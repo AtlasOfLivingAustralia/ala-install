@@ -1,0 +1,37 @@
+- include: ../../common/tasks/tomcat.yml
+
+- name: determine if the application is in our local repo
+  local_action: stat path={{local_repo_dir}}/{{datacheck}}.war
+  register: datacheck_war_path
+
+- name: fetch application if it is not in our local repo  
+  local_action: get_url url={{datacheck_url}} dest={{local_repo_dir}}/{{datacheck}}.war
+  when: datacheck_war_path.stat.exists == false
+  
+- name: install packages
+  yum: name={{item}} state=present
+  with_items:
+    - httpd
+  tags:
+    - packages 
+  notify: 
+    - restart apache
+
+- name: copy tomcat webapps
+  copy: src={{local_repo_dir}}/{{datacheck}}.war dest=/var/lib/{{tomcat}}/webapps/{{datacheck}}.war
+
+- name: ensure data directory exists
+  file: path={{data_dir}}/datacheck/config state=directory owner=tomcat group=tomcat
+  notify: 
+    - restart tomcat
+
+- name: copy all template configs
+  template: src=config/datacheck-config.properties dest={{data_dir}}/datacheck/config/datacheck-config.properties
+  notify: 
+    - restart tomcat
+      
+- name: set data ownership [all data is owned by tomcat]
+  file: path={{data_dir}}/datacheck owner=tomcat group=tomcat recurse=true
+  notify: 
+    - restart tomcat
+    

@@ -1,0 +1,6 @@
+# tasks that are common to many roles
+- name: ensure local repository exists [happens locally]
+  local_action: file dest={{local_repo_dir}} state=directory
+
+- name: ensure data directory exists
+  file: path={{data_dir}} state=directory    

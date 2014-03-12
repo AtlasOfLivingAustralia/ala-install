@@ -1,0 +1,130 @@
+- include: ../../common/tasks/tomcat.yml
+
+- name: determine if the application is in our local repo
+  local_action: stat path={{local_repo_dir}}/{{biocache_service}}.war
+  register: biocache_war_path
+
+- name: fetch application if it is not in our local repo  
+  local_action: get_url url={{biocache_service_url}} dest={{local_repo_dir}}/{{biocache_service}}.war
+  when: biocache_war_path.stat.exists == false
+  
+- name: setup yum repo
+  copy: src=yum/datastax.repo dest=/etc/yum.repos.d/datastax.repo
+
+- name: install packages
+  yum: name={{item}} state=present
+  with_items:
+    - $java
+    - $datastax
+    - $cassandra
+    - httpd
+  tags:
+    - packages 
+  notify: 
+    - restart cassandra
+    - configure cassandra
+    - restart apache
+
+- name: set cassandra to use the ByteOrderedPartitioner
+  lineinfile: " 
+    dest=/etc/cassandra/conf/cassandra.yaml  
+    regexp=^partitioner 
+    line='partitioner: org.apache.cassandra.dht.ByteOrderedPartitioner'"
+  notify: 
+    - restart cassandra
+  
+- name: setup production settings for Cassandra (not overwrites files)
+  copy: src={{item.src}} dest={{item.dest}}
+  with_items:
+    - {src: cassandra/90-nproc.conf, dest: /etc/security/limits.d/90-nproc.conf}
+    - {src: cassandra/limits.conf, dest: /etc/security/limits.conf}
+  notify: 
+    - restart cassandra
+        
+- name: disable swap
+  shell: "sudo swapoff --all"
+  
+- name: copy transient files to tmp (schemas etc)
+  copy: src={{item}} dest=/tmp
+  with_items:
+    - cassandra/cassandra-schema.txt
+
+- name: add common tomcat jars (for SOLR logging and JTS)
+  copy: src=tomcat/libs/{{item}} dest=/usr/share/{{tomcat}}/lib/{{item}}
+  with_items:
+    - jcl-over-slf4j-1.6.6.jar
+    - jts-1.12.jar
+    - jul-to-slf4j-1.6.6.jar
+    - log4j-1.2.16.jar
+    - slf4j-api-1.6.6.jar
+    - slf4j-log4j12-1.6.6.jar
+  notify: 
+    - restart tomcat
+
+- name: copy SOLR webapps
+  copy: src=tomcat/webapps/{{solr}}.war dest=/var/lib/{{tomcat}}/webapps/{{solr}}.war
+  notify: 
+    - restart tomcat
+
+- name: copy biocache webapps
+  copy: src={{local_repo_dir}}/{{biocache_service}}.war dest=/var/lib/{{tomcat}}/webapps/{{biocache_service}}.war
+  notify: 
+    - restart tomcat
+
+- name: ensure tomcat context directory exists
+  file: path=/usr/share/{{tomcat}}/conf/Catalina/localhost/ state=directory owner=tomcat group=tomcat
+  notify: 
+    - restart tomcat
+
+- name: copy SOLR context 
+  copy: src=tomcat/context/{{solr}}.xml dest=/usr/share/{{tomcat}}/conf/Catalina/localhost/{{solr}}.xml owner=tomcat group=tomcat
+  notify: 
+    - restart tomcat
+
+- name: ensure application data directory exists
+  file: path={{data_dir}}/biocache state=directory owner=tomcat group=tomcat
+    
+- name: copy all data assets 
+  copy: src=data/config dest={{data_dir}}/biocache owner=tomcat group=tomcat
+
+- name: copy SOLR config
+  copy: src=solr dest={{data_dir}} owner=tomcat group=tomcat
+  notify: 
+    - restart tomcat
+  
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner=tomcat group=tomcat
+  with_items:
+    - "{{data_dir}}/ala/layers/ready/shape"
+    - "{{data_dir}}/biocache-load"
+    - "{{data_dir}}/biocache-media"
+    - "{{data_dir}}/biocache-upload"
+    - "{{data_dir}}/cache"
+
+- name: copy all template configs
+  template: src={{item}} dest={{data_dir}}/biocache/{{item}} owner=tomcat group=tomcat
+  with_items:
+    - config/biocache-config.properties
+      
+- name: set data ownership [all data is owned by tomcat]
+  file: path={{data_dir}}/{{item}} owner=tomcat group=tomcat recurse=true
+  with_items:
+    - biocache
+    - ala
+    - biocache-load
+    - biocache-media
+    - biocache-upload
+    - cache
+  notify: 
+    - restart tomcat
+
+- name: set SOLR directory ownership [all data is owned by tomcat]
+  file: path={{data_dir}}/solr owner=tomcat group=tomcat recurse=true
+  notify: 
+    - restart tomcat
+               
+- name: set permissions for biocache-load [TODO - more restrictive permissions]
+  file: path={{data_dir}}/biocache-load mode=777   
+  notify: 
+    - restart tomcat
+            

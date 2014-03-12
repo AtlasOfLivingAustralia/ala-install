@@ -1,0 +1,5 @@
+# application versions
+collectory: collectory
+
+# assets
+collectory_url: http://maven.ala.org.au/repository/au/org/ala/collectory/collectory.war            

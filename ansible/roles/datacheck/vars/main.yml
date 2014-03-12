@@ -1,0 +1,5 @@
+# application versions
+datacheck: datacheck
+
+# assets
+datacheck_url: http://maven.ala.org.au/repository/au/org/ala/datacheck/datacheck.war            

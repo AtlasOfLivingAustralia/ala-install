@@ -1,0 +1,6 @@
+- hosts: collectory
+  remote_user: root
+  roles:
+    - common
+    - collectory
+            

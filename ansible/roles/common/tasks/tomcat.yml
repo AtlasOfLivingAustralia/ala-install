@@ -1,0 +1,20 @@
+# set up tomcat consistently whenever needed.  Used as:
+# - include ../common/tasks/tomcat.yml 
+
+# "tomcat" variable controls version (@see common/vars)
+- name: install tomcat
+  yum: name={{tomcat}} state=present
+  tags:
+    - packages 
+  notify: 
+    - restart tomcat
+
+# replace the commented out java_opts that ships with the CentOS install which is:
+#JAVA_OPTS="-Xminf0.1 -Xmaxf0.3"        
+- name: configure tomcat memory
+  lineinfile: 
+    dest=/etc/{{tomcat}}/{{tomcat}}.conf
+    regexp="-Xminf0.1 -Xmaxf0.3"
+    line='JAVA_OPTS="{{tomcat_java_opts}}"'
+  notify: 
+    - restart tomcat

@@ -1,0 +1,17 @@
+# common variables across all roles
+
+# the application data directory  
+data_dir: /data
+
+# versions that we wish common to all roles
+tomcat: tomcat6
+java: java-1.7.0-openjdk-devel
+
+# local artifact directory is used for storing artifacts that 
+# are sourced from (e.g.) svn, or ALA maintained URLs that we do 
+# not want to include in this build environment.  Typically these 
+# are the binaries for the web apps, or pre built indexes that are
+# maintained outside of this build.
+local_repo_dir: ~/.ala 
+
+tomcat_java_opts: -Xmx1G

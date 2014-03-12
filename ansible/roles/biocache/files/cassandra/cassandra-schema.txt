@@ -1,0 +1,114 @@
+/* Creates the cassandra 0.7.x schema necessary for biocache-store 
+   Run this file using:
+   ./cassandra-cli --host localhost --batch < create_cass_schema.txt
+*/
+
+/* all keyspaces are created using the ByteOrderPreservingPartitioner see the cassandra.yaml file */
+create keyspace occ;
+
+use occ;
+
+create column family occ with comparator=UTF8Type and default_validation_class=UTF8Type
+and comment='The column family for occurrence records' 
+and key_validation_class = 'UTF8Type' 
+and compaction_strategy=LeveledCompactionStrategy
+and compaction_strategy_options = {'sstable_size_in_mb' : '200'}
+and column_metadata=[{column_name: portalId, validation_class: UTF8Type, index_type: KEYS},
+{column_name: uuid, validation_class: UTF8Type, index_type: KEYS}];
+
+create column family loc with comparator=UTF8Type 
+and default_validation_class=UTF8Type 
+and key_validation_class = 'UTF8Type' 
+and comment ='The column family for locations'
+and compaction_strategy=LeveledCompactionStrategy
+and compaction_strategy_options = {'sstable_size_in_mb' : '200'};
+
+create column family attr with comparator=UTF8Type 
+and default_validation_class=UTF8Type 
+and key_validation_class = 'UTF8Type'
+and comment='The column family for attribution tracking' 
+and compaction_strategy=LeveledCompactionStrategy;
+
+create column family taxon with comparator=UTF8Type 
+and default_validation_class=UTF8Type 
+and key_validation_class = 'UTF8Type'
+and comment='The column family for taxon profile information' 
+and compaction_strategy=LeveledCompactionStrategy
+and compaction_strategy_options = {'sstable_size_in_mb' : '200'};
+
+
+/* update column family loc with comparator=UTF8Type and keys_cached=1.0 */
+
+create column family qa with comparator=UTF8Type 
+and default_validation_class=UTF8Type 
+and key_validation_class = 'UTF8Type'
+and comment='The column family for quality assertions'
+and column_metadata=[{column_name: userId, validation_class: UTF8Type,  index_type: KEYS},
+{column_name:code, validation_class: UTF8Type, index_type: KEYS}] 
+and compaction_strategy=LeveledCompactionStrategy
+and compaction_strategy_options = {'sstable_size_in_mb' : '200'};
+
+create column family dellog  
+  with comparator = 'UTF8Type'
+  and default_validation_class = 'UTF8Type'
+  and key_validation_class = 'UTF8Type'  
+  and compaction_strategy = 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'
+  and compaction_strategy_options = {'sstable_size_in_mb' : '200'}
+  and comment = 'The column family to log deleted information';
+
+create column family duplicates  
+  with comparator = 'UTF8Type'
+  and default_validation_class = 'UTF8Type'
+  and key_validation_class = 'UTF8Type'  
+  and compaction_strategy = 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'
+  and compaction_strategy_options = {'sstable_size_in_mb' : '200'}
+  and comment = 'The column family to store information about duplicates';
+
+create column family occ_duplicates  
+  with comparator = 'UTF8Type'
+  and default_validation_class = 'UTF8Type'
+  and key_validation_class = 'UTF8Type'  
+  and compaction_strategy = 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'
+  and compaction_strategy_options = {'sstable_size_in_mb' : '200'}
+  and comment = 'The column family to store information about duplicates';
+
+create column family upload
+  with comparator = 'UTF8Type'
+  and default_validation_class = 'UTF8Type'
+  and key_validation_class = 'UTF8Type'
+  and compaction_strategy = 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'
+  and compaction_strategy_options = {'sstable_size_in_mb' : '200'}
+  and comment = 'The column family to store information about dynamically uploaded datasets';
+
+create column family outliers with comparator = 'UTF8Type' and default_validation_class = 'UTF8Type'
+and comment='The column family for occurrence records' and gc_grace=2000;
+
+create column family occ_outliers with comparator = 'UTF8Type' and default_validation_class = 'UTF8Type'
+and comment='The column family for occurrence records' and gc_grace=2000;
+
+update column family outliers with comparator = 'UTF8Type' and default_validation_class = 'UTF8Type'
+and column_metadata=[{column_name: portalId, validation_class: UTF8Type, index_type: KEYS},
+{column_name: uuid, validation_class: UTF8Type, index_type: KEYS}];
+
+update column family occ_outliers with comparator = 'UTF8Type' and default_validation_class = 'UTF8Type'
+and column_metadata=[{column_name: portalId, validation_class: UTF8Type, index_type: KEYS},
+{column_name: uuid, validation_class: UTF8Type, index_type: KEYS}];
+
+
+create column family queryassert  
+  with comparator = 'UTF8Type'
+  and default_validation_class = 'UTF8Type'
+  and key_validation_class = 'UTF8Type'  
+  and compaction_strategy = 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'
+  and compaction_strategy_options = {'sstable_size_in_mb' : '200'}
+  and comment = 'The column family to store information about query based assertions';
+
+update column family queryassert with column_metadata=[{column_name: uuid, validation_class: UTF8Type, index_type: KEYS}];
+
+create column family distribution_outliers
+  with comparator = 'UTF8Type'
+  and default_validation_class = 'UTF8Type'
+  and key_validation_class = 'UTF8Type'
+  and compaction_strategy = 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'
+  and compaction_strategy_options = {'sstable_size_in_mb' : '200'}
+  and comment = 'The column family to store information about expert distribution outlier records';
