@@ -1,23 +1,23 @@
 # A monolythic installation
   
 [common]
-ala.vagrant.dev
+10.1.1.2
 
 [biocache]
-ala.vagrant.dev
+10.1.1.2
 
 [cli]
-ala.vagrant.dev
+10.1.1.2
 
 [collectory]
-ala.vagrant.dev
+10.1.1.2
 
 [datacheck]
-ala.vagrant.dev
+10.1.1.2
 
 [hubs-webapp]
-ala.vagrant.dev
+10.1.1.2
 
 [common:vars]
-base_url = ala.vagrant.dev:8080
+base_url = 10.1.1.2:8080
 local_repo_dir = ~/.ala

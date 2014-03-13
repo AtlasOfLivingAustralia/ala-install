@@ -12,8 +12,6 @@ $ cd vagrant
 $ vagrant up
 ```
 
-It will likely ask for your password to set the host file entry, which will address the machine on `ala.vagrant.dev`.
-
 The first execution of this downloads the CentOS image which can take 20 minutes or more. 
 
 ## Ansible
@@ -24,7 +22,7 @@ To run Ansible you need to locate the correct key file (e.g. the default insecur
 
 ```
 $ cd ansible
-$ $ ansible-playbook -i vagrant site.yml --private-key /Users/tim/.vagrant.d/insecure_private_key 
+$ ansible-playbook -i vagrant site.yml --private-key /Users/tim/.vagrant.d/insecure_private_key 
 ```
 
 The first execution of this downloads many large artifacts from the ALA sites and will likely take 30 minutes or more.  Subsequent executions do not perform this step.
