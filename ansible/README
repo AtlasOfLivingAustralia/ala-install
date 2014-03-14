@@ -4,4 +4,4 @@ This holds a single play to do a complete setup for the ALA demo platform on Cen
 This is a monolythic installation - future iterations might split out roles correctly, to allow for a more sophisticated deployment topology (e.g. roles for cassandra, web, tomcat etc).
 
 Example to run this using a the vagrant and insecure private key:
-$ ansible-playbook -i vagrant site.yml --private-key /Users/tim/.vagrant.d/insecure_private_key 
+$ ansible-playbook -i vagrant site.yml --private-key ~/.vagrant.d/insecure_private_key 

@@ -42,17 +42,18 @@
 - name: ensure data directory exists
   file: path={{data_dir}}/collectory owner=tomcat group=tomcat state=directory
 
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory
+  with_items:
+    - "{{data_dir}}/collectory/upload"
+    - "{{data_dir}}/collectory/taxa/data"
+
 - name: copy all data assets [SOLR, lucene etc] 
   copy: src={{item}} dest={{data_dir}}/collectory owner=tomcat group=tomcat
   with_items:
     - data/bootstrap
     - data/config
     - data/data
-
-- name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory
-  with_items:
-    - "{{data_dir}}/collectory/upload"
 
 - name: copy all template configs
   template: src={{item}} dest={{data_dir}}/collectory/{{item}}

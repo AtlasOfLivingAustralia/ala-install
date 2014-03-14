@@ -87,11 +87,6 @@
 - name: copy all data assets 
   copy: src=data/config dest={{data_dir}}/biocache owner=tomcat group=tomcat
 
-- name: copy SOLR config
-  copy: src=solr dest={{data_dir}} owner=tomcat group=tomcat
-  notify: 
-    - restart tomcat
-  
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner=tomcat group=tomcat
   with_items:
@@ -100,6 +95,12 @@
     - "{{data_dir}}/biocache-media"
     - "{{data_dir}}/biocache-upload"
     - "{{data_dir}}/cache"
+    - "{{data_dir}}/solr/conf"
+
+- name: copy SOLR config
+  copy: src=solr dest={{data_dir}} owner=tomcat group=tomcat
+  notify: 
+    - restart tomcat
 
 - name: copy all template configs
   template: src={{item}} dest={{data_dir}}/biocache/{{item}} owner=tomcat group=tomcat
@@ -115,6 +116,7 @@
     - biocache-media
     - biocache-upload
     - cache
+    - solr
   notify: 
     - restart tomcat
 
