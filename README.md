@@ -22,7 +22,7 @@ To run Ansible you need to locate the correct key file (e.g. the default insecur
 
 ```
 $ cd ansible
-$ ansible-playbook -i vagrant site.yml --private-key /Users/tim/.vagrant.d/insecure_private_key 
+$ ansible-playbook -i vagrant site.yml --private-key ~/.vagrant.d/insecure_private_key
 ```
 
 The first execution of this downloads many large artifacts from the ALA sites and will likely take 30 minutes or more.  Subsequent executions do not perform this step.
