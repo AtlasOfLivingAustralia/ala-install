@@ -26,7 +26,7 @@
   when: lucene_path.stat.exists == false
     
 - name: unpackage the lucene index if it was newly copied
-  shell: "tar xvf {{data_dir}}/lucene/col_namematching.tgz"
+  shell: "tar xvf {{data_dir}}/lucene/col_namematching.tgz -C /data/lucene/"
   when: lucene_path.stat.exists == false
       
 - name: set data ownership [all data is owned by tomcat]
@@ -42,7 +42,7 @@
   copy: src={{local_repo_dir}}/{{biocache_store}} dest=/usr/lib/biocache/{{biocache_store}}
 
 - name: unjar biocache
-  shell: "jar -xf /usr/lib/biocache/{{biocache_store}} /usr/lib/biocache/lib"      
+  shell: "unzip  /usr/lib/biocache/{{biocache_store}} lib/* -d /usr/lib/biocache/ "
     
 - name: create the templated biocache.sh
   template: src=biocache.sh dest=/usr/lib/biocache/biocache.sh mode=777
