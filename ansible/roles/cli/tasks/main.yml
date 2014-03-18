@@ -42,7 +42,7 @@
   copy: src={{local_repo_dir}}/{{biocache_store}} dest=/usr/lib/biocache/{{biocache_store}}
 
 - name: unjar biocache
-  shell: "unzip  /usr/lib/biocache/{{biocache_store}} lib/* -d /usr/lib/biocache/ "
+  shell: "unzip /usr/lib/biocache/{{biocache_store}} lib/* -d /usr/lib/biocache/"
     
 - name: create the templated biocache.sh
   template: src=biocache.sh dest=/usr/lib/biocache/biocache.sh mode=777
