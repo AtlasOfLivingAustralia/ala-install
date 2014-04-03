@@ -27,5 +27,6 @@ $ ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.
 The first execution of this downloads many large artifacts from the ALA sites and will likely take 30 minutes or more.  Subsequent executions do not perform this step.
 
 For other non-local virtual machines, you'll need to supply an SSH password:
-
-ansible-playbook -i inventories/images ala-demo.yml -vvvv -u mar759 --ask-pass --ask-sudo-pass
+```
+$ ansible-playbook -i inventories/images ala-demo.yml -vvvv -u mar759 --ask-pass --ask-sudo-pass
+```
