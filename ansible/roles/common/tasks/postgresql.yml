@@ -1,0 +1,58 @@
+- name: install software-properties-common (Debian)
+  apt: pkg=software-properties-common  state=present update_cache=yes
+  when: ansible_os_family == "Debian" 
+
+- name: install python-software-properties (Debian)
+  apt: pkg=python-software-properties  state=present
+  when: ansible_os_family == "Debian" 
+
+- name: Add postgres repository
+  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main' state=present
+  when: ansible_os_family == "Debian" 
+
+- name: Add postgres repository key
+  apt_key: url=http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc state=present
+
+- name: Install postgresql
+  apt: pkg=postgresql-9.3 state=present force=yes  update_cache=yes
+
+- name: Restart postgresql server
+  service: name=postgresql state=started enabled=yes
+
+- name: install libpq-dev (Debian)
+  apt: pkg=libpq-dev  state=present update_cache=yes
+  when: ansible_os_family == "Debian" 
+
+- name: install python-psycopg2 (Debian)
+  apt: pkg=python-psycopg2  state=present update_cache=yes
+  when: ansible_os_family == "Debian" 
+
+- name: start postgresql and configure to startup automatically
+  service: name=postgresql state=started enabled=yes
+  register: started
+  tags: postgresql
+
+- name: wait for postgresql restart
+  command: sleep 2
+  when: started.changed
+  tags: postgresql
+
+#   tasks:
+- name: ensure database is created (this fails on vagrant)
+  postgresql_db: name={{postgres_dbname}}
+  sudo_user: postgres 
+  ignore_errors: yes
+
+# this fails on vagrant
+- name: ensure user has access to database (this fails on vagrant)
+  postgresql_user: db={{postgres_dbname}} name={{postgres_dbuser}} password={{postgres_dbpassword}} priv=CONNECT/{{postgres_dbname}}:ALL
+  sudo_user: postgres
+  ignore_errors: yes
+
+#- name: ensure user does not have unnecessary privilege
+#  postgresql_user: name={{postgres_dbuser}} role_attr_flags=NOSUPERUSER,NOCREATEDB
+#  ignore_errors: yes
+
+# sudo -u postgres psql
+# ALTER USER postgres PASSWORD 'password';
+#  psql -U postgres -h localhost  //should work

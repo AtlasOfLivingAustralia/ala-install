@@ -1,4 +1,7 @@
 # A monolithic installation
+
+[demo-apache]
+10.1.1.2
   
 [common]
 10.1.1.2
@@ -15,7 +18,13 @@
 [datacheck]
 10.1.1.2
 
+[biocache-hubs]
+10.1.1.2
+
 [hubs-webapp]
+10.1.1.2
+
+[images]
 10.1.1.2
 
 [common:vars]

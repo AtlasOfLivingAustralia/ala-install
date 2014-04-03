@@ -1,0 +1,4 @@
+- hosts: biocache-hubs
+  roles:
+    - common
+    - biocache-hubs

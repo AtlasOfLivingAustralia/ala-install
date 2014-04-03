@@ -1,0 +1,4 @@
+- hosts: images
+  roles:
+    - common  
+    - images

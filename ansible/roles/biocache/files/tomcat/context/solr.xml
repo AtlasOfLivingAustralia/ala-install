@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/solr-4.6.1/home"
-     docBase="/var/lib/tomcat6/webapps/solr-4.6.1.war"
+<Context path="/solr/home"
+     docBase="/var/lib/tomcat6/webapps/solr.war"
      allowlinking="true"
      crosscontext="true"
      debug="0"

@@ -7,15 +7,6 @@
 - name: fetch application if it is not in our local repo  
   local_action: get_url url={{datacheck_url}} dest={{local_repo_dir}}/{{datacheck}}.war
   when: datacheck_war_path.stat.exists == false
-  
-- name: install packages
-  yum: name={{item}} state=present
-  with_items:
-    - httpd
-  tags:
-    - packages 
-  notify: 
-    - restart apache
 
 - name: copy tomcat webapps
   copy: src={{local_repo_dir}}/{{datacheck}}.war dest=/var/lib/{{tomcat}}/webapps/{{datacheck}}.war
@@ -29,9 +20,8 @@
   template: src=config/datacheck-config.properties dest={{data_dir}}/datacheck/config/datacheck-config.properties
   notify: 
     - restart tomcat
-      
+
 - name: set data ownership [all data is owned by tomcat]
-  file: path={{data_dir}}/datacheck owner=tomcat group=tomcat recurse=true
+  file: path={{data_dir}}/datacheck owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 
     - restart tomcat
-    

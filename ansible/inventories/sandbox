@@ -1,0 +1,17 @@
+# A sandbox installation
+  
+[common]
+ala-lennon.it.csiro.au
+
+[biocache]
+ala-lennon.it.csiro.au
+
+[cli]
+ala-lennon.it.csiro.au
+
+[datacheck]
+ala-lennon.it.csiro.au
+
+[common:vars]
+base_url = ala-lennon.it.csiro.au:8080
+local_repo_dir = ~/.ala

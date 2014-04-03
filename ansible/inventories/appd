@@ -1,0 +1,20 @@
+# A appd installation
+  
+[common]
+ala-harrison.it.csiro.au
+
+[biocache]
+ala-harrison.it.csiro.au
+
+[cli]
+ala-harrison.it.csiro.au
+
+[collectory]
+ala-harrison.it.csiro.au
+
+[biocache-hubs]
+ala-harrison.it.csiro.au
+
+[common:vars]
+base_url = ala-harrison.it.csiro.au:8080
+local_repo_dir = ~/.ala

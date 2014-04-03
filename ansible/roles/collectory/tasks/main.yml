@@ -1,3 +1,5 @@
+- include: ../../common/tasks/setfacts.yml
+- include: ../../common/tasks/java.yml
 - include: ../../common/tasks/tomcat.yml
 
 - name: determine if the application is in our local repo
@@ -5,18 +7,16 @@
   register: collectory_war_path
 
 - name: fetch application if it is not in our local repo  
-  local_action: get_url url={{collectory_url}} dest={{local_repo_dir}}/{{collectory}}.war
+  local_action: get_url url={{collectory_url}} dest={{local_repo_dir}}/collectory.war
   when: collectory_war_path.stat.exists == false
 
-- name: install packages
+- name: install mysql
   yum: name={{item}} state=present
   with_items:
-    - httpd
     - mysql-server
   tags:
     - packages 
   notify: 
-    - restart apache
     - restart mysql
 
 - name: copy transient files to tmp (schemas etc)
@@ -26,7 +26,7 @@
 
 - name: ensure mysql is running (this is idempotent so safe)
   service: name=mysqld state=started
-  
+
 - name: create or recreate collectory DB (existing data is lost) 
   shell: "{{item}}"
   with_items:
@@ -40,7 +40,7 @@
     - restart tomcat
 
 - name: ensure data directory exists
-  file: path={{data_dir}}/collectory owner=tomcat group=tomcat state=directory
+  file: path={{data_dir}}/collectory owner={{tomcat_user}} group={{tomcat_user}}  state=directory
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory
@@ -48,8 +48,8 @@
     - "{{data_dir}}/collectory/upload"
     - "{{data_dir}}/collectory/taxa/data"
 
-- name: copy all data assets [SOLR, lucene etc] 
-  copy: src={{item}} dest={{data_dir}}/collectory owner=tomcat group=tomcat
+- name: copy all data assets [SOLR, lucene etc]
+  copy: src={{item}} dest={{data_dir}}/collectory owner={{tomcat_user}}  group={{tomcat_user}} 
   with_items:
     - data/bootstrap
     - data/config
@@ -59,10 +59,10 @@
   template: src={{item}} dest={{data_dir}}/collectory/{{item}}
   with_items:
     - config/collectory-config.properties 
-      
+
 - name: set data ownership [all data is owned by tomcat]
-  file: path={{data_dir}}/{{item}} owner=tomcat group=tomcat recurse=true
+  file: path={{data_dir}}/{{item}} owner={{tomcat_user}}  group={{tomcat_user}}  recurse=true
   with_items:
     - collectory
   notify: 
-    - restart tomcat
+    - restart tomcat  

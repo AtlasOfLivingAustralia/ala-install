@@ -1,6 +1,4 @@
 - hosts: biocache
-  remote_user: root
   roles:
     - common
     - biocache
-            

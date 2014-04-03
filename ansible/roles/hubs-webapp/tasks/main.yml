@@ -7,7 +7,7 @@
 - name: fetch application if it is not in our local repo  
   local_action: get_url url={{hubs_webapp_url}} dest={{local_repo_dir}}/{{hubs_webapp}}.war
   when: hubs_webapp_war_path.stat.exists == false
-  
+
 - name: install packages
   yum: name={{item}} state=present
   with_items:
@@ -29,10 +29,8 @@
   template: src=config/hubs-config.properties dest={{data_dir}}/hubs/config/hubs-config.properties owner=tomcat group=tomcat
   notify: 
     - restart tomcat
-      
+
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/hubs owner=tomcat group=tomcat recurse=true
   notify: 
     - restart tomcat
-          
-            

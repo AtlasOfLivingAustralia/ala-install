@@ -1,0 +1,3 @@
+- include: biocache.yml
+- include: biocache-hubs.yml biocache_hub=appd-biocache-hub
+- include: cli.yml

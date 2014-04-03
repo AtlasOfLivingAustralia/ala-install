@@ -1,0 +1,13 @@
+# application versions  
+biocache_hub: generic-biocache-hub
+
+biocache_hub_config: generic-biocache-hub-config.properties
+
+collectory: collectory
+
+biocache_service: biocache-service
+
+# assets
+biocache_hub_url: http://maven.ala.org.au/repository/au/org/ala/generic-biocache-hub/generic-biocache-hub.war
+
+tomcat_webapps: /var/lib/tomcat7/webapps/

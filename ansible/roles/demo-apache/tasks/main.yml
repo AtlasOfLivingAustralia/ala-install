@@ -1,0 +1,21 @@
+- include: ../../common/tasks/setfacts.yml
+- include: ../../common/tasks/apache.yml
+
+- name: Copy proxy config (Redhat)
+  copy: src=centos-proxies.conf dest=/etc/httpd/conf.d/
+  when: ansible_os_family == "RedHat" 
+
+- name: Copy proxy config to sites-available (Debian)
+  copy: src=000-default.conf dest=/etc/apache2/sites-available/ owner=root group=root
+  when: ansible_os_family == "Debian" 
+
+- name: Copy welcome page
+  copy: src=index.html dest=/var/www/html/ owner=root group=root
+  when: ansible_os_family == "RedHat"   
+
+- name: Copy welcome page
+  copy: src=index.html dest=/var/www/ owner=root group=root
+  when: ansible_os_family == "Debian"   
+
+- name: Start Apache2
+  service: name={{apache}} state=restarted

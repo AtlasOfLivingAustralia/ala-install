@@ -1,0 +1,30 @@
+- include: ../../common/tasks/setfacts.yml
+- include: ../../common/tasks/java.yml
+- include: ../../common/tasks/tomcat.yml
+
+- name: determine if the application is in our local repo
+  local_action: stat path={{local_repo_dir}}/{{biocache_hub}}.war
+  register: biocache_hub_war_path
+
+- name: fetch application if it is not in our local repo  
+  local_action: get_url url={{biocache_hub_url}} dest={{local_repo_dir}}/{{biocache_hub}}.war
+  when: biocache_hub_war_path.stat.exists == false
+
+- name: copy tomcat webapps
+  copy: src={{local_repo_dir}}/{{biocache_hub}}.war dest=/var/lib/{{tomcat}}/webapps/{{biocache_hub}}.war
+
+#- name: download from maven repo
+#  command: "wget {{biocache_hub_url}} --output-document={{tomcat_webapps}}{{biocache_hub}}.war"
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/{{biocache_hub}}/config"
+
+- name: copy all config.properties
+  template: src=config/config.properties dest={{data_dir}}/{{biocache_hub}}/config/{{biocache_hub_config}}
+
+- name: set data ownership
+  file: path={{data_dir}}/{{biocache_hub}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify: 
+    - restart tomcat

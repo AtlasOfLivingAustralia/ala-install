@@ -1,0 +1,10 @@
+- debug: msg="ansible_os_family was {{ ansible_os_family}}"  
+
+- set_fact: tomcat=tomcat7 tomcat_user=tomcat7 tomcat_conf=/etc/default/tomcat7 apache=apache2
+  when: ansible_os_family == "Debian"
+
+
+- set_fact: tomcat=tomcat6 tomcat_user=tomcat tomcat_conf=/etc/tomcat6/tomcat6.conf apache=httpd
+  when: ansible_os_family == "RedHat" 
+  
+- debug: msg="ansible_os_family was {{ ansible_os_family}}"
