@@ -1,10 +1,9 @@
 # ALA Portal Installation Scripts
-An [Ansible](http://www.ansible.com/) based installation for the ALA Portal for CentOS 6.x.
+An [Ansible](http://www.ansible.com/) based installation for ALA components for CentOS 6.x and Ubuntu 12.x.
 
 ## Vagrant
 `vagrant` contains a configuration that can used with [VirtualBox](https://www.virtualbox.org/) to bring up a VH for deploying against.  
-This is included only to simplify testing, but any server running CentOS 6.x could be used.  To run you need [Vagrant](http://www.vagrantup.com/)
-installed, and have the [vagrant-hostmanager](https://github.com/smdahlen/vagrant-hostmanager) plugin installed `vagrant plugin install vagrant-hostmanager`.
+This is included only to simplify testing, but any server running CentOS 6.x could be used.  
 
 Once this is done, you can bring up a VH using:
 ```
@@ -22,7 +21,11 @@ To run Ansible you need to locate the correct key file (e.g. the default insecur
 
 ```
 $ cd ansible
-$ ansible-playbook -i vagrant site.yml --private-key ~/.vagrant.d/insecure_private_key
+$ ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key  -u root
 ```
 
 The first execution of this downloads many large artifacts from the ALA sites and will likely take 30 minutes or more.  Subsequent executions do not perform this step.
+
+For other non-local virtual machines, you'll need to supply an SSH password:
+
+ansible-playbook -i inventories/images ala-demo.yml -vvvv -u mar759 --ask-pass --ask-sudo-pass
