@@ -7,6 +7,8 @@
 # On CSIRO VMs the mounted storage is typically on /srv/data and we need to create a symlink from /data -> /srv/data 
 # On Nectar Ubuntu VMs this is usually /mnt  
 #
+- name: ensure local repository exists [happens locally]
+  local_action: file dest={{local_repo_dir}} state=directory
 
 - name: create data directory
   file: path={{data_dir}} state=directory
