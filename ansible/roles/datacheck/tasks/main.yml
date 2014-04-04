@@ -12,7 +12,7 @@
   copy: src={{local_repo_dir}}/{{datacheck}}.war dest=/var/lib/{{tomcat}}/webapps/{{datacheck}}.war
 
 - name: ensure data directory exists
-  file: path={{data_dir}}/datacheck/config state=directory owner=tomcat group=tomcat
+  file: path={{data_dir}}/datacheck/config state=directory owner={{tomcat_user}} group={{tomcat_user}}
   notify: 
     - restart tomcat
 

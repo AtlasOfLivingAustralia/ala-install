@@ -1,9 +1,14 @@
 # A monolithic installation
 
-[demo-apache]
-10.1.1.2
-  
 [common]
+10.1.1.2
+
+[common:vars]
+base_url=10.1.1.2:8080
+local_repo_dir=~/.ala
+is_vagrant=true
+
+[demo-apache]
 10.1.1.2
 
 [biocache]
@@ -26,7 +31,3 @@
 
 [images]
 10.1.1.2
-
-[common:vars]
-base_url = 10.1.1.2:8080
-local_repo_dir = ~/.ala

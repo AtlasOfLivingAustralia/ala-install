@@ -1,4 +1,4 @@
-# ALA Portal Installation Scripts
+# ALA Installation Scripts
 An [Ansible](http://www.ansible.com/) based installation for ALA components for CentOS 6.x and Ubuntu 12.x.
 
 ## Vagrant
@@ -7,7 +7,7 @@ This is included only to simplify testing, but any server running CentOS 6.x cou
 
 Once this is done, you can bring up a VH using:
 ```
-$ cd vagrant
+$ cd vagrant/centos
 $ vagrant up
 ```
 
@@ -26,7 +26,13 @@ $ ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.
 
 The first execution of this downloads many large artifacts from the ALA sites and will likely take 30 minutes or more.  Subsequent executions do not perform this step.
 
-For other non-local virtual machines, you'll need to supply an SSH password:
+For IM&T virtual machines:
 ```
-$ ansible-playbook -i inventories/images ala-demo.yml -vvvv -u mar759 --ask-pass --ask-sudo-pass
+$ ansible-playbook -i inventories/images ala-demo.yml -vvvv -u <CSIRO_IDENT> --ask-pass --ask-sudo-pass
 ```
+
+For Nectar VMs:
+```
+$ ansible-playbook -i inventories/nectar-sandbox sandbox.yml  --private-key ~/nectar.pem -u root
+```
+Note Nectar VMs will require an edit of the /etc/hosts file on the VM so that it recognises its own host name.

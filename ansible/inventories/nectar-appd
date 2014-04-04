@@ -18,3 +18,4 @@
 [common:vars]
 base_url = 130.220.210.67:8080
 local_repo_dir = ~/.ala
+mounted_storage_dir=/mnt

@@ -1,10 +1,21 @@
-# tasks that are common to many roles
-- name: ensure local repository exists [happens locally]
-  local_action: file dest={{local_repo_dir}} state=directory
+# We need to: 
+#
+# 1. Set in the inventory where the mounted storage is.
+# 2. Test that the mounted storage exists
+# 3. Create a symbolic link to the mounted storage
+# 
+# On CSIRO VMs the mounted storage is typically on /srv/data and we need to create a symlink from /data -> /srv/data 
+# On Nectar Ubuntu VMs this is usually /mnt  
+#
 
-# allow this to be symbolic link or a directoru
-- name: ensure data directory exists
+- name: Create data directory (vagrant only)
   file: path={{data_dir}} state=directory
+  when: is_vagrant
 
-- name: ensure data directory exists
-  shell: "ln -s {{data_dir}} /data"
+- name: ensure data directory on mounted storage exists
+  file: path={{mounted_storage_dir}}/data state=directory
+  when: (not is_vagrant) and (mounted_storage_dir != data_dir)
+
+- name: Create data directory (vagrant only)
+  file: src={{mounted_storage_dir}}/data dest={{data_dir}} state=link
+  when: (not is_vagrant) and (mounted_storage_dir != data_dir)

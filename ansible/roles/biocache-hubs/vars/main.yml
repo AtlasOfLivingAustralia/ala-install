@@ -9,5 +9,3 @@ biocache_service: biocache-service
 
 # assets
 biocache_hub_url: http://maven.ala.org.au/repository/au/org/ala/generic-biocache-hub/generic-biocache-hub.war
-
-tomcat_webapps: /var/lib/tomcat7/webapps/

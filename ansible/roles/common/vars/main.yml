@@ -1,10 +1,13 @@
 # common variables across all roles
 
 # the application data directory  
-data_dir: /srv/data
+data_dir: /data
+is_vagrant: false
+
+# when we need to create a symlink to mounted storage directory
+create_data_symlink: false
 
 # versions that we wish common to all roles
-
 postgres_dbname: ala-images
 postgres_dbuser: postgres
 postgres_dbpassword: password

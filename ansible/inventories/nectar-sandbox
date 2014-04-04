@@ -1,0 +1,21 @@
+# A sandbox installation
+  
+[common]
+118.138.243.64
+
+[biocache]
+118.138.243.64
+
+[cli]
+118.138.243.64
+
+[datacheck]
+118.138.243.64
+
+[sandbox-apache]
+118.138.243.64
+
+[common:vars]
+base_url = 118.138.243.64:8080
+local_repo_dir = ~/.ala
+mounted_storage_dir=/mnt
