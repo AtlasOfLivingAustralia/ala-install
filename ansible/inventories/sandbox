@@ -15,4 +15,10 @@ ala-lennon.it.csiro.au
 [common:vars]
 base_url = ala-lennon.it.csiro.au:8080
 local_repo_dir = ~/.ala
+
+
 mounted_storage_dir=/srv
+
+data_dir=/srv/data
+
+data_dir_symlink=/data

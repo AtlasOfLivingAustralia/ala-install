@@ -15,7 +15,10 @@
 [sandbox-apache]
 118.138.243.64
 
+[biocache-hubs]
+118.138.243.64
+
 [common:vars]
 base_url = 118.138.243.64:8080
 local_repo_dir = ~/.ala
-mounted_storage_dir=/mnt
+data_dir=/mnt/data

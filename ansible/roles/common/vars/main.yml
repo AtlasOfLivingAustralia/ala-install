@@ -1,7 +1,7 @@
 # common variables across all roles
 
 # the application data directory  
-data_dir: /data
+data_dir_symlink: /data
 is_vagrant: false
 
 # when we need to create a symlink to mounted storage directory

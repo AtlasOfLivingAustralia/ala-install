@@ -63,7 +63,7 @@
   when: ansible_os_family == "RedHat"
 
 - name: copy SOLR context  (Debian)
-  copy: src=tomcat/context/solr.xml dest=/var/lib/{{tomcat}}/conf/Catalina/localhost/solr.xml owner={{tomcat_user}}  group={{tomcat_user}} 
+  template: src=context/solr.xml dest=/var/lib/{{tomcat}}/conf/Catalina/localhost/solr.xml owner={{tomcat_user}}  group={{tomcat_user}} 
   notify:
     - restart tomcat
   when: ansible_os_family == "Debian"

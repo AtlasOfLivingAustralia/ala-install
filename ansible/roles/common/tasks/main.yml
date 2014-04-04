@@ -8,14 +8,9 @@
 # On Nectar Ubuntu VMs this is usually /mnt  
 #
 
-- name: Create data directory (vagrant only)
+- name: create data directory
   file: path={{data_dir}} state=directory
-  when: is_vagrant
 
-- name: ensure data directory on mounted storage exists
-  file: path={{mounted_storage_dir}}/data state=directory
-  when: (not is_vagrant) and (mounted_storage_dir != data_dir)
-
-- name: Create data directory (vagrant only)
-  file: src={{mounted_storage_dir}}/data dest={{data_dir}} state=link
-  when: (not is_vagrant) and (mounted_storage_dir != data_dir)
+- name: create symlink  from /data to the mounted storage
+  file: src={{data_dir}} dest={{data_dir_symlink}} state=link
+  when: not is_vagrant
