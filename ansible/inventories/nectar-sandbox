@@ -19,6 +19,6 @@
 118.138.243.64
 
 [common:vars]
-base_url = 118.138.243.64:8080
+base_url = 118.138.243.64
 local_repo_dir = ~/.ala
 data_dir=/mnt/data
