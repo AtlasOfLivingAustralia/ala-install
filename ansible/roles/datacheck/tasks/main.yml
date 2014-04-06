@@ -5,7 +5,7 @@
   register: datacheck_war_path
 
 - name: fetch application if it is not in our local repo  
-  local_action: get_url url={{datacheck_url}} dest={{local_repo_dir}}/{{datacheck}}.war
+  local_action: get_url url={{datacheck_war_url}} dest={{local_repo_dir}}/{{datacheck}}.war
   when: datacheck_war_path.stat.exists == false
 
 - name: copy tomcat webapps

@@ -19,6 +19,12 @@
 118.138.243.64
 
 [common:vars]
-base_url = 118.138.243.64
 local_repo_dir = ~/.ala
 data_dir=/mnt/data
+
+base_url = 118.138.243.64
+collectory_url = http://collections.ala.org.au
+biocache_url = http://118.138.243.64/biocache-service
+datacheck_url = http://118.138.243.64/datacheck
+biocache_ui_url = http://118.138.243.64/generic-biocache-hub
+solr_url = http://118.138.243.64/solr

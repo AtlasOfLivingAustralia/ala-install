@@ -13,5 +13,7 @@
   file: src=/etc/apache2/sites-available/000-default.conf dest=/etc/apache2/sites-enabled/000-default state=link
   when: ansible_os_family == "Debian"
 
+# TODO create directory in apache /var/www and a symbolic link to /data/biocache-media
+
 - name: Restart Apache2
   service: name={{apache}} state=restarted
