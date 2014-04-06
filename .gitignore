@@ -14,3 +14,13 @@ vagrant/ubuntu/.vagrant/machines/default/virtualbox/action_provision
 vagrant/ubuntu/.vagrant/machines/default/virtualbox/action_set_name
 
 vagrant/ubuntu/.vagrant/machines/default/virtualbox/id
+
+.idea/compiler.xml
+
+.idea/encodings.xml
+
+.idea/misc.xml
+
+.idea/modules.xml
+
+.idea/vcs.xml
