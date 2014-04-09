@@ -26,5 +26,5 @@ base_url = ala-lennon.it.csiro.au
 collectory_url = http://collections.ala.org.au
 biocache_url = http://ala-lennon.it.csiro.au/biocache-service
 datacheck_url = http://ala-lennon.it.csiro.au/datacheck
-biocache_ui_url = http://ala-lennon.it.csiro.au/generic-hub
+biocache_ui_url = http://ala-lennon.it.csiro.au/ala-hub
 solr_url = http://ala-lennon.it.csiro.au/solr
