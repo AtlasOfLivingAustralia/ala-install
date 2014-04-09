@@ -2,7 +2,6 @@
 
 # the application data directory  
 data_dir_symlink: /data
-is_vagrant: false
 
 # when we need to create a symlink to mounted storage directory
 create_data_symlink: false
@@ -19,6 +18,11 @@ java: java-1.7.0-openjdk-devel
 # not want to include in this build environment.  Typically these 
 # are the binaries for the web apps, or pre built indexes that are
 # maintained outside of this build.
-local_repo_dir: ~/.ala 
+#
+# DM: Ive removed local repo support as this is pretty buggy when not in use  with vagrant
+#
+#local_repo_dir: "~/.ala-ansible"
 
 tomcat_java_opts: -Xmx2g -Xms2g -XX:MaxPermSize=256m -Xss256k
+
+cassandra_user: cassandra

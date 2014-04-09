@@ -9,4 +9,11 @@ ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.d/
 
 For other non-local virtual machines, you'll need to supply an SSH password:
 
-ansible-playbook -i inventories/images ala-demo.yml -vvvv -u mar759 --ask-pass --ask-sudo-pass
+
+This works on CSIRO VMs......
+ansible-playbook -i inventories/demo ala-demo.yml --ask-pass --ask-sudo-pass -s
+
+
+May need to run
+
+ssh-keyscan ala-lennon.it.csiro.au >> .ssh/known_hosts 

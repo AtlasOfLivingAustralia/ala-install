@@ -9,3 +9,4 @@ ala-sutcliffe.it.csiro.au
 [common:vars]
 base_url = ala-sutcliffe.it.csiro.au:8080
 local_repo_dir = ~/.ala
+is_vagrant=false

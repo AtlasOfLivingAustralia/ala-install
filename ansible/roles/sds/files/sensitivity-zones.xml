@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sensitivity-zones>
+    <sensitivity-zone id="AUS" name="Australia" type="Country"/>
+    <sensitivity-zone id="NOTAUS" name="Outside Australia" type="Country"/>
+    <sensitivity-zone id="ACT" name="Australian Capital Territory" type="State"/>
+    <sensitivity-zone id="NSW" name="New South Wales" type="State"/>
+    <sensitivity-zone id="QLD" name="Queensland" type="State"/>
+    <sensitivity-zone id="VIC" name="Victoria" type="State"/>
+    <sensitivity-zone id="TAS" name="Tasmania" type="State"/>
+    <sensitivity-zone id="SA" name="South Australia" type="State"/>
+    <sensitivity-zone id="WA" name="Western Australia" type="State"/>
+    <sensitivity-zone id="NT" name="Northern Territory" type="State"/>
+    <sensitivity-zone id="CC" name="Cocos (Keeling) Islands" type="External_territory"/>
+    <sensitivity-zone id="CX" name="Christmas Island" type="External_territory"/>
+    <sensitivity-zone id="AC" name="Ashmore and Cartier Islands" type="External_territory"/>
+    <sensitivity-zone id="CS" name="Coral Sea Islands" type="External_territory"/>
+    <sensitivity-zone id="NF" name="Norfolk Island" type="External_territory"/>
+    <sensitivity-zone id="HM" name="Heard and McDonald Islands" type="External_territory"/>
+    <sensitivity-zone id="AQ" name="Australian Antartic Territory" type="External_territory"/>
+    <sensitivity-zone id="TSPZ" name="Torres Strait Protected Zone" type="Quarantine_zone"/>
+    <sensitivity-zone id="TSSQZ" name="Torres Strait Special Quarantine_zone" type="Quarantine_zone"/>
+    <sensitivity-zone id="FFEZ" name="Tri-State Fruit Fly Exclusion Zone" type="Quarantine_zone"/>
+    <sensitivity-zone id="PFFPQA1995" name="Papaya Fruit Fly Pest Quarantine Area 1995" type="Quarantine_zone"/>
+    <sensitivity-zone id="ECCPQA2004" name="Emerald Citrus Canker Pest Quarantine Area 2004" type="Quarantine_zone"/>
+    <sensitivity-zone id="RIFARA" name="Red Imported Fire Ant Restricted Area" type="Quarantine_zone"/>
+    <sensitivity-zone id="PIZNSWAC" name="Phylloxera Infested Zone - NSW Albury-Corowa" type="Quarantine_zone"/>
+    <sensitivity-zone id="PIZNSWSR" name="Phylloxera Infested Zone - NSW Sydney Region" type="Quarantine_zone"/>
+    <sensitivity-zone id="PIZVICNE" name="Phylloxera Infested Zone - Vic North East" type="Quarantine_zone"/>
+    <sensitivity-zone id="PIZVICMAR" name="Phylloxera Infested Zone - Vic Maroondah" type="Quarantine_zone"/>
+    <sensitivity-zone id="PIZVICNAG" name="Phylloxera Infested Zone - Vic Nagambie" type="Quarantine_zone"/>
+    <sensitivity-zone id="PIZVICMOR" name="Phylloxera Infested Zone - Vic Moroopna" type="Quarantine_zone"/>
+    <sensitivity-zone id="PIZVICUPT" name="Phylloxera Infested Zone - Vic Upton" type="Quarantine_zone"/>
+    <sensitivity-zone id="PIZVICWHB" name="Phylloxera Infested Zone - Vic Whitebridge" type="Quarantine_zone"/>
+    <sensitivity-zone id="PCNCAVICTHO" name="Potato Cyst Nematode Control Area - Vic Thorpdale" type="Quarantine_zone"/>
+    <sensitivity-zone id="PCNCAVICGEM" name="Potato Cyst Nematode Control Area - Vic Gembrook" type="Quarantine_zone"/>
+    <sensitivity-zone id="PCNCAVICKWR" name="Potato Cyst Nematode Control Area - Vic Koo Wee Rup" type="Quarantine_zone"/>
+    <sensitivity-zone id="PCNCAVICWAN" name="Potato Cyst Nematode Control Area - Vic Wandin" type="Quarantine_zone"/>
+</sensitivity-zones>

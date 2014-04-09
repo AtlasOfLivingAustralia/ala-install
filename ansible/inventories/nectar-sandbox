@@ -21,7 +21,7 @@
 [common:vars]
 local_repo_dir = ~/.ala
 data_dir=/mnt/data
-
+is_vagrant=false
 base_url = 118.138.243.64
 collectory_url = http://collections.ala.org.au
 biocache_url = http://118.138.243.64/biocache-service

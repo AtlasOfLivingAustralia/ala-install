@@ -17,16 +17,6 @@
     - configure cassandra
   when: ansible_os_family == "RedHat" 
 
-- name: set cassandra to use the ByteOrderedPartitioner (RedHat)
-  lineinfile: " 
-    dest=/etc/cassandra/conf/cassandra.yaml  
-    regexp=^partitioner 
-    line='partitioner: org.apache.cassandra.dht.ByteOrderedPartitioner'"
-  notify:
-    - restart cassandra
-  when: ansible_os_family == "RedHat"     
- 
-
 ########## DEBIAN ########## 
 
 - name: install packages (Debian)
@@ -64,25 +54,27 @@
     - configure cassandra
   when: ansible_os_family == "Debian" 
 
-
-- name: set cassandra to use the ByteOrderedPartitioner  (Debian)
-  lineinfile: " 
-    dest=/etc/cassandra/cassandra.yaml  
-    regexp=^partitioner 
-    line='partitioner: org.apache.cassandra.dht.ByteOrderedPartitioner'"
-  notify:
-    - restart cassandra
-  when: ansible_os_family == "Debian"
-
-
 - name: increase stack size (Debian only)
   shell: "sed -e s/Xss180k/Xss256k/g /etc/cassandra/cassandra-env.sh --in-place"
   when: ansible_os_family == "Debian"
+
+########## BOTH ########## 
 
 - name: setup production settings for Cassandra (not overwrites files)
   copy: src={{item.src}} dest={{item.dest}}
   with_items:
     - { src: cassandra/90-nproc.conf, dest: /etc/security/limits.d/90-nproc.conf }
     - { src: cassandra/limits.conf, dest: /etc/security/limits.conf }
+
+- name: create data directory for cassandra on mounted storage
+  file: path={{data_dir}}/cassandra state=directory owner={{cassandra_user}}  group={{cassandra_user}}
+
+- name: create the cassandra yaml from template
+  template: src=cassandra/cassandra.yaml dest={{cassandra_yaml}} owner={{cassandra_user}}  group={{cassandra_user}}
   notify: 
-    - restart cassandra
+    - restart cassandra  
+
+
+
+
+

@@ -1,0 +1,33 @@
+# demo installation
+  
+[common]
+ala-ono.it.csiro.au
+
+[collectory]
+ala-ono.it.csiro.au
+
+[biocache]
+ala-ono.it.csiro.au
+
+[cli]
+ala-ono.it.csiro.au
+
+[datacheck]
+ala-ono.it.csiro.au
+
+[demo-apache]
+ala-ono.it.csiro.au
+
+[biocache-hubs]
+ala-ono.it.csiro.au
+
+[common:vars]
+is_vagrant=false
+local_repo_dir = ~/.ala
+data_dir=/srv/data
+base_url = ala-ono.it.csiro.au
+collectory_url = http://ala-ono.it.csiro.au/collectory
+biocache_url = http://ala-ono.it.csiro.au/biocache-service
+datacheck_url = http://ala-ono.it.csiro.au/datacheck
+biocache_ui_url = http://ala-ono.it.csiro.au/generic-hub
+solr_url = http://ala-ono.it.csiro.au/solr

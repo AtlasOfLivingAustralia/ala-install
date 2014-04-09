@@ -1,24 +1,30 @@
 # A sandbox installation
   
 [common]
-118.138.243.64
+ala-lennon.it.csiro.au
 
 [biocache]
-118.138.243.64
-
-[biocache-hubs]
-118.138.243.64
+ala-lennon.it.csiro.au
 
 [cli]
-118.138.243.64
+ala-lennon.it.csiro.au
 
 [datacheck]
-118.138.243.64
+ala-lennon.it.csiro.au
 
 [sandbox-apache]
-118.138.243.64
+ala-lennon.it.csiro.au
+
+[biocache-hubs]
+ala-lennon.it.csiro.au
 
 [common:vars]
-base_url = sandbox.ala.org.au
+is_vagrant=false
 local_repo_dir = ~/.ala
-data_dir=/srv/data
+data_dir=/mnt/data
+base_url = sandbox.ala.org.au
+collectory_url = http://collections.ala.org.au
+biocache_url = http://ala-lennon.it.csiro.au/biocache-service
+datacheck_url = http://ala-lennon.it.csiro.au/datacheck
+biocache_ui_url = http://ala-lennon.it.csiro.au/generic-hub
+solr_url = http://ala-lennon.it.csiro.au/solr

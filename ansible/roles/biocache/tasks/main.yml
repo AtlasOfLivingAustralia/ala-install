@@ -11,7 +11,6 @@
   with_items:
     - cassandra/cassandra-schema.txt
 
-# TODO estart added here - not clear on why the notify>restart cassandra isnt working in previous tasks...
 - name: restart cassandra
   service: name=cassandra state=restarted
 
@@ -20,14 +19,6 @@
 
 - name: create schema
   shell: "cassandra-cli < /tmp/cassandra-schema.txt"
-
-- name: determine if the application is in our local repo
-  local_action: stat path={{local_repo_dir}}/{{biocache_service}}.war
-  register: biocache_war_path
-
-- name: fetch application if it is not in our local repo
-  local_action: get_url url={{biocache_service_url}} dest={{local_repo_dir}}/{{biocache_service}}.war
-  when: biocache_war_path.stat.exists == false
 
 - name: add common tomcat jars (for SOLR logging and JTS)
   copy: src=tomcat/libs/{{item}} dest=/usr/share/{{tomcat}}/lib/{{item}}
@@ -43,39 +34,37 @@
 
 - name: copy SOLR webapps
   copy: src=tomcat/webapps/{{solr}}.war dest=/var/lib/{{tomcat}}/webapps/solr.war
-  notify:
-    - restart tomcat
 
 - name: copy biocache webapps
-  copy: src={{local_repo_dir}}/{{biocache_service}}.war dest=/var/lib/{{tomcat}}/webapps/biocache-service.war
+  get_url: url={{biocache_service_url}} dest=/var/lib/{{tomcat}}/webapps/biocache-service.war
   notify:
     - restart tomcat
 
 - name: ensure tomcat context directory exists
-  file: path=/usr/share/{{tomcat}}/conf/Catalina/localhost/ state=directory owner={{tomcat_user}} group={{tomcat_user}} 
+  file: path=/usr/share/{{tomcat}}/conf/Catalina/localhost/ state=directory owner={{tomcat_user}} group={{tomcat_user}}
   notify:
     - restart tomcat
 
 - name: copy SOLR context (Redhat)
-  copy: src=tomcat/context/solr.xml dest=/usr/share/{{tomcat}}/conf/Catalina/localhost/solr.xml owner={{tomcat_user}}  group={{tomcat_user}} 
+  template: src=context/context/solr.xml dest=/usr/share/{{tomcat}}/conf/Catalina/localhost/solr.xml owner={{tomcat_user}}  group={{tomcat_user}}
   notify:
     - restart tomcat
   when: ansible_os_family == "RedHat"
 
 - name: copy SOLR context  (Debian)
-  template: src=context/solr.xml dest=/var/lib/{{tomcat}}/conf/Catalina/localhost/solr.xml owner={{tomcat_user}}  group={{tomcat_user}} 
+  template: src=context/solr.xml dest=/var/lib/{{tomcat}}/conf/Catalina/localhost/solr.xml owner={{tomcat_user}}  group={{tomcat_user}}
   notify:
     - restart tomcat
   when: ansible_os_family == "Debian"
 
 - name: ensure application data directory exists
-  file: path={{data_dir}}/biocache state=directory owner={{tomcat_user}}  group={{tomcat_user}} 
+  file: path={{data_dir}}/biocache state=directory owner={{tomcat_user}}  group={{tomcat_user}}
 
 - name: copy all data assets
-  copy: src=data/config dest={{data_dir}}/biocache owner={{tomcat_user}}  group={{tomcat_user}} 
+  copy: src=data/config dest={{data_dir}}/biocache owner={{tomcat_user}}  group={{tomcat_user}}
 
-- name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}} 
+- name: ensure target directories exist [data subdirectories etc.
+  file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/ala/layers/ready/shape"
     - "{{data_dir}}/biocache-load"
@@ -85,7 +74,7 @@
     - "{{data_dir}}/solr/biocache/conf"
 
 - name: copy SOLR config
-  copy: src=solr dest={{data_dir}} owner={{tomcat_user}}  group={{tomcat_user}} 
+  copy: src=solr dest={{data_dir}} owner={{tomcat_user}}  group={{tomcat_user}}
 
 - name: copy all template configs
   template: src={{item}} dest={{data_dir}}/biocache/{{item}} owner={{tomcat_user}}  group={{tomcat_user}}  mode=0644

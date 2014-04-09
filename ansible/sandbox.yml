@@ -1,6 +1,5 @@
 - include: biocache.yml
-- include: biocache-hubs.yml
+- include: biocache-hubs.yml biocache_hub=generic-hub
 - include: datacheck.yml
-- include: biocache-hubs.yml
 - include: sandbox-apache.yml
 - include: cli.yml

@@ -3,11 +3,6 @@
 [common]
 10.1.1.2
 
-[common:vars]
-base_url=10.1.1.2:8080
-local_repo_dir=~/.ala
-is_vagrant=true
-
 [demo-apache]
 10.1.1.2
 
@@ -31,3 +26,15 @@ is_vagrant=true
 
 [images]
 10.1.1.2
+
+[common:vars]
+base_url=10.1.1.2:8080
+local_repo_dir=~/.ala
+data_dir=/data
+is_vagrant=true
+base_url = sandbox.ala.org.au
+collectory_url = http://10.1.1.2/collectory
+biocache_url = http://10.1.1.2/biocache-service
+datacheck_url = http://10.1.1.2/datacheck
+biocache_ui_url = http://10.1.1.2/generic-biocache-hub
+solr_url = http://10.1.1.2/solr

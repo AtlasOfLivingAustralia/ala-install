@@ -24,3 +24,7 @@ vagrant/ubuntu/.vagrant/machines/default/virtualbox/id
 .idea/modules.xml
 
 .idea/vcs.xml
+
+ansible/roles/tiling-agent/tasks/main.yml
+
+ansible/inventories/tiling-agents

@@ -1,37 +1,13 @@
 - include: ../../common/tasks/setfacts.yml
 
-- name: determine if the lucene index is in our local repo
-  local_action: stat path={{local_repo_dir}}/col_namematching.tgz
-  register: lucene_path
-
-- name: fetch pre-built lucene index [only if it does not exist]
-  local_action: get_url url={{lucene_namematching_url}} dest={{local_repo_dir}}/col_namematching.tgz
-  when: lucene_path.stat.exists == false
-
-- name: determine if the biocache-store jar is in our local repo
-  local_action: stat path={{local_repo_dir}}/{{biocache_store}}
-  register: biocache_store_path
-
-- name: fetch the biocache-store jar [only if it does not exist]
-  local_action: get_url url={{biocache_store_url}} dest={{local_repo_dir}}/{{biocache_store}}
-  when: biocache_store_path.stat.exists == false
-
-- include: ../../common/tasks/setfacts.yml
-
 - name: ensure lucene directory exists 
   file: path={{data_dir}}/lucene state=directory owner={{tomcat_user}} group={{tomcat_user}}
 
-- name: Determine if the lucene index is there [it is big]
-  stat: path={{data_dir}}/lucene/col_namematching.tgz
-  register: lucene_path
-
-- name: copy lucene index only if one does not exist [it is big] 
-  copy: src={{local_repo_dir}}/col_namematching.tgz dest={{data_dir}}/lucene/col_namematching.tgz
-  when: lucene_path.stat.exists == false
+- name: Download lucene index
+  get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene/col_namematching.tgz
 
 - name: unpackage the lucene index if it was newly copied
   shell: "tar xvf {{data_dir}}/lucene/col_namematching.tgz -C {{data_dir}}/lucene/"
-  when: lucene_path.stat.exists == false
 
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/lucene owner={{tomcat_user}} group={{tomcat_user}} recurse=true
@@ -43,7 +19,7 @@
   copy: src=lib/log4j.xml dest=/usr/lib/biocache/log4j.xml
 
 - name: copy biocache store jar
-  copy: src={{local_repo_dir}}/{{biocache_store}} dest=/usr/lib/biocache/{{biocache_store}}
+  get_url: url={{biocache_store_url}} dest=/usr/lib/biocache/{{biocache_store}}
 
 - name: install unzip (Debian only)
   apt: pkg=unzip state=present

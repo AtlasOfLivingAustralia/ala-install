@@ -2,4 +2,4 @@
 collectory: collectory
 
 # assets
-collectory_url: http://maven.ala.org.au/repository/au/org/ala/collectory/1.0/collectory-1.0.war
+collectory_war_url: http://maven.ala.org.au/repository/au/org/ala/collectory/1.0/collectory-1.0.war

@@ -9,3 +9,5 @@ biocache_service_url: http://maven.ala.org.au/repository/au/org/ala/biocache-ser
 solr: solr-4.7.1
 biocache_service: biocache-service-1.1-SNAPSHOT
 biocache_hub: generic-biocache-hub
+
+local_repo_dir: ~/.ala

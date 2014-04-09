@@ -1,4 +1,4 @@
-# A appd installation
+# appd installation
   
 [common]
 ala-harrison.it.csiro.au
@@ -16,5 +16,12 @@ ala-harrison.it.csiro.au
 ala-harrison.it.csiro.au
 
 [common:vars]
-base_url = ala-harrison.it.csiro.au:8080
+is_vagrant=false
 local_repo_dir = ~/.ala
+data_dir=/mnt/data
+base_url = sandbox.ala.org.au
+collectory_url = http://collections.ala.org.au
+biocache_url = http://appd.ala.org.au/biocache-service
+datacheck_url = http://appd.ala.org.au/datacheck
+biocache_ui_url = http://appd.ala.org.au/generic-biocache-hub
+solr_url = http://appd.ala.org.au/solr
