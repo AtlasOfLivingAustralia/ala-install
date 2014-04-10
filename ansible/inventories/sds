@@ -12,4 +12,4 @@ local_repo_dir = ~/.ala
 data_dir=/srv/data
 base_url = sds.ala.org.au
 sds_url = http://sds.ala.org.au
-sds_context_path = 
+sds_context_path =

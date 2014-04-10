@@ -2,6 +2,7 @@
 - include: ../../common/tasks/java.yml
 - include: ../../common/tasks/tomcat.yml
 - include: ../../common/tasks/cassandra.yml
+- include: ../../common/tasks/nameindex.yml
 
 - name: disable swap
   shell: "sudo swapoff --all"

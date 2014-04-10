@@ -18,8 +18,8 @@ ala-harrison.it.csiro.au
 [common:vars]
 is_vagrant=false
 local_repo_dir = ~/.ala
-data_dir=/mnt/data
-base_url = sandbox.ala.org.au
+data_dir=/srv/data
+base_url = appd.ala.org.au
 collectory_url = http://collections.ala.org.au
 biocache_url = http://appd.ala.org.au/biocache-service
 datacheck_url = http://appd.ala.org.au/datacheck

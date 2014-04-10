@@ -26,3 +26,5 @@ java: java-1.7.0-openjdk-devel
 tomcat_java_opts: -Xmx2g -Xms2g -XX:MaxPermSize=256m -Xss256k
 
 cassandra_user: cassandra
+
+lucene_namematching_url: http://biocache.ala.org.au/archives/col_namematching.tgz

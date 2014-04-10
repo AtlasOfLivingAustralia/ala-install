@@ -1,5 +1,4 @@
 # remote assets
-lucene_namematching_url: http://biocache.ala.org.au/archives/col_namematching.tgz
 biocache_store_url: http://maven.ala.org.au/repository/au/org/ala/biocache-store/1.1-SNAPSHOT/biocache-store-1.1-SNAPSHOT-assembly.jar
 
 # application versions

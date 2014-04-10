@@ -27,6 +27,9 @@
 [images]
 10.1.1.2
 
+[sds]
+10.1.1.2
+
 [common:vars]
 base_url=10.1.1.2:8080
 local_repo_dir=~/.ala
@@ -38,3 +41,5 @@ biocache_url = http://10.1.1.2/biocache-service
 datacheck_url = http://10.1.1.2/datacheck
 biocache_ui_url = http://10.1.1.2/generic-biocache-hub
 solr_url = http://10.1.1.2/solr
+sds_url = http://10.1.1.2:8080/sds-webapp
+sds_context_path = /sds-webapp
