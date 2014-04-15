@@ -3,10 +3,37 @@
 [common]
 10.1.1.2
 
+[java]
+10.1.1.2
+
+[cassandra]
+10.1.1.2
+
+[tomcat]
+10.1.1.2
+
+[mysql]
+10.1.1.2
+
+[apache]
+10.1.1.2
+
+[solr]
+10.1.1.2
+
+[collectory-db]
+10.1.1.2
+
+[biocache-db]
+10.1.1.2
+
+[biocache-service]
+10.1.1.2
+
 [demo-apache]
 10.1.1.2
 
-[biocache]
+[biocache-hub]
 10.1.1.2
 
 [cli]
@@ -16,12 +43,6 @@
 10.1.1.2
 
 [datacheck]
-10.1.1.2
-
-[biocache-hubs]
-10.1.1.2
-
-[hubs-webapp]
 10.1.1.2
 
 [images]
@@ -35,11 +56,11 @@ base_url=10.1.1.2:8080
 local_repo_dir=~/.ala
 data_dir=/data
 is_vagrant=true
-base_url = sandbox.ala.org.au
+base_url = 10.1.1.2
 collectory_url = http://10.1.1.2/collectory
 biocache_url = http://10.1.1.2/biocache-service
 datacheck_url = http://10.1.1.2/datacheck
-biocache_ui_url = http://10.1.1.2/generic-biocache-hub
+biocache_ui_url = http://10.1.1.2/generic-hub
 solr_url = http://10.1.1.2/solr
 sds_url = http://10.1.1.2:8080/sds-webapp
 sds_context_path = /sds-webapp

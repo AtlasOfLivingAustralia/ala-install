@@ -1,6 +1,63 @@
-- include: biocache.yml
-- include: collectory.yml
-- include: datacheck.yml
-- include: biocache-hubs.yml biocache_hub=generic-hub
-- include: demo-apache.yml
-- include: cli.yml
+- hosts: common
+  roles:
+    - common
+
+- hosts: java
+  roles:
+    - java
+
+- hosts: tomcat
+  roles:
+    - tomcat
+
+- hosts: cassandra
+  roles:
+    - cassandra
+
+- hosts: mysql
+  roles:
+    - mysql
+
+- hosts: apache
+  roles:
+    - apache
+
+- hosts: nameindex
+  roles:
+    - nameindex
+
+- hosts: solr
+  roles:
+    - solr
+
+- hosts: biocache-db
+  roles:
+    - biocache-db
+
+- hosts: biocache-service
+  roles:
+    - biocache-service
+
+- hosts: biocache-hub
+  roles:
+    - { role: biocache-hub, biocache_hub: generic-hub }
+
+- hosts: collectory-db
+  roles:
+    - collectory-db
+
+- hosts: collectory
+  roles:
+    - collectory
+
+- hosts: datacheck
+  roles:
+    - datacheck
+
+- hosts: demo-apache
+  roles:
+    - demo-apache
+
+- hosts: cli
+  roles:
+    - cli

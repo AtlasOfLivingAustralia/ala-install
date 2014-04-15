@@ -1,5 +1,51 @@
-- include: biocache.yml
-- include: biocache-hubs.yml biocache_hub=ala-hub
-- include: datacheck.yml
-- include: sandbox-apache.yml
-- include: cli.yml
+- hosts: common
+  roles:
+    - common
+
+- hosts: java
+  roles:
+    - java
+
+- hosts: tomcat
+  roles:
+    - tomcat
+
+- hosts: cassandra
+  roles:
+    - cassandra
+
+- hosts: mysql
+  roles:
+    - mysql
+
+- hosts: apache
+  roles:
+    - apache
+
+- hosts: nameindex
+  roles:
+    - nameindex
+
+- hosts: biocache-db
+  roles:
+    - biocache-db
+
+- hosts: biocache-service
+  roles:
+    - biocache-service
+
+- hosts: biocache-hub
+  roles:
+    - { role: biocache-hub, biocache_hub: ala-hub }
+
+- hosts: datacheck
+  roles:
+    - datacheck
+
+- hosts: sandbox-apache
+  roles:
+    - sandbox-apache
+
+- hosts: cli
+  roles:
+    - cli

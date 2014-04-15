@@ -1,7 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
-- include: ../../common/tasks/java.yml
-- include: ../../common/tasks/tomcat.yml
-- include: ../../common/tasks/nameindex.yml
+# - include: ../../common/tasks/java.yml
+# - include: ../../common/tasks/tomcat.yml
+# - include: ../../common/tasks/nameindex.yml
 
 - name: copy sds hub app
   get_url: url={{sds_webapp_url}} dest=/var/lib/{{tomcat}}/webapps/sds-webapp2.war

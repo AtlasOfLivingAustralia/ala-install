@@ -1,6 +1,0 @@
-- name: install Java (RedHat)
-  yum: name=java7 state=present
-  when: ansible_os_family == "RedHat" 
-
-- include: oracle-java.yml
-  when: ansible_os_family == "Debian"

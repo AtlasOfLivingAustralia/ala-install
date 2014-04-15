@@ -1,0 +1,8 @@
+- name: restart tomcat
+  service: name={{tomcat}} state=restarted
+
+- name: restart httpd
+  service: name={{apache}} state=restarted
+
+- name: restart apache
+  service: name={{apache}} state=restarted

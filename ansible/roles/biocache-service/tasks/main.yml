@@ -1,0 +1,46 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: copy biocache webapps
+  get_url: url={{biocache_service_url}} dest=/var/lib/{{tomcat}}/webapps/biocache-service.war
+  notify:
+    - restart tomcat
+
+- name: ensure tomcat context directory exists
+  file: path=/usr/share/{{tomcat}}/conf/Catalina/localhost/ state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  notify:
+    - restart tomcat
+
+- name: ensure application data directory exists
+  file: path={{data_dir}}/biocache state=directory owner={{tomcat_user}}  group={{tomcat_user}}
+
+- name: copy all data assets
+  copy: src=data/config dest={{data_dir}}/biocache owner={{tomcat_user}}  group={{tomcat_user}}
+
+- name: ensure target directories exist [data subdirectories etc.
+  file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/ala/layers/ready/shape"
+    - "{{data_dir}}/biocache-load"
+    - "{{data_dir}}/biocache-media"
+    - "{{data_dir}}/biocache-upload"
+    - "{{data_dir}}/cache"
+
+- name: copy all template configs
+  template: src={{item}} dest={{data_dir}}/biocache/{{item}} owner={{tomcat_user}}  group={{tomcat_user}}  mode=0644
+  with_items:
+    - config/biocache-config.properties
+
+- name: set data ownership [all data is owned by tomcat]
+  file: path={{data_dir}}/{{item}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  with_items:
+    - biocache
+    - ala
+    - biocache-load
+    - biocache-media
+    - biocache-upload
+    - cache
+
+- name: set permissions for biocache-load [TODO - more restrictive permissions]
+  file: path={{data_dir}}/biocache-load mode=777
+  notify:
+    - restart tomcat

@@ -1,5 +1,5 @@
 - include: ../../common/tasks/setfacts.yml
-- include: ../../common/tasks/apache.yml
+# - include: ../../common/tasks/apache.yml
 
 - name: Copy proxy config (Redhat)
   copy: src=centos-sandbox.conf dest=/etc/httpd/conf.d/

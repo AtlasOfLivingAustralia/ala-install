@@ -1,7 +1,6 @@
 - include: ../../common/tasks/setfacts.yml
-- include: ../../common/tasks/apache.yml
 
-- name: Copy proxy config (Redhat)
+- name: Copy proxy config to conf.d (Redhat)
   copy: src=centos-proxies.conf dest=/etc/httpd/conf.d/
   when: ansible_os_family == "RedHat" 
 
@@ -11,6 +10,11 @@
 
 - name: Copy proxy config to sites-available (Debian)
   command: "rm /etc/apache2/sites-enabled/*" 
+  ignore_errors: yes
+  when: ansible_os_family == "Debian" 
+
+- name: Create symlink to sites-enabled (Debian)
+  command: "rm /etc/apache2/sites-enabled/000-default" 
   ignore_errors: yes
   when: ansible_os_family == "Debian" 
 

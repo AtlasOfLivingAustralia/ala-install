@@ -1,0 +1,22 @@
+- include: ../../common/tasks/setfacts.yml
+# - include: ../../common/tasks/java.yml
+# - include: ../../common/tasks/tomcat.yml
+# - include: ../../common/tasks/cassandra.yml
+# - include: ../../common/tasks/nameindex.yml
+
+- name: disable swap
+  shell: "sudo swapoff --all"
+
+- name: copy transient files to tmp (schemas etc)
+  copy: src={{item}} dest=/tmp
+  with_items:
+    - cassandra/cassandra-schema.txt
+
+- name: restart cassandra
+  service: name=cassandra state=restarted
+
+- name: ensure cassandra is running
+  wait_for: port=9160 delay=30
+
+- name: create schema
+  shell: "cassandra-cli < /tmp/cassandra-schema.txt"

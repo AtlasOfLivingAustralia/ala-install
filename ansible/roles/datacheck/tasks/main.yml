@@ -1,4 +1,4 @@
-- include: ../../common/tasks/tomcat.yml
+- include: ../../common/tasks/setfacts.yml
 
 - name: copy datacheck webapps
   get_url: url={{datacheck_war_url}} dest=/var/lib/{{tomcat}}/webapps/datacheck.war

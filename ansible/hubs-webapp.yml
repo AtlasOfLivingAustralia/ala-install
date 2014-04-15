@@ -1,4 +1,0 @@
-- hosts: hubs-webapp
-  roles:
-    - common
-    - hubs-webapp

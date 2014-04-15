@@ -1,0 +1,14 @@
+# common handlers that various roles can call
+
+# variable controls version (@see common/vars)
+- name: restart tomcat
+  service: name={{tomcat}} state=restarted
+
+- name: restart httpd
+  service: name={{apache}} state=restarted
+
+- name: restart apache
+  service: name={{apache}} state=restarted
+
+- name: restart mysql
+  service: name=mysqld state=restarted

@@ -1,5 +1,2 @@
 # remote assets
-biocache_store_url: http://maven.ala.org.au/repository/au/org/ala/biocache-store/1.1-SNAPSHOT/biocache-store-1.1-SNAPSHOT-assembly.jar
-
-# application versions
-biocache_store: biocache-store-1.1-SNAPSHOT-assembly.jar
+biocache_store_url: http://maven.ala.org.au/repository/au/org/ala/biocache-store/1.1/biocache-store-1.1-assembly.jar

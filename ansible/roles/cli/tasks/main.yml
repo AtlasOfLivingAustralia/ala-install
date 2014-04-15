@@ -1,6 +1,4 @@
 - include: ../../common/tasks/setfacts.yml
-- include: ../../common/tasks/nameindex.yml
-
 
 - name: ensure biocache directory exists
   file: path=/usr/lib/biocache state=directory
@@ -9,17 +7,21 @@
   copy: src=lib/log4j.xml dest=/usr/lib/biocache/log4j.xml
 
 - name: copy biocache store jar
-  get_url: url={{biocache_store_url}} dest=/usr/lib/biocache/{{biocache_store}}
+  get_url: url={{biocache_store_url}} dest=/usr/lib/biocache/biocache.jar
 
 - name: install unzip (Debian only)
   apt: pkg=unzip state=present
   when: ansible_os_family == "Debian"   
 
+- name: clean biocache existing extract
+  shell: "rm -Rf /usr/lib/biocache/lib"
+  ignore_errors: yes
+
 - name: unjar biocache
-  shell: "unzip /usr/lib/biocache/{{biocache_store}} lib/* -d /usr/lib/biocache/"
+  shell: "unzip /usr/lib/biocache/biocache.jar lib/* -d /usr/lib/biocache/"
 
 - name: create the templated biocache.sh
-  template: src=biocache.sh dest=/usr/lib/biocache/biocache.sh mode=777
+  copy: src=biocache.sh dest=/usr/lib/biocache/biocache.sh mode=777
 
 - name: make the symlink for /usr/bin/biocache 
   file: src=/usr/lib/biocache/biocache.sh dest=/usr/bin/biocache state=link
