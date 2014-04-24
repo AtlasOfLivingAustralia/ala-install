@@ -364,7 +364,7 @@ start_rpc: true
 # here if you want to listen on all interfaces but is not best practice
 # as it is known to confuse the node auto-discovery features of some
 # client drivers.
-rpc_address: localhost
+rpc_address: 
 # port for Thrift to listen for clients on
 rpc_port: 9160
 

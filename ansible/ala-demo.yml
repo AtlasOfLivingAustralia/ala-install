@@ -12,7 +12,7 @@
 
 - hosts: cassandra
   roles:
-    - cassandra
+    - { role: cassandra }
 
 - hosts: mysql
   roles:

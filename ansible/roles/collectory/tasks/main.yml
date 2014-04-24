@@ -1,40 +1,24 @@
 - include: ../../common/tasks/setfacts.yml
-# - include: ../../common/tasks/java.yml
-# - include: ../../common/tasks/tomcat.yml
-
-# - name: install mysql (RedHat)
-#   yum: name={{item}} state=present
-#   with_items:
-#     - mysql-server
-#   tags:
-#     - packages 
-#   notify: 
-#     - restart mysql
-#   when: ansible_os_family == "RedHat"
-
-# - name: install mysql (Debian)
-#   apt: pkg={{item}} state=present
-#   with_items:
-#     - mysql-server
-#   tags:
-#     - packages 
-#   notify: 
-#     - restart mysql
-#   when: ansible_os_family == "Debian"
-
-
+  tags:
+    - collectory
 
 - name: copy collectory hub app
   get_url: url={{collectory_war_url}} dest=/var/lib/{{tomcat}}/webapps/collectory.war
+  tags:
+    - collectory
 
 - name: ensure data directory exists
   file: path={{data_dir}}/collectory owner={{tomcat_user}} group={{tomcat_user}}  state=directory
+  tags:
+    - collectory
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory
   with_items:
     - "{{data_dir}}/collectory/upload"
     - "{{data_dir}}/collectory/taxa/data"
+  tags:
+    - collectory
 
 - name: copy all data assets [SOLR, lucene etc]
   copy: src={{item}} dest={{data_dir}}/collectory owner={{tomcat_user}}  group={{tomcat_user}} 
@@ -42,11 +26,15 @@
     - data/bootstrap
     - data/config
     - data/data
+  tags:
+    - collectory
 
 - name: copy all template configs
   template: src={{item}} dest={{data_dir}}/collectory/{{item}}
   with_items:
     - config/collectory-config.properties 
+  tags:
+    - collectory
 
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/{{item}} owner={{tomcat_user}}  group={{tomcat_user}}  recurse=true
@@ -54,3 +42,5 @@
     - collectory
   notify: 
     - restart tomcat  
+  tags:
+    - collectory

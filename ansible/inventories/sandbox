@@ -1,9 +1,21 @@
 # A sandbox installation
   
+[java]
+ala-lennon.it.csiro.au  
+
 [common]
 ala-lennon.it.csiro.au
 
-[biocache]
+[cassandra]
+ala-lennon.it.csiro.au
+
+[biocache-db]
+ala-lennon.it.csiro.au
+
+[biocache-service]
+ala-lennon.it.csiro.au
+
+[nameindex]
 ala-lennon.it.csiro.au
 
 [cli]
@@ -12,19 +24,41 @@ ala-lennon.it.csiro.au
 [datacheck]
 ala-lennon.it.csiro.au
 
+[apache]
+ala-lennon.it.csiro.au
+
 [sandbox-apache]
 ala-lennon.it.csiro.au
 
-[biocache-hubs]
+[biocache-hub]
 ala-lennon.it.csiro.au
 
 [common:vars]
 is_vagrant=false
 local_repo_dir = ~/.ala
 data_dir=/srv/data
-base_url = ala-lennon.it.csiro.au
+
+biocache_db_host = localhost
+cassandra_listen_host = localhost
+collectory_db_host_address = localhost
+collectory_db_host = localhost
+
+biocache_service_url = http://ala-lennon.it.csiro.au/biocache-service
+biocache_service_base_url = http://ala-lennon.it.csiro.au
+biocache_service_context_path = /biocache-service
+
+biocache_hub_url = http://ala-lennon.it.csiro.au/ala-hub
+biocache_hub_base_url = http://ala-lennon.it.csiro.au
+biocache_hub_context_path = /ala-hub 
+
 collectory_url = http://collections.ala.org.au
-biocache_url = http://ala-lennon.it.csiro.au/biocache-service
-datacheck_url = http://ala-lennon.it.csiro.au/datacheck
-biocache_ui_url = http://ala-lennon.it.csiro.au/ala-hub
+collectory_base_url = http://collections.ala.org.au
+collectory_context_path =
+
 solr_url = http://ala-lennon.it.csiro.au/solr
+solr_base_url = http://ala-lennon.it.csiro.au
+solr_context_path = /solr
+
+datacheck_url = http://ala-lennon.it.csiro.au/datacheck
+datacheck_base_url = http://ala-lennon.it.csiro.au
+datacheck_context_path = /datacheck

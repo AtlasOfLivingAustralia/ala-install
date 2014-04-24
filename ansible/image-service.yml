@@ -1,4 +1,7 @@
 - hosts: image-service
   roles:
-    - common  
+    - java
+    - common
+    - postgresql
+    - tomcat
     - image-service
