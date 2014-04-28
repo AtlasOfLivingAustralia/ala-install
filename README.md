@@ -2,9 +2,9 @@
 This project contains [Ansible](http://www.ansible.com/) playbooks for setting up ALA components on CentOS 6.x and Ubuntu 12.x machines.
 This project includes a playbook for setting up the [ALA demo portal](http://ala-demo.gbif.org).
 
-## Setting up the ALA demo portal with Ansible & Vagrant on your local machine
+## Setup the ALA demo with Ansible & Vagrant on your local machine
 
-### 1. Vagrant
+#### 1. Vagrant
 [Vagrant](http://www.vagrantup.com) can be used to test ansible playbooks on your local machine. To use this, you will need to install
 [VirtualBox](https://www.virtualbox.org) and [Vagrant](http://www.vagrantup.com).
 ```vagrant/centos``` and ```vagrant/ubuntu``` contain configurations that can used with [VirtualBox](https://www.virtualbox.org/) to bring up a VH for deploying against.  
