@@ -1,7 +1,0 @@
-# application versions  
-hubs_webapp: hubs-webapp-1.0-SNAPSHOT
-collectory: collectory
-biocache_service: biocache-service-1.0-SNAPSHOT
-
-# assets
-hubs_webapp_url: http://maven.ala.org.au/repository/au/org/ala/hubs-webapp/1.0-SNAPSHOT/hubs-webapp-1.0-SNAPSHOT.war

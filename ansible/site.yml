@@ -1,7 +1,0 @@
-- include: biocache.yml
-- include: collectory.yml
-- include: datacheck.yml
-- include: hubs-webapp.yml
-- include: cli.yml
-
-            

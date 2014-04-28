@@ -1,6 +1,0 @@
-- hosts: hubs-webapp
-  remote_user: root
-  roles:
-    - common
-    - hubs-webapp
-            
