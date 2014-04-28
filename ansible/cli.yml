@@ -1,6 +1,4 @@
 - hosts: cli
-  remote_user: root
   roles:
     - common
     - cli
-            

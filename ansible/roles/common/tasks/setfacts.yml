@@ -1,0 +1,21 @@
+- name: set debian variables
+  set_fact: 
+    tomcat: tomcat7
+    tomcat_user: tomcat7 
+    tomcat_conf: /etc/default/tomcat7 
+    apache: apache2
+    mysql_service: mysql
+    cassandra_yaml: /etc/cassandra/cassandra.yaml
+    cassandra_user: cassandra
+  when: ansible_os_family == "Debian"
+
+- name: set redhat variables
+  set_fact: 
+    tomcat: tomcat6
+    tomcat_user: tomcat
+    tomcat_conf: /etc/tomcat6/tomcat6.conf 
+    apache: httpd
+    mysql_service: mysqld
+    cassandra_yaml: /etc/cassandra/conf/cassandra.yaml
+    cassandra_user: cassandra
+  when: ansible_os_family == "RedHat"

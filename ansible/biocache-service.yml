@@ -1,0 +1,5 @@
+- hosts: biocache
+  roles:
+    - java
+    - tomcat
+    - biocache-service

@@ -1,0 +1,18 @@
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+ 
+  config.vm.box = "hashicorp/precise32" 
+ #  config.vm.box_url = "https://github.com/2creatives/vagrant-centos/releases/download/v0.1.0/centos64-x86_64-20131030.box"
+  
+  config.vm.hostname = "ala.vagrant.dev"
+  config.vm.network :private_network, ip: "10.1.1.2"
+    
+  # these machines require some memory to operate the apps
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 4096
+  end  
+  
+  # totally insecure, but this is local dev: make the vagrant defaut the root key
+  config.vm.provision "shell", inline: "sudo cp -r /home/vagrant/.ssh /root/.ssh"
+end

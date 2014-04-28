@@ -1,0 +1,4 @@
+# application versions  
+sds_config: "{{sds}}-config.properties"
+# assets
+sds_webapp_url: http://maven.ala.org.au/repository/au/org/ala/sds-webapp2/sds-webapp2.war

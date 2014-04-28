@@ -2,4 +2,4 @@
 datacheck: datacheck
 
 # assets
-datacheck_url: http://maven.ala.org.au/repository/au/org/ala/datacheck/datacheck.war            
+datacheck_war_url: http://maven.ala.org.au/repository/au/org/ala/datacheck/datacheck.war            

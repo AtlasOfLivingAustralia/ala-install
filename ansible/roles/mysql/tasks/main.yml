@@ -1,0 +1,21 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: install mysql (RedHat)
+  yum: name={{item}} state=present
+  with_items:
+    - mysql-server
+  tags:
+    - packages 
+  notify: 
+    - restart mysql
+  when: ansible_os_family == "RedHat"
+
+- name: install mysql (Debian)
+  apt: pkg={{item}} state=present
+  with_items:
+    - mysql-server
+  tags:
+    - packages 
+  notify: 
+    - restart mysql
+  when: ansible_os_family == "Debian"

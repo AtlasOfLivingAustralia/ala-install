@@ -1,0 +1,40 @@
+# appd installation
+  
+[common]
+ala-harrison.it.csiro.au
+
+[biocache-hub]
+ala-harrison.it.csiro.au
+
+[cli]
+ala-harrison.it.csiro.au
+
+[biocache-service]
+ala-harrison.it.csiro.au
+
+[sds]
+ala-harrison.it.csiro.au
+
+[common:vars]
+is_vagrant=false
+local_repo_dir = ~/.ala
+data_dir=/srv/data
+
+biocache_db_host = localhost
+cassandra_listen_host = localhost
+
+biocache_service_url = http://ala-harrison.it.csiro.au:8080/biocache-service
+biocache_service_base_url = http://ala-harrison.it.csiro.au:8080
+biocache_service_context_path = /biocache-service
+
+biocache_hub_url = http://appd.ala.org.au/appd-hub
+biocache_hub_base_url = http://appd.ala.org.au
+biocache_hub_context_path = /appd-hub
+
+solr_url = http://ala-harrison.it.csiro.au:8080/solr
+solr_base_url = http://ala-harrison.it.csiro.au:8080
+solr_context_path = /solr
+
+sds_url = http://sds.ala.org.au
+sds_base_url = http://sds.ala.org.au
+sds_context_path = 

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+</head>	
+<body>
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Atlas of Living Australia - demo</h1>
+        <p>This is a landing page with links through to the components now installed on this server.
+        <br/>
+           This demo was installed using <a href="http://www.ansible.com">ansible</a> scripts that are available <a href="https://github.com/gbif/ala-install/tree/ubuntu-support">here</a>.
+        </p>
+       </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Occurrence store</h2>
+          <p> 
+          	The occurrence store hould now be setup. This application consists of 
+          	3 web applications now running in Tomcat:
+          	<ul>
+              <li><a href="/generic-hub">Occurrence search</a> - Reskinnable front end UI</li>              
+              <li><a href="/generic-hub/explore/your-area?default=true">Explore your area</a>  - Reskinnable front end UI</li>
+          	  <li><a href="/biocache-service">Web services</a></li>
+          	  <li><a href="/solr">Apache SOLR</a></li>
+          	</ul>	
+			There is also a command line tool now installed that can be started with the command "biocache".
+			This tool can be used for loading data and running processes across the data.
+          </p>
+
+          <h4>Further information</h4>
+          <p>
+          	As part of the installation the following tools are installed:
+          		<ul>
+          			<li><a href="http://cassandra.apache.org/">Apache Cassandra</a></li>
+          		</ul>
+            Cassandra can be accessed directly using the commandline tool "cassandra-cli".
+          </p>
+        </div>
+
+        <div class="col-md-4">
+          <h2>Collectory</h2>
+          <p>
+          	The collectory is now setup and installed.	This is an application for editing metadata
+          	for collections, institutions and data resources.
+      		<ul>
+				<li><a href="/collectory">Collections browser</a></li>
+        <li><a href="/collectory/datasets">Datasets browser</a></li>
+				<li><a href="/collectory/ws">Web services</a></li>
+				<li><a href="/collectory/admin">Admin interface</a></li>
+			</ul>
+           </p>
+          <h4>Further information</h4>
+          <p>
+          	As part of the installation the following tools are installed:
+          		<ul>
+          			<li><a href="http://www.mysql.com/">MySQL</a></li>
+          		</ul>
+            MySQL can be accessed directly using the commandline tool "mysql".
+          </p>
+       </div>
+        <div class="col-md-4">
+          <h2>Sandbox</h2>
+          <p>The sandbox can be used to quickly load a dataset into the occurrence store for visualisation.</p>
+		  <ul>
+				<li><a href="/datacheck">Front end UI</a></li>
+			</ul>
+        </div>
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>
+&copy; <a href="http://www.ala.org.au">Atlas of Living Australia 2014</a></p>
+      </footer>
+    </div> <!-- /container -->
+</body>
+</html>

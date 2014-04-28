@@ -1,0 +1,29 @@
+- include: ../../common/tasks/setfacts.yml
+# - include: ../../common/tasks/java.yml
+# - include: ../../common/tasks/tomcat.yml
+# - include: ../../common/tasks/nameindex.yml
+
+- name: copy sds hub app
+  get_url: url={{sds_webapp_url}} dest=/var/lib/{{tomcat}}/webapps/sds-webapp2.war
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/sds/config"
+
+- name: Copy sensitivity categories XML
+  copy: src="sensitivity-categories.xml" dest="{{data_dir}}/sds/sensitivity-categories.xml"
+
+- name: Copy sensitivity zones XML
+  copy: src="sensitivity-zones.xml" dest="{{data_dir}}/sds/sensitivity-zones.xml"
+
+- name: Copy legacy properties file
+  copy: src="sensitivity-zones.xml" dest="{{data_dir}}/sds/sds-config.properties"
+
+- name: create config.properties from template
+  template: src="sds-config.properties" dest={{data_dir}}/sds/config/sds-config.properties
+
+- name: set data ownership
+  file: path={{data_dir}}/sds owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify: 
+    - restart tomcat

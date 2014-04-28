@@ -1,0 +1,12 @@
+# dependency versions
+datastax: dsc12-1.2.10-1
+cassandra: cassandra12-1.2.10-1
+
+# war location in maven repo
+biocache_service_war_path: http://maven.ala.org.au/repository/au/org/ala/biocache-service/1.1/biocache-service-1.1.war
+
+# application versions
+solr: solr-4.7.1
+biocache_service: biocache-service-1.1
+
+local_repo_dir: ~/.ala

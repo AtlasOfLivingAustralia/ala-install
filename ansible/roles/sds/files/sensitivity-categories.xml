@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sensitivity-categories>
+    <sensitivity-category id="NE" name="Not Evaluated" type="Conservation"/>
+    <sensitivity-category id="DD" name="Data Deficient" type="Conservation"/>
+    <sensitivity-category id="LC" name="Least Concern" type="Conservation"/>
+    <sensitivity-category id="NT" name="Near Threatened" type="Conservation"/>
+    <sensitivity-category id="CD" name="Conservation Dependent" type="Conservation"/>
+    <sensitivity-category id="VU" name="Vulnerable" type="Conservation"/>
+    <sensitivity-category id="EN" name="Endangered" type="Conservation"/>
+    <sensitivity-category id="CR" name="Critically Endangered" type="Conservation"/>
+    <sensitivity-category id="EW" name="Extinct in the Wild" type="Conservation"/>
+    <sensitivity-category id="EX" name="Extinct" type="Conservation"/>
+    <sensitivity-category id="X" name="Presumed Extinct" type="Conservation"/>
+    <sensitivity-category id="IA" name="Protected under international agreement" type="Conservation"/> 
+    <sensitivity-category id="R" name="Rare" type="Conservation"/>
+    <sensitivity-category id="P1" name="WA Priority 1" type="Conservation"/>
+    <sensitivity-category id="P2" name="WA Priority 2" type="Conservation"/>
+    <sensitivity-category id="P3" name="WA Priority 3" type="Conservation"/>
+    <sensitivity-category id="P4" name="WA Priority 4" type="Conservation"/>
+    <sensitivity-category id="P5" name="WA Priority 5" type="Conservation"/>
+    <sensitivity-category id="SP" name="WA Specially Protected" type="Conservation"/>
+    <sensitivity-category id="C2" name="SA Category 2 Conservation Protected" type="Conservation"/>
+    <sensitivity-category id="1"  name="NSW Category 1 Conservation Protected" type="Conservation"/>
+    <sensitivity-category id="2"  name="NSW Category 2 Conservation Protected" type="Conservation"/>
+    <sensitivity-category id="3"  name="NSW Category 3 Conservation Protected" type="Conservation"/>
+
+    <sensitivity-category id="PBC1" name="Plant pest not known in Australia" type="Plant_Pest"/>
+    <sensitivity-category id="PBC2" name="Plant pest eradicated" type="Plant_Pest"/>
+    <sensitivity-category id="PBC3" name="Plant pest under eradication" type="Plant_Pest"/>
+    <sensitivity-category id="PBC4" name="Plant pest subject to official control" type="Plant_Pest"/>
+    <sensitivity-category id="PBC5a" name="Plant pest in Torres Strait Zone" type="Plant_Pest"/>
+    <sensitivity-category id="PBC5b" name="Plant pest is Queensland Fruit Fly" type="Plant_Pest"/>
+    <sensitivity-category id="PBC6" name="Plant pest notifiable under State Legislation" type="Plant_Pest"/>
+    <sensitivity-category id="PBC8" name="Plant pest has a Transient Population on the supplied date and location" type="Plant_Pest"/>
+    <sensitivity-category id="PBC9" name="Plant pest is unreleased Exotic Biological Control Agent" type="Plant_Pest"/>
+    <sensitivity-category id="PBC10" name="Identified to Higher taxon that have members that are of Biosecurity Concern" type="Plant_Pest"/>
+</sensitivity-categories>

@@ -1,68 +1,46 @@
-- include: ../../common/tasks/tomcat.yml
-
-- name: determine if the application is in our local repo
-  local_action: stat path={{local_repo_dir}}/{{collectory}}.war
-  register: collectory_war_path
-
-- name: fetch application if it is not in our local repo  
-  local_action: get_url url={{collectory_url}} dest={{local_repo_dir}}/{{collectory}}.war
-  when: collectory_war_path.stat.exists == false
-
-- name: install packages
-  yum: name={{item}} state=present
-  with_items:
-    - httpd
-    - mysql-server
+- include: ../../common/tasks/setfacts.yml
   tags:
-    - packages 
-  notify: 
-    - restart apache
-    - restart mysql
+    - collectory
 
-- name: copy transient files to tmp (schemas etc)
-  copy: src={{item}} dest=/tmp
-  with_items:
-    - mysql/collectory-schema.sql
-
-- name: ensure mysql is running (this is idempotent so safe)
-  service: name=mysqld state=started
-  
-- name: create or recreate collectory DB (existing data is lost) 
-  shell: "{{item}}"
-  with_items:
-    - "mysql -u root -e 'DROP DATABASE IF EXISTS collectory'"
-    - "mysql -u root -e 'CREATE DATABASE collectory'"
-    - "mysql -u root collectory < /tmp/collectory-schema.sql"
-
-- name: copy tomcat webapps
-  copy: src={{local_repo_dir}}/{{collectory}}.war dest=/var/lib/{{tomcat}}/webapps/{{collectory}}.war
-  notify: 
-    - restart tomcat
+- name: copy collectory hub app
+  get_url: url={{collectory_war_url}} dest=/var/lib/{{tomcat}}/webapps/collectory.war
+  tags:
+    - collectory
 
 - name: ensure data directory exists
-  file: path={{data_dir}}/collectory owner=tomcat group=tomcat state=directory
+  file: path={{data_dir}}/collectory owner={{tomcat_user}} group={{tomcat_user}}  state=directory
+  tags:
+    - collectory
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory
   with_items:
-    - "{{data_dir}}/collectory/upload"
+    - "{{data_dir}}/collectory/upload/tmp"
     - "{{data_dir}}/collectory/taxa/data"
+  tags:
+    - collectory
 
-- name: copy all data assets [SOLR, lucene etc] 
-  copy: src={{item}} dest={{data_dir}}/collectory owner=tomcat group=tomcat
+- name: copy all data assets [SOLR, lucene etc]
+  copy: src={{item}} dest={{data_dir}}/collectory owner={{tomcat_user}}  group={{tomcat_user}} 
   with_items:
     - data/bootstrap
     - data/config
     - data/data
+  tags:
+    - collectory
 
 - name: copy all template configs
   template: src={{item}} dest={{data_dir}}/collectory/{{item}}
   with_items:
     - config/collectory-config.properties 
-      
+  tags:
+    - collectory
+
 - name: set data ownership [all data is owned by tomcat]
-  file: path={{data_dir}}/{{item}} owner=tomcat group=tomcat recurse=true
+  file: path={{data_dir}}/{{item}} owner={{tomcat_user}}  group={{tomcat_user}}  recurse=true
   with_items:
     - collectory
   notify: 
-    - restart tomcat
+    - restart tomcat  
+  tags:
+    - collectory

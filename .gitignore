@@ -2,3 +2,35 @@
 
 # Package Files #
 *.ear
+
+.idea/copyright/profiles_settings.xml
+
+.idea/scopes/scope_settings.xml
+
+.idea/workspace.xml
+
+vagrant/ubuntu/.vagrant/machines/default/virtualbox/action_provision
+
+vagrant/ubuntu/.vagrant/machines/default/virtualbox/action_set_name
+
+vagrant/ubuntu/.vagrant/machines/default/virtualbox/id
+
+.idea/compiler.xml
+
+.idea/encodings.xml
+
+.idea/misc.xml
+
+.idea/modules.xml
+
+.idea/vcs.xml
+
+ansible/roles/tiling-agent/tasks/main.yml
+
+ansible/inventories/tiling-agents
+
+vagrant/centos/.vagrant/machines/default/virtualbox/action_provision
+
+vagrant/centos/.vagrant/machines/default/virtualbox/action_set_name
+
+vagrant/centos/.vagrant/machines/default/virtualbox/id

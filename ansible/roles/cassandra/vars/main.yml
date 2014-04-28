@@ -1,0 +1,5 @@
+# common variables across all roles
+cassandra_user: cassandra
+# package variables used for RedHat
+datastax: dsc12-1.2.10-1
+cassandra: cassandra12-1.2.10-1

@@ -1,0 +1,39 @@
+- hosts: common
+  roles:
+    - common
+
+- hosts: java
+  roles:
+    - java
+
+- hosts: tomcat
+  roles:
+    - tomcat
+
+- hosts: cassandra
+  roles:
+    - cassandra
+
+- hosts: nameindex
+  roles:
+    - nameindex
+
+- hosts: biocache-db
+  roles:
+    - biocache-db
+
+- hosts: biocache-service
+  roles:
+    - biocache-service
+
+- hosts: cli
+  roles:
+    - cli
+
+- hosts: apache
+  roles:
+    - apache
+
+- hosts: biocache-apache
+  roles:
+    - biocache-apache

@@ -1,6 +1,4 @@
 - hosts: datacheck
-  remote_user: root
   roles:
     - common
     - datacheck
-            
