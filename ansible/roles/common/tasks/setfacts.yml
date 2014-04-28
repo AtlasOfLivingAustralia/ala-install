@@ -12,27 +12,10 @@
 - name: set redhat variables
   set_fact: 
     tomcat: tomcat6
-    tomcat_user: tomcat6
+    tomcat_user: tomcat
     tomcat_conf: /etc/tomcat6/tomcat6.conf 
     apache: httpd
     mysql_service: mysqld
     cassandra_yaml: /etc/cassandra/conf/cassandra.yaml
     cassandra_user: cassandra
   when: ansible_os_family == "RedHat"
-
-# - set_fact: tomcat=tomcat6 tomcat_user=tomcat tomcat_conf=/etc/tomcat6/tomcat6.conf apache=httpd
-#   when: ansible_os_family == "RedHat" 
-
-# - set_fact: cassandra_yaml=/etc/cassandra/conf/cassandra.yaml  
-#   when: ansible_os_family == "RedHat"
-
-# - set_fact: cassandra_yaml=/etc/cassandra/cassandra.yaml
-#   when: ansible_os_family == "Debian"
-
-# - set_fact: mysql_service=mysqld
-#   when: ansible_os_family == "RedHat"
-
-# - set_fact: mysql_service=mysql
-#   when: ansible_os_family == "Debian"
-
-# - debug: msg="ansible_os_family was {{ ansible_os_family}}"  

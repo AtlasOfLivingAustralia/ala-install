@@ -28,3 +28,9 @@ vagrant/ubuntu/.vagrant/machines/default/virtualbox/id
 ansible/roles/tiling-agent/tasks/main.yml
 
 ansible/inventories/tiling-agents
+
+vagrant/centos/.vagrant/machines/default/virtualbox/action_provision
+
+vagrant/centos/.vagrant/machines/default/virtualbox/action_set_name
+
+vagrant/centos/.vagrant/machines/default/virtualbox/id

@@ -15,7 +15,7 @@
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory
   with_items:
-    - "{{data_dir}}/collectory/upload"
+    - "{{data_dir}}/collectory/upload/tmp"
     - "{{data_dir}}/collectory/taxa/data"
   tags:
     - collectory
