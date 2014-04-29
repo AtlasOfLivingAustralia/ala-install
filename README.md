@@ -41,32 +41,44 @@ $ ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.
 
 ## Other playbooks  
 
-### ALA Demo on vagrant
-
-```
-$ cd ansible
-$ ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key  -u root
-```
 
 ### Standalone Biocache Hub on Nectar
 
-There is a template inventory in ```inventories/ala-hub-nectar```. Create a copy of this inventory or edit it to use the IP address of your new virtual machine.
+There is a template inventory in ```inventories/ala-hub-nectar```. To use this playbook for your VM, create a copy of ```inventories/sandbox```
+and change the references to point to the IP/DNS of your VM. Then point to this inventory with the ```-i``` parameter when running the playbook.
 
 ```
 $ ansible-playbook -i inventories/ala-hub-nectar biocache-hub.yml --private-key <PATH_TO_YOUR_PEM_FILE> -u root 
 ```
 
 ### Sandbox on Nectar
+
+```inventories/sandbox``` contains an inventory for the sandbox. To use this playbook for your VM, create a copy of ```inventories/sandbox```
+and change the references to point to the IP/DNS of your VM. Then point to this inventory with the ```-i``` parameter when running the playbook.
+
 ```
 $ ansible-playbook -i inventories/sandbox sandbox.yml --private-key <PATH_TO_YOUR_PEM_FILE> -u root 
+```
+
+### Image service on Nectar
+
+```inventories/images``` contains an inventory for the image-service. To use this playbook for your VM, create a copy of ```inventories/images```
+and change the references to point to the IP/DNS of your VM. Then point to this inventory with the ```-i``` parameter when running the playbook.
+
+```
+$ ansible-playbook -i inventories/images image-service.yml --private-key <PATH_TO_YOUR_PEM_FILE> -u root 
 ```
 
 
 ## Notes for different environments (CSIRO/Nectar)
 
+There are some minor differences for running these playbooks against Nectar VMs, CSIRO IM&T VMs and Vagrant VMs.
+In each case you will need to create an inventory file that points to your VM(s).
+
+
 For IM&T virtual machines:
 ```
-$ ansible-playbook -i inventories/images ala-demo.yml -u <CSIRO_IDENT> --ask-pass --ask-sudo-pass
+$ ansible-playbook -i inventories/demo ala-demo.yml -u <CSIRO_IDENT> --ask-pass --ask-sudo-pass
 ```
 
 For Nectar VMs:
@@ -74,3 +86,9 @@ For Nectar VMs:
 $ ansible-playbook -i inventories/nectar-sandbox sandbox.yml --private-key <PATH_TO_YOUR_PEM_FILE> -u root
 ```
 Note Nectar VMs will require an edit of the /etc/hosts file on the VM so that it recognises its own host name.
+
+For Vagrant VMs:
+
+$ ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key  -u root
+
+

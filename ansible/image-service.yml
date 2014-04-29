@@ -4,4 +4,6 @@
     - common
     - postgresql
     - tomcat
+    - apache
     - image-service
+    - images-apache

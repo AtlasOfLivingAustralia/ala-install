@@ -1,26 +1,35 @@
 - include: ../../common/tasks/setfacts.yml
-# - include: ../../common/tasks/postgresql.yml
-# - include: ../../common/tasks/java.yml
-# - include: ../../common/tasks/tomcat.yml
-# - include: ../../common/tasks/apache.yml
+
+- name: create images database
+  postgresql_db: name=images
+  sudo_user: postgres
+  sudo: True
+
+# this fails on vagrant 
+# to test, try psql -U images -W -d images -h localhost
+- name: create database user images (this fails on vagrant)
+  postgresql_user: db=images name=images password=password priv=ALL state=present
+  sudo_user: postgres
+  sudo: True
 
 - name: download from maven repo
-  command: "wget {{images_url}} --output-document={{tomcat_webapps}}{{images_app}}.war"
+  command: "wget {{images_url}} --output-document={{tomcat_webapps}}images.war"
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
-    - "{{data_dir}}/{{images_app}}/config"
+    - "{{data_dir}}/images/config"
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}} 
   with_items:
+    - "{{data_dir}}/images/config"  
     - "{{data_dir}}/images/store"
     - "{{data_dir}}/images/incoming"
     - "{{data_dir}}/images/bin/imgcnv"
 
 - name: copy all config.properties
-  template: src=config/config.properties dest={{data_dir}}/{{images_app}}/config/{{images_app}}-config.properties
+  template: src=config/config.properties dest={{data_dir}}/images/config/images-config.properties
 
 - name: set data ownership
   file: path={{data_dir}}/{{images_app}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
