@@ -1,7 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
 
 - name: copy biocache hub app
-  get_url: url={{biocache_hub_url}} dest=/var/lib/{{tomcat}}/webapps/{{biocache_hub}}.war
+  get_url: url={{biocache_hub_war_url}} force=yes dest=/var/lib/{{tomcat}}/webapps/{{biocache_hub}}.war
   tags: 
     - webapps
 
