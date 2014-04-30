@@ -28,7 +28,7 @@ cassandra_listen_host = localhost
 collectory_db_host_address = localhost
 collectory_db_host = localhost
 
-biocache_service_url = http://biocache-test.ala.org.au
+biocache_service_url = http://biocache-test.ala.org.au/ws
 biocache_service_base_url = http://biocache-test.ala.org.au
 biocache_service_context_path = 
 
