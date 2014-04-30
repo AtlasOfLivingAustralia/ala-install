@@ -8,4 +8,4 @@ biocache_service: biocache-service
 biocache_hub_version: 0.1
 
 # assets
-biocache_hub_url: http://maven.ala.org.au/repository/au/org/ala/{{biocache_hub}}/{{biocache_hub_version}}/{{biocache_hub}}-{{biocache_hub_version}}.war
+biocache_hub_war_url: http://maven.ala.org.au/repository/au/org/ala/{{biocache_hub}}/{{biocache_hub_version}}/{{biocache_hub}}-{{biocache_hub_version}}.war
