@@ -1,0 +1,13 @@
+# A monolithic installation
+
+[solr-server]
+ec2-54-206-203-219.ap-southeast-2.compute.amazonaws.com
+
+[solr-server:vars]
+local_repo_dir=~/.ala
+data_dir=/mnt/data
+is_vagrant=false
+
+solr_url = http://ec2-54-206-203-219.ap-southeast-2.compute.amazonaws.com:8080/solr
+solr_base_url = http://ec2-54-206-203-219.ap-southeast-2.compute.amazonaws.com:8080
+solr_context_path = /solr

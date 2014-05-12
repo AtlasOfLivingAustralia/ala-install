@@ -88,7 +88,12 @@ $ ansible-playbook -i inventories/nectar-sandbox sandbox.yml --private-key <PATH
 Note Nectar VMs will require an edit of the /etc/hosts file on the VM so that it recognises its own host name.
 
 For Vagrant VMs:
-
+```
 $ ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key  -u root
+```
 
+For EC2 instances:
+```
+$ ansible-playbook -i inventories/solr-amazon solr-standalone.yml --private-key ~/.ssh/dmartin-amazon.pem -u ubuntu -s
+```
 

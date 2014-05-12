@@ -24,6 +24,8 @@
     - "{{data_dir}}/biocache-media"
     - "{{data_dir}}/biocache-upload"
     - "{{data_dir}}/cache"
+    - "{{data_dir}}/tmp"
+    - "{{data_dir}}/offline/exports"    
 
 - name: copy all template configs
   template: src={{item}} dest={{data_dir}}/biocache/{{item}} owner={{tomcat_user}}  group={{tomcat_user}}  mode=0644

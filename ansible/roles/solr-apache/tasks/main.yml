@@ -1,0 +1,29 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: Copy proxy config (Redhat)
+  copy: src=centos-proxies.conf dest=/etc/httpd/conf.d/
+  when: ansible_os_family == "RedHat" 
+
+- name: Copy proxy config to sites-available (Debian)
+  copy: src=solr.conf dest=/etc/apache2/sites-available/ owner=root group=root
+  when: ansible_os_family == "Debian"
+
+- name: Create symlink to sites-enabled (Debian)
+  command: "rm /etc/apache2/sites-enabled/000*" 
+  ignore_errors: yes
+  when: ansible_os_family == "Debian" 
+
+- name: add the symlink into sites-enabled
+  file: src=/etc/apache2/sites-available/solr.conf dest=/etc/apache2/sites-enabled/solr state=link
+  when: ansible_os_family == "Debian"
+
+- name: Redirect to datacheck
+  template: src=index.html dest=/var/www/html/ owner=root group=root
+  when: ansible_os_family == "RedHat"   
+
+- name: Redirect to datacheck (Debian)
+  template: src=index.html dest=/var/www/index.html owner=root group=root
+  when: ansible_os_family == "Debian"
+
+- name: Restart Apache2
+  service: name={{apache}} state=restarted
