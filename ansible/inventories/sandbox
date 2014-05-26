@@ -1,39 +1,9 @@
 # The sandbox installation on CSIRO IM&T VM
   
-[java]
+[sandbox]
 ala-lennon.it.csiro.au  
 
-[common]
-ala-lennon.it.csiro.au
-
-[cassandra]
-ala-lennon.it.csiro.au
-
-[biocache-db]
-ala-lennon.it.csiro.au
-
-[biocache-service]
-ala-lennon.it.csiro.au
-
-[nameindex]
-ala-lennon.it.csiro.au
-
-[cli]
-ala-lennon.it.csiro.au
-
-[datacheck]
-ala-lennon.it.csiro.au
-
-[apache]
-ala-lennon.it.csiro.au
-
-[sandbox-apache]
-ala-lennon.it.csiro.au
-
-[biocache-hub]
-ala-lennon.it.csiro.au
-
-[common:vars]
+[sandbox:vars]
 is_vagrant=false
 local_repo_dir = ~/.ala
 data_dir=/srv/data
