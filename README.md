@@ -78,7 +78,7 @@ In each case you will need to create an inventory file that points to your VM(s)
 
 For IM&T virtual machines:
 ```
-$ ansible-playbook -i inventories/demo ala-demo.yml -u <CSIRO_IDENT> --ask-pass --ask-sudo-pass
+$ ansible-playbook -i inventories/demo ala-demo.yml -u <CSIRO_IDENT> --ask-pass --ask-sudo-pass -s
 ```
 
 For Nectar VMs:
