@@ -34,3 +34,11 @@ vagrant/centos/.vagrant/machines/default/virtualbox/action_provision
 vagrant/centos/.vagrant/machines/default/virtualbox/action_set_name
 
 vagrant/centos/.vagrant/machines/default/virtualbox/id
+
+ansible/inventories/solr-cloud
+
+ansible/inventories/solr-rufus
+
+ansible/solr-cloud.yml
+
+ansible/roles/zookeeper/tasks/main.yml
