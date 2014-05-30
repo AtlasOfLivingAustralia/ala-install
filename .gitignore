@@ -42,3 +42,5 @@ ansible/inventories/solr-rufus
 ansible/solr-cloud.yml
 
 ansible/roles/zookeeper/tasks/main.yml
+
+ansible/inventories/solr-amazon

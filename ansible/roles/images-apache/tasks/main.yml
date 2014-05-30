@@ -23,5 +23,10 @@
   ignore_errors: yes
   when: ansible_os_family == "Debian" 
 
+- name: Create symlink to images store (Debian)
+  command: "ln -sf /data /var/www/data" 
+  ignore_errors: yes
+  when: ansible_os_family == "Debian" 
+
 - name: Start Apache2
   service: name={{apache}} state=restarted

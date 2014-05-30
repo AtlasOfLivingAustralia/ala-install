@@ -51,6 +51,9 @@
 [sds]
 10.1.1.2
 
+[image-service]
+10.1.1.2
+
 [common:vars]
 local_repo_dir=~/.ala
 data_dir=/data
@@ -84,3 +87,7 @@ datacheck_context_path = /datacheck
 sds_url = http://10.1.1.2/sds-webapp2
 sds_base_url = http://10.1.1.2
 sds_context_path = /sds-webapp2
+
+images_url = http://10.1.1.2/images
+images_base_url = http://10.1.1.2
+images_context_path = /images

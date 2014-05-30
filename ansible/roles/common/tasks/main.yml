@@ -13,6 +13,12 @@
 - name: create data directory
   file: path={{data_dir}} state=directory
 
-- name: create symlink from /data to the mounted storage
-  file: src={{data_dir}} dest={{data_dir_symlink}} state=link
-  when: not is_vagrant
+# - name: create symlink from /data to the mounted storage
+#   file: src={{data_dir}} dest={{data_dir_symlink}} state=link
+#   when: not is_vagrant
+
+- name: Create symlink to images store (Debian)
+  command: "ln -sf {{data_dir}} {{data_dir_symlink}} " 
+  ignore_errors: yes
+  tags:
+    - data_dir
