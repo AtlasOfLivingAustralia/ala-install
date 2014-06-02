@@ -39,5 +39,7 @@ biocache_hub_context_path = /ala-hub
 collectory_url = http://collections.ala.org.au
 collectory_base_url = http://collections.ala.org.au
 collectory_context_path = 
+zoom_outside_scoped_region = false
+use_ala_spatial_portal = true
 
 biocache_hub=ala-hub
