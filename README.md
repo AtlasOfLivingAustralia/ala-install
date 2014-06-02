@@ -15,7 +15,7 @@ This is included only to simplify local testing, but any server running CentOS 6
 To create a virtual machine with vagrant:
 
 ```
-$ cd vagrant/centos
+$ cd vagrant/ubuntu
 $ vagrant up
 ```
 
