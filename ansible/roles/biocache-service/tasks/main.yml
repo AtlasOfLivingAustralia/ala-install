@@ -27,6 +27,7 @@
     - "{{data_dir}}/cache"
     - "{{data_dir}}/tmp"
     - "{{data_dir}}/offline/exports"    
+    - "{{data_dir}}/tool"        
 
 - name: copy all template configs
   template: src={{item}} dest={{data_dir}}/biocache/{{item}} owner={{tomcat_user}}  group={{tomcat_user}}  mode=0644
@@ -41,7 +42,11 @@
     - biocache-load
     - biocache-media
     - biocache-upload
+    - biocache-delete    
     - cache
+    - tmp    
+    - offline    
+    - tool       
 
 - name: set permissions for biocache-load [TODO - more restrictive permissions]
   file: path={{data_dir}}/biocache-load mode=777

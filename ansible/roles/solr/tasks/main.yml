@@ -47,8 +47,3 @@
 
 - name: set SOLR directory ownership [all data is owned by tomcat]
   file: path={{data_dir}}/solr owner={{tomcat_user}} group={{tomcat_user}}  recurse=true
-
-- name: set permissions for biocache-load [TODO - more restrictive permissions]
-  file: path={{data_dir}}/biocache-load mode=777
-  notify:
-    - restart tomcat
