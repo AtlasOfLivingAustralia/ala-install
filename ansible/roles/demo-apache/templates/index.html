@@ -16,7 +16,13 @@
         <h1>Atlas of Living Australia - demo</h1>
         <p>This is a landing page with links through to the components now installed on this server.
         <br/>
-           This demo was installed using <a href="http://www.ansible.com">ansible</a> scripts that are available
+           This demo was installed using on this 
+           {{ansible_distribution}} 
+           {{ansible_distribution_release}}  
+           {{ansible_distribution_version}}  
+           machine
+            on the {{ansible_date_time.date}}
+           <a href="http://www.ansible.com">ansible</a> scripts that are available
             <a href="https://github.com/gbif/ala-install">here</a>.
         </p>
        </div>
@@ -89,5 +95,13 @@
 &copy; <a href="http://www.ala.org.au">Atlas of Living Australia 2014</a></p>
       </footer>
     </div> <!-- /container -->
+
+<!--
+
+
+
+
+-->
+
 </body>
 </html>

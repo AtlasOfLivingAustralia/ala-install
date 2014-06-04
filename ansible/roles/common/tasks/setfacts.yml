@@ -8,6 +8,8 @@
     cassandra_yaml: /etc/cassandra/cassandra.yaml
     cassandra_user: cassandra
   when: ansible_os_family == "Debian"
+  tags:
+    - setfacts
 
 - name: set redhat variables
   set_fact: 
@@ -19,3 +21,5 @@
     cassandra_yaml: /etc/cassandra/conf/cassandra.yaml
     cassandra_user: cassandra
   when: ansible_os_family == "RedHat"
+  tags:
+  - setfacts
