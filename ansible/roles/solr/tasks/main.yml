@@ -22,17 +22,15 @@
 
 - name: copy SOLR context (Redhat)
   template: src=context/solr.xml dest=/usr/share/{{tomcat}}/conf/Catalina/localhost/solr.xml owner={{tomcat_user}}  group={{tomcat_user}}
-  notify:
-    - restart tomcat
   when: ansible_os_family == "RedHat"
   tags:
     - solr_config
 
 - name: copy SOLR context (Debian)
   template: src=context/solr.xml dest=/var/lib/{{tomcat}}/conf/Catalina/localhost/solr.xml owner={{tomcat_user}}  group={{tomcat_user}}
-  notify:
-    - restart tomcat
   when: ansible_os_family == "Debian"
+  tags:
+    - solr_config  
 
 - name: ensure target directories exist [data subdirectories etc.
   file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}}

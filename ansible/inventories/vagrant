@@ -54,6 +54,14 @@
 [image-service]
 10.1.1.2
 
+[ala-demo]
+10.1.1.2
+
+[ala-demo:vars]
+local_repo_dir=~/.ala
+data_dir=/data
+is_vagrant=true
+
 [common:vars]
 local_repo_dir=~/.ala
 data_dir=/data

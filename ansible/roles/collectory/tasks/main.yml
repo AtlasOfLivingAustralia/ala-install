@@ -6,6 +6,7 @@
   get_url: url={{collectory_war_url}} dest=/var/lib/{{tomcat}}/webapps/collectory.war
   tags:
     - collectory
+    - collectory_war
 
 - name: ensure data directory exists
   file: path={{data_dir}}/collectory owner={{tomcat_user}} group={{tomcat_user}}  state=directory

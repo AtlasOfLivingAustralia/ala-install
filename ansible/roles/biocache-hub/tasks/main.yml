@@ -4,6 +4,7 @@
   get_url: url={{biocache_hub_war_url}} force=yes dest=/var/lib/{{tomcat}}/webapps/{{biocache_hub}}.war
   tags: 
     - webapps
+    - hub_war   
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
@@ -18,6 +19,7 @@
   tags:
     - webapps
     - config
+    - hub_config    
 
 - name: set data ownership
   file: path={{data_dir}}/{{biocache_hub}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true

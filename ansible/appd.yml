@@ -1,10 +1,9 @@
 - hosts: appd
   roles:
-#   - common
-#   - java
-#   - tomcat
+    - common
+    - java
+    - tomcat
     - cassandra
-#   - mysql
     - apache
     - nameindex
     - solr

@@ -1,42 +1,9 @@
 # The demo installation on CSIRO IM&T servers
 
-[java]
-ala-ono.it.csiro.au 
-  
-[tomcat]
+[ala-demo]
 ala-ono.it.csiro.au 
 
-[apache]
-ala-ono.it.csiro.au 
-
-[cassandra]
-ala-ono.it.csiro.au 
-
-[common]
-ala-ono.it.csiro.au
-
-[collectory]
-ala-ono.it.csiro.au
-
-[biocache-db]
-ala-ono.it.csiro.au
-
-[biocache-service]
-ala-ono.it.csiro.au
-
-[cli]
-ala-ono.it.csiro.au
-
-[datacheck]
-ala-ono.it.csiro.au
-
-[demo-apache]
-ala-ono.it.csiro.au
-
-[biocache-hub]
-ala-ono.it.csiro.au
-
-[common:vars]
+[ala-demo:vars]
 is_vagrant=false
 local_repo_dir = ~/.ala
 data_dir=/srv/data
@@ -46,22 +13,22 @@ cassandra_listen_host = localhost
 collectory_db_host_address = localhost
 collectory_db_host = localhost
 
-biocache_service_url = http://ala-ono.it.csiro.au/biocache-service
-biocache_service_base_url = http://ala-ono.it.csiro.au
+biocache_service_url = http://ala-demo.gbif.org/biocache-service
+biocache_service_base_url = http://ala-demo.gbif.org
 biocache_service_context_path = /biocache-service
 
-biocache_hub_url = http://ala-ono.it.csiro.au/generic-hub
-biocache_hub_base_url = http://ala-ono.it.csiro.au
+biocache_hub_url = http://ala-demo.gbif.org/generic-hub
+biocache_hub_base_url = http://ala-demo.gbif.org
 biocache_hub_context_path = /generic-hub 
 
-collectory_url = http://ala-ono.it.csiro.au/collectory
-collectory_base_url = http://ala-ono.it.csiro.au
+collectory_url = http://ala-demo.gbif.org/collectory
+collectory_base_url = http://ala-demo.gbif.org
 collectory_context_path = /collectory
 
-solr_url = http://ala-ono.it.csiro.au/solr
-solr_base_url = http://ala-ono.it.csiro.au
+solr_url = http://ala-demo.gbif.org/solr
+solr_base_url = http://ala-demo.gbif.org
 solr_context_path = /solr
 
-datacheck_url = http://ala-ono.it.csiro.au/datacheck
-datacheck_base_url = http://ala-ono.it.csiro.au
+datacheck_url = http://ala-demo.gbif.org/datacheck
+datacheck_base_url = http://ala-demo.gbif.org
 datacheck_context_path = /datacheck

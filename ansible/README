@@ -1,19 +1,8 @@
+Reusable commands
+=================
 
-This holds a single play to do a complete setup for the ALA demo platform on CentOS.  
-
-This is a monolithic installation - future iterations might split out roles correctly, to allow for a more sophisticated deployment topology (e.g. roles for cassandra, web, tomcat etc).
-
-Example to run this using a the vagrant and insecure private key:
-
-ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key  -u root
-
-For other non-local virtual machines, you'll need to supply an SSH password:
+ansible-playbook -i inventories/vagrant --private-key ~/.vagrant.d/insecure_private_key -u root  ala-demo.yml
+ansible-playbook -i inventories/vagrant --private-key ~/.vagrant.d/insecure_private_key -u root  image-service.yml 
 
 
-This works on CSIRO VMs......
-ansible-playbook -i inventories/demo ala-demo.yml --ask-pass --ask-sudo-pass -s
 
-
-May need to run
-
-ssh-keyscan ala-lennon.it.csiro.au >> .ssh/known_hosts 
