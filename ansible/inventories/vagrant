@@ -54,6 +54,9 @@
 [image-service]
 10.1.1.2
 
+[alerts-service]
+10.1.1.2
+
 [ala-demo]
 10.1.1.2
 
@@ -99,3 +102,7 @@ sds_context_path = /sds-webapp2
 images_url = http://10.1.1.2/images
 images_base_url = http://10.1.1.2
 images_context_path = /images
+
+alerts_url = http://10.1.1.2/alerts
+alerts_base_url = http://10.1.1.2
+alerts_context_path = /alerts

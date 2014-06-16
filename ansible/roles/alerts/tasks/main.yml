@@ -1,0 +1,23 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: create alerts DB
+  mysql_db: name=alerts state=present
+
+- name: create alerts DB user
+  mysql_user: name=alerts password=password priv=*.*:ALL state=present
+
+- name: download from maven repo
+  command: "wget {{alerts_war_url}} --output-document={{tomcat_webapps}}alerts.war"
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/alerts/config"
+
+- name: copy all config.properties
+  template: src=alerts-config.properties dest={{data_dir}}/alerts/config/alerts-config.properties
+
+- name: set data ownership
+  file: path={{data_dir}}/alerts owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify: 
+    - restart tomcat

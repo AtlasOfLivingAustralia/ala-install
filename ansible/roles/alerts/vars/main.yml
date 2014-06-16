@@ -1,0 +1,2 @@
+# assets
+alerts_war_url: "{{maven_repo}}/au/org/ala/alerts/0.1/alerts-0.1.war"
