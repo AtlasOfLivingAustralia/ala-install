@@ -1,0 +1,24 @@
+# A monolithic installation
+
+[common]
+10.1.1.2
+
+[java]
+10.1.1.2
+
+[tomcat]
+10.1.1.2
+
+[mysql]
+10.1.1.2
+
+[apache]
+10.1.1.2
+
+[expert]
+10.1.1.2
+
+[common:vars]
+local_repo_dir=~/.ala
+data_dir=/data
+is_vagrant=true

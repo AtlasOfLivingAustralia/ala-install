@@ -1,0 +1,8 @@
+- hosts: specieslist-webapp
+  roles:
+    - common
+    - java
+    - tomcat
+    - mysql
+    - apache
+    - specieslist-webapp

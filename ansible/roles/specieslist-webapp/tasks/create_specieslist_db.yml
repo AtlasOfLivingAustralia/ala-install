@@ -1,0 +1,6 @@
+- name: create specieslist DB
+  mysql_db: name=specieslist state=present
+
+- name: create specieslist DB user
+  mysql_user: name=specieslist password=password priv=*.*:ALL state=present
+  

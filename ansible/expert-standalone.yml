@@ -1,0 +1,8 @@
+- hosts: expert
+  roles:
+    - common
+    - java
+    - tomcat
+    - mysql
+    - apache
+    - expert

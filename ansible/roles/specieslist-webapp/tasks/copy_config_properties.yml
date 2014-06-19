@@ -1,0 +1,8 @@
+- name: ensure data directory exists
+  file: path={{data_dir}}/specieslist-webapp/config state=directory owner={{tomcat_user}} group={{tomcat_user}}
+
+- name: copy all config.properties
+  template: src=config/specieslist-webapp-config.properties dest={{data_dir}}/specieslist-webapp/config/specieslist-webapp-config.properties
+
+- name: set data ownership [all data is owned by tomcat]
+  file: path={{data_dir}}/specieslist-webapp owner={{tomcat_user}} group={{tomcat_user}} recurse=true

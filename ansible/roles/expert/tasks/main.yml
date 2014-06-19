@@ -1,0 +1,12 @@
+- include: ../../common/tasks/setfacts.yml
+- include: add_to_apache_conf.yml
+
+- name: ensure tomcat directory exists
+  file: path=/usr/share/{{tomcat}}/conf/Catalina/localhost/ state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  notify:
+    - restart tomcat
+
+- name: copy specieslist webapps
+  copy: src=expert.war dest=/var/lib/{{tomcat}}/webapps/expert.war
+  notify:
+    - restart tomcat
