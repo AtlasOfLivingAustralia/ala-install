@@ -1,0 +1,8 @@
+- name: ensure data directory exists
+  file: path={{data_dir}}/cas/config state=directory owner={{tomcat_user}} group={{tomcat_user}}
+
+- name: copy all template configs
+  template: src=config/cas.properties dest={{data_dir}}/cas/config/cas.properties
+
+- name: set data ownership [all data is owned by tomcat]
+  file: path={{data_dir}}/cas owner={{tomcat_user}} group={{tomcat_user}} recurse=true
