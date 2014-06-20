@@ -1,0 +1,17 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: download from maven repo
+  command: "wget {{dashboard_war_url}} --output-document={{tomcat_webapps}}dashboard.war"
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/dashboard/config"
+
+- name: copy all config.properties
+  template: src=dashboard-config.properties dest={{data_dir}}/dashboard/config/dashboard-config.properties
+
+- name: set data ownership
+  file: path={{data_dir}}/dashboard owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify: 
+    - restart tomcat

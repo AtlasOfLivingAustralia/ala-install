@@ -1,0 +1,2 @@
+# assets
+dashboard_war_url: "{{maven_repo}}/au/org/ala/dashboard/dashboard.war"
