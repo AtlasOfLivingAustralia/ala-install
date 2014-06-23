@@ -1,0 +1,10 @@
+- name: create downloads DB
+  postgresql_db: name=downloads state=present
+  sudo_user: postgres
+  sudo: True
+
+- name: create database user downloads
+  postgresql_user: db=downloads name=postgres password=password priv=ALL state=present
+  sudo_user: postgres
+  sudo: True
+  

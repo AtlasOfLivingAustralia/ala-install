@@ -1,0 +1,8 @@
+- name: ensure data directory exists
+  file: path={{data_dir}}/downloads/config state=directory owner={{tomcat_user}} group={{tomcat_user}}
+
+- name: copy all template configs
+  template: src=config/downloads-config.properties dest={{data_dir}}/downloads/config/downloads-config.properties
+
+- name: set data ownership [all data is owned by tomcat]
+  file: path={{data_dir}}/downloads owner={{tomcat_user}} group={{tomcat_user}} recurse=true

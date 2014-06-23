@@ -1,0 +1,8 @@
+- hosts: downloads
+  roles:
+    - common
+    - java
+    - tomcat
+    - postgresql
+    - apache
+    - downloads

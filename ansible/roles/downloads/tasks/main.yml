@@ -1,0 +1,12 @@
+- include: ../../common/tasks/setfacts.yml
+- include: create_downloads_db.yml
+- include: add_to_apache_conf.yml
+- include: copy_config_properties.yml
+
+- name: ensure tomcat directory exists
+  file: path=/usr/share/{{tomcat}}/conf/Catalina/localhost/ state=directory owner={{tomcat_user}} group={{tomcat_user}}
+
+- name: copy cas webapps
+  copy: src=downloads.war dest=/var/lib/{{tomcat}}/webapps/downloads.war
+  notify:
+    - restart tomcat
