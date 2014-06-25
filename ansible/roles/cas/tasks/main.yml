@@ -6,7 +6,7 @@
 - name: ensure tomcat directory exists
   file: path=/usr/share/{{tomcat}}/conf/Catalina/localhost/ state=directory owner={{tomcat_user}} group={{tomcat_user}}
 
-- name: copy cas webapps
-  copy: src=cas.war dest=/var/lib/{{tomcat}}/webapps/cas.war
+- name: download from maven repo
+  command: "wget {{cas_war_url}} --output-document={{tomcat_webapps}}cas.war"
   notify:
     - restart tomcat

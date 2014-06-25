@@ -6,7 +6,7 @@
 - name: ensure tomcat directory exists
   file: path=/usr/share/{{tomcat}}/conf/Catalina/localhost/ state=directory owner={{tomcat_user}} group={{tomcat_user}}
 
-- name: copy specieslist webapps
-  copy: src=specieslist-webapp.war dest=/var/lib/{{tomcat}}/webapps/specieslist-webapp.war
+- name: download from maven repo
+  command: "wget {{specieslist_webapp_war_url}} --output-document={{tomcat_webapps}}specieslist-webapp.war"
   notify:
     - restart tomcat

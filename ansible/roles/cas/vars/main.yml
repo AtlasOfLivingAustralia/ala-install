@@ -1,0 +1,2 @@
+# assets
+cas_war_url: "{{maven_repo}}/au/org/ala/ala-cas/1.0-SNAPSHOT/ala-cas-1.0-SNAPSHOT.war"

@@ -5,4 +5,4 @@
   template: src=config/downloads-config.properties dest={{data_dir}}/downloads/config/downloads-config.properties
 
 - name: set data ownership [all data is owned by tomcat]
-  file: path={{data_dir}}/downloads owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  file: path={{data_dir}}/downloads owner={{tomcat_user}} group={{tomcat_user}} recurse=true  
