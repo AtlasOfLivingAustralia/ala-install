@@ -11,6 +11,9 @@
 - name: copy all config.properties
   template: src=dashboard-config.properties dest={{data_dir}}/dashboard/config/dashboard-config.properties
 
+- name: copy data.json
+  template: src=data.json dest={{data_dir}}/dashboard/data.json
+
 - name: set data ownership
   file: path={{data_dir}}/dashboard owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 
