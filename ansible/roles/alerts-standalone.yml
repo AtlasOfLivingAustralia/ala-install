@@ -1,0 +1,7 @@
+- hosts: alerts-service
+  roles:
+    - common
+    - java
+    - tomcat
+    - apache
+    - alerts
