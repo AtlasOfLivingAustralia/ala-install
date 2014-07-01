@@ -15,8 +15,7 @@
 - name: create or recreate collectory DB (existing data is lost) 
   shell: "{{item}}"
   with_items:
-    - "mysql -u root -e 'DROP DATABASE IF EXISTS collectory'"
-    - "mysql -u root -e 'CREATE DATABASE collectory'"
+    - "mysql -u root -e 'CREATE DATABASE IF NOT EXISTS collectory'"
     - "mysql -u root collectory < /tmp/collectory-schema.sql"
   tags:
     - createdb
