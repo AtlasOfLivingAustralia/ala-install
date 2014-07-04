@@ -5,7 +5,7 @@
   when: ansible_os_family == "RedHat" 
 
 - name: Copy proxy config to sites-available (Debian)
-  copy: src=000-default.conf dest=/etc/apache2/sites-available/ owner=root group=root
+  copy: src=sandbox.conf dest=/etc/apache2/sites-available/ owner=root group=root
   when: ansible_os_family == "Debian"
 
 - name: Create symlink to sites-enabled (Debian)

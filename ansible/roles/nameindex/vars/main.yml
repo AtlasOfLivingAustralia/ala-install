@@ -1,1 +1,10 @@
-lucene_namematching_url: http://biocache.ala.org.au/archives/col_namematching.tgz
+#lucene_namematching_url: http://biocache.ala.org.au/archives/col_namematching.tgz
+
+# a name index based on Catalogue of Life 2012
+lucene_namematching_url: "{{name_indexes_repo}}/col_namematching.tgz"
+
+# a name index based on AFD, APNI + Catalogue of Life 2012
+#lucene_namematching_url: "{{name_indexes_repo}}/merge_namematching.tgz"
+
+# a name index based on AFD, APNI 
+#lucene_namematching_url: "{{name_indexes_repo}}/namematching13.tgz"

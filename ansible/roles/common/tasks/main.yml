@@ -1,3 +1,4 @@
+- include: ../../common/tasks/setfacts.yml
 # We need to: 
 #
 # 1. Set in the inventory where the mounted storage is.
@@ -5,7 +6,7 @@
 # 3. Create a symbolic link to the mounted storage
 # 
 # On CSIRO VMs the mounted storage is typically on /srv/data and we need to create a symlink from /data -> /srv/data 
-# On Nectar Ubuntu VMs this is usually /mnt  
+# On Nectar & EC2 Ubuntu VMs this is usually /mnt  
 #
 - name: ensure local repository exists [happens locally]
   action: file dest={{local_repo_dir}} state=directory force=yes
@@ -13,6 +14,12 @@
 - name: create data directory
   file: path={{data_dir}} state=directory
 
-- name: create symlink  from /data to the mounted storage
-  file: src={{data_dir}} dest={{data_dir_symlink}} state=link
-  when: not is_vagrant
+# - name: create symlink from /data to the mounted storage
+#   file: src={{data_dir}} dest={{data_dir_symlink}} state=link
+#   when: not is_vagrant
+
+- name: Create symlink to /data (Debian)
+  command: "ln -sf {{data_dir}} {{data_dir_symlink}} " 
+  ignore_errors: yes
+  tags:
+    - data_dir

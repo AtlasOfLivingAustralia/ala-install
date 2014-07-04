@@ -7,7 +7,10 @@
     mysql_service: mysql
     cassandra_yaml: /etc/cassandra/cassandra.yaml
     cassandra_user: cassandra
+    tomcat_webapps: /var/lib/tomcat7/webapps/
   when: ansible_os_family == "Debian"
+  tags:
+    - setfacts
 
 - name: set redhat variables
   set_fact: 
@@ -18,4 +21,17 @@
     mysql_service: mysqld
     cassandra_yaml: /etc/cassandra/conf/cassandra.yaml
     cassandra_user: cassandra
+    tomcat_webapps: /var/lib/tomcat6/webapps/
   when: ansible_os_family == "RedHat"
+  tags:
+  - setfacts
+
+#- name: set remote repositories (GBIF + CDN)
+#  set_fact:
+#     maven_repo: http://repository.gbif.org/content/groups/public/
+#     data_file_repo: http://d1w4g4s73hkfzi.cloudfront.net/archives/20140610/
+
+- name: set remote repositories (ALA)
+  set_fact:
+    maven_repo: http://maven.ala.org.au/repository
+    name_indexes_repo: http://biocache.ala.org.au/archives/nameindexes/20140610/

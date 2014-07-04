@@ -14,5 +14,23 @@
                            http://activemq.apache.org/schema/core
                            http://activemq.apache.org/schema/core/activemq-core.xsd">
 
+<!-- Example ActiveMQ JMS settings
+    <bean id="jmsMessageListener" class="org.ala.jms.service.JmsMessageListener" />
+         <bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+                <property name="brokerURL" value="tcp://localhost:61616" />             
+                <property name="userName" value="system" />
+                <property name="password" value="manager" />
+        </bean> 
+        <bean id="pooledJmsConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+          destroy-method="stop">
+                <property name="connectionFactory" ref="jmsConnectionFactory" />
+        </beans>
+        <jms:listener-container container-type="default" 
+                                connection-factory="pooledJmsConnectionFactory"
+                                acknowledge="auto">
+                <jms:listener destination="au.org.ala.cs" ref="jmsMessageListener" />
+        </jms:listener-container>
+</beans>
+-->
 
 </beans>

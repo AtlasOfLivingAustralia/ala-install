@@ -5,26 +5,3 @@ data_dir_symlink: /data
 
 # when we need to create a symlink to mounted storage directory
 create_data_symlink: false
-
-# versions that we wish common to all roles
-postgres_dbname: ala-images
-postgres_dbuser: postgres
-postgres_dbpassword: password
-
-java: java-1.7.0-openjdk-devel
-
-# local artifact directory is used for storing artifacts that 
-# are sourced from (e.g.) svn, or ALA maintained URLs that we do 
-# not want to include in this build environment.  Typically these 
-# are the binaries for the web apps, or pre built indexes that are
-# maintained outside of this build.
-#
-# DM: Ive removed local repo support as this is pretty buggy when not in use  with vagrant
-#
-#local_repo_dir: "~/.ala-ansible"
-
-tomcat_java_opts: -Xmx2g -Xms2g -XX:MaxPermSize=256m -Xss256k
-
-cassandra_user: cassandra
-
-lucene_namematching_url: http://biocache.ala.org.au/archives/col_namematching.tgz
