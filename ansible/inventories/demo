@@ -1,7 +1,7 @@
 # The demo installation on CSIRO IM&T servers
 
 [ala-demo]
-ala-ono.it.csiro.au 
+ala-ono.it.csiro.au
 
 [ala-demo:vars]
 is_vagrant=false
@@ -19,11 +19,14 @@ biocache_service_context_path = /biocache-service
 
 biocache_hub_url = http://ala-demo.gbif.org/generic-hub
 biocache_hub_base_url = http://ala-demo.gbif.org
-biocache_hub_context_path = /generic-hub 
+biocache_hub_context_path = /generic-hub
 
 collectory_url = http://ala-demo.gbif.org/collectory
 collectory_base_url = http://ala-demo.gbif.org
 collectory_context_path = /collectory
+
+orgNameLong = Spain occurrence portal
+orgNameShort = Spain
 
 solr_url = http://ala-demo.gbif.org/solr
 solr_base_url = http://ala-demo.gbif.org

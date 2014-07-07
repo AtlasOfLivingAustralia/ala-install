@@ -1,8 +1,8 @@
 # demo installation
 
 [java]
-130.56.248.53 
-  
+130.56.248.53
+
 [tomcat]
 130.56.248.53
 
@@ -28,9 +28,9 @@ cassandra_listen_host = localhost
 collectory_db_host_address = localhost
 collectory_db_host = localhost
 
-biocache_service_url = http://biocache-test.ala.org.au/ws
-biocache_service_base_url = http://biocache-test.ala.org.au
-biocache_service_context_path = 
+biocache_service_url = http://biocache.ala.org.au/ws
+biocache_service_base_url = http://biocache.ala.org.au
+biocache_service_context_path =
 
 biocache_hub_url = http://130.56.248.53/ala-hub
 biocache_hub_base_url = http://130.56.248.53
@@ -38,8 +38,13 @@ biocache_hub_context_path = /ala-hub
 
 collectory_url = http://collections.ala.org.au
 collectory_base_url = http://collections.ala.org.au
-collectory_context_path = 
+collectory_context_path =
+
 zoom_outside_scoped_region = false
 use_ala_spatial_portal = true
+use_ala_bie|default = true
+orgNameLong = Atlas of Living Australia
+orgNameShort = ALA
+zoomOutsideScopedRegion = false
 
 biocache_hub=ala-hub
