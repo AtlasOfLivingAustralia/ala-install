@@ -38,8 +38,8 @@ biocache_service_url = http://biocache.ala.org.au/ws
 biocache_service_base_url = http://biocache.ala.org.au
 biocache_service_context_path =
 
-biocache_hub_url = http://biocache-test.ala.org.au
-biocache_hub_base_url = http://biocache-test.ala.org.au
+biocache_hub_url = http://biocache.ala.org.au
+biocache_hub_base_url = http://biocache.ala.org.au
 biocache_hub_context_path =
 biocache_hub_hostname = biocache.ala.org.au
 
@@ -55,4 +55,4 @@ orgNameShort = ALA
 disable_cas =
 bypass_cas =
 
-biocache_hub = ala-hub
+biocache_hub=ala-hub

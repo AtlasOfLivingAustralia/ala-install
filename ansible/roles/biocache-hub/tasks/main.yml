@@ -16,7 +16,7 @@
     - config
 
 - name: copy all config.properties
-  template: src=config/config.properties dest={{data_dir}}/{{biocache_hub}}/config/{{biocache_hub_config}}
+  template: src=config/config.properties dest={{data_dir}}/{{biocache_hub}}/config/{{biocache_hub_config}} 
   tags:
     - webapps
     - config
