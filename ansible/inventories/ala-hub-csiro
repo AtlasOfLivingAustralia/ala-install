@@ -18,6 +18,9 @@ ala-reed.it.csiro.au
 [hub-apache:vars]
 biocache_hub =
 
+[hub-ala-tomcat]
+ala-reed.it.csiro.au
+
 [biocache-hub]
 ala-reed.it.csiro.au
 
@@ -38,6 +41,7 @@ biocache_service_context_path =
 biocache_hub_url = http://biocache-test.ala.org.au
 biocache_hub_base_url = http://biocache-test.ala.org.au
 biocache_hub_context_path =
+biocache_hub_hostname = biocache.ala.org.au
 
 collectory_url = http://collections.ala.org.au
 collectory_base_url = http://collections.ala.org.au
