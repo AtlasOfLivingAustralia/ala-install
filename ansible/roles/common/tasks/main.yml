@@ -13,6 +13,7 @@
 
 - name: create data directory
   file: path={{data_dir}} state=directory
+  ignore_errors: yes
 
 # - name: create symlink from /data to the mounted storage
 #   file: src={{data_dir}} dest={{data_dir_symlink}} state=link
