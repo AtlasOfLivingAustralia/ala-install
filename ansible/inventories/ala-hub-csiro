@@ -1,22 +1,28 @@
-# demo installation
+# ALA test server installation
 
 [java]
-130.56.248.53
+ala-reed.it.csiro.au
 
 [tomcat]
-130.56.248.53
+ala-reed.it.csiro.au
 
 [apache]
-130.56.248.53
+ala-reed.it.csiro.au
 
 [common]
-130.56.248.53
+ala-reed.it.csiro.au
 
 [hub-apache]
-130.56.248.53
+ala-reed.it.csiro.au
+
+[hub-apache:vars]
+biocache_hub =
+
+[hub-ala-tomcat]
+ala-reed.it.csiro.au
 
 [biocache-hub]
-130.56.248.53
+ala-reed.it.csiro.au
 
 [common:vars]
 is_vagrant=false
@@ -32,9 +38,10 @@ biocache_service_url = http://biocache.ala.org.au/ws
 biocache_service_base_url = http://biocache.ala.org.au
 biocache_service_context_path =
 
-biocache_hub_url = http://130.56.248.53/ala-hub
-biocache_hub_base_url = http://130.56.248.53
-biocache_hub_context_path = /ala-hub
+biocache_hub_url = http://biocache.ala.org.au
+biocache_hub_base_url = http://biocache.ala.org.au
+biocache_hub_context_path =
+biocache_hub_hostname = biocache.ala.org.au
 
 collectory_url = http://collections.ala.org.au
 collectory_base_url = http://collections.ala.org.au
@@ -45,6 +52,7 @@ use_ala_spatial_portal = true
 use_ala_bie|default = true
 orgNameLong = Atlas of Living Australia
 orgNameShort = ALA
-zoomOutsideScopedRegion = false
+disable_cas =
+bypass_cas =
 
 biocache_hub=ala-hub

@@ -2,28 +2,29 @@
 
 - name: copy biocache hub app
   get_url: url={{biocache_hub_war_url}} force=yes dest=/var/lib/{{tomcat}}/webapps/{{biocache_hub}}.war
-  tags: 
+  tags:
     - webapps
-    - hub_war   
+    - hub_war
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/{{biocache_hub}}/config"
+    - "{{data_dir}}/{{biocache_hub}}/cache"
   tags:
     - webapps
     - config
 
 - name: copy all config.properties
-  template: src=config/config.properties dest={{data_dir}}/{{biocache_hub}}/config/{{biocache_hub_config}}
+  template: src=config/config.properties dest={{data_dir}}/{{biocache_hub}}/config/{{biocache_hub_config}} 
   tags:
     - webapps
     - config
-    - hub_config    
+    - hub_config
 
 - name: set data ownership
   file: path={{data_dir}}/{{biocache_hub}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify: 
+  notify:
     - restart tomcat
   tags:
     - webapps
