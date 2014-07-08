@@ -1,38 +1,12 @@
-# ALA test server installation
+# ALA Hub production server installation
 
-[java]
+[ala-hub-standalone]
 ala-reed.it.csiro.au
 
-[tomcat]
-ala-reed.it.csiro.au
-
-[apache]
-ala-reed.it.csiro.au
-
-[common]
-ala-reed.it.csiro.au
-
-[hub-apache]
-ala-reed.it.csiro.au
-
-[hub-apache:vars]
-biocache_hub =
-
-[hub-ala-tomcat]
-ala-reed.it.csiro.au
-
-[biocache-hub]
-ala-reed.it.csiro.au
-
-[common:vars]
+[ala-hub-standalone:vars]
 is_vagrant=false
 local_repo_dir = ~/.ala
-data_dir=/mnt/data
-
-biocache_db_host = localhost
-cassandra_listen_host = localhost
-collectory_db_host_address = localhost
-collectory_db_host = localhost
+data_dir=/data
 
 biocache_service_url = http://biocache.ala.org.au/ws
 biocache_service_base_url = http://biocache.ala.org.au
@@ -52,7 +26,9 @@ use_ala_spatial_portal = true
 use_ala_bie|default = true
 orgNameLong = Atlas of Living Australia
 orgNameShort = ALA
-disable_cas =
-bypass_cas =
+disable_cas = false
+bypass_cas = false
 
 biocache_hub=ala-hub
+use_ala_bie=true
+biocache_api_key=api-key-to-use

@@ -1,5 +1,5 @@
 - name: restart mysql
-  service: name=mysqld state=restarted       
+  service: name={{mysql_service}} state=restarted
 
 - name: restart tomcat
   service: name={{tomcat}} state=restarted

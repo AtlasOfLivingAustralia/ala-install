@@ -1,27 +1,9 @@
-- hosts: common
+- hosts: ala-hub-standalone
   roles:
     - common
-
-- hosts: java
-  roles:
     - java
-
-- hosts: tomcat
-  roles:
     - tomcat
-
-- hosts: apache
-  roles:
     - apache
-
-- hosts: biocache-hub
-  roles:
     - { role: biocache-hub, biocache_hub: ala-hub }
-
-- hosts: hub-apache
-  roles:
-    - { role: hub-apache }
-
-- hosts: hub-ala-tomcat
-  roles:
     - { role: hub-ala-tomcat, biocache_hub: ala-hub }
+    - { role: hub-apache }
