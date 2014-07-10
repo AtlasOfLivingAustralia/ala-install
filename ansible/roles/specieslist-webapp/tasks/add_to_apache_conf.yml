@@ -1,5 +1,5 @@
 - name: Copy proxy config to sites-available (Debian)
-  copy: src=demo.conf dest=/etc/apache2/sites-available/ owner=root group=root
+  copy: src=specieslist-webapp.conf dest=/etc/apache2/sites-available/ owner=root group=root
   when: ansible_os_family == "Debian" 
 
 - name: Create symlink to sites-enabled (Debian)
@@ -13,7 +13,7 @@
   when: ansible_os_family == "Debian" 
 
 - name: Create symlink to sites-enabled (Debian)
-  command: "ln -sf /etc/apache2/sites-available/demo.conf /etc/apache2/sites-enabled/demo" 
+  command: "ln -sf /etc/apache2/sites-available/specieslist-webapp.conf /etc/apache2/sites-enabled/specieslist-webapp"
   ignore_errors: yes
   when: ansible_os_family == "Debian" 
 
