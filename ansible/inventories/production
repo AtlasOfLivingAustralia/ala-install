@@ -1,5 +1,2 @@
 [volunteer-portal]
 ala-bowie.it.csiro.au
-
-[volunteer-portal:vars]
-volunteers_db_name=volunteers
