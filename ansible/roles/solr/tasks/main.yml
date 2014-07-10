@@ -36,6 +36,7 @@
   file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/solr/biocache/conf"
+    - "{{data_dir}}/biocache-load"
 
 - name: copy SOLR config
   copy: src=solr dest={{data_dir}} owner={{tomcat_user}}  group={{tomcat_user}}

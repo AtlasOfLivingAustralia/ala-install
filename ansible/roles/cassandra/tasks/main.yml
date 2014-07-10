@@ -9,8 +9,8 @@
 - name: install packages (Redhat)
   yum: name={{item}} state=present
   with_items:
-    - $datastax
-    - $cassandra
+    - "{{ datastax }}"
+    - "{{ cassandra }}"
   tags:
     - packages 
     - cassandra 
