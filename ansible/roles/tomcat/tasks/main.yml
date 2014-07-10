@@ -38,6 +38,8 @@
 - name: enable proxy_ajp (Debian)
   command: a2enmod proxy_ajp 
   when: ansible_os_family == "Debian" and tomcat_ajp == true
+  notify: 
+    - restart apache
   tags:
     - tomcat
 

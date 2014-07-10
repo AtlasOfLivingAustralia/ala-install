@@ -70,11 +70,6 @@
   tags:
     - volunteer-portal
 
-#- name: Reload Apache2
-#  service: name={{apache}} state=reloaded
-#  tags:
-#    - volunteer-portal
-
 - name: download from maven repo
   command: "wget {{volunteers_url}} --output-document={{tomcat_webapps}}ROOT.war"
   notify:

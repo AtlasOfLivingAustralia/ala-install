@@ -3,5 +3,3 @@ ala-bowie.it.csiro.au
 
 [volunteer-portal:vars]
 volunteers_db_name=volunteers
-#volunteers_db_username=volunteers
-#volunteers_db_password=password
