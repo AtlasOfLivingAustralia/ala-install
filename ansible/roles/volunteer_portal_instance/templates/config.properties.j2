@@ -1,0 +1,23 @@
+# CAS Config
+casProperties=casServerLoginUrl,serverName,centralServer,casServerName,uriFilterPattern,uriExclusionFilter,authenticateOnlyIfLoggedInFilterPattern,casServerLoginUrlPrefix,gateway,casServerUrlPrefix,contextPath
+serverName=http://{{ hostname }}
+server.url=http://{{ hostname }}/
+grails.serverURL=http://{{ hostname }}/
+contextPath={{volunteer_context_path}}
+casServerName=https://auth.ala.org.au
+uriExclusionFilterPattern=/images.*,/css.*,/js.*,/less.*
+casServerLoginUrl=https://auth.ala.org.au/cas/login
+gateway=false
+casServerUrlPrefix=https://auth.ala.org.au/cas
+security.cas.logoutUrl=https://auth.ala.org.au/cas/logout
+security.cas.adminRole=ROLE_VP_ADMIN
+uriFilterPattern=/validate/save.*,/validate/.*,/user/.*,/project/((?!index).)*,/task/.*,/newsItem/.*,/picklist/.*,/admin/.*,/frontPage/.*,/ajax/userReport,/transcribe/.*,/taskComment/((?!getCommentsAjax).)*,/locality/.*,/collectionEvent/.*,/ajax/keepSessionAlive.*,/forum/.*,/template/.*
+authenticateOnlyIfLoggedInFilterPattern=/,/project/index/.*,/tutorials/.*
+
+dataSource.driverClassName=org.postgresql.Driver
+dataSource.url=jdbc:postgresql://{{db_hostname}}/{{db_name}}
+dataSource.username={{db_username}}
+dataSource.password={{db_password}}
+
+images.urlPrefix=/data/volunteer/
+images.home=/data/volunteer-portal

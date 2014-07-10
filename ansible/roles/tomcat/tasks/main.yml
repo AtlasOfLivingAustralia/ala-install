@@ -13,17 +13,33 @@
   tags:
     - tomcat
 
+- name: install libtcnative-1 (Debian)
+  apt: pkg={{libtcnative}} state=present update_cache=yes
+  tags:
+    - packages 
+  when: ansible_os_family == "Debian" and tomcat_apr == true
+  tags:
+    - tomcat
 
 - name: install tomcat (Debian)
   apt: pkg={{tomcat}} state=present update_cache=yes
   tags:
     - packages 
-  notify: 
-    - restart tomcat
-  when: ansible_os_family == "Debian"  
+  when: ansible_os_family == "Debian"
   tags:
     - tomcat
 
+- name: setup tomcat (Debian)
+  template: src=server.xml.j2 dest=/etc/tomcat7/server.xml owner=tomcat7 group=tomcat7 mode=0644 backup=true
+  when: ansible_os_family == "Debian"
+  notify: 
+    - restart tomcat
+
+- name: enable proxy_ajp (Debian)
+  command: a2enmod proxy_ajp 
+  when: ansible_os_family == "Debian" and tomcat_ajp == true
+  tags:
+    - tomcat
 
 # replace the commented out java_opts that ships with the CentOS install which is:
 # JAVA_OPTS="-Xminf0.1 -Xmaxf0.3"        

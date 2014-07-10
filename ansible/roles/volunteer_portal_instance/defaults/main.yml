@@ -1,0 +1,12 @@
+tomcat_webapps: /var/lib/tomcat7/webapps/
+volunteer_context_path: /
+local_repo_dir: ~/.ala
+data_dir: /srv/data
+volunteers_url: "{{maven_repo}}/au/org/ala/volunteer-portal/volunteer-portal.war"
+hostname: volunteer.ala.org.au
+volunteer_app: volunteer-portal
+db_hostname: localhost
+tomcat_ajp: true
+tomcat_http: false
+tomcat_autoDeploy: true
+tomcat_bind_addr: '127.0.0.1' 

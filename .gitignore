@@ -9,6 +9,9 @@
 
 .idea/workspace.xml
 
+vagrant/centos/.vagrant
+vagrant/ubuntu/.vagrant
+
 vagrant/ubuntu/.vagrant/machines/default/virtualbox/action_provision
 
 vagrant/ubuntu/.vagrant/machines/default/virtualbox/action_set_name
