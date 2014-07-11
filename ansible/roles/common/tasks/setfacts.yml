@@ -1,6 +1,5 @@
 - name: set debian variables
   set_fact:
-    libtcnative: libtcnative-1
     tomcat: tomcat7
     tomcat_user: tomcat7 
     tomcat_conf: /etc/default/tomcat7 
