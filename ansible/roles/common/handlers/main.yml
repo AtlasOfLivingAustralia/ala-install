@@ -10,8 +10,5 @@
 - name: restart apache
   service: name={{apache}} state=restarted
 
-- name: reload apache
-  service: name={{apache}} state=reloaded
-
 - name: restart mysql
   service: name={{mysql_service}} state=restarted

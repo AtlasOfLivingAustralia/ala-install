@@ -69,15 +69,6 @@ and change the references to point to the IP/DNS of your VM. Then point to this 
 $ ansible-playbook -i inventories/images image-service.yml --private-key <PATH_TO_YOUR_PEM_FILE> -u root 
 ```
 
-### Volunteer Portal on CSIRO IM&T
-
-    $ ansible-playbook -i inventories/production volunteer-portal.yml --u bea18c --ask-pass --ask-sudo-pass -s -e "@/path/to/database-password.json"
-
-Where /path/to/database-password.json looks like:
-
-    {
-      "volunteers_db_password": "secret-password-here"
-    }
 
 ## Notes for different environments (CSIRO/Nectar)
 

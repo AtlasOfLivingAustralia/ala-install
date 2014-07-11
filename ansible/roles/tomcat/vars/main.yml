@@ -1,10 +1,2 @@
 # common variables across all roles
 tomcat_java_opts: -Xmx2g -Xms2g -XX:MaxPermSize=256m -Xss256k
-tomcat_http: true
-tomcat_http_port: 8080
-tomcat_ajp: false
-tomcat_ajp_port: 8009
-tomcat_apr: true
-tomcat_users: true
-tomcat_autoDeploy: true
-libtcnative: libtcnative-1
