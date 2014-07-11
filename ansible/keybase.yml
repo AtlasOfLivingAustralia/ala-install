@@ -1,6 +1,4 @@
 - hosts: keybase
-  sudo: yes 
-  sudo_user: root
   roles:
     - keybase
 

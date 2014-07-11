@@ -10,4 +10,4 @@
     - biocache-db
     - biocache-service
     - { role: biocache-hub, biocache_hub: appd-hub }
-    - cli
+    - biocache-cli

@@ -1,0 +1,6 @@
+- hosts: biocache-cli
+  roles:
+    - common
+    - java
+    - nameindex
+    - biocache-cli

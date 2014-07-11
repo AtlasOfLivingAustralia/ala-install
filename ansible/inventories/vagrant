@@ -1,5 +1,8 @@
 # A monolithic installation
 
+[biocache-cli]
+10.1.1.2
+
 [common]
 10.1.1.2
 
@@ -34,6 +37,12 @@
 10.1.1.2
 
 [biocache-hub]
+10.1.1.2
+
+[ala-demo]
+10.1.1.2
+
+[ala-hub-standalone]
 10.1.1.2
 
 [cli]

@@ -23,5 +23,11 @@
   ignore_errors: yes
   when: ansible_os_family == "Debian" 
 
+
+- name: Create symlink to sites-enabled (Debian)
+  command: "ln -s /data/biocache-media  /var/www/biocache-media" 
+  ignore_errors: yes
+  when: ansible_os_family == "Debian" 
+
 - name: Start Apache2
   service: name={{apache}} state=restarted

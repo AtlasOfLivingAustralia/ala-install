@@ -1,3 +1,0 @@
-- hosts: sandbox-apache
-  roles:
-  - sandbox-apache

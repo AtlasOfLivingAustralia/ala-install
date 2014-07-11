@@ -1,4 +1,0 @@
-- hosts: cli
-  roles:
-    - common
-    - cli

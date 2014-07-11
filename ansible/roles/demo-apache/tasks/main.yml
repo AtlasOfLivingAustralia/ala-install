@@ -8,12 +8,7 @@
   copy: src=demo.conf dest=/etc/apache2/sites-available/ owner=root group=root
   when: ansible_os_family == "Debian" 
 
-- name: Create symlink to sites-enabled (Debian)
-  command: "find /etc/apache2/sites-enabled/ -type l -delete" 
-  ignore_errors: yes
-  when: ansible_os_family == "Debian" 
-
-- name: Create symlink to sites-enabled (Debian)
+- name: Remove the default apache site enabled (Debian)
   command: "find /etc/apache2/sites-enabled/ -type l -delete" 
   ignore_errors: yes
   when: ansible_os_family == "Debian" 
@@ -34,6 +29,16 @@
   when: ansible_os_family == "Debian"       
   tags:
     - demo_apache
+
+- name: Create symlink to sites-enabled (Debian)
+  command: "ln -sf /data/biocache-media  /var/www/biocache-media" 
+  ignore_errors: yes
+  when: ansible_os_family == "Debian" 
+
+- name: Create symlink to sites-enabled (Debian)
+  command: "ln -sf /data/biocache-media  /var/www/html/biocache-media" 
+  ignore_errors: yes
+  when: ansible_os_family == "RedHat" 
 
 - name: Start Apache2
   service: name={{apache}} state=restarted
