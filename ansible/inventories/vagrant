@@ -66,6 +66,9 @@
 [alerts-service]
 10.1.1.2
 
+[volunteer-portal]
+10.1.1.2
+
 [ala-demo]
 10.1.1.2
 
@@ -115,3 +118,9 @@ images_context_path = /images
 alerts_url = http://10.1.1.2/alerts
 alerts_base_url = http://10.1.1.2
 alerts_context_path = /alerts
+
+[volunteer-portal:vars]
+hostname = 10.1.1.2
+volunteers_db_password=password
+
+
