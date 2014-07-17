@@ -50,15 +50,15 @@
   tags:  
     - "data_archives"     
 
-- name: Upload from local M2 name matching distribution zip (LOCAL)
-  copy: src="/Users/mar759/.m2/repository/au/org/ala/ala-name-matching/2.1-SNAPSHOT/ala-name-matching-2.1-SNAPSHOT-distribution.zip" dest="/usr/lib/nameindexer/nameindexer.zip" force=yes
-  tags:  
-    - "nameindexer"  
-
-# - name: Download name matching distribution zip
-#   get_url: url="{{maven_repo}}/au/org/ala/ala-name-matching/2.1-SNAPSHOT/ala-name-matching-2.1-SNAPSHOT-distribution.zip" dest="/usr/lib/nameindexer/nameindexer.zip" force=yes
+# - name: Upload from local M2 name matching distribution zip (LOCAL)
+#   copy: src="/Users/mar759/.m2/repository/au/org/ala/ala-name-matching/2.1-SNAPSHOT/ala-name-matching-2.1-SNAPSHOT-distribution.zip" dest="/usr/lib/nameindexer/nameindexer.zip" force=yes
 #   tags:  
 #     - "nameindexer"  
+
+- name: Download name matching distribution zip
+  get_url: url="{{maven_repo}}/au/org/ala/ala-name-matching/2.1-SNAPSHOT/ala-name-matching-2.1-SNAPSHOT-distribution.zip" dest="/usr/lib/nameindexer/nameindexer.zip" force=yes
+  tags:  
+    - "nameindexer"  
 
 - name: install unzip (Debian only)
   apt: pkg=unzip state=present
