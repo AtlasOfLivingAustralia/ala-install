@@ -3,37 +3,13 @@
 [biocache-cli]
 10.1.1.2
 
-[common]
-10.1.1.2
-
-[java]
-10.1.1.2
-
-[cassandra]
-10.1.1.2
-
-[tomcat]
-10.1.1.2
-
-[mysql]
-10.1.1.2
-
-[apache]
-10.1.1.2
-
-[solr]
-10.1.1.2
-
-[collectory-db]
+[collectory]
 10.1.1.2
 
 [biocache-db]
 10.1.1.2
 
 [biocache-service]
-10.1.1.2
-
-[demo-apache]
 10.1.1.2
 
 [biocache-hub]
@@ -43,18 +19,6 @@
 10.1.1.2
 
 [ala-hub-standalone]
-10.1.1.2
-
-[cli]
-10.1.1.2
-
-[collectory]
-10.1.1.2
-
-[datacheck]
-10.1.1.2
-
-[images]
 10.1.1.2
 
 [sds]
@@ -67,6 +31,9 @@
 10.1.1.2
 
 [ala-demo]
+10.1.1.2
+
+[nameindexer]
 10.1.1.2
 
 [ala-demo:vars]
