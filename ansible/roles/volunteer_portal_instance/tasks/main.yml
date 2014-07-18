@@ -28,12 +28,11 @@
   tags:
     - volunteer-portal
 
-# TODO
-#- name: Copy proxy config to conf.d (Redhat)
-#  template: src=centos-proxies.conf dest=/etc/httpd/conf.d/
-#  when: ansible_os_family == "RedHat" 
-#  tags:
-#    - volunteer-portal
+- name: Copy proxy config to conf.d (Redhat)
+  template: src=volunteer-portal.j2 dest=/etc/httpd/conf.d/default-vhost.conf
+  when: ansible_os_family == "RedHat" 
+  tags:
+    - volunteer-portal
 
 - name: Create Volunteer Portal virtual host config file (Debian)
   template: src=volunteer-portal.j2 dest=/etc/apache2/sites-available/volunteer-portal owner=root group=root
@@ -71,10 +70,8 @@
     - volunteer-portal
 
 - name: download from maven repo
-  command: "wget {{volunteers_url}} --output-document={{tomcat_webapps}}ROOT.war"
+  get_url: url={{ volunteers_url }} dest="{{tomcat_webapps}}ROOT.war"
   notify:
     - restart tomcat
   tags:
     - volunteer-portal
-
-

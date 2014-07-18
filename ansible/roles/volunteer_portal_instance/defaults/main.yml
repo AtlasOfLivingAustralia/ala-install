@@ -10,3 +10,4 @@ tomcat_ajp: true
 tomcat_http: false
 tomcat_autoDeploy: true
 tomcat_bind_addr: '127.0.0.1' 
+is_vagrant: false

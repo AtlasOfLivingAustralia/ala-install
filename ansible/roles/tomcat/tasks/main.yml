@@ -3,13 +3,21 @@
 # "tomcat" variable controls version (@see common/vars)
 - include: ../../common/tasks/setfacts.yml 
 
+- name: install libtcnative-1 (RedHat)
+  yum: pkg={{libtcnative}} state=present
+  tags:
+    - packages 
+  when: ansible_os_family == "RedHat" and tomcat_apr == true
+  tags:
+    - tomcat
+
 - name: install tomcat (RedHat)
   yum: name={{tomcat}} state=present
   tags:
     - packages 
   notify: 
     - restart tomcat
-  when: ansible_os_family == "RedHat"   
+  when: ansible_os_family == "RedHat"
   tags:
     - tomcat
 
@@ -29,15 +37,19 @@
   tags:
     - tomcat
 
-- name: setup tomcat (Debian)
-  template: src=server.xml.j2 dest=/etc/tomcat7/server.xml owner=tomcat7 group=tomcat7 mode=0644 backup=true
-  when: ansible_os_family == "Debian"
+- name: setup tomcat
+  template: src={{ item }} dest={{ tomcat_conf_dir }}/server.xml owner={{ tomcat_user }} mode=0644 backup=true
+  with_first_found:
+    - "../templates/server.xml.{{ ansible_distribution }}-{{ ansible_distribution_version }}.j2"
+    - "../templates/server.xml.{{ ansible_distribution }}.j2"
+    - "../templates/server.xml.{{ ansible_os_family }}.j2"
+    - "../templates/server.xml.j2"
   notify: 
     - restart tomcat
 
-- name: enable proxy_ajp (Debian)
-  command: a2enmod proxy_ajp 
-  when: ansible_os_family == "Debian" and tomcat_ajp == true
+- name: enable proxy_ajp
+  apache2_module: state=present name=proxy_ajp
+  when: ansible_os_family == "Debian" and tomcat_ajp == true # already on RedHat
   notify: 
     - restart apache
   tags:
