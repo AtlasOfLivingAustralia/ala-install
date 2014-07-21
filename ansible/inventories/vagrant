@@ -91,3 +91,45 @@ hostname = 10.1.1.2
 volunteers_db_password=password
 
 
+
+[ala-demo:vars]
+local_repo_dir=~/.ala
+data_dir=/data
+is_vagrant=true
+
+biocache_db_host = localhost
+cassandra_listen_host = localhost
+collectory_db_host_address = localhost
+collectory_db_host = localhost
+
+biocache_service_url = http://10.1.1.2/biocache-service
+biocache_service_base_url = http://10.1.1.2
+biocache_service_context_path = /biocache-service
+
+biocache_hub_url = http://10.1.1.2/generic-hub
+biocache_hub_base_url = http://10.1.1.2
+biocache_hub_context_path = /generic-hub 
+
+collectory_url = http://10.1.1.2/collectory
+collectory_base_url = http://10.1.1.2
+collectory_context_path = /collectory
+
+solr_url = http://10.1.1.2/solr
+solr_base_url = http://10.1.1.2
+solr_context_path = /solr
+
+datacheck_url = http://10.1.1.2/datacheck
+datacheck_base_url = http://10.1.1.2
+datacheck_context_path = /datacheck
+
+sds_url = http://10.1.1.2/sds-webapp2
+sds_base_url = http://10.1.1.2
+sds_context_path = /sds-webapp2
+
+images_url = http://10.1.1.2/images
+images_base_url = http://10.1.1.2
+images_context_path = /images
+
+alerts_url = http://10.1.1.2/alerts
+alerts_base_url = http://10.1.1.2
+alerts_context_path = /alerts
