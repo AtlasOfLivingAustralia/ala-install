@@ -1,11 +1,11 @@
-# application versions  
+# application versions
 biocache_hub_config: "{{biocache_hub}}-config.properties"
 
 collectory: collectory
 
 biocache_service: biocache-service
 
-biocache_hub_version: 1.0
+biocache_hub_version: 1.2
 
 # assets
 biocache_hub_war_url: "{{maven_repo}}/au/org/ala/{{biocache_hub}}/{{biocache_hub_version}}/{{biocache_hub}}-{{biocache_hub_version}}.war"
