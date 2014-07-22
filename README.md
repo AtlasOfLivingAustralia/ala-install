@@ -71,7 +71,7 @@ $ ansible-playbook -i inventories/images image-service.yml --private-key <PATH_T
 
 ### Volunteer Portal on CSIRO IM&T
 
-    $ ansible-playbook -i inventories/production volunteer-portal.yml --u bea18c --ask-pass --ask-sudo-pass -s -e "@/path/to/database-password.json"
+    $ ansible-playbook -i inventories/production volunteer-portal.yml --u username --ask-pass --ask-sudo-pass -s -e "@/path/to/database-password.json"
 
 Where /path/to/database-password.json looks like:
 
