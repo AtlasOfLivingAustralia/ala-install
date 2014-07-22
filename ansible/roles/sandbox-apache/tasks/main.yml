@@ -8,8 +8,8 @@
   copy: src=sandbox.conf dest=/etc/apache2/sites-available/ owner=root group=root
   when: ansible_os_family == "Debian"
 
-- name: Create symlink to sites-enabled (Debian)
-  command: "rm /etc/apache2/sites-enabled/000-default" 
+- name: Remove the default apache site enabled (Debian)
+  command: "find /etc/apache2/sites-enabled/ -type l -delete" 
   ignore_errors: yes
   when: ansible_os_family == "Debian" 
 

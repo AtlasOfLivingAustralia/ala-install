@@ -1,4 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
+  tags:
+    - webapps
+    - config
 
 - name: copy biocache hub app
   get_url: url={{biocache_hub_war_url}} force=yes dest=/var/lib/{{tomcat}}/webapps/{{biocache_hub}}.war
@@ -16,7 +19,7 @@
     - config
 
 - name: copy all config.properties
-  template: src=config/config.properties dest={{data_dir}}/{{biocache_hub}}/config/{{biocache_hub_config}} 
+  template: src=config/config.properties dest={{data_dir}}/{{biocache_hub}}/config/{{biocache_hub_config}} force=yes
   tags:
     - webapps
     - config

@@ -1,3 +1,0 @@
-- hosts: demo-apache
-  roles:
-  - demo-apache

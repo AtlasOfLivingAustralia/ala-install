@@ -1,0 +1,4 @@
+- hosts: collectory
+  roles:
+    - common
+    - collectory

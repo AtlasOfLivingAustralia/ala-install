@@ -1,4 +1,4 @@
-- hosts: biocache
+- hosts: biocache-service
   roles:
     - java
     - tomcat

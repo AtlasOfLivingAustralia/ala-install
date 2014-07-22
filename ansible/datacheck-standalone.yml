@@ -1,0 +1,4 @@
+- hosts: datacheck
+  roles:
+    - common
+    - datacheck

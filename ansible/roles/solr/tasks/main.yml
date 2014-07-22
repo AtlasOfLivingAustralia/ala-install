@@ -13,7 +13,7 @@
     - restart tomcat
 
 - name: copy SOLR webapps
-  copy: src=tomcat/webapps/{{solr}}.war dest=/var/lib/{{tomcat}}/webapps/solr.war
+  get_url: url={{solr_war_url}} dest=/var/lib/{{tomcat}}/webapps/solr.war
 
 - name: ensure tomcat context directory exists
   file: path=/usr/share/{{tomcat}}/conf/Catalina/localhost/ state=directory owner={{tomcat_user}} group={{tomcat_user}}

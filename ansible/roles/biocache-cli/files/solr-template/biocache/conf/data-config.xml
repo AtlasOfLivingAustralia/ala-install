@@ -1,0 +1,68 @@
+<dataConfig>
+    <dataSource type="JdbcDataSource" driver="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost/portal" user="root" password="password" batchSize="-1"/>
+    <document>
+        <entity name="occurrence" query="SELECT oc.id, oc.data_provider_id, dp.name data_provider, oc.data_resource_id, dr.name data_resource,
+                    oc.institution_code_id, ic.code institution_code, ic.name institution_code_name, ic.lsid institution_code_lsid,
+                    oc.collection_code_id, cc.code collection_code, oc.catalogue_number_id, cn.code catalogue_number,
+                    tc.guid taxon_concept_lsid, tn.canonical taxon_name, tn.author, tc.rank rank_id, rnk.name rank,
+                    ror.scientific_name raw_taxon_name, ror.author raw_author, oc.iso_country_code country_code,
+                    kdc.guid kingdom_lsid, kdn.canonical kingdom, phc.guid phylum_lsid, phn.canonical phylum,
+                    clc.guid class_lsid, cln.canonical class, odc.guid order_lsid, odn.canonical `order`,
+                    fmc.guid family_lsid, fmn.canonical family, gnc.guid genus_lsid, gnn.canonical genus, spc.guid species_lsid, spn.canonical species,
+                    oc.latitude, oc.longitude, ror.lat_long_precision, CONCAT_WS(',', oc.latitude, oc.longitude) as lat_long,
+                    oc.cell_id, oc.centi_cell_id, oc.tenmilli_cell_id,
+                    oc.year, oc.month, DATE_FORMAT(oc.occurrence_date,'%Y-%m-%dT%H:%i:%sZ') occurrence_date,
+                    oc.basis_of_record basis_of_record_id, bor.description basis_of_record, ror.basis_of_record raw_basis_of_record,
+                    typ.type_status, lit.it_value identifier_type, idr.identifier identifier_value, ror.identifier_name,
+                    DATE_FORMAT(ror.identification_date,'%Y-%m-%dT%H:%i:%sZ') identifier_date, ror.collector_name collector,
+                    taxonomic_issue, geospatial_issue, other_issue, ror.created created_date, oc.modified modified_date
+                    FROM occurrence_record oc
+                    INNER JOIN raw_occurrence_record ror ON ror.id = oc.id
+                    INNER JOIN data_provider dp ON dp.id = oc.data_provider_id
+                    INNER JOIN data_resource dr ON dr.id = oc.data_resource_id
+                    INNER JOIN institution_code ic ON ic.id = oc.institution_code_id
+                    INNER JOIN collection_code cc ON cc.id = oc.collection_code_id
+                    INNER JOIN catalogue_number cn ON cn.id = oc.catalogue_number_id
+                    INNER JOIN basis_of_record bor ON bor.id = oc.basis_of_record
+                    INNER JOIN taxon_name tn ON tn.id = oc.taxon_name_id
+                    INNER JOIN taxon_concept tc ON tc.id = oc.nub_concept_id
+                    INNER JOIN rank rnk ON rnk.id = tc.rank
+                    LEFT JOIN taxon_concept kdc ON kdc.id = oc.kingdom_concept_id
+                    LEFT JOIN taxon_name kdn ON kdn.id = kdc.taxon_name_id
+                    LEFT JOIN taxon_concept phc ON phc.id = oc.phylum_concept_id
+                    LEFT JOIN taxon_name phn ON phn.id = phc.taxon_name_id
+                    LEFT JOIN taxon_concept clc ON clc.id = oc.class_concept_id
+                    LEFT JOIN taxon_name cln ON cln.id = clc.taxon_name_id
+                    LEFT JOIN taxon_concept odc ON odc.id = oc.order_concept_id
+                    LEFT JOIN taxon_name odn ON odn.id = odc.taxon_name_id
+                    LEFT JOIN taxon_concept fmc ON fmc.id = oc.family_concept_id
+                    LEFT JOIN taxon_name fmn ON fmn.id = fmc.taxon_name_id
+                    LEFT JOIN taxon_concept gnc ON gnc.id = oc.genus_concept_id
+                    LEFT JOIN taxon_name gnn ON gnn.id = gnc.taxon_name_id
+                    LEFT JOIN taxon_concept spc ON spc.id = oc.species_concept_id
+                    LEFT JOIN taxon_name spn ON spn.id = spc.taxon_name_id
+                    LEFT JOIN typification_record typ ON typ.occurrence_id = oc.id
+                    LEFT JOIN identifier_record idr ON idr.occurrence_id = oc.id
+                    LEFT JOIN lookup_identifier_type lit ON lit.it_key = idr.identifier_type
+                    WHERE oc.data_resource_id = 56"> <!--  where data_resource_id = 71 -->
+            <entity name="state" query="select st.name
+                    FROM geo_mapping gm
+                    LEFT JOIN geo_region st ON st.id = gm.geo_region_id AND st.region_type &lt;= 2
+                    WHERE gm.occurrence_id=${occurrence.id}">
+                <field column="name" name="state"/>
+            </entity>
+            <entity name="biogeographic_region" query="select bgr.name
+                    FROM geo_mapping gm
+                    LEFT JOIN geo_region bgr ON bgr.id = gm.geo_region_id AND bgr.region_type = 2000
+                    WHERE gm.occurrence_id=${occurrence.id}">
+                <field column="name" name="biogeographic_region"/>
+            </entity>
+            <entity name="places" query="select plc.name
+                    FROM geo_mapping gm
+                    LEFT JOIN geo_region plc ON plc.id = gm.geo_region_id AND (plc.region_type &gt;= 3 AND plc.region_type &lt;= 11)
+                    WHERE gm.occurrence_id=${occurrence.id}">
+                <field column="name" name="places"/>
+            </entity>
+        </entity>
+    </document>
+</dataConfig>
