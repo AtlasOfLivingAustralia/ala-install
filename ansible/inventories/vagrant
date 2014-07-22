@@ -36,6 +36,9 @@
 [nameindexer]
 10.1.1.2
 
+[biocache-db]
+10.1.1.2
+
 [ala-demo:vars]
 local_repo_dir=~/.ala
 data_dir=/data
