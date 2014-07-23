@@ -6,11 +6,19 @@
   copy: src=yum/datastax.repo dest=/etc/yum.repos.d/datastax.repo
   when: ansible_os_family == "RedHat"   
 
-- name: install packages (Redhat)
-  yum: name={{item}} state=present
-  with_items:
-    - $datastax
-    - $cassandra
+# Note: Ansible 1.6.x yum does not work with "with_items"
+# This is more verbose, but version safe
+- name: install datastax (Redhat)
+  yum: name={{datastax}} state=present
+  tags:
+    - packages 
+    - cassandra 
+  notify: 
+    - restart cassandra
+  when: ansible_os_family == "RedHat" 
+
+- name: install cassandra (Redhat)
+  yum: name={{cassandra}} state=present
   tags:
     - packages 
     - cassandra 

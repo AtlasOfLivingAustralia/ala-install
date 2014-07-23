@@ -1,5 +1,5 @@
-- hosts: biocache-cassandra
+- hosts: biocache-db
   roles:
     - java
     - cassandra    
-    - biocache-cassandra
+    - biocache-db
