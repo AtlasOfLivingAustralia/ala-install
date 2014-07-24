@@ -2,8 +2,8 @@
 - include: create_specieslist_db.yml
 - include: add_to_apache_conf.yml
 - include: copy_config_properties.yml
-	tags:
-		- "config"
+  tags:
+    - "config"
 
 - name: ensure tomcat directory exists
   file: path=/usr/share/{{tomcat}}/conf/Catalina/localhost/ state=directory owner={{tomcat_user}} group={{tomcat_user}}
