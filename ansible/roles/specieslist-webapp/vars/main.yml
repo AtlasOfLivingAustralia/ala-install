@@ -1,2 +1,2 @@
 # assets
-specieslist_webapp_war_url: "{{maven_repo}}/au/org/ala/specieslist-webapp/0.2/specieslist-webapp-0.2.war"
+specieslist_webapp_war_url: "{{maven_repo}}/au/org/ala/specieslist-webapp/0.3/specieslist-webapp-0.3.war"
