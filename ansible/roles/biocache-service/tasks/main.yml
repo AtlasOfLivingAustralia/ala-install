@@ -1,7 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
 
 - name: copy biocache webapps
-  get_url: url={{biocache_service_war_path}} dest=/var/lib/{{tomcat}}/webapps/biocache-service.war
+  get_url: url={{biocache_service_war_path}} dest=/var/lib/{{tomcat}}/webapps/biocache-service.war force=yes
   notify:
     - restart tomcat
 
