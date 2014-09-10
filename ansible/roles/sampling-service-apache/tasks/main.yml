@@ -1,0 +1,22 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: Copy proxy config to sites-available (Debian)
+  template: src=sampling-service.conf dest=/etc/apache2/sites-available/ owner=root group=root
+  when: ansible_os_family == "Debian" 
+
+- name: Remove the default apache site enabled (Debian)
+  command: "find /etc/apache2/sites-enabled/ -type l -delete" 
+  ignore_errors: yes
+  when: ansible_os_family == "Debian" 
+
+- name: Create symlink to sites-enabled (Debian)
+  command: "ln -s /etc/apache2/sites-available/sampling-service.conf /etc/apache2/sites-enabled/sampling-service" 
+  when: ansible_os_family == "Debian" 
+
+- name: Create symlink to images store (Debian)
+  command: "ln -sf /data /var/www/data" 
+  ignore_errors: yes
+  when: ansible_os_family == "Debian" 
+
+- name: Start Apache2
+  service: name={{apache}} state=restarted

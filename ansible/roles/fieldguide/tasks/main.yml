@@ -1,0 +1,18 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: download from maven repo
+  command: "wget {{fieldguide_url}} --output-document={{tomcat_webapps}}fieldguide.war"
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/ala-fieldguide/config"
+    - "{{data_dir}}/ala-fieldguide/store"
+
+- name: copy all config.properties
+  template: src=config/config.properties dest={{data_dir}}/ala-fieldguide/config/ala-fieldguide-config.properties
+
+- name: set data ownership
+  file: path={{data_dir}}/{{fieldguide_app}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify: 
+    - restart tomcat
