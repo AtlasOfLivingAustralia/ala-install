@@ -33,6 +33,9 @@
 [volunteer-portal]
 10.1.1.2
 
+[webapi_standalone]
+10.1.1.2
+
 [ala-demo]
 10.1.1.2
 
@@ -93,7 +96,9 @@ alerts_context_path = /alerts
 hostname = 10.1.1.2
 volunteers_db_password=password
 
-
+[webapi_standalone:vars]
+hostname = 10.1.1.2
+webapi_db_password=password
 
 [ala-demo:vars]
 local_repo_dir=~/.ala

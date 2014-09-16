@@ -37,15 +37,33 @@
   tags:
     - tomcat
 
-- name: setup tomcat
-  template: src={{ item }} dest={{ tomcat_conf_dir }}/server.xml owner={{ tomcat_user }} mode=0644 backup=true
-  with_first_found:
-    - "../templates/server.xml.{{ ansible_distribution }}-{{ ansible_distribution_version }}.j2"
-    - "../templates/server.xml.{{ ansible_distribution }}.j2"
-    - "../templates/server.xml.{{ ansible_os_family }}.j2"
-    - "../templates/server.xml.j2"
+- name: setup tomcat (global)
+  tomcat_global: tomcat_conf_dir={{tomcat_conf_dir}} apr={{tomcat_apr}} tomcat_users={{tomcat_users}} shutdown_port={{tomcat_control_port}}
   notify: 
     - restart tomcat
+  tags:
+    - tomcat
+
+- name: setup tomcat (service)
+  tomcat_service: tomcat_conf_dir={{tomcat_conf_dir}} http={{tomcat_http}} http_port={{tomcat_http_port}} ajp={{tomcat_ajp}} ajp_port={{tomcat_ajp_port}} bind_addr={{tomcat_bind_addr}}
+  notify: 
+    - restart tomcat
+  tags:
+    - tomcat
+
+- name: setup tomcat (engine)
+  tomcat_engine: tomcat_conf_dir={{tomcat_conf_dir}} tomcat_users={{tomcat_users}}
+  notify: 
+    - restart tomcat
+  tags:
+    - tomcat
+
+- name: setup tomcat (default vhost)
+  tomcat_vhost: tomcat_conf_dir={{tomcat_conf_dir}} name=localhost webapps=webapps
+  notify: 
+    - restart tomcat
+  tags:
+    - tomcat
 
 - name: enable proxy_ajp
   apache2_module: state=present name=proxy_ajp
@@ -60,8 +78,8 @@
 - name: configure tomcat memory (RedHat)
   lineinfile: 
     dest={{tomcat_conf}}
-    regexp="-Djava.awt.headless=true -Xmx128m"
-    line='JAVA_OPTS="{{tomcat_java_opts}}"'
+    regexp="^JAVA_OPTS"
+    line='JAVA_OPTS="{{tomcat_java_opts}} -Djavax.sql.DataSource.Factory=org.apache.commons.dbcp.BasicDataSourceFactory"'
   notify: 
     - restart tomcat
   when: ansible_os_family == "RedHat"
@@ -71,7 +89,7 @@
 - name: configure tomcat memory (Debian)
   lineinfile: 
     dest={{tomcat_conf}}
-    regexp="-Xminf0.1 -Xmaxf0.3"
+    regexp="^JAVA_OPTS"
     line='JAVA_OPTS="{{tomcat_java_opts}}"'
   notify: 
     - restart tomcat

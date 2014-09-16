@@ -9,6 +9,7 @@
     mysql_service: mysql
     cassandra_yaml: /etc/cassandra/cassandra.yaml
     cassandra_user: cassandra
+    tomcat_dir: /var/lib/tomcat7
     tomcat_webapps: /var/lib/tomcat7/webapps/
   when: ansible_os_family == "Debian"
   tags:
@@ -25,6 +26,7 @@
     mysql_service: mysqld
     cassandra_yaml: /etc/cassandra/conf/cassandra.yaml
     cassandra_user: cassandra
+    tomcat_dir: /var/lib/tomcat6
     tomcat_webapps: /var/lib/tomcat6/webapps/
   when: ansible_os_family == "RedHat"
   tags:

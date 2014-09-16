@@ -8,3 +8,4 @@ tomcat_ajp_port: 8009
 tomcat_apr: true
 tomcat_users: true
 tomcat_autoDeploy: true
+tomcat_bind_addr: 0.0.0.0

@@ -1,0 +1,207 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# This file is part of ALA ansible scripts
+#
+# TODO Licence
+
+DOCUMENTATION = '''
+---
+module: tomcat_global
+short_description: Configure Tomcat global options.
+description:
+   - Add or remove a Tomcat virtual host.
+version_added: "1.6.2"
+options:
+  shutdown_port:
+    description:
+      - the port to listen on for the shutdown command
+    required: false
+    default: 8005
+  apr:
+    description:
+      - whether to use the apache portable runtime library loader listener for optimal production performance
+    required: false
+    default: true
+  tomcat_users:
+    description:
+      - whether to add the default Tomcat Users database, sourced from tomcat-users.xml
+    required: false
+    default: true
+  strip_comments:
+    description:
+      - whether to strip all comments from server.xml (this can cut down a lot of noise from the default file)
+    required: false
+    default: true
+  tomcat_conf_dir:
+    description:
+      - The tomcat conf directory
+    required: false
+    default: /etc/tomcat7 on debian, /etc/tomcat6 on enterprise linux
+notes:
+   - This module uses I(python-augeas), a Python Augeas binding library. You must ensure that python-agueas is installed
+     on the host before using this module.
+   - This module uses I(python-libxml2), a Python binding for the libxml2 library.  You must ensure that python-libxml2
+     is installed on the host before using this module.
+requirements: [ python-augeas, python-libxml2 ]
+author: Simon Bear
+'''
+
+EXAMPLES = '''
+
+'''
+
+try:
+    import augeas
+except ImportError:
+    augeas_found = False
+else:
+    augeas_found = True
+
+
+class NotSupportedError(Exception):
+    pass
+
+
+# ===========================================
+# Tomcat Global module specific support methods.
+#
+
+def load_augeas_for_file(root="/etc/tomcat7", lens="Xml.lns", filename="server.xml", check_mode=False):
+    aug = augeas.Augeas(root, None, augeas.Augeas.NO_LOAD | augeas.Augeas.NO_MODL_AUTOLOAD | (
+        augeas.Augeas.SAVE_NOOP if check_mode else augeas.Augeas.SAVE_BACKUP))
+    aug.add_transform(lens, filename)
+    aug.load()
+    return aug
+
+
+def tomcat_dir_for_distrib(distribution):
+    if distribution.lower() in ["redhat", "centos"]:
+        return '/etc/tomcat6'
+    else:
+        return '/etc/tomcat7'
+
+
+def xml_lint(filename):
+    try:
+        import libxml2
+        libxml2.thrDefIndentTreeOutput(1)
+        libxml2.keepBlanksDefault(0)
+        x = libxml2.parseFile(filename)
+        x.saveFormatFile(filename, 1)
+    except ImportError:
+        pass
+
+def b2xs(string):
+    return str(string).lower()
+
+
+def create_apr_listener(aug):
+    #<Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
+    aug.set("$server/Listener[#attribute/className=\"org.apache.catalina.core.AprLifecycleListener\"]/#attribute/className", "org.apache.catalina.core.AprLifecycleListener")
+    aug.set("$server/Listener[#attribute/className=\"org.apache.catalina.core.AprLifecycleListener\"]/#attribute/SSLEngine", "on")
+
+
+def remove_apr_listener(aug):
+    aug.remove("$server/Listener[#attribute/className=\"org.apache.catalina.core.AprLifecycleListener\"]")
+
+
+def create_default_tomcat_users(aug):
+    #<GlobalNamingResources>
+    #<Resource name="UserDatabase" auth="Container"
+    #          type="org.apache.catalina.UserDatabase"
+    #          description="User database that can be updated and saved"
+    #          factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
+    #          pathname="conf/tomcat-users.xml" />
+    #</GlobalNamingResources>
+    aug.set("$server/GlobalNamingResources/Resource[#attribute/name=\"UserDatabase\"]/#attribute/name", "UserDatabase")
+    aug.set("$server/GlobalNamingResources/Resource[#attribute/name=\"UserDatabase\"]/#attribute/auth", "Container")
+
+    aug.set("$server/GlobalNamingResources/Resource[#attribute/name=\"UserDatabase\"]/#attribute/type",
+            "org.apache.catalina.UserDatabase")
+
+    aug.set("$server/GlobalNamingResources/Resource[#attribute/name=\"UserDatabase\"]/#attribute/description",
+            "User database that can be updated and saved")
+
+    aug.set("$server/GlobalNamingResources/Resource[#attribute/name=\"UserDatabase\"]/#attribute/factory",
+            "org.apache.catalina.users.MemoryUserDatabaseFactory")
+
+    aug.set("$server/GlobalNamingResources/Resource[#attribute/name=\"UserDatabase\"]/#attribute/pathname",
+            "conf/tomcat-users.xml")
+
+
+def remove_default_tomcat_users(aug):
+    aug.remove("/Server/GlobalNamingResources/Resource[#attribute/name=\"UserDatabase\"]")
+
+
+def setup_tomcat(aug, shutdown_port, apr, tomcat_users):
+    aug.defvar("server", "/files/server.xml/Server")
+    aug.set("$server/#attribute/port", str(shutdown_port))
+
+    if apr:
+        create_apr_listener(aug)
+    else:
+        remove_apr_listener(aug)
+
+    if tomcat_users:
+        create_default_tomcat_users(aug)
+    else:
+        remove_default_tomcat_users(aug)
+
+
+# ===========================================
+# Module execution.
+#
+
+def main():
+    module = AnsibleModule(
+        argument_spec=dict(
+            shutdown_port=dict(default=8005, type="int"),
+            apr=dict(default=False, type="bool"),
+            tomcat_users=dict(default=True, type="bool"),
+            strip_comments=dict(default=True, type="bool"),
+            tomcat_conf_dir=dict(default=None, required=False)
+        ),
+        supports_check_mode=True
+    )
+
+    if not augeas_found:
+        module.fail_json(msg="the python augeas module is required")
+        return
+
+    shutdown_port = module.params["shutdown_port"]
+    apr = module.params["apr"]
+    tomcat_users = module.params["tomcat_users"]
+    strip_comments = module.params["strip_comments"]
+    tomcat_conf_dir = module.params["tomcat_conf_dir"]
+
+    if not tomcat_conf_dir:
+        distribution = get_distribution()
+        tomcat_conf_dir = tomcat_dir_for_distrib(distribution)
+
+    try:
+        aug = load_augeas_for_file(root=tomcat_conf_dir, check_mode=module.check_mode)
+    except Exception, e:
+        module.fail_json(msg="unable to connect to Augeas: %s" % e)
+        return
+
+    try:
+        setup_tomcat(aug, shutdown_port, apr, tomcat_users)
+
+        if strip_comments:
+            aug.remove("/files/server.xml//#comment")
+
+        aug.save()
+        saved = aug.get("/augeas/events/saved")
+        errors = aug.get("/augeas//errors")
+        aug.close()
+        if saved and not module.check_mode:
+            xml_lint(tomcat_conf_dir + "/server.xml")
+        module.exit_json(changed=True if saved else False, saved=saved, errors=errors)
+    except Exception, e:
+        module.fail_json(msg="exception while performing augeas operations: %s" % e)
+
+# import module snippets
+from ansible.module_utils.basic import *
+
+main()
