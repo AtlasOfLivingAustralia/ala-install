@@ -1,0 +1,2 @@
+fieldguide_app: ala-fieldguide
+fieldguide_url: "{{maven_repo}}/au/org/ala/ala-fieldguide/1.0-SNAPSHOT/ala-fieldguide-1.0-SNAPSHOT.war"

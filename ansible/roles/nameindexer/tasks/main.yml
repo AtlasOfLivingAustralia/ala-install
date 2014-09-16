@@ -56,7 +56,7 @@
 #     - "nameindexer"  
 
 - name: Download name matching distribution zip
-  get_url: url="{{maven_repo}}/au/org/ala/ala-name-matching/2.1-SNAPSHOT/ala-name-matching-2.1-SNAPSHOT-distribution.zip" dest="/usr/lib/nameindexer/nameindexer.zip" force=yes
+  get_url: url="{{ala_names_distribution_url}}" dest="/usr/lib/nameindexer/nameindexer.zip" force=yes
   tags:  
     - "nameindexer"  
 
@@ -78,7 +78,7 @@
     - "nameindexer"
 
 - name: clean nameindexer existing extract
-  shell: "mv /usr/lib/nameindexer/ala-name-matching-2.1-SNAPSHOT.jar /usr/lib/nameindexer/nameindexer.jar"
+  shell: "mv /usr/lib/nameindexer/ala-name-matching-{{ala_names_version}}.jar /usr/lib/nameindexer/nameindexer.jar"
   ignore_errors: yes  
   tags:
     - "nameindexer"
