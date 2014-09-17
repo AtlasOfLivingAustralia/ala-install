@@ -68,7 +68,7 @@
     - webapi
     - apache
 
-- name: Create Volunteer Portal virtual host config file (Debian)
+- name: Create webapi virtual host config file (Debian)
   template: src=webapi.j2 dest=/etc/apache2/sites-available/webapi.conf owner=root group=root
   when: ansible_os_family == "Debian" 
   notify:
