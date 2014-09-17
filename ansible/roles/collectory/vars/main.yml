@@ -1,4 +1,4 @@
 # application versions
 collectory: collectory
 # assets
-collectory_war_url: "{{maven_repo}}/au/org/ala/collectory/1.1.1/collectory-1.1.1.war"
+collectory_war_url: "{{maven_repo}}/au/org/ala/collectory/1.1.2/collectory-1.1.2.war"
