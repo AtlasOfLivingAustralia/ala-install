@@ -29,12 +29,23 @@
   when: ansible_os_family == "Debian"
   tags: jenkins
 
+- name: create JENKINS_HOME
+  file: name=/data/jenkins state=directory owner=jenkins group=jenkins
+  notify: restart jenkins
+  when: ansible_os_family == "Debian"
+  tags: jenkins
+
 - lineinfile: dest=/etc/default/jenkins backrefs=yes regexp=^HTTP_PORT=8080 line=HTTP_PORT=-1
   notify: restart jenkins
   when: ansible_os_family == "Debian"
   tags: jenkins
 
 - lineinfile: dest=/etc/default/jenkins backrefs=yes regexp=^AJP_PORT=-1 line=AJP_PORT=9009
+  notify: restart jenkins
+  when: ansible_os_family == "Debian"
+  tags: jenkins
+
+- lineinfile: dest=/etc/default/jenkins backrefs=yes regexp=^JENKINS_HOME=/var/lib/jenkins line=JENKINS_HOME=/data/jenkins
   notify: restart jenkins
   when: ansible_os_family == "Debian"
   tags: jenkins
