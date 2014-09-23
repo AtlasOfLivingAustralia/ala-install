@@ -29,7 +29,13 @@
 #- name: set remote repositories (GBIF + CDN)
 #  set_fact:
 #     maven_repo: http://repository.gbif.org/content/groups/public/
-#     data_file_repo: http://d1w4g4s73hkfzi.cloudfront.net/archives/20140610/
+#     data_file_repo: http://d1w4g4s73hkfzi.cloudfront.net/archives/20140610
+
+
+#- name: set remote repositories (Amazon CDN)
+#  set_fact:
+#    maven_repo: http://d39oypqjwmz32p.cloudfront.net/repository
+#    name_indexes_repo: http://d1w4g4s73hkfzi.cloudfront.net/archives/nameindexes/20140610/
 
 - name: set remote repositories (ALA)
   set_fact:
