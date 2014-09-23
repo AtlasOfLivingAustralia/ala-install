@@ -1,0 +1,23 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: create logger DB
+  mysql_db: name=logger state=present
+
+- name: create logger DB user
+  mysql_user: name=logger password=password priv=*.*:ALL state=present
+
+- name: download from maven repo
+  command: "wget {{logger_war_url}} --output-document={{tomcat_webapps}}logger-service.war"
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/logger/config"
+
+- name: copy all config.properties
+  template: src=logger-config.properties dest={{data_dir}}/logger/config/logger-config.properties
+
+- name: set data ownership
+  file: path={{data_dir}}/logger owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify: 
+    - restart tomcat
