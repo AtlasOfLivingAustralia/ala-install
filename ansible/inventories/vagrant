@@ -39,6 +39,12 @@
 [biocache-db]
 10.1.1.2
 
+[fieldguide]
+10.1.1.2
+
+[sampling-service]
+10.1.1.2
+
 [ala-demo:vars]
 local_repo_dir=~/.ala
 data_dir=/data
@@ -86,6 +92,14 @@ alerts_url = http://10.1.1.2/alerts
 alerts_base_url = http://10.1.1.2
 alerts_context_path = /alerts
 
+fieldguide_url = http://10.1.1.2/fieldguide
+fieldguide_base_url = http://10.1.1.2
+fieldguide_context_path = /fieldguide
+
+sampling_service_url = http://10.1.1.2/sampling-service
+sampling_service_base_url = http://10.1.1.2
+sampling_service_context_path = /sampling-service
+
 [ala-demo:vars]
 local_repo_dir=~/.ala
 data_dir=/data
@@ -127,3 +141,11 @@ images_context_path = /images
 alerts_url = http://10.1.1.2/alerts
 alerts_base_url = http://10.1.1.2
 alerts_context_path = /alerts
+
+fieldguide_url = http://10.1.1.2/fieldguide
+fieldguide_base_url = http://10.1.1.2
+fieldguide_context_path = /fieldguide
+
+sampling_service_url = http://10.1.1.2/sampling-service
+sampling_service_base_url = http://10.1.1.2
+sampling_service_context_path = /sampling-service

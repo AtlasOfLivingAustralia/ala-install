@@ -12,6 +12,9 @@
   <category name="org.ala.biocache">
     <priority value="ERROR"/>
   </category>
+  <category name="au.org.ala.names">
+    <priority value="ERROR"/>
+  </category>
   <category name="org.ala.layers">
     <priority value="ERROR"/>
   </category>
@@ -49,6 +52,9 @@
      <priority value="ERROR"/>
    </category>
    <category name="org.scale7.cassandra">
+    <priority value="ERROR"/>
+  </category>
+  <category name="org.rev6.scf">
     <priority value="ERROR"/>
   </category>
   <root>

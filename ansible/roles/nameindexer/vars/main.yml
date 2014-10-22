@@ -1,0 +1,4 @@
+# assets
+ala_names_distribution_url: "{{maven_repo}}/au/org/ala/ala-name-matching/2.1/ala-name-matching-2.1-distribution.zip"
+
+ala_names_version: "2.1"

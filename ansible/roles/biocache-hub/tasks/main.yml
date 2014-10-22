@@ -4,10 +4,14 @@
     - config
 
 - name: copy biocache hub app
-  get_url: url={{biocache_hub_war_url}} force=yes dest=/var/lib/{{tomcat}}/webapps/{{biocache_hub}}.war
+  get_url: url={{biocache_hub_war_url}} dest=/var/lib/{{tomcat}}/webapps/{{biocache_hub}}.war  force=yes
   tags:
     - webapps
     - hub_war
+
+# To use a locally built war file, 
+# - name: copy a war
+#   copy: src=/MyDir/my-hub.war dest=/usr/share/{{tomcat}}/lib/my-hub.war 
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}

@@ -1,0 +1,8 @@
+- hosts: fieldguide
+  roles:
+    - java
+    - common
+    - tomcat
+    - apache
+    - sampling-service
+    - sampling-service-apache
