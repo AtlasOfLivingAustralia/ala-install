@@ -9,7 +9,7 @@
     - biocache-db
     - biocache-service
     - { role: biocache-hub, biocache_hub: ala-hub }
-    - datacheck
+    - sandbox
     - solr    
     - sandbox-apache
     - biocache-cli
