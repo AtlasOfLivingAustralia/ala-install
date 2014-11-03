@@ -109,6 +109,8 @@ biocache_db_host = localhost
 cassandra_listen_host = localhost
 collectory_db_host_address = localhost
 collectory_db_host = localhost
+collectory_db_user = collectory
+collectory_db_password = password
 
 biocache_service_url = http://10.1.1.2/biocache-service
 biocache_service_base_url = http://10.1.1.2

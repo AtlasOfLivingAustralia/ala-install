@@ -24,3 +24,8 @@
   ignore_errors: yes
   tags:
     - data_dir
+
+- name: apt-get update (Debian)
+  command: "apt-get update" 
+  ignore_errors: yes
+  when: ansible_os_family == "Debian"

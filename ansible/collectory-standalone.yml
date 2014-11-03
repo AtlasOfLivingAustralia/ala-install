@@ -1,4 +1,8 @@
 - hosts: collectory
   roles:
     - common
+    - java    
+    - mysql
+    - collectory-db
+    - tomcat    
     - collectory

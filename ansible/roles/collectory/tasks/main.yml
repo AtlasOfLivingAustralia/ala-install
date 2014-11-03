@@ -2,7 +2,7 @@
   tags:
     - collectory
 
-- name: copy collectory hub app
+- name: copy collectory
   get_url: url={{collectory_war_url}} dest=/var/lib/{{tomcat}}/webapps/collectory.war force=yes
   tags:
     - collectory
@@ -22,9 +22,8 @@
     - collectory
 
 - name: copy all data assets [SOLR, lucene etc]
-  copy: src={{item}} dest={{data_dir}}/collectory owner={{tomcat_user}}  group={{tomcat_user}}
+  copy: src={{item}} dest={{data_dir}}/collectory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
-    - data/bootstrap
     - data/config
     - data/data
   tags:

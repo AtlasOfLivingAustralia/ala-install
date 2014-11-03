@@ -24,6 +24,8 @@ biocache_hub_context_path = /generic-hub
 collectory_url = http://ala-demo.gbif.org/collectory
 collectory_base_url = http://ala-demo.gbif.org
 collectory_context_path = /collectory
+collectory_db_user = collectory
+collectory_db_password = password
 
 orgNameLong = Spain occurrence portal
 orgNameShort = Spain
