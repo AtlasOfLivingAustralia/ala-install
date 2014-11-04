@@ -1,0 +1,13 @@
+- name: ensure mysql started
+  service: name={{mysql_service}} state=started enabled=yes
+
+- name: create DB
+  mysql_db: name={{ db_name }} state=present
+  tags:
+    - mysql
+
+- name: create  DB user
+  mysql_user: name={{ db_username }} password={{ db_password }} priv={{ db_name }}.*:ALL state=present
+  tags:
+    - webapi
+    - mysql

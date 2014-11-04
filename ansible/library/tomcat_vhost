@@ -1,0 +1,295 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# This file is part of ALA ansible scripts
+#
+# TODO Licence
+
+DOCUMENTATION = '''
+---
+module: tomcat_vhost
+short_description: Add or remove a Tomcat virtual host.
+description:
+   - Add or remove a Tomcat virtual host.
+version_added: "1.6.2"
+options:
+  name:
+    description:
+      - name of the virtual host to add or remove
+    required: true
+    default: null
+  aliases:
+    description:
+      - any aliases for this virtual host
+    required: false
+    default: []
+  service:
+    description:
+      - the tomcat service to put this vhost under
+    required: false
+    default: Catalina
+  engine:
+    description:
+      - the tomcat engine to put this vhost under
+    required: false
+    default: Catalina
+  webapps:
+    description:
+      - the webapps directory for the virtual host
+    required: false
+    default: webapps-%(name)s
+  autoDeploy:
+    description:
+      - the autoDeploy setting for the vhost
+    required: false
+    default: true
+  deployOnStartup
+    description:
+      - the deployOnStartup setting for the vhost
+    required: false
+    default: true
+  unpack_wars
+    description:
+      - the unpackWars setting for the vhost
+    required: false
+    default: true
+  remoteIpValve
+    description:
+      - whether to include the remote ip valve in the virtual host
+    required: false
+    default: false
+  access_log_valve
+    description:
+      - whether to include the access log valve in the virtual host
+    required: false
+    default: true
+  state:
+    description:
+      - The database state
+    required: false
+    default: present
+    choices: [ "present", "absent" ]
+  tomcat_conf_dir:
+    description:
+      - The tomcat conf directory
+    required: false
+    default: /etc/tomcat7 on debian, /etc/tomcat6 on enterprise linux
+notes:
+   - This module uses I(python-augeas), a Python Augeas binding library. You must ensure that python-agueas is installed
+     on the host before using this module.
+   - This module uses I(python-libxml2), a Python binding for the libxml2 library.  You must ensure that python-libxml2
+     is installed on the host before using this module.
+requirements: [ python-augeas, python-libxml2 ]
+author: Simon Bear
+'''
+
+EXAMPLES = '''
+# Create a new virtual host with
+- tomcat_vhost: name=app.exmaple.com
+
+# Create a new database with name "acme" and specific encoding and locale
+# settings. If a template different from "template0" is specified, encoding
+# and locale settings must match those of the template.
+- tomcat_vhost: name=app.exmaple.com
+                deployOnStartup=false
+                autoDeploy=false
+                remoteIpValve=true
+'''
+
+try:
+    import augeas
+except ImportError:
+    augeas_found = False
+else:
+    augeas_found = True
+
+
+class NotSupportedError(Exception):
+    pass
+
+
+# ===========================================
+# Tomcat Vhost module specific support methods.
+#
+
+def load_augeas_for_file(root="/etc/tomcat7", lens="Xml.lns", filename="server.xml", check_mode=False):
+    aug = augeas.Augeas(root, None, augeas.Augeas.NO_LOAD | augeas.Augeas.NO_MODL_AUTOLOAD | (
+        augeas.Augeas.SAVE_NOOP if check_mode else augeas.Augeas.SAVE_BACKUP))
+    aug.add_transform(lens, filename)
+    aug.load()
+    return aug
+
+
+def tomcat_dir_for_distrib(distribution):
+    if distribution.lower() in ["redhat", "centos"]:
+        return '/etc/tomcat6'
+    else:
+        return '/etc/tomcat7'
+
+
+def xml_lint(filename):
+    try:
+        import libxml2
+        libxml2.thrDefIndentTreeOutput(1)
+        libxml2.keepBlanksDefault(0)
+        x = libxml2.parseFile(filename)
+        x.saveFormatFile(filename, 1)
+    except ImportError:
+        pass
+
+
+def b2xs(string):
+    return str(string).lower()
+
+
+def create_vhost(aug, host, aliases=[], app_base=None, deploy_on_startup=True, auto_deploy=True, unpack_wars=True,
+                 remote_ip_valve=False, access_log_valve=True, service="Catalina", engine="Catalina"):
+    host_path = ("/files/server.xml/Server/Service[#attribute/name=\"%(service)s\"]/"
+                 "Engine[#attribute/name=\"%(engine)s\"]/Host[#attribute/name=\"%(host)s\"]") % locals()
+    existing = aug.match(host_path)
+    # print existing
+    if len(existing) == 0:
+        #print "none found"
+        aug.set(
+            ("/files/server.xml/Server/Service[#attribute/name=\"%(service)s\"]/"
+             "Engine[#attribute/name=\"%(engine)s\"]/Host[last()+1]/#attribute/name") % locals(),
+            host)
+        #aug.set("$host", "#empty")
+
+    host_var = aug.defvar("host", host_path)
+
+    #print aug.match("$host")
+
+    aug.set("$host/#attribute/autoDeploy", b2xs(auto_deploy))
+    aug.set("$host/#attribute/unpackWARs", b2xs(unpack_wars))
+    #aug.set("$host/#attribute/deployOnStartup", b2xs(deploy_on_startup))
+
+    if not app_base:
+        app_base = "webapps-%(host)s" % locals()
+    else:
+        name = host
+        app_base = app_base % locals()
+    aug.set("$host/#attribute/appBase", app_base)
+
+    existing_aliases = set([aug.get(it) for it in aug.match("$host/Alias/#text")])
+    new_aliases = set(aliases)
+
+    add_aliases = new_aliases - existing_aliases
+    remove_aliases = existing_aliases - new_aliases
+
+    if remove_aliases:
+        for alias in remove_aliases:
+            aug.remove("$host/Alias[#text=\"%s\"]" % alias)
+    if add_aliases:
+        for alias in add_aliases:
+            aug.set("$host/Alias[last()+1]/#text", alias)
+
+    if remote_ip_valve:
+        add_valve(aug, "host", "org.apache.catalina.valves.RemoteIpValve", {})
+    else:
+        remove_valve(aug, "host", "org.apache.catalina.valves.RemoteIpValve")
+
+    if access_log_valve:
+        add_valve(aug, "host", "org.apache.catalina.valves.AccessLogValve",
+                  {"directory": "logs", "prefix": "%(host)s_access_log." % locals(), "suffix": ".txt",
+                   "pattern": "%h %l %u %t &quot;%r&quot; %s %b"})
+    else:
+        remove_valve(aug, "host", "org.apache.catalina.valves.AccessLogValve")
+
+
+def remove_vhost(aug, host, service="Catalina", engine="Catalina"):
+    host_path = ("/files/server.xml/Server/Service[#attribute/name=\"%(service)s\"]/"
+                 "Engine[#attribute/name=\"%(engine)s\"]/Host[#attribute/name=\"%(host)s\"]") % locals()
+    existing = aug.match(host_path)
+    #print existing
+    if len(existing) > 0:
+        aug.remove(host_path)
+
+
+def add_valve(aug, host_var, class_name, attribs=None):
+    #print "$%(host_var)s/Valve[#attribute/className=\"%(class_name)s\"]/#attribute/className" % locals()
+    aug.set("$%(host_var)s/Valve[#attribute/className=\"%(class_name)s\"]/#attribute/className" % locals(), class_name)
+    aug.set("$%(host_var)s/Valve[#attribute/className=\"%(class_name)s\"]" % locals(), "#empty")
+    if attribs:
+        for key, value in attribs.items():
+            aug.set(("$%(host_var)s/Valve[#attribute/className=\"%(class_name)s\"]/#attribute/" % locals()) + key,
+                    value)
+
+
+def remove_valve(aug, host_var, class_name):
+    aug.remove("$%(host_var)s/Valve[#attribute/className=\"%(class_name)s\"]" % locals())
+
+
+# ===========================================
+# Module execution.
+#
+
+def main():
+    module = AnsibleModule(
+        argument_spec=dict(
+            name=dict(required=True),
+            aliases=dict(default=[], type="list"),
+            service=dict(default="Catalina"),
+            engine=dict(default="Catalina"),
+            webapps=dict(default="webapps-%(name)s"),
+            auto_deploy=dict(default="true", type="bool"),
+            deploy_on_startup=dict(default="true", type="bool"),
+            unpack_wars=dict(default="true", type="bool"),
+            remote_ip_valve=dict(default="false", type="bool"),
+            access_log_valve=dict(default="true", type="bool"),
+            state=dict(default="present", choices=["absent", "present"]),
+            tomcat_conf_dir=dict(default=None, required=False)
+        ),
+        supports_check_mode=True
+    )
+
+    if not augeas_found:
+        module.fail_json(msg="the python augeas module is required")
+        return
+
+    host = module.params["name"]
+    aliases = module.params["aliases"]
+    service = module.params["service"]
+    engine = module.params["engine"]
+    webapps = module.params["webapps"]
+    auto_deploy = module.params["auto_deploy"]
+    deploy_on_startup = module.params["deploy_on_startup"]
+    unpack_wars = module.params["unpack_wars"]
+    remote_ip_valve = module.params["remote_ip_valve"]
+    access_log_valve = module.params["access_log_valve"]
+    state = module.params["state"]
+
+    tomcat_conf_dir = module.params["tomcat_conf_dir"]
+
+    if not tomcat_conf_dir:
+        distribution = get_distribution()
+        tomcat_conf_dir = tomcat_dir_for_distrib(distribution)
+
+    try:
+        aug = load_augeas_for_file(root=tomcat_conf_dir, check_mode=module.check_mode)
+    except Exception, e:
+        module.fail_json(msg="unable to connect to Augeas: %s" % e)
+        return
+
+    try:
+        if state == "absent":
+            remove_vhost(aug, host, service, engine)
+        else:
+            create_vhost(aug=aug, host=host, aliases=aliases, app_base=webapps, deploy_on_startup=deploy_on_startup,
+                         auto_deploy=auto_deploy, unpack_wars=unpack_wars, remote_ip_valve=remote_ip_valve,
+                         access_log_valve=access_log_valve, service=service, engine=engine)
+
+        aug.save()
+        saved = aug.get("/augeas/events/saved")
+        errors = aug.get("/augeas//errors")
+        aug.close()
+        if saved and not module.check_mode:
+            xml_lint(tomcat_conf_dir + "/server.xml")
+        module.exit_json(changed=True if saved else False, name=host, saved=saved, errors=errors)
+    except Exception, e:
+        module.fail_json(msg="exception while performing augeas operations: %s" % e)
+
+# import module snippets
+from ansible.module_utils.basic import *
+
+main()

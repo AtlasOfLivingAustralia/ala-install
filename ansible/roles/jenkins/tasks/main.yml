@@ -1,0 +1,82 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: accept java 6 license
+  shell: echo oracle-java6-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
+  when: ansible_os_family == "Debian" 
+  tags: jenkins
+
+- name: accept java 8 license
+  shell: echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
+  when: ansible_os_family == "Debian" 
+  tags: jenkins
+
+- apt_key: url="http://pkg.jenkins-ci.org/{{ jenkins_channel }}/jenkins-ci.org.key" state=present
+  when: ansible_os_family == "Debian"
+  tags: jenkins
+
+- apt_repository: repo="deb http://pkg.jenkins-ci.org/{{ jenkins_channel }} binary/" state=present update-cache=yes
+  when: ansible_os_family == "Debian"
+  tags: jenkins
+
+- name: install packages
+  apt: name={{ item }} state=present
+  with_items:
+   - oracle-java6-installer
+   - oracle-java8-installer
+   - openjdk-7-jdk
+   - jenkins
+   - git
+  when: ansible_os_family == "Debian"
+  tags: jenkins
+
+- name: create JENKINS_HOME
+  file: name=/data/jenkins state=directory owner=jenkins group=jenkins
+  notify: restart jenkins
+  when: ansible_os_family == "Debian"
+  tags: jenkins
+
+- lineinfile: dest=/etc/default/jenkins backrefs=yes regexp=^HTTP_PORT=8080 line=HTTP_PORT=-1
+  notify: restart jenkins
+  when: ansible_os_family == "Debian"
+  tags: jenkins
+
+- lineinfile: dest=/etc/default/jenkins backrefs=yes regexp=^AJP_PORT=-1 line=AJP_PORT=9009
+  notify: restart jenkins
+  when: ansible_os_family == "Debian"
+  tags: jenkins
+
+- lineinfile: dest=/etc/default/jenkins backrefs=yes regexp=^JENKINS_HOME=/var/lib/jenkins line=JENKINS_HOME=/data/jenkins
+  notify: restart jenkins
+  when: ansible_os_family == "Debian"
+  tags: jenkins
+
+- service: name=jenkins enabled=yes state=started
+  when: ansible_os_family == "Debian"
+  tags: jenkins
+
+- apache2_module: state=present name={{ item }}
+  with_items:
+   - proxy_ajp
+   - ssl
+  notify: restart apache
+  when: ansible_os_family == "Debian"
+  tags: jenkins
+
+- name: enable the default ssl site
+  command: a2ensite default-ssl 
+  args:
+   creates: /etc/apache2/sites-enabled/default-ssl.conf
+  when: ansible_os_family == "Debian" 
+  notify: reload apache
+  tags: jenkins
+
+
+- copy: src=000-default.conf dest=/etc/apache2/sites-available/000-default.conf
+  notify: reload apache
+  when: ansible_os_family == "Debian"
+  tags: jenkins
+
+- template: src=default-ssl.conf.j2 dest=/etc/apache2/sites-available/default-ssl.conf
+  notify: reload apache
+  when: ansible_os_family == "Debian"
+  tags: jenkins

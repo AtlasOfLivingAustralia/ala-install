@@ -3,35 +3,83 @@
 # "tomcat" variable controls version (@see common/vars)
 - include: ../../common/tasks/setfacts.yml 
 
+- name: install libtcnative-1 (RedHat)
+  yum: pkg={{libtcnative}} state=present
+  tags:
+    - packages 
+  when: ansible_os_family == "RedHat" and tomcat_apr == true
+  tags:
+    - tomcat
+
 - name: install tomcat (RedHat)
   yum: name={{tomcat}} state=present
   tags:
     - packages 
   notify: 
     - restart tomcat
-  when: ansible_os_family == "RedHat"   
+  when: ansible_os_family == "RedHat"
   tags:
     - tomcat
 
+- name: install libtcnative-1 (Debian)
+  apt: pkg={{libtcnative}} state=present update_cache=yes
+  tags:
+    - packages 
+  when: ansible_os_family == "Debian" and tomcat_apr == true
+  tags:
+    - tomcat
 
 - name: install tomcat (Debian)
   apt: pkg={{tomcat}} state=present update_cache=yes
   tags:
     - packages 
-  notify: 
-    - restart tomcat
-  when: ansible_os_family == "Debian"  
+  when: ansible_os_family == "Debian"
   tags:
     - tomcat
 
+- name: setup tomcat (global)
+  tomcat_global: tomcat_conf_dir={{tomcat_conf_dir}} apr={{tomcat_apr}} tomcat_users={{tomcat_users}} shutdown_port={{tomcat_control_port}}
+  notify: 
+    - restart tomcat
+  tags:
+    - tomcat
+
+- name: setup tomcat (service)
+  tomcat_service: tomcat_conf_dir={{tomcat_conf_dir}} http={{tomcat_http}} http_port={{tomcat_http_port}} ajp={{tomcat_ajp}} ajp_port={{tomcat_ajp_port}} bind_addr={{tomcat_bind_addr}}
+  notify: 
+    - restart tomcat
+  tags:
+    - tomcat
+
+- name: setup tomcat (engine)
+  tomcat_engine: tomcat_conf_dir={{tomcat_conf_dir}} tomcat_users={{tomcat_users}}
+  notify: 
+    - restart tomcat
+  tags:
+    - tomcat
+
+- name: setup tomcat (default vhost)
+  tomcat_vhost: tomcat_conf_dir={{tomcat_conf_dir}} name=localhost webapps=webapps
+  notify: 
+    - restart tomcat
+  tags:
+    - tomcat
+
+- name: enable proxy_ajp
+  apache2_module: state=present name=proxy_ajp
+  when: ansible_os_family == "Debian" and tomcat_ajp == true # already on RedHat
+  notify: 
+    - restart apache
+  tags:
+    - tomcat
 
 # replace the commented out java_opts that ships with the CentOS install which is:
 # JAVA_OPTS="-Xminf0.1 -Xmaxf0.3"        
 - name: configure tomcat memory (RedHat)
   lineinfile: 
     dest={{tomcat_conf}}
-    regexp="-Djava.awt.headless=true -Xmx128m"
-    line='JAVA_OPTS="{{tomcat_java_opts}}"'
+    regexp="^JAVA_OPTS"
+    line='JAVA_OPTS="{{tomcat_java_opts}} -Djavax.sql.DataSource.Factory=org.apache.commons.dbcp.BasicDataSourceFactory"'
   notify: 
     - restart tomcat
   when: ansible_os_family == "RedHat"
@@ -41,7 +89,7 @@
 - name: configure tomcat memory (Debian)
   lineinfile: 
     dest={{tomcat_conf}}
-    regexp="-Xminf0.1 -Xmaxf0.3"
+    regexp="^JAVA_OPTS"
     line='JAVA_OPTS="{{tomcat_java_opts}}"'
   notify: 
     - restart tomcat

@@ -1,0 +1,34 @@
+<IfModule mod_ssl.c>
+        <VirtualHost _default_:443>
+                ServerAdmin support@ala.org.au
+                ServerName {{ inventory_hostname }}
+
+                DocumentRoot /var/www/html
+
+                ErrorLog ${APACHE_LOG_DIR}/error.log
+                CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+                SSLEngine on
+
+                #SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
+                #SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+
+                SSLCertificateFile   /etc/ssl/certs/STAR_it_csiro_au.crt
+                SSLCertificateKeyFile   /etc/ssl/private/wildcard.it.csiro.au.key
+                SSLCertificateChainFile   /etc/ssl/certs/STAR_it_csiro_au.ca-bundle
+
+                BrowserMatch "MSIE [2-6]" \
+                                nokeepalive ssl-unclean-shutdown \
+                                downgrade-1.0 force-response-1.0
+                BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+
+                ProxyRequests Off
+                ProxyPreserveHost On
+                ProxyVia full
+                AllowEncodedSlashes NoDecode
+                ProxyPass / ajp://localhost:9009/ nocanon
+
+        </VirtualHost>
+</IfModule>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet

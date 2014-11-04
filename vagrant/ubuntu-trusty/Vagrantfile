@@ -1,12 +1,12 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
- 
-  #config.vm.box = "hashicorp/precise32" 
-  config.vm.box = "precise64"
-  config.vm.box_url = "https://oss-binaries.phusionpassenger.com/vagrant/boxes/latest/ubuntu-12.04-amd64-vbox.box"
- #  config.vm.box_url = "https://github.com/2creatives/vagrant-centos/releases/download/v0.1.0/centos64-x86_64-20131030.box"
-  
+
+  config.vm.box = "ubuntu/trusty64"
+
   config.vm.hostname = "ala.vagrant.dev"
   config.vm.network :private_network, ip: "10.1.1.2"
     
@@ -18,4 +18,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # totally insecure, but this is local dev: make the vagrant default the root key
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
   config.vm.provision "shell", inline: "sudo cp -r /home/vagrant/.ssh /root/.ssh"
+
 end
