@@ -6,11 +6,11 @@
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
-    - "{{data_dir}}/ala-fieldguide/config"
-    - "{{data_dir}}/ala-fieldguide/store"
+    - "{{data_dir}}/{{fieldguide_app}}/config"
+    - "{{data_dir}}/{{fieldguide_app}}/store"
 
 - name: copy all config.properties
-  template: src=config/config.properties dest={{data_dir}}/ala-fieldguide/config/ala-fieldguide-config.properties
+  template: src=config/config.properties dest={{data_dir}}/{{fieldguide_app}}/config/{{fieldguide_app}}-config.properties
 
 - name: set data ownership
   file: path={{data_dir}}/{{fieldguide_app}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
