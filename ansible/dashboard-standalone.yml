@@ -1,0 +1,7 @@
+- hosts: dashboard-service
+  roles:
+    - common
+    - java
+    - tomcat
+    - apache
+    - dashboard
