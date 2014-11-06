@@ -1,4 +1,4 @@
-- hosts: dashboard-service
+- hosts: dashboard
   roles:
     - common
     - java

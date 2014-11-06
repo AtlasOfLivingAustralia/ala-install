@@ -45,6 +45,9 @@
 [sampling-service]
 10.1.1.2
 
+[dashboard]
+10.1.1.2
+
 [ala-demo:vars]
 local_repo_dir=~/.ala
 data_dir=/data
@@ -151,3 +154,7 @@ fieldguide_context_path = /fieldguide
 sampling_service_url = http://10.1.1.2/sampling-service
 sampling_service_base_url = http://10.1.1.2
 sampling_service_context_path = /sampling-service
+
+dashboard_url = http://10.1.1.2/dashboard
+dashboard_base_url = http://10.1.1.2
+dashboard_context_path = /dashboard
