@@ -6,3 +6,5 @@
     - collectory-db
     - tomcat    
     - collectory
+    - apache    
+    - collectory-apache
