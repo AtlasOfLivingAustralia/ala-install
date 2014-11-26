@@ -1,0 +1,19 @@
+- name: install mongo (RedHat)
+  yum: name="mongodb" state=present update_cache=yes
+  tags:
+    - packages 
+  notify: 
+    - restart tomcat
+  when: ansible_os_family == "RedHat"   
+  tags:
+    - mongodb
+
+- name: install mongo (Debian)
+  apt: pkg="mongodb" state=present update_cache=yes
+  tags:
+    - packages 
+  notify: 
+    - restart tomcat
+  when: ansible_os_family == "Debian"  
+  tags:
+    - mongodb

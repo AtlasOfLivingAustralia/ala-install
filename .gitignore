@@ -45,3 +45,5 @@ ansible/solr-cloud.yml
 ansible/roles/zookeeper/tasks/main.yml
 
 ansible/inventories/solr-amazon
+
+ansible/inventories/profiles-nectar

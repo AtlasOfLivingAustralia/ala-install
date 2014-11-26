@@ -1,0 +1,9 @@
+- hosts: profiles
+  roles:
+    - java
+    - common
+    - mongodb
+    - tomcat
+    - apache
+    # - profile-service
+    # - profile-hub
