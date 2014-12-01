@@ -1,10 +1,10 @@
 - include: ../../common/tasks/setfacts.yml
 
 - name: create logger DB
-  mysql_db: name=logger state=present
+  mysql_db: name={{logger_db_name}} state=present
 
 - name: create logger DB user
-  mysql_user: name=logger password=password priv=*.*:ALL state=present
+  mysql_user: name={{logger_db_username}} password={{logger_db_password}} priv=*.*:ALL state=present
 
 - name: download from maven repo
   command: "wget {{logger_war_url}} --output-document={{tomcat_webapps}}logger-service.war"
