@@ -73,5 +73,11 @@
   get_url: url={{ volunteers_url }} dest="{{tomcat_webapps}}ROOT.war"
   notify:
     - restart tomcat
+  register: getwar
   tags:
     - volunteer-portal
+
+- name: delete existing webapp
+  file: path="{{ tomcat_webapps }}ROOT" state=absent
+  when: getwar.changed
+
