@@ -6,6 +6,23 @@
 - name: create logger DB user
   mysql_user: name={{logger_db_username}} password={{logger_db_password}} priv=*.*:ALL state=present
 
+- name: copy transient files to tmp (schemas etc)
+  copy: src={{item}} dest=/tmp
+  with_items:
+    - db/
+      
+- name: create schema, stored procs and reference data
+  mysql_db: name={{logger_db_name}} state=import target={{item}}
+  with_items:
+    - /tmp/schema.sql
+    - /tmp/eventLogType.sql
+    - /tmp/reasonLogType.sql
+    - /tmp/sourceLogType.sql
+    - /tmp/refresh_summary_breakdown_email.sql
+    - /tmp/refresh_summary_breakdown_reason.sql
+    - /tmp/refresh_summary_totals.sql
+    - /tmp/update_breakdown_summary_information.sql
+  
 - name: download from maven repo
   command: "wget {{logger_war_url}} --output-document={{tomcat_webapps}}logger-service.war"
 
