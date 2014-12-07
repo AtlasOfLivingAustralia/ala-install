@@ -5,5 +5,5 @@
     - mongodb
     - tomcat
     - apache
-    # - profile-service
-    # - profile-hub
+    - profile-service
+    - profile-hub
