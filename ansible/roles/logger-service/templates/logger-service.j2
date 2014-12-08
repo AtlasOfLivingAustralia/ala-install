@@ -1,0 +1,35 @@
+<VirtualHost *:80>
+	ServerAdmin support@ala.org.au
+	ServerName {{ hostname }}
+
+	DocumentRoot /var/www/html
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
+
+{% if ansible_os_family == "Debian" %}
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel warn
+
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+{% endif %}
+
+
+	ProxyPreserveHost On
+	ProxyVia full
+
+	ProxyPass        /data !
+{% if tomcat_ajp == true %}
+	ProxyPass        /     ajp://127.0.0.1:{{tomcat_ajp_port}}/
+	ProxyPassReverse /     ajp://127.0.0.1:{{tomcat_ajp_port}}/
+{% else %}
+	ProxyPass        /  http://127.0.0.1:{{tomcat_http_port}}/
+	ProxyPassReverse /  http://127.0.0.1:{{tomcat_http_port}}/
+{% endif %}
+
+
+</VirtualHost>
