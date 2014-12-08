@@ -1,1 +1,2 @@
-solr_war_url: "http://search.maven.org/remotecontent?filepath=org/apache/solr/solr/4.10.0/solr-4.10.0.war"
+#solr_war_url: "http://search.maven.org/remotecontent?filepath=org/apache/solr/solr/4.10.0/solr-4.10.0.war"
+solr_war_url: "http://central.maven.org/maven2/org/apache/solr/solr/4.10.2/solr-4.10.2.war"

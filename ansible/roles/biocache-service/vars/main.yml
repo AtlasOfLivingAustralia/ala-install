@@ -6,7 +6,4 @@ cassandra: cassandra12-1.2.10-1
 #biocache_service_war_path: "{{ maven_repo }}/au/org/ala/biocache-service/1.2/biocache-service-1.2.war"
 biocache_service_war_path: http://nexus.ala.org.au/service/local/artifact/maven/redirect?r=snapshots&g=au.org.ala&a=biocache-service&v=LATEST&e=war
 
-# application versions
-biocache_service: biocache-service-1.2
-
 local_repo_dir: ~/.ala

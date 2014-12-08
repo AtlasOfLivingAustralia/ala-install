@@ -1,7 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
 
-- name: copy datacheck webapps
-  get_url: url={{datacheck_war_url}} dest=/var/lib/{{tomcat}}/webapps/datacheck.war force=yes
+- name: copy sandbox webapp
+  get_url: url={{sandbox_war_url}} dest=/var/lib/{{tomcat}}/webapps/sandbox.war force=yes
 
 - name: ensure data directory exists
   file: path={{data_dir}}/sandbox/config state=directory owner={{tomcat_user}} group={{tomcat_user}}
