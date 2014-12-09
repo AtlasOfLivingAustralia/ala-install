@@ -17,3 +17,4 @@
     - demo-apache
     - biocache-cli
     - nameindexer    
+    - logger-service
