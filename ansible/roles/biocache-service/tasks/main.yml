@@ -16,12 +16,6 @@
 - name: copy all data assets
   copy: src=data/config dest={{data_dir}}/biocache owner={{tomcat_user}}  group={{tomcat_user}}
 
-- name: ensure webapp directory exists
-  file: path=/var/lib/{{tomcat}}/webapps/biocache-service/WEB-INF/classes state=directory owner={{tomcat_user}}  group={{tomcat_user}}
-
-- name: copy log4j config file
-  template: src=log4j.xml dest=/var/lib/{{tomcat}}/webapps/biocache-service/WEB-INF/classes owner={{tomcat_user}} group={{tomcat_user}}
-
 - name: ensure target directories exist [data subdirectories etc.
   file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}}
   with_items:
