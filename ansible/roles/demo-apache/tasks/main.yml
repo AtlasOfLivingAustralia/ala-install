@@ -14,7 +14,7 @@
   when: ansible_os_family == "Debian" 
 
 - name: Create symlink to sites-enabled (Debian)
-  command: "ln -sf /etc/apache2/sites-available/demo.conf /etc/apache2/sites-enabled/demo" 
+  command: "ln -sf /etc/apache2/sites-available/demo.conf /etc/apache2/sites-enabled/demo.conf" 
   ignore_errors: yes
   when: ansible_os_family == "Debian" 
 
