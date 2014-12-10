@@ -1,13 +1,28 @@
 - include: ../../common/tasks/setfacts.yml
 
 - name: create logger DB
-  mysql_db: name=logger state=present
+  mysql_db: name={{logger_db_name}} state=present
 
 - name: create logger DB user
-  mysql_user: name=logger password=password priv=*.*:ALL state=present
+  mysql_user: name={{logger_db_username}} password={{logger_db_password}} priv=*.*:ALL state=present
 
-- name: download from maven repo
-  command: "wget {{logger_war_url}} --output-document={{tomcat_webapps}}logger-service.war"
+- name: copy transient files to tmp (schemas etc)
+  copy: src={{item}} dest=/tmp
+  with_items:
+    - db/
+      
+- name: create schema, stored procs and reference data
+  mysql_db: name={{logger_db_name}} state=import target={{item}}
+  with_items:
+    - /tmp/schema.sql
+    - /tmp/eventLogType.sql
+    - /tmp/reasonLogType.sql
+    - /tmp/sourceLogType.sql
+    - /tmp/refresh_summary_breakdown_email.sql
+    - /tmp/refresh_summary_breakdown_reason.sql
+    - /tmp/refresh_summary_totals.sql
+    - /tmp/update_breakdown_summary_information.sql
+    - /tmp/definer_user.sql
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
@@ -21,3 +36,51 @@
   file: path={{data_dir}}/logger owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 
     - restart tomcat
+
+- name: download from maven repo
+  get_url: url={{ logger_war_url }} dest="{{tomcat_dir}}/webapps/logger-service.war"
+  notify:
+    - restart tomcat
+ 
+#
+# VIRTUAL HOST CONFIGURATION
+# 
+
+#- name: ensure tomcat vhost logger-service directory exists
+#  file: path="{{tomcat_dir}}/webapps-logger-service" state=directory owner={{tomcat_user}} group={{tomcat_user}}
+#  notify:
+#    - restart tomcat
+
+#- name: symlink /usr/share/tomcat6 to new logger-service directory
+#  file: dest=/usr/share/tomcat6/webapps-logger-service src="{{tomcat_dir}}/webapps-logger-service" state=link
+#  when: ansible_os_family == "RedHat"
+#  notify:
+#    - restart tomcat
+
+#- name: download from maven repo
+#  get_url: url={{ logger_war_url }} dest="{{tomcat_dir}}/webapps-logger-service/ROOT.war"
+#  notify:
+#    - restart tomcat
+
+#- name: create tomcat vhost
+#  tomcat_vhost: name=logger-service aliases={{ hostname }}
+#  notify:
+#    - restart tomcat
+
+#- name: Copy proxy config to conf.d (Redhat)
+#  template: src=logger-service.j2 dest=/etc/httpd/conf.d/logger-service-vhost.conf
+#  when: ansible_os_family == "RedHat" 
+#  notify: 
+#    - restart apache
+
+#- name: Create logger-service virtual host config file (Debian)
+#  template: src=logger-service.j2 dest=/etc/apache2/sites-available/logger-service.conf owner=root group=root
+#  when: ansible_os_family == "Debian" 
+#  notify:
+#    - reload apache
+
+#- name: Enable logger-service virtual host (Debian)
+#  command: "a2ensite logger-service.conf"
+#  when: ansible_os_family == "Debian" 
+#  notify:
+#    - reload apache

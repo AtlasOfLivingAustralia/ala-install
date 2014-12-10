@@ -8,6 +8,7 @@
     - apache
     - nameindex
     - solr
+    - logger-client
     - biocache-db
     - biocache-service
     - { role: biocache-hub, biocache_hub: generic-hub }
@@ -17,3 +18,4 @@
     - demo-apache
     - biocache-cli
     - nameindexer    
+    - logger-service

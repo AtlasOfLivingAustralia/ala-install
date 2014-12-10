@@ -23,7 +23,7 @@
     - java
 
 - name: apt-add-repository (Debian)
-  command: apt-add-repository -y ppa:webupd8team/java
+  apt_repository: repo='ppa:webupd8team/java'
   when: ansible_os_family == "Debian" 
   tags:
     - java

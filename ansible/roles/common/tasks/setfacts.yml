@@ -1,12 +1,15 @@
 - name: set debian variables
   set_fact:
+    libtcnative: libtcnative-1
     tomcat: tomcat7
     tomcat_user: tomcat7 
     tomcat_conf: /etc/default/tomcat7 
+    tomcat_conf_dir: /etc/tomcat7
     apache: apache2
     mysql_service: mysql
     cassandra_yaml: /etc/cassandra/cassandra.yaml
     cassandra_user: cassandra
+    tomcat_dir: /var/lib/tomcat7
     tomcat_webapps: /var/lib/tomcat7/webapps/
   when: ansible_os_family == "Debian"
   tags:
@@ -14,13 +17,16 @@
 
 - name: set redhat variables
   set_fact:
+    libtcnative: tomcat-native
     tomcat: tomcat6
     tomcat_user: tomcat
     tomcat_conf: /etc/tomcat6/tomcat6.conf 
+    tomcat_conf_dir: /etc/tomcat6
     apache: httpd
     mysql_service: mysqld
     cassandra_yaml: /etc/cassandra/conf/cassandra.yaml
     cassandra_user: cassandra
+    tomcat_dir: /var/lib/tomcat6
     tomcat_webapps: /var/lib/tomcat6/webapps/
   when: ansible_os_family == "RedHat"
   tags:

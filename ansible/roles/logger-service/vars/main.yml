@@ -1,2 +1,2 @@
 # assets
-logger_war_url: "{{maven_repo}}/au/org/ala/logger-service/1.0/logger-service-1.0.war"
+logger_war_url: "{{maven_repo}}/au/org/ala/logger-service/2.0/logger-service-2.0.war"

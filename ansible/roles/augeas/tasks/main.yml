@@ -1,0 +1,31 @@
+- name: install augeas (RedHat)
+  yum: pkg={{item}} state=present
+  with_items:
+    - augeas-libs
+    - augeas
+    - python-augeas
+    - libxml2-python
+  when: ansible_os_family == "RedHat"
+  tags:
+    - packages
+    - augeas
+
+- name: Add augeas backport ppa repository (precise)
+  apt_repository: repo='ppa:raphink/augeas' state=present
+  when: ansible_distribution_release == "precise" 
+  tags:
+    - packages
+    - augeas
+
+- name: install augeas (Debian)
+  apt: pkg={{item}} state=present
+  with_items:
+    - libaugeas0
+    - augeas-lenses
+    - augeas-tools
+    - python-augeas
+    - python-libxml2
+  when: ansible_os_family == "Debian"
+  tags:
+    - packages
+    - augeas
