@@ -88,9 +88,9 @@ solr_url = http://10.1.1.2/solr
 solr_base_url = http://10.1.1.2
 solr_context_path = /solr
 
-datacheck_url = http://10.1.1.2/datacheck
-datacheck_base_url = http://10.1.1.2
-datacheck_context_path = /datacheck
+sandbox_url = http://10.1.1.2/sandbox
+sandbox_base_url = http://10.1.1.2
+sandbox_context_path = /sandbox
 
 sds_url = http://10.1.1.2/sds-webapp2
 sds_base_url = http://10.1.1.2
@@ -149,9 +149,9 @@ solr_url = http://10.1.1.2/solr
 solr_base_url = http://10.1.1.2
 solr_context_path = /solr
 
-datacheck_url = http://10.1.1.2/datacheck
-datacheck_base_url = http://10.1.1.2
-datacheck_context_path = /datacheck
+sandbox_url = http://10.1.1.2/sandbox
+sandbox_base_url = http://10.1.1.2
+sandbox_context_path = /sandbox
 
 sds_url = http://10.1.1.2/sds-webapp2
 sds_base_url = http://10.1.1.2
@@ -177,10 +177,10 @@ dashboard_url = http://10.1.1.2/dashboard
 dashboard_base_url = http://10.1.1.2
 dashboard_context_path = /dashboard
 
-logger_url=http://10.1.1.2/logger-service
-logger_base_url=http://10.1.1.2
-logger_context_path=/logger-service
-logger_db_name=logger
-logger_db_username=logger_user
-logger_db_password=logger_user
-logger_db_hostname=localhost
+logger_url = http://10.1.1.2/logger-service
+logger_base_url = http://10.1.1.2
+logger_context_path = /logger-service
+logger_db_name = logger
+logger_db_username = logger_user
+logger_db_password = logger_user
+logger_db_hostname = localhost
