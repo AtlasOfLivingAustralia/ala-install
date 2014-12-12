@@ -32,18 +32,11 @@
   tags:
   - setfacts
 
-#- name: set remote repositories (GBIF + CDN)
-#  set_fact:
-#     maven_repo: http://repository.gbif.org/content/groups/public/
-#     data_file_repo: http://d1w4g4s73hkfzi.cloudfront.net/archives/20140610
-
-
-#- name: set remote repositories (Amazon CDN)
-#  set_fact:
-#    maven_repo: http://d39oypqjwmz32p.cloudfront.net/repository
-#    name_indexes_repo: http://d1w4g4s73hkfzi.cloudfront.net/archives/nameindexes/20140610/
-
 - name: set remote repositories (ALA)
   set_fact:
+    # nexus_repo: http://d3smsb0woy1jac.cloudfront.net/content/repositories/releases/
+    nexus_repo: http://nexus.ala.org.au/content/groups/public/
+    #maven_repo: http://d39oypqjwmz32p.cloudfront.net/repository
     maven_repo: http://maven.ala.org.au/repository
+    # name_indexes_repo: http://d1w4g4s73hkfzi.cloudfront.net/archives/nameindexes/20140610/
     name_indexes_repo: http://biocache.ala.org.au/archives/nameindexes/20140610/
