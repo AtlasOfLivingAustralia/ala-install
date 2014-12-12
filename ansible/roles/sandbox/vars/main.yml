@@ -2,5 +2,4 @@
 sandbox: sandbox
 
 # assets
-#datacheck_war_url: "{{maven_repo}}/au/org/ala/datacheck/datacheck.war"
-sandbox_war_url: http://nexus.ala.org.au/service/local/artifact/maven/redirect?r=releases&g=au.org.ala&a=sandbox&v=LATEST&e=war
+sandbox_war_url: http://nexus.ala.org.au/service/local/artifact/maven/redirect?r=releases&g=au.org.ala&a=sandbox&v=1.0&e=war
