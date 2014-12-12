@@ -137,7 +137,7 @@ def add_connector(aug, protocol, bind_addr, port, connectionTimeout=None):
     aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/redirectPort" % locals(), "443")
 
     if connectionTimeout:
-        aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/connectionTimeout" % locals(), "UTF-8")
+        aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/connectionTimeout" % locals(), str(connectionTimeout))
     else:
         aug.remove("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/connectionTimeout" % locals())
 
