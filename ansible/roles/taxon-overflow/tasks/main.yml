@@ -1,0 +1,34 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: create DB
+  postgresql_db: name={{taxonoverflow_db_name}} state=present
+  sudo_user: postgres
+  sudo: True
+  tags:
+    - db
+
+- name: create database user 
+  postgresql_user: db={{taxonoverflow_db_name}} name={{taxonoverflow_db_username}} password={{taxonoverflow_db_password}} priv=ALL state=present
+  sudo_user: postgres
+  sudo: True
+  tags:
+    - db
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/taxonoverflow/config"
+
+- name: copy all config.properties
+  template: src=taxonoverflow-config.properties dest={{data_dir}}/taxonoverflow/config/taxonoverflow-config.properties
+
+- name: set data ownership
+  file: path={{data_dir}}/taxonoverflow owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify: 
+    - restart tomcat
+
+- name: download from maven repo
+  get_url: url={{ taxonoverflow_war_url }} dest="{{tomcat_dir}}/webapps/taxonoverflow-service.war" force=true
+  notify:
+    - restart tomcat
+ 
