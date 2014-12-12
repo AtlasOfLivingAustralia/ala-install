@@ -38,7 +38,7 @@
     - restart tomcat
 
 - name: download from maven repo
-  get_url: url={{ logger_war_url }} dest="{{tomcat_dir}}/webapps/logger-service.war"
+  get_url: url={{ logger_war_url }} dest="{{tomcat_dir}}/webapps/logger-service.war" force=yes
   notify:
     - restart tomcat
  
