@@ -6,4 +6,4 @@ data_dir_symlink: /data
 # when we need to create a symlink to mounted storage directory
 create_data_symlink: false
 
-use_cdn: "{{use_cdn|default('false')}}"
+use_cdn_repos: "{{use_cdn|default('false')}}"
