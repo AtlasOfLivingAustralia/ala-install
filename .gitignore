@@ -30,6 +30,8 @@ vagrant/ubuntu/.vagrant/machines/default/virtualbox/id
 
 .idea/vcs.xml
 
+ansible/roles/solr-reusable
+
 ansible/roles/tiling-agent/tasks/main.yml
 
 ansible/inventories/tiling-agents
