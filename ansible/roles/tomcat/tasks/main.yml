@@ -37,33 +37,33 @@
   tags:
     - tomcat
 
-- name: setup tomcat (global)
-  tomcat_global: tomcat_conf_dir={{tomcat_conf_dir}} apr={{tomcat_apr}} tomcat_users={{tomcat_users}} shutdown_port={{tomcat_control_port}}
-  notify: 
-    - restart tomcat
-  tags:
-    - tomcat
+#- name: setup tomcat (global)
+#  tomcat_global: tomcat_conf_dir={{tomcat_conf_dir}} apr={{tomcat_apr}} tomcat_users={{tomcat_users}} shutdown_port={{tomcat_control_port}}
+#  notify: 
+#    - restart tomcat
+#  tags:
+#    - tomcat
 
-- name: setup tomcat (service)
-  tomcat_service: tomcat_conf_dir={{tomcat_conf_dir}} http={{tomcat_http}} http_port={{tomcat_http_port}} ajp={{tomcat_ajp}} ajp_port={{tomcat_ajp_port}} bind_addr={{tomcat_bind_addr}}
-  notify: 
-    - restart tomcat
-  tags:
-    - tomcat
+#- name: setup tomcat (service)
+#  tomcat_service: tomcat_conf_dir={{tomcat_conf_dir}} http={{tomcat_http}} http_port={{tomcat_http_port}} ajp={{tomcat_ajp}} ajp_port={{tomcat_ajp_port}} bind_addr={{tomcat_bind_addr}}
+#  notify: 
+#    - restart tomcat
+#  tags:
+#    - tomcat
 
-- name: setup tomcat (engine)
-  tomcat_engine: tomcat_conf_dir={{tomcat_conf_dir}} tomcat_users={{tomcat_users}}
-  notify: 
-    - restart tomcat
-  tags:
-    - tomcat
+#- name: setup tomcat (engine)
+#  tomcat_engine: tomcat_conf_dir={{tomcat_conf_dir}} tomcat_users={{tomcat_users}}
+#  notify: 
+#    - restart tomcat
+#  tags:
+#    - tomcat
 
-- name: setup tomcat (default vhost)
-  tomcat_vhost: tomcat_conf_dir={{tomcat_conf_dir}} name=localhost webapps=webapps
-  notify: 
-    - restart tomcat
-  tags:
-    - tomcat
+#- name: setup tomcat (default vhost)
+#  tomcat_vhost: tomcat_conf_dir={{tomcat_conf_dir}} name=localhost webapps=webapps
+#  notify: 
+#    - restart tomcat
+#  tags:
+#    - tomcat
 
 - name: enable proxy_ajp
   apache2_module: state=present name=proxy_ajp
