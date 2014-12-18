@@ -1,22 +1,26 @@
 - include: ../../common/tasks/setfacts.yml
 
-- name: download from maven repo
-  command: "wget {{dashboard_war_url}} --output-document={{tomcat_webapps}}dashboard.war"
-
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/dashboard/config"
 
+- name: copy data files to /data
+  copy: src={{item}} dest={{data_dir}}/dashboard/
+  with_items:
+    - data.json
+
 - name: copy all config.properties
   template: src=dashboard-config.properties dest={{data_dir}}/dashboard/config/dashboard-config.properties
-
-- name: copy data.json
-  template: src=data.json dest={{data_dir}}/dashboard/data.json
 
 - name: set data ownership
   file: path={{data_dir}}/dashboard owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 
+    - restart tomcat
+
+- name: download from maven repo
+  get_url: url={{ dashboard_war_url }} dest="{{tomcat_dir}}/webapps/dashboard.war" force=true
+  notify:
     - restart tomcat
 
 - name: Copy proxy config to conf.d (Redhat)
@@ -38,4 +42,4 @@
   when: ansible_os_family == "Debian" 
 
 - name: Start Apache2
-  service: name={{apache}} state=restarted
+  service: name={{apache}} state=restarted 
