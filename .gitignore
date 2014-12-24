@@ -1,5 +1,7 @@
 *~
 *.class
+*.DS_Store
+*.pyc
 
 # Package Files #
 *.ear
@@ -55,3 +57,5 @@ ansible/inventories/solr-amazon
 ansible/inventories/profiles-nectar
 
 ansible/inventories/profiles
+
+ansible/machine_audit
