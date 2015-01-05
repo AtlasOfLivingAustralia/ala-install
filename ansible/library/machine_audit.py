@@ -159,8 +159,36 @@ def get_custom_facts(module, data):
       elif javaminorversion == '7':
          data['machine_audit']['java_vendor'] = 'Oracle?'
 
-
     # DBs installed (MySQL, Postgres, Cassandra, MongoDB)
+    # MySQL
+    rc, out, err = module.run_command("which mysql")
+    if rc == 0:
+      # we appear to have MySQL installed
+      rc, out, err = module.run_command("mysql --version")
+      data['machine_audit']['mysql_version'] = out.split('\n')[0].split(',')[0]
+
+    # Postgres
+    rc, out, err = module.run_command("which psql")
+    if rc == 0:
+      # we appear to have Postgres installed
+      rc, out, err = module.run_command("psql --version")
+      data['machine_audit']['postgres_version'] = out.split('\n')[0].split(',')[0]
+
+    # Cassandra
+    rc, out, err = module.run_command("which cqlsh")
+    if rc == 0:
+      # we appear to have Cassandra installed
+      rc, out, err = module.run_command("cqlsh --version")
+      data['machine_audit']['cassandra_version'] = out.split('\n')[0].split(',')[0]
+
+    # MongoDB
+    rc, out, err = module.run_command("which mongod")
+    if rc == 0:
+      # we appear to have MongoDB installed
+      rc, out, err = module.run_command("mongod --version")
+      data['machine_audit']['mongodb_version'] = out.split('\n')[0].split(',')[0]
+
+    # solr: ala-bie1 (running)
 
     # Additional running processes (ActiveMQ, Jenkins)
 

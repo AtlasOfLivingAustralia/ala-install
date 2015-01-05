@@ -24,7 +24,12 @@ def prepfile():
   if not os.path.exists(outputdir):
     os.makedirs(outputdir)
   outputfilename = 'machine_audit.csv'
-  outputline = 'Hostname,Reachable,IPv4 address,IPv4 network,vCPUs,RAM total GB,RAM free GB,mount sizes,total storage,used storage,swap GB,Linux distro,distro version,Tomcat dir/s,Tomcat webapps,Tomcat version,Java version,Java vendor\n'
+  outputline = 'Hostname,Reachable,IPv4 address,IPv4 network,Data centre,vCPUs,'
+  outputline += 'RAM total GB,RAM free GB,mount sizes,total storage,used storage,'
+  outputline += 'swap GB,Linux distro,distro version,Tomcat dir/s,Tomcat webapps,'
+  outputline += 'Tomcat version,Java version,Java vendor,MySQL,Postgres,'
+  outputline += 'Cassandra,MongoDB'
+  outputline += '\n'
   with open(outputdir + "/" + outputfilename, 'w') as of:
     of.write(outputline + "\n")
 
@@ -70,8 +75,30 @@ def log(host, data):
     # IP
     outputline += "{data},".format(data=facts.get('ansible_default_ipv4', None).get('address', None))
     # network
-    outputline += "{data},".format(data=facts.get('ansible_default_ipv4', None).get('network', None))
+    thisnetwork = facts.get('ansible_default_ipv4', None).get('network', None)
+    outputline += "{data},".format(data=thisnetwork)
     # Data centre (Melbourne/Canberra)
+    datacentre = "???"
+    if thisnetwork in ('138.194.80.0', '138.194.85.0', '138.194.104.0', '150.229.66.0'):
+      datacentre = "Melbourne"
+    elif thisnetwork in ('150.229.2.0', '152.83.240.0', '152.83.3.0', '152.83.8.0'):
+      datacentre = "Canberra"
+    outputline += "{data},".format(data=datacentre)
+    # The following IP addresses are based in Melbourne:
+    # 138.194.80.0
+    # 138.194.85.0
+    # 138.194.104.0
+    # 150.229.66.0
+    #
+    # The following IP addresses are based in Canberra:
+    # 150.229.2.0
+    # 152.83.240.0
+    # 152.83.3.0
+    # 152.83.8.0
+    #
+    # Note that the network 150.229.0.0 is broad and encompasses many subnets which are based around the country.
+
+
     # CPU allocation
     outputline += "{data},".format(data=facts.get('ansible_processor_vcpus', None))
     # RAM allocation in GB
@@ -119,19 +146,39 @@ def log(host, data):
       # Tomcat version
       tomcatversion = machine_audit.get('tomcat_version', None)
       if tomcatversion is not None:
-          outputline += "{data} ".format(data=tomcatversion)
+          outputline += "{data}".format(data=tomcatversion)
       outputline += ","
       # Java version
       javaversion = machine_audit.get('java_version', None)
       if javaversion is not None:
-          outputline += "{data} ".format(data=javaversion)
+          outputline += "{data}".format(data=javaversion)
       outputline += ","
       # Java vendor (variant will be Oracle, Sun, or the dreaded IBM JDK)
       javavendor = machine_audit.get('java_vendor', None)
       if javavendor is not None:
-          outputline += "{data} ".format(data=javavendor)
+          outputline += "{data}".format(data=javavendor)
       outputline += ","
-      # DBs installed (MySQL, Postgres, Cassandra, MongoDB)
+      # MySQL
+      mysqlver = machine_audit.get('mysql_version', None)
+      if mysqlver is not None:
+          outputline += "{data}".format(data=mysqlver)
+      outputline += ","
+      # Postgres
+      postgresver = machine_audit.get('postgres_version', None)
+      if postgresver is not None:
+          outputline += "{data}".format(data=postgresver)
+      outputline += ","
+      # Cassandra
+      cassver = machine_audit.get('cassandra_version', None)
+      if cassver is not None:
+          outputline += "{data}".format(data=cassver)
+      outputline += ","
+      # MongoDB
+      mongover = machine_audit.get('mongodb_version', None)
+      if mongover is not None:
+          outputline += "{data}".format(data=mongover)
+      outputline += ","
+
       # Additional running processes (ActiveMQ, Jenkins)
       # RAM allocation for Tomcat instances
 
