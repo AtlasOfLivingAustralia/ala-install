@@ -1,0 +1,13 @@
+- include: ../../common/tasks/setfacts.yml
+- include: ../../augeas/tasks/main.yml
+- include: create_cas_db.yml
+- include: add_to_apache_conf.yml
+- include: copy_config_properties.yml
+
+- name: ensure tomcat directory exists
+  file: path=/usr/share/{{tomcat}}/conf/Catalina/localhost/ state=directory owner={{tomcat_user}} group={{tomcat_user}}
+
+- name: download from maven repo
+  command: "wget {{cas_war_url}} --output-document={{tomcat_webapps}}cas.war"
+  notify:
+    - restart tomcat
