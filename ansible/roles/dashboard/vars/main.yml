@@ -1,0 +1,4 @@
+# assets
+version: "0.2-SNAPSHOT"
+dashboard_war_url: "http://nexus.ala.org.au/service/local/artifact/maven/redirect?r=public&g=au.org.ala&a=dashboard&v={{version}}&e=war"
+dashboard_context_path: "/dashboard"

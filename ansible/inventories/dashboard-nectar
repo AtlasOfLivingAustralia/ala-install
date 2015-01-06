@@ -1,0 +1,7 @@
+[dashboard_host]
+203.101.226.9
+
+[dashboard_host:vars]
+is_vagrant=false
+local_repo_dir = ~/.ala
+data_dir=/home/ubuntu/data

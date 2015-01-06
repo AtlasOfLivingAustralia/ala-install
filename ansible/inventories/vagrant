@@ -1,4 +1,6 @@
 # A monolithic installation
+[dashboard_host]
+10.1.1.2
 
 [biocache-cli]
 10.1.1.2
