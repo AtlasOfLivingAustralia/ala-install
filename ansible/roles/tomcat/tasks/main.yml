@@ -37,6 +37,12 @@
   tags:
     - tomcat
 
+- name: install python-augeas module
+  apt: pkg=python-augeas state=present update_cache=yes
+  when: ansible_os_family == "Debian"
+  tags:
+    - tomcat
+
 - name: setup tomcat (global)
   tomcat_global: tomcat_conf_dir={{tomcat_conf_dir}} apr={{tomcat_apr}} tomcat_users={{tomcat_users}} shutdown_port={{tomcat_control_port}}
   notify: 
