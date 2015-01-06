@@ -18,7 +18,7 @@
     - augeas
 
 - name: install augeas (Debian)
-  apt: pkg={{item}} state=present
+  apt: pkg={{item}} state=latest
   with_items:
     - libaugeas0
     - augeas-lenses

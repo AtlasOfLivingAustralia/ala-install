@@ -14,7 +14,7 @@
   when: ansible_os_family == "Debian" 
 
 - name: add the symlink into sites-enabled
-  file: src=/etc/apache2/sites-available/sandbox.conf dest=/etc/apache2/sites-enabled/sandbox state=link
+  file: src=/etc/apache2/sites-available/sandbox.conf dest=/etc/apache2/sites-enabled/sandbox.conf state=link
   when: ansible_os_family == "Debian"
 
 - name: Redirect to datacheck

@@ -1,0 +1,19 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: copy sandbox webapp
+  get_url: url={{sandbox_war_url}} dest=/var/lib/{{tomcat}}/webapps/sandbox.war force=yes
+
+- name: ensure data directory exists
+  file: path={{data_dir}}/sandbox/config state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  notify: 
+    - restart tomcat
+
+- name: copy all template configs
+  template: src=config/sandbox-config.properties dest={{data_dir}}/sandbox/config/sandbox-config.properties
+  notify: 
+    - restart tomcat
+
+- name: set data ownership [all data is owned by tomcat]
+  file: path={{data_dir}}/sandbox owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify: 
+    - restart tomcat

@@ -1,2 +1,3 @@
 # remote assets
-biocache_store_url: "{{maven_repo}}/au/org/ala/biocache-store/1.2/biocache-store-1.2-distribution.zip"
+#biocache_store_url: "{{maven_repo}}/au/org/ala/biocache-store/1.2/biocache-store-1.2-distribution.zip"
+biocache_store_url: "{{nexus_repo}}/au/org/ala/biocache-store/1.3/biocache-store-1.3-distribution.zip"

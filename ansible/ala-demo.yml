@@ -8,12 +8,14 @@
     - apache
     - nameindex
     - solr
+    - logger-client
     - biocache-db
     - biocache-service
     - { role: biocache-hub, biocache_hub: generic-hub }
     - collectory-db
     - collectory
-    - datacheck
+    - sandbox
     - demo-apache
     - biocache-cli
     - nameindexer    
+    - logger-service

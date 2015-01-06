@@ -1,0 +1,8 @@
+- hosts: ecodata
+  roles:
+    - java
+    - common
+    - mongodb
+    - tomcat
+    - apache
+#    - ecodata

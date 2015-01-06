@@ -3,7 +3,7 @@
 - name: copy transient files to tmp (schemas etc)
   copy: src={{item}} dest=/tmp
   with_items:
-    - collectory-schema.sql
+    - collectory-sequences.sql
   tags:
     - createdb
 
@@ -12,10 +12,16 @@
   tags:
     - mysql
 
-- name: create or recreate collectory DB (existing data is lost) 
+- name: create collectory DB
+  mysql_db: name=collectory state=present
+
+- name: create collectory DB user
+  mysql_user: name={{collectory_db_user}} password={{collectory_db_password}} priv=collectory.*:ALL state=present
+
+- name: create collectory sequences
   shell: "{{item}}"
   with_items:
     - "mysql -u root -e 'CREATE DATABASE IF NOT EXISTS collectory'"
-    - "mysql -u root collectory < /tmp/collectory-schema.sql"
+    - "mysql -u root collectory < /tmp/collectory-sequences.sql"
   tags:
     - createdb

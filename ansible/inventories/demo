@@ -1,4 +1,4 @@
-# An inventory for the deployment of the ALA demo.
+# An inventory for the deployment of the ALA demo for the UK.
 
 [ala-demo]
 ala-ono.it.csiro.au
@@ -6,32 +6,109 @@ ala-ono.it.csiro.au
 [ala-demo:vars]
 is_vagrant=false
 local_repo_dir = ~/.ala
-data_dir=/srv/data
+data_dir=/data
+
+####################### Biocache #######################
 
 biocache_db_host = localhost
 cassandra_listen_host = localhost
-collectory_db_host_address = localhost
-collectory_db_host = localhost
-
 biocache_service_url = http://ala-demo.gbif.org/biocache-service
 biocache_service_base_url = http://ala-demo.gbif.org
 biocache_service_context_path = /biocache-service
+logging_enabled=true
+default_country=United Kingdom
+
+####################### Hub #######################
 
 biocache_hub_url = http://ala-demo.gbif.org/generic-hub
 biocache_hub_base_url = http://ala-demo.gbif.org
 biocache_hub_context_path = /generic-hub
 
+org_url=http://www.nbn.org.uk/
+
+orgNameLong= UK occurrence portal
+orgNameShort=UK
+
+explore_your_area_lat = 54.00366
+explore_your_area_lng = -2.547855
+explore_your_area_location=Edinburgh
+
+map_default_latitude = 54.00366
+map_default_longitude = -2.547855
+map_default_zoom = 5
+
+####################### Collectory #######################
+
 collectory_url = http://ala-demo.gbif.org/collectory
 collectory_base_url = http://ala-demo.gbif.org
 collectory_context_path = /collectory
+collectory_db_host_address = localhost
+collectory_db_host = localhost
+collectory_db_user = collectory
+collectory_db_password = password
 
-orgNameLong = Spain occurrence portal
-orgNameShort = Spain
+orgNameLong = UK demo
+orgNameShort = UK demo
+
+# CAS
+uri_filter_pattern = /dummy
+
+# Security bypass
+security_bypass = true
+
+# External API access
+api_key= to_be_added
+
+# Skinning
+skin = generic
+
+# Map config
+collections_map_lat = 54.00366
+collections_map_lon = -2.547855
+collections_map_zoom = 5
+
+# Project name
+orgNameShort = UK demo
+orgNameLong = UK demo
+region = United Kingdom
+
+# EML config
+eml_delivery_point = Smith Street
+eml_city = Edinburgh
+eml_admin_area = Scotland
+eml_postal_code = S21 2SS
+eml_country = United Kingdom
+
+# Disable UI components
+disable_map = true
+disable_alerts = true
+disable_logger = false
+
+# Whether to check API keys for incoming write requests
+api_key_check_enabled = true
+
+# GBIF base URL for webservices
+gbifApiUrl=http://api.gbif.org/v1
+
+# Logger URL
+logger_webservice_url = http://ala-demo.gbif.org/logger-service/service
+
+####################### SOLR #######################
 
 solr_url = http://ala-demo.gbif.org/solr
 solr_base_url = http://ala-demo.gbif.org
 solr_context_path = /solr
 
-datacheck_url = http://ala-demo.gbif.org/datacheck
-datacheck_base_url = http://ala-demo.gbif.org
-datacheck_context_path = /datacheck
+sandbox_url = http://ala-demo.gbif.org/sandbox
+sandbox_base_url = http://ala-demo.gbif.org
+sandbox_context_path = /sandbox
+
+################# Logger Service ############
+
+logger_url = http://ala-demo.gbif.org/logger-service
+logger_base_url = http://ala-demo.gbif.org
+logger_context_path = /logger-service 
+logger_db_name = logger
+logger_db_username = logger_user
+logger_db_password = logger_user
+logger_db_hostname = localhost

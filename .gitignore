@@ -1,3 +1,4 @@
+*~
 *.class
 
 # Package Files #
@@ -16,6 +17,8 @@ vagrant/ubuntu/.vagrant/machines/default/virtualbox/action_set_name
 vagrant/ubuntu/.vagrant/machines/default/virtualbox/id
 
 .idea/
+
+ansible/roles/solr-reusable
 
 ansible/roles/tiling-agent/tasks/main.yml
 
@@ -36,3 +39,7 @@ ansible/solr-cloud.yml
 ansible/roles/zookeeper/tasks/main.yml
 
 ansible/inventories/solr-amazon
+
+ansible/inventories/profiles-nectar
+
+ansible/inventories/profiles

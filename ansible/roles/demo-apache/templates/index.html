@@ -32,10 +32,10 @@
           	The occurrence store should now be setup. This application consists of 
           	3 web applications now running in Tomcat:
           	<ul>
-              <li><a href="/generic-hub">Occurrence search</a> - Reskinnable front end UI</li>              
-              <li><a href="/generic-hub/explore/your-area?default=true">Explore your area</a>  - Reskinnable front end UI</li>
-          	  <li><a href="/biocache-service">Web services</a></li>
-          	  <li><a href="/solr">Apache SOLR</a></li>
+              <li><a href="{{biocache_hub_context_path}}">Occurrence search</a> - Reskinnable front end UI</li>              
+              <li><a href="{{biocache_hub_context_path}}/explore/your-area?default=true">Explore your area</a>  - Reskinnable front end UI</li>
+          	  <li><a href="{{biocache_service_context_path}}">Web services</a></li>
+          	  <li><a href="{{solr_context_path}}">Apache SOLR</a></li>
           	</ul>	
 			There is also a command line tool now installed that can be started with the command "biocache".
 			This tool can be used for loading data and running processes across the data.
@@ -57,10 +57,10 @@
           	The collectory is now setup and installed.	This is an application for editing metadata
           	for collections, institutions and data resources.
       		<ul>
-				<li><a href="/collectory">Collections browser</a></li>
-        <li><a href="/collectory/datasets">Datasets browser</a></li>
-				<li><a href="/collectory/ws">Web services</a></li>
-				<li><a href="/collectory/admin">Admin interface</a></li>
+				<li><a href="{{collectory_context_path}}">Collections browser</a></li>
+        <li><a href="{{collectory_context_path}}/datasets">Datasets browser</a></li>
+				<li><a href="{{collectory_context_path}}/ws">Web services</a></li>
+				<li><a href="{{collectory_context_path}}/admin">Admin interface</a></li>
 			</ul>
            </p>
           <h4>Further information</h4>
@@ -78,7 +78,7 @@
             There is support for loading CSV data.
           </p>
 		  <ul>
-				<li><a href="/datacheck">Front end UI</a></li>
+				<li><a href="{{sandbox_context_path}}">Front end UI</a></li>
 			</ul>
         </div>
       </div>

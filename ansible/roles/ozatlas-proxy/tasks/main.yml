@@ -1,0 +1,26 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: create DB
+  mysql_db: name={{ozatlas_proxy_db_name}} state=present
+
+- name: create DB user
+  mysql_user: name={{ozatlas_proxy_db_username}} password={{ ozatlas_proxy_db_password}} priv=*.*:ALL state=present
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/ozatlas-proxy/config"
+
+- name: copy all config.properties
+  template: src=ozatlas-proxy-config.properties dest={{data_dir}}/ozatlas-proxy/config/ozatlas-proxy-config.properties
+
+- name: set data ownership
+  file: path={{data_dir}}/ozatlas-proxy owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify: 
+    - restart tomcat
+
+- name: download from maven repo
+  get_url: url={{ ozatlas_proxy_war_url }} dest="{{tomcat_dir}}/webapps/ozatlas-proxy.war" force=yes
+  notify:
+    - restart tomcat
+ 

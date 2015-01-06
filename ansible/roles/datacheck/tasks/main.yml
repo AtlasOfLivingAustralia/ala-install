@@ -1,19 +1,19 @@
 - include: ../../common/tasks/setfacts.yml
 
 - name: copy datacheck webapps
-  get_url: url={{datacheck_war_url}} dest=/var/lib/{{tomcat}}/webapps/datacheck.war
+  get_url: url={{datacheck_war_url}} dest=/var/lib/{{tomcat}}/webapps/datacheck.war force=yes
 
 - name: ensure data directory exists
-  file: path={{data_dir}}/datacheck/config state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{data_dir}}/sandbox/config state=directory owner={{tomcat_user}} group={{tomcat_user}}
   notify: 
     - restart tomcat
 
 - name: copy all template configs
-  template: src=config/datacheck-config.properties dest={{data_dir}}/datacheck/config/datacheck-config.properties
+  template: src=config/sandbox-config.properties dest={{data_dir}}/sandbox/config/sandbox-config.properties
   notify: 
     - restart tomcat
 
 - name: set data ownership [all data is owned by tomcat]
-  file: path={{data_dir}}/datacheck owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  file: path={{data_dir}}/sandbox owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 
     - restart tomcat

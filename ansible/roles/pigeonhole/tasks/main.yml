@@ -1,0 +1,19 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/pigeonhole/config"
+
+- name: copy all config.properties
+  template: src=pigeonhole-config.properties dest={{data_dir}}/pigeonhole/config/pigeonhole-config.properties
+
+- name: set data ownership
+  file: path={{data_dir}}/pigeonhole owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify: 
+    - restart tomcat
+
+- name: download from maven repo
+  get_url: url={{ pigeonhole_war_url }} dest="{{tomcat_dir}}/webapps/pigeonhole.war"
+  notify:
+    - restart tomcat

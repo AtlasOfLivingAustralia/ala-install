@@ -53,6 +53,12 @@
 [sampling-service]
 10.1.1.2
 
+[dashboard]
+10.1.1.2
+
+[logger-service]
+10.1.1.2
+
 [ala-demo:vars]
 local_repo_dir=~/.ala
 data_dir=/data
@@ -84,9 +90,9 @@ solr_url = http://10.1.1.2/solr
 solr_base_url = http://10.1.1.2
 solr_context_path = /solr
 
-datacheck_url = http://10.1.1.2/datacheck
-datacheck_base_url = http://10.1.1.2
-datacheck_context_path = /datacheck
+sandbox_url = http://10.1.1.2/sandbox
+sandbox_base_url = http://10.1.1.2
+sandbox_context_path = /sandbox
 
 sds_url = http://10.1.1.2/sds-webapp2
 sds_base_url = http://10.1.1.2
@@ -125,10 +131,13 @@ biocache_db_host = localhost
 cassandra_listen_host = localhost
 collectory_db_host_address = localhost
 collectory_db_host = localhost
+collectory_db_user = collectory
+collectory_db_password = password
 
 biocache_service_url = http://10.1.1.2/biocache-service
 biocache_service_base_url = http://10.1.1.2
 biocache_service_context_path = /biocache-service
+cache_logging_enabled=true
 
 biocache_hub_url = http://10.1.1.2/generic-hub
 biocache_hub_base_url = http://10.1.1.2
@@ -142,9 +151,9 @@ solr_url = http://10.1.1.2/solr
 solr_base_url = http://10.1.1.2
 solr_context_path = /solr
 
-datacheck_url = http://10.1.1.2/datacheck
-datacheck_base_url = http://10.1.1.2
-datacheck_context_path = /datacheck
+sandbox_url = http://10.1.1.2/sandbox
+sandbox_base_url = http://10.1.1.2
+sandbox_context_path = /sandbox
 
 sds_url = http://10.1.1.2/sds-webapp2
 sds_base_url = http://10.1.1.2
@@ -165,3 +174,15 @@ fieldguide_context_path = /fieldguide
 sampling_service_url = http://10.1.1.2/sampling-service
 sampling_service_base_url = http://10.1.1.2
 sampling_service_context_path = /sampling-service
+
+dashboard_url = http://10.1.1.2/dashboard
+dashboard_base_url = http://10.1.1.2
+dashboard_context_path = /dashboard
+
+logger_url = http://10.1.1.2/logger-service
+logger_base_url = http://10.1.1.2
+logger_context_path = /logger-service
+logger_db_name = logger
+logger_db_username = logger_user
+logger_db_password = logger_user
+logger_db_hostname = localhost

@@ -1,0 +1,5 @@
+# application versions
+sandbox: sandbox
+
+# assets
+sandbox_war_url: http://nexus.ala.org.au/service/local/artifact/maven/redirect?r=releases&g=au.org.ala&a=sandbox&v=1.0&e=war

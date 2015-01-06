@@ -34,6 +34,9 @@
   with_items:
     - config/biocache-config.properties
 
+- name: copy biocache logging config
+  copy: src=config/facets.json dest={{data_dir}}/biocache/config/facets.json
+
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/{{item}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   with_items:
