@@ -13,7 +13,7 @@
     - deployment
 
 - name: copy data.json
-  template: src=data.json dest={{data_dir}}/dashboard/data.json
+  copy: src=data.json dest={{data_dir}}/dashboard/data.json
   tags:
     - deployment
 
