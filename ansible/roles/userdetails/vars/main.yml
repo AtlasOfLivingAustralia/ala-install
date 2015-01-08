@@ -1,2 +1,2 @@
 # assets
-logger_war_url: "{{nexus_repo}}/au/org/ala/userdetails/0.1/userdetails-0.1.war"
+userdetails_war_url: "{{nexus_repo}}/au/org/ala/userdetails/0.1/userdetails-0.1.war"
