@@ -14,6 +14,20 @@
   apache2_module: state=present name=proxy_http
   when: ansible_os_family == "Debian"
 
+- name: Enable mod_proxy_ajp (enables mod_proxy transitively)
+  apache2_module: state=present name=proxy_ajp
+  when: ansible_os_family == "Debian"
+
+- name: Create Apache virtual host config file
+  template: src=apache-default-vhost.j2 dest=/etc/apache2/sites-available/000-default.conf owner=root group=root
+  notify:
+    - reload apache
+
+#- name: Enable Apache virtual host
+#  command: "a2ensite default-host.conf"
+#  notify:
+#    - reload apache
+
 - name: Start Apache2 (Debian)
   service: name=apache2 state=restarted
   when: ansible_os_family == "Debian"

@@ -46,41 +46,4 @@
 # VIRTUAL HOST CONFIGURATION
 # 
 
-- name: ensure tomcat vhost logger-service directory exists
-  file: path="{{tomcat_dir}}/webapps-logger-service" state=directory owner={{tomcat_user}} group={{tomcat_user}}
-  notify:
-    - restart tomcat
-
-- name: symlink /usr/share/tomcat6 to new logger-service directory
-  file: dest=/usr/share/tomcat6/webapps-logger-service src="{{tomcat_dir}}/webapps-logger-service" state=link
-  when: ansible_os_family == "RedHat"
-  notify:
-    - restart tomcat
-
-- name: download from maven repo
-  get_url: url={{ logger_war_url }} dest="{{tomcat_dir}}/webapps-logger-service/ROOT.war"
-  notify:
-    - restart tomcat
-
-- name: create tomcat vhost
-  tomcat_vhost: name=logger-service aliases={{ hostname }}
-  notify:
-    - restart tomcat
-
-- name: Copy proxy config to conf.d (Redhat)
-  template: src=logger-service.j2 dest=/etc/httpd/conf.d/logger-service-vhost.conf
-  when: ansible_os_family == "RedHat" 
-  notify: 
-    - restart apache
-
-- name: Create logger-service virtual host config file (Debian)
-  template: src=logger-service.j2 dest=/etc/apache2/sites-available/logger-service.conf owner=root group=root
-  when: ansible_os_family == "Debian" 
-  notify:
-    - reload apache
-
-- name: Enable logger-service virtual host (Debian)
-  command: "a2ensite logger-service.conf"
-  when: ansible_os_family == "Debian" 
-  notify:
-    - reload apache
+- include: ../../tomcat_deploy/tasks/main.yml app_name="logger-service" war_url='{{ logger_war_url }}' war_file="logger-service.war" hostname='{{ hostname }}' vhost="true"

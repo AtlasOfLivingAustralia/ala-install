@@ -1,0 +1,37 @@
+- fail: msg="Required variables> app_name, war_url, war_file, hostname, vhost"
+  when: app_name is not defined or war_url is not defined or war_file is not defined or hostname is not defined or vhost is not defined
+
+- name: set the tomcat deployment directory when there is a virtual host
+  set_fact: deploy_dir="{{ tomcat_dir }}/webapps-{{ app_name }}/" war_file="ROOT.war"
+  when: vhost == true or vhost == "true"
+
+- name: set the tomcat deploy directory when there is no virtual host
+  set_fact: deploy_dir="{{ tomcat_dir }}/webapps/"
+  when: not vhost or vhost == "false" or vhost == false
+
+- name: create tomcat vhost dir if required
+  file: path="{{ deploy_dir }}" state=directory owner={{ tomcat_user }} group={{ tomcat_user }}
+  when: vhost
+
+- name: download from maven repo
+  get_url: url={{ war_url }} dest="{{ deploy_dir }}/{{ war_file }}" force=yes
+  notify:
+    - restart tomcat
+ 
+- name: create tomcat vhost
+  tomcat_vhost: name={{ app_name }} aliases={{ hostname }}
+  when: vhost 
+  notify:
+    - restart tomcat
+
+- name: Create Apache virtual host config file
+  template: src=apache-vhost.j2 dest=/etc/apache2/sites-available/{{ app_name }}.conf owner=root group=root
+  when: vhost 
+  notify:
+    - reload apache
+
+- name: Enable Apache virtual host
+  command: "a2ensite {{ app_name }}.conf"
+  when: vhost
+  notify:
+    - reload apache
