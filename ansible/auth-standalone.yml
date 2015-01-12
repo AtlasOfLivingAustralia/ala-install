@@ -1,0 +1,9 @@
+- hosts: cas
+  roles:
+    - common
+    - java
+    - tomcat
+    - mysql
+    - apache
+    - cas
+    - userdetails
