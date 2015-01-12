@@ -1,0 +1,35 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: create userdetails DB
+  mysql_db: name={{userdetails_db_name}} state=present
+
+- name: create userdetails DB user
+  mysql_user: name={{userdetails_db_username}} password={{userdetails_db_password}} priv=*.*:ALL state=present
+
+- name: copy transient files to tmp (schemas etc)
+  copy: src={{item}} dest=/tmp
+  with_items:
+    - db/
+      
+- name: create schema, stored procs and reference data
+  mysql_db: name={{userdetails_db_name}} state=import target={{item}}
+  with_items:
+    - /tmp/schema.sql
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/userdetails/config"
+
+- name: copy all config.properties
+  template: src=userdetails-config.properties dest={{data_dir}}/userdetails/config/userdetails-config.properties
+
+- name: set data ownership
+  file: path={{data_dir}}/userdetails owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify: 
+    - restart tomcat
+
+- name: download from maven repo
+  get_url: url={{ userdetails_war_url }} dest="{{tomcat_dir}}/webapps/userdetails.war" force=yes
+  notify:
+    - restart tomcat
