@@ -40,7 +40,6 @@
 
 - name: using CDN links to remote repositories 
   set_fact:
-    groupIdPath: "{{groupId | default('au/org/ala')}}"
-    maven_repo_ws_url: "http://d1y8dzn5ojje9s.cloudfront.net/content/groups/public/{{groupIdPath | replace('.', '/')}}/{{artifactId}}/{{version}}/{{artifactId}}-{{version}}.{{packaging | default('war')}}"
+    maven_repo_ws_url: "http://d3smsb0woy1jac.cloudfront.net/content/repositories/releases/{{groupIdPath | replace('.', '/')}}/{{artifactId}}/{{version}}/{{artifactId}}-{{version}}.{{packaging | default('war')}}"
     name_indexes_repo: http://d1w4g4s73hkfzi.cloudfront.net/archives/nameindexes/20140610/
   when: use_cdn_repos == "true"
