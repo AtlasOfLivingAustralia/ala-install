@@ -71,6 +71,11 @@ def prepfile():
 
 
 def logfail(host, data, failstring):
+  if type(data) == dict:
+    invocation = data.pop('invocation', None)
+    if invocation.get('module_name', None) != 'machine_audit':
+      return
+
   if data is None or isinstance(data, basestring):
     outputfilename = 'machine_audit.csv'
   else:
@@ -235,7 +240,7 @@ class CallbackModule(object):
     pass
   def runner_on_ok(self, host, res):
     log(host, res)
-  def runner_on_skipped(self, host, item=None):
+  def runner_on_skipped(self, host, res=None):
     logfail(host, res, 'Host skipped')
   def runner_on_unreachable(self, host, res):
     logfail(host, res, 'Unreachable')
