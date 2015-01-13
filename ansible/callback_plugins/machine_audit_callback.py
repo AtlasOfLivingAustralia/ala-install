@@ -240,8 +240,8 @@ class CallbackModule(object):
     pass
   def runner_on_ok(self, host, res):
     log(host, res)
-  def runner_on_skipped(self, host, res=None):
-    logfail(host, res, 'Host skipped')
+  def runner_on_skipped(self, host, item=None):
+    logfail(host, item, 'Host skipped')
   def runner_on_unreachable(self, host, res):
     logfail(host, res, 'Unreachable')
   def runner_on_no_hosts(self):
