@@ -19,8 +19,4 @@
   notify: 
     - restart tomcat
 
-- name: download from maven repo
-  get_url: url={{ specieslist_war_url }} dest="{{tomcat_dir}}/webapps/specieslist-webapp.war" force=yes
-  notify:
-    - restart tomcat
- 
+- include: ../../tomcat_deploy/tasks/main.yml app_name="specieslist-webapp" war_url='{{ specieslist_war_url }}' war_file="specieslist-webapp.war" context_path='{{ specieslist_context_path }}'

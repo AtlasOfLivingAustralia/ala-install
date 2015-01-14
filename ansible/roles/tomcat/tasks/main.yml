@@ -34,44 +34,18 @@
   tags:
     - packages 
   when: ansible_os_family == "Debian"
+  register: tomcat_installed
   tags:
     - tomcat
 
-#- name: setup tomcat (global)
-#  tomcat_global: tomcat_conf_dir={{tomcat_conf_dir}} apr={{tomcat_apr}} tomcat_users={{tomcat_users}} shutdown_port={{tomcat_control_port}}
-#  notify: 
-#    - restart tomcat
-#  tags:
-#    - tomcat
-
-#- name: setup tomcat (service)
-#  tomcat_service: tomcat_conf_dir={{tomcat_conf_dir}} http={{tomcat_http}} http_port={{tomcat_http_port}} ajp={{tomcat_ajp}} ajp_port={{tomcat_ajp_port}} bind_addr={{tomcat_bind_addr}}
-#  notify: 
-#    - restart tomcat
-#  tags:
-#    - tomcat
-
-#- name: setup tomcat (engine)
-#  tomcat_engine: tomcat_conf_dir={{tomcat_conf_dir}} tomcat_users={{tomcat_users}}
-#  notify: 
-#    - restart tomcat
-#  tags:
-#    - tomcat
-
-#- name: setup tomcat (default vhost)
-#  tomcat_vhost: tomcat_conf_dir={{tomcat_conf_dir}} name=localhost webapps=webapps
-#  notify: 
-#    - restart tomcat
-#  tags:
-#    - tomcat
-
-- name: enable proxy_ajp
-  apache2_module: state=present name=proxy_ajp
-  when: ansible_os_family == "Debian" and tomcat_ajp == true # already on RedHat
-  notify: 
-    - restart apache
+- name: copy template server.xml file (Debian)
+  template: src="server.xml.j2" dest="{{ tomcat_dir }}/conf/server.xml"
+  when: ansible_os_family == "Debian" and tomcat_installed.changed  # only do this after a fresh tomcat install
   tags:
+    - packages
     - tomcat
+  notify:
+    - restart tomcat 
 
 # replace the commented out java_opts that ships with the CentOS install which is:
 # JAVA_OPTS="-Xminf0.1 -Xmaxf0.3"        

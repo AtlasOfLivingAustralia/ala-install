@@ -37,4 +37,4 @@
   notify: 
     - restart tomcat
 
-- include: ../../tomcat_deploy/tasks/main.yml app_name="logger-service" war_url='{{ logger_war_url }}' war_file="logger-service.war" hostname='{{ hostname }}' vhost="true"
+- include: ../../tomcat_deploy/tasks/main.yml app_name="logger-service" war_url='{{ logger_war_url }}' war_file="logger-service.war" context_path='{{ logger_context_path }}'
