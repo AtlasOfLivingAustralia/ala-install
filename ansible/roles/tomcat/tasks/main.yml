@@ -38,14 +38,12 @@
   tags:
     - tomcat
 
-- name: copy template server.xml file (Debian)
-  template: src="server.xml.j2" dest="{{ tomcat_dir }}/conf/server.xml"
-  when: ansible_os_family == "Debian" and tomcat_installed.changed  # only do this after a fresh tomcat install
-  tags:
-    - packages
+- name: enable the AJP 1.3 connector
+  tomcat_connector: name="AJP/1.3"
+  tags: 
     - tomcat
   notify:
-    - restart tomcat 
+    - restart tomcat
 
 # replace the commented out java_opts that ships with the CentOS install which is:
 # JAVA_OPTS="-Xminf0.1 -Xmaxf0.3"        
