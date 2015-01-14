@@ -1,37 +1,59 @@
-- fail: msg="Required variables> app_name, war_url, war_file, hostname, vhost"
-  when: app_name is not defined or war_url is not defined or war_file is not defined or hostname is not defined or vhost is not defined
+- set_fact: vhost={{context_path == "" or context_path == "/"}}
+  # note: a context path of / causes problems with CAS authentication, so don't use it with apps that require auth
 
-- name: set the tomcat deployment directory when there is a virtual host
-  set_fact: deploy_dir="{{ tomcat_dir }}/webapps-{{ app_name }}/" war_file="ROOT.war"
-  when: vhost == true or vhost == "true"
+- set_fact: war_filename="ROOT" tomcat_deploy_dir="{{ tomcat_dir }}/webapps-{{ hostname }}"
+  when: vhost=="true" or vhost==true
 
-- name: set the tomcat deploy directory when there is no virtual host
-  set_fact: deploy_dir="{{ tomcat_dir }}/webapps/"
-  when: not vhost or vhost == "false" or vhost == false
+- set_fact: war_filename="{{ app_name }}" tomcat_deploy_dir="{{ tomcat_dir }}/webapps"
+  when: vhost=="false" or vhost==false or vhost is not defined
 
-- name: create tomcat vhost dir if required
-  file: path="{{ deploy_dir }}" state=directory owner={{ tomcat_user }} group={{ tomcat_user }}
-  when: vhost
+- name: ensure apache vhost exists
+  apache_vhost: name={{ hostname }}
+  ignore_errors: yes
+  notify:
+    - reload apache
+
+- name: ensure proxy pass exists for apache (without default context)
+  apache_proxypass: name={{ hostname }} src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - { src: "/{{ app_name }}", dest: "ajp://localhost:8009/{{ app_name }}" }
+  when: vhost!="true" and vhost!=true
+  notify:
+    - reload apache
+
+- name: ensure proxy pass exists for apache (with default context)
+  apache_proxypass: name={{ hostname }} src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - { src: "/", dest: "ajp://localhost:8009/" }
+  when: vhost=="true" or vhost==true
+  notify:
+    - reload apache
+
+- name: Enable vhost for Apache
+  command: a2ensite {{ hostname }}
+  args:
+    creates: /etc/apache2/sites-enabled/{{hostname}}
+
+- name: create tomcat vhost
+  tomcat_vhost: name={{ hostname }} #remote_ip_valve="true"
+  when: vhost=="true" or vhost==true
+  notify:
+    - restart tomcat
+  tags:
+    - valve
+
+- name: ensure tomcat vhost webapps directory exists if necessary
+  file: path="{{ tomcat_deploy_dir }}" state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  when: vhost=="true" or vhost==true
+  notify:
+    - restart tomcat
 
 - name: download from maven repo
-  get_url: url={{ war_url }} dest="{{ deploy_dir }}/{{ war_file }}" force=yes
+  get_url: url={{ war_url }} dest="{{ tomcat_deploy_dir }}/{{ war_filename }}.war"
   notify:
     - restart tomcat
- 
-- name: create tomcat vhost
-  tomcat_vhost: name={{ app_name }} aliases={{ hostname }}
-  when: vhost 
-  notify:
-    - restart tomcat
+  register: getwar
 
-- name: Create Apache virtual host config file
-  template: src=apache-vhost.j2 dest=/etc/apache2/sites-available/{{ app_name }}.conf owner=root group=root
-  when: vhost 
-  notify:
-    - reload apache
-
-- name: Enable Apache virtual host
-  command: "a2ensite {{ app_name }}.conf"
-  when: vhost
-  notify:
-    - reload apache
+- name: deploy existing webapp (to ensure a clean redeployment)
+  file: path="{{ tomcat_deploy_dir }}/{{ war_filename }}" state=absent
+  when: getwar.changed
