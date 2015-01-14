@@ -1,5 +1,5 @@
 # assets
-version: "0.2-SNAPSHOT"
+version: "0.2"
 artifactId: "dashboard"
 dashboard_war_url: "{{maven_repo_ws_url}}"
 dashboard_context_path: "/dashboard"
