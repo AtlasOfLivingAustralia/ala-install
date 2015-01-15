@@ -34,7 +34,7 @@
 
 - name: set remote repositories (ALA)
   set_fact:
-    maven_repo_ws_url: "http://nexus.ala.org.au/service/local/artifact/maven/redirect?r=public&g={{groupId | default('au.org.ala')}}&a={{artifactId}}&v={{version}}&e={{packaging | default('war')}}"
+    maven_repo_ws_url: "http://nexus.ala.org.au/service/local/artifact/maven/redirect?r=public&g={{groupId | default('au.org.ala')}}&a={{artifactId}}&v={{version}}&e={{packaging | default('war')}}&c={{classifier | default('')}}"
     name_indexes_repo: http://biocache.ala.org.au/archives/nameindexes/20140610/
   when: use_cdn_repos == "false"
 
