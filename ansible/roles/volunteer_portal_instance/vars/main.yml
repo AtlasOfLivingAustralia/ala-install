@@ -3,7 +3,9 @@ volunteer_context_path: /
 
 local_repo_dir: ~/.ala
 data_dir: /srv/data
-volunteers_url: "{{maven_repo}}/au/org/ala/volunteer-portal/volunteer-portal.war"
+version: "1.0"
+artifactId: "volunteer-portal"
+volunteers_url: "{{maven_repo_ws_url}}"
 volunteer_app: volunteer-portal
 tomcat_ajp: true
 tomcat_http: false

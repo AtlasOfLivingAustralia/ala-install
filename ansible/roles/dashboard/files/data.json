@@ -33,5 +33,8 @@
  	"volunteers": 147,
  	"activeProjects": 5,
  	"completedProjects": 6
- 	}
+  },
+  "info": {
+    "records-topic": "Info Sample\n----\nwhatever whatever\n\n- list item1\n- list item2"
+  }
 }

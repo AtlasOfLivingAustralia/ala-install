@@ -1,2 +1,6 @@
 # assets
-dashboard_war_url: "{{maven_repo}}/au/org/ala/dashboard/dashboard.war"
+version: "0.2"
+artifactId: "dashboard"
+dashboard_war_url: "{{maven_repo_ws_url}}"
+dashboard_context_path: "/dashboard"
+

@@ -7,3 +7,4 @@ data_dir_symlink: /data
 create_data_symlink: false
 
 use_cdn_repos: "{{use_cdn|default('false')}}"
+groupIdPath: "{{groupId | default('au/org/ala')}}"

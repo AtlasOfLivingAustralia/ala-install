@@ -1,3 +1,4 @@
 # assets
-logger_war_url: "{{nexus_repo}}/au/org/ala/logger-service/2.0.2/logger-service-2.0.2.war"
-#logger_war_url: "http://nexus.ala.org.au/service/local/artifact/maven/redirect?r=snapshots&g=au.org.ala&a=logger-service&v=LATEST&e=war"
+version: "2.0.2"
+artifactId: "logger-service"
+logger_war_url: "{{maven_repo_ws_url}}"

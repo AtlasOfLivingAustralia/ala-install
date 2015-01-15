@@ -1,3 +1,5 @@
 sampling_service_app: sampling-service
-sampling_service_war_url: "{{maven_repo}}/ala/layers-service/2.0-SNAPSHOT/layers-service-2.0-SNAPSHOT.war"
 sampling_service_url: http://10.1.1.2/sampling-service
+version: "2.0-SNAPSHOT"
+artifactId: "layers-service"
+sampling_service_war_url: "{{maven_repo_ws_url}}"

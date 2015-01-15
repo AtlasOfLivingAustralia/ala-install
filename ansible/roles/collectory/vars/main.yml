@@ -1,5 +1,6 @@
 # application versions
 collectory: collectory
 # assets
-#collectory_war_url: "{{maven_repo}}/au/org/ala/collectory/1.1.2/collectory-1.1.2.war"
-collectory_war_url: "{{nexus_repo}}/au/org/ala/collectory/1.1.3/collectory-1.1.3.war"
+version: "1.1.3"
+artifactId: "collectory"
+collectory_war_url: "{{maven_repo_ws_url}}"

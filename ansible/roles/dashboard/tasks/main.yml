@@ -4,42 +4,51 @@
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/dashboard/config"
-
-- name: copy data files to /data
-  copy: src={{item}} dest={{data_dir}}/dashboard/
-  with_items:
-    - data.json
+  tags:
+    - deployment
 
 - name: copy all config.properties
   template: src=dashboard-config.properties dest={{data_dir}}/dashboard/config/dashboard-config.properties
+  tags:
+    - deployment
+
+- name: copy data.json
+  copy: src=data.json dest={{data_dir}}/dashboard/data.json
+  tags:
+    - deployment
 
 - name: set data ownership
   file: path={{data_dir}}/dashboard owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify: 
-    - restart tomcat
+  tags:
+    - deployment
 
 - name: download from maven repo
-  get_url: url={{ dashboard_war_url }} dest="{{tomcat_dir}}/webapps/dashboard.war" force=true
+  command: "wget {{dashboard_war_url}} --max-redirect=5 --output-document={{tomcat_webapps}}dashboard.war"
   notify:
     - restart tomcat
-
-- name: Copy proxy config to conf.d (Redhat)
-  copy: src=centos-proxies.conf dest=/etc/httpd/conf.d/
-  when: ansible_os_family == "RedHat" 
+  tags:
+    - deployment
 
 - name: Copy proxy config to sites-available (Debian)
   copy: src=dashboard-apache.conf dest=/etc/apache2/sites-available/ owner=root group=root
-  when: ansible_os_family == "Debian" 
+  when: ansible_os_family == "Debian"
+  tags:
+    - proxy
+
+- name: Remove the default apache site enabled (Debian)
+  command: "find /etc/apache2/sites-enabled/ -type l -delete"
+  ignore_errors: yes
+  when: ansible_os_family == "Debian"
+  tags:
+    - proxy
 
 - name: Create symlink to sites-enabled (Debian)
-  command: "find /etc/apache2/sites-enabled/ -type l -delete" 
-  ignore_errors: yes
-  when: ansible_os_family == "Debian" 
+  command: "ln -s /etc/apache2/sites-available/dashboard-apache.conf /etc/apache2/sites-enabled/dashboard.conf"
+  when: ansible_os_family == "Debian"
+  tags:
+    - proxy
 
-- name: Create symlink to sites-enabled (Debian)
-  command: "ln -sf /etc/apache2/sites-available/dashboard-apache.conf /etc/apache2/sites-enabled/dashboard" 
-  ignore_errors: yes
-  when: ansible_os_family == "Debian" 
-
-- name: Start Apache2
-  service: name={{apache}} state=restarted 
+- name: Start Apache2 (Debian)
+  service: name=apache2 state=restarted
+  tags:
+    - proxy

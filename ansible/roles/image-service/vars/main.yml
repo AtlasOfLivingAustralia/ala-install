@@ -1,2 +1,4 @@
 images_app: ala-images
-images_url: "{{maven_repo}}/au/org/ala/ala-images/ala-images.war"
+version: "0.1"
+artifactId: "ala-images"
+images_url: "{{maven_repo_ws_url}}"

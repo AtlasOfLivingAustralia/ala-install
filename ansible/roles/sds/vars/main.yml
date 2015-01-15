@@ -1,0 +1,6 @@
+# application versions  
+sds_config: "{{sds}}-config.properties"
+# assets
+version: "0.1"
+artifactId: "sds-webapp2"
+sds_webapp_url: "{{maven_repo_ws_url}}"

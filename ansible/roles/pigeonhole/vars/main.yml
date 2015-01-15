@@ -1,2 +1,4 @@
 # assets
-pigeonhole_war_url: "{{maven_repo}}/au/org/ala/pigeonhole/1.0/pigeonhole-1.0.war"
+version: "0.1"
+artifactId: "pigeonhole"
+pigeonhole_war_url: "{{maven_repo_ws_url}}"

@@ -1,4 +1,6 @@
 # assets
-ala_names_distribution_url: "{{maven_repo}}/au/org/ala/ala-name-matching/2.1/ala-name-matching-2.1-distribution.zip"
-
+version: "2.1"
+artifactId: "ala-name-matching"
+packaging: "zip"
+ala_names_distribution_url: "{{maven_repo_ws_url}}&c=distribution"
 ala_names_version: "2.1"
