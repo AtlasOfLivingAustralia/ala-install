@@ -19,8 +19,4 @@
   notify: 
     - restart tomcat
 
-- name: download from maven repo
-  get_url: url={{ ozatlas_proxy_war_url }} dest="{{tomcat_dir}}/webapps/ozatlas-proxy.war" force=yes
-  notify:
-    - restart tomcat
- 
+- include: ../../tomcat_deploy/tasks/main.yml app_name="ozatlas-proxy" war_url='{{ ozatlas_proxy_war_url }}' war_file="ozatlas-proxy.war" context_path="{{ozatlas_proxy_context_path}}"
