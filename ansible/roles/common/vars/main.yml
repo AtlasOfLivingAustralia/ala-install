@@ -1,10 +1,12 @@
 # common variables across all roles
 
-# the application data directory  
+# the application data directory
 data_dir_symlink: /data
 
 # when we need to create a symlink to mounted storage directory
 create_data_symlink: false
+
+packaging: "war"
 
 use_cdn_repos: "{{use_cdn|default('false')}}"
 groupIdPath: "{{groupId | default('au/org/ala')}}"
