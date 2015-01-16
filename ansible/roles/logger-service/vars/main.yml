@@ -1,4 +1,6 @@
 # assets
 version: "2.0.2"
 artifactId: "logger-service"
+classifier: ''
+packaging: "war"
 logger_war_url: "{{maven_repo_ws_url}}"

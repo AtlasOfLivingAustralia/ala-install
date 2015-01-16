@@ -5,6 +5,11 @@ cassandra: cassandra12-1.2.10-1
 # war location in maven repo
 version: "1.3"
 artifactId: "biocache-service"
+
+# biocache service does not need a value for classifier
+classifier: ''
+packaging: "war"
+
 biocache_service_war_path: "{{maven_repo_ws_url}}"
 
 local_repo_dir: ~/.ala
