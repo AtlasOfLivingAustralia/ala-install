@@ -2,8 +2,8 @@
   set_fact:
     libtcnative: libtcnative-1
     tomcat: tomcat7
-    tomcat_user: tomcat7 
-    tomcat_conf: /etc/default/tomcat7 
+    tomcat_user: tomcat7
+    tomcat_conf: /etc/default/tomcat7
     tomcat_conf_dir: /etc/tomcat7
     apache: apache2
     mysql_service: mysql
@@ -20,7 +20,7 @@
     libtcnative: tomcat-native
     tomcat: tomcat6
     tomcat_user: tomcat
-    tomcat_conf: /etc/tomcat6/tomcat6.conf 
+    tomcat_conf: /etc/tomcat6/tomcat6.conf
     tomcat_conf_dir: /etc/tomcat6
     apache: httpd
     mysql_service: mysqld
@@ -38,7 +38,7 @@
     name_indexes_repo: http://biocache.ala.org.au/archives/nameindexes/20140610/
   when: use_cdn_repos == "false"
 
-- name: using CDN links to remote repositories 
+- name: using CDN links to remote repositories
   set_fact:
     maven_repo_ws_url: "http://d3smsb0woy1jac.cloudfront.net/content/repositories/releases/{{groupIdPath | replace('.', '/')}}/{{artifactId}}/{{version}}/{{artifactId}}-{{version}}.{{packaging | default('war')}}"
     name_indexes_repo: http://d1w4g4s73hkfzi.cloudfront.net/archives/nameindexes/20140610/
