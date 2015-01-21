@@ -2,16 +2,47 @@
   tags:
     - collectory
 
-- name: copy collectory
-  get_url: url={{collectory_war_url}} dest=/var/lib/{{tomcat}}/webapps/collectory.war force=yes
+#
+# Database configuration
+# 
+- name: copy transient files to tmp (schemas etc)
+  copy: src={{item}} dest=/tmp
+  with_items:
+    - collectory-sequences.sql
   tags:
-    - collectory
-    - collectory_war
+    - db
+
+- name: ensure mysql is running (this is idempotent so safe)
+  service: name={{mysql_service}} state=started
+  tags:
+    - db
+
+- name: create collectory DB
+  mysql_db: name=collectory state=present
+  register: dbschema
+  tags:
+    - db
+
+- name: create collectory DB user
+  mysql_user: name={{collectory_db_user}} password={{collectory_db_password}} priv=collectory.*:ALL state=present
+  tags:
+    - db
+
+- name: create collectory sequences
+  mysql_db: name=collectory state=import target={{item}}
+  with_items:
+    - /tmp/collectory-sequences.sql
+  when: dbschema.changed
+  tags:
+    - db
+#
+# Properties files configuration
+#
 
 - name: ensure data directory exists
   file: path={{data_dir}}/collectory owner={{tomcat_user}} group={{tomcat_user}}  state=directory
   tags:
-    - collectory
+    - properties
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory
@@ -19,7 +50,7 @@
     - "{{data_dir}}/collectory/upload/tmp"
     - "{{data_dir}}/collectory/taxa/data"
   tags:
-    - collectory
+    - properties
 
 - name: copy all data assets [SOLR, lucene etc]
   copy: src={{item}} dest={{data_dir}}/collectory owner={{tomcat_user}} group={{tomcat_user}}
@@ -27,14 +58,14 @@
     - data/config
     - data/data
   tags:
-    - collectory
+    - properties
 
 - name: copy all template configs
   template: src={{item}} dest={{data_dir}}/collectory/{{item}}
   with_items:
     - config/collectory-config.properties 
   tags:
-    - collectory
+    - properties
 
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/{{item}} owner={{tomcat_user}}  group={{tomcat_user}}  recurse=true
@@ -43,4 +74,17 @@
   notify: 
     - restart tomcat  
   tags:
-    - collectory
+    - properties
+
+#
+# WAR file deployment and virtual host configuration
+#
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ collectory_context_path }}' hostname='{{ collectory_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ collectory_war_url }}' context_path='{{ collectory_context_path }}' hostname='{{ collectory_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
