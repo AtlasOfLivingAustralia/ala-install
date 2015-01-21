@@ -82,20 +82,48 @@ def ensure_vhost_exists(aug, vhost, filename):
         # Create vhost in filename listening on all IPs, port 80
         aug.set("/files/%(filename)s.conf/VirtualHost/arg" % locals(), "*:80")
         # Set ServerName directive
+
         aug.set("/files/%(filename)s.conf/VirtualHost/directive[1]" % locals(), "ServerName")
         aug.set("/files/%(filename)s.conf/VirtualHost/directive[1]/arg" % locals(), vhost)
+
         # Set ServerAdmin directive
         aug.set("/files/%(filename)s.conf/VirtualHost/directive[2]" % locals(), "ServerAdmin")
         aug.set("/files/%(filename)s.conf/VirtualHost/directive[2]/arg" % locals(), DEFAULT_SERVER_ADMIN_EMAIL)
+
         #Set DocumentRoot directive
         aug.set("/files/%(filename)s.conf/VirtualHost/directive[3]" % locals(), "DocumentRoot")
         aug.set("/files/%(filename)s.conf/VirtualHost/directive[3]/arg" % locals(), DEFAULT_DOCUMENT_ROOT % locals())
+
+        #Set directory permissions
+        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[1]/arg" % locals(), "/")
+        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[1]/directive[1]" % locals(), "Require")
+        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[1]/directive[1]/arg[1]" % locals(), "all")
+        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[1]/directive[1]/arg[2]" % locals(), "granted")
+
+        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[2]/arg" % locals(), DEFAULT_DOCUMENT_ROOT % locals())
+        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[2]/directive[1]" % locals(), "Options")
+        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[2]/directive[1]/arg[1]" % locals(), "Indexes")
+        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[2]/directive[1]/arg[2]" % locals(), "FollowSymLinks")
+        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[2]/directive[1]/arg[3]" % locals(), "MultiViews")
+
+        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[2]/directive[2]" % locals(), "AllowOverride")
+        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[2]/directive[2]/arg[1]" % locals(), "None")
+
+        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[2]/directive[3]" % locals(), "Order")
+        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[2]/directive[3]/arg[1]" % locals(), "allow,deny")
+
+        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[2]/directive[4]" % locals(), "Allow")
+        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[2]/directive[4]/arg[1]" % locals(), "from")
+        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[2]/directive[4]/arg[2]" % locals(), "all")
+
         #Set ErrorLog
         aug.set("/files/%(filename)s.conf/VirtualHost/directive[4]" % locals(), "ErrorLog")
         aug.set("/files/%(filename)s.conf/VirtualHost/directive[4]/arg" % locals(), "${APACHE_LOG_DIR}/error.log")
+
         #Set LogLevel
         aug.set("/files/%(filename)s.conf/VirtualHost/directive[5]" % locals(), "LogLevel")
         aug.set("/files/%(filename)s.conf/VirtualHost/directive[5]/arg" % locals(), "warn")
+
         #Set Access log
         aug.set("/files/%(filename)s.conf/VirtualHost/directive[6]" % locals(), "CustomLog")
         aug.set("/files/%(filename)s.conf/VirtualHost/directive[6]/arg[1]" % locals(), "${APACHE_LOG_DIR}/access.log")
