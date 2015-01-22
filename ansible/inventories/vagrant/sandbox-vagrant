@@ -1,0 +1,43 @@
+[sandbox]
+vagrant1
+
+[sandbox:vars]
+is_vagrant=true
+local_repo_dir = ~/.ala
+data_dir=/srv/data
+
+biocache_db_host = localhost
+cassandra_listen_host = localhost
+collectory_db_host_address = localhost
+collectory_db_host = localhost
+
+biocache_service_hostname = sandbox.vagrant1.ala.org.au
+biocache_service_url = http://sandbox.vagrant1.ala.org.au/biocache-service
+biocache_service_base_url = http://sandbox.vagrant1.ala.org.au
+biocache_service_context_path = /biocache-service
+
+biocache_hub_hostname = sandbox.vagrant1.ala.org.au
+biocache_hub_url = http://sandbox.vagrant1.ala.org.au/ala-hub
+biocache_hub_base_url = http://sandbox.vagrant1.ala.org.au
+biocache_hub_context_path = /ala-hub 
+
+collectory_url = http://collections.vagrant1.ala.org.au
+collectory_base_url = http://collections.vagrant1.ala.org.au
+collectory_context_path =
+
+solr_hostname = sandbox.vagrant1.ala.org.au
+solr_url = http://sandbox.vagrant1.ala.org.au/solr
+solr_base_url = http://sandbox.vagrant1.ala.org.au
+solr_context_path = /solr
+
+sandbox_hostname = sandbox.vagrant1.ala.org.au
+sandbox_url = http://sandbox.vagrant1.ala.org.au/datacheck
+sandbox_base_url = http://sandbox.vagrant1.ala.org.au
+sandbox_context_path = /datacheck
+
+biocache_sds_url = http://sds.vagrant1.ala.org.au
+bie_service_url = http://bie.vagrant1.ala.org.au/ws
+bie_url = http://bie.vagrant1.ala.org.au
+layers_service_url = http://spatial.vagrant1.ala.org.au/ws
+lists_service_url = http://lists.vagrant1.ala.org.au
+logger_url = http://logger.vagrant1.ala.org.au

@@ -1,0 +1,59 @@
+[biocache]
+vagrant1
+
+[biocache:vars]
+local_repo_dir = ~/.ala
+data_dir=/srv/data
+is_vagrant=true
+
+#
+# Services deployed as part of this script
+#
+
+biocache_db_host = localhost
+cassandra_listen_host = localhost
+
+biocache_service_hostname = vagrant1.ala.org.au
+biocache_service_url = http://vagrant1.ala.org.au/biocache-service
+biocache_service_base_url = http://vagrant1.ala.org.au
+biocache_service_context_path = /biocache-service
+
+biocache_hub_hostname = biocache.vagrant1.ala.org.au
+biocache_hub_url = http://biocache.vagrant1.ala.org.au
+biocache_hub_base_url = http://biocache.vagrant1.ala.org.au
+biocache_hub_context_path = 
+
+solr_hostname = localhost:8080
+solr_url = http://localhost:8080/solr
+solr_base_url = http://localhost:8080
+solr_context_path = /solr
+
+collectory_hostname = collections.vagrant1.ala.org.au
+collectory_url = http://collections.vagrant1.ala.org.au
+collectory_base_url = http://collections.vagrant1.ala.org.au
+collectory_context_path = 
+
+#
+# Other services not deployed as part of this script
+#
+
+biocache_sds_url = http://sds.vagrant1.ala.org.au
+bie_service_url = http://bie.vagrant1.ala.org.au/ws
+bie_url = http://bie.vagrant1.ala.org.au
+layers_service_url = http://spatial.vagrant1.ala.org.au/ws
+lists_service_url = http://lists.vagrant1.ala.org.au
+logger_url = http://logger.vagrant1.ala.org.au
+
+#
+# Configuration properties
+#
+
+caches_layers_enabled = false
+caches_log_enabled = false
+caches_auth_enabled = false
+caches_collections_enabled = false
+name_index_dir = /data/lucene/col_namematching
+sample_files = none
+default_country = 
+layers_service_sampling = true
+bie_service_enabled = false

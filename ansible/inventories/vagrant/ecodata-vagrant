@@ -1,0 +1,15 @@
+[ecodata]
+vagrant1
+
+[ecodata:vars]
+is_vagrant=true
+local_repo_dir=~/.ala
+data_dir=/data
+tomcat_webapps=/var/lib/tomcat7/webapps
+
+ecodata_hostname=ecodata.vagrant1.ala.org.au
+
+ecodata_url=http://ecodata.vagrant1.ala.org.au
+ecodata_base_url=http://ecodata.vagrant1.ala.org.au
+ecodata_context_path=
+
