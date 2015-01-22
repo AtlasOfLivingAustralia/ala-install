@@ -1,0 +1,6 @@
+# assets
+version: "0.1"
+artifactId: "profile-hub"
+classifier: ''
+packaging: "war"
+profile_hub_war_url: "{{maven_repo_ws_url}}"

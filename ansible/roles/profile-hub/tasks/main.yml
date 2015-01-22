@@ -1,19 +1,41 @@
 - include: ../../common/tasks/setfacts.yml
-
-- name: download from profile-hub
-  command: "wget http://nexus.ala.org.au/service/local/artifact/maven/redirect?r=releases&g=au.org.ala&a=profile-hub&v=LATEST&e=war --output-document={{tomcat_webapps}}profile-hub.war"
   tags:
-    - webapps
+    - profile-hub
 
-# - name: ensure target directories exist [data subdirectories etc.]
-#   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
-#   with_items:
-#     - "{{data_dir}}/alerts/config"
+#
+# Properties file configuration
+#
+- name: ensure data directory exists
+  file: path={{data_dir}}/profile-hub/config state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  tags:
+    - profile-hub
+    - properties
 
-# - name: copy all config.properties
-#   template: src=alerts-config.properties dest={{data_dir}}/alerts/config/alerts-config.properties
+- name: copy all template configs
+  template: src=profile-hub-config.properties dest={{data_dir}}/profile-hub/config/profile-hub-config.properties
+  tags:
+    - profile-hub
+    - properties
 
-# - name: set data ownership
-#   file: path={{data_dir}}/alerts owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-#   notify: 
-#     - restart tomcat
+- name: set data ownership [all data is owned by tomcat]
+  file: path={{data_dir}}/profile-hub owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  tags:
+    - profile-hub
+    - properties
+
+
+#
+# WAR file deployment and virtual host configuration
+#
+
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ profile_hub_context_path }}' hostname='{{ profile_hub_hostname }}'
+  tags:
+    - profile-hub
+    - deploy
+    - apache_vhost
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ profile_hub_war_url }}' context_path='{{ profile_hub_context_path }}' hostname='{{ profile_hub_hostname }}'
+  tags:
+    - profile-hub
+    - deploy
+    - tomcat_vhost
