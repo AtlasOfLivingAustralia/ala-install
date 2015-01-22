@@ -1,2 +1,6 @@
 # assets
-cas_war_url: "{{maven_repo}}/au/org/ala/ala-cas/1.0-SNAPSHOT/ala-cas-1.0-SNAPSHOT.war"
+version: "1.1"
+artifactId: "ala-cas"
+classifier: ''
+packaging: "war"
+cas_war_url: "{{maven_repo_ws_url}}"
