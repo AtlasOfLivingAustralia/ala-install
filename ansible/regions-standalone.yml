@@ -1,0 +1,7 @@
+- hosts: regions
+  roles:
+    - common
+    - java
+    - apache
+    - tomcat
+    - regions

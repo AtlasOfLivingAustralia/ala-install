@@ -1,0 +1,54 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - regions
+
+#
+# WAR file deployment and virtual host configuration
+#
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ regions_context_path }}' hostname='{{ regions_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - regions
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ regions_war_url }}' context_path='{{regions_context_path}}' hostname='{{ regions_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - regions
+
+#
+# External configuration properties file
+#
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/regions/config"
+  tags:
+    - properties
+    - regions
+
+- name: copy all config.properties
+  template: src=regions-config.properties dest={{data_dir}}/regions/config/regions-config.properties
+  tags:
+    - properties
+    - regions
+
+- name: set data ownership
+  file: path={{data_dir}}/regions owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - properties
+    - regions
+
+- name: copy configuration files
+  copy: src={{item}} dest={{data_dir}}/regions/config
+  with_items:
+    - regions-metadata.json
+    - layer-regions-metadata.json
+    - state-emblems.json
+    - stateEmblems.txt
+  tags:
+    - properties
+    - regions
