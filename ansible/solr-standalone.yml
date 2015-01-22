@@ -3,6 +3,5 @@
     - common
     - java
     - tomcat
-    - solr
     - apache
-    - solr-apache
+    - solr
