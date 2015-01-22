@@ -11,5 +11,4 @@
     - { role: biocache-hub, biocache_hub: ala-hub }
     - sandbox
     - solr    
-    - sandbox-apache
     - biocache-cli
