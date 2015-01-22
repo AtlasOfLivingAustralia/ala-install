@@ -1,5 +1,4 @@
 # assets
-#taxonoverflow_war_url: "{{maven_repo}}/au/org/ala/taxon-overflow/0.1/taxon-overflow-0.1.war"
-
-# TODO: remove this after the war has been deployed to the maven repo
-taxonoverflow_war_url: "http://nexus.ala.org.au/service/local/repositories/releases/content/au/org/ala/taxon-overflow/0.1/taxon-overflow-0.1.war"
+version: "0.1"
+artifactId: "taxon-overflow"
+taxonoverflow_war_url: "{{maven_repo_ws_url}}"
