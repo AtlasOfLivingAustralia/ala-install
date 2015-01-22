@@ -2,13 +2,25 @@
   tags:
     - webapi
 
+- name: create DB
+  mysql_db: name={{webapi_db_name}} state=present
+  tags:
+    - webapi
+    - db
+
+- name: create DB user
+  mysql_user: name={{webapi_db_username}} password={{webapi_db_password}} priv=*.*:ALL state=present
+  tags:
+    - webapi
+    - db
+
 - name: ensure target directories exist [data subdirectories etc.]
   file: path="{{ data_dir }}/webapi/config" state=directory owner={{tomcat_user}} group={{tomcat_user}}
   notify:
     - restart tomcat
   tags:
     - webapi
-    - config
+    - properties
 
 - name: copy all config.properties
   template: src=webapi-config.properties.j2 dest={{data_dir}}/webapi/config/webapi-config.properties
@@ -16,7 +28,7 @@
     - restart tomcat
   tags:
     - webapi
-    - config
+    - properties
 
 - name: set data ownership
   file: path={{data_dir}}/webapi owner={{tomcat_user}} group={{tomcat_user}} recurse=true
@@ -24,64 +36,19 @@
     - restart tomcat
   tags:
     - webapi
-    - config
+    - properties
 
-- name: ensure tomcat vhost webapps directory exists
-  file: path="{{tomcat_dir}}/webapps-webapi" state=directory owner={{tomcat_user}} group={{tomcat_user}}
-  notify:
-    - restart tomcat
+#
+# WAR file deployment and Apache/Tomcat virtual host configuration
+#
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ webapi_context_path }}' hostname='{{ webapi_hostname }}'
   tags:
     - webapi
-    - config
+    - apache_vhost
+    - deploy
 
-- name: symlink /usr/share/tomcat6 to new webapps directory
-  file: dest=/usr/share/tomcat6/webapps-webapi src="{{tomcat_dir}}/webapps-webapi" state=link
-  when: ansible_os_family == "RedHat"
-  notify:
-    - restart tomcat
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ webapi_url }}' context_path='{{ webapi_context_path }}' hostname='{{ webapi_hostname }}'
   tags:
     - webapi
-    - tomcat
-
-- name: download from maven repo
-  get_url: url={{ webapi_url }} dest="{{tomcat_dir}}/webapps-webapi/ROOT.war"
-  notify:
-    - restart tomcat
-  tags:
-    - webapi
-    - tomcat
-
-- name: create tomcat vhost
-  tomcat_vhost: name=webapi aliases={{ hostname }}
-  notify:
-    - restart tomcat
-  tags:
-    - webapi
-    - tomcat
-
-- name: Copy proxy config to conf.d (Redhat)
-  template: src=webapi.j2 dest=/etc/httpd/conf.d/webapi-vhost.conf
-  when: ansible_os_family == "RedHat" 
-  notify: 
-    - restart apache
-  tags:
-    - webapi
-    - apache
-
-- name: Create webapi virtual host config file (Debian)
-  template: src=webapi.j2 dest=/etc/apache2/sites-available/webapi.conf owner=root group=root
-  when: ansible_os_family == "Debian" 
-  notify:
-    - reload apache
-  tags:
-    - webapi
-    - apache
-
-- name: Enable webapi virtual host (Debian)
-  command: "a2ensite webapi"
-  when: ansible_os_family == "Debian" 
-  notify:
-    - reload apache
-  tags:
-    - webapi
-    - apache
+    - tomcat_vhost
+    - deploy

@@ -1,5 +1,8 @@
 - hosts: webapi_standalone
   roles:
     - common
-    - { role: mysql_instance, db_name: '{{ webapi_db_name }}',  db_username: '{{ webapi_db_username }}', db_password: '{{ webapi_db_password }}' }
-    - { role: webapi_instance, db_name: '{{ webapi_db_name }}',  db_username: '{{ webapi_db_username }}', db_password: '{{ webapi_db_password }}' }
+    - java
+    - mysql
+    - apache
+    - tomcat
+    - webapi_instance

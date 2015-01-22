@@ -1,9 +1,0 @@
-webapi_context_path: /
-data_dir: /data
-version: "0.1"
-artifactId: "webapi"
-webapi_url: "{{maven_repo_ws_url}}"
-hostname: api.ala.org.au
-webapi_app: webapi
-db_hostname: localhost
-is_vagrant: false
