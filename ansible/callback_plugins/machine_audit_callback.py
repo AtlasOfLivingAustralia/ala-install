@@ -73,10 +73,10 @@ def prepfile():
 def logfail(host, data, failstring):
   if type(data) == dict:
     invocation = data.pop('invocation', None)
-    if invocation.get('module_name', None) != 'machine_audit':
+    if invocation is not None and invocation.get('module_name', None) != 'machine_audit':
       return
 
-  if data is None or isinstance(data, basestring):
+  if data is None or isinstance(data, basestring) or data.get('ansible_facts', None) is None:
     outputfilename = 'machine_audit.csv'
   else:
     facts = data.get('ansible_facts', None)
