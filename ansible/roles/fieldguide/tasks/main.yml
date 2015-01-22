@@ -1,18 +1,46 @@
 - include: ../../common/tasks/setfacts.yml
+  tags:
+    - fieldguide
 
-- name: download from maven repo
-  command: "wget {{fieldguide_url}} --output-document={{tomcat_webapps}}fieldguide.war"
+#
+# WAR file deployment and virtual host configuration
+#
+
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ fieldguide_context_path }}' hostname='{{ fieldguide_hostname }}'
+  tags:
+    - fieldguide
+    - deploy
+    - apache_vhost
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ fieldguide_war_url }}' context_path='{{ fieldguide_context_path }}' hostname='{{ fieldguide_hostname }}'
+  tags:
+    - fieldguide
+    - deploy
+    - tomcat_vhost
+
+#
+# Properties and data file configuration
+#
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/{{fieldguide_app}}/config"
     - "{{data_dir}}/{{fieldguide_app}}/store"
+  tags:
+    - fieldguide
+    - properties
 
 - name: copy all config.properties
   template: src=config/config.properties dest={{data_dir}}/{{fieldguide_app}}/config/{{fieldguide_app}}-config.properties
+  tags:
+    - fieldguide
+    - properties
 
 - name: set data ownership
   file: path={{data_dir}}/{{fieldguide_app}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 
     - restart tomcat
+  tags:
+    - fieldguide
+    - properties
