@@ -1,5 +1,0 @@
-Reusable commands
-=================
-
-ansible-playbook -i inventories/vagrant --private-key ~/.vagrant.d/insecure_private_key -u root  ala-demo.yml
-ansible-playbook -i inventories/vagrant --private-key ~/.vagrant.d/insecure_private_key -u root  image-service.yml 
