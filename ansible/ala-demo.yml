@@ -12,10 +12,9 @@
     - biocache-db
     - biocache-service
     - { role: biocache-hub, biocache_hub: generic-hub }
-    - collectory-db
     - collectory
     - sandbox
-    - demo-apache
     - biocache-cli
     - nameindexer    
     - logger-service
+    - demo
