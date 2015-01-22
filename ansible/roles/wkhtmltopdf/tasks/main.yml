@@ -1,7 +1,13 @@
 - include: ../../common/tasks/setfacts.yml 
+  tags:
+    - wkhtmltopdf
 
 - name: download wkhtmltopdf deb
-  get_url: 'url=http://downloads.sourceforge.net/project/wkhtmltopdf/0.12.1/wkhtmltox-0.12.1_linux-precise-i386.deb dest=/tmp/wkhtmltopdf.deb'
+  get_url: url={{ wkhtmltopdf_url }} dest=/tmp/wkhtmltopdf.deb force=true
+  tags:
+    - wkhtmltopdf
 
 - name: install wkhtmltopdf deb
   apt: deb=/tmp/wkhtmltopdf.deb
+  tags:
+    - wkhtmltopdf
