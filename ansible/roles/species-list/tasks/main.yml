@@ -1,26 +1,49 @@
 - include: ../../common/tasks/setfacts.yml
+  tags:
+    - specieslist
 
 - name: create DB
   mysql_db: name={{specieslist_db_name}} state=present
+  tags:
+    - specieslist
+    - db
 
 - name: create DB user
   mysql_user: name={{specieslist_db_username}} password={{ specieslist_db_password}} priv=*.*:ALL state=present
+  tags:
+    - specieslist
+    - db
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/specieslist-webapp/config"
+  tags:
+    - specieslist
+    - properties
 
 - name: copy all config.properties
   template: src=specieslist-webapp-config.properties dest={{data_dir}}/specieslist-webapp/config/specieslist-webapp-config.properties
+  tags:
+    - specieslist
+    - properties
 
 - name: set data ownership
   file: path={{data_dir}}/specieslist-webapp owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 
     - restart tomcat
+  tags:
+    - specieslist
+    - properties
 
-- name: download from maven repo
-  get_url: url={{ specieslist_war_url }} dest="{{tomcat_dir}}/webapps/specieslist-webapp.war" force=yes
-  notify:
-    - restart tomcat
- 
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ specieslist_context_path }}' hostname='{{ specieslist_hostname }}'
+  tags:
+    - specieslist
+    - apache_vhost
+    - deploy
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ specieslist_war_url }}' context_path='{{ specieslist_context_path }}' hostname='{{ specieslist_hostname }}'
+  tags:
+    - specieslist
+    - tomcat_vhost
+    - deploy
