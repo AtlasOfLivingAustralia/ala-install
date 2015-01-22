@@ -1,29 +1,56 @@
 - include: ../../common/tasks/setfacts.yml
-# - include: ../../common/tasks/java.yml
-# - include: ../../common/tasks/tomcat.yml
-# - include: ../../common/tasks/nameindex.yml
+  tags:
+    - sds
 
-- name: copy sds hub app
-  get_url: url={{sds_webapp_url}} dest=/var/lib/{{tomcat}}/webapps/sds-webapp2.war
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ sds_context_path }}' hostname='{{ sds_hostname }}'
+  tags:
+    - sds
+    - apache_vhost
+    - deploy
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ sds_webapp_url }}' context_path='{{ sds_context_path }}' hostname='{{ sds_hostname }}'
+  tags:
+    - sds
+    - tomcat_vhost
+    - deploy
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/sds/config"
+    - "{{data_dir}}/lucene"
+  tags:
+    - sds
+    - properties
 
 - name: Copy sensitivity categories XML
   copy: src="sensitivity-categories.xml" dest="{{data_dir}}/sds/sensitivity-categories.xml"
+  tags:
+    - sds
+    - properties
 
 - name: Copy sensitivity zones XML
   copy: src="sensitivity-zones.xml" dest="{{data_dir}}/sds/sensitivity-zones.xml"
+  tags:
+    - sds
+    - properties
 
 - name: Copy legacy properties file
   copy: src="sensitivity-zones.xml" dest="{{data_dir}}/sds/sds-config.properties"
+  tags:
+    - sds
+    - properties
 
 - name: create config.properties from template
   template: src="sds-config.properties" dest={{data_dir}}/sds/config/sds-config.properties
+  tags:
+    - sds
+    - properties
 
 - name: set data ownership
   file: path={{data_dir}}/sds owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 
     - restart tomcat
+  tags:
+    - sds
+    - properties
