@@ -136,14 +136,14 @@ class AnsibleSkeleton {
                     # Database configuration items
                     #
                     - name: create database
-                      mysql_db: name={{${appNameVar}_db_name}} state=present")
+                      mysql_db: name={{${appNameVar}_db_name}} state=present
                       register: dbschema
                       tags:
                         - db
                         - ${appName}
 
-                    - name: create DB user")
-                      mysql_user: name={{${appNameVar}_db_username}} password={{ ${appNameVar}_db_password}} priv=*.*:ALLstate=present
+                    - name: create DB user
+                      mysql_user: name={{${appNameVar}_db_username}} password={{ ${appNameVar}_db_password}} priv=*.*:ALL state=present
                       register: dbuser
                       tags:
                         - db
@@ -227,7 +227,7 @@ class AnsibleSkeleton {
     static inventory(args) {
         println "  - Creating skeleton inventory file for vagrant..."
 
-        File inventoryVagrant = new File("${appName}-vagrant")
+        File inventoryVagrant = new File("inventories/vagrant/${appName}-vagrant")
         files << inventoryVagrant
 
             write(inventoryVagrant, """\
@@ -248,7 +248,7 @@ class AnsibleSkeleton {
                 """.stripIndent(), false)
 
             if (args.contains("mysql") || args.contains("postgresql")) {
-                write(file, """
+                write(inventoryVagrant, """
                         ${appNameVar}_db_name=${appNameVar}
                         ${appNameVar}_db_username=${appNameVar}
                         ${appNameVar}_db_password=${appNameVar}
