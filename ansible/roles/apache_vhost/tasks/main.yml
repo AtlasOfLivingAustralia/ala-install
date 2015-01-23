@@ -47,4 +47,4 @@
 
 - name: Enable SSL module for Apache (if required)
   apache2_module: state=present name=ssl
-  when: ssl == "true"
+  when: ssl is defined and ssl == "true"
