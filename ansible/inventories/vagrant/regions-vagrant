@@ -1,0 +1,19 @@
+[regions]
+vagrant1.ala.org.au
+
+[regions:vars]
+is_vagrant=true
+local_repo_dir=~/.ala
+data_dir=/data
+tomcat_webapps={{tomcat_dir}}/webapps
+
+regions_hostname=regions.vagrant1.ala.org.au
+
+regions_context_path=
+regions_base_url=http://regions.vagrant1.ala.org.au
+regions_url=http://regions.vagrant1.ala.org.au
+
+biocache_base_url = http://biocache.vagrant1.ala.org.au/
+spatial_base_url = http://spatial.vagrant1.ala.org.au/
+security_cas_login_url = https://auth.ala.org.au/cas/login
+biocache_records_url = http://biocache.vagrant1.ala.org.au/
