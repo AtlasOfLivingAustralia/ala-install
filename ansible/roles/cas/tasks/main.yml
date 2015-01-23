@@ -80,12 +80,37 @@
     - cas
     - properties
 
+- name: ensure ssl certificate directory exists (if required)
+  file: path={{ ssl_certificate_server_dir }} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  when: ssl_enabled
+  tags:
+    - cas
+    - properties
+    - apache_vhost
+
+- name: copy SSL files (if required)
+  copy: src={{item}} dest={{ssl_certificate_server_dir}}
+  with_items:
+    - "{{ssl_cert_file_path}}"
+    - "{{ssl_key_file_path}}"
+    - "{{ssl_chain_file_path}}"
+  when: ssl_enabled
+  tags:
+    - cas
+    - properties
+    - apache_vhost
 
 #
 # WAR file deployment and virtual host configuration
 #
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ cas_context_path }}' hostname='{{ cas_hostname }}'
+- include: ../../apache_vhost/tasks/main.yml 
+     context_path='{{ cas_context_path }}' 
+     hostname='{{ cas_hostname }}' 
+     ssl='{{ ssl_enabled }}' 
+     ssl_cert_file={{ ssl_cert_file_path }}
+     ssl_key_file={{ ssl_key_file_path }} 
+     ssl_chain_file={{ ssl_chain_file_path }}
   tags:
     - cas
     - deploy

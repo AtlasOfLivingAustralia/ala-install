@@ -80,6 +80,15 @@ will create
 ProxyPass /biocache-media   !
 ```
 
+### SSL Configuration
+
+Use the following parameters if you need to enable SSL in your Apache virtual host.
+
+1. ```ssl_enabled = true``` - this enables SSL
+1. ```ssl_certificate_server_dir = /path/to/cert/dir``` - this is the location on the server for your certificate and key files
+1. ```ssl_cert_file_path = /LOCAL/path/to/cert/file``` - this is the path to the certificate file on your LOCAL machine, used to copy the file to the server. This sets the ```SSLCertificateFile``` directive.
+1. ```ssl_key_file_path = /LOCAL/path/to/key/file``` - this is the path to the private key file on your LOCAL machine, used to copy the file to the server. This sets the ```SSLCertificateKeyFile``` directive.
+1. ```ssl_chain_file_path = /LOCAL/path/to/chain/file``` - this is the path to the certificate chain file on your LOCAL machine, used to copy the file to the server. This sets the ```SSLCertificateChainFile``` directive.
 ## Examples
 
 1. To deploy the logger-service to ```logger.ala.org.au```:
