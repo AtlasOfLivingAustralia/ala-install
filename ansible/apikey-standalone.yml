@@ -1,0 +1,8 @@
+- hosts: apikey
+  roles:
+    - common
+    - java
+    - mysql
+    - apache
+    - tomcat
+    - apikey
