@@ -27,7 +27,7 @@ class AnsibleSkeleton {
         new File("roles/${appName}/vars").mkdirs()
 
         if (args.contains("properties")) {
-            properties = new File("roles/${appName}/templates/${appNameVar}-config.properties")
+            properties = new File("roles/${appName}/templates/${appName}-config.properties")
             files << properties
         }
         tasks = new File("roles/${appName}/tasks/main.yml")
@@ -86,14 +86,15 @@ class AnsibleSkeleton {
                     serverName=http://{{ ${appNameVar}_hostname }}
                     contextPath={{ ${appNameVar}_context_path }}
                     grails.serverURL=http://{{ ${appNameVar}_hostname }}{{ ${appNameVar}_context_path }}
-                    uriFilterPattern=/admin/.*
                     casServerName=https://auth.ala.org.au
                     uriExclusionFilterPattern=/images.*,/css.*,/js.*,/less.*
                     casServerLoginUrl=https://auth.ala.org.au/cas/login
                     gateway=false
                     casServerUrlPrefix=https://auth.ala.org.au/cas
                     security.cas.logoutUrl=https://auth.ala.org.au/cas/logout
-                    authenticateOnlyIfLoggedInFilterPattern=/,/apps,/category
+                    authenticateOnlyIfLoggedInFilterPattern=???
+                    auth.admin_role=ROLE_ADMIN
+                    uriFilterPattern=/admin, /admin/.*
                     """.stripIndent())
 
         write(tasks, """

@@ -1,0 +1,43 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - bie-webapp
+
+#
+# External configuration properties file
+#
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/bie-webapp2/config"
+  tags:
+    - properties
+    - bie-webapp
+
+- name: copy all config.properties
+  template: src=bie-webapp2-config.groovy dest={{data_dir}}/bie-webapp2/config/bie-webapp2-config.groovy
+  tags:
+    - properties
+    - bie-webapp
+
+- name: set data ownership
+  file: path={{data_dir}}/bie-webapp2 owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - properties
+    - bie-webapp
+
+#
+# WAR file deployment and virtual host configuration
+#
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ bie_webapp_context_path }}' hostname='{{ bie_webapp_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - bie-webapp
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ bie_webapp_war_url }}' context_path='{{bie_webapp_context_path}}' hostname='{{ bie_webapp_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - bie-webapp
