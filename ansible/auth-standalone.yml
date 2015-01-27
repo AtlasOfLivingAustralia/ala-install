@@ -2,6 +2,7 @@
   roles:
     - common
     - java
+    - postfix
     - tomcat
     - mysql
     - apache
