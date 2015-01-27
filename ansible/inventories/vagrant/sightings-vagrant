@@ -1,0 +1,21 @@
+[sightings]
+vagrant1
+
+[sightings:vars]
+is_vagrant=true
+local_repo_dir=~/.ala
+data_dir=/data
+tomcat_webapps={{tomcat_dir}}/webapps
+
+sightings_hostname=sightings.vagrant1.ala.org.au
+
+sightings_context_path=
+sightings_base_url=http://sightings.vagrant1.ala.org.au
+sightings_url=http://sightings.vagrant1.ala.org.au
+
+ala_base_url = http://www.ala.org.au/
+bie_base_url = http://bie.vagrant1.ala.org.au/
+biocache_base_url = http://biocache.vagrant1.ala.org.au/
+userdetails_url = http://auth.vagrant1.ala.org.au/userdetails/userDetails/getUserListWithIds
+userdetails_emails_url = http://auth.vagrant1.ala.org.au/userdetails/userDetails/getUserListFull
+header_footer_base_url = http://www2.ala.org.au/commonui
