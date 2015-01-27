@@ -1,0 +1,6 @@
+# assets
+version: "0.2"
+artifactId: "expert"
+classifier: ''
+packaging: "war"
+expert_war_url: "{{maven_repo_ws_url}}"
