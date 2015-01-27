@@ -7,7 +7,6 @@
     - "../vars/{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
     - "../vars/{{ ansible_distribution }}.yml"
     - "../vars/{{ ansible_os_family }}.yml"
-#    - "../vars/defaults.yml"
   tags: postgresql
 
 - name: install software-properties-common (Debian)
@@ -25,9 +24,14 @@
   when: ansible_os_family == "Debian" 
   tags: postgresql
 
-- name: Add postgres repository
+- name: Add postgres repository - precise
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main' state=present
-  when: ansible_os_family == "Debian" 
+  when: ansible_distribution_release == "precise" 
+  tags: postgresql
+
+- name: Add postgres repository - todo need a precise/trusty switch
+  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' state=present
+  when: ansible_distribution_release == "trusty" 
   tags: postgresql
 
 - name: Add postgres repository key
@@ -35,17 +39,20 @@
   when: ansible_os_family == "Debian" 
   tags: postgresql
 
-- name: Install postgresql
-  apt: pkg=postgresql-9.3 state=present force=yes  update_cache=yes
-  when: ansible_os_family == "Debian" 
-  tags: postgresql
+- name: Install PostGIS
+  apt: pkg={{ item }} state=present update_cache=yes
+  with_items:
+    - postgresql-9.3-postgis-2.1
+    - pgadmin3
+    - postgresql-contrib
+    - gdal-bin
 
 - name: install yum repo
   yum: name=http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-centos93-9.3-1.noarch.rpm state=present
   when: ansible_os_family == "RedHat"
   tags: postgresql
-  # TODO: This assumes Centos 6.4.  Add centos 5,7 variants, rhel variants?
 
+  # TODO: This assumes Centos 6.4.  Add centos 5,7 variants, rhel variants?
 - name: install postgres (RedHat)
   yum: name={{ item }} state=present
   with_items:
@@ -74,7 +81,6 @@
   when: ansible_os_family == "RedHat"
   notify: restart postgresql
   tags: postgresql
-
 
 - name: Restart postgresql server
   service: name={{ postgresql_service }} state=started enabled=yes
