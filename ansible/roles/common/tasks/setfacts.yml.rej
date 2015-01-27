@@ -1,0 +1,16 @@
+diff a/ansible/roles/common/tasks/setfacts.yml b/ansible/roles/common/tasks/setfacts.yml	(rejected hunks)
+@@ -34,12 +34,12 @@
+ 
+ - name: set remote repositories (ALA)
+   set_fact:
+-    maven_repo_ws_url: "http://nexus.ala.org.au/service/local/artifact/maven/redirect?r=public&g={{groupId | default('au.org.ala')}}&a={{artifactId}}&v={{version}}&e={{packaging | default('war')}}&c={{classifier | default('')}}"
++    maven_repo_ws_url: "http://nexus.ala.org.au/service/local/artifact/maven/redirect?r=public&g={{groupId | default('au.org.ala')}}&a={{artifactId | default('')}}&v={{version | default('')}}&e={{packaging | default('war')}}&c={{classifier | default('')}}"
+     name_indexes_repo: http://biocache.ala.org.au/archives/nameindexes/20140610/
+   when: use_cdn_repos == "false"
+ 
+ - name: using CDN links to remote repositories
+   set_fact:
+-    maven_repo_ws_url: "http://d3smsb0woy1jac.cloudfront.net/content/repositories/releases/{{groupIdPath | replace('.', '/')}}/{{artifactId}}/{{version}}/{{artifactId}}-{{version}}.{{packaging | default('war')}}"
++    maven_repo_ws_url: "http://d3smsb0woy1jac.cloudfront.net/content/repositories/releases/{{groupIdPath | replace('.', '/')}}/{{artifactId | default('')}}/{{version}}/{{artifactId}}-{{version | default('')}}.{{packaging | default('war')}}"
+     name_indexes_repo: http://d1w4g4s73hkfzi.cloudfront.net/archives/nameindexes/20140610/
+   when: use_cdn_repos == "true"

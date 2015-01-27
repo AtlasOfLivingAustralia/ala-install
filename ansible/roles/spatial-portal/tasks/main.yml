@@ -1,0 +1,23 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: download from maven repo
+  command: "wget {{spatial_portal_war_url}} --output-document={{tomcat_webapps}}webportal.war"
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/webportal/config"
+
+- name: copy all config.properties
+  template: src=webportal-config.properties dest={{data_dir}}/webportal/config/webportal-config.properties
+
+- name: copy all log4j.properties
+  template: src=log4j.properties dest={{data_dir}}/webportal/config/log4j.properties
+
+- name: set data ownership
+  file: path={{data_dir}}/webportal owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify: 
+    - restart tomcat
+
+
+#   /data/ala/runtime/output/

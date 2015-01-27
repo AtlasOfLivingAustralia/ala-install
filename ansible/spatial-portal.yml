@@ -1,0 +1,6 @@
+- hosts: spatial-portal
+  roles:
+    - java
+    - common
+    - tomcat
+    - spatial-portal

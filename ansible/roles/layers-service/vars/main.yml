@@ -1,0 +1,5 @@
+layers_service_app: layers-service
+layers_service_url: http://10.1.1.2/layers-service
+version: "2.0-SNAPSHOT"
+artifactId: "layers-service"
+layers_service_war_url: "{{maven_repo_ws_url}}"
