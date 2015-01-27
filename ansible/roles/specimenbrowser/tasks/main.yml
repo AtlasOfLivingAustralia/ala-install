@@ -1,0 +1,43 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - specimenbrowser
+
+#
+# External configuration properties file
+#
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/specimenbrowser/config"
+  tags:
+    - properties
+    - specimenbrowser
+
+- name: copy all config.properties
+  template: src=specimenbrowser-config.properties dest={{data_dir}}/specimenbrowser/config/specimenbrowser-config.properties
+  tags:
+    - properties
+    - specimenbrowser
+
+- name: set data ownership
+  file: path={{data_dir}}/specimenbrowser owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - properties
+    - specimenbrowser
+
+#
+# WAR file deployment and virtual host configuration
+#
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ specimenbrowser_context_path }}' hostname='{{ specimenbrowser_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - specimenbrowser
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ specimenbrowser_war_url }}' context_path='{{specimenbrowser_context_path}}' hostname='{{ specimenbrowser_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - specimenbrowser

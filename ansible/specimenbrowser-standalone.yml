@@ -1,0 +1,7 @@
+- hosts: specimenbrowser
+  roles:
+    - common
+    - java
+    - apache
+    - tomcat
+    - specimenbrowser

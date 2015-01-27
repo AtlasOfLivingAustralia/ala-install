@@ -1,0 +1,6 @@
+# assets
+version: "0.1"
+artifactId: "specimenbrowser"
+classifier: ''
+packaging: "war"
+specimenbrowser_war_url: "{{maven_repo_ws_url}}"
