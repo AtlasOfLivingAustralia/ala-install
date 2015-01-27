@@ -10,4 +10,7 @@ webapi_db_name=webapi
 webapi_db_username=webapi
 webapi_db_password=webapi
 webapi_db_hostname=localhost
-webapi_context_path=
+webapi_context_path=/
+
+mail_host=some.mail.host
+mail_disabled=true

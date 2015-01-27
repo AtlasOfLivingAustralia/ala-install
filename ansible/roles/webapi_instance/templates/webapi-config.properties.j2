@@ -12,7 +12,11 @@ gateway=false
 casServerUrlPrefix=https://auth.ala.org.au/cas
 security.cas.logoutUrl=https://auth.ala.org.au/cas/logout
 authenticateOnlyIfLoggedInFilterPattern=/,/apps,/category
+
 dataSource.driverClassName=com.mysql.jdbc.Driver
 dataSource.url=jdbc:mysql://{{ webapi_db_hostname }}/{{ webapi_db_name }}?autoReconnect=true&connectTimeout=0
 dataSource.username={{ webapi_db_username }}
 dataSource.password={{ webapi_db_password }}
+
+grails.mail.host={{ mail_host }}
+grails.mail.disabled={{ mail_disabled|default(true) }}
