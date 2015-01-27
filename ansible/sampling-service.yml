@@ -1,4 +1,4 @@
-- hosts: fieldguide
+- hosts: sampling-service
   roles:
     - java
     - common
