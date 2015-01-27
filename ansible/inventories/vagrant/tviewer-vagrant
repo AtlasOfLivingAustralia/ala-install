@@ -1,0 +1,22 @@
+[tviewer]
+vagrant1
+
+[tviewer:vars]
+is_vagrant=true
+local_repo_dir=~/.ala
+data_dir=/data
+tomcat_webapps={{tomcat_dir}}/webapps
+
+tviewer_hostname=vagrant1.ala.org.au
+
+tviewer_context_path=/tviewer
+tviewer_base_url=http://vagrant1.ala.org.au
+tviewer_url=http://vagrant1.ala.org.au/tviewer
+
+bie_base_url = http://bie.ala.org.au
+biocache_base_url = http://biocache.ala.org.au
+biocache_services_url = http://biocache.ala.org.au/ws
+spatial_base_url = http://spatial.ala.org.au
+ala_base_url = http://ala.org.au
+ala_image_info_url = http://images.ala.org.au/ws/getImageInfo/
+header_footer_base_url = http://www2.ala.org.au/commonui
