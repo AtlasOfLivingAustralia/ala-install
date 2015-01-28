@@ -15,15 +15,22 @@
     - createdb
 
 # Not working currently.....
-- name: setup the DB
+- name: setup the DB - WARNING!!! this isnt idempotent yet
   command: "psql -d {{ layers_db_name | default('layersdb') }} -a -f /tmp/layersdb.sql"
   sudo_user: postgres
   sudo: True  
   tags:
     - createdb
 
-- name: setup stored procedures
+- name: setup stored procedures - WARNING!!! this isnt idempotent yet
   command: "psql -d {{ layers_db_name | default('layersdb') }} -a -f /tmp/stored_procs.sql"
+  sudo_user: postgres
+  sudo: True  
+  tags:
+    - createdb
+
+- name: setup the DB user password
+  command: "psql -d {{ layers_db_name | default('layersdb') }} -c \"ALTER USER {{ layers_db_username }} WITH PASSWORD '{{ layers_db_password }}' \""
   sudo_user: postgres
   sudo: True  
   tags:
@@ -31,6 +38,16 @@
 
 - name: download from maven repo
   command: "wget {{layers_service_war_url}} --output-document={{tomcat_webapps}}layers-service.war"
+
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ layers_service_context_path }}' hostname='{{ layers_service_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ layers_service_war_url }}' context_path='{{ layers_service_context_path }}' hostname='{{ layers_service_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
@@ -74,6 +91,3 @@
   file: path={{data_dir}}/ala owner={{tomcat_user}} group={{tomcat_user}} recurse=true
 
 - debug: msg="To finish installation copy the layer files used by the primary layers-service into {{ data_dir }}/ala/data/layers/ready for the subdirectories diva, shape and shape_diva"
-
-
-
