@@ -49,43 +49,15 @@ $ ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.
 
 ## Other playbooks  
 
+### Vagrant
 
-### Standalone Biocache Hub on Nectar
-
-There is a template inventory in ```inventories/ala-hub-nectar```. To use this playbook for your VM, create a copy of ```inventories/sandbox```
-and change the references to point to the IP/DNS of your VM. Then point to this inventory with the ```-i``` parameter when running the playbook.
+The ```inventories/vagrant/``` directory contains sample inventories for most playbooks that will work against a Ubuntu Vagrant virtual machine. To use these inventories, add an entry for ```vagrant1``` and ```vagrant1.ala.org.au``` to your hosts file, or edit the inventory file and replace the hostnames and URLs, then run
 
 ```
-$ ansible-playbook -i inventories/ala-hub-nectar biocache-hub.yml --private-key <PATH_TO_YOUR_PEM_FILE> -u root 
+ansible-playbook --sudo --ask-sudo-pass -i inventories/vagrant/<inventoryFile> <playbook>.yml --private-key ~/.vagrant.d/insecure_private_key -u vagrant```
 ```
 
-### Sandbox on Nectar
-
-```inventories/sandbox``` contains an inventory for the sandbox. To use this playbook for your VM, create a copy of ```inventories/sandbox```
-and change the references to point to the IP/DNS of your VM. Then point to this inventory with the ```-i``` parameter when running the playbook.
-
-```
-$ ansible-playbook -i inventories/sandbox sandbox.yml --private-key <PATH_TO_YOUR_PEM_FILE> -u root 
-```
-
-### Image service on Nectar
-
-```inventories/images``` contains an inventory for the image-service. To use this playbook for your VM, create a copy of ```inventories/images```
-and change the references to point to the IP/DNS of your VM. Then point to this inventory with the ```-i``` parameter when running the playbook.
-
-```
-$ ansible-playbook -i inventories/images image-service.yml --private-key <PATH_TO_YOUR_PEM_FILE> -u root 
-```
-
-### Volunteer Portal on CSIRO IM&T
-
-    $ ansible-playbook -i inventories/production volunteer-portal.yml --u username --ask-pass --ask-sudo-pass -s -e "@/path/to/database-password.json"
-
-Where /path/to/database-password.json looks like:
-
-    {
-      "volunteers_db_password": "secret-password-here"
-    }
+The inventory files can easily be modified to work against other virtual machines or servers (e.g. Nectar or CSIRO) simply by modifying the server and host names appropriately.
 
 ## Notes for different environments (CSIRO/Nectar)
 
