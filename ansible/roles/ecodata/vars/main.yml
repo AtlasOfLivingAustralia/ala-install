@@ -3,4 +3,5 @@ version: "0.1"
 artifactId: "ecodata"
 classifier: ''
 packaging: "war"
+groupId: "au.org.ala"
 ecodata_war_url: "{{maven_repo_ws_url}}"

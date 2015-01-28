@@ -3,4 +3,5 @@ version: "0.2-SNAPSHOT"
 artifactId: "apikey"
 classifier: ''
 packaging: "war"
+groupId: "au.org.ala"
 apikey_war_url: "{{maven_repo_ws_url}}"

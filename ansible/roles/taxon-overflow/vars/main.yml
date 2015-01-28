@@ -1,4 +1,5 @@
 # assets
 version: "0.1"
 artifactId: "taxon-overflow"
+groupId: "au.org.ala"
 taxonoverflow_war_url: "{{maven_repo_ws_url}}"
