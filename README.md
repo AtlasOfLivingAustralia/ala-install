@@ -2,6 +2,10 @@
 This project contains [Ansible](http://www.ansible.com/) playbooks for setting up ALA components on CentOS 6.x and Ubuntu 12.x machines.
 This project includes a playbook for setting up the [ALA demo ](http://ala-demo.gbif.org).
 
+## Ansible version
+
+The playbooks and roles in this repository require Ansible 1.8 or above.
+
 ## Setup the ALA demo
 
 Below are some instructions for setting up the [ALA demo](http://ala-demo.gbif.org) with Ansible & Vagrant on your local machine.
@@ -9,7 +13,9 @@ Below are some instructions for setting up the [ALA demo](http://ala-demo.gbif.o
 #### 1. Vagrant
 [Vagrant](http://www.vagrantup.com) can be used to test ansible playbooks on your local machine. To use this, you will need to install
 [VirtualBox](https://www.virtualbox.org) and [Vagrant](http://www.vagrantup.com).
-```vagrant/centos``` and ```vagrant/ubuntu``` contain configurations that can used with [VirtualBox](https://www.virtualbox.org/) to bring up a VH for deploying against.  
+
+ ```vagrant/centos``` and ```vagrant/ubuntu``` contain configurations that can used with [VirtualBox](https://www.virtualbox.org/) to bring up a VH for deploying against.  
+
 This is included only to simplify local testing, but any server running CentOS 6.x or Ubuntu 12.x could be used.  
 
 To create a virtual machine with vagrant:
@@ -29,7 +35,9 @@ with password ```vagrant```.
 
 #### 2. Ansible
 
-An [Ansible inventory file](http://docs.ansible.com/intro_inventory.html) is included that allows for running against a Vagrant configured VH (see ```inventories/vagrant```). Other inventories can easily be crafted to match other infrastructure.  
+An [Ansible inventory file](http://docs.ansible.com/intro_inventory.html) is included that allows for running against a Vagrant configured VM (see ```inventories/vagrant/demo-vagrant```). Other inventories can easily be crafted to match other infrastructure.  
+
+Note: any application deployed as part of a playbook requires the following two variables to be defined in the inventory: ```<applicationName>_hostname``` variable and ```<applicationName>_context_path```. See the readme file in the ansible directory for more information.
 
 To run Ansible against your vagrant instance you need to locate the correct key file (e.g. the default insecure vagrant file if using the Vagrant config for testing):
 
