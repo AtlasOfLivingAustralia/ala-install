@@ -1,1 +1,4 @@
-geoserver_war_url: "http://downloads.sourceforge.net/project/geoserver/GeoServer/2.6.2/geoserver-2.6.2-war?r=http%3A%2F%2Fgeoserver.org%2Frelease%2Fstable%2F&ts=1421800833&use_mirror=aarnet"
+groupId: "org.geoserver"
+version: "2.6.2"
+artifactId: "geoserver"
+geoserver_war_url: "{{maven_repo_ws_url}}"
