@@ -2,6 +2,10 @@
 This project contains [Ansible](http://www.ansible.com/) playbooks for setting up ALA components on CentOS 6.x and Ubuntu 12.x machines.
 This project includes a playbook for setting up the [ALA demo ](http://ala-demo.gbif.org).
 
+## Ansible version
+
+The playbooks and roles in this repository require Ansible 1.8 or above.
+
 ## Setup the ALA demo
 
 Below are some instructions for setting up the [ALA demo](http://ala-demo.gbif.org) with Ansible & Vagrant on your local machine.
@@ -9,7 +13,9 @@ Below are some instructions for setting up the [ALA demo](http://ala-demo.gbif.o
 #### 1. Vagrant
 [Vagrant](http://www.vagrantup.com) can be used to test ansible playbooks on your local machine. To use this, you will need to install
 [VirtualBox](https://www.virtualbox.org) and [Vagrant](http://www.vagrantup.com).
-```vagrant/centos``` and ```vagrant/ubuntu``` contain configurations that can used with [VirtualBox](https://www.virtualbox.org/) to bring up a VH for deploying against.  
+
+ ```vagrant/centos``` and ```vagrant/ubuntu``` contain configurations that can used with [VirtualBox](https://www.virtualbox.org/) to bring up a VH for deploying against.  
+
 This is included only to simplify local testing, but any server running CentOS 6.x or Ubuntu 12.x could be used.  
 
 To create a virtual machine with vagrant:
@@ -29,7 +35,9 @@ with password ```vagrant```.
 
 #### 2. Ansible
 
-An [Ansible inventory file](http://docs.ansible.com/intro_inventory.html) is included that allows for running against a Vagrant configured VH (see ```inventories/vagrant```). Other inventories can easily be crafted to match other infrastructure.  
+An [Ansible inventory file](http://docs.ansible.com/intro_inventory.html) is included that allows for running against a Vagrant configured VM (see ```inventories/vagrant/demo-vagrant```). Other inventories can easily be crafted to match other infrastructure.  
+
+Note: any application deployed as part of a playbook requires the following two variables to be defined in the inventory: ```<applicationName>_hostname``` variable and ```<applicationName>_context_path```. See the readme file in the ansible directory for more information.
 
 To run Ansible against your vagrant instance you need to locate the correct key file (e.g. the default insecure vagrant file if using the Vagrant config for testing):
 
@@ -41,43 +49,15 @@ $ ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.
 
 ## Other playbooks  
 
+### Vagrant
 
-### Standalone Biocache Hub on Nectar
-
-There is a template inventory in ```inventories/ala-hub-nectar```. To use this playbook for your VM, create a copy of ```inventories/sandbox```
-and change the references to point to the IP/DNS of your VM. Then point to this inventory with the ```-i``` parameter when running the playbook.
+The ```inventories/vagrant/``` directory contains sample inventories for most playbooks that will work against a Ubuntu Vagrant virtual machine. To use these inventories, add an entry for ```vagrant1``` and ```vagrant1.ala.org.au``` to your hosts file, or edit the inventory file and replace the hostnames and URLs, then run
 
 ```
-$ ansible-playbook -i inventories/ala-hub-nectar biocache-hub.yml --private-key <PATH_TO_YOUR_PEM_FILE> -u root 
+ansible-playbook --sudo --ask-sudo-pass -i inventories/vagrant/<inventoryFile> <playbook>.yml --private-key ~/.vagrant.d/insecure_private_key -u vagrant```
 ```
 
-### Sandbox on Nectar
-
-```inventories/sandbox``` contains an inventory for the sandbox. To use this playbook for your VM, create a copy of ```inventories/sandbox```
-and change the references to point to the IP/DNS of your VM. Then point to this inventory with the ```-i``` parameter when running the playbook.
-
-```
-$ ansible-playbook -i inventories/sandbox sandbox.yml --private-key <PATH_TO_YOUR_PEM_FILE> -u root 
-```
-
-### Image service on Nectar
-
-```inventories/images``` contains an inventory for the image-service. To use this playbook for your VM, create a copy of ```inventories/images```
-and change the references to point to the IP/DNS of your VM. Then point to this inventory with the ```-i``` parameter when running the playbook.
-
-```
-$ ansible-playbook -i inventories/images image-service.yml --private-key <PATH_TO_YOUR_PEM_FILE> -u root 
-```
-
-### Volunteer Portal on CSIRO IM&T
-
-    $ ansible-playbook -i inventories/production volunteer-portal.yml --u username --ask-pass --ask-sudo-pass -s -e "@/path/to/database-password.json"
-
-Where /path/to/database-password.json looks like:
-
-    {
-      "volunteers_db_password": "secret-password-here"
-    }
+The inventory files can easily be modified to work against other virtual machines or servers (e.g. Nectar or CSIRO) simply by modifying the server and host names appropriately.
 
 ## Notes for different environments (CSIRO/Nectar)
 

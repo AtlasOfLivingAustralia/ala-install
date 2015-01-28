@@ -1,0 +1,6 @@
+# assets
+version: "1.0"
+artifactId: "regions"
+classifier: ''
+packaging: "war"
+regions_war_url: "{{maven_repo_ws_url}}"

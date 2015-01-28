@@ -1,2 +1,6 @@
 # assets
-userdetails_war_url: "{{nexus_repo}}/au/org/ala/userdetails/0.1/userdetails-0.1.war"
+version: "0.1"
+artifactId: "userdetails"
+classifier: ''
+packaging: "war"
+userdetails_war_url: "{{maven_repo_ws_url}}"

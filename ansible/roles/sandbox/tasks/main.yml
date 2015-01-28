@@ -1,19 +1,54 @@
 - include: ../../common/tasks/setfacts.yml
+  tags:
+    - sandbox
 
-- name: copy sandbox webapp
-  get_url: url={{sandbox_war_url}} dest=/var/lib/{{tomcat}}/webapps/sandbox.war force=yes
+#
+# WAR file deployment and virtual host configuration
+#
+
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ sandbox_context_path }}' hostname='{{ sandbox_hostname }}' additional_proxy_pass='{{ additional_proxy_pass }}'
+  tags:
+    - sandbox
+    - deploy
+    - apache_vhost
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ sandbox_war_url }}' context_path='{{ sandbox_context_path }}' hostname='{{ sandbox_hostname }}'
+  tags:
+    - sandbox
+    - deploy
+    - tomcat_vhost
+
+- name: Redirect to datacheck 
+  template: src=index.html dest=/srv/{{ sandbox_hostname }}/www/index.html owner={{tomcat_user}} group={{tomcat_user}}
+  tags:
+    - sandbox
+    - deploy
+    - apache_vhost
+
+#
+# Properties and data file configuration
+#
 
 - name: ensure data directory exists
   file: path={{data_dir}}/sandbox/config state=directory owner={{tomcat_user}} group={{tomcat_user}}
   notify: 
     - restart tomcat
+  tags:
+    - sandbox
+    - properties
 
 - name: copy all template configs
   template: src=config/sandbox-config.properties dest={{data_dir}}/sandbox/config/sandbox-config.properties
   notify: 
     - restart tomcat
+  tags:
+    - sandbox
+    - properties
 
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/sandbox owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 
     - restart tomcat
+  tags:
+    - sandbox
+    - properties

@@ -1,7 +1,8 @@
-- hosts: cas
+- hosts: auth
   roles:
     - common
     - java
+    - postfix
     - tomcat
     - mysql
     - apache

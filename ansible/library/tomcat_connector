@@ -1,0 +1,225 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# This file is part of ALA ansible scripts
+#
+# TODO Licence
+
+DOCUMENTATION = '''
+---
+module: tomcat_connector
+short_description: Add or remove a Tomcat connector
+description:
+   - Add or remove a Tomcat connector.
+version_added: "1.8.2"
+options:
+  name:
+    description:
+      - the name of the connector
+    required: true
+    choices: [ "HTTP/1.1", "AJP/1.3" ]
+  service:
+    description:
+      - the name of the service to put the connector in
+    required: false
+    default: Catalina
+  bind_addr:
+    description:
+      - The ip address to bind the server socket to
+    required: false
+    default: 0.0.0.0
+  port:
+    description:
+      - the port to use for connector
+      - will use default port for protocol (8080 for HTTP or 8009 for AJP) if omitted
+    required: false
+  connection_timeout:
+    description:
+      - the amount of time in ms to wait for the client before timing out
+    required: false
+    default: 20000
+  uri_encoding:
+    description:
+      - the charset for uri encoding
+    required: false
+    default: UTF-8
+  redirect_port:
+    description:
+      - the port to automatically redirect to for requests that require servlet security-constraints
+    required: false
+    default: 443
+  state:
+    description:
+      - The connector state
+    required: false
+    default: present
+    choices: [ "present", "absent" ]
+  tomcat_conf_dir:
+    description:
+      - The tomcat conf directory
+    required: false
+    default: /etc/tomcat7 on debian, /etc/tomcat6 on enterprise linux
+notes:
+   - This module uses I(python-augeas), a Python Augeas binding library. You must ensure that python-agueas is installed
+     on the host before using this module.
+   - This module uses I(python-libxml2), a Python binding for the libxml2 library.  You must ensure that python-libxml2
+     is installed on the host before using this module.
+requirements: [ python-augeas, python-libxml2 ]
+author: Simon Bear
+'''
+
+EXAMPLES = '''
+'''
+
+try:
+    import augeas
+except ImportError:
+    augeas_found = False
+else:
+    augeas_found = True
+
+import logging
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('tomcat_connector')
+
+class NotSupportedError(Exception):
+    pass
+
+
+# ===========================================
+# Tomcat Service module specific support methods.
+#
+
+def load_augeas_for_file(root="/etc/tomcat7", lens="Xml.lns", filename="server.xml", check_mode=False):
+    aug = augeas.Augeas(root, None, augeas.Augeas.NO_LOAD | augeas.Augeas.NO_MODL_AUTOLOAD | (
+        augeas.Augeas.SAVE_NOOP if check_mode else augeas.Augeas.SAVE_BACKUP))
+    aug.add_transform(lens, filename)
+    aug.load()
+    return aug
+
+
+def tomcat_dir_for_distrib(distribution):
+    if distribution.lower() in ["redhat", "centos"]:
+        return '/etc/tomcat6'
+    else:
+        return '/etc/tomcat7'
+
+
+def xml_lint(filename):
+    try:
+        import libxml2
+        libxml2.thrDefIndentTreeOutput(1)
+        libxml2.keepBlanksDefault(0)
+        x = libxml2.parseFile(filename)
+        x.saveFormatFile(filename, 1)
+    except ImportError:
+        pass
+
+
+def b2xs(string):
+    return str(string).lower()
+
+
+def default_port(name):
+    return 8080 if name == "HTTP/1.1" else 8009
+
+
+def add_connector(aug, protocol, service, bind_addr, port, connection_timeout=20000, uri_encoding="UTF-8", redirect_port=443):
+
+    aug.defvar("service", "/files/server.xml/Server/Service[#attribute/name=\"%(service)s\"]" % locals())
+
+    log.debug("add_connector")
+    log.debug(locals())
+
+    aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/port" % locals(), str(port))
+
+    aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/protocol" % locals(), protocol)
+
+    aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/address" % locals(), bind_addr)
+
+    aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/URIEncoding" % locals(), uri_encoding)
+
+    aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/redirectPort" % locals(), str(redirect_port))
+
+    aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/connectionTimeout" % locals(),
+            str(connection_timeout))
+
+
+def remove_connector(aug, protocol, port):
+    aug.remove("$service/Connector[#attribute/port=\"%(port)s\"]" % locals())
+
+
+# ===========================================
+# Module execution.
+#
+
+
+def main():
+    module = AnsibleModule(
+        argument_spec=dict(
+            name=dict(required=True, choices=["HTTP/1.1", "AJP/1.3"]),
+            service=dict(default="Catalina"),
+            bind_addr=dict(default="0.0.0.0"),
+            port=dict(type="int"),
+            connection_timeout=dict(default=20000, type="int"),
+            uri_encoding=dict(default="UTF-8"),
+            redirect_port=dict(default=443, type="int"),
+            state=dict(default="present", choices=["absent", "present"]),
+            tomcat_conf_dir=dict(default=None)
+        ),
+        supports_check_mode=True
+    )
+
+    if not augeas_found:
+        module.fail_json(msg="the python augeas module is required")
+        return
+
+    name = module.params["name"]
+    service = module.params["service"]
+    bind_addr = module.params["bind_addr"]
+    port = module.params["port"]
+    connection_timeout = module.params["connection_timeout"]
+    uri_encoding = module.params["uri_encoding"]
+    redirect_port = module.params["redirect_port"]
+    state = module.params["state"]
+
+    tomcat_conf_dir = module.params["tomcat_conf_dir"]
+
+    if not port:
+        port = default_port(name)
+
+    if not tomcat_conf_dir:
+        distribution = get_distribution()
+        tomcat_conf_dir = tomcat_dir_for_distrib(distribution)
+
+    try:
+        aug = load_augeas_for_file(root=tomcat_conf_dir, check_mode=module.check_mode)
+    except Exception, e:
+        module.fail_json(msg="unable to connect to Augeas: %s" % e)
+        return
+
+    try:
+        if state == "absent":
+            remove_connector(aug, name, port)
+        else:
+            add_connector(aug, name, service, bind_addr, port, connection_timeout, uri_encoding, redirect_port)
+
+        try:
+            aug.save()
+        except Exception, e:
+            log.exception("Couldn't save server.xml")
+        saved = aug.get("/augeas/events/saved")
+        errors = aug.match("//errors/*")
+        aug.close()
+        if saved and not module.check_mode:
+            xml_lint(tomcat_conf_dir + "/server.xml")
+        module.exit_json(changed=True if saved else False, name=name, saved=saved, errors=errors)
+
+    except Exception, e:
+        log.exception("exception while performing augeas operations")
+        module.fail_json(msg="exception while performing augeas operations: %s" % e)
+
+# import module snippets
+from ansible.module_utils.basic import *
+
+main()

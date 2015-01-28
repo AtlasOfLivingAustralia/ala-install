@@ -1,0 +1,71 @@
+# The Atlas installation on CSIRO IM&T servers of Collectory
+
+[collectory]
+vagrant1
+
+[collectory:vars]
+local_repo_dir=~/.ala
+is_vagrant=true
+data_dir=/data
+
+collectory_hostname=collections.vagrant.ala.org.au
+
+collectory_db_host_address = localhost
+collectory_db_host = localhost
+
+collectory_url = http://collections.vagrant1.ala.org.au
+collectory_base_url = http://collections.vagrant1.ala.org.au
+collectory_context_path = 
+
+collectory_db_user = collectory
+collectory_db_password = password
+
+orgNameLong = Atlas of Living Australia
+orgNameShort = Atlas
+
+# CAS
+uri_filter_pattern = /admin.*,/collection.*,/institution.*,/contact.*,/reports.*,/providerCode.*,/providerMap.*,/dataProvider.*,/dataResource.*,/dataHub.*,/manage/.*
+
+# Security bypass
+security_bypass = false
+
+# External API access
+api_key= to_be_added
+
+# Biocache integration
+biocache_hub_url=http://biocache.vagrant1.ala.org.au
+biocache_service_url=http://biocache.vagrant1.ala.org.au
+
+# Skinning
+skin = ala2
+
+# Map config
+collections_map_lon = 134
+collections_map_lat = -28.2
+collections_map_zoom = 4
+
+# Project name
+orgNameShort = Atlas
+orgNameLong = Atlas of Living Australia
+region = Australia
+
+# EML config
+eml_delivery_point = CSIRO Ecosystems Services
+eml_city = Canberra
+eml_admin_area = ACT
+eml_postal_code = 2601
+eml_country = Australia
+
+# Disable UI components
+disable_map = false
+disable_alerts = false
+disable_logger = false
+
+# Whether to check API keys for incoming write requests
+api_key_check_enabled = true
+
+# GBIF base URL for webservices
+gbifApiUrl=http://api.vagrant1.gbif.org/v1
+
+# Logger URL
+logger_url = http://logger.vagrant1.ala.org.au/service

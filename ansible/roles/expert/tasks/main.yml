@@ -1,0 +1,43 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - expert
+
+#
+# External configuration properties file
+#
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/expert/config"
+  tags:
+    - properties
+    - expert
+
+- name: copy all config.properties
+  template: src=expert-config.properties dest={{data_dir}}/expert/config/expert-config.properties
+  tags:
+    - properties
+    - expert
+
+- name: set data ownership
+  file: path={{data_dir}}/expert owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - properties
+    - expert
+
+#
+# WAR file deployment and virtual host configuration
+#
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ expert_context_path }}' hostname='{{ expert_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - expert
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ expert_war_url }}' context_path='{{expert_context_path}}' hostname='{{ expert_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - expert

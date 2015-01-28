@@ -14,6 +14,12 @@
   apache2_module: state=present name=proxy_http
   when: ansible_os_family == "Debian"
 
+- name: Enable mod_proxy_ajp
+  apache2_module: state=present name=proxy_ajp
+  when: ansible_os_family == "Debian"
+  notify:
+    - restart apache
+
 - name: Start Apache2 (Debian)
   service: name=apache2 state=restarted
   when: ansible_os_family == "Debian"

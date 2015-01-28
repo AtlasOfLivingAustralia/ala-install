@@ -1,0 +1,5 @@
+version: "0.1"
+artifactId: "webapi"
+classifier: ''
+packaging: "war"
+webapi_url: "{{maven_repo_ws_url}}"

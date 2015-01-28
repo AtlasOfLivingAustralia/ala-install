@@ -1,4 +1,4 @@
-- hosts: cas
+- hosts: auth
   roles:
     - common
     - java

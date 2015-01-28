@@ -1,0 +1,25 @@
+[expert]
+vagrant1
+
+[expert:vars]
+is_vagrant=true
+local_repo_dir=~/.ala
+data_dir=/data
+tomcat_webapps={{tomcat_dir}}/webapps
+
+expert_hostname=vagrant1.ala.org.au
+
+expert_context_path=/expert
+expert_base_url=http://vagrant1.ala.org.au
+expert_url=http://vagrant1.ala.org.au/expert
+
+bie_base_url = http://bie.vagrant1.ala.org.au
+bie_services_base_url = http://bie.vagrant1.ala.org.au/ws
+
+biocache_base_url = http://biocache.vagrant1.ala.org.au
+
+ala_base_url = http://ala.org.au
+
+spatial_base_url = http://spatial.vagrant1.ala.org.au
+
+header_footer_base_url = http://www2.ala.org.au/commonui

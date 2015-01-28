@@ -1,6 +1,0 @@
-- include: ../../common/tasks/setfacts.yml
-
-- name: Configure Tomcat server
-  template: src=server.xml dest=/var/lib/tomcat7/conf
-  notify:
-    - restart tomcat

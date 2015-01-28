@@ -1,0 +1,6 @@
+# assets
+version: "0.1"
+artifactId: "sightings"
+classifier: ''
+packaging: "war"
+sightings_war_url: "{{maven_repo_ws_url}}"

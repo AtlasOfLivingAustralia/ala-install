@@ -1,0 +1,50 @@
+- name: determine if a virtual host is required (vhost not required for localhost, 127.0.0.1 or any hostname with a colon in it)
+  set_fact: vhost_required={{ hostname.find(':') == -1 and hostname.find('localhost') == -1 and hostname.find('127.0.0.1') == -1 }}
+
+- name: Is a virtual host required?
+  debug: msg="Virtual Host required for hostname {{hostname}}? {{vhost_required}}"
+
+- name: ensure apache vhost exists
+  apache_vhost: name={{ hostname }} ssl={{ ssl|default(false) }} ssl_cert_file={{ ssl_cert_file|default('') }} ssl_key_file={{ ssl_key_file|default('') }} ssl_chain_file={{ ssl_chain_file|default('') }}
+  ignore_errors: yes
+  when: vhost_required
+  notify:
+    - reload apache
+
+- name: ensure proxy pass exists for apache (without default context)
+  apache_proxypass: name={{ hostname }} src={{ item.src }} dest={{ item.dest }}
+  when: vhost_required
+  with_items:
+    - { src: "/{{ context_path.replace('/', '') }}", dest: "ajp://localhost:8009/{{ context_path.replace('/', '') }}" }
+  notify:
+    - reload apache
+
+- name: add optional additional proxy pass rules (if required)
+  apache_proxypass: name={{ hostname }} src={{ item.src }} dest={{ item.dest }}
+  when: vhost_required and additional_proxy_pass is defined
+  with_items: additional_proxy_pass
+  notify:
+    - reload apache
+
+- name: create a proxy pass rule for the root context (if required)
+  apache_proxypass: name={{ hostname }} src="/" dest="ajp://localhost:8009/{{ proxy_root_context_to }}/"
+  when: proxy_root_context_to is defined
+  notify:
+    - reload apache
+
+- name: ensure www directory exists
+  file: path=/srv/{{ hostname }}/www state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  notify:
+    - reload apache
+
+- name: Enable vhost for Apache
+  command: a2ensite {{ hostname }}
+  when: vhost_required
+  args:
+    creates: /etc/apache2/sites-enabled/{{hostname}}
+  notify: 
+    - reload apache
+
+- name: Enable SSL module for Apache (if required)
+  apache2_module: state=present name=ssl
+  when: ssl is defined and ssl == "true"

@@ -13,3 +13,6 @@ packaging: "war"
 biocache_service_war_path: "{{maven_repo_ws_url}}"
 
 local_repo_dir: ~/.ala
+
+additional_proxy_pass:
+  - { src: "/biocache-media", dest: "!" }

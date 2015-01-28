@@ -1,0 +1,16 @@
+[webapi_standalone]
+vagrant1
+
+[webapi_standalone:vars]
+is_vagrant=true
+data_dir=/data
+local_repo_dir=~/.ala
+webapi_hostname=api.vagrant1.ala.org.au
+webapi_db_name=webapi
+webapi_db_username=webapi
+webapi_db_password=webapi
+webapi_db_hostname=localhost
+webapi_context_path=/
+
+mail_host=some.mail.host
+mail_disabled=true

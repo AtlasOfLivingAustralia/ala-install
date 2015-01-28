@@ -1,0 +1,8 @@
+This directory contains inventories for deploying applications to a vagrant instance. 
+
+For these inventories to work, you will need to have a Ubuntu 14.04 vagrant VM running, with the IP address mapped to vagrant1 in your /etc/hosts file. The generated inventory will create URLs of vagrant1.ala.org.au, so you will need to map that in /etc/hosts as well in order to test your scripts with these inventories.
+
+Example ansible script:
+
+(from the ala-install/ansible directory)
+ansible-playbook --sudo --ask-sudo-pass -i inventories/vagrant/taxon-overflow-vagrant taxon-overflow-standalone.yml --private-key ~/.vagrant.d/insecure_private_key -u vagrant

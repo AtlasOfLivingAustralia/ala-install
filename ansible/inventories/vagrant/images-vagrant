@@ -1,0 +1,11 @@
+[image-service]
+vagrant1
+  
+[image-service:vars]
+is_vagrant=true
+local_repo_dir = ~/.ala
+data_dir=/srv/data
+images_url = http://images.vagrant1.ala.org.au
+images_base_url = http://images.vagrant1.ala.org.au
+images_context_path = 
+images_hostname = images.vagrant1.ala.org.au

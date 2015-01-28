@@ -5,5 +5,4 @@
     - tomcat
     - apache
     - fieldguide
-    - fieldguide-apache
     - wkhtmltopdf

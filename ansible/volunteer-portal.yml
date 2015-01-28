@@ -1,6 +1,8 @@
 - hosts: volunteer-portal
   roles:
     - common
-    - { role: postgresql_instance, db_name: '{{volunteers_db_name}}',  db_username: '{{volunteers_db_username}}', db_password: '{{volunteers_db_password}}' }
-    - { role: volunteer_portal_instance, db_name: '{{volunteers_db_name}}',  db_username: '{{volunteers_db_username}}', db_password: '{{volunteers_db_password}}' }
-#    - solr
+    - java
+    - apache
+    - tomcat
+    - postgresql
+    - volunteer_portal_instance

@@ -1,0 +1,23 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: ensure data directory exists
+  file: path=/srv/{{ demo_hostname }}/www/html state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  tags:
+    - demo
+
+- name: Copy welcome page (Debian)
+  template: src=index.html dest=/srv/{{ demo_hostname }}/www/index.html mode=0666
+  tags:
+    - demo
+
+- name: Create symlink to data/biocache-media from /srv/[hostname]/www/biocache-media
+  command: "ln -sf /data/biocache-media  /srv/{{ demo_hostname }}/www/biocache-media" 
+  ignore_errors: yes
+  tags:
+    - demo
+
+- name: Create symlink to data/biocache-media from /srv/[hostname]/www/html/biocache-media
+  command: "ln -sf /data/biocache-media  /srv/{{ demo_hostname }}/www/html/biocache-media" 
+  ignore_errors: yes
+  tags: 
+    - demo

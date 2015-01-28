@@ -1,0 +1,6 @@
+# assets
+version: "0.2"
+artifactId: "tviewer"
+classifier: ''
+packaging: "war"
+tviewer_war_url: "{{maven_repo_ws_url}}"

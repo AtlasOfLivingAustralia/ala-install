@@ -1,0 +1,6 @@
+# assets
+version: "0.1"
+artifactId: "profile-service"
+classifier: ''
+packaging: "war"
+profile_service_war_url: "{{maven_repo_ws_url}}"

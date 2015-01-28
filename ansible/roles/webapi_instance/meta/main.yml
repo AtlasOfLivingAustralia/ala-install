@@ -1,4 +1,0 @@
-dependencies:
-  - { role: augeas }
-  - { role: apache }
-  - { role: tomcat }

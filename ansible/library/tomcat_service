@@ -18,31 +18,6 @@ options:
       - the name of the Service
     required: false
     default: Catalina
-  bind_addr:
-    description:
-      - The ip address to bind the ajp and http server sockets to
-    required: false
-    default: 0.0.0.0
-  http:
-    description:
-      - whether to add an http connector
-    required: false
-    default: true
-  http_port:
-    description:
-      - the port to use for the http connector
-    required: false
-    default: 8080
-  ajp:
-    description:
-      - whether to add an ajp connector
-    required: false
-    default: false
-  ajp_port:
-    description:
-      - the port to use for the ajp connector
-    required: false
-    default: 8009
   state:
     description:
       - The database state
@@ -115,62 +90,9 @@ def b2xs(string):
     return str(string).lower()
 
 
-def add_connector(aug, protocol, bind_addr, port, connectionTimeout=None):
-
-    log.debug("add_connector")
-    log.debug(locals())
-
-    #log.debug(aug.match("$service/*"))
-
-    aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/port" % locals(), str(port))
-
-    #connectors = aug.match("$service/Connector[#attribute/protocol=\"%(protocol)s\"][#attribute/port=\"%(port)s\"]")
-
-    #if not connectors:
-    #aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/port", str(port))
-    aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/protocol" % locals(), protocol)
-
-    aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/address" % locals(), bind_addr)
-
-    aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/URIEncoding" % locals(), "UTF-8")
-
-    aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/redirectPort" % locals(), "443")
-
-    if connectionTimeout:
-        aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/connectionTimeout" % locals(), str(connectionTimeout))
-    else:
-        aug.remove("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/connectionTimeout" % locals())
-
-
-def remove_connector(aug, protocol, port):
-    aug.remove("$service/Connector[#attribute/port=\"%(port)s\"]" % locals())
-
-
-def create_service(aug, name, bind_addr, http, http_port, ajp, ajp_port):
-    #<Connector port="8080" protocol="HTTP/1.1"
-    #           connectionTimeout="20000"
-    #           URIEncoding="UTF-8"
-    #           redirectPort="8443" />
-    #<Connector port="{{ tomcat_ajp_port | default('8009') }}" protocol="AJP/1.3"
-    #           address="{{ tomcat_bind_addr | default('0.0.0.0') }}"
-    #           redirectPort="443"
-    #           URIEncoding="UTF-8" />
-
-
+def create_service(aug, name):
 
     aug.set("/files/server.xml/Server/Service[#attribute/name=\"%(name)s\"]/#attribute/name" % locals(), name)
-
-    aug.defvar("service", "/files/server.xml/Server/Service[#attribute/name=\"%(name)s\"]" % locals())
-
-    if http:
-        add_connector(aug, "HTTP/1.1", bind_addr, http_port, 20000)
-    else:
-        remove_connector(aug, "HTTP/1.1", http_port)
-
-    if ajp:
-        add_connector(aug, "AJP/1.3", bind_addr, ajp_port)
-    else:
-        remove_connector(aug, "AJP/1.3", ajp_port)
 
 
 def remove_service(aug, name):
@@ -186,11 +108,6 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             name=dict(default="Catalina"),
-            bind_addr=dict(default="0.0.0.0"),
-            http=dict(default=True, type="bool"),
-            http_port=dict(default=8080, type="int"),
-            ajp=dict(default=False, type="bool"),
-            ajp_port=dict(default=8009, type="int"),
             state=dict(default="present", choices=["absent", "present"]),
             tomcat_conf_dir=dict(default=None)
         ),
@@ -202,11 +119,6 @@ def main():
         return
 
     name = module.params["name"]
-    bind_addr = module.params["bind_addr"]
-    http = module.params["http"]
-    http_port = module.params["http_port"]
-    ajp = module.params["ajp"]
-    ajp_port = module.params["ajp_port"]
     state = module.params["state"]
 
     tomcat_conf_dir = module.params["tomcat_conf_dir"]
@@ -227,7 +139,7 @@ def main():
         if state == "absent":
             remove_service(aug, name)
         else:
-            create_service(aug, name, bind_addr, http, http_port, ajp, ajp_port)
+            create_service(aug, name)
 
         try:
             aug.save()

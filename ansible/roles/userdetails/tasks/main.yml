@@ -1,35 +1,80 @@
 - include: ../../common/tasks/setfacts.yml
+  tags:
+    - userdetails
 
-- name: create userdetails DB
-  mysql_db: name={{userdetails_db_name}} state=present
+#
+# Database configuration
+#
+
+- name: create database
+  mysql_db: name={{user_store_db_name}} state=present
+  register: dbschema
+  tags:
+    - userdetails
+    - db
 
 - name: create userdetails DB user
-  mysql_user: name={{userdetails_db_username}} password={{userdetails_db_password}} priv=*.*:ALL state=present
+  mysql_user: name={{user_store_db_username}} password={{user_store_db_password}} priv=*.*:ALL state=present
+  tags:
+    - userdetails
+    - db
 
 - name: copy transient files to tmp (schemas etc)
   copy: src={{item}} dest=/tmp
   with_items:
     - db/
-      
+  tags:
+    - userdetails
+    - db
+        
 - name: create schema, stored procs and reference data
-  mysql_db: name={{userdetails_db_name}} state=import target={{item}}
+  mysql_db: name={{user_store_db_name}} state=import target={{item}}
   with_items:
     - /tmp/schema.sql
+  when: dbschema.changed
+  tags:
+    - userdetails
+    - db
+
+#
+# Properties and data directory configuration
+#
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/userdetails/config"
+  tags:
+    - userdetails
+    - properties
 
 - name: copy all config.properties
   template: src=userdetails-config.properties dest={{data_dir}}/userdetails/config/userdetails-config.properties
+  tags:
+    - userdetails
+    - properties
 
 - name: set data ownership
   file: path={{data_dir}}/userdetails owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 
     - restart tomcat
+  tags:
+    - userdetails
+    - properties
 
-- name: download from maven repo
-  get_url: url={{ userdetails_war_url }} dest="{{tomcat_dir}}/webapps/userdetails.war" force=yes
-  notify:
-    - restart tomcat
+#
+# WAR file deployment and virtual host configuration
+#
+
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ userdetails_context_path }}' hostname='{{ userdetails_hostname }}'
+  tags:
+    - userdetails
+    - deploy
+    - apache_vhost
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ userdetails_war_url }}' context_path='{{ userdetails_context_path }}' hostname='{{ userdetails_hostname }}'
+  tags:
+    - userdetails
+    - deploy
+    - tomcat_vhost
+

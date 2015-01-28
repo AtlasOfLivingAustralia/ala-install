@@ -1,9 +1,16 @@
 - include: ../../common/tasks/setfacts.yml
 
-- name: copy biocache webapps
-  get_url: url={{biocache_service_war_path}} dest=/var/lib/{{tomcat}}/webapps/biocache-service.war force=yes
-  notify:
-    - restart tomcat
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ biocache_service_context_path }}' hostname='{{ biocache_service_hostname }}' 
+  tags:
+    - biocache-service
+    - deploy
+    - apache_vhost
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ biocache_service_war_path }}' context_path='{{ biocache_service_context_path }}' hostname='{{ biocache_service_hostname }}'
+  tags:
+    - biocache-service
+    - deploy
+    - tomcat_vhost
 
 - name: ensure tomcat context directory exists
   file: path=/usr/share/{{tomcat}}/conf/Catalina/localhost/ state=directory owner={{tomcat_user}} group={{tomcat_user}}

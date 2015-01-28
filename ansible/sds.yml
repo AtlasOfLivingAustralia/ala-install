@@ -1,4 +1,7 @@
 - hosts: sds
   roles:
     - common
+    - java
+    - apache
+    - tomcat
     - sds

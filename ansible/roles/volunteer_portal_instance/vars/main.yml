@@ -1,13 +1,5 @@
-tomcat_webapps: /var/lib/tomcat7/webapps/
-volunteer_context_path: /
-
-local_repo_dir: ~/.ala
-data_dir: /srv/data
 version: "1.0"
 artifactId: "volunteer-portal"
-volunteers_url: "{{maven_repo_ws_url}}"
-volunteer_app: volunteer-portal
-tomcat_ajp: true
-tomcat_http: false
-tomcat_autoDeploy: true
-tomcat_bind_addr: '127.0.0.1' 
+classifier: ''
+packaging: "war"
+volunteer_portal_war_url: "{{maven_repo_ws_url}}"

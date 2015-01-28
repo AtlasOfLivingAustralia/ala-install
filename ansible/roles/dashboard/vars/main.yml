@@ -2,5 +2,3 @@
 version: "0.3.1"
 artifactId: "dashboard"
 dashboard_war_url: "{{maven_repo_ws_url}}"
-dashboard_context_path: "/dashboard"
-

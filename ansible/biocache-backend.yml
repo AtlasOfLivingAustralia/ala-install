@@ -1,12 +1,11 @@
-- hosts: biocache-backend
+- hosts: biocache
   roles:
     - common
     - java
     - tomcat
+    - apache
     - cassandra
     - nameindex
     - biocache-db
     - biocache-service
     - biocache-cli
-    - apache
-    - biocache-apache

@@ -1,23 +1,49 @@
 - include: ../../common/tasks/setfacts.yml
+  tags:
+    - alerts
 
 - name: create alerts DB
   mysql_db: name=alerts state=present
+  tags:
+    - db
+    - alerts
 
 - name: create alerts DB user
   mysql_user: name=alerts password=password priv=*.*:ALL state=present
-
-- name: download from maven repo
-  command: "wget {{alerts_war_url}} --output-document={{tomcat_webapps}}alerts.war"
+  tags:
+    - db
+    - alerts
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/alerts/config"
+  tags:
+    - properties
+    - alerts
 
 - name: copy all config.properties
   template: src=alerts-config.properties dest={{data_dir}}/alerts/config/alerts-config.properties
+  tags:
+    - properties
+    - alerts
 
 - name: set data ownership
   file: path={{data_dir}}/alerts owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 
     - restart tomcat
+  tags:
+    - properties
+    - alerts
+
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ alerts_context_path }}' hostname='{{ alerts_hostname }}'
+  tags:
+    - alerts
+    - apache_vhost
+    - deploy
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ alerts_war_url }}' context_path='{{ alerts_context_path }}' hostname='{{ alerts_hostname }}'
+  tags:
+    - alerts
+    - tomcat_vhost
+    - deploy

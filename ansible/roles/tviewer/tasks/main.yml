@@ -1,0 +1,43 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - tviewer
+
+#
+# External configuration properties file
+#
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/tviewer/config"
+  tags:
+    - properties
+    - tviewer
+
+- name: copy all config.properties
+  template: src=tviewer-config.properties dest={{data_dir}}/tviewer/config/tviewer-config.properties
+  tags:
+    - properties
+    - tviewer
+
+- name: set data ownership
+  file: path={{data_dir}}/tviewer owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - properties
+    - tviewer
+
+#
+# WAR file deployment and virtual host configuration
+#
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ tviewer_context_path }}' hostname='{{ tviewer_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - tviewer
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ tviewer_war_url }}' context_path='{{tviewer_context_path}}' hostname='{{ tviewer_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - tviewer

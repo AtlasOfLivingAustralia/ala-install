@@ -1,0 +1,33 @@
+[ala-hub-standalone]
+vagrant1
+
+[ala-hub-standalone:vars]
+is_vagrant=true
+local_repo_dir = ~/.ala
+data_dir=/data
+
+biocache_service_url = http://biocache.vagrant1.ala.org.au/ws
+biocache_service_base_url = http://biocache.vagrant1.ala.org.au
+biocache_service_context_path = ws
+
+biocache_hub_url = http://biocache.vagrant1.ala.org.au
+biocache_hub_base_url = http://biocache.vagrant1.ala.org.au
+biocache_hub_context_path =
+biocache_hub_hostname = biocache.vagrant1.ala.org.au
+hostname = biocache.vagrant1.ala.org.au
+
+collectory_url = http://collections.vagrant1.ala.org.au
+collectory_base_url = http://collections.vagrant1.ala.org.au
+collectory_context_path =
+
+zoom_outside_scoped_region = false
+use_ala_spatial_portal = false
+use_ala_bie|default = false
+orgNameLong = Atlas of Living Australia
+orgNameShort = ALA
+disable_cas = false
+bypass_cas = false
+
+biocache_hub=ala-hub
+use_ala_bie=false
+biocache_api_key=invalidkey

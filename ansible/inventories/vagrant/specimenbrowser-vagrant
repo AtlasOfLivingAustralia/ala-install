@@ -1,0 +1,23 @@
+[specimenbrowser]
+vagrant1
+
+[specimenbrowser:vars]
+is_vagrant=true
+local_repo_dir=~/.ala
+data_dir=/data
+tomcat_webapps={{tomcat_dir}}/webapps
+
+specimenbrowser_hostname=vagrant1.ala.org.au
+
+specimenbrowser_context_path=/specimenbrowser
+specimenbrowser_base_url=http://vagrant1.ala.org.au
+specimenbrowser_url=http://vagrant1.ala.org.au/specimenbrowser
+
+bie_base_url = http://bie.ala.org.au
+biocache_base_url = http://biocache.ala.org.au
+biocache_services_url = http://biocache.ala.org.au/ws
+collectory_base_url = http://collectory.ala.org.au
+collectory_services_url = http://collectory.ala.org.au/ws
+spatial_base_url = http://spatial.ala.org.au
+ala_base_url = http://ala.org.au
+ala_image_info_url = http://images.ala.org.au/ws/getImageInfo/

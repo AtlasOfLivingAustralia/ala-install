@@ -2,82 +2,92 @@
   tags:
     - volunteer-portal
 
+#
+# Database configuration
+#
+
+- name: create database
+  postgresql_db: name={{ volunteer_portal_db_name }}
+  sudo_user: postgres
+  sudo: True
+  register: dbschema
+  tags:
+    - db
+    - volunteer-portal
+
+- name: create database user
+  postgresql_user: db={{ volunteer_portal_db_name }} name={{ volunteer_portal_db_username }} password={{ volunteer_portal_db_password }} priv=ALL state=present
+  sudo_user: postgres
+  sudo: True
+  tags:
+    - db
+    - volunteer-portal
+
+#
+# Properties and data file configuration
+#
+
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/volunteer-portal/config"
   tags:
     - volunteer-portal
+    - properties
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}}
   with_items:
+    - "{{data_dir}}/volunteer-portal/config"
     - "{{data_dir}}/volunteer-portal/project"
     - "{{data_dir}}/volunteer-portal/projectStaging"
     - "{{data_dir}}/volunteer-portal/projectType"
+    - "{{data_dir}}/volunteer/elasticsearch"  # this path is hardcoded in the source!
   tags:
     - volunteer-portal
+    - properties
 
 - name: set data ownership
   file: path={{data_dir}}/volunteer-portal owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   tags:
     - volunteer-portal
+    - properties
 
 - name: copy all config.properties
   template: src=config.properties.j2 dest={{data_dir}}/volunteer-portal/config/volunteer-portal-config.properties
   tags:
     - volunteer-portal
+    - properties
 
-- name: Copy proxy config to conf.d (Redhat)
-  template: src=volunteer-portal.j2 dest=/etc/httpd/conf.d/default-vhost.conf
-  when: ansible_os_family == "RedHat" 
-  tags:
-    - volunteer-portal
-
-- name: Create Volunteer Portal virtual host config file (Debian)
-  template: src=volunteer-portal.j2 dest=/etc/apache2/sites-available/volunteer-portal owner=root group=root
-  when: ansible_os_family == "Debian" 
-  tags:
-    - volunteer-portal
-
-- name: Disable all existing virtual hosts (TODO don't do this) (Debian)
-  command: "a2dissite *" 
-  ignore_errors: yes
-  when: ansible_os_family == "Debian" 
-  tags:
-    - volunteer-portal
-
-- name: Enable VP virtual host (Debian)
-  command: "a2ensite volunteer-portal" 
-  ignore_errors: yes
-  when: ansible_os_family == "Debian" 
-  notify:
-    - reload apache
-  tags:
-    - volunteer-portal
+#
+# WAR file deployment and virtual host configuration
+#
 
 - name: Ensure volunteers WWW directory exists
   file: path={{ item }} state=directory
   with_items:
-    - /srv/volunteer/www
-    - /srv/volunteer/www/data
+    - /srv/{{ volunteer_portal_hostname }}/www
+    - /srv/{{ volunteer_portal_hostname }}/www/data
   tags:
     - volunteer-portal
+    - apache_vhost
+    - deploy
 
 - name: Symlink data dir to /data
-  file: dest=/srv/volunteer/www/data/volunteer src={{data_dir}}/volunteer-portal state=link
+  file: dest=/srv/{{ volunteer_portal_hostname }}/www/data/volunteer src={{data_dir}}/volunteer-portal state=link
   tags:
     - volunteer-portal
+    - apache_vhost
+    - deploy
 
-- name: download from maven repo
-  get_url: url={{ volunteers_url }} dest="{{tomcat_webapps}}ROOT.war"
-  notify:
-    - restart tomcat
-  register: getwar
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ volunteer_portal_context_path }}' hostname='{{ volunteer_portal_hostname }}'
   tags:
     - volunteer-portal
+    - apache_vhost
+    - deploy
 
-- name: delete existing webapp
-  file: path="{{ tomcat_webapps }}ROOT" state=absent
-  when: getwar.changed
-
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ volunteer_portal_war_url }}' context_path='{{ volunteer_portal_context_path }}' hostname='{{ volunteer_portal_hostname }}'
+  tags:
+    - volunteer-portal
+    - tomcat_vhost
+    - deploy
