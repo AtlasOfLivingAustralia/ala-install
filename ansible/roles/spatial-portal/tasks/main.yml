@@ -1,7 +1,14 @@
 - include: ../../common/tasks/setfacts.yml
 
-- name: download from maven repo
-  command: "wget {{spatial_portal_war_url}} --output-document={{tomcat_webapps}}webportal.war"
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ spatial_portal_context_path }}' hostname='{{ spatial_portal_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ spatial_portal_war_url }}' context_path='{{ spatial_portal_context_path }}' hostname='{{ spatial_portal_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
@@ -18,6 +25,3 @@
   file: path={{data_dir}}/webportal owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 
     - restart tomcat
-
-
-#   /data/ala/runtime/output/
