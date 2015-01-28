@@ -4,10 +4,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
  
   #config.vm.box = "hashicorp/precise32" 
   config.vm.box = "trusty64"
+  config.ssh.insert_key = false  
   config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
- #  config.vm.box_url = "https://github.com/2creatives/vagrant-centos/releases/download/v0.1.0/centos64-x86_64-20131030.box"
-  
-  config.vm.hostname = "ala.vagrant.dev"
+   config.vm.hostname = "ala.vagrant.dev"
   config.vm.network :private_network, ip: "10.1.1.2"
     
   # these machines require some memory to operate the apps
