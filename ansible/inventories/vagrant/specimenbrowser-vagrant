@@ -5,10 +5,8 @@ vagrant1
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-tomcat_webapps={{tomcat_dir}}/webapps
 
 specimenbrowser_hostname=vagrant1.ala.org.au
-
 specimenbrowser_context_path=/specimenbrowser
 specimenbrowser_base_url=http://vagrant1.ala.org.au
 specimenbrowser_url=http://vagrant1.ala.org.au/specimenbrowser

@@ -5,7 +5,6 @@ vagrant1
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-tomcat_webapps=/var/lib/tomcat7/webapps
 
 profile_service_hostname=vagrant1.ala.org.au
 profile_service_url=http://vagrant1.ala.org.au/profile-service

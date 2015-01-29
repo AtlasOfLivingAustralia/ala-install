@@ -5,10 +5,8 @@ vagrant1
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-tomcat_webapps=/var/lib/tomcat7/webapps
 
 pigeonhole_hostname=vagrant1.ala.org.au
-
 pigeonhole_url=http://vagrant1.ala.org.au/pigeonhole
 pigeonhole_base_url=http://vagrant1.ala.org.au
 pigeonhole_context_path=pigeonhole

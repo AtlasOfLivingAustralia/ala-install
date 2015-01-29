@@ -5,10 +5,8 @@ vagrant1.ala.org.au
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-tomcat_webapps={{tomcat_dir}}/webapps
 
 regions_hostname=regions.vagrant1.ala.org.au
-
 regions_context_path=
 regions_base_url=http://regions.vagrant1.ala.org.au
 regions_url=http://regions.vagrant1.ala.org.au

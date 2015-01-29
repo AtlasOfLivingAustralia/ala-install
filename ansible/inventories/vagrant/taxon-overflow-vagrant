@@ -5,10 +5,8 @@ vagrant1
 is_vagrant=false
 local_repo_dir=~/.ala
 data_dir=/data
-tomcat_webapps=/var/lib/tomcat7/webapps
 
 taxonoverflow_hostname=vagrant1.ala.org.au
-
 taxonoverflow_url=http://vagrant1.ala.org.au/taxon-overflow
 taxonoverflow_base_url=http://vagrant1.ala.org.au
 taxonoverflow_context_path=/taxon-overflow

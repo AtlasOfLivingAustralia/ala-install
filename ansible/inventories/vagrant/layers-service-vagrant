@@ -8,7 +8,6 @@ vagrant1
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-tomcat_webapps=/var/lib/tomcat7/webapps
 
 geoserver_hostname=vagrant1.ala.org.au
 geoserver_url=http://vagrant1.ala.org.au
@@ -20,7 +19,6 @@ geoserver_context_path=/geoserver
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-tomcat_webapps=/var/lib/tomcat7/webapps
 
 layers_service_hostname=vagrant1.ala.org.au
 layers_service_url=http://vagrant1.ala.org.au

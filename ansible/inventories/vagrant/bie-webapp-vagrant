@@ -5,10 +5,8 @@ vagrant1
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-tomcat_webapps={{tomcat_dir}}/webapps
 
 bie_webapp_hostname=vagrant1.ala.org.au
-
 bie_webapp_context_path=/bie-webapp2
 bie_webapp_base_url=http://vagrant1.ala.org.au
 bie_webapp_url=http://vagrant1.ala.org.au/bie-webapp2
