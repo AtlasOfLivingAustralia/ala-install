@@ -5,10 +5,8 @@ vagrant1
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-tomcat_webapps=/var/lib/tomcat7/webapps
 
 fieldguide_hostname=fieldguide.vagrant1.ala.org.au
-
 fieldguide_url=http://fieldguide.vagrant1.ala.org.au
 fieldguide_base_url=http://fieldguide.vagrant1.ala.org.au
 fieldguide_context_path=

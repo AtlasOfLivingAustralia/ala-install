@@ -1,0 +1,39 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - spatial-portal
+
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ spatial_portal_context_path }}' hostname='{{ spatial_portal_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - spatial-portal
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ spatial_portal_war_url }}' context_path='{{ spatial_portal_context_path }}' hostname='{{ spatial_portal_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - spatial-portal
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/webportal/config"
+  tags:
+    - spatial-portal   
+
+- name: copy all config.properties
+  template: src=webportal-config.properties dest={{data_dir}}/webportal/config/webportal-config.properties
+  tags:
+    - spatial-portal 
+
+- name: copy all log4j.properties
+  template: src=log4j.properties dest={{data_dir}}/webportal/config/log4j.properties
+  tags:
+    - spatial-portal 
+
+- name: set data ownership
+  file: path={{data_dir}}/webportal owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify: 
+    - restart tomcat
+  tags:
+    - spatial-portal    

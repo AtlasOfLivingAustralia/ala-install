@@ -5,6 +5,7 @@ vagrant1
 is_vagrant=true
 data_dir=/data
 local_repo_dir=~/.ala
+
 webapi_hostname=api.vagrant1.ala.org.au
 webapi_db_name=webapi
 webapi_db_username=webapi

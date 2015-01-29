@@ -5,10 +5,8 @@ vagrant1
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-tomcat_webapps={{tomcat_dir}}/webapps
 
 sightings_hostname=sightings.vagrant1.ala.org.au
-
 sightings_context_path=
 sightings_base_url=http://sightings.vagrant1.ala.org.au
 sightings_url=http://sightings.vagrant1.ala.org.au

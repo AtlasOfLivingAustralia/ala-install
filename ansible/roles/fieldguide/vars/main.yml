@@ -3,4 +3,5 @@ version: "2.0"
 artifactId: "fieldguide"
 classifier: ''
 packaging: "war"
+groupId: "au.org.ala"
 fieldguide_war_url: "{{maven_repo_ws_url}}"

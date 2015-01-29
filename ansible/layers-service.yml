@@ -1,0 +1,10 @@
+- hosts: layers-service
+  roles:
+    - java
+    - common
+    - tomcat
+    - apache
+    - geoserver
+    - postgresql    
+    - layers-service
+    - layer-ingestion

@@ -3,4 +3,5 @@ version: "0.1"
 artifactId: "profile-hub"
 classifier: ''
 packaging: "war"
+groupId: "au.org.ala"
 profile_hub_war_url: "{{maven_repo_ws_url}}"

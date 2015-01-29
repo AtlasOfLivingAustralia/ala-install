@@ -1,0 +1,7 @@
+# assets
+version: "3.0.0-SNAPSHOT"
+artifactId: "spatial-portal"
+classifier: ''
+packaging: "war"
+groupId: "au.org.ala"
+spatial_portal_war_url: "{{maven_repo_ws_url}}"

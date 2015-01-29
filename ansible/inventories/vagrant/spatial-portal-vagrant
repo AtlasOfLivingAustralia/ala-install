@@ -1,0 +1,12 @@
+[spatial-portal]
+vagrant1
+
+[spatial-portal:vars]
+is_vagrant=true
+local_repo_dir=~/.ala
+data_dir=/data
+
+spatial_portal_hostname=vagrant1.ala.org.au
+spatial_portal_url=http://vagrant1.ala.org.au
+spatial_portal_base_url=http://vagrant1.ala.org.au
+spatial_portal_context_path=/webportal

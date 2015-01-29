@@ -5,10 +5,8 @@ vagrant1
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-tomcat_webapps={{tomcat_dir}}/webapps
 
 apikey_hostname=vagrant1.ala.org.au
-
 apikey_context_path=/apikey
 apikey_base_url=http://vagrant1.ala.org.au
 apikey_url=http://vagrant1.ala.org.au/apikey

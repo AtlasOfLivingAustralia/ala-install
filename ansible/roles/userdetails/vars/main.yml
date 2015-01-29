@@ -3,4 +3,5 @@ version: "0.1"
 artifactId: "userdetails"
 classifier: ''
 packaging: "war"
+groupId: "au.org.ala"
 userdetails_war_url: "{{maven_repo_ws_url}}"

@@ -1,0 +1,12 @@
+[geoserver]
+vagrant1
+
+[geoserver:vars]
+is_vagrant=true
+local_repo_dir=~/.ala
+data_dir=/data
+
+geoserver_hostname=geoserver.vagrant1.ala.org.au
+geoserver_url=http://geoserver.vagrant1.ala.org.au
+geoserver_base_url=http://geoserver.vagrant1.ala.org.au
+geoserver_context_path=

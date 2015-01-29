@@ -5,10 +5,8 @@ vagrant1
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-tomcat_webapps=/var/lib/tomcat7/webapps
 
 specieslist_hostname=lists.vagrant1.ala.org.au
-
 specieslist_url=http://lists.vagrant1.ala.org.au
 specieslist_base_url=http://lists.vagrant1.ala.org.au
 specieslist_context_path=

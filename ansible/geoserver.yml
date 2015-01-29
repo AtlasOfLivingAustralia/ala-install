@@ -1,0 +1,7 @@
+- hosts: geoserver
+  roles:
+    - java
+    - common
+    - tomcat
+    - apache
+    - geoserver

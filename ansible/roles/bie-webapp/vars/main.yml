@@ -3,4 +3,5 @@ version: "0.2"
 artifactId: "bie-webapp2"
 classifier: ''
 packaging: "war"
+groupId: "au.org.ala"
 bie_webapp_war_url: "{{maven_repo_ws_url}}"

@@ -71,6 +71,7 @@ class AnsibleSkeleton {
                 "version: \"???\"\n" +
                 "artifactId: \"${appName}\"\n" +
                 "classifier: ''\n" +
+                "groupId: \"au.org.ala\"\n" +
                 "packaging: \"war\"\n" +
                 "${appNameVar}_war_url: \"{{maven_repo_ws_url}}\"", false)
     }
@@ -239,10 +240,8 @@ class AnsibleSkeleton {
                 is_vagrant=true
                 local_repo_dir=~/.ala
                 data_dir=/data
-                tomcat_webapps={{tomcat_dir}}/webapps
 
                 ${appNameVar}_hostname=vagrant1.ala.org.au
-
                 ${appNameVar}_context_path=/???
                 ${appNameVar}_base_url=http://vagrant1.ala.org.au
                 ${appNameVar}_url=http://vagrant1.ala.org.au/???

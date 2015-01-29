@@ -5,10 +5,8 @@ vagrant1
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-tomcat_webapps={{tomcat_dir}}/webapps
 
 expert_hostname=vagrant1.ala.org.au
-
 expert_context_path=/expert
 expert_base_url=http://vagrant1.ala.org.au
 expert_url=http://vagrant1.ala.org.au/expert

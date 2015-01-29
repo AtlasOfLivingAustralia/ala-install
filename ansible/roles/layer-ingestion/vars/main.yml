@@ -1,0 +1,7 @@
+# remote assets
+version: "1.0-SNAPSHOT"
+artifactId: "layer-ingestion"
+classifier: "bin"
+groupId: "au.org.ala"
+packaging: "zip"
+layer_ingestion_url: "{{maven_repo_ws_url}}"

@@ -29,7 +29,7 @@
   when: ansible_distribution_release == "precise" 
   tags: postgresql
 
-- name: Add postgres repository - todo need a precise/trusty switch
+- name: Add postgres repository - trusty
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' state=present
   when: ansible_distribution_release == "trusty" 
   tags: postgresql
@@ -39,7 +39,7 @@
   when: ansible_os_family == "Debian" 
   tags: postgresql
 
-- name: Install PostGIS
+- name: Install Postgres with PostGIS
   apt: pkg={{ item }} state=present update_cache=yes
   with_items:
     - postgresql-9.3-postgis-2.1

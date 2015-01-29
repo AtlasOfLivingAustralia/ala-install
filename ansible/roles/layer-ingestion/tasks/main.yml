@@ -1,0 +1,35 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - ingestion
+
+- name: ensure layer-ingestion directory exists
+  file: path=/usr/lib/layer-ingestion state=directory
+  tags:
+    - ingestion 
+
+- name: clean layer-ingestion existing extract
+  shell: "rm -Rf /usr/lib/layer-ingestion/lib /usr/lib/layer-ingestion/*.jar"
+  ignore_errors: yes
+  tags:
+    - ingestion
+
+- name: copy ingestion zip
+  get_url: url={{layer_ingestion_url}} dest="/tmp/layer-ingestion.zip" force=yes owner={{tomcat_user}} group={{tomcat_user}}
+  tags:
+    - ingestion
+
+- name: install unzip (Debian only)
+  apt: pkg=unzip state=present
+  when: ansible_os_family == "Debian"
+  tags:
+    - ingestion
+
+- name: unzip layer-ingestion
+  shell: "unzip -d /usr/lib/layer-ingestion /tmp/layer-ingestion.zip"
+  tags:
+    - ingestion
+
+- name: unzip layer-ingestion
+  shell: "mv /usr/lib/layer-ingestion/layer-ingestion*/* /usr/lib/layer-ingestion/"
+  tags:
+    - ingestion

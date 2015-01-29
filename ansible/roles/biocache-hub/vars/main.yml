@@ -11,6 +11,7 @@ biocache_hub_version: 1.2.3
 
 version: "LATEST"
 artifactId: "{{biocache_hub}}"
+groupId: "au.org.ala"
 classifier: ''
 packaging: "war"
 biocache_hub_war_url: "{{maven_repo_ws_url}}"

@@ -1,4 +1,5 @@
 # assets
 version: "0.1"
 artifactId: "alerts"
+groupId: "au.org.ala"
 alerts_war_url: "{{maven_repo_ws_url}}"

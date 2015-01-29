@@ -1,4 +1,5 @@
 images_app: ala-images
 version: "0.1"
 artifactId: "ala-images"
+groupId: "au.org.ala"
 images_url: "{{maven_repo_ws_url}}"
