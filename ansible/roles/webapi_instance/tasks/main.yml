@@ -23,7 +23,7 @@
     - properties
 
 - name: copy all config.properties
-  template: src=webapi-config.properties.j2 dest={{data_dir}}/webapi/config/webapi-config.properties
+  template: src=webapi-config.properties dest={{data_dir}}/webapi/config/webapi-config.properties
   notify:
     - restart tomcat
   tags:

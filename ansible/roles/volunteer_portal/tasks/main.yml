@@ -54,7 +54,7 @@
     - properties
 
 - name: copy all config.properties
-  template: src=config.properties.j2 dest={{data_dir}}/volunteer-portal/config/volunteer-portal-config.properties
+  template: src=config.properties dest={{data_dir}}/volunteer-portal/config/volunteer-portal-config.properties
   tags:
     - volunteer-portal
     - properties
