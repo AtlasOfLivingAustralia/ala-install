@@ -1,4 +1,6 @@
 groupId: "org.geoserver"
 version: "2.6.2"
 artifactId: "geoserver"
+packaging: "war"
+classifier: ""
 geoserver_war_url: "{{maven_repo_ws_url}}"

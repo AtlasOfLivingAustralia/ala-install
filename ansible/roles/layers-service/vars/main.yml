@@ -2,4 +2,6 @@ layers_service_app: layers-service
 version: "2.0-SNAPSHOT"
 artifactId: "layers-service"
 groupId: "au.org.ala"
+classifier: ""
+packaging: "war"
 layers_service_war_url: "{{maven_repo_ws_url}}"
