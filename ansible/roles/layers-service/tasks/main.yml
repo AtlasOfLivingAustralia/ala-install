@@ -1,10 +1,13 @@
 - include: ../../common/tasks/setfacts.yml
+  tags:    
+    - layers-service    
 
 - name: install Postgis and GDAL Execs
   apt: pkg={{ item }} state=present update_cache=yes
   with_items:
     - postgis
     - gdal-bin
+  tags:    
     - layers-service    
 
 - name: copy transient files to tmp (schemas etc)
