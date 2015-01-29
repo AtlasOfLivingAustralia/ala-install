@@ -5,7 +5,6 @@ vagrant1
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-tomcat_webapps=/var/lib/tomcat7/webapps
 
 spatial_portal_hostname=vagrant1.ala.org.au
 spatial_portal_url=http://vagrant1.ala.org.au
