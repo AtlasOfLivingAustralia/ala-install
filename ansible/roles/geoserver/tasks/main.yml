@@ -1,11 +1,15 @@
 - include: ../../common/tasks/setfacts.yml
+  tags:
+    - geoserver  
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ geoserver_context_path }}' hostname='{{ geoserver_hostname }}'
   tags:
     - deploy
     - apache_vhost
+    - geoserver
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ geoserver_war_url }}' context_path='{{ geoserver_context_path }}' hostname='{{ geoserver_hostname }}'
   tags:
     - deploy
     - tomcat_vhost
+    - geoserver    
