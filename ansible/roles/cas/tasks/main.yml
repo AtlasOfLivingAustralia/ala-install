@@ -90,9 +90,9 @@
 - name: copy SSL files (if required)
   copy: src={{item}} dest={{ssl_certificate_server_dir}}
   with_items:
-    - "{{ssl_cert_file_path}}"
-    - "{{ssl_key_file_path}}"
-    - "{{ssl_chain_file_path}}"
+    - "{{ssl_certificate_local_dir}}/{{ssl_cert_file}}"
+    - "{{ssl_certificate_local_dir}}/{{ssl_key_file}}"
+    - "{{ssl_certificate_local_dir}}/{{ssl_chain_file}}"
   tags:
     - cas
     - properties
@@ -106,9 +106,9 @@
      context_path='{{ cas_context_path }}' 
      hostname='{{ cas_hostname }}' 
      ssl="true"
-     ssl_cert_file={{ ssl_cert_file_path }}
-     ssl_key_file={{ ssl_key_file_path }} 
-     ssl_chain_file={{ ssl_chain_file_path }}
+     ssl_cert_file='{{ssl_certificate_server_dir}}/{{ ssl_cert_file }}'
+     ssl_key_file='{{ssl_certificate_server_dir}}/{{ ssl_key_file }}'
+     ssl_chain_file='{{ssl_certificate_server_dir}}/{{ ssl_chain_file }}'
   tags:
     - cas
     - deploy

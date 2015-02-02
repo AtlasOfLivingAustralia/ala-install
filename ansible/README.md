@@ -85,10 +85,12 @@ ProxyPass /biocache-media   !
 Use the following parameters if you need to enable SSL in your Apache virtual host.
 
 1. ```ssl = true``` - this enables SSL
-1. ```ssl_certificate_server_dir = /path/to/cert/dir``` - this is the location on the server for your certificate and key files
-1. ```ssl_cert_file_path = /LOCAL/path/to/cert/file``` - this is the path to the certificate file on your LOCAL machine, used to copy the file to the server. This sets the ```SSLCertificateFile``` directive.
-1. ```ssl_key_file_path = /LOCAL/path/to/key/file``` - this is the path to the private key file on your LOCAL machine, used to copy the file to the server. This sets the ```SSLCertificateKeyFile``` directive.
-1. ```ssl_chain_file_path = /LOCAL/path/to/chain/file``` - this is the path to the certificate chain file on your LOCAL machine, used to copy the file to the server. This sets the ```SSLCertificateChainFile``` directive.
+1. ```ssl_certificate_server_dir = /path/to/cert/dir/on/server``` - this is the location on the server for your certificate and key files
+1. ```ssl_certificate_local_dir = /LOCAL/path/to/ssl/files``` - this is the LOCAL file path to the SSL configuration files (key, cert, chain) that need to be deployed to the server
+1. ```ssl_cert_file = filename``` - this is the name of the SSL certificate file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateFile``` directive (to ssl\_certificate\_server\_dir/ssl\_cert\_file).
+1. ```ssl_key_file = filename``` - this is the name of the SSL key file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateKeyFile``` directive (to ssl\_certificate\_server\_dir/ssl\_key\_file).
+1. ```ssl_chain_file = filename``` - this is the name of the SSL certificate chain file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateChainFile``` directive (to ssl\_certificate\_server\_dir/ssl\_chain\_file).
+
 ## Examples
 
 1. To deploy the logger-service to ```logger.ala.org.au```:
