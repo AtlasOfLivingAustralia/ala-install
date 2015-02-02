@@ -103,12 +103,12 @@ def ensure_vhost_exists(aug, vhost, filename, ssl, ssl_cert_file, ssl_key_file, 
 
     if len(existing) == 0:
         directiveIndex = 1
-        directivePath = "/files/%(filename)s.conf/VirtualHost/directive[%(directiveIndex)s]"
+        directivePath = "/files/%(filename)s.conf/VirtualHost[1]/directive[%(directiveIndex)s]"
 
         # Add a vhost with some default settings
         
-        # Create vhost in filename listening on all IPs, port 80
-        aug.set("/files/%(filename)s.conf/VirtualHost/arg" % locals(), "*:" + port)
+        # Create a vhost in filename listening on all IPs on port 80 or 443 if SSL is enabled
+        aug.set("/files/%(filename)s.conf/VirtualHost[1]/arg" % locals(), "*:" + port)
         
         # Set ServerName directive
         insert_directive(aug, filename, directivePath, "ServerName " + vhost, directiveIndex)
@@ -127,12 +127,12 @@ def ensure_vhost_exists(aug, vhost, filename, ssl, ssl_cert_file, ssl_key_file, 
         directiveIndex += 1
 
         #Set directory permissions
-        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[1]/arg" % locals(), "/")
-        subDirectivePath = "/files/%(filename)s.conf/VirtualHost/Directory[1]/directive[%(directiveIndex)s]"
+        aug.set("/files/%(filename)s.conf/VirtualHost[1]/Directory[1]/arg" % locals(), "/")
+        subDirectivePath = "/files/%(filename)s.conf/VirtualHost[1]/Directory[1]/directive[%(directiveIndex)s]"
         insert_directive(aug, filename, subDirectivePath, "Require all granted", 1)
         
-        aug.set("/files/%(filename)s.conf/VirtualHost/Directory[2]/arg" % locals(), DEFAULT_DOCUMENT_ROOT % locals())
-        subDirectivePath = "/files/%(filename)s.conf/VirtualHost/Directory[2]/directive[%(directiveIndex)s]"
+        aug.set("/files/%(filename)s.conf/VirtualHost[1]/Directory[2]/arg" % locals(), DEFAULT_DOCUMENT_ROOT % locals())
+        subDirectivePath = "/files/%(filename)s.conf/VirtualHost[1]/Directory[2]/directive[%(directiveIndex)s]"
         subDirectiveIndex = 1
         insert_directive(aug, filename, subDirectivePath, "Options Indexes FollowSymLinks MultiViews", subDirectiveIndex)
         subDirectiveIndex += 1
@@ -154,22 +154,30 @@ def ensure_vhost_exists(aug, vhost, filename, ssl, ssl_cert_file, ssl_key_file, 
         insert_directive(aug, filename, directivePath, "CustomLog ${APACHE_LOG_DIR}/access.log combined", directiveIndex)
         directiveIndex += 1
 
+        if ssl:
+            # If SSL is enabled, create a vhost in filename listening on all IPs on port 80 to redirect all traffic to port 443
+            aug.set("/files/%(filename)s.conf/VirtualHost[2]/arg" % locals(), "*:80")
+            directivePath = "/files/%(filename)s.conf/VirtualHost[2]/directive[%(directiveIndex)s]"
+            insert_directive(aug, filename, directivePath, "ServerName " + vhost, 1)
+            insert_directive(aug, filename, directivePath, "Redirect permanent / https://" + vhost + "/", 2)
+
+
 
 def insert_ssl_configuration(aug, filename, directiveIndex, ssl_cert_file, ssl_key_file, ssl_chain_file):
-    insert_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost/directive[%(directiveIndex)s]", "SSLEngine on", directiveIndex) 
+    insert_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[1]/directive[%(directiveIndex)s]", "SSLEngine on", directiveIndex) 
     directiveIndex += 1
-    insert_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost/directive[%(directiveIndex)s]", "SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL", directiveIndex) 
+    insert_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[1]/directive[%(directiveIndex)s]", "SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL", directiveIndex) 
     directiveIndex += 1
     if ssl_cert_file:
-        insert_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost/directive[%(directiveIndex)s]", "SSLCertificateFile %(ssl_cert_file)s" % locals(), directiveIndex)
+        insert_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[1]/directive[%(directiveIndex)s]", "SSLCertificateFile %(ssl_cert_file)s" % locals(), directiveIndex)
         directiveIndex += 1
 
     if ssl_key_file:
-        insert_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost/directive[%(directiveIndex)s]", "SSLCertificateKeyFile %(ssl_key_file)s" % locals(), directiveIndex)
+        insert_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[1]/directive[%(directiveIndex)s]", "SSLCertificateKeyFile %(ssl_key_file)s" % locals(), directiveIndex)
         directiveIndex += 1
     
     if ssl_chain_file:
-        insert_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost/directive[%(directiveIndex)s]", "SSLCertificateChainFile %(ssl_chain_file)s" % locals(), directiveIndex)
+        insert_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[1]/directive[%(directiveIndex)s]", "SSLCertificateChainFile %(ssl_chain_file)s" % locals(), directiveIndex)
         directiveIndex += 1
 
     return directiveIndex
