@@ -43,6 +43,9 @@ bie_url = http://bie.vagrant1.ala.org.au
 layers_service_url = http://spatial.vagrant1.ala.org.au/ws
 lists_service_url = http://lists.vagrant1.ala.org.au
 logger_url = http://logger.vagrant1.ala.org.au
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas
+userdetails_url=https://auth.ala.org.au/userdetails/userDetails
 
 #
 # Configuration properties

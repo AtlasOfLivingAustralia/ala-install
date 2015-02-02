@@ -14,3 +14,6 @@ pigeonhole_context_path=pigeonhole
 bie_baseUrl = http://bie.ala.org.au
 biocache_baseUrl = http://biocache.ala.org.au/ws
 ecodata_baseUrl = http://ecodata.ala.org.au
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

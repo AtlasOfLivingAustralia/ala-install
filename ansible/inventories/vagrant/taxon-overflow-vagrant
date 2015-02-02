@@ -15,3 +15,6 @@ taxonoverflow_db_name=taxonoverflow
 taxonoverflow_db_username=postgres
 taxonoverflow_db_password=password
 taxonoverflow_db_hostname=localhost
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

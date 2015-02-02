@@ -15,3 +15,6 @@ alerts_db_name=alerts
 alerts_db_username=alerts_user
 alerts_db_password=alerts_user
 alerts_db_hostname=localhost
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

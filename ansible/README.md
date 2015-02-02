@@ -101,3 +101,14 @@ Use the following parameters if you need to enable SSL in your Apache virtual ho
   2. ```logger_hostname = ala.org.au```
 
 (these values go in the inventory file to be used when you run the playbook)
+
+# External Configuration Files
+Most ALA applications require an external configuration properties file. This file is typically deployed via an ansible template so that environment-specific values (such as database connections and URLs to other services) can be substituted at deploy time.
+
+When writing a new Ansible script, ensure that your application's configuration properties file has been moved (do NOT leave a copy in the application's GIT repository) to the templates directory for the application role, and replace ALL URLs and other environment-specific values with ansible variables. *Note: this must include the CAS server URLs.*
+
+This will ensure that your application can be safely deployed to a non-production or non-ALA environment.
+
+The AnsibleSkeleton script will create a skeleton properties file for your application, with appropriate variables for the auth servers (```auth_base_url``` and ```auth_cas_url```).
+
+*Auth URLs MUST be accessed via SSL.*

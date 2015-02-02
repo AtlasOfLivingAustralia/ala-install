@@ -28,3 +28,6 @@ layers_service_context_path=/layers-service
 layers_db_name=layersdb
 layers_db_username=postgres
 layers_db_password=password
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

@@ -16,3 +16,6 @@ fieldguide_url={{fieldguide_base_url}}
 fieldguide_store=/data/fieldguide/store
 biocache_service_ws_url=http://biocache.vagrant1.ala.org.au/ws
 bie_service_ws_url=http://bie.vagrant1.ala.org.au/ws
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas
