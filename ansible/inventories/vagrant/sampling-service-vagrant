@@ -17,3 +17,6 @@ sampling_db_password=sampling_user
 sampling_db_hostname=localhost
 
 layers_service_url=http://spatial.vagrant1.ala.org.au/ws
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

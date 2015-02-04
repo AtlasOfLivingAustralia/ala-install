@@ -15,3 +15,6 @@ logger_db_name=logger
 logger_db_username=logger_user
 logger_db_password=logger_user
 logger_db_hostname=localhost
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

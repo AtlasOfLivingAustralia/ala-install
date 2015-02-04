@@ -15,3 +15,6 @@ data_dir=/srv/data
 base_url = sds.vagrant1.ala.org.au
 sds_url = http://sds.vagrant1.ala.org.au
 sds_context_path = 
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

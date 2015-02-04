@@ -69,3 +69,7 @@ gbifApiUrl=http://api.vagrant1.gbif.org/v1
 
 # Logger URL
 logger_url = http://logger.vagrant1.ala.org.au/service
+
+# Auth server
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

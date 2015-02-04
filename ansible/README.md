@@ -84,11 +84,13 @@ ProxyPass /biocache-media   !
 
 Use the following parameters if you need to enable SSL in your Apache virtual host.
 
-1. ```ssl_enabled = true``` - this enables SSL
-1. ```ssl_certificate_server_dir = /path/to/cert/dir``` - this is the location on the server for your certificate and key files
-1. ```ssl_cert_file_path = /LOCAL/path/to/cert/file``` - this is the path to the certificate file on your LOCAL machine, used to copy the file to the server. This sets the ```SSLCertificateFile``` directive.
-1. ```ssl_key_file_path = /LOCAL/path/to/key/file``` - this is the path to the private key file on your LOCAL machine, used to copy the file to the server. This sets the ```SSLCertificateKeyFile``` directive.
-1. ```ssl_chain_file_path = /LOCAL/path/to/chain/file``` - this is the path to the certificate chain file on your LOCAL machine, used to copy the file to the server. This sets the ```SSLCertificateChainFile``` directive.
+1. ```ssl = true``` - this enables SSL
+1. ```ssl_certificate_server_dir = /path/to/cert/dir/on/server``` - this is the location on the server for your certificate and key files
+1. ```ssl_certificate_local_dir = /LOCAL/path/to/ssl/files``` - this is the LOCAL file path to the SSL configuration files (key, cert, chain) that need to be deployed to the server
+1. ```ssl_cert_file = filename``` - this is the name of the SSL certificate file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateFile``` directive (to ssl\_certificate\_server\_dir/ssl\_cert\_file).
+1. ```ssl_key_file = filename``` - this is the name of the SSL key file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateKeyFile``` directive (to ssl\_certificate\_server\_dir/ssl\_key\_file).
+1. ```ssl_chain_file = filename``` - this is the name of the SSL certificate chain file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateChainFile``` directive (to ssl\_certificate\_server\_dir/ssl\_chain\_file).
+
 ## Examples
 
 1. To deploy the logger-service to ```logger.ala.org.au```:
@@ -99,3 +101,14 @@ Use the following parameters if you need to enable SSL in your Apache virtual ho
   2. ```logger_hostname = ala.org.au```
 
 (these values go in the inventory file to be used when you run the playbook)
+
+# External Configuration Files
+Most ALA applications require an external configuration properties file. This file is typically deployed via an ansible template so that environment-specific values (such as database connections and URLs to other services) can be substituted at deploy time.
+
+When writing a new Ansible script, ensure that your application's configuration properties file has been moved (do NOT leave a copy in the application's GIT repository) to the templates directory for the application role, and replace ALL URLs and other environment-specific values with ansible variables. *Note: this must include the CAS server URLs.*
+
+This will ensure that your application can be safely deployed to a non-production or non-ALA environment.
+
+The AnsibleSkeleton script will create a skeleton properties file for your application, with appropriate variables for the auth servers (```auth_base_url``` and ```auth_cas_url```).
+
+*Auth URLs MUST be accessed via SSL.*

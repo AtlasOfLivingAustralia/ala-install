@@ -84,17 +84,21 @@ class AnsibleSkeleton {
                     # CAS Config
                     #
                     casProperties=casServerLoginUrl,serverName,centralServer,casServerName,uriFilterPattern,uriExclusionFilter,authenticateOnlyIfLoggedInFilterPattern,casServerLoginUrlPrefix,gateway,casServerUrlPrefix,contextPath
-                    serverName=http://{{ ${appNameVar}_hostname }}
-                    contextPath={{ ${appNameVar}_context_path }}
-                    grails.serverURL=http://{{ ${appNameVar}_hostname }}{{ ${appNameVar}_context_path }}
-                    casServerName=https://auth.ala.org.au
-                    uriExclusionFilterPattern=/images.*,/css.*,/js.*,/less.*
-                    casServerLoginUrl=https://auth.ala.org.au/cas/login
+                    casServerName={{ auth_base_url }}
+                    casServerUrlPrefix={{ auth_cas_url }}
+                    casServerLoginUrl={{ auth_cas_url }}/login
+                    security.cas.loginUrl={{ auth_cas_url }}/login
+                    security.cas.logoutUrl={{ auth_cas_url }}/logout
                     gateway=false
-                    casServerUrlPrefix=https://auth.ala.org.au/cas
-                    security.cas.logoutUrl=https://auth.ala.org.au/cas/logout
+                    security.cas.adminRole=ROLE_ADMIN
+                    
+                    serverURL=https://{{ ${appNameVar}_hostname }}
+                    serverName=http://{{ ${appNameVar}_hostname }}
+                    security.cas.appServerName=http://{{ ${appNameVar}_hostname }}
+                    grails.serverURL=http://{{ ${appNameVar}_hostname }}{{ ${appNameVar}_context_path }}
+                    contextPath={{ ${appNameVar}_context_path }}
+                    uriExclusionFilterPattern=/images.*,/css.*,/js.*,/less.*
                     authenticateOnlyIfLoggedInFilterPattern=???
-                    auth.admin_role=ROLE_ADMIN
                     uriFilterPattern=/admin, /admin/.*
                     """.stripIndent())
 
@@ -124,8 +128,6 @@ class AnsibleSkeleton {
                         - properties
                         - ${appName}
                     """.stripIndent())
-
-
     }
 
     static mysql() {
@@ -245,6 +247,9 @@ class AnsibleSkeleton {
                 ${appNameVar}_context_path=/???
                 ${appNameVar}_base_url=http://vagrant1.ala.org.au
                 ${appNameVar}_url=http://vagrant1.ala.org.au/???
+
+                auth_base_url=https://auth.ala.org.au
+                auth_cas_url=https://auth.ala.org.au/cas
                 """.stripIndent(), false)
 
             if (args.contains("mysql") || args.contains("postgresql")) {

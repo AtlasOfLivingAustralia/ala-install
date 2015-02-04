@@ -15,3 +15,6 @@ apikey_db_name=apikey
 apikey_db_username=apikey
 apikey_db_password=apikey
 apikey_db_hostname=localhost
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

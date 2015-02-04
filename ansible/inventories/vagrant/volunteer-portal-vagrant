@@ -13,3 +13,6 @@ volunteer_portal_db_name=volunteer_portal
 volunteer_portal_db_username=volunteer_portal
 volunteer_portal_db_password=password
 volunteer_portal_db_hostname=localhost
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

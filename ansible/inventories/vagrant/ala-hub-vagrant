@@ -14,6 +14,7 @@ biocache_hub_url = http://biocache.vagrant1.ala.org.au
 biocache_hub_base_url = http://biocache.vagrant1.ala.org.au
 biocache_hub_context_path =
 biocache_hub_hostname = biocache.vagrant1.ala.org.au
+userdetails_url=https://auth.ala.org.au/userdetails/userDetails
 hostname = biocache.vagrant1.ala.org.au
 
 collectory_url = http://collections.vagrant1.ala.org.au
@@ -31,3 +32,6 @@ bypass_cas = false
 biocache_hub=ala-hub
 use_ala_bie=false
 biocache_api_key=invalidkey
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas
