@@ -7,7 +7,7 @@ union select 'firstname' as 'key', firstname as 'value' from users where usernam
 union select 'lastname' as 'key', lastname as 'value' from users where username=p_username
 union select 'displayName' as 'key', profiles.value from profiles inner join users ON users.userid=profiles.userid where users.username=p_username and profiles.property='displayName'
 union select 'userid' as 'key', cast(userid as char) as 'value' from users where username=p_username
-union select 'authority' as 'key', group_concat(a.authority) as 'value' from authorities a, users u where a.userid=u.userid and u.username=p_username;
+union select 'authority' as 'key', group_concat(a.role_id) as 'value' from user_role a, users u where a.user_id=u.userid and u.username=p_username;
 end
 //
 delimiter ;
