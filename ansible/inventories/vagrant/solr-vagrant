@@ -11,3 +11,5 @@ solr_url=http://vagrant1.ala.org.au/solr
 solr_base_url=http://vagrant1.ala.org.au
 solr_context_path=/solr
 
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

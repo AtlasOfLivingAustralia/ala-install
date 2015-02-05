@@ -10,3 +10,6 @@ geoserver_hostname=geoserver.vagrant1.ala.org.au
 geoserver_url=http://geoserver.vagrant1.ala.org.au
 geoserver_base_url=http://geoserver.vagrant1.ala.org.au
 geoserver_context_path=
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

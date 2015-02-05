@@ -10,3 +10,6 @@ images_url = http://images.vagrant1.ala.org.au
 images_base_url = http://images.vagrant1.ala.org.au
 images_context_path = 
 images_hostname = images.vagrant1.ala.org.au
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

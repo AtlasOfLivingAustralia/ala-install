@@ -15,3 +15,6 @@ biocache_base_url = http://biocache.vagrant1.ala.org.au/
 spatial_base_url = http://spatial.vagrant1.ala.org.au/
 security_cas_login_url = https://auth.ala.org.au/cas/login
 biocache_records_url = http://biocache.vagrant1.ala.org.au/
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

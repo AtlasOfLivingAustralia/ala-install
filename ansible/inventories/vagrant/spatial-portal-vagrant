@@ -10,3 +10,6 @@ spatial_portal_hostname=vagrant1.ala.org.au
 spatial_portal_url=http://vagrant1.ala.org.au
 spatial_portal_base_url=http://vagrant1.ala.org.au
 spatial_portal_context_path=/webportal
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

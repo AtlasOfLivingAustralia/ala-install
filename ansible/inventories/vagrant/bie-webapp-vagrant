@@ -24,7 +24,7 @@ bhl_base_url=http://bhlidx.vagrant1.ala.org.au
 
 species_list_base_url=http://lists.vagrant1.ala.org.au
 
-userdetails_url=http://auth.vagrant1.ala.org.au/userdetails/userDetals
+userdetails_url=https://auth.vagrant1.ala.org.au/userdetails/userDetails
 userdetails_path=getUserList
 
 alerts_base_url=http://alerts.vagrant1.ala.org.au
@@ -33,3 +33,5 @@ sightings_base_url=http://sightings.vagrant1.ala.org.au
 
 header_footer_base_url=http://www2.ala.org.au/commonui
 
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

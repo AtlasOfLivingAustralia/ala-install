@@ -11,7 +11,12 @@ webapi_db_name=webapi
 webapi_db_username=webapi
 webapi_db_password=webapi
 webapi_db_hostname=localhost
+webapi_base_url=http://api.vagrant1.ala.org.au
+webapi_url=http://api.vagrant1.ala.org.au
 webapi_context_path=/
 
 mail_host=some.mail.host
 mail_disabled=true
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

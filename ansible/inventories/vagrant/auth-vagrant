@@ -7,13 +7,13 @@ local_repo_dir=~/.ala
 data_dir=/data
 
 cas_hostname=vagrant1.ala.org.au
-cas_url=http://vagrant1.ala.org.au/cas
-cas_base_url=http://vagrant1.ala.org.au
+cas_url=https://vagrant1.ala.org.au/cas
+cas_base_url=https://vagrant1.ala.org.au
 cas_context_path=/cas
 
 userdetails_hostname=vagrant1.ala.org.au
-userdetails_url=http://vagrant1.ala.org.au/userdetails
-userdetail_base_url=http://vagrant1.ala.org.au
+userdetails_url=https://vagrant1.ala.org.au/userdetails
+userdetails_base_url=https://vagrant1.ala.org.au
 userdetails_context_path=/userdetails
 
 ticket_registry_db_name=casTicketRegistry
@@ -31,3 +31,22 @@ oauth_providers_flickr_secret=somesecret
 
 user_store_db_encoding_salt=salt
 user_store_db_encoding_algorithm=MD5
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas
+
+sightings_base_url=http://sightings.ala.org.au
+spatial_base_url=http://spatial.ala.org.au
+volunteer_base_url=http://volunteer.ala.org.au
+lists_base_url=http://lists.ala.org.au
+biocache_base_url=http://biocache.ala.org.au
+alerts_base_url=http://alerts.ala.org.au
+
+#
+# SSL Configuration files
+#
+ssl_certificate_server_dir=/path/to/ssl/files/on/target/server
+ssl_certificate_local_dir=/path/to/local/ssl/files/to/be/copied/to/server
+ssl_cert_file=
+ssl_key_file=
+ssl_chain_file=

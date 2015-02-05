@@ -25,6 +25,7 @@ biocache_hub_hostname = demo.vagrant1.ala.org.au
 biocache_hub_url = http://demo.vagrant1.ala.org.au/generic-hub
 biocache_hub_base_url = http://demo.vagrant1.ala.org.au
 biocache_hub_context_path = /generic-hub
+userdetails_url=https://auth.ala.org.au/userdetails/userDetails
 
 org_url=http://www.csiro.au
 
@@ -119,3 +120,6 @@ logger_db_username = logger_user
 logger_db_password = logger_user
 logger_db_hostname = localhost
 
+############### Auth Server #########
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

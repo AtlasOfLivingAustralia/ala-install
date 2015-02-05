@@ -11,3 +11,5 @@ dashboard_url=http://dashboard.vagrant1.ala.org.au/
 dashboard_base_url=http://dashboard.vagrant1.ala.org.au/
 dashboard_context_path=
 
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

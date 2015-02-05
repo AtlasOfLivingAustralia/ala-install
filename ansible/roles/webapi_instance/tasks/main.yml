@@ -47,7 +47,7 @@
     - apache_vhost
     - deploy
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ webapi_url }}' context_path='{{ webapi_context_path }}' hostname='{{ webapi_hostname }}'
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ webapi_war_url }}' context_path='{{ webapi_context_path }}' hostname='{{ webapi_hostname }}'
   tags:
     - webapi
     - tomcat_vhost

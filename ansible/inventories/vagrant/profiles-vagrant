@@ -15,3 +15,6 @@ profile_hub_hostname=vagrant1.ala.org.au
 profile_hub_url=http://vagrant1.ala.org.au/profile-hub
 profile_hub_base_url=http://vagrant1.ala.org.au
 profile_hub_context_path=/profile-hub
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

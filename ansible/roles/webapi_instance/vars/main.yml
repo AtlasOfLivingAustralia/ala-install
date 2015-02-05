@@ -1,6 +1,6 @@
-version: "0.1"
+version: "0.2"
 artifactId: "webapi"
 classifier: ''
 packaging: "war"
 groupId: "au.org.ala"
-webapi_url: "{{maven_repo_ws_url}}"
+webapi_war_url: "{{maven_repo_ws_url}}"

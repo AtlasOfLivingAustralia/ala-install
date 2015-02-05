@@ -17,3 +17,6 @@ ozatlas_proxy_db_password=ozatlasproxy
 ozatlas_proxy_db_hostname=localhost
 
 fieldData_url=http://vagrant1.ala.org.au/fielddata
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

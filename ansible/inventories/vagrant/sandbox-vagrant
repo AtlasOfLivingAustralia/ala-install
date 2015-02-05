@@ -15,6 +15,7 @@ biocache_service_hostname = sandbox.vagrant1.ala.org.au
 biocache_service_url = http://sandbox.vagrant1.ala.org.au/biocache-service
 biocache_service_base_url = http://sandbox.vagrant1.ala.org.au
 biocache_service_context_path = /biocache-service
+userdetails_url=https://auth.ala.org.au/userdetails/userDetails
 
 biocache_hub_hostname = sandbox.vagrant1.ala.org.au
 biocache_hub_url = http://sandbox.vagrant1.ala.org.au/ala-hub
@@ -41,3 +42,6 @@ bie_url = http://bie.vagrant1.ala.org.au
 layers_service_url = http://spatial.vagrant1.ala.org.au/ws
 lists_service_url = http://lists.vagrant1.ala.org.au
 logger_url = http://logger.vagrant1.ala.org.au
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas
