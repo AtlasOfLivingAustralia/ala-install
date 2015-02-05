@@ -13,8 +13,14 @@
     - properties
     - specimenbrowser
 
+- name: copy biocache logging config
+  copy: src=data.json dest="{{data_dir}}/specimenbrowser/config/data.json" force=yes
+  tags:
+    - properties
+    - specimenbrowser
+
 - name: copy all config.properties
-  template: src=specimenbrowser-config.properties dest={{data_dir}}/specimenbrowser/config/specimenbrowser-config.properties
+  template: src=specimenbrowser-config.properties dest={{data_dir}}/specimenbrowser/config/specimenbrowser-config.properties force=yes
   tags:
     - properties
     - specimenbrowser
