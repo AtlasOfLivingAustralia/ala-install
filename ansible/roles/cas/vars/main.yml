@@ -1,6 +1,10 @@
 # assets
-version: "1.1-SNAPSHOT"
+version: "1.1"
 artifactId: "ala-cas"
 classifier: ''
 packaging: "war"
 cas_war_url: "{{maven_repo_ws_url}}"
+tomcat_xmx_override: "2g"
+tomcat_gc_override: "-XX:+UseG1GC"
+
+tomcat_java_opts_override: "-Xmx4g -Xms2g -XX:MaxPermSize=256m -Xss256k -XX:+UseG1GC"

@@ -78,3 +78,16 @@
     - deploy
     - tomcat_vhost
 
+#
+# Override the default memory settings for Tomcat to increase heap space and change the garbage collector
+#
+- name: Override default tomcat memory configuration
+  lineinfile:
+    dest={{tomcat_conf}}
+    regexp="^JAVA_OPTS"
+    line='JAVA_OPTS="{{tomcat_java_opts_override}}"'
+  notify:
+    - restart tomcat
+  when: ansible_os_family == "Debian"
+  tags:
+    - tomcat
