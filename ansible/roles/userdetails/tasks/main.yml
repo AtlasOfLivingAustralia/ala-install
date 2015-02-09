@@ -88,6 +88,7 @@
     line='JAVA_OPTS="{{tomcat_java_opts_override}}"'
   notify:
     - restart tomcat
-  when: ansible_os_family == "Debian"
   tags:
+    - userdetails
+    - deploy
     - tomcat
