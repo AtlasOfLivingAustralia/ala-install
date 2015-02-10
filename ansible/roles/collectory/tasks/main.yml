@@ -9,6 +9,7 @@
   copy: src={{item}} dest=/tmp
   with_items:
     - collectory-sequences.sql
+    - collectory-schema.sql
   tags:
     - db
 
@@ -23,6 +24,7 @@
   tags:
     - db
 
+
 - name: create collectory DB user
   mysql_user: name={{collectory_db_user}} password={{collectory_db_password}} priv=collectory.*:ALL state=present
   tags:
@@ -32,28 +34,30 @@
   mysql_db: name=collectory state=import target={{item}}
   with_items:
     - /tmp/collectory-sequences.sql
+    - /tmp/collectory-schema.sql
   when: dbschema.changed
   tags:
     - db
+
 #
 # Properties files configuration
 #
 
 - name: ensure data directory exists
-  file: path={{data_dir}}/collectory owner={{tomcat_user}} group={{tomcat_user}}  state=directory
+  file: path={{data_dir}}/ala-collectory owner={{tomcat_user}} group={{tomcat_user}}  state=directory
   tags:
     - properties
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory
   with_items:
-    - "{{data_dir}}/collectory/upload/tmp"
-    - "{{data_dir}}/collectory/taxa/data"
+    - "{{data_dir}}/ala-collectory/upload/tmp"
+    - "{{data_dir}}/ala-collectory/taxa/data"
   tags:
     - properties
 
 - name: copy all data assets [SOLR, lucene etc]
-  copy: src={{item}} dest={{data_dir}}/collectory owner={{tomcat_user}} group={{tomcat_user}}
+  copy: src={{item}} dest={{data_dir}}/ala-collectory owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   with_items:
     - data/config
     - data/data
@@ -61,16 +65,17 @@
     - properties
 
 - name: copy all template configs
-  template: src={{item}} dest={{data_dir}}/collectory/{{item}}
+  template: src={{item}} dest={{data_dir}}/ala-collectory/{{item}}
   with_items:
-    - config/collectory-config.properties 
+    - config/ala-collectory-config.properties
+    - config/connection-profiles.json
   tags:
     - properties
 
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/{{item}} owner={{tomcat_user}}  group={{tomcat_user}}  recurse=true
   with_items:
-    - collectory
+    - ala-collectory
   notify: 
     - restart tomcat  
   tags:
