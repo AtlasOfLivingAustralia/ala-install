@@ -1,8 +1,8 @@
 # application versions
-collectory: collectory
+collectory: ala-collectory
 # assets
-version: "1.1.3"
-artifactId: "collectory"
+version: "1.0"
+artifactId: "ala-collectory"
 groupId: "au.org.ala"
 # collectory does not need a value for classifier
 classifier: ''
