@@ -19,6 +19,25 @@
     - db
     - apikey
 
+- name: copy transient files to tmp (schemas etc)
+  copy: src={{item}} dest=/tmp
+  with_items:
+    - apikey_schema.sql
+  when: dbschema.changed
+  tags:
+    - db
+    - apikey
+
+- name: create schema, stored procs and reference data
+  mysql_db: name={{apikey_db_name}} state=import target={{item}}
+  with_items:
+    - /tmp/apikey_schema.sql
+  when: dbschema.changed
+  tags:
+    - db
+    - apikey
+
+
 #
 # External configuration properties file
 #
