@@ -4,7 +4,8 @@
     - common
     - tomcat
     - apache
-    - geoserver
-    - postgresql    
+    - postgresql
+    - layers-db
     - layers-service
     - layer-ingestion
+    - geoserver

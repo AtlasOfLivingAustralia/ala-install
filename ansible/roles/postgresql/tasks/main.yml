@@ -106,6 +106,29 @@
   when: started.changed
   tags: postgresql
 
+- name: ensure postgresql server is running
+  action: service name=postgresql state=started
+  tags: postgresql
+
+- name: ensure postgis_template database exists
+  postgresql_db: db=postgis_template state=present
+  sudo_user: postgres
+  tags: postgresql
+
+- name: make postgis_template a template
+  action: command psql -d postgis_template -c "UPDATE pg_database SET datistemplate=true WHERE datname='postgis_template';"
+  sudo_user: postgres
+  tags: postgresql
+
+- name: run the postgis SQL scripts
+  action: command psql -d postgis_template -f {{ item }}
+  sudo_user: postgres
+  with_items:
+    - /usr/share/postgresql/9.3/contrib/postgis-2.1/postgis.sql
+    - /usr/share/postgresql/9.3/contrib/postgis-2.1/spatial_ref_sys.sql
+    - /usr/share/postgresql/9.3/contrib/postgis-2.1/postgis_comments.sql
+  tags: postgresql
+
 #- name: ensure user does not have unnecessary privilege
 #  postgresql_user: name={{postgres_dbuser}} role_attr_flags=NOSUPERUSER,NOCREATEDB
 #  ignore_errors: yes

@@ -1,6 +1,31 @@
 - include: ../../common/tasks/setfacts.yml
+
+- name: packages
+  apt: pkg={{ item }} update_cache=yes state=latest
+  with_items:
+    - curl
+    - unzip
   tags:
-    - geoserver  
+    - geoserver
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/ala/data/geoserver_data_dir"
+    - "{{data_dir}}/ala/data/geoserver_data_dir/gwc"
+  tags:
+    - geoserver
+
+- name: configure geoserver data dir
+  lineinfile:
+    dest={{tomcat_conf}}
+    line='CATALINA_OPTS="-DGEOSERVER_DATA_DIR={{data_dir}}/ala/data/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/ala/data/geoserver_data_dir/gwc"'
+  notify:
+    - restart tomcat
+  when: ansible_os_family == "Debian"
+  tags:
+    - tomcat
+    - geoserver
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ geoserver_context_path }}' hostname='{{ geoserver_hostname }}'
   tags:
@@ -12,4 +37,57 @@
   tags:
     - deploy
     - tomcat_vhost
-    - geoserver    
+    - geoserver
+
+- name: unzip .war to get data directory
+  command: "unzip {{ tomcat_deploy_dir }}/{{ war_filename }}.war data/* -d /tmp/"
+  tags:
+    - geoserver
+
+- name: remove previous geoserver data dir
+  command: "rm -r /tmp/geoserver_data_dir"
+  ignore_errors: yes
+  tags:
+    - geoserver
+
+- name: rename data dir
+  command: "mv /tmp/data /tmp/geoserver_data_dir"
+  tags:
+    - geoserver
+
+- name: copy data directory
+  command: "cp -r /tmp/geoserver_data_dir {{data_dir}}/ala/data"
+  tags:
+    - geoserver
+
+- name: copy geoserver script
+  template: src=geoserver.sh dest={{data_dir}}/geoserver.sh
+  tags:
+    - geoserver
+
+- name: copy geoserver script
+  template: src=geoserver.objects.xml dest={{data_dir}}/geoserver.objects.xml
+  tags:
+    - geoserver
+
+- name: copy geoserver script
+  template: src=geoserver.distributions.xml dest={{data_dir}}/geoserver.distributions.xml
+  tags:
+    - geoserver
+
+- name: geoserver script permissions
+  command: "chmod a+x {{data_dir}}/geoserver.sh"
+  tags:
+    - geoserver
+
+- name: set data ownership
+  file: path={{data_dir}}/ala owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - geoserver
+
+- debug: "finish geoserver setup by running {{data_dir}}/geoserver.sh"
+
+
+
