@@ -12,23 +12,27 @@
     - collectory-schema.sql
   tags:
     - db
+    - collectory
 
 - name: ensure mysql is running (this is idempotent so safe)
   service: name={{mysql_service}} state=started
   tags:
     - db
+    - collectory
 
 - name: create collectory DB
   mysql_db: name=collectory state=present
   register: dbschema
   tags:
     - db
+    - collectory
 
 
 - name: create collectory DB user
   mysql_user: name={{collectory_db_user}} password={{collectory_db_password}} priv=collectory.*:ALL state=present
   tags:
     - db
+    - collectory
 
 - name: create collectory sequences
   mysql_db: name=collectory state=import target={{item}}
@@ -38,48 +42,46 @@
   when: dbschema.changed
   tags:
     - db
+    - collectory
 
 #
 # Properties files configuration
 #
 
-- name: ensure data directory exists
-  file: path={{data_dir}}/ala-collectory owner={{tomcat_user}} group={{tomcat_user}}  state=directory
-  tags:
-    - properties
-
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
-    - "{{data_dir}}/ala-collectory/upload/tmp"
-    - "{{data_dir}}/ala-collectory/taxa/data"
+    - "{{data_dir}}/{{ collectory_app }}"
+    - "{{data_dir}}/{{ collectory_app }}/upload/tmp"
+    - "{{data_dir}}/{{ collectory_app }}/taxa/data"
   tags:
     - properties
+    - collectory
 
 - name: copy all data assets [SOLR, lucene etc]
-  copy: src={{item}} dest={{data_dir}}/ala-collectory owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  copy: src={{item}} dest={{data_dir}}/{{ collectory_app }} owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - data/config
     - data/data
   tags:
     - properties
+    - collectory
 
 - name: copy all template configs
-  template: src={{item}} dest={{data_dir}}/ala-collectory/{{item}}
+  template: src={{item}} dest={{data_dir}}/{{ collectory_app }}/config/{{ collectory_app }}-config.properties
   with_items:
-    - config/ala-collectory-config.properties
-    - config/connection-profiles.json
+    - config/collectory-config.properties
   tags:
     - properties
+    - collectory
 
 - name: set data ownership [all data is owned by tomcat]
-  file: path={{data_dir}}/{{item}} owner={{tomcat_user}}  group={{tomcat_user}}  recurse=true
-  with_items:
-    - ala-collectory
+  file: path={{data_dir}}/{{ collectory_app }} owner={{tomcat_user}}  group={{tomcat_user}}  recurse=true
   notify: 
     - restart tomcat  
   tags:
     - properties
+    - collectory
 
 #
 # WAR file deployment and virtual host configuration
@@ -88,8 +90,10 @@
   tags:
     - deploy
     - apache_vhost
+    - collectory
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ collectory_war_url }}' context_path='{{ collectory_context_path }}' hostname='{{ collectory_hostname }}'
   tags:
     - deploy
     - tomcat_vhost
+    - collectory

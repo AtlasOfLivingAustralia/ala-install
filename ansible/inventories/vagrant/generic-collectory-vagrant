@@ -8,7 +8,12 @@ local_repo_dir=~/.ala
 is_vagrant=true
 data_dir=/data
 
-collectory_hostname=collections.vagrant.ala.org.au
+collectory_app=generic-collectory
+collectory_version=1.0
+skin=generic
+security_bypass=true
+
+collectory_hostname=collections.vagrant1.ala.org.au
 
 collectory_db_host_address = localhost
 collectory_db_host = localhost
@@ -26,18 +31,12 @@ orgNameShort = Atlas
 # CAS
 uri_filter_pattern = /admin.*,/collection.*,/institution.*,/contact.*,/reports.*,/providerCode.*,/providerMap.*,/dataProvider.*,/dataResource.*,/dataHub.*,/manage/.*
 
-# Security bypass
-security_bypass = false
-
 # External API access
 api_key= to_be_added
 
 # Biocache integration
-biocache_hub_url=http://biocache.vagrant1.ala.org.au
-biocache_service_url=http://biocache.vagrant1.ala.org.au
-
-# Skinning
-skin = ala2
+biocache_hub_url=http://biocache.ala.org.au
+biocache_service_url=http://biocache.ala.org.au
 
 # Map config
 collections_map_lon = 134
@@ -65,10 +64,10 @@ disable_logger = false
 api_key_check_enabled = true
 
 # GBIF base URL for webservices
-gbifApiUrl=http://api.vagrant1.gbif.org/v1
+gbifApiUrl=http://api.gbif.org/v1
 
 # Logger URL
-logger_url = http://logger.vagrant1.ala.org.au/service
+logger_url = http://logger.ala.org.au/service
 
 # Auth server
 auth_base_url=https://auth.ala.org.au
