@@ -42,3 +42,14 @@
     - layers-db
     - createdb
 
+- name: copy deploy_testdata script
+  template: src=deploy_layersdb_testdata.sh dest={{data_dir}}/deploy_layersdb_testdata.sh
+  tags:
+    - layers-db
+
+- name: deploy_testdata script permissions
+  command: "chmod a+x {{data_dir}}/deploy_layersdb_testdata.sh"
+  tags:
+    - layers-db
+
+- debug: "deploy testdata in layers-db and geoserver by running {{data_dir}}/deploy_layersdb_testdata.sh"

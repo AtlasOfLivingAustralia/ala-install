@@ -1,0 +1,7 @@
+layers_service_app: spatial-analysis
+version: "4.0-SNAPSHOT"
+artifactId: "ala-spatial"
+groupId: "au.org.ala"
+classifier: ""
+packaging: "war"
+spatial_analysis_war_url: "{{maven_repo_ws_url}}"

@@ -4,6 +4,9 @@ vagrant1
 [geoserver]
 vagrant1
 
+[spatial-analysis]
+vagrant1
+
 [geoserver:vars]
 is_vagrant=true
 local_repo_dir=~/.ala
@@ -39,6 +42,20 @@ layers_db_password=postgres
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
+
+[spatial-analysis:vars]
+is_vagrant=true
+local_repo_dir=~/.ala
+data_dir=/data
+
+spatial_analysis_hostname=vagrant1.ala.org.au
+spatial_analysis_url=http://vagrant1.ala.org.au/spatial-analysis
+spatial_analysis_base_url=http://vagrant1.ala.org.au
+spatial_analysis_context_path=/spatial-analysis
+
+layers_db_name=layersdb
+layers_db_username=postgres
+layers_db_password=postgres
 
 [layers-db:vars]
 layersdb_schema_url=https://github.com/AtlasOfLivingAustralia/spatial-database/raw/master/layersdb.sql

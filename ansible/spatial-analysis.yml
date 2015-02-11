@@ -1,0 +1,7 @@
+- hosts: spatial-analysis
+  roles:
+    - java
+    - common
+    - tomcat
+    - apache
+    - spatial-analysis
