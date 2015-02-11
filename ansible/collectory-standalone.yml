@@ -1,8 +1,8 @@
 - hosts: collectory
   roles:
-    - { role: common, collectory_app: ala-collectory, collectory_version: 1.0 }
-    - { role: java, collectory_app: ala-collectory, collectory_version: 1.0 }
-    - { role: mysql, collectory_app: ala-collectory, collectory_version: 1.0 }
-    - { role: tomcat, collectory_app: ala-collectory, collectory_version: 1.0 }
-    - { role: apache, collectory_app: ala-collectory, collectory_version: 1.0 }
-    - { role: collectory, collectory_app: ala-collectory, collectory_version: 1.0, security_bypass: "", skin: ala2 }
+    - common
+    - java
+    - mysql
+    - tomcat
+    - apache
+    - collectory

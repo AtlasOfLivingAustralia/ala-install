@@ -8,6 +8,11 @@ local_repo_dir=~/.ala
 is_vagrant=true
 data_dir=/data
 
+collectory_app=generic-collectory
+collectory_version=1.0
+skin=generic
+security_bypass=true
+
 collectory_hostname=collections.vagrant1.ala.org.au
 
 collectory_db_host_address = localhost
