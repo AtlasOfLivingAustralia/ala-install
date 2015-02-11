@@ -1,0 +1,7 @@
+# assets
+version: "1.0-SNAPSHOT"
+artifactId: "timeseries"
+classifier: ''
+packaging: "war"
+groupId: "au.org.ala"
+timeseries_war_url: "{{maven_repo_ws_url}}"

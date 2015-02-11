@@ -1,0 +1,7 @@
+- hosts: timeseries
+  roles:
+    - java
+    - common
+    - tomcat
+    - apache
+    - timeseries
