@@ -8,14 +8,14 @@ local_repo_dir=~/.ala
 is_vagrant=true
 data_dir=/data
 
-collectory_hostname=collections.vagrant1.ala.org.au
+collectory_hostname=vagrant1.ala.org.au
 
 collectory_db_host_address = localhost
 collectory_db_host = localhost
 
-collectory_url = http://collections.vagrant1.ala.org.au
-collectory_base_url = http://collections.vagrant1.ala.org.au
-collectory_context_path = 
+collectory_url = http://vagrant1.ala.org.au/generic
+collectory_base_url = http://vagrant1.ala.org.au
+collectory_context_path = /generic
 
 collectory_db_user = collectory
 collectory_db_password = password

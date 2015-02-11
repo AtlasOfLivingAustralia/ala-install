@@ -5,4 +5,4 @@
     - mysql
     - tomcat    
     - apache
-    - { role: collectory, collectory: ala-collectory, collectory_version: 1.0 }
+    - { role: collectory, collectory: generic-collectory, collectory_version: 1.0 }

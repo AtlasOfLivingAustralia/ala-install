@@ -31,7 +31,3 @@ alter table provider_map_provider_code add index FK13BB0B0A2B882E69 (provider_ma
 alter table provider_map_provider_code add index FK13BB0B0A195335D1 (provider_map_institution_codes_id), add constraint FK13BB0B0A195335D1 foreign key (provider_map_institution_codes_id) references provider_map (id);
 alter table provider_map_provider_code add index FK13BB0B0A79EFEF03 (provider_code_id), add constraint FK13BB0B0A79EFEF03 foreign key (provider_code_id) references provider_code (id);
 create index uid_idx on temp_data_resource (uid);
-CREATE TABLE `sequence` (`id` bigint(20) NOT NULL,`next_id` bigint(20) NOT NULL,`name` varchar(45) NOT NULL,`prefix` varchar(5) NOT NULL, PRIMARY KEY (`id`));
-
-# Could be moved to Bootstrap.groovy
-insert into sequence (id, name, prefix) values (1, 'collection', 'co'), (2, 'institution', 'in'), (3, 'dataProvider', 'dp'), (4, 'dataResource', 'dr'), (5, 'dataHub', 'dh'), (6, 'attribution', 'at'), (7,'tempDataResource', 'drt');
