@@ -1,8 +1,8 @@
 - hosts: collectory
   roles:
-    - common
-    - java    
-    - mysql
-    - tomcat    
-    - apache
+    - { role: common, collectory: generic-collectory, collectory_version: 1.0 }
+    - { role: java, collectory: generic-collectory, collectory_version: 1.0 }
+    - { role: mysql, collectory: generic-collectory, collectory_version: 1.0 }
+    - { role: tomcat, collectory: generic-collectory, collectory_version: 1.0 }
+    - { role: apache, collectory: generic-collectory, collectory_version: 1.0 }
     - { role: collectory, collectory: generic-collectory, collectory_version: 1.0 }
