@@ -51,15 +51,15 @@
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
-    - "{{data_dir}}/{{ collectory }}"
-    - "{{data_dir}}/{{ collectory }}/upload/tmp"
-    - "{{data_dir}}/{{ collectory }}/taxa/data"
+    - "{{data_dir}}/{{ collectory_app }}"
+    - "{{data_dir}}/{{ collectory_app }}/upload/tmp"
+    - "{{data_dir}}/{{ collectory_app }}/taxa/data"
   tags:
     - properties
     - collectory
 
 - name: copy all data assets [SOLR, lucene etc]
-  copy: src={{item}} dest={{data_dir}}/{{ collectory }} owner={{tomcat_user}} group={{tomcat_user}}
+  copy: src={{item}} dest={{data_dir}}/{{ collectory_app }} owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - data/config
     - data/data
@@ -68,15 +68,15 @@
     - collectory
 
 - name: copy all template configs
-  template: src={{item}} dest={{data_dir}}/{{ collectory }}/config/{{ collectory }}-config.properties
+  template: src={{item}} dest={{data_dir}}/{{ collectory_app }}/config/{{ collectory_app }}-config.properties
   with_items:
-    - config/{{ collectory }}-config.properties
+    - config/collectory-config.properties
   tags:
     - properties
     - collectory
 
 - name: set data ownership [all data is owned by tomcat]
-  file: path={{data_dir}}/{{ collectory }} owner={{tomcat_user}}  group={{tomcat_user}}  recurse=true
+  file: path={{data_dir}}/{{ collectory_app }} owner={{tomcat_user}}  group={{tomcat_user}}  recurse=true
   notify: 
     - restart tomcat  
   tags:

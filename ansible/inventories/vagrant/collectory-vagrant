@@ -26,18 +26,12 @@ orgNameShort = Atlas
 # CAS
 uri_filter_pattern = /admin.*,/collection.*,/institution.*,/contact.*,/reports.*,/providerCode.*,/providerMap.*,/dataProvider.*,/dataResource.*,/dataHub.*,/manage/.*
 
-# Security bypass
-security_bypass = false
-
 # External API access
 api_key= to_be_added
 
 # Biocache integration
 biocache_hub_url=http://biocache.ala.org.au
 biocache_service_url=http://biocache.ala.org.au
-
-# Skinning
-skin = ala2
 
 # Map config
 collections_map_lon = 134
