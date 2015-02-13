@@ -1,0 +1,65 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:    
+    - spatial-analysis
+
+- name: packages
+  apt: pkg={{ item }} update_cache=yes state=latest
+  with_items:
+    - imagemagick
+  tags:
+    - spatial-analysis
+
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ spatial_analysis_context_path }}' hostname='{{ spatial_analysis_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - spatial-analysis
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ spatial_analysis_war_url }}' context_path='{{ spatial_analysis_context_path }}' hostname='{{ spatial_analysis_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - spatial-analysis
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/ala/data/alaspatial/"
+    - "{{data_dir}}/alaspatial/config"
+    - "{{data_dir}}/ala/modelling/gdm"
+    - "{{data_dir}}/ala/modelling/maxent"
+    - "{{data_dir}}/ala/runtime"
+    - "{{data_dir}}/ala/runtime/output"
+    - "{{data_dir}}/ala/data/layers/analysis"
+  tags:
+    - spatial-analysis
+
+- name: map analysis output directory
+  file: src={{ data_dir }}/ala/runtime dest=/srv/{{ spatial_analysis_hostname }}/www/output state=link
+
+- name: copy all config.properties
+  template: src=config/alaspatial-config.properties dest={{data_dir}}/alaspatial/config/alaspatial-config.properties
+  tags:
+    - spatial-analysis
+
+- name: copy all log4j.properties
+  template: src=config/log4j.properties dest={{data_dir}}/alaspatial/config/log4j.properties
+  tags:
+    - spatial-analysis
+
+- name: copy all data-config.xml
+  template: src=config/data.xml dest={{data_dir}}/alaspatial/config/alaspatial-data-config.xml
+  tags:
+    - spatial-analysis
+
+- name: set data ownership
+  file: path={{data_dir}}/alaspatial owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  tags:
+    - spatial-analysis
+
+- name: set data ownership
+  file: path={{data_dir}}/ala owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  tags:
+    - spatial-analysis
+
+- debug: msg="To finish installation copy put a copy of maxent and gdm into {{ data_dir }}/modelling"

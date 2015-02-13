@@ -1,0 +1,55 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:    
+    - layers-db
+
+- name: ensure layersdb exists
+  action: command createdb -T postgis_template {{ layers_db_name | default('layersdb') }}
+  sudo_user: postgres
+  ignore_errors: yes
+  register: dbschema
+  tags:
+    - layers-db
+    - createdb
+
+- name: ensure user postgres access
+  action: postgresql_user db=layersdb user=postgres password="postgres" priv=ALL state=present
+  sudo_user: postgres
+  tags:
+    - layers-db
+    - createdb
+
+- name: download layersdb schema
+  command: "wget {{layersdb_schema_url}} --output-document=/tmp/layersdb.schema.sql"
+  when: dbschema.changed
+  tags:
+    - layers-db
+    - createdb
+
+- name: load schema
+  action: command psql {{ layers_db_name | default('layersdb') }} -f "/tmp/layersdb.schema.sql"
+  sudo_user: postgres
+  when: dbschema.changed
+  tags:
+    - layers-db
+    - createdb
+
+- name: placeholder data for geoserver
+  action: command psql {{ layers_db_name | default('layersdb') }} -c "insert into objects (id, pid, name, the_geom) select '1', '1', 'test', st_geomfromtext('POLYGON((112.0 -44.0,154.0 -44.0,154.0 -9.0,112.0 -9.0,112.0 -44.0))', 4326);insert into distributions (geom_idx,the_geom) select 1, st_geomfromtext('POLYGON((112.0 -44.0,154.0 -44.0,154.0 -9.0,112.0 -9.0,112.0 -44.0))', 4326);"
+  sudo_user: postgres
+  when: dbschema.changed
+  ignore_errors: yes
+  tags:
+    - layers-db
+    - createdb
+
+- name: copy deploy_testdata script
+  template: src=deploy_layersdb_testdata.sh dest={{data_dir}}/deploy_layersdb_testdata.sh
+  tags:
+    - layers-db
+
+- name: deploy_testdata script permissions
+  command: "chmod a+x {{data_dir}}/deploy_layersdb_testdata.sh"
+  tags:
+    - layers-db
+
+- debug: "deploy testdata in layers-db and geoserver by running {{data_dir}}/deploy_layersdb_testdata.sh"

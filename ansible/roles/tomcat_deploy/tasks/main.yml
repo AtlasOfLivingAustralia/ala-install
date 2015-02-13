@@ -2,20 +2,20 @@
   # note: a context path of / causes problems with CAS authentication, so don't use it with apps that require auth
 
 - set_fact: war_filename="ROOT" tomcat_deploy_dir="{{ tomcat_dir }}/webapps-{{ hostname }}"
-  when: vhost=="true" or vhost==true
+  when: vhost=="true" or vhost==true or vhost=="True"
 
 - set_fact: war_filename="{{ context_path.replace('/', '') }}" tomcat_deploy_dir="{{ tomcat_dir }}/webapps"
-  when: vhost=="false" or vhost==false or vhost is not defined
+  when: vhost=="false" or vhost==false or vhost=="False" or vhost is not defined
 
 - name: create tomcat vhost
   tomcat_vhost: name={{ hostname }} #remote_ip_valve="true"
-  when: vhost=="true" or vhost==true
+  when: vhost=="true" or vhost==true or vhost=="True"
   notify:
     - restart tomcat
 
 - name: ensure tomcat vhost webapps directory exists if necessary
   file: path="{{ tomcat_deploy_dir }}" state=directory owner={{tomcat_user}} group={{tomcat_user}}
-  when: vhost=="true" or vhost==true
+  when: vhost=="true" or vhost==true or vhost=="True"
   notify:
     - restart tomcat
 

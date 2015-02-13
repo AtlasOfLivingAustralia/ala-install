@@ -1,67 +1,6 @@
 - include: ../../common/tasks/setfacts.yml
   tags:    
-    - layers-service    
-
-- name: install Postgis and GDAL Execs
-  apt: pkg={{ item }} state=present update_cache=yes
-  with_items:
-    - postgis
-    - gdal-bin
-  tags:    
-    - layers-service    
-
-- name: copy transient files to tmp (schemas etc)
-  copy: src={{item}} dest=/tmp
-  with_items:
-    - layersdb.sql
-    - stored_procs.sql    
-  tags:
-    - createdb
     - layers-service
-
-- name: create layersdb database
-  postgresql_db: name={{ layers_db_name | default('layersdb') }}
-  sudo_user: postgres
-  sudo: True
-  register: dbschema
-  tags:
-    - db
-    - layers-service
-
-- name: create layersdb database user
-  postgresql_user: db={{ layers_db_name | default('layersdb') }} name={{ layers_db_username }} password={{ layers_db_password }} priv=ALL state=present
-  sudo_user: postgres
-  sudo: True
-  tags:
-    - db
-    - layers-service
-
-- name: setup the DB table and sequences
-  command: "psql -d {{ layers_db_name | default('layersdb') }} -a -f /tmp/layersdb.sql"
-  sudo_user: postgres
-  sudo: True  
-  when: dbschema.changed  
-  tags:
-    - db
-    - layers-service    
-
-- name: setup stored procedures - WARNING!!! this isnt idempotent yet
-  command: "psql -d {{ layers_db_name | default('layersdb') }} -a -f /tmp/stored_procs.sql"
-  sudo_user: postgres
-  sudo: True  
-  when: dbschema.changed    
-  tags:
-    - db
-    - layers-service    
-
-- name: setup the DB user password
-  command: "psql -d {{ layers_db_name | default('layersdb') }} -c \"ALTER USER {{ layers_db_username }} WITH PASSWORD '{{ layers_db_password }}' \""
-  sudo_user: postgres
-  sudo: True  
-  when: dbschema.changed    
-  tags:
-    - db
-    - layers-service    
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ layers_service_context_path }}' hostname='{{ layers_service_hostname }}'
   tags:
@@ -79,8 +18,8 @@
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/layers-store/config"
-    - "{{data_dir}}/layers-store/batch_requests"
     - "{{data_dir}}/layers-service/config"
+    - "{{data_dir}}/layers-service/batch_requests"
     - "{{data_dir}}/ala/data/layers/ready/shape"
     - "{{data_dir}}/ala/data/layers/ready/shape_diva"
     - "{{data_dir}}/ala/data/layers/ready/diva"
