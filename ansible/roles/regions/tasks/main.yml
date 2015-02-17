@@ -34,14 +34,6 @@
     - properties
     - regions
 
-- name: set data ownership
-  file: path={{data_dir}}/regions owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify:
-    - restart tomcat
-  tags:
-    - properties
-    - regions
-
 - name: copy configuration files
   copy: src={{item}} dest={{data_dir}}/regions/config
   with_items:
@@ -49,6 +41,14 @@
     - layer-regions-metadata.json
     - state-emblems.json
     - stateEmblems.txt
+  tags:
+    - properties
+    - regions
+
+- name: set data ownership
+  file: path={{data_dir}}/regions owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
   tags:
     - properties
     - regions

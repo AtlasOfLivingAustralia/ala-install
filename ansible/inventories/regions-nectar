@@ -1,15 +1,15 @@
 [regions]
-10.1.1.2
+203.101.226.9
 
 [regions:vars]
-is_vagrant=true
-local_repo_dir=~/.ala
+is_vagrant=false
+local_repo_dir = ~/.ala
 data_dir=/data
 
-regions_hostname=regions.vagrant1.ala.org.au
+regions_hostname=regions.nectar.ala.org.au
 regions_context_path=
-regions_base_url=http://regions.vagrant1.ala.org.au
-regions_base_url=http://regions.vagrant1.ala.org.au
+regions_base_url=http://regions.nectar.ala.org.au
+regions_base_url=http://regions.nectar.ala.org.au
 
 bie_base_url=http://bie.ala.org.au
 biocache_base_url=http://biocache.ala.org.au
