@@ -14,7 +14,7 @@ curl -v -u {{geoserver_username}}:{{geoserver_password}} -XDELETE {{geoserver_ur
 curl -v -u {{geoserver_username}}:{{geoserver_password}} -XPOST -H "Content-type: text/xml" -d "<workspace><name>ALA</name></workspace>" {{geoserver_url}}/rest/workspaces
 
 #create LayersDB store
-curl -v -u {{geoserver_username}}:{{geoserver_password}} -XPOST -H "Content-type: text/xml" -d "<dataStore><name>LayersDB</name><connectionParameters><host>{{postgis_host}}</host><port>{{postgis_port}}</port><database>layersdb</database><schema>public</schema><user>{{postgis_username}}</user><passwd>{{postgis_password}}</passwd><dbtype>postgis</dbtype></connectionParameters></dataStore>" {{geoserver_url}}/rest/workspaces/ALA/datastores
+curl -v -u {{geoserver_username}}:{{geoserver_password}} -XPOST -H "Content-type: text/xml" -d "<dataStore><name>LayersDB</name><connectionParameters><host>{{postgis_host | default('localhost')}}</host><port>{{postgis_port | default('5432')}}</port><database>{{layers_db_name | default('layersdb')}}</database><schema>public</schema><user>{{postgis_username | default('postgres')}}</user><passwd>{{postgis_password | default('postgres')}}</passwd><dbtype>postgis</dbtype></connectionParameters></dataStore>" {{geoserver_url}}/rest/workspaces/ALA/datastores
 
 #create styles
 curl -v -u {{geoserver_username}}:{{geoserver_password}} -XPOST -H "Content-type: text/xml" -d "<style><name>distributions_style</name><filename>distributions_style.sld</filename></style>" {{geoserver_url}}/rest/styles

@@ -2,6 +2,14 @@
   tags:
     - ingestion
 
+- name: install Postgis and GDAL Execs
+  apt: pkg={{ item }} state=present update_cache=yes
+  with_items:
+    - postgis
+    - gdal-bin
+  tags:    
+    - ingestion       
+
 - name: ensure layer-ingestion directory exists
   file: path=/usr/lib/layer-ingestion state=directory
   tags:
