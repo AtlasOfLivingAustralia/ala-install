@@ -38,7 +38,7 @@
     - reload apache
 
 - name: Enable vhost for Apache
-  command: a2ensite {{ hostname }}
+  command: a2ensite {{ hostname }}.conf
   when: vhost_required
   args:
     creates: /etc/apache2/sites-enabled/{{hostname}}
