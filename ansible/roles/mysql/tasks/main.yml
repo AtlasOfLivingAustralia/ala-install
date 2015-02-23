@@ -7,6 +7,7 @@
     - MySQL-python
   tags:
     - packages 
+  register: mysql_installed
   notify: 
     - restart mysql
   when: ansible_os_family == "RedHat"
@@ -18,6 +19,32 @@
     - python-mysqldb
   tags:
     - packages 
+  register: mysql_installed
   notify: 
     - restart mysql
   when: ansible_os_family == "Debian"
+
+- name: warn about using the default root user password
+  debug: msg="You are installing MySQL with a default root password of 'password'. Are you sure you want to do that? Specify a real password in your inventory file using the variable mysql_root_password."
+  when: mysql_installed.changed and  mysql_root_password is not defined
+
+- name: change root user password on first run
+  mysql_user: name=root password={{ mysql_root_password | default('password') }} priv=*.*:ALL,GRANT host={{ item }}
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+  when: mysql_installed.changed
+
+- name: delete anonymous MySQL user for the host
+  mysql_user: user="" host="{{ansible_hostname}}" login_user="root" login_password={{ mysql_root_password | default('password') }} state="absent"
+  when: mysql_installed.changed
+
+- name: delete anyonmous MySQL user for localhost
+  mysql_user: user="" login_user="root" login_password={{ mysql_root_password | default('password') }} state="absent"
+  when: mysql_installed.changed
+
+- name: drop test database
+  mysql_db: name="test" login_user="root" login_password={{ mysql_root_password | default('password') }} state="absent"
+  when: mysql_installed.changed
