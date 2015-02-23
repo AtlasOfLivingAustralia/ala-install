@@ -24,6 +24,15 @@
     - pigeonhole
     - properties
 
+- name: ensure target directories exist [data subdirectories etc.
+  file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/pigeonhole"
+    - "{{data_dir}}/pigeonhole/config"
+    - "{{data_dir}}/pigeonhole/upload"
+  tags:
+    - pigeonhole
+
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ pigeonhole_context_path }}' hostname='{{ pigeonhole_hostname }}'
   tags:
     - pigeonhole
