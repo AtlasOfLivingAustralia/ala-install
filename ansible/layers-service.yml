@@ -6,6 +6,6 @@
     - apache
     - postgresql
     - layers-db
+    - geoserver    
     - layers-service
     - layer-ingestion
-    - geoserver

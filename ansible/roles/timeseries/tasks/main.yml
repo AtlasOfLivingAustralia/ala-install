@@ -1,0 +1,43 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - timeseries
+
+#
+# External configuration properties file
+#
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/timeseries/config"
+  tags:
+    - properties
+    - timeseries
+
+- name: copy all config.properties
+  template: src=timeseries-config.properties dest={{data_dir}}/timeseries/config/timeseries-config.properties force=yes
+  tags:
+    - properties
+    - timeseries
+
+- name: set data ownership
+  file: path={{data_dir}}/timeseries owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - properties
+    - timeseries
+
+#
+# WAR file deployment and virtual host configuration
+#
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ timeseries_context_path }}' hostname='{{ timeseries_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - timeseries
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ timeseries_war_url }}' context_path='{{timeseries_context_path}}' hostname='{{ timeseries_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - timeseries

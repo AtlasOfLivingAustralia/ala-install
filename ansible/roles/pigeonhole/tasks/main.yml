@@ -2,24 +2,17 @@
   tags:
     - pigeonhole
 
-- name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+- name: ensure target directories exist data subdirectories etc.
+  file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}}  recurse=true
   with_items:
+    - "{{data_dir}}/pigeonhole"
     - "{{data_dir}}/pigeonhole/config"
+    - "{{data_dir}}/pigeonhole/upload"
   tags:
     - pigeonhole
-    - properties
 
 - name: copy all config.properties
   template: src=pigeonhole-config.properties dest={{data_dir}}/pigeonhole/config/pigeonhole-config.properties
-  tags:
-    - pigeonhole
-    - properties
-
-- name: set data ownership
-  file: path={{data_dir}}/pigeonhole owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify: 
-    - restart tomcat
   tags:
     - pigeonhole
     - properties

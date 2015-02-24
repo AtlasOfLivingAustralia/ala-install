@@ -28,6 +28,7 @@
     - "{{data_dir}}/alaspatial/config"
     - "{{data_dir}}/ala/modelling/gdm"
     - "{{data_dir}}/ala/modelling/maxent"
+    - "{{data_dir}}/ala/runtime/output/maxent/""
     - "{{data_dir}}/ala/runtime"
     - "{{data_dir}}/ala/runtime/output"
     - "{{data_dir}}/ala/data/layers/analysis"

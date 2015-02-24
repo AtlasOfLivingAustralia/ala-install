@@ -11,5 +11,9 @@ geoserver_url=http://geoserver.vagrant1.ala.org.au
 geoserver_base_url=http://geoserver.vagrant1.ala.org.au
 geoserver_context_path=
 
+
+geoserver_username=admin
+geoserver_password=geoserver
+
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
