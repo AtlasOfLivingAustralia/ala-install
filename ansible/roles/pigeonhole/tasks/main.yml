@@ -2,20 +2,6 @@
   tags:
     - pigeonhole
 
-- name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
-  with_items:
-    - "{{data_dir}}/pigeonhole/config"
-  tags:
-    - pigeonhole
-    - properties
-
-- name: copy all config.properties
-  template: src=pigeonhole-config.properties dest={{data_dir}}/pigeonhole/config/pigeonhole-config.properties
-  tags:
-    - pigeonhole
-    - properties
-
 - name: ensure target directories exist data subdirectories etc.
   file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}}  recurse=true
   with_items:
@@ -24,6 +10,12 @@
     - "{{data_dir}}/pigeonhole/upload"
   tags:
     - pigeonhole
+
+- name: copy all config.properties
+  template: src=pigeonhole-config.properties dest={{data_dir}}/pigeonhole/config/pigeonhole-config.properties
+  tags:
+    - pigeonhole
+    - properties
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ pigeonhole_context_path }}' hostname='{{ pigeonhole_hostname }}'
   tags:
