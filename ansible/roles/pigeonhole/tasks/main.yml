@@ -16,16 +16,8 @@
     - pigeonhole
     - properties
 
-- name: set data ownership
-  file: path={{data_dir}}/pigeonhole owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify: 
-    - restart tomcat
-  tags:
-    - pigeonhole
-    - properties
-
-- name: ensure target directories exist [data subdirectories etc.
-  file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}}
+- name: ensure target directories exist data subdirectories etc.
+  file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}}  recurse=true
   with_items:
     - "{{data_dir}}/pigeonhole"
     - "{{data_dir}}/pigeonhole/config"
