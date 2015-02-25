@@ -1,5 +1,5 @@
 # assets
-version: "0.1"
+version: "1.0-SNAPSHOT"
 artifactId: "pigeonhole"
 groupId: "au.org.ala"
 pigeonhole_war_url: "{{maven_repo_ws_url}}"
