@@ -1,5 +1,5 @@
 # ALA Installation Scripts
-This project contains [Ansible](http://www.ansible.com/) playbooks for setting up ALA components on CentOS 6.x and Ubuntu 12.x machines.
+This project contains [Ansible](http://www.ansible.com/) playbooks for setting up ALA components on Ubuntu 12 and 14 machines.
 This project includes a playbook for setting up the [ALA demo ](http://ala-demo.gbif.org).
 
 ## Ansible version
