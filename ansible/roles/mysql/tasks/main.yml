@@ -48,3 +48,7 @@
 - name: drop test database
   mysql_db: name="test" login_user="root" login_password={{ mysql_root_password | default('password') }} state="absent"
   when: mysql_installed.changed
+
+- name: create my.cnf file 
+  template: src=my.cnf dest=/root/.my.cnf owner=root mode=0600
+  when: mysql_installed.changed
