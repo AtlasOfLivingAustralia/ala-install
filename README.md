@@ -14,9 +14,9 @@ Below are some instructions for setting up the [ALA demo](http://ala-demo.gbif.o
 [Vagrant](http://www.vagrantup.com) can be used to test ansible playbooks on your local machine. To use this, you will need to install
 [VirtualBox](https://www.virtualbox.org) and [Vagrant](http://www.vagrantup.com).
 
- ```vagrant/centos``` and ```vagrant/ubuntu``` contain configurations that can used with [VirtualBox](https://www.virtualbox.org/) to bring up a VH for deploying against.  
+```vagrant/ubuntu``` contain configurations that can used with [VirtualBox](https://www.virtualbox.org/) to bring up a VH for deploying against.  
 
-This is included only to simplify local testing, but any server running CentOS 6.x or Ubuntu 12.x could be used.  
+This is included only to simplify local testing, but any server Ubuntu 12.x could be used.  
 
 To create a virtual machine with vagrant:
 
@@ -25,7 +25,7 @@ $ cd vagrant/ubuntu
 $ vagrant up
 ```
 
-The first execution of this downloads the CentOS image which can take 20 minutes or more. Once ready you can ssh to your VM like so:
+The first execution of this downloads the Ubuntu image which can take 20 minutes or more. Once ready you can ssh to your VM like so:
 
 ```
 $ ssh vagrant@10.1.1.2
