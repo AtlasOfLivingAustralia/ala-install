@@ -112,3 +112,8 @@ This will ensure that your application can be safely deployed to a non-productio
 The AnsibleSkeleton script will create a skeleton properties file for your application, with appropriate variables for the auth servers (```auth_base_url``` and ```auth_cas_url```).
 
 *Auth URLs MUST be accessed via SSL.*
+
+# Sample Inventories
+The inventories/vagrant directory contains inventories for deploying applications to a vagrant instance.
+
+For these inventories to work, you will need to have a Ubuntu 14.04 vagrant VM running, with the IP address mapped to ```vagrant1``` AND ```vagrant1.ala.org.au``` in your /etc/hosts files. The inventories refer to the host as 'vagrant1', and the URLs for the applications will be 'vagrant1.ala.org.au/something`.
