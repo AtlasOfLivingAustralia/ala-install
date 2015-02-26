@@ -1,15 +1,25 @@
-[dashboard_host]
+[dashboard]
 203.101.226.9
 
-[dashboard_host:vars]
+[dashboard:vars]
 is_vagrant=false
 local_repo_dir = ~/.ala
 data_dir=/home/ubuntu/data
 
 dashboard_hostname=dashboard.nectar.ala.org.au
+dashboard_context_path=
 dashboard_url=http://dashboard.nectar.ala.org.au/
 dashboard_base_url=http://dashboard.nectar.ala.org.au/
-dashboard_context_path=
 
+ala_base_url=http://ala.org.au
+bie_base_url=http://bie.ala.org.au
+biocache_base_url=http://biocache.ala.org.au
+spatial_base_url=http://spatial.ala.org.au
+logger_base_url=http://logger.ala.org.au
+collectory_base_url=http://collections.ala.org.au
+volunteer_base_url=http://volunteer.ala.org.au
+images_base_url=http://images.ala.org.au
 
-# note: add a /etc/hosts entry for dashboard.nectar.ala.org.au mapping to the IP address of your Nectar instance for this to work
+security_cas_login_url=https://auth.ala.org.au/cas/login
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas
