@@ -46,4 +46,3 @@ brds.guidUrl = "{{ sightings_base_url }}"
 
 ranking.readonly = true
 
-headerAndFooter.baseURL = "{{ header_footer_base_url }}"
