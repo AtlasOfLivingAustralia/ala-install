@@ -1,0 +1,16 @@
+# The SDS installation on CSIRO IM&T VM
+[sds]
+203.101.226.9
+
+[sds:vars]
+sds_hostname=sds.nectar.ala.org.au
+
+is_vagrant=false
+local_repo_dir = ~/.ala
+data_dir=/data
+base_url = sds.nectar.ala.org.au
+sds_url = http://sds.nectar.ala.org.au
+sds_context_path = 
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas
