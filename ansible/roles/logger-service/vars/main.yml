@@ -1,5 +1,5 @@
 # assets
-version: "2.1"
+version: "2.2"
 artifactId: "logger-service"
 groupId: "au.org.ala"
 classifier: ''
