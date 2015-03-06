@@ -2,17 +2,27 @@
 
 - name: disable swap
   shell: "sudo swapoff --all"
+  tags:
+    - biocache_db
 
 - name: copy transient files to tmp (schemas etc)
   copy: src={{item}} dest=/tmp
   with_items:
     - cassandra/cassandra-schema.txt
+  tags:
+    - biocache_db
 
 - name: restart cassandra
   service: name=cassandra state=restarted
+  tags:
+    - biocache_db
 
 - name: ensure cassandra is running
   wait_for: port=9160 delay=30
+  tags:
+    - biocache_db
 
 - name: create schema
   shell: "cassandra-cli < /tmp/cassandra-schema.txt"
+  tags:
+    - biocache_db
