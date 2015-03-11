@@ -2,6 +2,7 @@
   tags:
     - webapps
     - config
+    - biocache_hub
 
 #
 # WAR file deployment and Apache/Tomcat virtual host configuration
@@ -12,12 +13,14 @@
     - webapps
     - apache_vhost
     - deploy
+    - biocache_hub    
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ biocache_hub_war_url }}' context_path='{{ biocache_hub }}' hostname='{{ biocache_hub_hostname }}'
   tags:
     - webapps
     - tomcat_vhost
     - deploy
+    - biocache_hub    
 
 #
 # Properties and data file configuration
@@ -31,6 +34,7 @@
   tags:
     - webapps
     - config
+    - biocache_hub    
 
 - name: copy all config.properties
   template: src=config/config.properties dest={{data_dir}}/{{biocache_hub}}/config/{{biocache_hub_config}} force=yes
@@ -38,6 +42,7 @@
     - webapps
     - config
     - hub_config
+    - biocache_hub    
 
 - name: set data ownership
   file: path={{data_dir}}/{{biocache_hub}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
@@ -46,6 +51,7 @@
   tags:
     - webapps
     - config
+    - biocache_hub    
 
 - name: Create symlink to data/biocache-media from /srv/[hostname]/www/biocache-media
   command: "ln -sf /data/biocache-media  /srv/{{ biocache_hub_hostname }}/www/biocache-media"
@@ -53,3 +59,4 @@
   tags:
     - webapps
     - config
+    - biocache_hub    
