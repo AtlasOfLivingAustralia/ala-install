@@ -18,3 +18,13 @@ profile_hub_context_path=/profile-hub
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
+
+userdetails_base_url=https://auth.ala.org.au/userdetails
+images_base_url=http://images.ala.org.au
+ala_base_url=http://ala.org.au
+collectory_base_url=http://collections.ala.org.au
+bie_base_url=http://bie.ala.org.au
+lists_base_url=http://lists.ala.org.au
+biocache_base_url=http://biocache.ala.org.au
+sandbox_base_url=http://sandbox.ala.org.au
+avh_base_url=http://avh.ala.org.au
