@@ -1,5 +1,5 @@
 # assets
-version: "0.1"
+version: "0.2-SNAPSHOT"
 artifactId: "profile-hub"
 classifier: ''
 packaging: "war"
