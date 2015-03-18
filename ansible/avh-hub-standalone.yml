@@ -1,0 +1,7 @@
+- hosts: avh-hub-standalone
+  roles:
+    - common
+    - java
+    - tomcat
+    - apache
+    - { role: biocache-hub, biocache_hub: avh-hub, proxy_root_context_to: avh-hub }
