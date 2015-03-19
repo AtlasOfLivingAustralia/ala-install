@@ -4,7 +4,24 @@ This project includes a playbook for setting up the [ALA demo ](http://ala-demo.
 
 ## Ansible version
 
-The playbooks and roles in this repository require Ansible 1.8 or above.
+The playbooks and roles in this repository require <strong>Ansible 1.8</strong> or above.
+
+NOTE: many linux packages have an older version of Ansible (1.7 or even 1.5). You will need to update your packages and upgrade ansible first.
+
+For APT:
+```
+$ sudo apt-get install software-properties-common
+$ sudo apt-add-repository ppa:ansible/ansible
+$ sudo apt-get update
+$ sudo apt-get install ansible
+```
+
+
+If you see this error:
+```
+ERROR: apache2_module is not a legal parameter in an Ansible task or handler.
+```
+then you have an older version of Ansible.
 
 ## Setup the ALA demo
 
@@ -49,7 +66,7 @@ To run Ansible against your vagrant instance you need to locate the correct key 
 
 ```
 $ cd ansible
-$ ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key -u vagrant
+$ ansible-playbook -i inventories/vagrant --sudo --ask-sudo-pass ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key -u vagrant
 ```
 
 
