@@ -1,0 +1,7 @@
+# assets
+version: "1.0-SNAPSHOT"
+artifactId: "fieldcapture-hub"
+classifier: ''
+packaging: "war"
+groupId: "au.org.ala"
+fieldcapture_hub_war_url: "{{maven_repo_ws_url}}"

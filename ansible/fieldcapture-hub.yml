@@ -1,0 +1,7 @@
+- hosts: fieldcapture-hub
+  roles:
+    - java
+    - common
+    - tomcat
+    - apache
+    - fieldcapture-hub
