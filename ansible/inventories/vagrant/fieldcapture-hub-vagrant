@@ -14,3 +14,4 @@ ecodata_url=http://localhost:8080/ecodata
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
+spatial_portal_url=http://spatial-dev.ala.org.au
