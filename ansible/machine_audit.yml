@@ -1,6 +1,0 @@
----
-- hosts: ala
-  gather_facts: no
-  tasks:
-  - name: machine audit
-    machine_audit: filter=*
