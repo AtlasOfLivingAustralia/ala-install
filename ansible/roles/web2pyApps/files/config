@@ -1,0 +1,36 @@
+# Rename this file to "config" to make it active
+
+[host]
+apihost = 10.1.1.2:8000/api
+[apis]
+# the full path to where a local phylesystem.git can be found
+repo_path   = /data/phylesystem/
+repo_parent   = /data/phylesystem/shards
+
+# the remote to push changes to
+# This will usually be "origin" on a local dev machine where phylesystem.git
+# was cloned via SSH (git@github.com:...)
+# On deployed servers, which use anonymous git:// protocol, we add a new
+# remote "originssh" which can be pushed to
+repo_remote = REPO_REMOTE
+
+# these allow us to specify the SSH keys that git pushes
+# will use. Leave the config keys in this config file,
+# without any values assigned, to not use this feature
+git_ssh     = ~/.test
+pkey        = ~/.testp
+
+oti_base_url = http://10.1.1.2:7478/db/data
+opentree_docstore_url = OPENTREE_DOCSTORE_URL
+# Push scripts will substitute the OTI_BASE_URL server-config variables, shared
+# with other apps.
+
+# prefix for the GitHubRemote used in the push mirror
+#   default is git@github.com:OpenTreeOfLife
+git_hub_remote = git@github.com:temi
+
+[logging]
+level = debug 
+formatter = rich
+filepath = /tmp/opentree-api.log
+

@@ -1,0 +1,2 @@
+# when changing this make sure to change web2py in files directory
+pidFile: "{{web2pyDir}}/web2py.pid"

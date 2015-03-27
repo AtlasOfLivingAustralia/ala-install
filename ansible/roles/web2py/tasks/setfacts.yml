@@ -1,0 +1,6 @@
+- name: set debian variables
+  set_fact:
+    web2pyUrl: https://github.com/web2py/web2py.git
+    web2pyVersion: R-2.4.2
+    web2pyParentDir: /data
+    web2pyDir: /data/web2py

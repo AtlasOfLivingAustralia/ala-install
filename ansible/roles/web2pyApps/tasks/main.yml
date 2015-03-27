@@ -1,0 +1,314 @@
+- include: ../../web2py/tasks/setfacts.yml
+  tags:
+    - web2pyApps
+
+- name: checking if web2py downloaded
+  stat: path="{{peyotlDir}}"
+  register: downloaded
+  tags:
+    - web2pyApps
+
+- name: delete phylesystem
+  command: "rm -rf {{phylesystemDir}}"
+  when: deletePhylesystem == True
+  tags:
+    - web2pyApps
+
+- name: git clone/update phylesystem
+  git: repo="{{phylesystemUrl0}}" dest="{{phylesystemDir}}" update=yes
+  tags:
+    - web2pyApps
+
+- name: downloading studies
+  command: "bash pull-studies.bash"
+  args:
+    chdir: "{{phylesystemDir}}"
+  tags:
+    - web2pyApps
+
+
+#- name: downloading phylesystem1 dir
+#  git: repo="{{phylesystemUrl1}}" dest="{{phylesystemDir1}}" update=yes
+
+- name: download peyotl
+  git: repo="{{peyotlUrl}}" dest="{{peyotlDir}}" version="{{peyotlVersion}}"
+  when: downloaded.stat.exists == False
+  tags:
+    - web2pyApps
+
+- name: peyotl install requirements
+  command: "pip install -r requirements.txt"
+  args:
+    chdir: "{{peyotlDir}}"
+  tags:
+    - web2pyApps
+
+- name: peyotl config file
+  copy: src=.peyotl dest=~
+  tags:
+    - web2pyApps
+
+- name: peyotl setup
+  command: "python setup.py develop"
+  args:
+    chdir: "{{peyotlDir}}"
+  tags:
+    - web2pyApps
+
+- name: checking if web2py downloaded
+  stat: path="{{apiDir}}"
+  register: downloaded
+  tags:
+    - web2pyApps
+
+- name: download api
+  git: repo="{{apiUrl}}" dest="{{apiDir}}" version="{{apiVersion}}"
+  when: downloaded.stat.exists == False
+  tags:
+    - web2pyApps
+
+- name: api - install requirements
+  command: "pip install -r requirements.txt"
+  args:
+    chdir: "{{apiDir}}"
+  tags:
+    - api
+    - web2pyApps
+
+- name: copying api config
+  action: copy src=config dest="{{configDest}}"
+  tags:
+    - web2pyApps
+
+- name: download opentree git repo
+  git: repo="{{opentreeUrl}}" dest="{{opentreeDir}}" version="{{opentreeVersion}}"
+  tags:
+    - web2pyApps
+
+- name: opentree - install requirements
+  command: "pip install -r requirements.txt"
+  args:
+    chdir: "{{opentreeDir}}"
+  tags:
+    - web2pyApps
+
+- name: curator - install requirements
+  command: "pip install -r requirements.txt"
+  args:
+    chdir: "{{curatorDir}}"
+  tags:
+    - web2pyApps
+
+- name: create curator link to applications directory
+  command: "ln -s {{curatorDir}} ."
+  args:
+    chdir: "{{web2pyAppDir}}"
+    creates: "{{web2pyAppDir}}/{{curatorApp}}"
+  tags:
+    - web2pyApps
+
+- name: create webapp link to applications directory
+  command: "ln -s {{webappDir}} {{opentreeApp}}"
+  args:
+    chdir: "{{web2pyAppDir}}"
+    creates: "{{web2pyAppDir}}/{{opentreeApp}}"
+  tags:
+    - web2pyApps
+
+- name: copying curator config
+  action: copy src=config.curator dest="{{curatorAppDir}}/private/config"
+  tags:
+    - web2pyApps
+
+- name: copying curator db file
+  action: copy src=db.py dest="{{curatorAppDir}}/models/"
+  tags:
+    - web2pyApps
+
+- name: create curator database directory
+  command: "mkdir {{curatorAppDir}}/databases/"
+  ignore_errors: yes
+  tags:
+    - web2pyApps
+
+- name: copying sqlite database
+  command: "cp {{web2pyDir}}/storage.sqlite {{curatorAppDir}}/databases/"
+  tags:
+    - web2pyApps
+
+- name: copying opentree config
+  action: copy src=config.opentree dest="{{opentreeAppDir}}/private/config"
+  tags:
+    - web2pyApps
+
+- name: change routing behaviour of web2py
+  command: "cp {{opentreeDir}}/SITE.routes.py routes.py"
+  args:
+    chdir: "{{web2pyDir}}"
+  tags:
+    - web2pyApps
+
+# install NCL
+- name: git clone/update NCL
+  git: repo="{{nclGit}}" dest="{{nclDir}}" update=yes
+  tags:
+    - ncl
+    - web2pyApps
+
+- name: NCL install
+  command: "sh bootstrap.sh"
+  args:
+    chdir: "{{nclDir}}"
+  tags:
+    - ncl
+    - web2pyApps
+
+- name: NCL build directory
+  command: "mkdir build"
+  args:
+    chdir: "{{nclDir}}"
+  ignore_errors: yes
+  tags:
+    - ncl
+    - web2pyApps
+
+- name: NCL configure
+  command: "./configure --prefix='{{opentreeToolsDir}}' --with-constfuncs=yes --disable-shared --with-reserveid"
+  args:
+    chdir: "{{nclDir}}"
+  tags:
+    - ncl
+    - web2pyApps
+
+- name: ncl make
+  command: "make -j2"
+  args:
+    chdir: "{{nclDir}}"
+  tags:
+    - ncl
+    - web2pyApps
+
+
+- name: ncl check
+  command: "make check"
+  args:
+    chdir: "{{nclDir}}"
+  tags:
+    - ncl
+    - web2pyApps
+
+
+- name: ncl install
+  command: "make install"
+  args:
+    chdir: "{{nclDir}}"
+  tags:
+    - ncl
+    - web2pyApps
+
+
+- name: ncl installcheck
+  command: "make installcheck"
+  args:
+    chdir: "{{nclDir}}"
+  tags:
+    - ncl
+    - web2pyApps
+
+# install 2nexml
+- name: git clone/update 2nexml
+  git: repo="{{toNexmlGit}}" dest="{{toNexmlDir}}" update=yes
+  tags:
+    - tonexml
+    - web2pyApps
+
+- name: 2nexml build directory
+  command: "mkdir build"
+  args:
+    chdir: "{{toNexmlDir}}"
+  ignore_errors: yes
+  tags:
+    - tonexml
+    - web2pyApps
+
+- name: 2nexml bootstrap
+  command: "sh bootstrap.sh"
+  register: tonexml
+  ignore_errors: yes
+  args:
+    chdir: "{{toNexmlDir}}"
+  tags:
+    - tonexml
+    - web2pyApps
+
+- name: debug statement
+  debug: var=tonexml
+  tags:
+    - tonexml
+    - web2pyApps
+
+
+- name: 2nexml add missing automake
+  command: "automake --add-missing"
+  when: tonexml.rc == 1
+  args:
+    chdir: "{{toNexmlDir}}"
+  tags:
+    - tonexml
+    - web2pyApps
+
+
+- name: 2nexml bootstrap
+  command: "sh bootstrap.sh"
+  when: tonexml.rc == 1
+  args:
+    chdir: "{{toNexmlDir}}"
+  tags:
+    - tonexml
+    - web2pyApps
+
+- name: 2nexml configure
+  command: "./configure --prefix='{{opentreeToolsDir}}' --with-ncl='{{opentreeToolsDir}}'"
+  args:
+    chdir: "{{toNexmlDir}}"
+  tags:
+    - tonexml
+    - web2pyApps
+
+- name: 2nexml make
+  command: "make -j2"
+  args:
+    chdir: "{{toNexmlDir}}"
+  tags:
+    - tonexml
+    - web2pyApps
+
+- name: 2nexml check
+  command: "make check"
+  args:
+    chdir: "{{toNexmlDir}}"
+  tags:
+    - tonexml
+    - web2pyApps
+
+- name: 2nexml install
+  command: "make install"
+  args:
+    chdir: "{{toNexmlDir}}"
+  tags:
+    - tonexml
+    - web2pyApps
+
+- name: 2nexml installcheck
+  command: "make installcheck"
+  args:
+    chdir: "{{toNexmlDir}}"
+  tags:
+    - tonexml
+    - web2pyApps
+
+- name: restarting web2py
+  shell: "/etc/init.d/web2py restart"
+  when: ansible_os_family == "Debian"
+  tags:
+      - web2pyApps

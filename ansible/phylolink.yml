@@ -1,0 +1,16 @@
+- hosts: phylolink
+  roles:
+    - phylolink-dependencies
+    - web2py
+    - web2PyApps
+    - common
+    - java
+    - tomcat
+    - apache
+    - phylolink
+  sudo: yes
+  sudo_user: root
+  vars:
+    deleteWeb2py: True
+    deletePhylesystem: True
+    tomcat_user: tomcat7

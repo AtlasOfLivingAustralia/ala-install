@@ -1,0 +1,61 @@
+# Copy this file to "config" (and replace tokens below) to make it active
+#
+# DO NOT CHANGE the formatting of assignment lines (removing spaces, etc) in
+# this file! The 'config.example' files are used by our deployment scripts to
+# build the final config for each web2py app. Changes here might keep it
+# from being built properly.
+
+[apis]
+# These values can be obtained by registering your instance as an
+# application with GitHub, at https://github.com/settings/applications/new
+github_client_id = d6ba8125a90dff89597a
+github_redirect_uri = http://10.1.1.2:8000/curator/user 
+# DON'T INCLUDE 'github_client_secret' value here. For better security, this is
+# loaded from a separate file and added to config data on-the-fly.
+
+# List public-facing base URL for supporting data services
+# (NOTE that these are used by both server- and client-side code)
+[domains]
+treemachine = http://10.1.1.2:7474/db/data
+taxomachine = http://10.1.1.2:7476/db/data
+oti = http://10.1.1.2:7478/db/data
+opentree_api = http://10.1.1.2:8000/api/v1
+
+# Building on the URLs above, complete the public-facing URL for all methods
+# (again, these should work from both server- and client-side code)
+#
+# NOTE: In our example setup, all service methods are proxied through Apache as
+# URLs within the main opentree site. So we assume that partial paths '/db/data/' 
+# are handled in the ProxyPass statement.
+[method_urls]
+getDraftTreeID_url = {treemachine_domain}/ext/GoLS/graphdb/getDraftTreeID
+getSyntheticTree_url = {treemachine_domain}/ext/GoLS/graphdb/getSyntheticTree  
+getSourceTree_url = {treemachine_domain}/ext/GoLS/graphdb/getSourceTree  
+getConflictTaxJsonAltRel_url = {taxomachine_domain}/ext/GetJsons/node/{nodeID}/getConflictTaxJsonAltRel
+getDraftTreeForOttolID_url = {treemachine_domain}/ext/GoLS/graphdb/getDraftTreeForOttolID  
+getDraftTreeForNodeID_url = {treemachine_domain}/ext/GoLS/graphdb/getDraftTreeForNodeID
+doTNRSForNames_url = {taxomachine_domain}/ext/TNRS/graphdb/autocompleteBoxQuery
+getContextsJSON_url = {taxomachine_domain}/ext/TNRS/graphdb/getContextsJSON
+getNodeIDForOttolID_url = {treemachine_domain}/ext/GoLS/graphdb/getNodeIDForottId
+getJSONFromNode_url = {treemachine_domain}/ext/GetJsons/node
+findAllStudies_url = {oti_domain}/ext/QueryServices/graphdb/findAllStudies
+phylesystem_config_url = {opentree_api_domain}/phylesystem_config
+
+# Open Tree API - RESTful URLs for managing studies in remote storage (note HTTP verbs for each)
+#
+# NOTE that we shouldn't need '?jsoncallback=?' on URLs for the Open Tree API, since
+# it now supports cross-domain requests via CORS
+
+API_create_study_POST_url = {opentree_api_domain}/study
+API_load_study_GET_url = {opentree_api_domain}/study/{STUDY_ID}
+API_update_study_PUT_url = {opentree_api_domain}/study/{STUDY_ID}
+API_remove_study_DELETE_url = {opentree_api_domain}/study/{STUDY_ID}
+
+API_create_file_POST_url = {opentree_api_domain}/study/{STUDY_ID}/file
+API_load_file_GET_url = {opentree_api_domain}/study/{STUDY_ID}/file/{FILE_ID}
+API_update_file_PUT_url = {opentree_api_domain}/study/{STUDY_ID}/file/{FILE_ID}
+API_remove_file_DELETE_url = {opentree_api_domain}/study/{STUDY_ID}/file/{FILE_ID}
+
+[external]
+dir=/data/web2py/applications/curator/private/scratch
+2nexml=/data/opentree-tools/bin/NCLconverter

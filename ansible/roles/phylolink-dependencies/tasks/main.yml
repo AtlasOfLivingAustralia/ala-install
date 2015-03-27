@@ -1,0 +1,51 @@
+- name: apt-get update (Debian)
+  command: "apt-get update"
+  ignore_errors: yes
+  when: ansible_os_family == "Debian"
+  tags:
+    - apt_update
+
+- name: install maven 3
+  apt: pkg=maven state=present
+
+- name: install git
+  apt: pkg=git state=present
+
+- name: install python
+  apt: pkg=python state=present
+
+# in ubuntu 14.04 this does not work
+#- name: install python-pip
+#  apt: pkg=python-pip state=present
+
+- name: download pip
+  get_url: url=https://raw.github.com/pypa/pip/master/contrib/get-pip.py dest=~
+
+- name: install pip
+  command: "python get-pip.py"
+  args:
+    chdir: "~"
+
+- name: download ez_setup
+  get_url: url=https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py dest=~
+
+- name: install ez_setup
+  command: "python ez_setup.py"
+  args:
+    chdir: "~"
+
+
+- name: install curl
+  apt: pkg=curl state=present
+
+- name: install make
+  apt: pkg=make state=present
+
+- name: install autoconf
+  apt: pkg=autoconf state=present
+
+- name: install automake
+  apt: pkg=automake state=present
+
+- name: install g++
+  apt: pkg=g++ state=present

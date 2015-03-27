@@ -1,0 +1,30 @@
+[phylesystem]
+# parent of the phylesystem, or phylesystem-1, phylesystem-2 directories...
+#   if you have multiple phylesystem repositories not contained in the same
+#   directory
+parent = /data/phylesystem/shards
+
+# Valid repo_nexml2json values are
+#       0.0.0 (Badgerfish)
+#       1.0.0 ("direct" HoneyBadgerFish)
+#       1.2.1 ("byId" HoneyBadgerFish)
+repo_nexml2json = 1.2.1
+
+
+[ott]
+# directory of holding ott. The directory name
+#   is expected to have the form:
+#       ottVERSION_NUMBER_HERE
+parent = /data/ott/ott2.5
+#cache = redis:localhost:6379
+
+[logging]
+level = debug
+filepath = /tmp/peyotl-log
+formatter = rich
+
+[apis]
+phylesystem_api = http://10.1.1.2:8000/api
+oti_api = http://10.1.1.2:8000/api
+taxomachine = http://10.1.1.2:7478/taxomachine/db/data/ext
+treemachine = http://10.1.1.2:7474/treemachine/db/data/ext

@@ -1,0 +1,31 @@
+# rename this to "conf" to make it active
+[domains]
+treemachine = http://10.1.1.2:7474
+taxomachine = http://10.1.1.2:7476
+#treemachine_domain = http://10.1.1.2:7474
+#taxomachine_domain = http://10.1.1.2:7476
+
+[hosting]
+hostdomain = 10.1.1.2:8000
+
+
+# Building on domains above, complete the public-facing URL for all methods
+# (again, these should work from both server- and client-side code)
+#
+# NOTE: In our example setup, all service methods are proxied through Apache as
+# URLs within the main opentree site. So we assume that partial paths '/db/data/' 
+# are handled in the ProxyPass statement.
+[method_urls]
+getDraftTreeID_url = {treemachine_domain}/db/data/ext/GoLS/graphdb/getDraftTreeID
+getSyntheticTree_url = {treemachine_domain}/db/data/ext/GoLS/graphdb/getSyntheticTree  
+getSourceTree_url = {treemachine_domain}/db/data/ext/GoLS/graphdb/getSourceTree  
+getConflictTaxJsonAltRel_url = {taxomachine_domain}/db/data/ext/GetJsons/node/{nodeID}/getConflictTaxJsonAltRel
+getDraftTreeForOttolID_url = {treemachine_domain}/db/data/ext/GoLS/graphdb/getDraftTreeForOttolID  
+getDraftTreeForNodeID_url = {treemachine_domain}/db/data/ext/GoLS/graphdb/getDraftTreeForNodeID
+doTNRSForNames_url = {taxomachine_domain}/db/data/ext/TNRS/graphdb/autocompleteBoxQuery
+getContextsJSON_url = {taxomachine_domain}/db/data/ext/TNRS/graphdb/getContextsJSON
+getNodeIDForOttolID_url = {treemachine_domain}/db/data/ext/GoLS/graphdb/getNodeIDForOttolID
+getJSONFromNode_url = {treemachine_domain}/db/data/ext/GetJsons/node
+findAllStudies_url = {oti_domain}/db/data/ext/QueryServices/graphdb/findAllStudies
+# Include one phylesystem-api method to download NexSON from Bibliographic References page
+API_load_study_GET_url = {opentree_api_domain}/study/{STUDY_ID}
