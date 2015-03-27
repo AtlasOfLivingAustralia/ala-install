@@ -1,0 +1,17 @@
+[fieldcapture-hub]
+vagrant1
+
+[fieldcapture-hub:vars]
+is_vagrant=false
+local_repo_dir=~/.ala
+data_dir=/data
+
+fieldcapture_hub_hostname=vagrant1.ala.org.au
+fieldcapture_hub_context_path=
+fieldcapture_hub_base_url=http://vagrant1.ala.org.au
+collectory_url=http://144.6.225.176/ala-collectory/
+ecodata_url=http://localhost:8080/ecodata
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas
+spatial_portal_url=http://spatial-dev.ala.org.au
