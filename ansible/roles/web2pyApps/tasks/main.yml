@@ -80,6 +80,18 @@
   tags:
     - web2pyApps
 
+- name: checking if opentree dir already present
+  stat: path="{{opentreeDir}}"
+  register: opentreePresent
+  tags:
+    - web2pyApps
+
+- name: delete old opentree dir
+  command: "rm -rf {{opentreeDir}}"
+  when: opentreePresent.stat.exists == True
+  tags:
+    - web2pyApps
+
 - name: download opentree git repo
   git: repo="{{opentreeUrl}}" dest="{{opentreeDir}}" version="{{opentreeVersion}}"
   tags:

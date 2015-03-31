@@ -6,7 +6,7 @@
     - common
     - java
     - tomcat
-    - apache
+    - nginx
     - phylolink
   sudo: yes
   sudo_user: root
