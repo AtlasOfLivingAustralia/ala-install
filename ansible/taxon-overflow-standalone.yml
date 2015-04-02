@@ -5,4 +5,5 @@
     - tomcat
     - apache
     - postgresql
+    - postfix
     - taxon-overflow
