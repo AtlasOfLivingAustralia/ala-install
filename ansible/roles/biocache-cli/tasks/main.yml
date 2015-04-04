@@ -1,41 +1,65 @@
 - include: ../../common/tasks/setfacts.yml
+  tags:
+    - biocache-cli
 
 - name: ensure biocache directory exists
   file: path=/usr/lib/biocache state=directory
+  tags:
+    - biocache-cli
 
 - name: clean biocache existing extract
   shell: "rm -Rf /usr/lib/biocache/lib /usr/lib/biocache/*.jar"
   ignore_errors: yes
+  tags:
+    - biocache-cli  
 
 - name: copy biocache logging config
   copy: src=lib/log4j.xml dest=/usr/lib/biocache/log4j.xml
+  tags:
+    - biocache-cli
 
 - name: copy biocache logging config
   copy: src=config/subgroups.json dest={{data_dir}}/biocache/config/subgroups.json
+  tags:
+    - biocache-cli    
 
 - name: copy biocache store jar
   get_url: url={{biocache_store_url}} dest="/usr/lib/biocache/biocache.zip" force=yes owner={{tomcat_user}} group={{tomcat_user}}
+  tags:
+    - biocache-cli  
 
 - name: install unzip (Debian only)
   apt: pkg=unzip state=present
   when: ansible_os_family == "Debian"
+  tags:
+    - biocache-cli  
 
 - name: unjar biocache
   shell: "unzip /usr/lib/biocache/biocache.zip -d /usr/lib/biocache/"
+  tags:
+    - biocache-cli  
 
 - name: create the templated biocache.sh
   template: src=biocache.sh dest=/usr/lib/biocache/biocache mode=777
+  tags:
+    - biocache-cli  
 
 - name: clean biocache existing extract
   shell: "mv /usr/lib/biocache/biocache-store-*.jar /usr/lib/biocache/biocache.jar"
-  ignore_errors: yes  
+  ignore_errors: yes
+  tags:
+    - biocache-cli  
 
 - name: create biocache executable
   shell: "cat /usr/lib/biocache/biocache.jar >> /usr/lib/biocache/biocache"
   ignore_errors: yes  
+  tags:
+    - biocache-cli  
 
 - name: make the symlink for /usr/bin/biocache 
   file: src=/usr/lib/biocache/biocache dest=/usr/bin/biocache state=link
+  tags:
+    - biocache-cli  
 
 - name: create the reindex directory
   file: path={{item}} state=directory mode=777
@@ -43,6 +67,10 @@
     - "{{data_dir}}/biocache-reindex/solr-template"
     - "{{data_dir}}/biocache-reindex/solr-create"
     - "{{data_dir}}/biocache-reindex/solr"
+  tags:
+    - biocache-cli  
 
 - name: copy solr-template
   copy: src=solr-template dest={{data_dir}}/biocache-reindex/
+  tags:
+    - biocache-cli  

@@ -3,4 +3,5 @@
     - common
     - java
     - nameindex
+    - biocache-properties
     - biocache-cli
