@@ -25,6 +25,7 @@
     - augeas-tools
     - python-augeas
     - python-libxml2
+    - libpython2.7
   when: ansible_os_family == "Debian"
   tags:
     - packages

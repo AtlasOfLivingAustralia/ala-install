@@ -141,7 +141,7 @@ def main():
     state = module.params["state"]
 
     try:
-        aug = load_augeas_for_file()
+        aug = load_augeas_for_file(check_mode=module.check_mode)
     except Exception, e:
         module.fail_json(msg="unable to connect to Augeas: %s" % e)
         return
