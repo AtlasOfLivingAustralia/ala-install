@@ -1,16 +1,18 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - biocache-properties
+    - biocache-layers    
 
 - name: ensure target directories exist
   file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/biocache/layers"
+    - "{{data_dir}}/biocache/config"    
   tags:
     - biocache-properties    
 
 - name: copy biocache config propeties template 
-  template: src={{item}} dest={{data_dir}}/biocache/config/{{item}} owner={{tomcat_user}}  group={{tomcat_user}}  mode=0644
+  template: src={{item}} dest={{data_dir}}/biocache/config/ {{item}} owner={{tomcat_user}}  group={{tomcat_user}}  mode=0644
   with_items:
     - biocache-config.properties
   tags:
@@ -21,12 +23,14 @@
   when: sds_enabled  
   tags:
     - biocache-properties
+    - biocache-layers    
 
 - name: Extract SDS layers
   shell: "tar zxvf {{data_dir}}/biocache/layers/sds-layers.tgz -C {{data_dir}}/biocache/layers/"
   when: sds_enabled
   tags:
     - biocache-properties
+    - biocache-layers    
 
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/{{item}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
@@ -34,3 +38,4 @@
     - biocache 
   tags:
     - biocache-properties
+    - biocache-layers    

@@ -1,4 +1,6 @@
 - include: ../../common/tasks/setfacts.yml
+  tags:
+    - solr 
 
 - name: add common tomcat jars (for SOLR logging and JTS)
   copy: src=tomcat/libs/{{item}} dest=/usr/share/{{tomcat}}/lib/{{item}}
@@ -11,40 +13,63 @@
     - slf4j-log4j12-1.6.6.jar
   notify:
     - restart tomcat
+  tags:
+    - solr       
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ solr_context_path }}' hostname='{{ solr_hostname }}'
+  tags:
+    - solr    
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ solr_war_url }}' context_path='{{ solr_context_path }}' hostname='{{ solr_hostname }}'
+  tags:
+    - solr    
 
 - name: ensure tomcat context directory exists
   file: path=/usr/share/{{tomcat}}/conf/Catalina/localhost/ state=directory owner={{tomcat_user}} group={{tomcat_user}}
   notify:
     - restart tomcat
+  tags:
+    - solr_config  
+    - solr        
 
 - name: copy SOLR context (Redhat)
   template: src=context/solr.xml dest=/usr/share/{{tomcat}}/conf/Catalina/localhost/solr.xml owner={{tomcat_user}}  group={{tomcat_user}}
   when: ansible_os_family == "RedHat"
   tags:
     - solr_config
+    - solr
 
 - name: copy SOLR context (Debian)
   template: src=context/solr.xml dest=/var/lib/{{tomcat}}/conf/Catalina/localhost/solr.xml owner={{tomcat_user}}  group={{tomcat_user}}
   when: ansible_os_family == "Debian"
   tags:
     - solr_config  
+    - solr    
 
 - name: ensure target directories exist [data subdirectories etc.
   file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/solr/biocache/conf"
+  tags:
+    - solr_config  
+    - solr        
 
 - name: copy SOLR config
   copy: src=solr dest={{data_dir}} owner={{tomcat_user}}  group={{tomcat_user}}
+  tags:
+    - solr_config  
+    - solr      
 
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/{{item}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   with_items:
     - solr
+  tags:
+    - solr_config  
+    - solr        
 
 - name: set SOLR directory ownership [all data is owned by tomcat]
   file: path={{data_dir}}/solr owner={{tomcat_user}} group={{tomcat_user}}  recurse=true
+  tags:
+    - solr_config  
+    - solr      
