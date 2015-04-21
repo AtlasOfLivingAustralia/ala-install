@@ -145,11 +145,15 @@
 
 - name: copying sqlite database
   command: "cp {{web2pyDir}}/storage.sqlite {{curatorAppDir}}/databases/"
+  notify:
+      - restart web2py
   tags:
     - web2pyApps
 
 - name: copying opentree config
   action: copy src=config.opentree dest="{{opentreeAppDir}}/private/config"
+  notify:
+      - restart web2py
   tags:
     - web2pyApps
 
@@ -157,12 +161,29 @@
   command: "cp {{opentreeDir}}/SITE.routes.py routes.py"
   args:
     chdir: "{{web2pyDir}}"
+  notify:
+    - restart web2py
   tags:
     - web2pyApps
 
 # install NCL
+- name: delete NCL dir
+  command: "rm -rf {{nclDir}}"
+  when: deleteNCL == True
+  tags:
+    - ncl
+    - web2pyApps
+
+- name: checking if NCL downloaded
+  stat: path="{{nclDir}}"
+  register: ncl
+  tags:
+    - ncl
+    - web2pyApps
+
 - name: git clone/update NCL
   git: repo="{{nclGit}}" dest="{{nclDir}}" update=yes
+  when: ncl.stat.exists == False
   tags:
     - ncl
     - web2pyApps
@@ -171,6 +192,7 @@
   command: "sh bootstrap.sh"
   args:
     chdir: "{{nclDir}}"
+  when: ncl.stat.exists == False
   tags:
     - ncl
     - web2pyApps
@@ -180,6 +202,7 @@
   args:
     chdir: "{{nclDir}}"
   ignore_errors: yes
+  when: ncl.stat.exists == False
   tags:
     - ncl
     - web2pyApps
@@ -188,6 +211,7 @@
   command: "./configure --prefix='{{opentreeToolsDir}}' --with-constfuncs=yes --disable-shared --with-reserveid"
   args:
     chdir: "{{nclDir}}"
+  when: ncl.stat.exists == False
   tags:
     - ncl
     - web2pyApps
@@ -196,6 +220,7 @@
   command: "make -j2"
   args:
     chdir: "{{nclDir}}"
+  when: ncl.stat.exists == False
   tags:
     - ncl
     - web2pyApps
@@ -205,6 +230,7 @@
   command: "make check"
   args:
     chdir: "{{nclDir}}"
+  when: ncl.stat.exists == False
   tags:
     - ncl
     - web2pyApps
@@ -214,6 +240,7 @@
   command: "make install"
   args:
     chdir: "{{nclDir}}"
+  when: ncl.stat.exists == False
   tags:
     - ncl
     - web2pyApps
@@ -223,13 +250,29 @@
   command: "make installcheck"
   args:
     chdir: "{{nclDir}}"
+  when: ncl.stat.exists == False
   tags:
     - ncl
     - web2pyApps
 
 # install 2nexml
+- name: delete 2nexml dir
+  command: "rm -rf {{toNexmlDir}}"
+  when: deleteToNexml == True
+  tags:
+    - tonexml
+    - web2pyApps
+
+- name: checking if 2nexml downloaded
+  stat: path="{{toNexmlDir}}"
+  register: nexml
+  tags:
+    - tonexml
+    - web2pyApps
+
 - name: git clone/update 2nexml
   git: repo="{{toNexmlGit}}" dest="{{toNexmlDir}}" update=yes
+  when: nexml.stat.exists == False
   tags:
     - tonexml
     - web2pyApps
@@ -239,6 +282,7 @@
   args:
     chdir: "{{toNexmlDir}}"
   ignore_errors: yes
+  when: nexml.stat.exists == False
   tags:
     - tonexml
     - web2pyApps
@@ -246,6 +290,7 @@
 - name: 2nexml bootstrap
   command: "sh bootstrap.sh"
   register: tonexml
+  when: nexml.stat.exists == False
   ignore_errors: yes
   args:
     chdir: "{{toNexmlDir}}"
@@ -255,6 +300,7 @@
 
 - name: debug statement
   debug: var=tonexml
+  when: nexml.stat.exists == False
   tags:
     - tonexml
     - web2pyApps
@@ -262,7 +308,7 @@
 
 - name: 2nexml add missing automake
   command: "automake --add-missing"
-  when: tonexml.rc == 1
+  when: nexml.stat.exists == False and tonexml and tonexml.rc == 1
   args:
     chdir: "{{toNexmlDir}}"
   tags:
@@ -272,7 +318,7 @@
 
 - name: 2nexml bootstrap
   command: "sh bootstrap.sh"
-  when: tonexml.rc == 1
+  when: nexml.stat.exists == False and tonexml and tonexml.rc == 1
   args:
     chdir: "{{toNexmlDir}}"
   tags:
@@ -281,6 +327,7 @@
 
 - name: 2nexml configure
   command: "./configure --prefix='{{opentreeToolsDir}}' --with-ncl='{{opentreeToolsDir}}'"
+  when: nexml.stat.exists == False
   args:
     chdir: "{{toNexmlDir}}"
   tags:
@@ -289,6 +336,7 @@
 
 - name: 2nexml make
   command: "make -j2"
+  when: nexml.stat.exists == False
   args:
     chdir: "{{toNexmlDir}}"
   tags:
@@ -299,6 +347,7 @@
   command: "make check"
   args:
     chdir: "{{toNexmlDir}}"
+  when: nexml.stat.exists == False
   tags:
     - tonexml
     - web2pyApps
@@ -307,6 +356,7 @@
   command: "make install"
   args:
     chdir: "{{toNexmlDir}}"
+  when: nexml.stat.exists == False
   tags:
     - tonexml
     - web2pyApps
@@ -315,12 +365,7 @@
   command: "make installcheck"
   args:
     chdir: "{{toNexmlDir}}"
+  when: nexml.stat.exists == False
   tags:
     - tonexml
     - web2pyApps
-
-- name: restarting web2py
-  shell: "/etc/init.d/web2py restart"
-  when: ansible_os_family == "Debian"
-  tags:
-      - web2pyApps

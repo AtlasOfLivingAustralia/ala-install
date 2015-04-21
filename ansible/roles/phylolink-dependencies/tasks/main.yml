@@ -1,5 +1,5 @@
 - name: apt-get update (Debian)
-  command: "apt-get update"
+  apt: update_cache=yes
   ignore_errors: yes
   when: ansible_os_family == "Debian"
   tags:
