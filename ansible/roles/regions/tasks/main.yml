@@ -37,8 +37,7 @@
 - name: copy configuration files
   copy: src={{item}} dest={{data_dir}}/regions/config
   with_items:
-    - regions-metadata.json
-    - layer-regions-metadata.json
+    - menu-config.json
     - state-emblems.json
     - stateEmblems.txt
   tags:

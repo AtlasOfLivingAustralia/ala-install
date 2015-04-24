@@ -1,5 +1,5 @@
 # assets
-version: "2.2-SNAPSHOT"
+version: "2.2"
 artifactId: "regions"
 classifier: ''
 packaging: "war"

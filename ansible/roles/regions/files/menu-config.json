@@ -1,0 +1,170 @@
+[
+  {
+    "label": "States and territories",
+    "fid": "cl22",
+    "exclude": ["Unknown1", "Macquarie Island", "Ashmore and Cartier Islands", "Coral Sea Islands"],
+    "subregions": [
+      {
+        "match_exp": "Australian Capital Territory",
+        "regions_within": [
+          {
+            "label": "Biogeographic (IBRA)",
+            "fid": "cl1048",
+            "regions": [
+              {
+                "label": "Australian Alps"
+              },
+              {
+                "label": "South Eastern Highlands"
+              },
+              {
+                "label": "Sydney Basin"
+              }
+            ]
+          },
+          {
+            "label": "Marine and Coastal (IMCRA)",
+            "fid": "cl21",
+            "regions": [
+              {
+                "label": "Southeast Shelf Transition"
+              }
+            ]
+          },
+          {
+            "label": "Natural Resource Management (NRM)",
+            "fid": "cl916",
+            "regions": [
+              {
+                "label": "ACT"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Local government",
+    "fid": "cl959"
+  },
+  {
+    "label": "Biogeographic regions",
+    "fid": "cl1048"
+  },
+  {
+    "label": "Marine regions",
+    "fid": "cl21"
+  },
+  {
+    "label": "Management regions",
+    "fid": "cl916"
+  },
+  {
+    "label": "Indigenous protected areas",
+    "fid": "cl2015"
+  },
+  {
+    "label": "Indigenous land use agreements",
+    "fid": "cl2010"
+  },
+  {
+    "label": "Major drainage divisions",
+    "fid": "cl1059"
+  },
+  {
+    "label": "Other regions",
+    "submenu" : [
+      {
+        "label": "Great Eastern Ranges Initiative",
+        "fid": "cl2049",
+        "description": "The Great Eastern Ranges Initiative (GER) is bringing people and organisations together to protect, link and restore healthy habitats over 3,600 kilometers from Western Victoria, through NSW and the ACT, to Far North Queensland. GER is a strategic response to mitigate the potential impacts of climate change, invasive species, land clearing and other environmental changes on the Great Eastern Ranges. This vast area contains Australia’s richest diversity of plants and animals and catchments that provide a reliable, clean source of water for over 90% of eastern Australia’s population. Visit <a href=\"http://www.greateasternranges.org.au\">www.greateasternranges.org.au</a> for more information.",
+        "subregions": [
+          {
+            "match_exp": ".*",
+            "regions_within": [
+              {
+                "label": "Administrative",
+                "regions": [
+                  {
+                    "label": "Hunter Valley Partnership",
+                    "fid": "cl1063",
+                    "description": "The Hunter Valley comprises a complex region of east-west and north-south connections, in one of the few parts of the GER corridor where the Great Dividing Range diminishes to a naturally low and narrow line of hills. The landscape supports of complex mix of inland and coastal species, and forms a natural ‘bottle-neck’ for forest and woodland species migrating along the ranges. <a href='http://www.greateasternranges.org.au/our-partners/ger-regional-partnerships/hunter-valley-partnership/'>Click here for more information.</a>"
+                  },
+                  {
+                    "label": "Border Ranges Alliance",
+                    "fid": "cl1062",
+                    "description": "The Border Ranges is one of Australia's most biologically diverse regions, a spectacular backdrop to local communities, and home to many unique plants and animals. It is part of the World Heritage listed Gondwana Rainforests of Australia. <a href=\"http://www.greateasternranges.org.au/our-partners/ger-regional-partnerships/border-ranges-alliance/\">Click here for more information.</a>"
+                  },
+                  {
+                    "label": "Kosciuszko to Coast",
+                    "fid": "cl1067",
+                    "description": "The Kosciuszko to Coast region links the Australian Alps National Parks through natural temperate grasslands and woodlands to tablelands, forests and coastal ecosystems. This creates the tallest altitudinal gradient in the GER corridor between Australia’s highest peak Mount Kosciuszko (2,228 meters) and sea level. <a href=\"http://www.greateasternranges.org.au/our-partners/ger-regional-partnerships/kosciusko2coast/\">Click here for more information.</a>"
+                  },
+                  {
+                    "label": "Slopes to Summit",
+                    "fid": "cl1069",
+                    "description": "The Slopes to Summit landscape area forms a natural altitudinal gradient linking the high country habitats of the Australian Alps and northern central Victoria, with the temperate woodlands and grasslands of inland NSW. <a href=\"http://www.greateasternranges.org.au/our-partners/ger-regional-partnerships/slopes-to-summit/\">Click here for more information.</a>"
+                  },
+                  {
+                    "label": "Southern Highlands Link",
+                    "fid": "cl1070",
+                    "description": "The Southern Highlands Link provides several connections linking the World Heritage-listed reserves of the Greater Blue Mountains with major sandstone reserves to the south. Although parts of the Southern Highlands have been extensively cleared for agriculture and urban expansion, it remains an important landscape for a variety of bird migrations along the ranges and between the coast and inland. <a href=\"http://www.greateasternranges.org.au/our-partners/ger-regional-partnerships/southern-highlands-link/\">Click here for more information.</a>"
+                  },
+                  {
+                    "label": "Kanangra-Boyd to Wyangala Link",
+                    "fid": "cl2050",
+                    "description": "The Kanangra-Boyd to Wyangala Link forms a natural corridor connecting the cool forests of Australia’s east coast with the drier temperate and semi-arid woodlands of the interior. The corridor allows species which are normally associated with forest environments to occupy habitat which is not available in the surrounding landscape, and also provides a refuge for woodland species during periods of prolonged drought. <a href=\"http://www.greateasternranges.org.au/our-partners/ger-regional-partnerships/kanangra-boyd-to-wyangala-link/\">Click here for more information.</a>"
+                  },
+                  {
+                    "label": "Jaliigirr Biodiversity Alliance",
+                    "fid": "cl1065",
+                    "description": "The Jaliigirr (Coffs Coast hinterland) landscape is located at the convergence of tropical, subtropical and temperate zones creating a unique diversity and complexity of habitats and species. These ecological communities provide our water supply, clean air, crop pollination, nutrient recycling, food, medicines, building materials and the regeneration of primary production soils, contributing billions of dollars to our local economy annually. <a href=\"http://www.greateasternranges.org.au/our-partners/ger-regional-partnerships/jalliigirr-biodiversity-alliance/\">Click here for more information.</a>"
+                  },
+                  {
+                    "label": "Illawarra to Shoalhaven",
+                    "fid": "cl1064",
+                    "description": "The Illawarra to Shoalhaven landscape comprises both a major north-south rainforest corridor formed by the Illawarra and Cambewarra escarpments, and a series of altitudinal linkages enabling seasonal migration of species between coastal reserves, the Southern Highlands and beyond. <a href=\"http://www.greateasternranges.org.au/our-partners/ger-regional-partnerships/illawarra-to-shoalhaven/\">Click here for more information.</a>"
+                  },
+                  {
+                    "label": "Central Victorian Biolinks",
+                    "fid": "cl2048",
+                    "description": "The Central Victorian BioLinks landscape comprises a complex mosaic of local and continental scale landscape linkages connecting the Grampians with the Victorian Alps, and supporting seasonal species movements between the Murray River and the Macedon Ranges. The landscape occurs on a naturally low section of the eastern ranges, making the woodlands and riparian forests of the landscape even more important for nomadic and migratory species. <a href=\"http://www.greateasternranges.org.au/our-partners/ger-regional-partnerships/central-victorian-biolinks/\">Click here for more information.</a>"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "RAMSAR wetland regions",
+        "fid": "cl935"
+      },
+      {
+        "label": "Directory of Important Wetlands",
+        "fid": "cl901"
+      },
+      {
+        "label": "Areas for Further Assessment within the East Marine Region",
+        "fid": "cl900"
+      },
+      {
+        "label": "Australian Coral Ecoregions",
+        "fid": "cl917"
+      },
+      {
+        "label": "Collaborative Australian Protected Areas Database",
+        "fid": "cl2079"
+      },
+      {
+        "label": "Exclusive Economic Zone",
+        "fid": "cl929"
+      },
+      {
+        "label": "Atlas of Life in the Coastal Wilderness",
+        "fid": "cl990"
+      }
+    ]
+  }
+]
