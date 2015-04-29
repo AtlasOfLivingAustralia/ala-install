@@ -66,7 +66,7 @@ To run Ansible against your vagrant instance you need to locate the correct key 
 
 ```
 $ cd ansible
-$ ansible-playbook -i inventories/vagrant/demo-vagrant --sudo --ask-sudo-pass ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key -u vagrant
+$ ansible-playbook -i inventories/vagrant/demo-vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key -u vagrant -s
 ```
 
 
