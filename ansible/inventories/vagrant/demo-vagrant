@@ -2,7 +2,7 @@
 vagrant1
 
 [ala-demo:vars]
-is_vagrant=true
+is_vagrant=false
 local_repo_dir = ~/.ala
 data_dir=/data
 
@@ -29,7 +29,7 @@ userdetails_url=https://auth.ala.org.au/userdetails/userDetails
 
 org_url=http://www.csiro.au
 
-orgNameLong= Bla
+orgNameLong=Bla
 orgNameShort=bla
 
 explore_your_area_lat = 54.00366
@@ -89,7 +89,7 @@ disable_alerts = true
 disable_logger = false
 
 # Whether to check API keys for incoming write requests
-api_key_check_enabled = true
+api_key_check_enabled = false
 
 # GBIF base URL for webservices
 gbifApiUrl=http://api.gbif.org/v1
