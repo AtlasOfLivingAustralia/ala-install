@@ -2,7 +2,7 @@
 vagrant1
 
 [ala-demo:vars]
-is_vagrant=false
+is_vagrant=true
 local_repo_dir = ~/.ala
 data_dir=/data
 
