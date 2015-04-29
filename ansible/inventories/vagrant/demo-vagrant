@@ -114,7 +114,7 @@ sandbox_context_path = /sandbox
 logger_hostname = demo.vagrant1.ala.org.au
 logger_url = http://demo.vagrant1.ala.org.au/logger-service
 logger_base_url = http://demo.vagrant1.ala.org.au
-logger_context_path = /logger-service 
+logger_context_path = /logger-service
 logger_db_name = logger
 logger_db_username = logger_user
 logger_db_password = logger_user
@@ -123,3 +123,6 @@ logger_db_hostname = localhost
 ############### Auth Server #########
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
+
+####### When near the GBIF building (e.g. in Europe) the GBIF nexus will likely be fastest #########
+use_gbif_nexus=true

@@ -36,12 +36,13 @@
   set_fact:
     name_indexes_repo: http://s3.amazonaws.com/ala-nameindexes/20140610
 
-- name: set nexus repository (ALA)
+- name: using the ALA nexus repository
   set_fact:
     maven_repo_ws_url: "http://nexus.ala.org.au/service/local/artifact/maven/redirect?r=public&g={{groupId | default('au.org.ala')}}&a={{artifactId | default('')}}&v={{version | default('')}}&e={{packaging | default('war')}}&c={{classifier | default('')}}"
   when: use_gbif_nexus == "false"
 
-- name: set nexus repository (GBIF)
+- name: using the GBIF nexus repository
   set_fact:
     maven_repo_ws_url: "http://repository.gbif.org/service/local/artifact/maven/redirect?r=ala-release&g={{groupId | default('au.org.ala')}}&a={{artifactId | default('')}}&v={{version | default('')}}&e={{packaging | default('war')}}&c={{classifier | default('')}}"
   when: use_gbif_nexus == "true"
+
