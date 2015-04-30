@@ -77,21 +77,28 @@ Once completed successfully you can view the demo on http://demo.vagrant1.ala.or
 ## Installing the ALA demo on EC2 or other cloud providers
 
 There is an inventory you can use to setup the demo on a cloud provider [here](ansible/inventories/demo-ec2).
+An Ubuntu 14 instance with 15GB of RAM and 4 CPUs is recommended.
+
 Here are the steps to run with this inventory:
 
-- Create your Ubuntu 14 instance. Make sure your machine is open on *ports 22, 80 and 443*. 
+ *  Create your Ubuntu 14 instance. Make sure your machine is open on *ports 22, 80 and 443*. 
 
-- Add the following to your */etc/hosts* file on the machine your are running ansible from (e.g. your laptop):
+ *  Add the following to your */etc/hosts* file on the machine your are running ansible from (e.g. your laptop):
 ```
 12.12.12.12	ala-demo	ala-demo.org 
 ```
 You'll need to replace "12.12.12.12" with the IP address of your newly created Ubuntu 14 instance.
 
-- Run the following:
-```
-ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem -u ubuntu -s -i ansible/inventories/demo-ec2 ansible/ala-demo.yml
-```
-- View http://ala-demo.org
+ * Run the following:
+  ```
+   ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem -u ubuntu -s -i ansible/inventories/demo-ec2 ansible/ala-demo.yml
+  ```
+ * View http://ala-demo.org
+ 
+### That worked, now what do I do ?
+ * Have a look at the (documentation](https://github.com/AtlasOfLivingAustralia/documentation/wiki/First-data-resource) and load a data resource.
+ * Or, load occurrence data in CSV format into the application using the sandbox which can be found at (http://ala-demo.org/sandbox)[http://ala-demo.org/sandbox] using your new VM.
+ 
 
 ### Vagrant
 
