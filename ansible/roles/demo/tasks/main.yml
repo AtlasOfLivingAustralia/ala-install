@@ -24,3 +24,13 @@
   ignore_errors: yes
   tags: 
     - demo
+
+- name: Finish message
+  debug: msg="That's ready! You can now access your ALA demo instance at http://{{ demo_hostname }}"
+  tags: 
+    - demo  
+
+- name: Finish message
+  debug: msg="Theres further documentation on data loading here https://github.com/AtlasOfLivingAustralia/documentation/wiki"
+  tags: 
+    - demo  
