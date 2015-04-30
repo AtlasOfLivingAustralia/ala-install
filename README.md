@@ -42,7 +42,10 @@ $ cd vagrant/ubuntu
 $ vagrant up
 ```
 
-The first execution of this downloads the Ubuntu image which can take 20 minutes or more. The ALA sample inventories (in the ansible/inventories/vagrant directory) refer to the VM as 'vagrant1' rather than the IP address. For this to work, you will need to add ```10.1.1.2  vagrant1 vagrant1.ala.org.au``` to your /etc/hosts file. Alternatively, you can edit the inventory file and replace 'vagrant1' with the IP address of your VM. 
+The first execution of this downloads the Ubuntu image which can take 20 minutes or more. The ALA sample inventories (in the ansible/inventories/vagrant directory) refer to the VM as 'vagrant1' rather than the IP address. For this to work, you will need to add the following entries to you ```/etc/hosts``` file (alternatively, you can edit the inventory file and replace 'vagrant1' with the IP address of your VM).
+```
+10.1.1.2  vagrant1 vagrant1.ala.org.au demo.vagrant1.ala.org.au
+```
 
 Once ready you can ssh to your VM like so:
 
@@ -69,6 +72,7 @@ $ cd ansible
 $ ansible-playbook -i inventories/vagrant/demo-vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key -u vagrant -s
 ```
 
+Once completed successfully you can view the demo on http://demo.vagrant1.ala.org.au/ 
 
 ## Other playbooks  
 
