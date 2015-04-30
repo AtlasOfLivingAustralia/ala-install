@@ -97,7 +97,7 @@ ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem -u ubuntu -s -i ansible/i
  
 ### That worked, now what do I do ?
  * Have a look at the [documentation](https://github.com/AtlasOfLivingAustralia/documentation/wiki/First-data-resource) and load a data resource.
- * Or, load occurrence data in CSV format into the application using the sandbox which can be found at (http://ala-demo.org/sandbox)[http://ala-demo.org/sandbox] using your new VM.
+ * Or, load occurrence data in CSV format into the application using the sandbox which can be found at [http://ala-demo.org/sandbox](http://ala-demo.org/sandbox) using your new VM.
  
 
 ### Vagrant
