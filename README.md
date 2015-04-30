@@ -81,7 +81,7 @@ Here are the steps to run with this inventory:
 
 - Create your Ubuntu 14 instance. Make sure your machine is open on *ports 22, 80 and 443*. 
 
-- Add the following to your */etc/hosts* file:
+- Add the following to your */etc/hosts* file on the machine your are running ansible from (e.g. your laptop):
 ```
 12.12.12.12	ala-demo	ala-demo.org 
 ```
