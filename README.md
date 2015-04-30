@@ -74,14 +74,31 @@ $ ansible-playbook -i inventories/vagrant/demo-vagrant ala-demo.yml --private-ke
 
 Once completed successfully you can view the demo on http://demo.vagrant1.ala.org.au/ 
 
-## Other playbooks  
+## Installing the ALA demo on EC2 or other cloud providers
+
+There is an inventory you can use to setup the demo on a cloud provider [here](ansible/inventories/demo-ec2).
+Here are the steps to run with this inventory:
+
+- Create your Ubuntu 14 instance. Make sure your machine is open on *ports 22, 80 and 443*. 
+
+- Add the following to your */etc/hosts* file:
+```
+12.12.12.12	ala-demo	ala-demo.org 
+```
+You'll need to replace "12.12.12.12" with the IP address of your newly created Ubuntu 14 instance.
+
+- Run the following:
+```
+ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem -u ubuntu -s -i ansible/inventories/demo-ec2 ansible/ala-demo.yml
+```
+- View http://ala-demo.org
 
 ### Vagrant
 
 The ```inventories/vagrant/``` directory contains sample inventories for most playbooks that will work against a Ubuntu Vagrant virtual machine. To use these inventories, add an entry for ```vagrant1``` and ```vagrant1.ala.org.au``` to your hosts file, or edit the inventory file and replace the hostnames and URLs, then run
 
 ```
-ansible-playbook --sudo --ask-sudo-pass -i inventories/vagrant/<inventoryFile> <playbook>.yml --private-key ~/.vagrant.d/insecure_private_key -u vagrant
+ansible-playbook -i inventories/vagrant/<inventoryFile> <playbook>.yml --private-key ~/.vagrant.d/insecure_private_key -u vagrant -s
 ```
 
 The inventory files can easily be modified to work against other virtual machines or servers (e.g. Nectar or CSIRO) simply by modifying the server and host names appropriately.
