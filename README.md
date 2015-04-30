@@ -96,7 +96,7 @@ You'll need to replace "12.12.12.12" with the IP address of your newly created U
  * View http://ala-demo.org
  
 ### That worked, now what do I do ?
- * Have a look at the (documentation](https://github.com/AtlasOfLivingAustralia/documentation/wiki/First-data-resource) and load a data resource.
+ * Have a look at the [documentation](https://github.com/AtlasOfLivingAustralia/documentation/wiki/First-data-resource) and load a data resource.
  * Or, load occurrence data in CSV format into the application using the sandbox which can be found at (http://ala-demo.org/sandbox)[http://ala-demo.org/sandbox] using your new VM.
  
 
