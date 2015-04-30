@@ -77,7 +77,7 @@ Once completed successfully you can view the demo on http://demo.vagrant1.ala.or
 ## Installing the ALA demo on EC2 or other cloud providers
 
 There is an inventory you can use to setup the demo on a cloud provider [here](ansible/inventories/demo-ec2).
-An Ubuntu 14 instance with 15GB of RAM and 4 CPUs is recommended.
+An Ubuntu 14 instance with 15GB of RAM and 4 CPUs is recommended. The scripts where tested on 30th April 2015 and took approximately 20 mins to run.
 
 Here are the steps to run with this inventory:
 
