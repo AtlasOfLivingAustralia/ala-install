@@ -90,9 +90,9 @@ Here are the steps to run with this inventory:
 You'll need to replace "12.12.12.12" with the IP address of your newly created Ubuntu 14 instance.
 
  * Run the following:
-  ```
-   ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem -u ubuntu -s -i ansible/inventories/demo-ec2 ansible/ala-demo.yml
-  ```
+```
+ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem -u ubuntu -s -i ansible/inventories/demo-ec2 ansible/ala-demo.yml
+```
  * View http://ala-demo.org
  
 ### That worked, now what do I do ?
