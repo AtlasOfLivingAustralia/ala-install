@@ -8,5 +8,4 @@ create_data_symlink: false
 
 packaging: "war"
 
-use_cdn_repos: "{{use_cdn|default('false')}}"
 groupIdPath: "{{groupId | default('au/org/ala')}}"

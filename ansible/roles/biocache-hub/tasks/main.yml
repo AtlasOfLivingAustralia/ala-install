@@ -8,14 +8,14 @@
 # WAR file deployment and Apache/Tomcat virtual host configuration
 #
 
-- include: ../../apache_vhost/tasks/main.yml context_path='/{{ biocache_hub }}' hostname='{{ biocache_hub_hostname }}'
+- include: ../../apache_vhost/tasks/main.yml context_path='/{{ biocache_hub_context_path }}' hostname='{{ biocache_hub_hostname }}'
   tags:
     - webapps
     - apache_vhost
     - deploy
     - biocache_hub    
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ biocache_hub_war_url }}' context_path='{{ biocache_hub }}' hostname='{{ biocache_hub_hostname }}'
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ biocache_hub_war_url }}' context_path='{{ biocache_hub_context_path }}' hostname='{{ biocache_hub_hostname }}'
   tags:
     - webapps
     - tomcat_vhost
@@ -36,13 +36,24 @@
     - config
     - biocache_hub    
 
+- name: copy grouped_facets.json
+  template: src=config/{{grouped_facets_json}} dest={{data_dir}}/{{biocache_hub}}/config/{{grouped_facets_json}} force=yes
+  when: grouped_facets_json is defined
+  tags:
+    - webapps
+    - config
+    - hub_config
+    - biocache_hub
+
+
 - name: copy all config.properties
   template: src=config/config.properties dest={{data_dir}}/{{biocache_hub}}/config/{{biocache_hub_config}} force=yes
   tags:
     - webapps
     - config
     - hub_config
-    - biocache_hub    
+    - biocache_hub
+    
 
 - name: set data ownership
   file: path={{data_dir}}/{{biocache_hub}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
@@ -52,7 +63,6 @@
     - webapps
     - config
     - biocache_hub    
-
 - name: Create symlink to data/biocache-media from /srv/[hostname]/www/biocache-media
   command: "ln -sf /data/biocache-media  /srv/{{ biocache_hub_hostname }}/www/biocache-media"
   ignore_errors: yes

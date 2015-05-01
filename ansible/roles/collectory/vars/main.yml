@@ -1,10 +1,12 @@
 # application versions
 # assets
 version: "{{ collectory_version | default('LATEST') }}"
-artifactId: "{{ collectory_app | default('') }}"
+artifactId: "{{ collectory_app | default('generic-collectory') }}"
 groupId: "au.org.ala"
 # collectory does not need a value for classifier
 classifier: ''
 packaging: "war"
 
 collectory_war_url: "{{maven_repo_ws_url}}"
+
+collectory_data_dir: "{{data_dir}}/{{ collectory_app | default('generic-collectory') }}"

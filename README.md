@@ -31,18 +31,21 @@ Below are some instructions for setting up the [ALA demo](http://ala-demo.gbif.o
 [Vagrant](http://www.vagrantup.com) can be used to test ansible playbooks on your local machine. To use this, you will need to install
 [VirtualBox](https://www.virtualbox.org) and [Vagrant](http://www.vagrantup.com).
 
-The ```vagrant/ubuntu``` directory contains configurations that can used with [VirtualBox](https://www.virtualbox.org/) to bring up a VH for deploying against.  
+The ```vagrant/ubuntu-trusty``` directory contains configurations that can used with [VirtualBox](https://www.virtualbox.org/) to bring up a VH for deploying against.  
 
 This is included only to simplify local testing, but any server Ubuntu 14.x could be used.  
 
 To create a virtual machine with vagrant:
 
 ```
-$ cd vagrant/ubuntu
+$ cd vagrant/ubuntu-trusty
 $ vagrant up
 ```
 
-The first execution of this downloads the Ubuntu image which can take 20 minutes or more. The ALA sample inventories (in the ansible/inventories/vagrant directory) refer to the VM as 'vagrant1' rather than the IP address. For this to work, you will need to add ```10.1.1.2  vagrant1 vagrant1.ala.org.au``` to your /etc/hosts file. Alternatively, you can edit the inventory file and replace 'vagrant1' with the IP address of your VM. 
+The first execution of this downloads the Ubuntu image which can take 20 minutes or more. The ALA sample inventories (in the ansible/inventories/vagrant directory) refer to the VM as 'vagrant1' rather than the IP address. For this to work, you will need to add the following entries to you ```/etc/hosts``` file (alternatively, you can edit the inventory file and replace 'vagrant1' with the IP address of your VM).
+```
+10.1.1.2  vagrant1 vagrant1.ala.org.au demo.vagrant1.ala.org.au
+```
 
 Once ready you can ssh to your VM like so:
 
@@ -66,18 +69,43 @@ To run Ansible against your vagrant instance you need to locate the correct key 
 
 ```
 $ cd ansible
-$ ansible-playbook -i inventories/vagrant --sudo --ask-sudo-pass ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key -u vagrant
+$ ansible-playbook -i inventories/vagrant/demo-vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key -u vagrant -s
 ```
 
+Once completed successfully you can view the demo on http://demo.vagrant1.ala.org.au/ 
 
-## Other playbooks  
+## Installing the ALA demo on EC2 or other cloud providers
+
+There is an inventory you can use to setup the demo on a cloud provider [here](ansible/inventories/demo-ec2).
+An Ubuntu 14 instance with 15GB of RAM and 4 CPUs is recommended. The scripts where tested on 30th April 2015 and took approximately 20 mins to run on a EC2 instance.
+
+Here are the steps to run with this inventory:
+
+ *  Create your Ubuntu 14 instance. Make sure your machine is open on *ports 22, 80 and 443*. 
+
+ *  Add the following to your */etc/hosts* file on the machine your are running ansible from (e.g. your laptop):
+```
+12.12.12.12	ala-demo	ala-demo.org 
+```
+You'll need to replace "12.12.12.12" with the IP address of your newly created Ubuntu 14 instance.
+
+ * Run the following:
+```
+ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem -u ubuntu -s -i ansible/inventories/demo-ec2 ansible/ala-demo.yml
+```
+ * View http://ala-demo.org
+ 
+##### That worked, now what do I do ?
+ * Have a look at the [documentation](https://github.com/AtlasOfLivingAustralia/documentation/wiki/First-data-resource) and load a data resource.
+ * Or, load occurrence data in CSV format into the application using the sandbox which can be found at [http://ala-demo.org/sandbox](http://ala-demo.org/sandbox) using your new VM.
+ 
 
 ### Vagrant
 
 The ```inventories/vagrant/``` directory contains sample inventories for most playbooks that will work against a Ubuntu Vagrant virtual machine. To use these inventories, add an entry for ```vagrant1``` and ```vagrant1.ala.org.au``` to your hosts file, or edit the inventory file and replace the hostnames and URLs, then run
 
 ```
-ansible-playbook --sudo --ask-sudo-pass -i inventories/vagrant/<inventoryFile> <playbook>.yml --private-key ~/.vagrant.d/insecure_private_key -u vagrant
+ansible-playbook -i inventories/vagrant/<inventoryFile> <playbook>.yml --private-key ~/.vagrant.d/insecure_private_key -u vagrant -s
 ```
 
 The inventory files can easily be modified to work against other virtual machines or servers (e.g. Nectar or CSIRO) simply by modifying the server and host names appropriately.

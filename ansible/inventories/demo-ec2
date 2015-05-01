@@ -1,29 +1,44 @@
+###############################################################################
+#
+# An inventory to use to set up a machine on EC2 or other cloud provider.
+# To use this add the following into your /etc/hosts file:
+#
+# 12.12.12.12	ala-demo	ala-demo.org 
+#
+# You'll need to replace "12.12.12.12" with the IP address of your newly created
+# Ubuntu 14 instance.
+#
+# ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem -u ubuntu -s -i ansible/inventories/demo-ec2 ansible/ala-demo.yml
+#
+###############################################################################
+
 [ala-demo]
-vagrant1
+ala-demo
 
 [ala-demo:vars]
-is_vagrant=true
 local_repo_dir = ~/.ala
-data_dir=/data
 
-demo_hostname = demo.vagrant1.ala.org.au
+# Mounted storage is usually /mnt on EC2.
+data_dir=/mnt
 
-####################### Biocache #######################
+demo_hostname = ala-demo.org
+
+####################### Biocache ##############################################
 
 biocache_db_host = localhost
 cassandra_listen_host = localhost
-biocache_service_hostname = demo.vagrant1.ala.org.au
-biocache_service_url = http://demo.vagrant1.ala.org.au/biocache-service
-biocache_service_base_url = http://demo.vagrant1.ala.org.au
+biocache_service_hostname = ala-demo.org
+biocache_service_url = http://ala-demo.org/biocache-service
+biocache_service_base_url = http://ala-demo.org
 biocache_service_context_path = /biocache-service
 logging_enabled=true
 default_country=Australia
 
-####################### Hub #######################
+####################### Hub ###################################################
 
-biocache_hub_hostname = demo.vagrant1.ala.org.au
-biocache_hub_url = http://demo.vagrant1.ala.org.au/generic-hub
-biocache_hub_base_url = http://demo.vagrant1.ala.org.au
+biocache_hub_hostname = ala-demo.org
+biocache_hub_url = http://ala-demo.org/generic-hub
+biocache_hub_base_url = http://ala-demo.org
 biocache_hub_context_path = /generic-hub
 userdetails_url=https://auth.ala.org.au/userdetails/userDetails
 
@@ -40,11 +55,11 @@ map_default_latitude = 54.00366
 map_default_longitude = -2.547855
 map_default_zoom = 5
 
-####################### Collectory #######################
+####################### Collectory ############################################
 
-collectory_hostname = demo.vagrant1.ala.org.au
-collectory_url = http://demo.vagrant1.ala.org.au/collectory
-collectory_base_url = http://demo.vagrant1.ala.org.au
+collectory_hostname = ala-demo.org
+collectory_url = http://ala-demo.org/collectory
+collectory_base_url = http://ala-demo.org
 collectory_context_path = /collectory
 collectory_db_host_address = localhost
 collectory_db_host = localhost
@@ -95,25 +110,25 @@ api_key_check_enabled = false
 gbifApiUrl=http://api.gbif.org/v1
 
 # Logger URL
-logger_webservice_url = http://demo.vagrant1.ala.org.au/logger-service/service
+logger_webservice_url = http://ala-demo.org/logger-service/service
 
 ####################### SOLR #######################
 
-solr_hostname = demo.vagrant1.ala.org.au
-solr_url = http://demo.vagrant1.ala.org.au/solr
-solr_base_url = http://demo.vagrant1.ala.org.au
+solr_hostname = ala-demo.org
+solr_url = http://ala-demo.org/solr
+solr_base_url = http://ala-demo.org
 solr_context_path = /solr
 
-sandbox_hostname = demo.vagrant1.ala.org.au
-sandbox_url = http://demo.vagrant1.ala.org.au/sandbox
-sandbox_base_url = http://demo.vagrant1.ala.org.au
+sandbox_hostname = ala-demo.org
+sandbox_url = http://ala-demo.org/sandbox
+sandbox_base_url = http://ala-demo.org
 sandbox_context_path = /sandbox
 
 ################# Logger Service ############
 
-logger_hostname = demo.vagrant1.ala.org.au
-logger_url = http://demo.vagrant1.ala.org.au/logger-service
-logger_base_url = http://demo.vagrant1.ala.org.au
+logger_hostname = ala-demo.org
+logger_url = http://ala-demo.org/logger-service
+logger_base_url = http://ala-demo.org
 logger_context_path = /logger-service
 logger_db_name = logger
 logger_db_username = logger_user
