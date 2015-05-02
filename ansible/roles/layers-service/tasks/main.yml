@@ -1,18 +1,21 @@
 - include: ../../common/tasks/setfacts.yml
   tags:    
     - layers-service
+    - webapps
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ layers_service_context_path }}' hostname='{{ layers_service_hostname }}'
   tags:
     - deploy
     - apache_vhost
-    - layers-service    
+    - layers-service   
+    - webapps 
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ layers_service_war_url }}' context_path='{{ layers_service_context_path }}' hostname='{{ layers_service_hostname }}'
   tags:
     - deploy
     - tomcat_vhost
     - layers-service    
+    - webapps
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
