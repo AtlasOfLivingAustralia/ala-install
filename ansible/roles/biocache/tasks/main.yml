@@ -113,7 +113,7 @@
     - restart tomcat
 
 - name: copy all template configs
-  template: src={{item}} dest={{data_dir}}/biocache/{{item}} owner=tomcat group=tomcat mode=0644
+  template: src={{item}} dest={{data_dir}}/biocache/{{item}} owner=tomcat group=tomcat mode=0774
   with_items:
     - config/biocache-config.properties
 

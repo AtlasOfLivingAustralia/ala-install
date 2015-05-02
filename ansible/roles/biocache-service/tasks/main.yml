@@ -29,7 +29,7 @@
   copy: src=data/config dest={{data_dir}}/biocache owner={{tomcat_user}}  group={{tomcat_user}}
 
 - name: ensure target directories exist [data subdirectories etc.
-  file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}}
+  file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}} mode=0774
   with_items:
     - "{{data_dir}}/ala/layers/ready/shape"
     - "{{data_dir}}/biocache-load"
@@ -42,7 +42,7 @@
     - "{{data_dir}}/tool"        
 
 - name: copy all template configs
-  template: src={{item}} dest={{data_dir}}/biocache/{{item}} owner={{tomcat_user}}  group={{tomcat_user}}  mode=0644
+  template: src={{item}} dest={{data_dir}}/biocache/{{item}} owner={{tomcat_user}}  group={{tomcat_user}} mode=0774
   with_items:
     - config/biocache-config.properties
 
