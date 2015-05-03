@@ -30,6 +30,11 @@
   tags: 
     - demo  
 
+- name: set redhat variables
+  command: "usermod -a -G {{ tomcat_user }} ubuntu" 
+  when: ansible_os_family == "Debian"
+
+
 - name: Finish message
   debug: msg="Theres further documentation on data loading here https://github.com/AtlasOfLivingAustralia/documentation/wiki"
   tags: 
