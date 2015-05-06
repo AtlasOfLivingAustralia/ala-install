@@ -1,0 +1,64 @@
+# APA Hub server installation
+
+[apa-hub]
+apa.ala.org.au
+
+[apa-hub:vars]
+is_vagrant=false
+local_repo_dir = ~/.ala
+data_dir=/data
+
+biocache_service_url = http://biocache.ala.org.au/ws
+biocache_service_base_url = http://biocache.ala.org.au
+biocache_service_context_path =
+
+biocache_hub=ala-hub
+biocache_hub_version=0.1-SNAPSHOT
+
+biocache_hub_url = http://apa.ala.org.au
+biocache_hub_base_url = http://apa.ala.org.au
+biocache_hub_context_path = /apa-hub
+biocache_hub_hostname = apa.ala.org.au
+
+collectory_url = http://collections.ala.org.au
+collectory_base_url = http://collections.ala.org.au
+collectory_context_path =
+
+disable_cas = false
+bypass_cas = false
+auth_base_url = https://auth.ala.org.au
+auth_cas_url = https://auth.ala.org.au/cas/login
+
+dwc.exclude=dataHubUid,dataProviderUid,institutionUid,year,month,day,modified,left,right,provenance,taxonID,preferredFlag,outlierForLayers,speciesGroups,associatedMedia,images,userQualityAssertion,speciesHabitat
+s,duplicationType,taxonomicIssues,subspeciesID,nameMatchMetric,sounds
+use_ala_spatial_portal = true
+biocache_api_key=api-key-to-use
+bie_base_url = http://bie.ala.org.au/
+bie_search_path = /search
+use_ala_bie|default = true
+use_ala_bie=true
+biocache_ajax_useProxy = true
+facets.exclude=dataHubUid,day,modified,left,right,taxonID,preferredFlag,associatedMedia,images,subspeciesID,sounds,raw_state_conservation,imcra,basis_of_record,multimedia,occurrence_status_s,user_id,data_provide
+r_uid,dataset_name,data_resource_uid,institution_uid,life_stage,species_subgroup,interaction,location_id,event_id,type_status,alau_user_id,provenance
+facets.hide=common_name,raw_common_name,elevation_d_rng,min_elevation_d_rng,cl959,raw_state_conservation,biogeographic_region,species_habitats,institution_uid
+facets.include=establishment_means,user_assertions,assertion_user_id,name_match_metric,duplicate_type,raw_datum,raw_sex,life_stage,elevation_d_rng,min_elevation_d_rng,identified_by,species_subgroup,biogeographic
+_region,raw_identification_qualifier
+use_gbif_nexus = false
+
+# Define APA specific variables (MLH)
+biocache_query_context = data_hub_uid:dh8
+orgNameLong = Atlas of Prehistoric Australia
+orgNameShort = APA
+org_url = http://www.flinders.edu.au/
+explore_your_area_lat =
+explore_your_area_lng =
+explore_your_area_location =
+map_default_latitude = -23.2629
+map_default_longitude = 133.5251
+map_default_colourby =
+default_facet_map_colour_by =
+default_list_view = listView
+zoom_outside_scoped_region = false
+
+authorise_roles = ROLE_ADMIN
+club_role_for_hub = ROLE_APA_CLUB
