@@ -4,5 +4,4 @@
     - java
     - tomcat
     - apache
-    - { role: biocache-hub, biocache_hub: apa-hub, proxy_root_context_to: apa-hub }
-hub }
+    - { role: biocache-hub, biocache_hub: apa-hub }
