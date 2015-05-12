@@ -4,7 +4,7 @@ This project includes a playbook for setting up the [ALA demo ](http://ala-demo.
 
 ## Ansible version
 
-The playbooks and roles in this repository require <strong>Ansible 1.8</strong> or above.
+The playbooks and roles in this repository require <strong>Ansible 1.8.x</strong>. There have been reported problems with Ansible 1.9+ which we are [working on](https://github.com/AtlasOfLivingAustralia/ala-install/issues/56).
 
 NOTE: many linux packages have an older version of Ansible (1.7 or even 1.5). You will need to update your packages and upgrade ansible first.
 
