@@ -3,6 +3,7 @@
     - java
     - common
     - mongodb
+    - wkhtmltopdf
     - tomcat
     - apache
     - nameindex
