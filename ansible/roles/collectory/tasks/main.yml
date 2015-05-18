@@ -10,7 +10,6 @@
   copy: src={{item}} dest=/tmp
   with_items:
     - collectory-sequences.sql
-    - collectory-schema.sql
   tags:
     - db
     - collectory
@@ -22,7 +21,7 @@
     - collectory
 
 - name: create collectory DB
-  mysql_db: name=collectory state=present
+  mysql_db: name=collectory state=present encoding=utf8
   register: dbschema
   tags:
     - db
@@ -39,7 +38,6 @@
   mysql_db: name=collectory state=import target={{item}}
   with_items:
     - /tmp/collectory-sequences.sql
-    - /tmp/collectory-schema.sql
   when: dbschema.changed
   tags:
     - db
