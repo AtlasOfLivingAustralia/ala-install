@@ -1,5 +1,5 @@
 # assets
-version: "0.7-SNAPSHOT"
+version: "0.8"
 artifactId: "specieslist-webapp"
 groupId: "au.org.ala"
 specieslist_war_url: "{{maven_repo_ws_url}}"
