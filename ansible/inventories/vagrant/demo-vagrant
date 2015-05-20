@@ -42,6 +42,7 @@ map_default_zoom = 5
 
 ####################### Collectory #######################
 
+collectory_app = generic-collectory
 collectory_hostname = demo.vagrant1.ala.org.au
 collectory_url = http://demo.vagrant1.ala.org.au/collectory
 collectory_base_url = http://demo.vagrant1.ala.org.au

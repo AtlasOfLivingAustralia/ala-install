@@ -1,17 +1,40 @@
 - include: ../../common/tasks/setfacts.yml
+  tags:
+    - "nameindex"  
+
+- name: set name index to use (COL)
+  set_fact:
+    lucene_namematching_url: "{{ col_namematching_url }}"
+    when: nameindex_variant == "col"
+  tags:
+    - "nameindex"  
+
+- name: set name index to use (Merged)
+  set_fact:
+    lucene_namematching_url: "{{ merged_namematching_url }}"
+    when: nameindex_variant == "merged"
+  tags:
+    - "nameindex"  
+
+- name: set name index to use (ALA)
+  set_fact:
+    lucene_namematching_url: "{{ ala_namematching_url }}"
+    when: nameindex_variant == "ala"
+  tags:
+    - "nameindex"  
 
 - name: ensure lucene directory exists 
-  file: path={{data_dir}}/lucene state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{data_dir}}/lucene/namematching state=directory owner={{tomcat_user}} group={{tomcat_user}}
   tags:
     - "nameindex"  
 
 - name: Download lucene index
-  get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene/col_namematching.tgz
+  get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene/namematching.tgz
   tags:
     - "nameindex"  
 
 - name: unpackage the lucene index if it was newly copied
-  shell: "tar xvf {{data_dir}}/lucene/col_namematching.tgz -C {{data_dir}}/lucene/"
+  shell: "tar xvf {{data_dir}}/lucene/namematching.tgz -C {{data_dir}}/lucene/namematching --strip-components=1"
   tags:
     - "nameindex"  
 

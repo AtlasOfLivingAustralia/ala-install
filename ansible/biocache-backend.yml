@@ -7,5 +7,6 @@
     - cassandra
     - nameindex
     - biocache-db
+    - biocache-properties    
     - biocache-service
     - biocache-cli

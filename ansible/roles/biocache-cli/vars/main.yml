@@ -1,5 +1,5 @@
 # remote assets
-version: "1.4"
+version: "{{ biocache_cli_version | default('1.4.2') }}"
 artifactId: "biocache-store"
 classifier: "distribution"
 groupId: "au.org.ala"

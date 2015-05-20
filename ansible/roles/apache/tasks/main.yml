@@ -1,25 +1,37 @@
 - name: Install Apache2 (RedHat)
   yum: "name=httpd state=present"
   when: ansible_os_family == "RedHat"
+  tags:
+    - apache  
 
 - name: Start Apache2 (RedHat)
   service: name=httpd state=restarted
   when: ansible_os_family == "RedHat"
+  tags:
+    - apache  
 
 - name: Install Apache2 (Debian)
   apt: "pkg=apache2 state=present"
   when: ansible_os_family == "Debian"
+  tags:
+    - apache
 
 - name: Enable mod_proxy_http (enables mod_proxy transitively)
   apache2_module: state=present name=proxy_http
   when: ansible_os_family == "Debian"
+  tags:
+    - apache
 
 - name: Enable mod_proxy_ajp
   apache2_module: state=present name=proxy_ajp
   when: ansible_os_family == "Debian"
   notify:
     - restart apache
+  tags:
+    - apache    
 
 - name: Start Apache2 (Debian)
   service: name=apache2 state=restarted
   when: ansible_os_family == "Debian"
+  tags:
+    - apache  
