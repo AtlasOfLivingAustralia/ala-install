@@ -19,14 +19,20 @@
 
 - name: ensure tomcat context directory exists
   file: path=/usr/share/{{tomcat}}/conf/Catalina/localhost/ state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  tags:
+    - biocache-service  
   notify:
     - restart tomcat
 
 - name: ensure application data directory exists
   file: path={{data_dir}}/biocache state=directory owner={{tomcat_user}}  group={{tomcat_user}}
+  tags:
+    - biocache-service  
 
 - name: copy all data assets
   copy: src=data/config dest={{data_dir}}/biocache owner={{tomcat_user}}  group={{tomcat_user}}
+  tags:
+    - biocache-service  
 
 - name: ensure target directories exist [data subdirectories etc.
   file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}} mode=0774
@@ -45,9 +51,13 @@
   template: src={{item}} dest={{data_dir}}/biocache/{{item}} owner={{tomcat_user}}  group={{tomcat_user}} mode=0774
   with_items:
     - config/biocache-config.properties
+  tags:
+    - biocache-service    
 
 - name: copy biocache logging config
   copy: src=config/facets.json dest={{data_dir}}/biocache/config/facets.json
+  tags:
+    - biocache-service  
 
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/{{item}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
@@ -62,8 +72,12 @@
     - tmp    
     - offline    
     - tool       
+  tags:
+    - biocache-service    
 
 - name: set permissions for biocache-load [TODO - more restrictive permissions]
   file: path={{data_dir}}/biocache-load mode=777
+  tags:
+    - biocache-service  
   notify:
     - restart tomcat

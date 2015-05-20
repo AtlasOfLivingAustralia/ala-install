@@ -99,7 +99,7 @@
   file: path={{data_dir}}/cassandra state=directory owner={{cassandra_user}}  group={{cassandra_user}}
 
 - name: create the cassandra yaml from template
-  template: src=cassandra/cassandra.yaml dest={{cassandra_yaml}} owner={{cassandra_user}}  group={{cassandra_user}}
+  template: src=cassandra.yaml dest={{cassandra_yaml}} owner={{cassandra_user}}  group={{cassandra_user}}
   notify: 
     - restart cassandra  
 
