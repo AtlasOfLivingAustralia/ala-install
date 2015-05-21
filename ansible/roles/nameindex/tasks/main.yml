@@ -5,21 +5,21 @@
 - name: set name index to use (COL)
   set_fact:
     lucene_namematching_url: "{{ col_namematching_url }}"
-    when: nameindex_variant == "col"
+  when: nameindex_variant == "col"
   tags:
     - "nameindex"  
 
 - name: set name index to use (Merged)
   set_fact:
     lucene_namematching_url: "{{ merged_namematching_url }}"
-    when: nameindex_variant == "merged"
+  when: nameindex_variant == "merged"
   tags:
     - "nameindex"  
 
 - name: set name index to use (ALA)
   set_fact:
     lucene_namematching_url: "{{ ala_namematching_url }}"
-    when: nameindex_variant == "ala"
+  when: nameindex_variant == "ala"
   tags:
     - "nameindex"  
 
@@ -27,6 +27,11 @@
   file: path={{data_dir}}/lucene/namematching state=directory owner={{tomcat_user}} group={{tomcat_user}}
   tags:
     - "nameindex"  
+
+- name: debug
+  debug: msg="Downloading {{ nameindex_variant }} index from {{ lucene_namematching_url }}"
+  tags:
+    - "nameindex"
 
 - name: Download lucene index
   get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene/namematching.tgz
