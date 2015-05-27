@@ -50,4 +50,4 @@
   set_fact:
     col_namematching_url: "{{name_indexes_repo}}/col_namematching.tgz"
     merged_namematching_url: "{{name_indexes_repo}}/merge_namematching.tgz"
-    ala_namematching_url: "{{name_indexes_repo}}/namematching13.tgz"
+    ala_namematching_url: "{{name_indexes_repo}}/namematching.tgz"
