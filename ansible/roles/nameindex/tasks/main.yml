@@ -24,7 +24,7 @@
     - "nameindex"  
 
 - name: ensure lucene directory exists 
-  file: path={{data_dir}}/lucene/namematching state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{data_dir}}/lucene/namematching state=directory
   tags:
     - "nameindex"  
 
@@ -43,7 +43,7 @@
   tags:
     - "nameindex"  
 
-- name: set data ownership [all data is owned by tomcat]
-  file: path={{data_dir}}/lucene owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  tags:
-    - "nameindex"
+# - name: set data ownership [all data is owned by tomcat]
+#   file: path={{data_dir}}/lucene owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+#   tags:
+#     - "nameindex"
