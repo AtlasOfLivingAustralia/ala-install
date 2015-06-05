@@ -1,0 +1,53 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - oznome-demo
+
+#
+# WAR file deployment and virtual host configuration
+#
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ oznome_demo_context_path }}' hostname='{{ oznome_demo_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - oznome-demo
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ oznome_demo_war_url }}' context_path='{{oznome_demo_context_path}}' hostname='{{ oznome_demo_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - oznome-demo
+
+#
+# External configuration properties file
+#
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/oznome-demo/config"
+  tags:
+    - properties
+    - oznome-demo
+
+- name: copy all config.properties
+  template: src=oznome-demo-config.properties dest={{data_dir}}/oznome-demo/config/oznome-demo-config.properties
+  tags:
+    - properties
+    - oznome-demo
+
+- name: copy configuration files
+  copy: src={{item}} dest={{data_dir}}/oznome-demo/config
+  with_items:
+    - menu-config.json
+    - state-emblems.json
+    - stateEmblems.txt
+  tags:
+    - properties
+    - oznome-demo
+
+- name: set data ownership
+  file: path={{data_dir}}/oznome-demo owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - properties
+    - oznome-demo

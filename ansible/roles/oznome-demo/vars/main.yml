@@ -1,0 +1,5 @@
+# assets
+version: "1.0-SNAPSHOT"
+artifactId: "oznome-demo"
+groupId: "au.org.ala"
+oznome_demo_war_url: "{{maven_repo_ws_url}}"

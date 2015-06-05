@@ -1,0 +1,8 @@
+- hosts: oznome-demo
+  roles:
+    - common
+    - java
+    - mongodb
+    - apache
+    - tomcat
+    - oznome-demo
