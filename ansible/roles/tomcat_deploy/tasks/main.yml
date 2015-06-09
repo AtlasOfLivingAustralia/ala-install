@@ -19,12 +19,10 @@
   notify:
     - restart tomcat
 
+- name: remove existing webapp (to ensure a clean redeployment)
+  file: path="{{ tomcat_deploy_dir }}/{{ war_filename }}" state=absent
+
 - name: download from maven repo
   get_url: url={{ war_url }} dest="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" force=true
   notify:
     - restart tomcat
-  register: getwar
-
-- name: deploy existing webapp (to ensure a clean redeployment)
-  file: path="{{ tomcat_deploy_dir }}/{{ war_filename }}" state=absent
-  when: getwar.changed
