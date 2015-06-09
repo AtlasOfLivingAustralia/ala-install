@@ -127,3 +127,6 @@ auth_cas_url=https://auth.ala.org.au/cas
 
 ####### When near the GBIF building (e.g. in Europe) the GBIF nexus will likely be fastest #########
 use_gbif_nexus=true
+
+####### Disable SDS checks for the demo
+sds_enabled=false
