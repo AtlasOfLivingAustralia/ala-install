@@ -71,7 +71,7 @@
     - cassandra 
 
 - name: install Cassandra (Debian)
-  apt: pkg=cassandra=1.2.10 state=present update_cache=yes
+  apt: pkg=cassandra=1.2.19 state=present update_cache=yes force=yes
   with_items:
     - $cassandra
   tags:

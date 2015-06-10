@@ -47,13 +47,6 @@
     - "{{data_dir}}/offline/exports"    
     - "{{data_dir}}/tool"        
 
-- name: copy all template configs
-  template: src={{item}} dest={{data_dir}}/biocache/{{item}} owner={{tomcat_user}}  group={{tomcat_user}} mode=0774
-  with_items:
-    - config/biocache-config.properties
-  tags:
-    - biocache-service    
-
 - name: copy biocache logging config
   copy: src=config/facets.json dest={{data_dir}}/biocache/config/facets.json
   tags:

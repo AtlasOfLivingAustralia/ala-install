@@ -24,7 +24,7 @@
     - biocache-cli    
 
 - name: copy biocache store jar
-  get_url: url={{biocache_store_url}} dest="/usr/lib/biocache/biocache.zip" force=yes owner={{tomcat_user}} group={{tomcat_user}} timeout=240
+  get_url: url={{biocache_store_url}} dest="/usr/lib/biocache/biocache.zip" force=yes timeout=240
   tags:
     - biocache-cli  
 

@@ -5,14 +5,11 @@ collectory: collectory
 
 biocache_service: biocache-service
 
-biocache_hub_version: 1.2.3
-
 # assets
 
 version: "LATEST"
-artifactId: "{{biocache_hub}}"
-groupId: "au.org.ala"
+artifactId: "{{ biocache_hub | default('generic-hub') }}"
+groupId: "{{ biocache_hub_group_id | default('au.org.ala') }}"
 classifier: ''
 packaging: "war"
-biocache_hub_war_url: "{{maven_repo_ws_url}}"
-
+biocache_hub_war_url: "{{ biocache_hub_maven_repo_ws_url | default(maven_repo_ws_url) }}"
