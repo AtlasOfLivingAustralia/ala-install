@@ -33,7 +33,7 @@ biocache_service_url = http://ala-demo.org/biocache-service
 biocache_service_base_url = http://ala-demo.org
 biocache_service_context_path = /biocache-service
 logging_enabled=true
-default_country=Australia
+default_country=
 
 ####################### Hub ###################################################
 
