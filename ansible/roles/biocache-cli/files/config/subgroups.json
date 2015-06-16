@@ -6,11 +6,11 @@
         "taxa": [
             {
                 "name": "DASYUROMORPHIA",
-                "common": "Marsupials, Dasyuroid & Carnivores"
+                "common": "Carnivorous Marsupials"
             },
             {
                 "name": "DIPROTODONTIA",
-                "common": "Diprotodont Marsupials"
+                "common": "Herbivorous Marsupials"
             },
             {
                 "name": "NOTORYCTEMORPHIA",
@@ -26,7 +26,7 @@
             },
             {
                 "name": "ARTIODACTYLA",
-                "common": "Cloven-hoofed Ungulates"
+                "common": "Even-toed hoofed"
             },
             {
                 "name": "CARNIVORA",
@@ -42,7 +42,7 @@
             },
             {
                 "name": "INSECTIVORA",
-                "common": "Shrews"
+                "common": "Shrews, Hedgehogs"
             },
             {
                 "name": "LAGOMORPHA",
@@ -50,7 +50,7 @@
             },
             {
                 "name": "PERRISODACTYLA",
-                "common": "Horses"
+                "common": "Odd-toed hoofed"
             },
             {
                 "name": "RODENTIA",
@@ -68,7 +68,7 @@
         "taxa": [
             {
                 "name": "ANSERIFORMES",
-                "common": "Ducks, Geese"
+                "common": "Ducks, Geese, Swans"
             },
             {
                 "name": "APODIFORMES",
@@ -76,11 +76,11 @@
             },
             {
                 "name": "CAPRIMULGIFORMES",
-                "common": "Nightjars, Frogmouths"
+                "common": "Nightjars, Frogmouths, Potoos"
             },
             {
                 "name": "CHARADRIIFORMES",
-                "common": "Coursers, Thick-knees"
+                "common": "Waders, Gulls, Auks"
             },
             {
                 "name": "CICONIIFORMES",
@@ -162,7 +162,7 @@
             },
             {
                 "name": "BLATTODEA",
-                "common": "Cockroaches"
+                "common": "Cockroaches, Termites"
             },
             {
                 "name": "COLEOPTERA",
@@ -174,27 +174,23 @@
             },
             {
                 "name": "DIPTERA",
-                "common": "Flies"
+                "common": "Flies, Mosquitoes"
             },
             {
                 "name": "EMBIOPTERA",
-                "common": "Web-spinners"
+                "common": "Webspinners"
             },
             {
                 "name": "EPHEMEROPTERA",
-                "common": "Mayflies"
+                "common": "Mayflies, Shadlfies"
             },
             {
                 "name": "HEMIPTERA",
-                "common": "Aphids"
+                "common": "Cicadas, Aphids, Planthoppers, Leafhoppers, Shield Bugs"
             },
             {
                 "name": "HYMENOPTERA",
-                "common": "Ants"
-            },
-            {
-                "name": "ISOPTERA",
-                "common": "Termites"
+                "common": "Wasps, Ants, Bees, Sawflies"
             },
             {
                 "name": "LEPIDOPTERA",
@@ -202,31 +198,31 @@
             },
             {
                 "name": "MANTODEA",
-                "common": "Mantids"
+                "common": "Mantises"
             },
             {
                 "name": "MECOPTERA",
-                "common": "Scorpion-flies"
+                "common": "Scorpionflies, Hangingflies"
             },
             {
                 "name": "MEGALOPTERA",
-                "common": "Alderflies"
+                "common": "Alderflies, Dobsonflies, Fishflies"
             },
             {
                 "name": "NEUROPTERA",
-                "common": "Ant-lions"
+                "common": "Lacewings, Mantidflies, Antlions"
             },
             {
                 "name": "ODONATA",
-                "common": "Dragonflies"
+                "common": "Dragonflies, Damselflies"
             },
             {
                 "name": "ORTHOPTERA",
-                "common": "Grasshoppers"
+                "common": "Grasshoppers, Crickets, Locusts, Katydids, Weta, Lubber"
             },
             {
                 "name": "PHASMIDA",
-                "common": "Stick Insects"
+                "common": "Stick Insects, Phasmids"
             },
             {
                 "name": "PHTHIRAPTERA",
@@ -238,7 +234,7 @@
             },
             {
                 "name": "PSOCOPTERA",
-                "common": "Booklice"
+                "common": "Booklice, Barklice, Barkflies"
             },
             {
                 "name": "SIPHONAPTERA",
@@ -246,7 +242,7 @@
             },
             {
                 "name": "STREPSIPTERA",
-                "common": "Strepsipterans"
+                "common": "Twisted-Wing Parasites"
             },
             {
                 "name": "THYSANOPTERA",
@@ -254,7 +250,7 @@
             },
             {
                 "name": "TRICHOPTERA",
-                "common": "Caddisflies"
+                "common": "Caddisflies, Sedge-flies or Rail-flies"
             },
             {
                 "name": "ZORAPTERA",
@@ -272,23 +268,23 @@
         "taxa": [
             {
                 "name": "BUFONIDAE",
-                "common": "Bufonids"
+                "common": "True Toads"
             },
             {
                 "name": "HYLIDAE",
-                "common": "Hylids"
+                "common": "Tree Frogs"
             },
             {
                 "name": "MICROHYLIDAE",
-                "common": "Microhylid Frogs"
+                "common": "Narrow-Mouthed Frogs"
             },
             {
                 "name": "MYOBATRACHIDAE",
-                "common": "Australian Frogs"
+                "common": "Australian Ground Frogs"
             },
             {
                 "name": "RANIDAE",
-                "common": "Ranid Frogs"
+                "common": "True Frogs"
             }
         ]
     },
@@ -306,7 +302,7 @@
             },
             {
                 "name": "TESTUDINES",
-                "common": "Tortoises, Turtles"
+                "common": "Tortoises, Turtles, Terrapins"
             }
         ]
     },
