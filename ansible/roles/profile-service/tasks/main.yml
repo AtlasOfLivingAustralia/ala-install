@@ -11,6 +11,12 @@
     - profile-service
     - properties
 
+- name: ensure snapshot directory exists
+  file: path={{data_dir}}/profile-service/snapshots state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  tags:
+    - profile-service
+    - properties
+
 - name: copy all template configs
   template: src=profile-service-config.properties dest={{data_dir}}/profile-service/config/profile-service-config.properties
   tags:

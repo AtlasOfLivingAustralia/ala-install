@@ -11,6 +11,12 @@
     - profile-hub
     - properties
 
+- name: ensure data directory exists
+  file: path={{data_dir}}/profile-hub/temp state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  tags:
+    - profile-hub
+    - properties
+
 - name: copy all template configs
   template: src=profile-hub-config.properties dest={{data_dir}}/profile-hub/config/profile-hub-config.properties
   tags:
