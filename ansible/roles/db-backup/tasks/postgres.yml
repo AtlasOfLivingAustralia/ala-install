@@ -1,9 +1,9 @@
-- debug: msg = "Backing up Postgres database {{ db_name }} on {{ db_hostname | default('localhost') }}:{{ db_port | default('5432') }} to {{ db_backup_dir | default('/data') }}"
+- debug: msg = "Backing up Postgres database {{ db_name }} on localhost:5432' to {{ backup_dir | default('/data') }}"
   tags:
     - db
-    - _dbbackup
+    - backup
 
-- shell: "sudo pg_dump -h {{ db_hostname | default('localhost') }} -p {{ db_port | default('5432') }} -U {{ db_user }} -W {{ db_password }} {{ db_name }} | gzip > {{ db_backup_dir | default('/data') }}/db_`date '+%Y%m%d%H%M%S'`.gz"
+- shell: "sudo -u {{ db_user }} pg_dump -Fc {{ db_name }} | gzip > {{ db_backup_dir | default('/data') }}/db_`date '+%Y%m%d%H%M%S'`.gz"
   tags:
     - db
-    - db_backup
+    - backup
