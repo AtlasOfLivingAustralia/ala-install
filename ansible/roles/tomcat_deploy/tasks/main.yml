@@ -19,8 +19,13 @@
   notify:
     - restart tomcat
 
+- name: check war file existence
+  stat: path="{{ tomcat_deploy_dir }}/{{ war_filename }}"
+  register: war_exist
+
 - name: back up existing war file
   shell: "sudo cp {{ tomcat_deploy_dir }}/{{ war_filename }}.war {{ backup_dir | default('/data') }}/{{ war_filename }}_`date '+%Y%m%d%H%M%S'`.war"
+  when: war_exist.stat.exists == True
 
 - name: remove existing webapp (to ensure a clean redeployment)
   file: path="{{ tomcat_deploy_dir }}/{{ war_filename }}" state=absent
