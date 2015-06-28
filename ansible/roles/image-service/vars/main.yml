@@ -1,5 +1,8 @@
 images_app: ala-images
-version: "0.1"
+version: "{{ images_version | default('LATEST') }}"
 artifactId: "ala-images"
 groupId: "au.org.ala"
 images_url: "{{maven_repo_ws_url}}"
+
+additional_proxy_pass:
+  - { src: "/data", dest: "!" }
