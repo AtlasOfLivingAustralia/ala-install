@@ -6,6 +6,8 @@
     - wkhtmltopdf
     - tomcat
     - apache
+    - postfix
     - nameindex
+    - {role: db-backup, db: mongo}
     - profile-service
     - profile-hub

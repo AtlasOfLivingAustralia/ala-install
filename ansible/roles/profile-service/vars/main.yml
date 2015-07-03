@@ -1,5 +1,5 @@
 # assets
-version: "0.3-SNAPSHOT"
+version: "{{ profile_service_version | default('LATEST') }}"
 artifactId: "profile-service"
 classifier: ''
 packaging: "war"
