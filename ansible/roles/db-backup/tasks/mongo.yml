@@ -1,0 +1,9 @@
+- debug: msg = "Backing up MongoDB instance on {{ db_hostname | default('localhost') }}:{{ db_port | default('27017') }} to {{ backup_dir | default('/data') }}"
+  tags:
+    - db
+    - backup
+
+- shell: "sudo mongodump -h {{ db_hostname | default('localhost') }} -p {{ db_port | default('27017') }} -o {{ backup_dir | default('/data') }} | gzip > db_`date '+%Y%m%d%H%M%S'`.gz"
+  tags:
+    - db
+    - backup
