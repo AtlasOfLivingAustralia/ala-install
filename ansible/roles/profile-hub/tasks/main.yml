@@ -11,8 +11,14 @@
     - profile-hub
     - properties
 
-- name: ensure data directory exists
+- name: ensure temporary file directory exists
   file: path={{data_dir}}/profile-hub/temp state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  tags:
+    - profile-hub
+    - properties
+
+- name: ensure staged images directory exists
+  file: path={{data_dir}}/profile-hub/staged-images state=directory owner={{tomcat_user}} group={{tomcat_user}}
   tags:
     - profile-hub
     - properties
