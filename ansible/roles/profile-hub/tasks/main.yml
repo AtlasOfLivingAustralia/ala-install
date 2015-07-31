@@ -35,6 +35,26 @@
     - profile-hub
     - properties
 
+#
+# Set up a CRON job to delete temporary files
+#
+- name: copy script to delete temporary files to the home dir
+  template: src=delete-temp-profile-files.sh dest={{data_dir}}/profile-hub/delete-temp-profile-files.sh
+  tags: 
+    - profile-hub
+    - cron
+
+- name: set executable permission
+  file: path="{{data_dir}}/profile-hub/delete-temp-profile-files.sh" mode="a+x"
+  tags:
+    - profile-hub
+    - cron
+
+- name: create the cron job
+  cron: name="delete Profile Hub temporary files" hour="0" minute="0" job="{{data_dir}}/profile-hub/delete-temp-profile-files.sh > /dev/null"
+  tags:
+    - profile-hub
+    - cron
 
 #
 # WAR file deployment and virtual host configuration
