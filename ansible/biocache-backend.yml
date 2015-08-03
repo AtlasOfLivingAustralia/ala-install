@@ -10,3 +10,4 @@
     - biocache-properties    
     - biocache-service
     - biocache-cli
+    - jenkins

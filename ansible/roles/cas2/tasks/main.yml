@@ -30,7 +30,7 @@
     - cas
     - db
     - user_db
-     
+
 - name: create schema, stored procs and reference data
   mysql_db: name={{ user_store_db_name }} state=import target={{item}}
   with_items:
@@ -58,7 +58,6 @@
     - db
     - ticket_db
 
-
 #
 # Properties file configuration
 #
@@ -69,7 +68,10 @@
     - properties
 
 - name: copy all template configs
-  template: src=config/cas.properties dest={{data_dir}}/cas/config/cas.properties
+  template: src={{ item }} dest={{data_dir}}/cas/config
+  with_items:
+    - "config/cas.properties"
+    - "config/log4j.xml"
   tags:
     - cas
     - properties
