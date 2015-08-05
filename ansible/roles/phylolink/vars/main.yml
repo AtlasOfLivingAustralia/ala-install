@@ -1,5 +1,5 @@
 # assets
-version: "0.2.5-SNAPSHOT"
+version: "0.2.6"
 artifactId: "phylolink"
 groupId: "au.org.ala"
 phylolink_war_url: "{{maven_repo_ws_url}}"

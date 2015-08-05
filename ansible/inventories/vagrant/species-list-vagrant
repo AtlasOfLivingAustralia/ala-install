@@ -25,3 +25,5 @@ field_guide_base_url=http://fieldguide.ala.org.au
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
+
+nameindex_to_use=ala

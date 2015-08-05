@@ -101,6 +101,7 @@
   command: "pip install -r requirements.txt"
   args:
     chdir: "{{opentreeDir}}"
+  ignore_errors: yes
   tags:
     - web2pyApps
 
