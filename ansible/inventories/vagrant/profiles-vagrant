@@ -28,3 +28,5 @@ lists_base_url=http://lists.ala.org.au
 biocache_base_url=http://biocache.ala.org.au
 sandbox_base_url=http://sandbox.ala.org.au
 avh_base_url=http://avh.ala.org.au
+
+image_upload_api_key = abc

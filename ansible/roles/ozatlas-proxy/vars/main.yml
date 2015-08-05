@@ -1,4 +1,4 @@
 # assets
-version: "0.2"
+version: "{{ ozatlas_proxy_version | default('LATEST')}}"
 artifactId: "ozatlas-proxy"
 ozatlas_proxy_war_url: "{{maven_repo_ws_url}}"

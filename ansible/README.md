@@ -117,3 +117,31 @@ The AnsibleSkeleton script will create a skeleton properties file for your appli
 The inventories/vagrant directory contains inventories for deploying applications to a vagrant instance.
 
 For these inventories to work, you will need to have a Ubuntu 14.04 vagrant VM running, with the IP address mapped to ```vagrant1``` AND ```vagrant1.ala.org.au``` in your /etc/hosts files. The inventories refer to the host as 'vagrant1', and the URLs for the applications will be 'vagrant1.ala.org.au/something`.
+
+# Database backups
+The role ```role/db-backup``` can be included in your playbook to backup a database instance during each deployment. This role currently supports MongoDB, MySQL and Postgres. The role defines a *db_backup* tag.
+
+This role will export the database to a .gz file called db\_[timestamp].gz in a directory you specify (defaults to /data).
+
+To use this role, add the following to your playbook _before_ your application deployment:
+
+``` - { role: db-backup, db: "mongo|mysql|postgres" } ```.
+
+You will also need to specify the following variables in your inventory file:
+
+|Database|Option|Mandatory|Default|Description|
+|--------|------|---------|-------|-----------|
+|All|backup\_dir|No|/data|The directory to save the backup file to|
+|MongoDB|db\_hostname|No|localhost|The hostname to use when connecting to the database|
+| |db\_port|No|27017|The port to use when connecting to the database|
+|MySQL|db\_user|Yes|none|The user to connect as|
+| |db\_password|Yes|none|The user's password|
+| |db\_name|Yes|none|The name of the database schema to backup|
+| |db\_host|No|localhost|The hostname to use when connecting to the database|
+| |db\_port|No|3306|The port to use when connecting to the database|
+|Postgres|db\_user|Yes|none|The user to connect as|
+| |db\_name|Yes|none|The name of the database schema to backup|
+
+* NOTE: There are some current limitations with the postgres support due to the way it handles authentication. The current implementation only supports postgres instances running on localhost as the postgres user.
+
+To skip the database backup step during your deployment, add the following to your ansible-playbook command: ``` --skip-tags backup```.

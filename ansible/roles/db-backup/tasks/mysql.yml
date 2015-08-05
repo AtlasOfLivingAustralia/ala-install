@@ -1,0 +1,9 @@
+- debug: msg = "Backing up MySQL database {{ db_name }} on {{ db_hostname | default('localhost') }}:{{ db_port | default('3306') }} to {{ backup_dir | default('/data') }}"
+  tags:
+    - db
+    - backup
+
+- shell: "sudo mysqldump --routines --host {{ db_hostname | default('localhost') }} --port {{ db_port | default('3307') }} -u {{ db_user }} -p{{ db_password }} {{ db_name }} | gzip > {{ backup_dir | default('/data') }}/db_`date '+%Y%m%d%H%M%S'`.gz"
+  tags:
+    - db
+    - backup

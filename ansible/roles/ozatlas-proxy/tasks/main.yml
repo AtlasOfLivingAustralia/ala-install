@@ -3,7 +3,7 @@
     - ozatlas-proxy
 
 - name: create DB
-  mysql_db: name={{ozatlas_proxy_db_name}} state=present
+  mysql_db: name={{ozatlas_proxy_db_name |  default('ozatlasproxy')}} state=present
   tags:
     - ozatlas-proxy
     - db

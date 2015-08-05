@@ -1,0 +1,11 @@
+- include: ./mongo.yml
+  when: db == 'mongo' or db == 'mongodb'
+  tags: db
+
+- include: ./mysql.yml
+  when: db == 'mysql'
+  tags: db
+
+- include: ./postgres.yml
+  when: db == 'postgres'
+  tags: db
