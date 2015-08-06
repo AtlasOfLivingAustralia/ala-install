@@ -22,6 +22,7 @@ biocache_base_url=http://biocache.ala.org.au
 ala_base_url=http://www.ala.org.au
 bie_base_url=http://bie.ala.org.au
 field_guide_base_url=http://fieldguide.ala.org.au
+list_tool_base_url=http://lists.ala.org.au
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
