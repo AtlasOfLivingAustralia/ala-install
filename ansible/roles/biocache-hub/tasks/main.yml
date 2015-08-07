@@ -63,6 +63,7 @@
     - webapps
     - config
     - biocache_hub    
+    
 - name: Create symlink to data/biocache-media from /srv/[hostname]/www/biocache-media
   command: "ln -sf /data/biocache-media  /srv/{{ biocache_hub_hostname }}/www/biocache-media"
   ignore_errors: yes
