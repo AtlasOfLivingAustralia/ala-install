@@ -24,7 +24,7 @@
     - "nameindex"  
 
 - name: ensure lucene directory exists 
-  file: path={{data_dir}}/lucene/namematching state=directory
+  file: path={{ data_dir }}/lucene/namematching state=directory
   tags:
     - "nameindex"  
 
@@ -39,7 +39,7 @@
     - "nameindex"  
 
 - name: unpackage the lucene index if it was newly copied
-  shell: "tar xvf {{data_dir}}/lucene/namematching.tgz -C {{data_dir}}/lucene/namematching --strip-components=1"
+  shell: "tar xvf {{ data_dir }}/lucene/namematching.tgz -C {{ data_dir }}/lucene/namematching --strip-components=1"
   tags:
     - "nameindex"  
 

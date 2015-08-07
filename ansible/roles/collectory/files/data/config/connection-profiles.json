@@ -1,31 +1,166 @@
 {
-'parameters': [
-{'name':'LOCATION_URL','paramName':'url','display':'Location URL', 'type':'text'},
-{'name':'SERVICE_URL','paramName':'url','display':'Service URL', 'type':'text'},
-{'name':'WEBSITE_URL','paramName':'url','display':'Website URL', 'type':'text'},
-{'name':'BASE_URL','paramName':'url','display':'Base URL', 'type':'text'},
-{'name':'RESOURCE','paramName':'resource','display':'Resource', 'type':'text'},
-{'name':'TERMS','paramName':'termsForUniqueKey',
-'display':'DwC terms that uniquely<br/> identify a record', 'type':'text'},
-{'name':'PARAMS','paramName':'params','display':'JSON map of parameters', 'type':'textArea'},
-{'name':'DOCUMENT_MAPPER','paramName':'documentMapper', 'display':'Document mapper', 'type':'text'},
-{'name':'SITE_MAP','paramName':'siteMap', 'display':'Site map', 'type':'text'},
-{'name':'HARVESTER','paramName':'harvester', 'display':'Harvester class', 'type':'text'},
-{'name':'MIME_TYPE','paramName':'mime_type', 'display':'MIME type', 'type':'text'},
-{'name':'GROUP_ID','paramName':'group_id','display':'Group ID', 'type':'text'},
-{'name':'API_KEY','paramName':'api_key','display':'API key', 'type':'text'},
-{'name':'START_DATE','paramName':'start_date','display':'Start date', 'type':'text'},
-{'name':'CONTENT_TYPE','paramName':'content_type','display':'Content type', 'type':'text'},
-{'name':'PRIVACY_FILTER','paramName':'privacy_filter','display':'Privacy filter', 'type':'text'},
-{'name':'PER_PAGE','paramName':'per_page','display':'# per page', 'type':'text'},
-{'name':'KEYWORDS','paramName':'keywords','display':'Keywords', 'type':'textArea'},
-{'name':'AUTO','paramName':'automation','display':'Automatically loaded', 'type':'boolean'},
-{'name':'STRIP','paramName':'strip','display':'Strip whitespaces in key', 'type':'boolean'},
-{'name':'INCREMENTAL', 'paramName':'incremental','display':'Incremental Load', 'type':'boolean'},
-{'name':'CSV_DELIMITER','paramName':'csv_delimiter','display':'Value delimiter', 'type':'delimiter', 'defaultValue': ','},
-{'name':'CSV_END_OF_LINE','paramName':'csv_eol','display':'Line delimiter', 'type':'delimiter', 'defaultValue': '\n'},
-{'name':'CSV_ESCAPE','paramName':'csv_escape_char','display':'Escape character', 'type':'text', 'defaultValue': '\\'},
-{'name':'CSV_QUOTE','paramName':'csv_text_enclosure','display':'Text enclosure', 'type':'text', 'defaultValue': '"'},
+    'parameters': [
+        {
+            'name': 'LOCATION_URL',
+            'paramName': 'url',
+            'display': 'LocationURL',
+            'type': 'text'
+        },
+        {
+            'name': 'SERVICE_URL',
+            'paramName': 'url',
+            'display': 'ServiceURL',
+            'type': 'text'
+        },
+        {
+            'name': 'WEBSITE_URL',
+            'paramName': 'url',
+            'display': 'WebsiteURL',
+            'type': 'text'
+        },
+        {
+            'name': 'BASE_URL',
+            'paramName': 'url',
+            'display': 'BaseURL',
+            'type': 'text'
+        },
+        {
+            'name': 'RESOURCE',
+            'paramName': 'resource',
+            'display': 'Resource',
+            'type': 'text'
+        },
+        {
+            'name': 'TERMS',
+            'paramName': 'termsForUniqueKey',
+            'display': 'DwCtermsthatuniquely<br/>identifyarecord',
+            'type': 'text'
+        },
+        {
+            'name': 'PARAMS',
+            'paramName': 'params',
+            'display': 'JSONmapofparameters',
+            'type': 'textArea'
+        },
+        {
+            'name': 'DOCUMENT_MAPPER',
+            'paramName': 'documentMapper',
+            'display': 'Documentmapper',
+            'type': 'text'
+        },
+        {
+            'name': 'SITE_MAP',
+            'paramName': 'siteMap',
+            'display': 'Sitemap',
+            'type': 'text'
+        },
+        {
+            'name': 'HARVESTER',
+            'paramName': 'harvester',
+            'display': 'Harvesterclass',
+            'type': 'text'
+        },
+        {
+            'name': 'MIME_TYPE',
+            'paramName': 'mime_type',
+            'display': 'MIMEtype',
+            'type': 'text'
+        },
+        {
+            'name': 'GROUP_ID',
+            'paramName': 'group_id',
+            'display': 'GroupID',
+            'type': 'text'
+        },
+        {
+            'name': 'API_KEY',
+            'paramName': 'api_key',
+            'display': 'APIkey',
+            'type': 'text'
+        },
+        {
+            'name': 'START_DATE',
+            'paramName': 'start_date',
+            'display': 'Startdate',
+            'type': 'text'
+        },
+        {
+            'name': 'CONTENT_TYPE',
+            'paramName': 'content_type',
+            'display': 'Contenttype',
+            'type': 'text'
+        },
+        {
+            'name': 'PRIVACY_FILTER',
+            'paramName': 'privacy_filter',
+            'display': 'Privacyfilter',
+            'type': 'text'
+        },
+        {
+            'name': 'PER_PAGE',
+            'paramName': 'per_page',
+            'display': '#perpage',
+            'type': 'text'
+        },
+        {
+            'name': 'KEYWORDS',
+            'paramName': 'keywords',
+            'display': 'Keywords',
+            'type': 'textArea'
+        },
+        {
+            'name': 'AUTO',
+            'paramName': 'automation',
+            'display': 'Automaticallyloaded',
+            'type': 'boolean'
+        },
+        {
+            'name': 'STRIP',
+            'paramName': 'strip',
+            'display': 'Stripwhitespacesinkey',
+            'type': 'boolean'
+        },
+        {
+            'name': 'INCREMENTAL',
+            'paramName': 'incremental',
+            'display': 'IncrementalLoad',
+            'type': 'boolean'
+        },
+        {
+            'name': 'CSV_DELIMITER',
+            'paramName': 'csv_delimiter',
+            'display': 'Valuedelimiter',
+            'type': 'delimiter',
+            'defaultValue': ','
+        },
+        {
+            'name': 'CSV_END_OF_LINE',
+            'paramName': 'csv_eol',
+            'display': 'Linedelimiter',
+            'type': 'delimiter',
+            'defaultValue': '\n'
+        },
+        {
+            'name': 'CSV_ESCAPE',
+            'paramName': 'csv_escape_char',
+            'display': 'Escapecharacter',
+            'type': 'text',
+            'defaultValue': '\\'
+        },
+        {
+            'name': 'CSV_QUOTE',
+            'paramName': 'csv_text_enclosure',
+            'display': 'Textenclosure',
+            'type': 'text',
+            'defaultValue': '"'},
+        {
+            'name': 'SPECIES_LIST_URL',
+            'paramName': 'species_list_url',
+            'display': 'SpeciesListUrl',
+            'type': 'text',
+            'defaultValue': 'http://'
+        },
+
 {'name':'ID_REGEX','paramName':'autofeed_id_regex','display':'Regex to match id files', 'type':'text'},
 {'name':'DATA_REGEX','paramName':'autofeed_data_regex','display':'Regex to match data files', 'type':'text'}
 ],
@@ -39,6 +174,7 @@
 {'name':'DwCA','display':'DarwinCore archive',params:['LOCATION_URL','AUTO','TERMS','STRIP','INCREMENTAL'],'supportFileUpload':'true'},
 {'name':'AutoFeed','display':'Automated feed',params:['LOCATION_URL','AUTO','CSV_DELIMITER','CSV_END_OF_LINE','CSV_ESCAPE','CSV_QUOTE','TERMS','STRIP','INCREMENTAL']},
 {'name':'WebsiteWithSitemap','display':'Website with sitemap',params:['WEBSITE_URL','DOCUMENT_MAPPER','SITE_MAP','HARVESTER','MIME_TYPE']},
-{'name':'Flickr','display':'Flickr API',params:['BASE_URL','GROUP_ID','API_KEY','START_DATE','CONTENT_TYPE','PRIVACY_FILTER','PER_PAGE','KEYWORDS','TERMS']}
+{'name':'Flickr','display':'Flickr API',params:['BASE_URL','GROUP_ID','API_KEY','START_DATE','CONTENT_TYPE','PRIVACY_FILTER','PER_PAGE','KEYWORDS','TERMS']},
+{'name':'EOL','display':'EOL API',params:['BASE_URL','SPECIES_LIST_URL']}
 ]
 }

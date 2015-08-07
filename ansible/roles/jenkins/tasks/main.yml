@@ -62,14 +62,14 @@
   when: ansible_os_family == "Debian"
   tags: jenkins
 
-- name: enable the default ssl site
-  command: a2ensite default-ssl 
-  args:
-   creates: /etc/apache2/sites-enabled/default-ssl.conf
-  when: ansible_os_family == "Debian" 
-  notify: reload apache
-  tags: jenkins
-
+# Disabled - SSL certificates need to be configured properly
+# - name: enable the default ssl site
+#   command: a2ensite default-ssl 
+#   args:
+#    creates: /etc/apache2/sites-enabled/default-ssl.conf
+#   when: ansible_os_family == "Debian" 
+#   notify: reload apache
+#   tags: jenkins
 
 - copy: src=000-default.conf dest=/etc/apache2/sites-available/000-default.conf
   notify: reload apache

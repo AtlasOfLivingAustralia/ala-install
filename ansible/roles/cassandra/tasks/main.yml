@@ -1,4 +1,6 @@
 - include: ../../common/tasks/setfacts.yml
+  tags:
+    - cassandra 
 
 ########## REDHAT ########## 
 
@@ -87,21 +89,25 @@
   tags:
     - cassandra 
 
-########## BOTH ########## 
-
 - name: setup production settings for Cassandra (not overwrites files)
   copy: src={{item.src}} dest={{item.dest}}
   with_items:
     - { src: conf/90-nproc.conf, dest: /etc/security/limits.d/90-nproc.conf }
     - { src: conf/limits.conf, dest: /etc/security/limits.conf }
+  tags:   
+    - cassandra 
 
 - name: create data directory for cassandra on mounted storage
-  file: path={{data_dir}}/cassandra state=directory owner={{cassandra_user}}  group={{cassandra_user}}
+  file: path={{ data_dir }}/cassandra state=directory owner={{cassandra_user}} group={{cassandra_user}}
+  tags:   
+    - cassandra   
 
 - name: create the cassandra yaml from template
-  template: src=cassandra.yaml dest={{cassandra_yaml}} owner={{cassandra_user}}  group={{cassandra_user}}
+  template: src=cassandra.yaml dest={{cassandra_yaml}} owner={{cassandra_user}} group={{cassandra_user}} force=yes
   notify: 
-    - restart cassandra  
+    - restart cassandra
+  tags:   
+    - cassandra 
 
 
 
