@@ -8,6 +8,7 @@
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{ data_dir }}/bie-index/config"    
+    - "{{ data_dir }}/bie/import"     
   tags:
     - config
 
