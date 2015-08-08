@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - solr 
+    - solr_config
 
 - name: add common tomcat jars (for SOLR logging and JTS)
   copy: src=tomcat/libs/{{item}} dest=/usr/share/{{tomcat}}/lib/{{item}}
