@@ -23,6 +23,9 @@ ala_base_url=http://www.ala.org.au
 bie_base_url=http://bie.ala.org.au
 field_guide_base_url=http://fieldguide.ala.org.au
 list_tool_base_url=http://lists.ala.org.au
+spatial_service_base_url=http://spatial.ala.org.au
+regions_base_url=http://regions.ala.org.au
+sandbox_base_url=http://sandbox.ala.org.au
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
