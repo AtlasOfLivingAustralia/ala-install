@@ -34,6 +34,7 @@
   with_items:
     - "{{data_dir}}/phylolink/config"
   tags:
+    - deploy
     - phylolink
     - properties
 
@@ -42,6 +43,7 @@
   notify:
       - restart tomcat
   tags:
+    - deploy
     - phylolink
     - properties
 
