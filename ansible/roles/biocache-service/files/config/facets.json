@@ -1,228 +1,289 @@
 [
     {
-        "facets": [
+        "title":"Taxon",
+        "facets":[
             {
-                "sort": "index",
-                "field": "taxon_name"
+                "sort":"index",
+                "field":"taxon_name"
             },
             {
-                "sort": "index",
-                "field": "raw_taxon_name"
+                "sort":"index",
+                "field":"raw_taxon_name"
             },
             {
-                "sort": "index",
-                "field": "common_name"
+                "sort":"index",
+                "field":"subspecies_name"
             },
             {
-                "sort": "index",
-                "field": "subspecies_name"
+                "sort":"index",
+                "field":"species"
             },
             {
-                "sort": "index",
-                "field": "species"
+                "sort":"index",
+                "field":"genus"
             },
             {
-                "sort": "index",
-                "field": "genus"
+                "sort":"index",
+                "field":"family"
             },
             {
-                "sort": "index",
-                "field": "family"
+                "sort":"index",
+                "field":"order"
             },
             {
-                "sort": "index",
-                "field": "order"
+                "sort":"index",
+                "field":"class"
             },
             {
-                "sort": "index",
-                "field": "class"
+                "sort":"index",
+                "field":"phylum"
             },
             {
-                "sort": "index",
-                "field": "phylum"
+                "sort":"index",
+                "field":"kingdom"
             },
             {
-                "sort": "index",
-                "field": "kingdom"
+                "sort":"count",
+                "field":"rank"
             },
             {
-                "sort": "index",
-                "field": "species_group"
+                "sort":"count",
+                "field":"name_match_metric"
             },
             {
-                "sort": "count",
-                "field": "rank"
+                "sort":"index",
+                "field":"species_group"
             },
             {
-                "sort": "count",
-                "field": "interaction"
+                "sort":"index",
+                "field":"common_name"
             },
             {
-                "sort": "count",
-                "field": "species_habitats"
+                "sort":"count",
+                "field":"species_subgroup"
+            },
+            {
+                "sort":"count",
+                "field":"interaction"
             }
-        ],
-        "title": "Taxonomic"
+        ]
     },
     {
-        "facets": [
+        "title":"Identification",
+        "facets":[
             {
-                "sort": "index",
-                "field": "uncertainty"
+                "sort":"index",
+                "field":"identified_by"
             },
             {
-                "sort": "count",
-                "field": "sensitive"
+                "sort":"index",
+                "field":"raw_identification_qualifier"
             },
             {
-                "sort": "count",
-                "field": "state_conservation"
+                "sort":"count",
+                "field":"taxonomic_issue"
             },
             {
-                "sort": "count",
-                "field": "raw_state_conservation"
+                "sort":"index",
+                "field":"type_status"
             },
             {
-                "sort": "count",
-                "field": "cl966"
-            },
-            {
-                "sort": "count",
-                "field": "cl959"
-            },
-            {
-                "sort": "count",
-                "field": "state"
-            },
-            {
-                "sort": "index",
-                "field": "country"
-            },
-            {
-                "sort": "count",
-                "field": "ibra"
-            },
-            {
-                "sort": "count",
-                "field": "imcra"
-            },
-            {
-                "sort": "count",
-                "field": "cl1918"
-            },
-            {
-                "sort": "count",
-                "field": "cl617"
-            },
-            {
-                "sort": "count",
-                "field": "cl620"
-            },
-            {
-                "sort": "count",
-                "field": "geospatial_kosher"
+                "sort":"index",
+                "field":"original_name_usage"
             }
-        ],
-        "title": "Geospatial"
+        ]
     },
     {
-        "facets": [
+        "title":"Location",
+        "facets":[
             {
-                "sort": "index",
-                "field": "month"
+                "sort":"index",
+                "field":"country"
             },
             {
-                "sort": "index",
-                "field": "year"
+                "sort":"count",
+                "field":"state"
             },
             {
-                "sort": "index",
-                "field": "decade"
+                "sort":"index",
+                "field":"elevation_d_rng"
+            },
+            {
+                "sort":"index",
+                "field":"min_elevation_d_rng"
+            },
+            {
+                "sort":"count",
+                "field":"cl959"
+            },
+            {
+                "sort":"count",
+                "field":"cl1048"
+            },
+            {
+                "sort":"count",
+                "field":"cl966"
+            },
+            {
+                "sort":"count",
+                "field":"cl21"
+            },
+            {
+                "sort":"index",
+                "field":"biogeographic_region"
+            },
+            {
+                "sort":"count",
+                "field":"cl1918"
+            },
+            {
+                "sort":"count",
+                "field":"cl617"
+            },
+            {
+                "sort":"count",
+                "field":"cl620"
+            },
+            {
+                "sort":"count",
+                "field":"species_habitats"
+            },
+            {
+                "sort":"index",
+                "field":"coordinate_uncertainty"
+            },
+            {
+                "sort":"count",
+                "field":"geospatial_kosher"
+            },
+            {
+                "sort":"index",
+                "field":"location_id"
             }
-        ],
-        "title": "Temporal"
+        ]
     },
     {
-        "facets": [
+        "title":"Occurrence",
+        "facets":[
             {
-                "sort": "index",
-                "field": "basis_of_record"
+                "sort":"index",
+                "field":"collector"
             },
             {
-                "sort": "index",
-                "field": "type_status"
+                "sort":"count",
+                "field":"raw_sex"
             },
             {
-                "sort": "count",
-                "field": "multimedia"
+                "sort":"count",
+                "field":"life_stage"
             },
             {
-                "sort": "index",
-                "field": "collector"
+                "sort":"count",
+                "field":"establishment_means"
             },
             {
-                "sort": "index",
-                "field": "occurrence_status_s"
+                "sort":"index",
+                "field":"month"
+            },
+            {
+                "sort":"index",
+                "field":"year"
+            },
+            {
+                "sort":"index",
+                "field":"occurrence_year"
+            },
+            {
+                "sort":"count",
+                "field":"state_conservation"
+            },
+            {
+                "sort":"count",
+                "field":"raw_state_conservation"
+            },
+            {
+                "sort":"index",
+                "field":"event_id"
             }
-        ],
-        "title": "Record details"
+        ]
     },
     {
-        "facets": [
+        "title":"Record",
+        "facets":[
             {
-                "sort": "count",
-                "field": "alau_user_id"
+                "sort":"index",
+                "field":"basis_of_record"
             },
             {
-                "sort": "count",
-                "field": "data_provider_uid"
+                "sort":"count",
+                "field":"multimedia"
             },
             {
-                "sort": "count",
-                "field": "data_resource_uid"
-            },
-            {
-                "sort": "count",
-                "field": "institution_uid"
-            },
-            {
-                "sort": "count",
-                "field": "collection_uid"
-            },
-            {
-                "sort": "count",
-                "field": "provenance"
+                "sort":"index",
+                "field":"occurrence_status_s"
             }
-        ],
-        "title": "Attribution"
+        ]
     },
     {
-        "facets": [
+        "title":"Assertions",
+        "facets":[
             {
-                "sort": "count",
-                "field": "assertions"
+                "sort":"count",
+                "field":"sensitive"
             },
             {
-                "sort": "index",
-                "field": "assertion_user_id"
+                "sort":"count",
+                "field":"assertions"
             },
             {
-                "sort": "count",
-                "field": "outlier_layer"
+                "sort":"count",
+                "field":"outlier_layer"
             },
             {
-                "sort": "count",
-                "field": "outlier_layer_count"
+                "sort":"count",
+                "field":"outlier_layer_count"
             },
             {
-                "sort": "count",
-                "field": "taxonomic_issue"
+                "sort":"count",
+                "field":"user_assertions"
             },
             {
-                "sort": "count",
-                "field": "duplicate_status"
+                "sort":"index",
+                "field":"assertion_user_id"
+            },
+            {
+                "sort":"count",
+                "field":"duplicate_status"
+            },
+            {
+                "sort":"count",
+                "field":"duplicate_type"
             }
-        ],
-        "title": "Record assertions"
+        ]
+    },
+    {
+        "title":"Attribution",
+        "facets":[
+            {
+                "sort":"count",
+                "field":"alau_user_id"
+            },
+            {
+                "sort":"count",
+                "field":"collection_uid"
+            },
+            {
+                "sort":"count",
+                "field":"institution_uid"
+            },
+            {
+                "sort":"count",
+                "field":"data_provider_uid"
+            },
+            {
+                "sort":"count",
+                "field":"data_resource_uid"
+            }
+        ]
     }
 ]
