@@ -1,5 +1,5 @@
 # assets
-version: "0.4"
+version: "0.5"
 artifactId: "userdetails"
 classifier: ''
 packaging: "war"
