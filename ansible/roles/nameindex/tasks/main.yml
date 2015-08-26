@@ -23,6 +23,13 @@
   tags:
     - "nameindex"  
 
+- name: set name index to use (Custom)
+  set_fact:
+    lucene_namematching_url: "{{ custom_namematching_url }}"
+  when: nameindex_variant == "custom"
+  tags:
+    - "nameindex"  
+
 - name: ensure lucene directory exists 
   file: path={{ data_dir }}/lucene/namematching state=directory
   tags:
