@@ -26,6 +26,7 @@
     - "{{data_dir}}/ala/data/layers/ready/shape"
     - "{{data_dir}}/ala/data/layers/ready/shape_diva"
     - "{{data_dir}}/ala/data/layers/ready/diva"
+    - "{{data_dir}}/ala/data/layers/analysis/tmp/"
   tags:
     - layers-service        
 
