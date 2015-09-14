@@ -50,5 +50,6 @@
     <cores adminPath="/admin/cores" defaultCoreName="biocache" host="${host:}" hostPort="${jetty.port:8983}" hostContext="${hostContext:solr}" zkClientTimeout="${zkClientTimeout:15000}">
         <core name="biocache" instanceDir="biocache" />
         <core name="bie" instanceDir="bie" />
+        <core name="bie-offline" instanceDir="bie-offline" />
     </cores>
 </solr>

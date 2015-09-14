@@ -399,6 +399,7 @@
    <field name="georeferencedCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="taxonomicStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="establishmentMeans" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="distribution" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="true" />
 
    <!-- higher taxonomy -->
    <field name="speciesGroup" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" />

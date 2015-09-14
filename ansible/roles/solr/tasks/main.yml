@@ -52,6 +52,7 @@
   with_items:
     - "{{data_dir}}/solr/biocache/conf"
     - "{{data_dir}}/solr/bie/conf"    
+    - "{{data_dir}}/solr-indexes/    
   tags:
     - solr_config  
     - solr        
