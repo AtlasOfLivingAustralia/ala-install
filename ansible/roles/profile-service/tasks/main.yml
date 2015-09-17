@@ -29,6 +29,14 @@
     - profile-service
     - properties
 
+#
+# Copy google analytics key to target directory
+#
+- name: Copy Google Analytics key to config directory
+  copy: src={{analytics_private_key_local_path}} dest={{data_dir}}/profile-service/config/google_analytics_key.p12
+  tags:
+    - profile-service
+    - properties
 
 #
 # WAR file deployment and virtual host configuration
