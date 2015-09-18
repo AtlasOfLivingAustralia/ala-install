@@ -34,14 +34,14 @@
     - solr        
 
 - name: copy SOLR context (Redhat)
-  template: src=context/solr.xml dest=/usr/share/{{tomcat}}/conf/Catalina/localhost/solr.xml owner={{tomcat_user}}  group={{tomcat_user}}
+  template: src=context/solr.xml dest=/usr/share/{{tomcat}}/conf/Catalina/localhost/solr.xml owner={{tomcat_user}} group={{tomcat_user}}
   when: ansible_os_family == "RedHat"
   tags:
     - solr_config
     - solr
 
 - name: copy SOLR context (Debian)
-  template: src=context/solr.xml dest=/var/lib/{{tomcat}}/conf/Catalina/localhost/solr.xml owner={{tomcat_user}}  group={{tomcat_user}}
+  template: src=context/solr.xml dest=/var/lib/{{tomcat}}/conf/Catalina/localhost/solr.xml owner={{tomcat_user}} group={{tomcat_user}}
   when: ansible_os_family == "Debian"
   tags:
     - solr_config  
@@ -52,7 +52,7 @@
   with_items:
     - "{{data_dir}}/solr/biocache/conf"
     - "{{data_dir}}/solr/bie/conf"    
-    - "{{data_dir}}/solr-indexes/    
+    - "{{data_dir}}/solr-indexes/"    
   tags:
     - solr_config  
     - solr        
@@ -64,9 +64,7 @@
     - solr      
 
 - name: set data ownership [all data is owned by tomcat]
-  file: path={{data_dir}}/{{item}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  with_items:
-    - solr
+  file: path={{data_dir}}/solr owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   tags:
     - solr_config  
     - solr        
@@ -74,5 +72,5 @@
 - name: set SOLR directory ownership [all data is owned by tomcat]
   file: path={{data_dir}}/solr owner={{tomcat_user}} group={{tomcat_user}}  recurse=true
   tags:
-    - solr_config  
-    - solr      
+    - solr_config
+    - solr
