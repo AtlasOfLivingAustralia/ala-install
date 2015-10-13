@@ -23,6 +23,12 @@
     - profile-hub
     - properties
 
+- name: ensure private images directory exists
+  file: path={{data_dir}}/profile-hub/private-images state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  tags:
+    - profile-hub
+    - properties
+
 - name: copy all template configs
   template: src=profile-hub-config.properties dest={{data_dir}}/profile-hub/config/profile-hub-config.properties
   tags:

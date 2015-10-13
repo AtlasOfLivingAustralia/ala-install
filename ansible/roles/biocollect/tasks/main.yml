@@ -1,0 +1,43 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - biocollect
+
+#
+# WAR file deployment and virtual host configuration
+#
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ biocollect_context_path }}' hostname='{{ biocollect_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - biocollect
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ biocollect_war_url }}' context_path='{{biocollect_context_path}}' hostname='{{ biocollect_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - biocollect
+
+#
+# External configuration properties file
+#
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/biocollect/config"
+  tags:
+    - properties
+    - biocollect
+
+- name: copy all config.properties
+  template: src=biocollect-config.properties dest={{data_dir}}/biocollect/config/biocollect-config.properties
+  tags:
+    - properties
+    - biocollect
+
+- name: set data ownership
+  file: path={{data_dir}}/biocollect owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - properties
+    - biocollect

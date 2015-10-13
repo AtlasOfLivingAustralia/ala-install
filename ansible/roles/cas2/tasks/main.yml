@@ -103,6 +103,11 @@
 #
 # WAR file deployment and virtual host configuration
 #
+- name: copy all template configs
+  template: src=apache2.conf dest=/etc/apache2/sites-available/{{cas_hostname}}.conf
+  tags:
+    - cas
+    - apache_vhost
 
 - include: ../../apache_vhost/tasks/main.yml 
      context_path='{{ cas_context_path }}' 

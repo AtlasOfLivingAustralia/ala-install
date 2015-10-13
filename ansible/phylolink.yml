@@ -4,6 +4,7 @@
     - web2py
     - web2PyApps
     - common
+    - nameindex
     - java
     - tomcat
     - nginx

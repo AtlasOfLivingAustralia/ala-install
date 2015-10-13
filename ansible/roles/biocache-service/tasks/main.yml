@@ -33,9 +33,27 @@
   copy: src=data/config dest={{data_dir}}/biocache owner={{tomcat_user}}  group={{tomcat_user}}
   tags:
     - biocache-service  
-     
-- name: copy biocache logging config
+
+- name: ensure target directories exist [data subdirectories etc.
+  file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}} mode=0774
+  with_items:
+    - "{{data_dir}}/ala/layers/ready/shape"
+    - "{{data_dir}}/biocache-load"
+    - "{{data_dir}}/biocache-media"
+    - "{{data_dir}}/biocache-upload"
+    - "{{data_dir}}/biocache-delete"
+    - "{{data_dir}}/cache"
+    - "{{data_dir}}/tmp"
+    - "{{data_dir}}/offline/exports"    
+    - "{{data_dir}}/tool"        
+
+- name: copy biocache facets config
   copy: src=config/facets.json dest={{data_dir}}/biocache/config/facets.json
+  tags:
+    - biocache-service  
+
+- name: copy biocache logging config
+  copy: src=config/log4j.xml dest={{data_dir}}/biocache/config/log4j.xml
   tags:
     - biocache-service  
 
