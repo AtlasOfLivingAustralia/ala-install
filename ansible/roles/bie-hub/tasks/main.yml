@@ -4,12 +4,13 @@
     - config
     - bie
 
-- name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+- name: ensure target directories exist
+  file: path={{item}} state=directory mode=0775
   with_items:
-    - "{{ data_dir }}/{{ bie_hub }}/config"
+    - "{{data_dir}}/{{bie_hub}}/config"
   tags:
     - config
+    - bie    
 
 - name: copy all config.properties
   template: src=bie-hub-config.properties dest={{data_dir}}/{{bie_hub}}/config/{{bie_hub}}-config.properties force=yes
