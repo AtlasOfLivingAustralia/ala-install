@@ -1,5 +1,5 @@
 # assets
-version: "0.6"
+version: "{{ user_details_version | default('LATEST') }}"
 artifactId: "userdetails"
 classifier: ''
 packaging: "war"

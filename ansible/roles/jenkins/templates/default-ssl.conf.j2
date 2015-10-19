@@ -8,14 +8,14 @@
                 ErrorLog ${APACHE_LOG_DIR}/error.log
                 CustomLog ${APACHE_LOG_DIR}/access.log combined
 
-                SSLEngine on
+                #SSLEngine on
 
                 #SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
                 #SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
 
-                SSLCertificateFile   /etc/ssl/certs/STAR_it_csiro_au.crt
-                SSLCertificateKeyFile   /etc/ssl/private/wildcard.it.csiro.au.key
-                SSLCertificateChainFile   /etc/ssl/certs/STAR_it_csiro_au.ca-bundle
+                #SSLCertificateFile   /etc/ssl/certs/STAR_it_csiro_au.crt
+                #SSLCertificateKeyFile   /etc/ssl/private/wildcard.it.csiro.au.key
+                #SSLCertificateChainFile   /etc/ssl/certs/STAR_it_csiro_au.ca-bundle
 
                 BrowserMatch "MSIE [2-6]" \
                                 nokeepalive ssl-unclean-shutdown \

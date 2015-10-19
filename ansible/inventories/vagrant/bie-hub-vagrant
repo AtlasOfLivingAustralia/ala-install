@@ -1,0 +1,38 @@
+[bie-hub]
+vagrant1
+
+[bie-hub:vars]
+data_dir=/data
+is_vagrant=true
+
+bie_hub = ala-bie
+bie_hub_base_url = http://vagrant1.ala.org.au
+bie_hub_context_path = /ala-bie
+bie_hub_hostname = vagrant1.ala.org.au
+
+bie_index_url = http://vagrant1.ala.org.au/bie-index
+
+bie_service_query_context = 
+biocache_service_query_context = 
+
+biocache_hub_url = http://biocache.ala.org.au
+biocache_service_url = http://biocache.ala.org.au/ws
+
+collectory_url = http://collections.ala.org.au
+lists_url = http://lists.ala.org.au
+alerts_url = http://alerts.ala.org.au
+sightings_url = http://sightings.ala.org.au/
+
+default_map_lon = -4.505723
+default_map_lat = 56.998999
+default_map_zoom = 6
+
+image_thumbnail_url = http://images.ala.org.au/image/proxyImageThumbnail?imageId=
+
+# Header and footer
+ala_base_url = http://www.ala.org.au
+bie_base_url = http://vagrant1.ala.org.au/ala-bie
+
+biocache_query_context = 
+skin_layout = main
+skin_orgNameLong = Atlas of Living Australia

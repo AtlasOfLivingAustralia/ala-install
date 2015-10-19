@@ -374,13 +374,13 @@
    <field name="description" type="text" indexed="true" stored="true" multiValued="false" omitNorms="false" />
 
    <!-- Taxa fields -->
+   <field name="taxonConceptID" type="string" indexed="true" stored="true" omitNorms="true" />
    <field name="parentGuid" type="string" indexed="true" stored="true" omitNorms="true" />
    <field name="otherGuid" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
    <field name="synonym" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
    <field name="scientificName" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="singleScientificName" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
-   <field name="scientificNameRaw" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="author" type="string" indexed="true" stored="true" omitNorms="false" />
+   <field name="scientificNameAuthorship" type="string" indexed="true" stored="true" omitNorms="false" />
+   <field name="nameComplete" type="string" indexed="true" stored="true" omitNorms="false" />
    <field name="acceptedConceptName" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="acceptedConceptID" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="conservationStatus" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
@@ -391,17 +391,15 @@
    <field name="commonNameDisplay" type="string" indexed="false" stored="true" multiValued="false" omitNorms="true" />
    <field name="commonNameSingle" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="rank" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
-   <field name="rawRank" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="rankID" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
-   <field name="scientificNameText" type="text_ws" indexed="true" stored="true" multiValued="true" omitNorms="false" />
-   <field name="nameComplete" type="string" indexed="false" stored="true" multiValued="false" omitNorms="true" />
-   <field name="dataset" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="dataProvider" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="datasetName" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="rightsHolder" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="uid" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="true" />
    <field name="occurrenceCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="georeferencedCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="taxonomicStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="establishmentMeans" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="distribution" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="true" />
 
    <!-- higher taxonomy -->
    <field name="speciesGroup" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" />
@@ -506,7 +504,6 @@
    <copyField source="speciesSubgroup" dest="text"/>
    <copyField source="acronym" dest="text"/>
    <copyField source="scientificName" dest="text"/>
-   <copyField source="scientificNameRaw" dest="text"/>
    <!-- <copyField source="commonName" dest="text"/> -->
    <copyField source="pestStatus" dest="text"/>
    <copyField source="category_*" dest="text"/>
@@ -519,12 +516,10 @@
    <copyField source="name" dest="exact_text"/>
    <copyField source="acronym" dest="exact_text"/>
    <copyField source="scientificName" dest="exact_text"/>
-   <copyField source="scientificNameRaw" dest="exact_text"/>
    <copyField source="commonNameExact" dest="exact_text"/>
    <copyField source="scientificName" dest="concat_name"/>
    <copyField source="commonName" dest="concat_name"/>
    <copyField source="commonName" dest="stopped_common_name"/>
-   <copyField source="nameComplete" dest="name_complete"/>
    <copyField source="commonName" dest="auto_name_exact"/>
-   <copyField source="scientificNameText" dest="auto_name_exact"/>
+
 </schema>

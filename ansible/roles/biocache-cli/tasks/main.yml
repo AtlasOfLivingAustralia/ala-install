@@ -27,6 +27,7 @@
   get_url: url={{biocache_store_url}} dest="/usr/lib/biocache/biocache.zip" force=yes timeout=240
   tags:
     - biocache-cli  
+    - download-zip  
 
 - name: install unzip (Debian only)
   apt: pkg=unzip state=present

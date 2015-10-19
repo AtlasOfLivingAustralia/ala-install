@@ -6,6 +6,7 @@
   sudo: True
   tags:
     - db
+    - image-service
 
 - name: create database user images 
   postgresql_user: db=images name=images password=password priv=ALL state=present
@@ -13,16 +14,25 @@
   sudo: True
   tags:
     - db
+    - image-service
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ images_context_path }}' hostname='{{ images_hostname }}'
   tags:
     - deploy
     - apache_vhost
+    - image-service
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ images_url }}' context_path='{{ images_context_path }}' hostname='{{ images_hostname }}'
   tags:
     - deploy
     - tomcat_vhost
+    - image-service    
+
+- name: Create symlink to data/biocache-media from /srv/[hostname]/www/html/biocache-media
+  command: "ln -sf /data/images/store /srv/{{ images_hostname }}/www/store" 
+  ignore_errors: yes
+  tags: 
+    - image-service
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
@@ -30,6 +40,7 @@
     - "{{data_dir}}/images/config"
   tags:
     - properties
+    - image-service
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}} 
@@ -41,11 +52,13 @@
     - "{{data_dir}}/images/bin/imgcnv"
   tags:
     - properties
+    - image-service
 
 - name: copy all config.properties
   template: src=config/config.properties dest={{data_dir}}/images/config/images-config.properties
   tags:
     - properties
+    - image-service
 
 - name: set data ownership
   file: path={{data_dir}}/{{images_app}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true state=directory
@@ -53,6 +66,7 @@
     - restart tomcat
   tags:
     - properties
+    - image-service
 
 - name: set data ownership
   file: path={{data_dir}}/images owner={{tomcat_user}} group={{tomcat_user}} recurse=true
@@ -60,3 +74,4 @@
     - restart tomcat
   tags:
     - properties
+    - image-service
