@@ -6,11 +6,8 @@
 # 3. Create a symbolic link to the mounted storage
 # 
 # On CSIRO VMs the mounted storage is typically on /srv/data and we need to create a symlink from /data -> /srv/data 
+# before scripts are ran.
 # On Nectar & EC2 Ubuntu VMs this is usually /mnt  
-#
-# - name: ensure local repository exists [happens locally]
-#   action: file dest={{local_repo_dir}} state=directory force=yes
-
 
 - file: path={{ data_dir }} state=directory mode=0755
   when: is_vagrant is defined and is_vagrant == True
