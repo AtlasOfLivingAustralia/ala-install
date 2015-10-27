@@ -27,5 +27,7 @@ spatial_service_base_url=http://spatial.ala.org.au
 regions_base_url=http://regions.ala.org.au
 sandbox_base_url=http://sandbox1.ala.org.au
 
+nameindex_to_use=ala
+
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
