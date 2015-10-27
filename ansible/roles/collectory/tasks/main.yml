@@ -3,19 +3,8 @@
     - collectory
     - webapps
 
-#
-# Database configuration
-# 
-- name: copy transient files to tmp (schemas etc)
-  copy: src={{item}} dest=/tmp
-  with_items:
-    - collectory-sequences.sql
-  tags:
-    - db
-    - collectory
-
 - name: ensure mysql is running (this is idempotent so safe)
-  service: name={{mysql_service}} state=started
+  service: name={{ mysql_service }} state=started
   tags:
     - db
     - collectory
@@ -27,25 +16,11 @@
     - db
     - collectory
 
-
 - name: create collectory DB user
   mysql_user: name={{collectory_db_user}} password={{collectory_db_password}} priv=collectory.*:ALL state=present
   tags:
     - db
     - collectory
-
-- name: create collectory sequences
-  mysql_db: name=collectory state=import target={{item}}
-  with_items:
-    - /tmp/collectory-sequences.sql
-  when: dbschema.changed
-  tags:
-    - db
-    - collectory
-
-#
-# Properties files configuration
-#
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
@@ -82,9 +57,6 @@
     - properties
     - collectory
 
-#
-# WAR file deployment and virtual host configuration
-#
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ collectory_context_path }}' hostname='{{ collectory_hostname }}'
   tags:
     - deploy

@@ -45,27 +45,18 @@
     - hub_config
     - biocache_hub
 
-
 - name: copy all config.properties
   template: src=config/config.properties dest={{data_dir}}/{{biocache_hub}}/config/{{biocache_hub_config}} force=yes
   tags:
     - webapps
     - config
     - hub_config
-    - biocache_hub
-    
+    - biocache_hub    
 
 - name: set data ownership
   file: path={{data_dir}}/{{biocache_hub}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify:
     - restart tomcat
-  tags:
-    - webapps
-    - config
-    - biocache_hub    
-- name: Create symlink to data/biocache-media from /srv/[hostname]/www/biocache-media
-  command: "ln -sf /data/biocache-media  /srv/{{ biocache_hub_hostname }}/www/biocache-media"
-  ignore_errors: yes
   tags:
     - webapps
     - config

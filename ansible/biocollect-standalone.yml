@@ -1,0 +1,7 @@
+- hosts: biocollect
+  roles:
+    - common
+    - java
+    - apache
+    - tomcat
+    - biocollect

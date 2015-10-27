@@ -2,12 +2,10 @@
   roles:
     - common
     - java
-    - tomcat
-    - apache
     - cassandra
     - nameindex
     - biocache-db
-    - biocache-properties    
-    - biocache-service
+    - biocache-properties
     - biocache-cli
     - jenkins
+    - apache    

@@ -1,0 +1,33 @@
+[bie-index]
+vagrant1
+
+[bie-index:vars]
+data_dir=/data
+tomcat_java_opts = -Xmx512m -Xms512m -XX:MaxPermSize=128m -Xss256k -Djava.awt.headless=true
+
+bie_index_base_url = http://vagrant1.ala.org.au
+bie_index_context_path = /bie-index
+bie_index_hostname = vagrant1.ala.org.au
+
+solr_hostname = localhost:8080
+solr_url = http://localhost:8080/solr
+solr_base_url = http://localhost:8080
+solr_context_path = /solr
+
+auth_base_url = https://auth.ala.org.au
+auth_cas_url = https://auth.ala.org.au/cas
+disable_cas = false
+bypass_cas = false
+
+index_live_url = http://localhost:8080/solr/bie
+index_offline_url = http://localhost:8080/solr/bie-offline
+
+biocache_solr_url = http://localhost:8080/solr/biocache
+index_images = true
+collectory_url = http://collections.ala.org.au/ws
+
+default_name_source=National Species Lists
+default_common_name_source=National Species Lists
+image_service_url = http://images.ala.org.au
+
+ala_base_url = http://www.ala.org.au

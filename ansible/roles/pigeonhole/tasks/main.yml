@@ -16,6 +16,7 @@
   tags:
     - pigeonhole
     - properties
+    - config    
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ pigeonhole_context_path }}' hostname='{{ pigeonhole_hostname }}'
   tags:

@@ -1,0 +1,6 @@
+version: "LATEST"
+artifactId: "{{ bie_hub | default('generic-bie') }}"
+groupId: "{{ bie_hub_group_id | default('au.org.ala') }}"
+classifier: ''
+packaging: "war"
+bie_hub_war_url: "{{ bie_hub_maven_repo_ws_url | default(maven_repo_ws_url) }}"
