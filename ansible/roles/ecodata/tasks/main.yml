@@ -1,7 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - ecodata
-
+    - deploy
 #
 # External configuration properties file
 #
