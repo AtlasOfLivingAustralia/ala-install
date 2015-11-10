@@ -29,7 +29,7 @@ Below are some instructions for setting up the [ALA demo](http://ala-demo.gbif.o
 
 #### 1. Vagrant
 [Vagrant](http://www.vagrantup.com) can be used to test ansible playbooks on your local machine. To use this, you will need to install
-[VirtualBox](https://www.virtualbox.org) and [Vagrant](http://www.vagrantup.com).
+[VirtualBox](https://www.virtualbox.org) and [Vagrant](http://www.vagrantup.com). We recommend using vagrant version 1.7.x. Earlier versions of vagrant will not work with the ```VagrantFile``` in this repository.
 
 The ```vagrant/ubuntu-trusty``` directory contains configurations that can used with [VirtualBox](https://www.virtualbox.org/) to bring up a VH for deploying against.  
 
