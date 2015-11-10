@@ -474,7 +474,9 @@
 
 
     <fieldType name="quad"      class="solr.SpatialTermQueryPrefixTreeFieldType" units="degrees" />
-    <fieldType name="geohash"   class="solr.SpatialRecursivePrefixTreeFieldType" spatialContextFactory="com.spatial4j.core.context.jts.JtsSpatialContextFactory" units="degrees" />
+    <fieldType name="geohash"   class="solr.SpatialRecursivePrefixTreeFieldType" 
+    spatialContextFactory="com.spatial4j.core.context.jts.JtsSpatialContextFactory" units="degrees" 
+    autoIndex="true" validationRule="none"/>
 
  </types>
 

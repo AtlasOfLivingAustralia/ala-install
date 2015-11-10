@@ -147,7 +147,7 @@
             },
             {
                 "sort":"count",
-                "field":"state"
+                "field":"cl927"
             },
             {
                 "sort":"index",
@@ -188,6 +188,18 @@
             {
                 "sort":"count",
                 "field":"cl620"
+            },
+            {
+                "sort":"count",
+                "field":"cl958"
+            },
+            {
+                "sort":"count",
+                "field":"cl1049"
+            },
+            {
+                "sort":"count",
+                "field":"cl916"
             },
             {
                 "sort":"count",
