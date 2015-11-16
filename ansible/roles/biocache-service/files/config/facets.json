@@ -99,7 +99,9 @@
        		{ 
        			"sort": "index", 
        		 	"field": "country" 
-       		},
+       		}, {
+ "sort": "index",
+"field": "state" },
 			{ 
 				"sort": "count", 
 				"field": "cl2079" 
@@ -170,7 +172,7 @@
 			},
 			{ 
 				"sort": "count", 
-				"field": "cl22" 
+				"field": "cl2013" 
 			},
 			{ 
 				"sort": "count", 
@@ -186,7 +188,7 @@
 			},
 			{
 				"sort": "count", 
-				"field": "cl1076" 
+				"field": "el1076" 
 			},
 			{ 
 				"sort": "count", 
@@ -255,7 +257,7 @@
             },
             {
                 "sort":"index",
-                "field":"occurrence_year"
+                "field":"occurrence_decade_i"
             },
             {
                 "sort":"count",
