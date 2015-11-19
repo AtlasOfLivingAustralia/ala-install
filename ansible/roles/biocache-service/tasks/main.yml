@@ -46,6 +46,7 @@
     - "{{data_dir}}/tmp"
     - "{{data_dir}}/offline/exports"    
     - "{{data_dir}}/tool"        
+    - "{{data_dir}}/biocache-download/tmp"
 
 - name: copy biocache facets config
   copy: src=config/facets.json dest={{data_dir}}/biocache/config/facets.json
@@ -70,6 +71,7 @@
     - tmp    
     - offline    
     - tool       
+    - biocache-download
   tags:
     - biocache-service    
 
