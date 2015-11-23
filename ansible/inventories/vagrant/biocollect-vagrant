@@ -19,6 +19,7 @@ deployment_env=dev
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
+ala_baseURL=http://www.ala.org.au
 images_base_url=http://images1-dev.ala.org.au
 bie_base_url=http://bie.ala.org.au
 lists_base_url=http://lists.ala.org.au

@@ -7,7 +7,7 @@ biocache_service: biocache-service
 
 # assets
 
-version: "LATEST"
+version: "{{ biocache_hub_version | default('LATEST') }}"
 artifactId: "{{ biocache_hub | default('generic-hub') }}"
 groupId: "{{ biocache_hub_group_id | default('au.org.ala') }}"
 classifier: ''

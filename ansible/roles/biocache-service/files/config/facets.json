@@ -96,134 +96,138 @@
     {
         "title":"Location",
         "facets":[
-       		{ 
-       			"sort": "index", 
-       		 	"field": "country" 
-       		},
-			{ 
-				"sort": "count", 
-				"field": "cl2079" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl2078" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl925" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl901" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl918" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl958" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl1048" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl1049" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl21" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl966" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl1085" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl678" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl959" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl991" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl916" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl935"
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl1057" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl22" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl927" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl923" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl619" 
-			},
-			{
-				"sort": "count", 
-				"field": "cl1076" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl617" 
-			},
-			{ 
-				"sort": "count", 
-				"field": "cl620" 
-			},
-			{
-				"sort": "index",
-				"field": "elevation_d_rng"
-			},
-			{
-				"sort": "index",
-				"field": "min_elevation_d_rng"
-			},
-			{ 
-				"sort": "count", 
-				"field": "sensitive" 
-			},
-			{
-				"sort": "count",
-				"field": "species_habitats"
-			},
-			{
-				"sort": "index",
-				"field": "coordinate_uncertainty"
-			},
-			{
-				"sort": "count",
-				"field": "geospatial_kosher"
-			},
-			{
-				"sort": "index",
-				"field": "location_id"
-			}
+            {
+                "sort":"index",
+                "field":"country"
+            },
+            {
+                "sort":"index",
+                "field":"state"
+            },
+            {
+                "sort":"count",
+                "field":"cl2079"
+            },
+            {
+                "sort":"count",
+                "field":"cl2078"
+            },
+            {
+                "sort":"count",
+                "field":"cl925"
+            },
+            {
+                "sort":"count",
+                "field":"cl901"
+            },
+            {
+                "sort":"count",
+                "field":"cl918"
+            },
+            {
+                "sort":"count",
+                "field":"cl958"
+            },
+            {
+                "sort":"count",
+                "field":"cl1048"
+            },
+            {
+                "sort":"count",
+                "field":"cl1049"
+            },
+            {
+                "sort":"count",
+                "field":"cl21"
+            },
+            {
+                "sort":"count",
+                "field":"cl966"
+            },
+            {
+                "sort":"count",
+                "field":"cl1085"
+            },
+            {
+                "sort":"count",
+                "field":"cl678"
+            },
+            {
+                "sort":"count",
+                "field":"cl959"
+            },
+            {
+                "sort":"count",
+                "field":"cl991"
+            },
+            {
+                "sort":"count",
+                "field":"cl916"
+            },
+            {
+                "sort":"count",
+                "field":"cl935"
+            },
+            {
+                "sort":"count",
+                "field":"cl1057"
+            },
+            {
+                "sort":"count",
+                "field":"cl2013"
+            },
+            {
+                "sort":"count",
+                "field":"cl927"
+            },
+            {
+                "sort":"count",
+                "field":"cl923"
+            },
+            {
+                "sort":"count",
+                "field":"cl619"
+            },
+            {
+                "sort":"count",
+                "field":"el1076"
+            },
+            {
+                "sort":"count",
+                "field":"cl617"
+            },
+            {
+                "sort":"count",
+                "field":"cl620"
+            },
+            {
+                "sort":"index",
+                "field":"elevation_d_rng"
+            },
+            {
+                "sort":"index",
+                "field":"min_elevation_d_rng"
+            },
+            {
+                "sort":"count",
+                "field":"sensitive"
+            },
+            {
+                "sort":"count",
+                "field":"species_habitats"
+            },
+            {
+                "sort":"index",
+                "field":"coordinate_uncertainty"
+            },
+            {
+                "sort":"count",
+                "field":"geospatial_kosher"
+            },
+            {
+                "sort":"index",
+                "field":"location_id"
+            }
         ]
     },
     {
@@ -255,7 +259,7 @@
             },
             {
                 "sort":"index",
-                "field":"occurrence_year"
+                "field":"occurrence_decade_i"
             },
             {
                 "sort":"count",
