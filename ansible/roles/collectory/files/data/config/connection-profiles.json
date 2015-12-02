@@ -7,6 +7,19 @@
             'type': 'text'
         },
         {
+            'name': 'DATASET_TITLE',
+            'paramName': 'datasetTitle',
+            'display': 'Dataset title',
+            'type': 'text'
+        },
+        {
+            'name': 'CONTENT_NAMESPACE',
+            'paramName': 'contentNamespace',
+            'display': 'Content Namespace',
+            'type': 'text'
+        },        
+
+        {
             'name': 'SERVICE_URL',
             'paramName': 'url',
             'display': 'ServiceURL',
@@ -168,7 +181,7 @@
 {'name':'NONE','display':'none',params:[]},
 {'name':'DIGIR','display':'DIGIR',params:['SERVICE_URL','RESOURCE','TERMS']},
 {'name':'TAPIR','display':'TAPIR',params:['SERVICE_URL','TERMS']},
-{'name':'BioCASe','display':'BioCase',params:['SERVICE_URL','TERMS']},
+{'name':'BioCASe','display':'BioCase',params:['SERVICE_URL','TERMS','CONTENT_NAMESPACE','DATASET_TITLE']},
 {'name':'CustomWebservice','display':'Custom web service',params:['SERVICE_URL','PARAMS','TERMS']},
 {'name':'DwC','display':'DarwinCore csv file',params:['LOCATION_URL','AUTO','CSV_DELIMITER','CSV_END_OF_LINE','CSV_ESCAPE','CSV_QUOTE','TERMS','STRIP','INCREMENTAL'], 'supportFileUpload':'true'},
 {'name':'DwCA','display':'DarwinCore archive',params:['LOCATION_URL','AUTO','TERMS','STRIP','INCREMENTAL'],'supportFileUpload':'true'},
