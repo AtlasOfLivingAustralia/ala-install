@@ -59,6 +59,10 @@
   include: ../../nginx/tasks/main.yml
   vars:
     nginx_sites:
+       phylojive:
+         - listen 80
+         - server_name phylojive.ala.org.au
+         - return 301 http://phylolink.ala.org.au$request_uri
        phylolink:
          - listen 80
          - server_name {{ phylolink_hostname }}
