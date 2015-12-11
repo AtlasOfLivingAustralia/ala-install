@@ -18,8 +18,12 @@ The variables that can be passed to this role and a brief description about
 them are as follows.
 
 ```yaml
-# The max clients allowed
-nginx_max_clients: 512 
+# A list of directives for the events section.
+nginx_events_params:
+ - worker_connections 512
+ - debug_connection 127.0.0.1
+ - use epoll
+ - multi_accept on
 
 # The user to run nginx
 nginx_user: "www-data"
@@ -204,10 +208,10 @@ Additional configuration are created in /etc/nginx/conf.d/
 6) Example to use this role with my ssl-certs role to generate or copie ssl certificate ( https://galaxy.ansible.com/list#/roles/3115 )
 ```yaml
  - hosts: all
-   roles: 
+   roles:
      - jdauphant.ssl-certs
      - role: jdauphant.nginx
-       nginx_configs: 
+       nginx_configs:
           ssl:
                - ssl_certificate_key {{ssl_certs_privkey_path}}
                - ssl_certificate     {{ssl_certs_cert_path}}
@@ -234,4 +238,3 @@ Author Information
 - Original : Benno Joy
 - Modified by : DAUPHANT Julien
 - https://github.com/jdauphant/ansible-role-nginx
-

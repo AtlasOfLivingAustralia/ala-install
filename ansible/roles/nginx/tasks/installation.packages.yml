@@ -24,6 +24,12 @@
 - name: Install the nginx packages
   apt: name={{ item }} state=present
   with_items: nginx_ubuntu_pkg
-  environment: nginx_env
+  environment: "{{ nginx_env }}"
   when: ansible_os_family == "Debian"
+  tags: [packages,nginx]
+
++- name: Install the nginx packages
+  zypper: name={{ item }} state=present
+  with_items: nginx_suse_pkg
+  when: ansible_os_family == "Suse"
   tags: [packages,nginx]
