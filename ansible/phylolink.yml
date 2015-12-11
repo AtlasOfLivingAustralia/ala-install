@@ -9,8 +9,8 @@
     - tomcat
     - nginx
     - phylolink
-  become: yes
-  become_user: root
+  sudo: yes
+  sudo_user: root
   vars:
     deleteWeb2py: False
     deletePhylesystem: False
