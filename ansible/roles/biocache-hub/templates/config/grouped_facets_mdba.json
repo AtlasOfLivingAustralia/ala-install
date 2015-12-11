@@ -90,7 +90,7 @@
             },
             {
                 "sort":"index",
-                "field":"decade"
+                "field":"occurrence_decade_i"
             }
         ]
     },
