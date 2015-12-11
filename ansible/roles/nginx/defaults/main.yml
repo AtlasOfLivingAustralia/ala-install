@@ -12,7 +12,7 @@ nginx_suse_pkg:
 yum_epel_repo: epel
 yum_base_repo: base
 
-nginx_official_repo: False
+nginx_official_repo: True
 
 keep_only_specified: False
 
