@@ -40,6 +40,7 @@ nginx_sites:
      - server_name _
      - root "/usr/share/nginx/html"
      - index index.html
+nginx_https_sites: []
 nginx_remove_sites: []
 
 nginx_configs: {}

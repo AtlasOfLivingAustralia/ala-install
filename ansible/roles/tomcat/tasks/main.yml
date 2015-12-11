@@ -5,37 +5,33 @@
 
 - name: install libtcnative-1 (RedHat)
   yum: pkg={{libtcnative}} state=present
-  tags:
-    - packages 
   when: ansible_os_family == "RedHat" and tomcat_apr == true
   tags:
+    - packages
     - tomcat
 
 - name: install tomcat (RedHat)
   yum: name={{tomcat}} state=present
-  tags:
-    - packages 
   notify: 
     - restart tomcat
   when: ansible_os_family == "RedHat"
   tags:
+    - packages
     - tomcat
 
 - name: install libtcnative-1 (Debian)
   apt: pkg={{libtcnative}} state=present update_cache=yes
-  tags:
-    - packages 
   when: ansible_os_family == "Debian" and tomcat_apr == true
   tags:
+    - packages
     - tomcat
 
 - name: install tomcat (Debian)
   apt: pkg={{tomcat}} state=present update_cache=yes
-  tags:
-    - packages 
   when: ansible_os_family == "Debian"
   register: tomcat_installed
   tags:
+    - packages
     - tomcat
 
 - name: enable the AJP 1.3 connector
