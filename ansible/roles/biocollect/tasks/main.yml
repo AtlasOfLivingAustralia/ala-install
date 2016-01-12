@@ -42,3 +42,9 @@
   tags:
     - properties
     - biocollect
+
+- name: Copy config files to config directory
+  copy: src=regions.json dest={{data_dir}}/biocollect/config/regions.json
+  tags:
+    - biocollect
+    - properties

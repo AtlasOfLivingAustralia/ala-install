@@ -1,0 +1,76 @@
+{
+  "regions": [
+    {
+      "key": "cl2111",
+      "value": "NRM"
+    },
+    {
+      "key": "cl1048",
+      "value": "IBRA 7 Regions"
+    },
+    {
+      "key": "cl1049",
+      "value": "IBRA 7 Subregions"
+    },
+    {
+      "key": "cl22",
+      "value": "Australian states"
+    },
+    {
+      "key": "cl959",
+      "value": "Local Gov. Areas"
+    },
+    {
+      "key": "cl935",
+      "value": "RAMSAR wetland regions"
+    },
+    {
+      "key": "cl901",
+      "value": "Directory of Important Wetlands"
+    },
+    {
+      "key": "cl900",
+      "value": "Areas for Further Assessment within the East Marine Region"
+    },
+    {
+      "key": "cl917",
+      "value": "Australian Coral Ecoregions"
+    },
+    {
+      "key": "cl2079",
+      "value": "Collaborative Australian Protected Areas Database"
+    },
+    {
+      "key": "cl929",
+      "value": "Exclusive Economic Zone"
+    },
+    {
+      "key": "cl990",
+      "value": "Atlas of Life in the Coastal Wilderness"
+    },
+    {
+      "key": "cl1048",
+      "value": "Biogeographic regions"
+    },
+    {
+      "key": "cl21",
+      "value": "Marine regions"
+    },
+    {
+      "key": "cl2015",
+      "value": "Indigenous protected areas"
+    },
+    {
+      "key": "cl2010",
+      "value": "Indigenous land use agreements"
+    },
+    {
+      "key": "cl1059",
+      "value": "Major drainage divisions"
+    },
+    {
+      "key": "cl2109",
+      "value": "Bush Heritage Reserves"
+    }
+  ]
+}
