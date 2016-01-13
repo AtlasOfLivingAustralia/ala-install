@@ -381,6 +381,7 @@
    <field name="scientificName" type="string" indexed="true" stored="true" omitNorms="false" />
    <field name="scientificNameAuthorship" type="string" indexed="true" stored="true" omitNorms="false" />
    <field name="nameComplete" type="string" indexed="true" stored="true" omitNorms="false" />
+   <field name="nameFormatted" type="string" indexed="false" stored="true" multiValued="false" omitNorms="true" />
    <field name="acceptedConceptName" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="acceptedConceptID" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="conservationStatus" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
