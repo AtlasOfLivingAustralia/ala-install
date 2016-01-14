@@ -26,12 +26,7 @@
   tags:
     - properties
     - ecodata
-    
-- name: Copy elastic search mapping config file to config directory
-  copy: src=mapping.json dest={{data_dir}}/ecodata/config/mapping.json
-  tags:
-    - ecodata
-    - properties
+
 
 #
 # WAR file deployment and virtual host configuration
