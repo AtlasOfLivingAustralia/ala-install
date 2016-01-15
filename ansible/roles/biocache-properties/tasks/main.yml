@@ -23,7 +23,12 @@
   when: sds_enabled is defined and sds_enabled == true
   tags:
     - biocache-properties
-    - biocache-layers    
+    - biocache-layers   
+
+- name: copy biocache subgroups config
+  copy: src=subgroups.json dest={{data_dir}}/biocache/config/subgroups.json
+  tags:
+    - biocache-properties 
 
 - name: Extract SDS layers
   shell: "tar zxvf {{data_dir}}/biocache/layers/sds-layers.tgz -C {{data_dir}}/biocache/layers/"
