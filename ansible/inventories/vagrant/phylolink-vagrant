@@ -1,5 +1,5 @@
 [phylolink]
-10.1.1.2
+phylolink.vagrant1.ala.org.au
 
 [phylolink:vars]
 is_vagrant=true
