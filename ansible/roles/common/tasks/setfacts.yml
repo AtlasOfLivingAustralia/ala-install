@@ -35,19 +35,27 @@
 - name: set name index location
   set_fact:
     name_indexes_repo: http://s3.amazonaws.com/ala-nameindexes/20140610
+  tags:
+    - setfacts    
 
 - name: using the ALA nexus repository
   set_fact:
     maven_repo_ws_url: "http://nexus.ala.org.au/service/local/artifact/maven/redirect?r=public&g={{groupId | default('au.org.ala')}}&a={{artifactId | default('')}}&v={{version | default('')}}&e={{packaging | default('war')}}&c={{classifier | default('')}}"
   when: use_gbif_nexus is not defined or use_gbif_nexus == "false"
+  tags:
+    - setfacts  
 
 - name: using the GBIF nexus repository
   set_fact:
     maven_repo_ws_url: "http://repository.gbif.org/service/local/artifact/maven/redirect?r=ala-release&g={{groupId | default('au.org.ala')}}&a={{artifactId | default('')}}&v={{version | default('')}}&e={{packaging | default('war')}}&c={{classifier | default('')}}"
   when: use_gbif_nexus is defined and use_gbif_nexus == "true"
+  tags:
+    - setfacts  
 
 - name: setup name index URLs
   set_fact:
     col_namematching_url: "{{name_indexes_repo}}/col_namematching.tgz"
     merged_namematching_url: "{{name_indexes_repo}}/merge_namematching.tgz"
     ala_namematching_url: "{{name_indexes_repo}}/namematching.tgz"
+  tags:
+    - setfacts    

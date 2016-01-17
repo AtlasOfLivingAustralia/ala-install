@@ -1,0 +1,16 @@
+#{{ ansible_managed }}
+server {
+{% for v in nginx_https_sites[item] %}
+{% if v.find('\n') != -1 %}
+   {{v.replace("\n","\n   ")}}
+{% else %}
+   {% if v != "" %}{{ v.replace(";",";\n      ").replace(" {"," {\n      ").replace(" }"," \n   }\n") }}{% if v.find('{') == -1%};
+{% endif %}{% endif %}{% endif %}
+{% endfor %}
+
+  # ssl config (partly from nginx role vars/main, but cert paths set in vhost)
+  ssl on;
+  ssl_protocols {{ nginx_ssl_protocols }};
+  ssl_ciphers {{ nginx_ssl_ciphers }};
+  ssl_prefer_server_ciphers {{ nginx_ssl_prefer_server_ciphers }};
+}
