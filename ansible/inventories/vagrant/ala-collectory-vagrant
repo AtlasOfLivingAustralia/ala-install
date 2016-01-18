@@ -9,7 +9,7 @@ is_vagrant=true
 data_dir=/data
 
 collectory_app=ala-collectory
-collectory_version=1.0
+collectory_version=1.3.5
 skin=ala2
 security_bypass=
 
