@@ -27,6 +27,7 @@ biocache_base_url=http://biocache.ala.org.au
 spatial_base_url=http://spatial.ala.org.au
 ecodata_base_url=http://ecodata.ala.org.au
 layers_base_url=http://layers.ala.org.au
+merit_base_url=https://fieldcapture-test.ala.org.au
 
 project_editor_username=fc-te@outlook.com
 project_editor_password=testing!
