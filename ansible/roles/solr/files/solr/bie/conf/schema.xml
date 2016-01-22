@@ -372,6 +372,7 @@
    <field name="idxtype" type="string" indexed="true" stored="true" required="true" />
    <field name="name" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="description" type="text" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+   <field name="content" type="text" indexed="true" stored="true" multiValued="false" omitNorms="false" />
 
    <!-- Taxa fields -->
    <field name="taxonConceptID" type="string" indexed="true" stored="true" omitNorms="true" />
@@ -425,7 +426,7 @@
    <field name="auto_text" type="auto_text" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
    <field name="auto_text_edge" type="auto_text_edge" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
    <field name="concat_name" type="concat_name" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
-   <field name="doc_name" type="textgen" indexed="true" stored="false" multiValued="true" omitNorms="false" omitTermFreqAndPositions="false"/>
+   <field name="doc_name" type="textgen" indexed="true" stored="true" multiValued="true" omitNorms="false" omitTermFreqAndPositions="false"/>
    <!--  NC:2013-02-08 remove the omitTermFreqAndPositions because this setting will cause an exception when searching for a phrase -->
    <field name="stopped_common_name" type="stopped_common_name" indexed="true" stored="false" multiValued="true" omitNorms="true" />
    <field name="name_complete" type="name_complete" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
