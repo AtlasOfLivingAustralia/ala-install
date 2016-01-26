@@ -376,13 +376,14 @@
 
    <!-- Taxa fields -->
    <field name="taxonConceptID" type="string" indexed="true" stored="true" omitNorms="true" />
+   <field name="taxonGuid" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="parentGuid" type="string" indexed="true" stored="true" omitNorms="true" />
    <field name="otherGuid" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
    <field name="synonym" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
    <field name="scientificName" type="string" indexed="true" stored="true" omitNorms="false" />
    <field name="scientificNameAuthorship" type="string" indexed="true" stored="true" omitNorms="false" />
    <field name="nameComplete" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="nameFormatted" type="string" indexed="false" stored="true" multiValued="false" omitNorms="true" />
+   <field name="nameFormatted" type="string" indexed="true" stored="true" omitNorms="false" />
    <field name="acceptedConceptName" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="acceptedConceptID" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="conservationStatus" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
@@ -394,6 +395,8 @@
    <field name="commonNameSingle" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="rank" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="rankID" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
+   <field name="dataset" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="dataProvider" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="datasetName" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="rightsHolder" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="uid" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="true" />
@@ -401,7 +404,19 @@
    <field name="georeferencedCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="taxonomicStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="establishmentMeans" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="distribution" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="true" />
+   <field name="status" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="source" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="subject" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="format" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="language" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="priority" type="int" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="additionalIdentifiers" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
+   <field name="datasetName" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="rightsHolder" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="namePublishedIn" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="namePublishedInYear" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="namePublishedInID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+
 
    <!-- higher taxonomy -->
    <field name="speciesGroup" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" />
