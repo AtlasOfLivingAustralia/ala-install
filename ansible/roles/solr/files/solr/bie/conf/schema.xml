@@ -411,8 +411,6 @@
    <field name="language" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="priority" type="int" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="additionalIdentifiers" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
-   <field name="datasetName" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="rightsHolder" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedIn" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInYear" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
