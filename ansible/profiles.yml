@@ -8,5 +8,6 @@
     - postfix
     - nameindex
     - {role: db-backup, db: mongo}
+    - elasticsearch
     - profile-service
     - profile-hub
