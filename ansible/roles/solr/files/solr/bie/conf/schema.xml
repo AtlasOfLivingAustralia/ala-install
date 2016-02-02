@@ -395,22 +395,25 @@
    <field name="commonNameSingle" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="rank" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="rankID" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
-   <field name="dataset" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="datasetID" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="dataProvider" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="datasetName" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="rightsHolder" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="uid" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="true" />
    <field name="occurrenceCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="georeferencedCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="taxonomicStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="establishmentMeans" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="distribution" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="status" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="source" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="subject" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="format" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="license" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="rights" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="language" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="priority" type="int" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="additionalIdentifiers" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
+   <field name="datasetName" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="rightsHolder" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedIn" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInYear" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
@@ -520,6 +523,7 @@
    <copyField source="speciesSubgroup" dest="text"/>
    <copyField source="acronym" dest="text"/>
    <copyField source="scientificName" dest="text"/>
+   <!-- <copyField source="commonName" dest="text"/> -->
    <copyField source="pestStatus" dest="text"/>
    <copyField source="category_*" dest="text"/>
    <copyField source="conservationStatus" dest="text"/>
