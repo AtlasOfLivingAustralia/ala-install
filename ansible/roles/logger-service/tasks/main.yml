@@ -24,7 +24,7 @@
   tags:
     - logger-service
     - db
-     
+
 - name: create schema, stored procs and reference data
   mysql_db: name={{logger_db_name}} state=import target={{item}}
   with_items:

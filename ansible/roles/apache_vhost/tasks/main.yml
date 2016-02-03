@@ -11,18 +11,18 @@
   notify:
     - reload apache
 
+- name: add optional additional proxy pass rules (if required)
+  apache_proxypass: name={{ hostname }} src={{ item.src }} dest={{ item.dest }}
+  when: vhost_required and additional_proxy_pass is defined
+  with_items: additional_proxy_pass
+  notify:
+    - reload apache    
+
 - name: ensure proxy pass exists for apache (without default context)
   apache_proxypass: name={{ hostname }} src={{ item.src }} dest={{ item.dest }}
   when: vhost_required
   with_items:
     - { src: "/{{ context_path.replace('/', '') }}", dest: "ajp://localhost:8009/{{ context_path.replace('/', '') }}" }
-  notify:
-    - reload apache
-
-- name: add optional additional proxy pass rules (if required)
-  apache_proxypass: name={{ hostname }} src={{ item.src }} dest={{ item.dest }}
-  when: vhost_required and additional_proxy_pass is defined
-  with_items: additional_proxy_pass
   notify:
     - reload apache
 
