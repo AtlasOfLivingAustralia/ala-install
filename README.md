@@ -14,6 +14,7 @@ $ sudo apt-get install software-properties-common python-dev git python-pip
 $ git clone https://github.com/ansible/ansible.git
 $ cd ansible
 $ git checkout v1.8.4
+$ git submodule update --init --recursive
 $ sudo make install
 ```
 
