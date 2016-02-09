@@ -11,11 +11,7 @@ NOTE: many linux packages have an older version of Ansible (1.7 or even 1.5). Yo
 For APT:
 ```
 $ sudo apt-get install software-properties-common python-dev git python-pip
-$ git clone https://github.com/ansible/ansible.git
-$ cd ansible
-$ git checkout v1.8.4
-$ git submodule update --init --recursive
-$ sudo make install
+$ sudo pip install -I ansible==1.8.4
 ```
 
 
