@@ -2,12 +2,12 @@
   roles:
     - java
     - common
-    - mongodb
+    - {role: db-backup, db: mongo}
+    - {role: mongodb, mongo_version: "3.0.0"}
     - tomcat
     - apache
     - postfix
     - nameindex
-    - {role: db-backup, db: mongo}
     - elasticsearch
     - profile-service
     - profile-hub
