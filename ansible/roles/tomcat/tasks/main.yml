@@ -2,6 +2,9 @@
 # - include: ../common/tasks/tomcat.yml 
 # "tomcat" variable controls version (@see common/vars)
 - include: ../../common/tasks/setfacts.yml 
+  tags:
+    - packages
+    - tomcat
 
 - name: install libtcnative-1 (RedHat)
   yum: pkg={{libtcnative}} state=present
