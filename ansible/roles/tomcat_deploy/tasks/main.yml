@@ -31,6 +31,6 @@
   file: path="{{ tomcat_deploy_dir }}/{{ war_filename }}" state=absent
 
 - name: download from maven repo
-  get_url: url={{ war_url }} dest="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" force=true
+  get_url: url={{ war_url }} dest="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" force=true timeout=60
   notify:
     - restart tomcat
