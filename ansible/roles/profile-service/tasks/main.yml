@@ -12,7 +12,10 @@
     - properties
 
 - name: ensure snapshot directory exists
-  file: path={{data_dir}}/profile-service/snapshots state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{data_dir}}/profile-service/{{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - snapshots
+    - attachments
   tags:
     - profile-service
     - properties
