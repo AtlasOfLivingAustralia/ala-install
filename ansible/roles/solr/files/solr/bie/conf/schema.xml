@@ -393,6 +393,7 @@
    <field name="commonNameSort" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="commonNameDisplay" type="string" indexed="false" stored="true" multiValued="false" omitNorms="true" />
    <field name="commonNameSingle" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+   <field name="centroid" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="rank" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="rankID" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="datasetID" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
