@@ -80,16 +80,16 @@ will create
 ProxyPass /biocache-media   !
 ```
 
-### SSL Configuration
+### HTTPS Configuration
 
-Use the following parameters if you need to enable SSL in your Apache virtual host.
+Use the following parameters if you need to enable HTTPS (TLS, aka SSL in years gone by) in your Apache virtual host.
 
-1. ```ssl = true``` - this enables SSL
+1. ```ssl = true``` - this enables HTTPS
 1. ```ssl_certificate_server_dir = /path/to/cert/dir/on/server``` - this is the location on the server for your certificate and key files
-1. ```ssl_certificate_local_dir = /LOCAL/path/to/ssl/files``` - this is the LOCAL file path to the SSL configuration files (key, cert, chain) that need to be deployed to the server
-1. ```ssl_cert_file = filename``` - this is the name of the SSL certificate file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateFile``` directive (to ssl\_certificate\_server\_dir/ssl\_cert\_file).
-1. ```ssl_key_file = filename``` - this is the name of the SSL key file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateKeyFile``` directive (to ssl\_certificate\_server\_dir/ssl\_key\_file).
-1. ```ssl_chain_file = filename``` - this is the name of the SSL certificate chain file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateChainFile``` directive (to ssl\_certificate\_server\_dir/ssl\_chain\_file).
+1. ```ssl_certificate_local_dir = /LOCAL/path/to/ssl/files``` - this is the LOCAL file path to the HTTPS configuration files (key, cert, chain) that need to be deployed to the server
+1. ```ssl_cert_file = filename``` - this is the name of the HTTPS certificate file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateFile``` directive (to ssl\_certificate\_server\_dir/ssl\_cert\_file).
+1. ```ssl_key_file = filename``` - this is the name of the HTTPS key file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateKeyFile``` directive (to ssl\_certificate\_server\_dir/ssl\_key\_file).
+1. ```ssl_chain_file = filename``` - this is the name of the HTTPS certificate chain file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateChainFile``` directive (to ssl\_certificate\_server\_dir/ssl\_chain\_file).
 
 ## Examples
 
@@ -111,7 +111,7 @@ This will ensure that your application can be safely deployed to a non-productio
 
 The AnsibleSkeleton script will create a skeleton properties file for your application, with appropriate variables for the auth servers (```auth_base_url``` and ```auth_cas_url```).
 
-*Auth URLs MUST be accessed via SSL.*
+*Auth URLs MUST be accessed via HTTPS.*
 
 # Sample Inventories
 The inventories/vagrant directory contains inventories for deploying applications to a vagrant instance.
