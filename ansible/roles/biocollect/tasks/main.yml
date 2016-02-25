@@ -1,6 +1,8 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - deploy
+    - apache_vhost
+    - tomcat_vhost
     - biocollect
 
 #
@@ -9,10 +11,9 @@
 - include: ../../apache_vhost/tasks/main.yml
     context_path='{{ biocollect_context_path }}'
     hostname='{{ biocollect_hostname }}'
-    ssl="true"
-    ssl_cert_file='{{ssl_certificate_server_dir}}/{{ ssl_cert_file }}'
-    ssl_key_file='{{ssl_certificate_server_dir}}/{{ ssl_key_file }}'
-    ssl_chain_file='{{ssl_certificate_server_dir}}/{{ ssl_chain_file }}'
+    ssl_cert_filepath="{{ssl_certificate_server_dir}}/{{ ssl_cert_file }}"
+    ssl_key_filepath="{{ssl_certificate_server_dir}}/{{ ssl_key_file }}"
+    ssl_chain_filepath="{{ssl_certificate_server_dir}}/{{ ssl_chain_file }}"
   tags:
     - deploy
     - apache_vhost

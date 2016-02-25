@@ -5,7 +5,7 @@
   debug: msg="Virtual Host required for hostname {{hostname}}? {{vhost_required}}"
 
 - name: ensure apache vhost exists
-  apache_vhost: name={{ hostname }} ssl={{ ssl|default(false) }} ssl_cert_file={{ ssl_cert_file|default('') }} ssl_key_file={{ ssl_key_file|default('') }} ssl_chain_file={{ ssl_chain_file|default('') }}
+  apache_vhost: name={{ hostname }} ssl={{ ssl|default(false) }} ssl_cert_filepath={{ ssl_cert_filepath|default('') }} ssl_key_filepath={{ ssl_key_filepath|default('') }} ssl_chain_filepath={{ ssl_chain_filepath|default('') }}
   ignore_errors: yes
   when: vhost_required
   notify:
