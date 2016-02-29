@@ -131,6 +131,8 @@ def main():
             src=dict(required=True),
             dest=dict(required=True),
             state=dict(default="present", choices=["absent", "present"]),
+            ssl=dict(default=False, required=False, type="bool"),
+            force_https=dict(default=True, required=False, type="bool"),
         ),
         supports_check_mode=True
     )
@@ -139,6 +141,8 @@ def main():
     src = module.params["src"]
     dest = module.params["dest"]
     state = module.params["state"]
+    ssl = module.params["ssl"]
+    force_https = module.params["force_https"]
 
     try:
         aug = load_augeas_for_file(check_mode=module.check_mode)
