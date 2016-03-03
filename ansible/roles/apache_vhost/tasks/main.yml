@@ -37,6 +37,26 @@
   notify:
     - reload apache
 
+- name: ensure HTTPS certificate directory exists (if required)
+  file: path={{ ssl_certificate_server_dir }} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  when: ssl
+
+- name: check whether copying HTTPS certificates from local is required
+  set_fact: copy_https_certs_from_local={{ copy_https_certs_from_local | default(false) }}
+
+- name: set local directory for HTTPS certificate copy
+  set_fact: ssl_certificate_local_dir={{ ssl_certificate_local_dir | default('LocalDirectoryNotRequired') }}
+
+- name: copy HTTPS certificate files from local
+  copy: src={{item}} dest={{ssl_certificate_server_dir}}
+  with_items:
+    - "{{ssl_certificate_local_dir}}/{{ssl_cert_file}}"
+    - "{{ssl_certificate_local_dir}}/{{ssl_key_file}}"
+    - "{{ssl_certificate_local_dir}}/{{ssl_chain_file}}"
+  when: ssl and copy_https_certs_from_local
+  notify:
+    - reload apache
+
 - name: Enable vhost for Apache
   command: a2ensite {{ hostname }}.conf
   when: vhost_required
