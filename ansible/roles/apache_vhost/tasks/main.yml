@@ -1,6 +1,9 @@
 - name: determine if a virtual host is required (vhost not required for localhost, 127.0.0.1 or any hostname with a colon in it)
   set_fact: vhost_required={{ hostname.find(':') == -1 and hostname.find('localhost') == -1 and hostname.find('127.0.0.1') == -1 }}
 
+- name: check whether HTTPS is required
+  set_fact: ssl={{ ssl | default(false) }}
+
 - name: Is a virtual host required?
   debug: msg="Virtual Host required for hostname {{hostname}}? {{vhost_required}}"
 
