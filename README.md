@@ -14,6 +14,11 @@ $ sudo apt-get install software-properties-common python-dev git python-pip
 $ sudo pip install -I ansible==1.8.4
 ```
 
+For OSX:
+```
+$ sudo easy_install pip
+$ sudo pip install -I ansible==1.8.4
+```
 
 If you see this error:
 ```
@@ -28,6 +33,14 @@ Below are some instructions for setting up the [ALA demo](http://ala-demo.gbif.o
 #### 1. Vagrant
 [Vagrant](http://www.vagrantup.com) can be used to test ansible playbooks on your local machine. To use this, you will need to install
 [VirtualBox](https://www.virtualbox.org) and [Vagrant](http://www.vagrantup.com). We recommend using vagrant version 1.7.x. Earlier versions of vagrant will not work with the ```VagrantFile``` in this repository.
+
+For Debian/Ubuntu:
+```
+sudo apt-get install virtualbox virtualbox-dkms virtualbox-qt
+cd ~/Downloads
+wget https://releases.hashicorp.com/vagrant/1.7.4/vagrant_1.7.4_x86_64.deb
+sudo dpkg -i vagrant_1.7.4_x86_64.deb
+```
 
 The ```vagrant/ubuntu-trusty``` directory contains configurations that can used with [VirtualBox](https://www.virtualbox.org/) to bring up a VH for deploying against.  
 
