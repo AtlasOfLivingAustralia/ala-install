@@ -31,7 +31,7 @@ Below are some instructions for setting up the [ALA demo](http://ala-demo.gbif.o
 
 For Debian/Ubuntu:
 ```
-sudo apt-get install virtualbox virtualbox-dkms
+sudo apt-get install virtualbox virtualbox-dkms virtualbox-qt
 cd ~/Downloads
 wget https://releases.hashicorp.com/vagrant/1.7.4/vagrant_1.7.4_x86_64.deb
 sudo dpkg -i vagrant_1.7.4_x86_64.deb
