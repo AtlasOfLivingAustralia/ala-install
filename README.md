@@ -14,6 +14,11 @@ $ sudo apt-get install software-properties-common python-dev git python-pip
 $ sudo pip install -I ansible==1.8.4
 ```
 
+For OSX:
+```
+$ sudo easy_install pip
+$ sudo pip install -I ansible==1.8.4
+```
 
 If you see this error:
 ```
