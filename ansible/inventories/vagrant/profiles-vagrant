@@ -7,14 +7,16 @@ local_repo_dir=~/.ala
 data_dir=/data
 deployment_env=vagrant1
 
+tomcat_java_opts=-Xmx512m -Xms512m -XX:MaxPermSize=128m -Xss256k -Djava.awt.headless=true
+
 profile_service_hostname=profiles-ws.vagrant1.ala.org.au
-profile_service_url=http://profiles-ws.vagrant1.ala.org.au
-profile_service_base_url=http://profiles-ws.vagrant1.ala.org.au
+profile_service_url=https://profiles-ws.vagrant1.ala.org.au
+profile_service_base_url=https://profiles-ws.vagrant1.ala.org.au
 profile_service_context_path=
 
 profile_hub_hostname=profiles.vagrant1.ala.org.au
-profile_hub_url=http://profiles.vagrant1.ala.org.au
-profile_hub_base_url=http://profiles.vagrant1.ala.org.au
+profile_hub_url=https://profiles.vagrant1.ala.org.au
+profile_hub_base_url=https://profiles.vagrant1.ala.org.au
 profile_hub_context_path=
 
 auth_base_url=https://auth.ala.org.au
@@ -62,3 +64,15 @@ apikey_ip_whitelist=152.83.193.212 # Mark's laptop, required to run the bulk imp
 # Elastic Search config
 elasticsearch_version=1.7.2
 elasticsearch_cluster_name=profiles_es_{{ deployment_env }}
+
+
+#
+# SSL Configuration files
+#
+ssl=true
+copy_https_certs_from_local=true
+ssl_certificate_server_dir=/etc/apache2
+ssl_certificate_local_dir=../../catacomb
+ssl_cert_file=ala.org.au.crt
+ssl_key_file=ala.org.au.key
+ssl_chain_file=ala.org.au.chain.crt
