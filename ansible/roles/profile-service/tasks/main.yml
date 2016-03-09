@@ -1,6 +1,10 @@
 - include: ../../common/tasks/setfacts.yml
   tags: 
     - profile-service
+    - deploy
+    - properties
+    - apache_vhost
+    - tomcat_vhost
 
 #
 # Properties file configuration
