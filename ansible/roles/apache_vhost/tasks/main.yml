@@ -4,11 +4,23 @@
 - name: check whether HTTPS is required
   set_fact: ssl={{ ssl | default(false) }}
 
+- name: set ssl_cert_filepath variable, if required
+  set_fact: ssl_cert_filepath={{ssl_certificate_server_dir}}/{{ ssl_cert_file }}
+  when: ssl_cert_file is defined
+
+- name: set ssl_key_filepath variable, if required
+  set_fact: ssl_key_filepath={{ssl_certificate_server_dir}}/{{ ssl_key_file }}
+  when: ssl_key_file is defined
+
+- name: set ssl_chain_filepath variable, if required
+  set_fact: ssl_chain_filepath={{ssl_certificate_server_dir}}/{{ ssl_chain_file }}
+  when: ssl_chain_file is defined
+
 - name: Is a virtual host required?
   debug: msg="Virtual Host required for hostname {{hostname}}? {{vhost_required}}"
 
 - name: ensure apache vhost exists
-  apache_vhost: name={{ hostname }} ssl={{ ssl|default(false) }} ssl_cert_filepath={{ ssl_cert_filepath|default('') }} ssl_key_filepath={{ ssl_key_filepath|default('') }} ssl_chain_filepath={{ ssl_chain_filepath|default('') }} force_https={{ force_https|default(true) }}
+  apache_vhost: name={{ hostname }} force_https={{ force_https|default(true) }}
   ignore_errors: yes
   when: vhost_required
   notify:
@@ -48,7 +60,16 @@
   set_fact: copy_https_certs_from_local={{ copy_https_certs_from_local | default(false) }}
 
 - name: set local directory for HTTPS certificate copy
-  set_fact: ssl_certificate_local_dir={{ ssl_certificate_local_dir | default('LocalDirectoryNotRequired') }}
+  set_fact: ssl_certificate_local_dir={{ ssl_certificate_local_dir | default('ssl_certificate_local_dir_not_set') }}
+
+- name: set ssl_cert_file if undefined
+  set_fact: ssl_cert_file={{ ssl_cert_file | default('ssl_cert_file_not_set') }}
+
+- name: set ssl_key_file if undefined
+  set_fact: ssl_key_file={{ ssl_key_file | default('ssl_key_file_not_set') }}
+
+- name: set ssl_chain_file if undefined
+  set_fact: ssl_chain_file={{ ssl_chain_file | default('ssl_chain_file_not_set') }}
 
 - name: copy HTTPS certificate files from local
   copy: src={{item}} dest={{ssl_certificate_server_dir}}
