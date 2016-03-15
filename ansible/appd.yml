@@ -12,3 +12,4 @@
     - biocache-service
     - { role: biocache-hub, biocache_hub: appd-hub, proxy_root_context_to: appd-hub }
     - biocache-cli
+    - appd
