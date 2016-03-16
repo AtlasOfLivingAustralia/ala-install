@@ -6,30 +6,34 @@ is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
-biocollect_hostname=biocollect.vagrant1.ala.org.au
+biocollect_hostname=biocollect-vagrant.ala.org.au
 biocollect_context_path=
-biocollect_base_url=http://biocollect.vagrant1.ala.org.au
-biocollect_url=http://biocollect.vagrant1.ala.org.au/
+biocollect_base_url=http://biocollect-vagrant.ala.org.au
+biocollect_url=http://biocollect-vagrant.ala.org.au/
+biocollect_homepage_url=http://biocollect-vagrant.ala.org.au/
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
 deployment_env=dev
 
-auth_base_url=https://auth.ala.org.au
-auth_cas_url=https://auth.ala.org.au/cas
-
-ala_baseURL=http://www.ala.org.au
+ala_baseURL=https://www.ala.org.au
 images_base_url=http://images1-dev.ala.org.au
 bie_base_url=http://bie.ala.org.au
 lists_base_url=http://lists.ala.org.au
 biocache_base_url=http://biocache.ala.org.au
 spatial_base_url=http://spatial.ala.org.au
-ecodata_base_url=http://ecodata.ala.org.au
+ecodata_base_url=http://ecodata-bio-dev.ala.org.au
 layers_base_url=http://layers.ala.org.au
-merit_base_url=https://fieldcapture-test.ala.org.au
+merit_base_url=https://fieldcapture-dev.ala.org.au
 
 project_editor_username=fc-te@outlook.com
 project_editor_password=testing!
 project_admin_username=fc-ta@outlook.com
 project_admin_password=testing!
+
+biocollect_support_email=biocollect-support@ala.org.au
+
+bugherd_integration=true
+
+api_key=INSERT_API_KEY_HERE
