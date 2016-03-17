@@ -49,3 +49,5 @@
 - name: install cron job for indexing elastic search
   cron: minute=21 hour=22 name="Elastic search indexing" job="wget -O - {{ ecodata_url }}{{ ecodata_context_path }}/admin/reIndexAll >/dev/null 2>&1" user=root state=present
 
+- name: install cron job for SciStarter importa
+  cron: special_time=monthly hour=21 minute=21  name="Import projects from SciStarter" job="wget -O - {{ ecodata_url }}{{ ecodata_context_path }}/ws/project/importProjectsFromSciStarter >/dev/null 2>&1" user=root state=present
