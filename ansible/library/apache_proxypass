@@ -59,6 +59,7 @@ EXAMPLES = '''
 - apache_proxypass: name=app.exmaple.com src=/foo dest=http://localhost:8080/foo state=present
 '''
 
+
 try:
     import augeas
 except ImportError:
@@ -75,63 +76,66 @@ def load_augeas_for_file(root="/etc/apache2/sites-available", lens="httpd.lns", 
     return aug
 
 
-def ensure_directive(aug, vhost, vhost_index, key, value):
-    match = aug.match('/files//VirtualHost[directive="ServerName" and directive/arg="%(vhost)s"][%(vhost_index)s]/'
-                      '*[self::directive="%(key)s"]' % locals())
+def set_directive(aug, filename, path, directive, virtualHostIndex):
+    parts = directive.split(" ")
+
+    aug.set(path % locals(), parts[0])
+    for index in range(1, len(parts)):
+        argPath = path + "/arg[%(index)s]"
+        aug.set(argPath % locals(), parts[index])
+
+
+def ensure_directive(aug, filename, vhost, vhost_index, key, value):
+    match = aug.match('/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/*[self::directive="%(key)s"]' % locals())
     if len(match) == 0:
-        aug.set('/files//VirtualHost[directive="ServerName" and directive/arg="%(vhost)s"][%(vhost_index)s]/directive[last()+1]'
-                    % locals(),
-                    key)
-    aug.set('/files//VirtualHost[directive="ServerName" and directive/arg="%(vhost)s"][%(vhost_index)s]/'
-                '*[self::directive="%(key)s"]/arg' % locals(),
-                value)
+        aug.set('/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/directive[last()+1]' % locals(), key)
+    aug.set('/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/*[self::directive="%(key)s"]/arg' % locals(), value)
 
 
-
-def ensure_proxy_pass_exists(aug, vhost, src, dest, proxy_vhosts):
+def ensure_proxy_pass_exists(aug, filename, vhost, src, dest, proxy_vhosts):
 
     for vhost_index in proxy_vhosts:
         #Ensure some basic mod_proxy config is enabled for the vhost:
-        ensure_directive(aug, vhost, vhost_index, "ProxyRequests", "Off")
-        ensure_directive(aug, vhost, vhost_index, "ProxyPreserveHost", "On")
-        ensure_directive(aug, vhost, vhost_index, "ProxyVia", "full")
+        ensure_directive(aug, filename, vhost, vhost_index, "ProxyRequests", "Off")
+        ensure_directive(aug, filename, vhost, vhost_index, "ProxyPreserveHost", "On")
+        ensure_directive(aug, filename, vhost, vhost_index, "ProxyVia", "full")
 
-        match = aug.match('/files//VirtualHost[directive="ServerName" and directive/arg="%(vhost)s"][%(vhost_index)s]/'
-                      '*[self::directive="ProxyPass"]' % locals())
+        match = aug.match('/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/'
+            '*[self::directive="ProxyPass"]' % locals())
         if len(match) == 0:
             aug.set(
-                '/files//VirtualHost[directive="ServerName" and directive/arg="%(vhost)s"][%(vhost_index)s]/directive[last()+1]'
+                '/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/directive[last()+1]'
                 % locals(),
                 "ProxyPass")
         aug.set(
-            '/files//VirtualHost[directive="ServerName" and directive/arg="%(vhost)s"][%(vhost_index)s]/*[self::directive="ProxyPass"]/arg[1]'
+            '/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/*[self::directive="ProxyPass"]/arg[1]'
             % locals(),
             src)
         aug.set(
-            '/files//VirtualHost[directive="ServerName" and directive/arg="%(vhost)s"][%(vhost_index)s]/*[self::directive="ProxyPass"]/arg[2]'
+            '/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/*[self::directive="ProxyPass"]/arg[2]'
             % locals(),
             dest)
 
         if dest.startswith('http'):
             aug.set(
-                ('/files//VirtualHost[directive="ServerName" and directive/arg="%(vhost)s"][%(vhost_index)s]/directive[last()+1]'
+                ('/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/directive[last()+1]'
                  % locals()),
                 "ProxyPassReverse")
             aug.set(
-                ('/files//VirtualHost[directive="ServerName" and directive/arg="%(vhost)s"][%(vhost_index)s]/*[self::directive="ProxyPassReverse"]/arg[1]'
+                ('/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/*[self::directive="ProxyPassReverse"]/arg[1]'
                  % locals()),
                 src)
             aug.set(
-                ('/files//VirtualHost[directive="ServerName" and directive/arg="%(vhost)s"][%(vhost_index)s]/*[self::directive="ProxyPassReverse"]/arg[2]'
+                ('/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/*[self::directive="ProxyPassReverse"]/arg[2]'
                  % locals()),
                 dest)
 
 
-def remove_proxy_pass(aug, vhost, src, dest, proxy_vhosts):
+def remove_proxy_pass(aug, filename, vhost, src, dest, proxy_vhosts):
     for vhost_index in proxy_vhosts:
-        aug.remove('/files//VirtualHost[directive="ServerName" and directive/arg="%(vhost)s"][%(vhost_index)s]/'
+        aug.remove('/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/'
                    '*[self::directive="ProxyPass"][arg[1] = "%(src)s" and arg[2] = "%(dest)s"]' % locals())
-        aug.remove('/files//VirtualHost[directive="ServerName" and directive/arg="%(vhost)s"][%(vhost_index)s]/'
+        aug.remove('/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/'
                    '*[self::directive="ProxyPassReverse"][arg[1] = "%(src)s" and arg[2] = "%(dest)s"]' % locals())
 
 
@@ -139,6 +143,7 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             name=dict(required=True),
+            filename=dict(default=None, required=False),
             src=dict(required=True),
             dest=dict(required=True),
             state=dict(default="present", choices=["absent", "present"]),
@@ -149,11 +154,15 @@ def main():
     )
 
     vhost = module.params["name"]
+    filename = module.params["filename"]
     src = module.params["src"]
     dest = module.params["dest"]
     state = module.params["state"]
     ssl = module.params["ssl"]
     force_https = module.params["force_https"]
+
+    if not filename:
+        filename = vhost
 
     try:
         aug = load_augeas_for_file(check_mode=module.check_mode)
@@ -175,13 +184,13 @@ def main():
 
     try:
         if state == 'present':
-            ensure_proxy_pass_exists(aug, vhost, src, dest, proxy_vhosts)
+            ensure_proxy_pass_exists(aug, filename, vhost, src, dest, proxy_vhosts)
         elif state == 'absent':
-            remove_proxy_pass(aug, vhost, src, dest, proxy_vhosts)
+            remove_proxy_pass(aug, filename, vhost, src, dest, proxy_vhosts)
             module.fail_json(msg="state=absent is not implemented yet" % locals())
             return
     except Exception, e:
-        module.fail_json(msg="an error occured while making changes: %s" % e)
+        module.fail_json(msg="an error occurred while making changes: %s" % e)
         return
 
     try:

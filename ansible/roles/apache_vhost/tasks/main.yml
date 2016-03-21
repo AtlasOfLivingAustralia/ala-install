@@ -26,7 +26,7 @@
   when: ssl_chain_file is defined and ssl_certificate_server_dir is defined
 
 - name: ensure apache vhost exists
-  apache_vhost: name={{ hostname }} force_https={{ force_https|default(true) }}
+  apache_vhost: name={{ hostname }} ssl={{ ssl|default(false) }} force_https={{ force_https|default(true) }} ssl_cert_filepath={{ ssl_cert_filepath|default(false) }} ssl_key_filepath={{ ssl_key_filepath|default(false) }} ssl_chain_filepath={{ ssl_chain_filepath|default(false) }}
   ignore_errors: yes
   when: vhost_required
   notify:
@@ -37,7 +37,7 @@
   when: vhost_required and additional_proxy_pass is defined
   with_items: additional_proxy_pass
   notify:
-    - reload apache    
+    - reload apache
 
 - name: ensure proxy pass exists for apache (without default context)
   apache_proxypass: name={{ hostname }} src={{ item.src }} dest={{ item.dest }} ssl={{ ssl|default(false) }} force_https={{ force_https|default(true) }}
