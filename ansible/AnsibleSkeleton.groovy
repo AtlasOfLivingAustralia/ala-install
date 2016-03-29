@@ -38,6 +38,10 @@ class AnsibleSkeleton {
                         - include: ../../common/tasks/setfacts.yml
                           tags:
                             - ${appName}
+                            - deploy
+                            - properties
+                            - apache_vhost
+                            - tomcat_vhost
                      """.stripIndent(), false)
 
         playbook = new File("${appName}-standalone.yml")
@@ -68,7 +72,7 @@ class AnsibleSkeleton {
     static vars() {
         println "  - Creating vars file..."
         write(vars, "# assets\n" +
-                "version: \"???\"\n" +
+                "version: \"{{ ${appNameVar}_version | default('LATEST') }}\"\n" +
                 "artifactId: \"${appName}\"\n" +
                 "classifier: ''\n" +
                 "groupId: \"au.org.ala\"\n" +
@@ -92,7 +96,7 @@ class AnsibleSkeleton {
                     gateway=false
                     security.cas.adminRole=ROLE_ADMIN
                     
-                    serverURL=https://{{ ${appNameVar}_hostname }}
+                    serverURL=http://{{ ${appNameVar}_hostname }}
                     serverName=http://{{ ${appNameVar}_hostname }}
                     security.cas.appServerName=http://{{ ${appNameVar}_hostname }}
                     grails.serverURL=http://{{ ${appNameVar}_hostname }}{{ ${appNameVar}_context_path }}
@@ -133,6 +137,7 @@ class AnsibleSkeleton {
     static mysql() {
         println "  - Adding mysql stuff..."
 
+        write(playbook, "\n    - {role: db-backup, db: mysql}")        
         write(playbook, "\n    - mysql")
 
         write(tasks, """
@@ -168,6 +173,7 @@ class AnsibleSkeleton {
     static postgresql() {
         println "  - Adding postgresql stuff..."
 
+        write(playbook, "\n    - {role: db-backup, db: postgresql}")
         write(playbook, "\n    - postgresql")
 
         write(tasks, """
@@ -243,6 +249,8 @@ class AnsibleSkeleton {
                 local_repo_dir=~/.ala
                 data_dir=/data
 
+                ${appNameVar}_version=???
+
                 ${appNameVar}_hostname=vagrant1.ala.org.au
                 ${appNameVar}_context_path=/???
                 ${appNameVar}_base_url=http://vagrant1.ala.org.au
@@ -266,6 +274,7 @@ class AnsibleSkeleton {
     static mongodb() {
         println "  - Adding mongodb stuff..."
 
+        write(playbook, "\n    - {role: db-backup, db: mongo}")
         write(playbook, "\n    - mongodb")
     }
 
