@@ -1,0 +1,23 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - reinitialise
+
+- name: REMOVE tomcat
+  apt: name=tomcat7 purge=yes state=absent
+  tags:
+    - reinitialise
+
+- name: REMOVE apache2
+  apt: name=apache2  purge=yes state=absent
+  tags:
+    - reinitialise
+
+- name: REMOVE /data
+  file: path={{data_dir}} state=absent
+  tags:
+    - reinitialise
+
+- name: REMOVE /data
+  file: path=/data state=absent
+  tags:
+    - reinitialise
