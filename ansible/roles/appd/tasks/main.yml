@@ -8,6 +8,11 @@
     - solr_config  
     - solr    
 
+- name: overwrite facets.json
+  copy: src=facets.json dest={{data_dir}}/biocache/config/facets.json owner={{tomcat_user}}  group={{tomcat_user}}
+  tags:
+    - appd
+
 - name: copy biocache config properties template 
   template: src={{item}} dest={{data_dir}}/biocache/config/{{item}} mode=0644
   with_items:
@@ -17,5 +22,10 @@
 
 - name: remove default vhost from apache config
   file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+  notify:
+    - reload apache
+
+- name: change vhost proxy settings in apache
+  template: src=vhost.conf dest=/etc/apache2/sites-available/{{biocache_hub_hostname}}.conf
   notify:
     - reload apache

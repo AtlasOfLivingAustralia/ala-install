@@ -20,14 +20,12 @@
 
 - name: Download SDS layers
   get_url: url={{ sds_layers_url | default('http://biocache.ala.org.au/archives/layers/sds-layers.tgz') }} dest="{{data_dir}}/biocache/layers/sds-layers.tgz" force=yes
-  when: sds_enabled is defined and sds_enabled == true
   tags:
     - biocache-properties
     - biocache-layers   
 
 - name: Extract SDS layers
   shell: "tar zxvf {{data_dir}}/biocache/layers/sds-layers.tgz -C {{data_dir}}/biocache/layers/"
-  when: sds_enabled is defined and sds_enabled == true
   tags:
     - biocache-properties
     - biocache-layers    

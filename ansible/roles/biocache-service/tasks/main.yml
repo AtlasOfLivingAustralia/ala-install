@@ -1,5 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
+    - apache_vhost
+    - tomcat_vhost
     - biocache-service
     - webapps
 

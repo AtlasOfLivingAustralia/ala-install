@@ -24,7 +24,7 @@
   register: war_exist
 
 - name: back up existing war file
-  shell: "sudo cp {{ tomcat_deploy_dir }}/{{ war_filename }}.war {{ backup_dir | default('/data') }}/{{ war_filename }}_`date '+%Y%m%d%H%M%S'`.war"
+  copy: src={{ tomcat_deploy_dir }}/{{ war_filename }}.war dest="{{ backup_dir | default('/data') }}/{{ war_filename }}_{{ansible_date_time.iso8601}}.war" remote_src=True
   when: war_exist.stat.exists == True
 
 - name: remove existing webapp (to ensure a clean redeployment)
