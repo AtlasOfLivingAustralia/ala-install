@@ -1,0 +1,7 @@
+- hosts: doi-service
+  roles:
+    - common
+    - java
+    - tomcat
+    - nginx
+    - doi-service

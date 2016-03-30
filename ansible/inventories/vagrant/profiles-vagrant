@@ -36,30 +36,29 @@ sandbox_base_url=http://sandbox.ala.org.au
 avh_base_url=http://avh.ala.org.au
 nsl_base_url=https://biodiversity.org.au/test-nsl
 
-image_upload_apikey = 92c5d514-92e6-4faf-9997-b8cef233b883
-profile_service_apikey = 04f4a530-a0b6-4a9f-be4a-4dde9827ae34
+image_upload_apikey = 
+profile_service_apikey = 
 
-biodiv_library_api_key=1265b70b-3f49-4e4a-9f9b-a0e5b1033228
+biodiv_library_api_key=
 
 nameindex_to_use=ala
 
 # ANDS test account details
-ands_doi_app_id=e6f84d76f388c237f1de517e652bc174c47fd6e2
-ands_doi_key=63e0a8c258
-ands_doi_client_id=68
+ands_doi_app_id=
+ands_doi_key=
+ands_doi_client_id=
 
 # Google Analytics account details
-analytics_serviceAccountEmail=742444384775-bvi7i0n5uh7a45qu7324td9hh4i733gn@developer.gserviceaccount.com
-analytics_viewId=108545238
-#analytics_private_key_local_path=/path/to/local/clone/of/ansible-inventories/googleAnalytics/google-analytics-key.p12
-analytics_private_key_local_path=~/projects/ala/ansible-inventories/googleAnalytics/google-analytics-key.p12
+analytics_serviceAccountEmail=
+analytics_viewId=
+analytics_private_key_local_path=/path/to/local/clone/of/ansible-inventories/googleAnalytics/google-analytics-key.p12
 
 # Feature flags
 disable_authorisation=false
 feature_image_upload=true
 feature_publication=false
 
-apikey_ip_whitelist=152.83.193.212 # Mark's laptop, required to run the bulk import processes
+apikey_ip_whitelist=
 
 # Elastic Search config
 elasticsearch_version=1.7.2

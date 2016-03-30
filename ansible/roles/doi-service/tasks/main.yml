@@ -1,0 +1,67 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - doi-service
+    - deploy
+    - properties
+    - tomcat_vhost
+    - nginx_vhost
+
+#
+# External configuration properties file
+#
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/doi-service/config"
+  tags:
+    - properties
+    - doi-service
+
+- name: copy all config.properties
+  template: src=doi-service-config.properties dest={{data_dir}}/doi-service/config/doi-service-config.properties
+  tags:
+    - properties
+    - doi-service
+
+- name: set data ownership
+  file: path={{data_dir}}/doi-service owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - properties
+    - doi-service
+
+#
+# WAR file deployment and virtual host configuration
+#
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ doi_service_war_url }}' context_path='{{doi_service_context_path}}' hostname='{{ doi_service_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - doi-service
+
+name: add nginx vhost config
+  include: ../../nginx/tasks/main.yml
+  vars:
+    nginx_sites:
+      doi_service:
+        - listen 80
+        - listen [::]:80
+        - server_name {{ doi_service_hostname }}
+        - client_max_body_size 500m
+        - location / { proxy_set_header X-Real-IP $remote_addr; proxy_set_header Host $host; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_pass http://127.0.0.1:8080; }
+    nginx_https_sites:
+      doi_service:
+        - listen 443 spdy
+        - listen [::]:443 spdy
+        - server_name {{ doi_service_hostname }}
+        - ssl_certificate {{ doi_service_https_certificate_path }}
+        - ssl_certificate_key {{ doi_service_https_certificate_key_path }}
+        - client_max_body_size 500m
+        - location / { proxy_set_header X-Real-IP $remote_addr; proxy_set_header Host $host; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_pass http://127.0.0.1:8080; }
+  notify:
+    - reload nginx
+  tags:
+    - doi-service
+    - nginx_vhost
+    - deploy
