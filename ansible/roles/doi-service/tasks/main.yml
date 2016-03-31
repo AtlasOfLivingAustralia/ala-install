@@ -40,7 +40,7 @@
     - tomcat_vhost
     - doi-service
 
-name: add nginx vhost config
+- name: add nginx vhost config
   include: ../../nginx/tasks/main.yml
   vars:
     nginx_sites:

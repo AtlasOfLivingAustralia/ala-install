@@ -231,7 +231,7 @@ class AnsibleSkeleton {
         write(playbook, "\n    - nginx")
 
         write(tasks, """
-                name: add nginx vhost config
+                - name: add nginx vhost config
                   include: ../../nginx/tasks/main.yml
                   vars:
                     nginx_sites:
