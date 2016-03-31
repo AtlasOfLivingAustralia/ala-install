@@ -13,27 +13,27 @@
   tags: [configuration,nginx]
 
 - name: Copy the nginx configuration file
-  template: src=nginx.conf.j2 dest={{nginx_conf_dir}}/nginx.conf
+  template: src={{role_path}}/../nginx/templates/nginx.conf.j2 dest={{nginx_conf_dir}}/nginx.conf
   notify:
    - restart nginx
   tags: [configuration,nginx]
 
 - name: Ensure auth_basic files created
-  template: src=auth_basic.j2 dest={{nginx_conf_dir}}/auth_basic/{{ item }} owner=root group={{nginx_group}} mode=0750
+  template: src={{role_path}}/../nginx/templates/auth_basic.j2 dest={{nginx_conf_dir}}/auth_basic/{{ item }} owner=root group={{nginx_group}} mode=0750
   with_items: nginx_auth_basic_files.keys()
   notify:
    - reload nginx
   tags: [configuration,nginx]
 
 - name: Create the configurations for sites
-  template: src=site.conf.j2 dest={{nginx_conf_dir}}/sites-available/{{ item }}.conf
+  template: src={{role_path}}/../nginx/templates/site.conf.j2 dest={{nginx_conf_dir}}/sites-available/{{ item }}.conf
   with_items: nginx_sites.keys() | difference(nginx_remove_sites)
   notify:
    - reload nginx
   tags: [configuration,nginx]
 
 - name: Create the configurations for https sites
-  template: src=https_site.conf.j2 dest={{nginx_conf_dir}}/sites-available/{{ item }}_https.conf
+  template: src={{role_path}}/../nginx/templates/https_site.conf.j2 dest={{nginx_conf_dir}}/sites-available/{{ item }}_https.conf
   with_items: nginx_https_sites.keys() | difference(nginx_remove_sites)
   notify:
    - reload nginx
@@ -54,7 +54,7 @@
   tags: [configuration,nginx]
 
 - name: Create the configurations for independent config file
-  template: src=config.conf.j2 dest={{nginx_conf_dir}}/conf.d/{{ item }}.conf
+  template: src={{role_path}}/../nginx/templates/config.conf.j2 dest={{nginx_conf_dir}}/conf.d/{{ item }}.conf
   with_items: nginx_configs.keys()
   notify:
    - reload nginx
