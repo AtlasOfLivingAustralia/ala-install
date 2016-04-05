@@ -41,7 +41,7 @@
     - "nameindex"
 
 - name: Download lucene index
-  get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene/namematching.tgz
+  get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene/namematching.tgz force={{ force_nameindex_download | default(false) }}
   tags:
     - "nameindex"  
 
