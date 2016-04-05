@@ -101,20 +101,15 @@ def ensure_proxy_pass_exists(aug, filename, vhost, src, dest, proxy_vhosts):
         ensure_directive(aug, filename, vhost, vhost_index, "ProxyVia", "full")
 
         match = aug.match('/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/'
-            '*[self::directive="ProxyPass"]' % locals())
+            '*[self::directive="ProxyPass"][arg[1]="%(src)s"]' % locals())
+
         if len(match) == 0:
-            aug.set(
-                '/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/directive[last()+1]'
-                % locals(),
-                "ProxyPass")
-        aug.set(
-            '/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/*[self::directive="ProxyPass"]/arg[1]'
-            % locals(),
-            src)
-        aug.set(
-            '/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/*[self::directive="ProxyPass"]/arg[2]'
-            % locals(),
-            dest)
+            aug.set('/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/directive[last()+1]' % locals(), "ProxyPass")
+            aug.set('/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/*[self::directive="ProxyPass"][last()]/arg[1]' % locals(), src)
+            aug.set('/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/*[self::directive="ProxyPass"][last()]/arg[2]' % locals(), dest)
+        else:
+            aug.set('/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/*[self::directive="ProxyPass"][arg[1]="%(src)s"]/arg[1]' % locals(), src)
+            aug.set('/files/%(filename)s.conf/VirtualHost[%(vhost_index)s]/*[self::directive="ProxyPass"][arg[1]="%(src)s"]/arg[2]' % locals(), dest)
 
         if dest.startswith('http'):
             aug.set(
