@@ -98,3 +98,7 @@
 - name: Enable SSL module for Apache (if required)
   apache2_module: state=present name=ssl
   when: ssl is defined and ssl
+
+- name: Add the virtual host to the /etc/hosts file for Vagrant instances
+  lineinfile: dest=/etc/hosts regexp="^127.0.0.1 .*?{{hostname}}.*?$" line="127.0.0.1 localhost {{ hostname }}" state=present
+  when: is_vagrant
