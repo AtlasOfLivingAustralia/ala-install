@@ -79,6 +79,9 @@ will create
 ```
 ProxyPass /biocache-media   !
 ```
+3. ```log_filename``` - the filename of the application's log file, so that the tomcat_deploy role can back it up. If not provided, the war_filename will be used. Do not include the file extension.
+
+The existing WAR file and log file will be backed up before the new WAR is deployed.
 
 ### HTTPS Configuration
 

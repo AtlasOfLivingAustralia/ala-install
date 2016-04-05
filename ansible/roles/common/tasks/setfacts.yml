@@ -5,6 +5,7 @@
     tomcat_user: tomcat7
     tomcat_conf: /etc/default/tomcat7
     tomcat_conf_dir: /etc/tomcat7
+    tomcat_log_dir: /var/log/tomcat7
     apache: apache2
     mysql_service: mysql
     cassandra_yaml: /etc/cassandra/cassandra.yaml

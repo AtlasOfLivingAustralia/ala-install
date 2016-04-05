@@ -27,6 +27,14 @@
   copy: src={{ tomcat_deploy_dir }}/{{ war_filename }}.war dest="{{ backup_dir | default('/data') }}/{{ war_filename }}_{{ansible_date_time.iso8601}}.war" remote_src=True
   when: war_exist.stat.exists == True
 
+- name: check if a log file exists
+  stat: path="{{ tomcat_log_dir }}/{{ log_filename | default(war_filename) }}.log"
+  register: log_exist
+
+- name: back up tomcat log file
+  copy: src={{ tomcat_log_dir }}/{{ log_filename | default(war_filename) }}.log dest="{{ tomcat_log_dir }}/{{ log_filename | default(war_filename) }}.log.{{ ansible_date_time.iso8601 }}" remote_src=True
+  when: log_exist.stat.exists == True
+  
 - name: remove existing webapp (to ensure a clean redeployment)
   file: path="{{ tomcat_deploy_dir }}/{{ war_filename }}" state=absent
 
