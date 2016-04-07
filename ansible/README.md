@@ -94,8 +94,9 @@ ssl = true
 in your inventory. 
 
 There are two options for installing HTTPS key/cert/etc files on your server:
+
 1. Copy local files to the server; or
-1. Manage them on the server with a tool like SSL Mate.
+1. Manage them on the server with a tool like SSL Mate (this is the default).
 
 ALA uses option 2.
 
