@@ -1,7 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - ecodata
-
+    - deploy
 #
 # External configuration properties file
 #
@@ -48,4 +48,3 @@
 #
 - name: install cron job for indexing elastic search
   cron: minute=21 hour=22 name="Elastic search indexing" job="wget -O - {{ ecodata_url }}{{ ecodata_context_path }}/admin/reIndexAll >/dev/null 2>&1" user=root state=present
-

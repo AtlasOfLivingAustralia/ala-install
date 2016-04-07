@@ -5,8 +5,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
   config.ssh.insert_key = false
   config.vm.hostname = "ala.vagrant.dev"
-  config.vm.network :private_network, ip: "10.1.1.2"
-    
+  config.vm.network :private_network, ip: "10.1.1.3"
+  config.vm.network :forwarded_port, guest: 22, host: 2223, id: 'ssh'
+
   # these machines require some memory to operate the apps
   config.vm.provider "virtualbox" do |v|
     v.memory = 4096
@@ -14,6 +15,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   
   # totally insecure, but this is local dev: make the vagrant default the root key
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
-  config.vm.provision "shell", inline: "sudo cp -r /home/vagrant/.ssh /root/.ssh"
+  config.vm.provision "shell", inline: "sudo cp -r /home/vagrant/.ssh /root/"
 
 end

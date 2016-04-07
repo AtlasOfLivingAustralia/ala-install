@@ -1,12 +1,16 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - deploy
+    - apache_vhost
+    - tomcat_vhost
     - biocollect
 
 #
 # WAR file deployment and virtual host configuration
 #
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ biocollect_context_path }}' hostname='{{ biocollect_hostname }}'
+- include: ../../apache_vhost/tasks/main.yml
+    context_path='{{ biocollect_context_path }}'
+    hostname='{{ biocollect_hostname }}'
   tags:
     - deploy
     - apache_vhost

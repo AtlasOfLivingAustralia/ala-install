@@ -1,0 +1,31 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - appd
+
+- name: overwrite the SOLR schema with APPD version if it is needed
+  copy: src=schema.xml dest={{data_dir}}/solr/biocache/conf/schema.xml owner={{tomcat_user}}  group={{tomcat_user}}
+  tags:
+    - solr_config  
+    - solr    
+
+- name: overwrite facets.json
+  copy: src=facets.json dest={{data_dir}}/biocache/config/facets.json owner={{tomcat_user}}  group={{tomcat_user}}
+  tags:
+    - appd
+
+- name: copy biocache config properties template 
+  template: src={{item}} dest={{data_dir}}/biocache/config/{{item}} mode=0644
+  with_items:
+    - biocache-config.properties
+  tags:
+    - biocache-properties
+
+- name: remove default vhost from apache config
+  file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+  notify:
+    - reload apache
+
+- name: change vhost proxy settings in apache
+  template: src=vhost.conf dest=/etc/apache2/sites-available/{{biocache_hub_hostname}}.conf
+  notify:
+    - reload apache

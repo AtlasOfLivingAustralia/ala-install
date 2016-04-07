@@ -1,0 +1,7 @@
+- hosts: amrin-hub-standalone
+  roles:
+    - common
+    - java
+    - tomcat
+    - apache
+    - { role: biocache-hub, biocache_hub: amrin-hub, grouped_facets_json: grouped_facets_amrin.json }

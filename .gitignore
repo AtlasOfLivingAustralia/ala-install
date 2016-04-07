@@ -45,3 +45,5 @@ ansible/inventories/profiles
 ansible/machine_audit
 
 ansible/inventories/spatial-setup
+
+*.retry

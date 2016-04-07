@@ -1,0 +1,7 @@
+# assets
+version: "{{ doi_service_version | default('LATEST') }}"
+artifactId: "doi-service"
+classifier: ''
+groupId: "au.org.ala"
+packaging: "war"
+doi_service_war_url: "{{maven_repo_ws_url}}"

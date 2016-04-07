@@ -124,9 +124,9 @@
   action: command psql -d postgis_template -f {{ item }}
   sudo_user: postgres
   with_items:
-    - /usr/share/postgresql/9.3/contrib/postgis-2.1/postgis.sql
-    - /usr/share/postgresql/9.3/contrib/postgis-2.1/spatial_ref_sys.sql
-    - /usr/share/postgresql/9.3/contrib/postgis-2.1/postgis_comments.sql
+    - /usr/share/postgresql/9.3/contrib/postgis-2.2/postgis.sql
+    - /usr/share/postgresql/9.3/contrib/postgis-2.2/spatial_ref_sys.sql
+    - /usr/share/postgresql/9.3/contrib/postgis-2.2/postgis_comments.sql
   tags: postgresql
 
 #- name: ensure user does not have unnecessary privilege

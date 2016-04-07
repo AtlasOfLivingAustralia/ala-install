@@ -10,12 +10,15 @@ NOTE: many linux packages have an older version of Ansible (1.7 or even 1.5). Yo
 
 For APT:
 ```
-$ sudo apt-get install software-properties-common
-$ sudo apt-add-repository ppa:ansible/ansible
-$ sudo apt-get update
-$ sudo apt-get install ansible
+$ sudo apt-get install software-properties-common python-dev git python-pip
+$ sudo pip install -I ansible==1.8.4
 ```
 
+For OSX:
+```
+$ sudo easy_install pip
+$ sudo pip install -I ansible==1.8.4
+```
 
 If you see this error:
 ```
@@ -30,6 +33,14 @@ Below are some instructions for setting up the [ALA demo](http://ala-demo.gbif.o
 #### 1. Vagrant
 [Vagrant](http://www.vagrantup.com) can be used to test ansible playbooks on your local machine. To use this, you will need to install
 [VirtualBox](https://www.virtualbox.org) and [Vagrant](http://www.vagrantup.com). We recommend using vagrant version 1.7.x. Earlier versions of vagrant will not work with the ```VagrantFile``` in this repository.
+
+For Debian/Ubuntu:
+```
+$ sudo apt-get install virtualbox virtualbox-dkms virtualbox-qt
+$ cd ~/Downloads
+$ wget https://releases.hashicorp.com/vagrant/1.7.4/vagrant_1.7.4_x86_64.deb
+$ sudo dpkg -i vagrant_1.7.4_x86_64.deb
+```
 
 The ```vagrant/ubuntu-trusty``` directory contains configurations that can used with [VirtualBox](https://www.virtualbox.org/) to bring up a VH for deploying against.  
 
@@ -69,7 +80,7 @@ To run Ansible against your vagrant instance you need to locate the correct key 
 
 ```
 $ cd ansible
-$ ansible-playbook -i inventories/vagrant/demo-vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key -u vagrant -s
+$ ansible-playbook -i inventories/vagrant/demo-vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key --user vagrant --sudo
 ```
 
 Once completed successfully you can view the demo on http://demo.vagrant1.ala.org.au/ 
@@ -91,7 +102,7 @@ You'll need to replace "12.12.12.12" with the IP address of your newly created U
 
  * Run the following:
 ```
-ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem -u ubuntu -s -i ansible/inventories/demo-ec2 ansible/ala-demo.yml
+ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem --user ubuntu --sudo -i ansible/inventories/demo-ec2 ansible/ala-demo.yml
 ```
  * View http://ala-demo.org
  
@@ -105,7 +116,7 @@ ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem -u ubuntu -s -i ansible/i
 The ```inventories/vagrant/``` directory contains sample inventories for most playbooks that will work against a Ubuntu Vagrant virtual machine. To use these inventories, add an entry for ```vagrant1``` and ```vagrant1.ala.org.au``` to your hosts file, or edit the inventory file and replace the hostnames and URLs, then run
 
 ```
-ansible-playbook -i inventories/vagrant/<inventoryFile> <playbook>.yml --private-key ~/.vagrant.d/insecure_private_key -u vagrant -s
+ansible-playbook -i inventories/vagrant/<inventoryFile> <playbook>.yml --private-key ~/.vagrant.d/insecure_private_key --user vagrant --sudo
 ```
 
 The inventory files can easily be modified to work against other virtual machines or servers (e.g. Nectar or CSIRO) simply by modifying the server and host names appropriately.
@@ -118,23 +129,23 @@ In each case you will need to create an inventory file that points to your VM(s)
 
 For IM&T virtual machines:
 ```
-$ ansible-playbook -i inventories/demo ala-demo.yml -u <CSIRO_IDENT> --ask-pass --ask-sudo-pass -s
+$ ansible-playbook -i inventories/demo ala-demo.yml --user <CSIRO_IDENT> --sudo --ask-pass --ask-sudo-pass
 ```
 
 For Nectar VMs:
 ```
-$ ansible-playbook -i inventories/nectar-sandbox sandbox.yml --private-key <PATH_TO_YOUR_PEM_FILE> -u root
+$ ansible-playbook -i inventories/nectar-sandbox sandbox.yml --private-key <PATH_TO_YOUR_PEM_FILE> --user root
 ```
 Note Nectar VMs will require an edit of the /etc/hosts file on the VM so that it recognises its own host name.
 
 For Vagrant VMs:
 ```
-$ ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key  -u vagrant
+$ ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key --user vagrant
 ```
 
 For EC2 instances:
 ```
-$ ansible-playbook -i inventories/solr-amazon solr-standalone.yml --private-key ~/.ssh/dmartin-amazon.pem -u ubuntu -s
+$ ansible-playbook -i inventories/solr-amazon solr-standalone.yml --private-key ~/.ssh/dmartin-amazon.pem --user ubuntu --sudo
 ```
 
 ## Required inventory properties

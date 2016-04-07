@@ -1,0 +1,10 @@
+- hosts: doi-service
+  roles:
+    - common
+    - java
+    - postfix
+    - {role: db-backup, db: mongo}
+    - {role: mongodb, mongo_version: "3.0.0"}
+    - tomcat
+    - nginx
+    - doi-service

@@ -31,51 +31,42 @@
 ########## DEBIAN ########## 
 
 - name: install packages (Debian)
-  apt: pkg=wget  state=present
+  apt: name=wget  state=present
   when: ansible_os_family == "Debian" 
   tags:
     - packages 
     - cassandra 
 
 - name: install packages (Debian)
-  apt: pkg=software-properties-common  state=present
+  apt: name=software-properties-common  state=present
   when: ansible_os_family == "Debian" 
   tags:
     - packages 
     - cassandra 
 
 - name: install packages 2 (Debian)
-  apt: pkg=python-software-properties  state=present
+  apt: name=python-software-properties  state=present
   when: ansible_os_family == "Debian"
   tags:
     - packages 
     - cassandra 
 
-- name: apt-add-repository (Debian)
-  command: apt-add-repository 'deb http://debian.datastax.com/community stable main'
-  when: ansible_os_family == "Debian" 
-  tags:
-    - packages 
-    - cassandra 
-
-- name: get datastax repo key (Debian)
-  command: wget http://debian.datastax.com/debian/repo_key --output-document=/tmp/datastax.key
+- name: apt add repository (Debian)
+  apt_repository: repo='deb http://debian.datastax.com/community stable main' state=present
   when: ansible_os_family == "Debian"
   tags:
-    - packages 
-    - cassandra 
+    - packages
+    - cassandra
 
-- name: add datastax repo key  (Debian)
-  command: apt-key add /tmp/datastax.key
+- name: add datastax repo key (Debian)
+  apt_key: url=http://debian.datastax.com/debian/repo_key state=present
   when: ansible_os_family == "Debian"
   tags:
-    - packages 
-    - cassandra 
+    - packages
+    - cassandra
 
 - name: install Cassandra (Debian)
-  apt: pkg=cassandra=1.2.19 state=present update_cache=yes force=yes
-  with_items:
-    - $cassandra
+  apt: name=cassandra=1.2.19 state=present update_cache=yes force=yes
   tags:
     - packages 
     - cassandra 
@@ -84,7 +75,7 @@
   when: ansible_os_family == "Debian" 
 
 - name: increase stack size (Debian only)
-  shell: "sed -e s/Xss180k/Xss256k/g /etc/cassandra/cassandra-env.sh --in-place"
+  lineinfile: dest=/etc/cassandra/cassandra-env.sh regexp=Xss180k line=Xss256k
   when: ansible_os_family == "Debian"
   tags:
     - cassandra 

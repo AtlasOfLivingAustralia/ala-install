@@ -1,5 +1,5 @@
 # assets
-version: "1.1"
+version: "{{ pigeonhole_version | default('LATEST') }}"
 artifactId: "pigeonhole"
 groupId: "au.org.ala"
 pigeonhole_war_url: "{{maven_repo_ws_url}}"

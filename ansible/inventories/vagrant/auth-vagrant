@@ -42,6 +42,39 @@ lists_base_url=http://lists.ala.org.au
 biocache_base_url=http://biocache.ala.org.au
 alerts_base_url=http://alerts.ala.org.au
 
+pac4j_callback_url=https://vagrant1.ala.org.au/cas/login
+
+#facebook
+pac4j_facebook_consumer_key=to_be_added
+pac4j_facebook_consumer_secret=to_be_added
+
+# twitter
+pac4j_twitter_consumer_key=to_be_added
+pac4j_twitter_consumer_secret=to_be_added
+
+# github
+pac4j_github_consumer_key=to_be_added
+pac4j_github_consumer_secret=to_be_added
+
+# google
+pac4j_google_consumer_key=to_be_added
+pac4j_google_consumer_secret=to_be_added
+
+# linkedin
+pac4j_linkedin_consumer_key=to_be_added
+pac4j_linkedin_consumer_secret=to_be_added
+
+# windows live
+pac4j_windows_consumer_key=to_be_added
+pac4j_windows_consumer_secret=to_be_added
+
+# yahoo OAuth and OpenID
+pac4j_yahoo_consumer_key=to_be_added--
+pac4j_yahoo_consumer_secret=to_be_added
+
+# automatic registration ALA user password
+user_create_password=to_be_added
+
 #
 # SSL Configuration files
 #

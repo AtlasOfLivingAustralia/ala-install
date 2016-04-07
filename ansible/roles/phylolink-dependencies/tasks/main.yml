@@ -19,7 +19,7 @@
 #  apt: pkg=python-pip state=present
 
 - name: download pip
-  get_url: url=https://raw.github.com/pypa/pip/master/contrib/get-pip.py dest=~
+  get_url: url=https://bootstrap.pypa.io/get-pip.py dest=~
 
 - name: install pip
   command: "python get-pip.py"

@@ -17,3 +17,4 @@ auth_cas_url=https://auth.ala.org.au/cas
 collectory_url=http://collections.ala.org.au
 imagesService_baseURL=http://images2-dev.ala.org.au
 biocacheService_baseUrl=http://biocache.ala.org.au
+spatial_base_url=http://spatial.ala.org.au

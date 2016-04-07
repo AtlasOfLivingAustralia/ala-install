@@ -1,6 +1,10 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - profile-hub
+    - deploy
+    - properties
+    - apache_vhost
+    - tomcat_vhost
 
 #
 # Properties file configuration
@@ -65,8 +69,9 @@
 #
 # WAR file deployment and virtual host configuration
 #
-
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ profile_hub_context_path }}' hostname='{{ profile_hub_hostname }}'
+- include: ../../apache_vhost/tasks/main.yml 
+    context_path='{{ profile_hub_context_path }}' 
+    hostname='{{ profile_hub_hostname }}'
   tags:
     - profile-hub
     - deploy

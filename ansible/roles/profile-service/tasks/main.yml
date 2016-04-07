@@ -1,6 +1,10 @@
 - include: ../../common/tasks/setfacts.yml
   tags: 
     - profile-service
+    - deploy
+    - properties
+    - apache_vhost
+    - tomcat_vhost
 
 #
 # Properties file configuration
@@ -12,7 +16,10 @@
     - properties
 
 - name: ensure snapshot directory exists
-  file: path={{data_dir}}/profile-service/snapshots state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{data_dir}}/profile-service/{{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - snapshots
+    - attachments
   tags:
     - profile-service
     - properties
@@ -41,8 +48,9 @@
 #
 # WAR file deployment and virtual host configuration
 #
-
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ profile_service_context_path }}' hostname='{{ profile_service_hostname }}'
+- include: ../../apache_vhost/tasks/main.yml 
+    context_path='{{ profile_service_context_path }}' 
+    hostname='{{ profile_service_hostname }}'
   tags:
     - profile-service
     - deploy

@@ -336,7 +336,7 @@
              have some sort of hard autoCommit to limit the log size.
           -->
         <autoCommit>
-            <maxTime>15000</maxTime>
+            <maxTime>600000</maxTime>
             <openSearcher>false</openSearcher>
         </autoCommit>
 
@@ -345,11 +345,9 @@
              but does not ensure that data is synced to disk.  This is
              faster and more near-realtime friendly than a hard commit.
           -->
-        <!--
           <autoSoftCommit>
-            <maxTime>1000</maxTime>
+            <maxTime>10000</maxTime>
           </autoSoftCommit>
-         -->
 
         <!-- Update Related Event Listeners
 

@@ -3,7 +3,6 @@ vagrant1
 
 [alerts-service:vars]
 is_vagrant=true
-local_repo_dir=~/.ala
 data_dir=/data
 
 alerts_hostname=alerts.vagrant1.ala.org.au
