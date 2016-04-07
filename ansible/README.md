@@ -85,9 +85,24 @@ The existing WAR file and log file will be backed up before the new WAR is deplo
 
 ### HTTPS Configuration
 
-Use the following parameters if you need to enable HTTPS (TLS, aka SSL in years gone by) in your Apache virtual host.
+HTTPS can be enabled for your playbook by specifying
+
+```
+ssl = true
+```
+
+in your inventory. 
+
+There are two options for installing HTTPS key/cert/etc files on your server:
+1. Copy local files to the server; or
+1. Manage them on the server with a tool like SSL Mate.
+
+ALA uses option 2.
+
+Use the following parameters if you need to copy local files to your server:
 
 1. ```ssl = true``` - this enables HTTPS
+1. ```copy_https_certs_from_local = true``` - this enables the copy option
 1. ```ssl_certificate_server_dir = /path/to/cert/dir/on/server``` - this is the location on the server for your certificate and key files
 1. ```ssl_certificate_local_dir = /LOCAL/path/to/ssl/files``` - this is the LOCAL file path to the HTTPS configuration files (key, cert, chain) that need to be deployed to the server
 1. ```ssl_cert_file = filename``` - this is the name of the HTTPS certificate file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateFile``` directive (to ssl\_certificate\_server\_dir/ssl\_cert\_file).
