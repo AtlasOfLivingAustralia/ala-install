@@ -10,7 +10,7 @@
 # Description:       Disable Linux transparent huge pages, to improve
 #                    database performance.
 ### END INIT INFO
-
+ 
 case $1 in
   start)
     if [ -d /sys/kernel/mm/transparent_hugepage ]; then
