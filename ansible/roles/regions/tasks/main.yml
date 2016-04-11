@@ -23,19 +23,19 @@
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
-    - "{{data_dir}}/regions/config"
+    - "{{data_dir}}/{{regions}}/config"
   tags:
     - properties
     - regions
 
 - name: copy all config.properties
-  template: src=regions-config.properties dest={{data_dir}}/regions/config/regions-config.properties
+  template: src=regions-config.properties dest={{data_dir}}/{{regions}}/config/{{regions_config}} force=yes
   tags:
     - properties
     - regions
 
 - name: copy configuration files
-  copy: src={{item}} dest={{data_dir}}/regions/config
+  copy: src={{item}} dest={{data_dir}}/{{regions}}/config
   with_items:
     - menu-config.json
     - state-emblems.json
@@ -44,8 +44,15 @@
     - properties
     - regions
 
+- name: copy menu-config.json
+  template: src={{menu_config_json}} dest={{data_dir}}/{{regions}}/config/menu-config.json force=yes
+  when: menu_config_json is defined
+  tags:
+    - properties
+    - regions
+
 - name: set data ownership
-  file: path={{data_dir}}/regions owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  file: path={{data_dir}}/{{regions}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify:
     - restart tomcat
   tags:

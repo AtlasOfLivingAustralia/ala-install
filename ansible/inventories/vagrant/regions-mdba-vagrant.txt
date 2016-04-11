@@ -6,18 +6,16 @@ is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
-regions_hostname=ger.vagrant1.ala.org.au
+regions_hostname=regions-mdba.vagrant1.ala.org.au
 regions_context_path=
-regions_base_url=http://ger.vagrant1.ala.org.au
-regions_base_url=http://ger.vagrant1.ala.org.au
-layout_skin=ger
-regions_accordion_panel_maxheight=405px
-regions_map_height=750
-regions_map_bounds=[-13,145,-39,155]
+regions_base_url=http://regions-mdba.vagrant1.ala.org.au
+regions_base_url=http://regions-mdba.vagrant1.ala.org.au
+layout_skin=mdba
+skin_home_url=http://mdba.ala.org.au
 skin_fluid_layout=false
-skin_breadcrumb="skin.breadcrumb.level1.title=Home\nskin.breadcrumb.level1.path=\nskin.breadcrumb.level2.title=Locations\nskin.breadcrumb.level2.path=/species-by-location/"
-default_region_type=Other regions
-default_region=Great Eastern Ranges Initiative
+skin_breadcrumb="skin.breadcrumb.level1.title=Home\nskin.breadcrumb.level1.path="
+default_region_type=Major drainage divisions
+default_region=DARLING RIVER
 
 ala_base_url=http://ala.org.au
 bie_base_url=http://bie.ala.org.au
