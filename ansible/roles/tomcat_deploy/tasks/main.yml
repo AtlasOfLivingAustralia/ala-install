@@ -1,7 +1,7 @@
 - set_fact: vhost={{context_path == "" or context_path == "/"}}
   # note: a context path of / causes problems with CAS authentication, so don't use it with apps that require auth
 
-- set_fact: war_filename="ROOT" tomcat_deploy_dir="{{ tomcat_dir }}/webapps-{{ hostname }}" log_filename={{ log_filename | default(context_path.replace('/', '')) }}
+- set_fact: war_filename="ROOT" tomcat_deploy_dir="{{ tomcat_dir }}/webapps-{{ hostname }}" log_filename={{ log_filename | default(artifactId) }}
   when: vhost=="true" or vhost==true or vhost=="True"
 
 - set_fact: war_filename="{{ context_path.replace('/', '') }}" tomcat_deploy_dir="{{ tomcat_dir }}/webapps" log_filename={{ log_filename | default(context_path.replace('/', '')) }}
