@@ -38,6 +38,7 @@ nsl_base_url=https://biodiversity.org.au/test-nsl
 
 image_upload_apikey = 
 profile_service_apikey = 
+uploaded_images_base_url=http://images2-dev.ala.org.au
 
 biodiv_library_api_key=
 
