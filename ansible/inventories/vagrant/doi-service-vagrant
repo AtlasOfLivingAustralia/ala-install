@@ -1,0 +1,26 @@
+[doi-service]
+doi.vagrant1.ala.org.au
+
+[doi-service:vars]
+is_vagrant=false
+local_repo_dir=~/.ala
+data_dir=/data
+
+deployment_env=vagrant
+
+doi_service_hostname=doi.vagrant1.ala.org.au
+doi_service_context_path=
+doi_service_base_url=http://doi.vagrant1.ala.org.au
+doi_service_url=http://doi.vagrant1.ala.org.au
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas
+
+# ANDS test account details
+ands_doi_mint_url=https://services.ands.org.au/doi/1.1/
+ands_doi_app_id=
+ands_doi_key=
+ands_doi_client_id=
+
+doi_service_https_certificate_path=
+doi_service_https_certificate_key_path=

@@ -1,11 +1,13 @@
 - set_fact: vhost={{context_path == "" or context_path == "/"}}
   # note: a context path of / causes problems with CAS authentication, so don't use it with apps that require auth
 
-- set_fact: war_filename="ROOT" tomcat_deploy_dir="{{ tomcat_dir }}/webapps-{{ hostname }}"
+- set_fact: war_filename="ROOT" tomcat_deploy_dir="{{ tomcat_dir }}/webapps-{{ hostname }}" log_filename={{ log_filename | default(artifactId) }}
   when: vhost=="true" or vhost==true or vhost=="True"
 
-- set_fact: war_filename="{{ context_path.replace('/', '') }}" tomcat_deploy_dir="{{ tomcat_dir }}/webapps"
+- set_fact: war_filename="{{ context_path.replace('/', '') }}" tomcat_deploy_dir="{{ tomcat_dir }}/webapps" log_filename={{ log_filename | default(context_path.replace('/', '')) }}
   when: vhost=="false" or vhost==false or vhost=="False" or vhost is not defined
+
+- debug: msg="war_filename is {{ war_filename }}; tomcat_deploy_dir is {{ tomcat_deploy_dir }}; log_filename is {{ log_filename }}"
 
 - name: create tomcat vhost
   tomcat_vhost: name={{ hostname }} #remote_ip_valve="true"
@@ -24,13 +26,21 @@
   register: war_exist
 
 - name: back up existing war file
-  shell: "sudo cp {{ tomcat_deploy_dir }}/{{ war_filename }}.war {{ backup_dir | default('/data') }}/{{ war_filename }}_`date '+%Y%m%d%H%M%S'`.war"
+  copy: src={{ tomcat_deploy_dir }}/{{ war_filename }}.war dest="{{ backup_dir | default('/data') }}/{{ war_filename }}_{{ansible_date_time.iso8601}}.war" remote_src=True
   when: war_exist.stat.exists == True
 
+- name: check if a log file exists
+  stat: path="{{ tomcat_log_dir }}/{{ log_filename }}.log"
+  register: log_exist
+
+- name: back up tomcat log file
+  copy: src={{ tomcat_log_dir }}/{{ log_filename }}.log dest="{{ tomcat_log_dir }}/{{ log_filename }}.log.{{ ansible_date_time.iso8601 }}" remote_src=True
+  when: log_exist.stat.exists == True
+  
 - name: remove existing webapp (to ensure a clean redeployment)
   file: path="{{ tomcat_deploy_dir }}/{{ war_filename }}" state=absent
 
 - name: download from maven repo
-  get_url: url={{ war_url }} dest="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" force=true
+  get_url: url={{ war_url }} dest="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" force=true timeout=60
   notify:
     - restart tomcat

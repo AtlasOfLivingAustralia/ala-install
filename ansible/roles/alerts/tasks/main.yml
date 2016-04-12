@@ -3,19 +3,19 @@
     - alerts
 
 - name: create alerts DB
-  mysql_db: name=alerts state=present
+  mysql_db: name={{ alerts_db_name }} state=present
   tags:
     - db
     - alerts
 
 - name: create alerts DB user
-  mysql_user: name=alerts password=password priv=*.*:ALL state=present
+  mysql_user: name={{ alerts_db_username }} password={{ alerts_db_password}} priv=*.*:ALL state=present
   tags:
     - db
     - alerts
 
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{item}} state=directory owner={{ tomcat_user }} group={{ tomcat_user }}
   with_items:
     - "{{data_dir}}/alerts/config"
   tags:

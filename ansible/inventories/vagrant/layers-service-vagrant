@@ -9,7 +9,6 @@ vagrant1
 
 [geoserver:vars]
 is_vagrant=true
-local_repo_dir=~/.ala
 data_dir=/data
 
 geoserver_hostname=vagrant1.ala.org.au
@@ -28,7 +27,6 @@ postgis_password=postgres
 
 [layers-service:vars]
 is_vagrant=true
-local_repo_dir=~/.ala
 data_dir=/data
 
 layers_service_hostname=vagrant1.ala.org.au
@@ -45,7 +43,6 @@ auth_cas_url=https://auth.ala.org.au/cas
 
 [spatial-analysis:vars]
 is_vagrant=true
-local_repo_dir=~/.ala
 data_dir=/data
 
 spatial_analysis_hostname=vagrant1.ala.org.au

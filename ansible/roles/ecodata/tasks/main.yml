@@ -1,7 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - ecodata
-
+    - deploy
 #
 # External configuration properties file
 #
@@ -26,12 +26,7 @@
   tags:
     - properties
     - ecodata
-    
-- name: Copy elastic search mapping config file to config directory
-  copy: src=mapping.json dest={{data_dir}}/ecodata/config/mapping.json
-  tags:
-    - ecodata
-    - properties
+
 
 #
 # WAR file deployment and virtual host configuration
@@ -53,4 +48,3 @@
 #
 - name: install cron job for indexing elastic search
   cron: minute=21 hour=22 name="Elastic search indexing" job="wget -O - {{ ecodata_url }}{{ ecodata_context_path }}/admin/reIndexAll >/dev/null 2>&1" user=root state=present
-

@@ -7,8 +7,9 @@ artifactId: "{{ collectory_app | default('generic-collectory') }}"
 groupId: "{{ collectory_group_id | default('au.org.ala') }}"
 # collectory does not need a value for classifier
 classifier: ''
+
 packaging: "war"
 
-collectory_war_url: "{{ maven_repo_ws_url }}"
+collectory_war_url: "{{ collectory_maven_repo_ws_url | default(maven_repo_ws_url) }}"
 
 collectory_data_dir: "{{ data_dir }}/{{ collectory_app | default('generic-collectory') }}"

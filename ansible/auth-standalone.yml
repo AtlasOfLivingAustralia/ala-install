@@ -6,5 +6,6 @@
     - tomcat
     - mysql
     - apache
-    - cas
+    - cas2
     - userdetails
+    - apikey

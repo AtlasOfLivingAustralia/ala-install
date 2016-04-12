@@ -16,10 +16,8 @@
 ala-demo
 
 [ala-demo:vars]
-local_repo_dir = ~/.ala
-
-# Mounted storage is usually /mnt on EC2.
-data_dir=/mnt
+# Mounted storage is usually /mnt on EC2. Create a symlink to /mnt -> /data
+data_dir=/data
 
 demo_hostname = ala-demo.org
 
@@ -55,6 +53,8 @@ explore_your_area_location=Edinburgh
 map_default_latitude = 54.00366
 map_default_longitude = -2.547855
 map_default_zoom = 5
+
+skin_layout = generic
 
 ####################### Collectory ############################################
 
