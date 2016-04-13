@@ -1,0 +1,32 @@
+- name: copy SOLR config
+  copy: src={{ item }} dest=/data/solr_config
+  with_items:
+    - "biocache"
+    - "bie"    
+    - "solr.xml"  
+  tags:
+    - solrcloud_config
+
+- name: unjar biocache
+  shell: "chmod 777 /opt/solr/server/scripts/cloud-scripts/zkcli.sh"
+  tags:
+    - biocache-cli 
+
+- name: Upload biocache schema(s) to zookeeper
+  shell: "/opt/solr/server/scripts/cloud-scripts/zkcli.sh -cmd upconfig -zkhost {{ solr_zk_host }} -confname biocache -solrhome /data/solr -confdir /data/solr_config/biocache/conf"
+  tags:
+    - solrcloud_config
+
+- name: Delete biocache collection if it exists
+  get_url: url="http://127.0.0.1:{{ solr_port }}/solr/admin/collections?action=DELETE&name=biocache" dest=/tmp/delete-collection.txt force=yes
+  tags:
+    - solrcloud_config
+  tags:
+    - solrcloud_create_collection    
+  ignore_errors: True
+
+- name: Create biocache collection
+  get_url: url="http://127.0.0.1:{{ solr_port }}/solr/admin/collections?action=CREATE&property.name=biocache&name=biocache&numShards=4&replicationFactor=1&collection.configName=biocache" dest=/tmp/create-collection.txt force=yes
+  tags:
+    - solrcloud_config
+    - solrcloud_create_collection

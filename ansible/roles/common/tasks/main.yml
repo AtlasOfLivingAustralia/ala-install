@@ -22,7 +22,7 @@
   when: data_dir_stat.stat.isdir is defined and data_dir_stat.stat.exists == True
   tags: common
 
-- debug: msg="data directory {{ data_dir }} is NOT defined (path does not exist) is_vagrant = {{ is_vagrant }}"
+- debug: msg="data directory {{ data_dir }} is NOT defined (path does not exist)"
   when: data_dir_stat.stat.isdir is not defined 
   tags: common
 

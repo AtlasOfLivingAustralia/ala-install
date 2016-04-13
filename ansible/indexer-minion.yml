@@ -1,0 +1,5 @@
+- hosts: indexer-minion
+  roles:
+    - java
+    - common
+    - indexer-minion
