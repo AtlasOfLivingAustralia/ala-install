@@ -4,21 +4,29 @@ This project includes a playbook for setting up the [ALA demo ](http://ala-demo.
 
 ## Ansible version
 
-The playbooks and roles in this repository require <strong>Ansible 1.8.x</strong>. There have been reported problems with Ansible 1.9+ which we are [working on](https://github.com/AtlasOfLivingAustralia/ala-install/issues/56).
+### The current supported version is: **2.0.1.0**
+
+The playbooks and roles in this repository have been developed and tested against the above version.
 
 NOTE: many linux packages have an older version of Ansible (1.7 or even 1.5). You will need to update your packages and upgrade ansible first.
 
 For APT:
+
 ```
 $ sudo apt-get install software-properties-common python-dev git python-pip
-$ sudo pip install -I ansible==1.8.4
+$ sudo pip install -I ansible==[version]
 ```
 
+where ```[version]``` is the supported version listed above.
+
 For OSX:
+
 ```
 $ sudo easy_install pip
-$ sudo pip install -I ansible==1.8.4
+$ sudo pip install -I ansible==[version]
 ```
+
+where ```[version]``` is the supported version listed above.
 
 If you see this error:
 ```
