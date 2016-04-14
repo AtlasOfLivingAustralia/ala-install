@@ -4,6 +4,8 @@
 - name: check the ansible version
   pause: prompt="You are not using the supported version of Ansible. The supported version is {{ supported_ansible_version.full }}. You are using {{ ansible_version.full }}. Proceed at your own risk. Press enter to continue"
   when: supported_ansible_version.major != ansible_version.major or supported_ansible_version.minor != ansible_version.minor or supported_ansible_version.revision != ansible_version.revision
+  tags:
+    - version_check
 
 - name: set debian variables
   set_fact:
