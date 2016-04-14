@@ -1,5 +1,5 @@
 [doi-service]
-doi.vagrant1.ala.org.au
+vagrant1
 
 [doi-service:vars]
 is_vagrant=false
