@@ -38,6 +38,7 @@ nsl_base_url=https://biodiversity.org.au/test-nsl
 
 image_upload_apikey = 
 profile_service_apikey = 
+uploaded_images_base_url=http://images2-dev.ala.org.au
 
 biodiv_library_api_key=
 
@@ -68,10 +69,10 @@ elasticsearch_cluster_name=profiles_es_{{ deployment_env }}
 #
 # SSL Configuration files
 #
-ssl=true
-copy_https_certs_from_local=true
-ssl_certificate_server_dir=/etc/apache2
-ssl_certificate_local_dir=../../catacomb
-ssl_cert_file=ala.org.au.crt
-ssl_key_file=ala.org.au.key
-ssl_chain_file=ala.org.au.chain.crt
+#ssl=true
+#copy_https_certs_from_local=true
+#ssl_certificate_server_dir=/etc/apache2
+#ssl_certificate_local_dir=../../catacomb
+#ssl_cert_file=ala.org.au.crt
+#ssl_key_file=ala.org.au.key
+#ssl_chain_file=ala.org.au.chain.crt

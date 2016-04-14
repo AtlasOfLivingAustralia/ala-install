@@ -44,6 +44,7 @@
   tags:
     - profile-service
     - properties
+    - google-analytics
 
 #
 # WAR file deployment and virtual host configuration
