@@ -1,1 +1,10 @@
-ipt_war_url: "http://repository.gbif.org/service/local/artifact/maven/redirect?r=releases&g=org.gbif&a=ipt&v=LATEST&e=war"
+use_gbif_nexus: "true"
+maven_release_dir: "releases"
+
+version: "{{ ipt_version | default('LATEST') }}"
+artifactId: "ipt"
+classifier: ''
+groupId: "org.gbif"
+packaging: "war"
+ipt_war_url: "{{maven_repo_ws_url}}"
+
