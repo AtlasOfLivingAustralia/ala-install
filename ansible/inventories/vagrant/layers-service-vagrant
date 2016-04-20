@@ -7,6 +7,9 @@ vagrant1
 [spatial-analysis]
 vagrant1
 
+[layers-db]
+vagrant1
+
 [geoserver:vars]
 is_vagrant=true
 data_dir=/data

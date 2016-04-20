@@ -20,3 +20,5 @@ auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
 ecodata_base_url=http://ecodata.vagrant1.ala.org.au
+pigeonhole_base_url=http://pigeonhole.vagrant1.ala.org.au
+mail_server_host=localhost
