@@ -11,5 +11,10 @@ images_base_url = http://images.vagrant1.ala.org.au
 images_context_path = 
 images_hostname = images.vagrant1.ala.org.au
 
+images_db_password = images
+images_db_username = images
+
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
+
+collectory_url=http://collections.ala.org.au

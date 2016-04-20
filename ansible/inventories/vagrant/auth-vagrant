@@ -26,6 +26,16 @@ user_store_db_hostname=localhost
 user_store_db_username=userstore
 user_store_db_password=userstore
 
+apikey_hostname=auth.vagrant1.ala.org.au
+apikey_context_path=/apikey
+apikey_base_url=http://auth.vagrant1.ala.org.au
+apikey_url=http://auth.vagrant1.ala.org.au/apikey
+
+apikey_db_name=apikey
+apikey_db_username=apikey
+apikey_db_password=apikey
+apikey_db_hostname=localhost
+
 oauth_providers_flickr_key=somekey
 oauth_providers_flickr_secret=somesecret
 
@@ -78,8 +88,17 @@ user_create_password=to_be_added
 #
 # SSL Configuration files
 #
+ssl=false
 ssl_certificate_server_dir=/path/to/ssl/files/on/target/server
 ssl_certificate_local_dir=/path/to/local/ssl/files/to/be/copied/to/server
 ssl_cert_file=
 ssl_key_file=
 ssl_chain_file=
+
+m_ala_org_au=
+
+oauth_providers_flickr_callback=
+oauth_providers_flickr_secret=
+oauth_providers_flickr_callback=
+
+api_key=

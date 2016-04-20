@@ -1,5 +1,5 @@
 [regions]
-10.1.1.2
+vagrant1
 
 [regions:vars]
 is_vagrant=true
