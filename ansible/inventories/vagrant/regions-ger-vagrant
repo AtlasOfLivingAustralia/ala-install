@@ -1,7 +1,7 @@
-[regions]
+[regions-ger]
 vagrant1
 
-[regions:vars]
+[regions-ger:vars]
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
@@ -33,3 +33,5 @@ biocache_records_url=http://biocache.vagrant1.ala.org.au/
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
+
+regions=regions-ger

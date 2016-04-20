@@ -25,3 +25,5 @@ biocache_records_url=http://biocache.vagrant1.ala.org.au/
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
+
+regions=regions
