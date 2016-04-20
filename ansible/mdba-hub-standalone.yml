@@ -8,6 +8,6 @@
     role: biocache-hub,
     biocache_hub: mdba-hub,
     grouped_facets_json: grouped_facets_mdba.json,
-    biocache_hub_authenticate_only_if_logged_in_filter_pattern: '/occurrences/(?!.+userAssertions|facet.+).+,/explore/your-area,/query,/proxy/download/.*,/,/resource.*'
+    biocache_hub_authenticate_only_if_logged_in_filter_pattern: '/occurrences/(?!.+userAssertions|facet.+).+,/explore/your-area,/query,/proxy/download/.*,/,/resource.*,/contact.*,/about.*,/access.*,/disclaim.*'
     }
  # - { role: biocache-hub, biocache_hub: avh-hub, proxy_root_context_to: avh-hub }
