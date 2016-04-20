@@ -30,7 +30,7 @@
     - "{{data_dir}}/solr-create"
     - "{{data_dir}}/solr"
     - "{{data_dir}}/tmp/indexing"
-    - "{{data_dir}}/logs/indexing"
+    - "{{data_dir}}/logs"
   tags:
     - indexer-minion 
 

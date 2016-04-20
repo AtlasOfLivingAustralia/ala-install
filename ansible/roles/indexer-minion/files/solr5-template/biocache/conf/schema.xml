@@ -472,7 +472,7 @@
 
 
     <fieldType name="quad"      class="solr.SpatialTermQueryPrefixTreeFieldType" distanceUnits="degrees" />
-    <!-- <fieldType name="geohash"   class="solr.SpatialRecursivePrefixTreeFieldType" spatialContextFactory="com.spatial4j.core.context.jts.JtsSpatialContextFactory" distanceUnits="degrees" /> -->
+    <fieldType name="geohash"   class="solr.SpatialRecursivePrefixTreeFieldType" spatialContextFactory="com.spatial4j.core.context.jts.JtsSpatialContextFactory" distanceUnits="degrees" />
 
  </types>
 
@@ -729,7 +729,7 @@
 
 <!-- SOLR 4.0 Spatial Fields -->   
    <field name="quad"     type="quad"     indexed="true" stored="true"  multiValued="false" />
-   <!-- <field name="geohash"  type="geohash"  indexed="true" stored="true"  multiValued="false" /> -->
+   <field name="geohash"  type="geohash"  indexed="true" stored="true"  multiValued="false" />
 
    <!-- Some ALA dynamic fields -->
    <dynamicField name="*_s" type="string" indexed="true" stored="false" omitNorms="true" />
@@ -776,7 +776,7 @@
         or to add multiple fields to the same field for easier/faster searching.  -->
 	<!-- SOLR 4.0 spatial support -->
    <copyField source="lat_long" dest="quad"/>
-   <!-- <copyField source="lat_long" dest="geohash"/> -->
+   <copyField source="lat_long" dest="geohash"/>
    <!-- BIE additions -->
    <copyField source="data_provider" dest="text"/>
    <copyField source="data_resource" dest="text"/>
