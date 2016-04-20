@@ -31,3 +31,7 @@ nameindex_to_use=ala
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
+
+ssl=false
+phylolink_https_certificate_path=/etc/bla
+phylolink_https_certificate_key_path=/etc/bla
