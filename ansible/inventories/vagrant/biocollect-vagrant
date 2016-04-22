@@ -37,3 +37,5 @@ biocollect_support_email=biocollect-support@ala.org.au
 bugherd_integration=true
 
 api_key=INSERT_API_KEY_HERE
+
+mdba_base_url=http://mdba-test.ala.org.au
