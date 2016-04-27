@@ -1,0 +1,19 @@
+
+nginx_sites:
+  1:
+    - listen 80
+    - listen [::]:80
+    - server_name {{ hostname }}
+    - "{{ redirect }}"
+    - client_max_body_size 500m
+    - location /{{ context_path.replace('/', '') }} { proxy_set_header X-Real-IP $remote_addr; proxy_set_header Host $host; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_pass http://127.0.0.1:8080/{{ context_path.replace('/', '') }}; }
+
+nginx_https_sites:
+  1:
+    - listen 443 spdy
+    - listen [::]:443 spdy
+    - server_name {{ hostname }}
+    - ssl_certificate {{ssl_certificate_server_dir}}/{{ ssl_cert_file }}
+    - ssl_certificate_key {{ssl_certificate_server_dir}}/{{ ssl_key_file }}
+    - client_max_body_size 500m
+    - location /{{ context_path.replace('/', '') }} { proxy_set_header X-Real-IP $remote_addr; proxy_set_header Host $host; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_pass http://127.0.0.1:8080/{{ context_path.replace('/', '') }}; }
