@@ -32,6 +32,12 @@ nameindex_to_use=ala
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
+#
+# SSL Configuration files
+#
 ssl=false
-phylolink_https_certificate_path=/etc/bla
-phylolink_https_certificate_key_path=/etc/bla
+copy_https_certs_from_local=true
+ssl_certificate_server_dir=/etc/nginx
+ssl_certificate_local_dir=../../catacomb
+ssl_cert_file=*.ala.org.au.crt
+ssl_key_file=ala.org.au.key
