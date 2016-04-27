@@ -22,5 +22,13 @@ ands_doi_app_id=
 ands_doi_key=
 ands_doi_client_id=
 
-doi_service_https_certificate_path=
-doi_service_https_certificate_key_path=
+#
+# SSL Configuration files
+#
+ssl=true
+copy_https_certs_from_local=true
+ssl_certificate_server_dir=/etc/nginx
+ssl_certificate_local_dir=../../catacomb
+ssl_cert_file=*.ala.org.au.crt
+ssl_key_file=ala.org.au.key
+ssl_chain_file=*.ala.org.au.chain.crt
