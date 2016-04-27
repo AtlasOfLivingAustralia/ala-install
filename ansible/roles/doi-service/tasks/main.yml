@@ -41,27 +41,12 @@
     - doi-service
 
 - name: add nginx vhost config
-  include: ../../nginx/tasks/main.yml
-  vars:
-    nginx_sites:
-      doi_service:
-        - listen 80
-        - listen [::]:80
-        - server_name {{ doi_service_hostname }}
-        - client_max_body_size 500m
-        - location / { proxy_set_header X-Real-IP $remote_addr; proxy_set_header Host $host; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_pass http://127.0.0.1:8080; }
-    nginx_https_sites:
-      doi_service:
-        - listen 443 spdy
-        - listen [::]:443 spdy
-        - server_name {{ doi_service_hostname }}
-        - ssl_certificate {{ doi_service_https_certificate_path }}
-        - ssl_certificate_key {{ doi_service_https_certificate_key_path }}
-        - client_max_body_size 500m
-        - location / { proxy_set_header X-Real-IP $remote_addr; proxy_set_header Host $host; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_pass http://127.0.0.1:8080; }
+  include: ../../nginx_vhost/tasks/main.yml
+    context_path='{{ doi_service_context_path }}' 
+    hostname='{{ doi_service_hostname }}'
   notify:
     - reload nginx
   tags:
     - doi-service
-    - nginx_vhost
+    - nginx_vhost 
     - deploy
