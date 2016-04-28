@@ -13,6 +13,30 @@
             {
                 "sort":"count",
                 "field":"cl2113"
+            },
+            {
+                "sort":"count",
+                "field":"cl10835"
+            },
+            {
+                "sort":"count",
+                "field":"cl10832"
+            },
+            {
+                "sort":"count",
+                "field":"cl10833"
+            },
+            {
+                "sort":"count",
+                "field":"cl10834"
+            },
+            {
+                "sort":"count",
+                "field":"cl10829"
+            },
+            {
+                "sort":"count",
+                "field":"cl10831"
             }
         ]
     },
