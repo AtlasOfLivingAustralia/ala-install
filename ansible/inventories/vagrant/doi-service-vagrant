@@ -2,7 +2,7 @@
 vagrant1
 
 [doi-service:vars]
-is_vagrant=false
+is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
@@ -25,10 +25,4 @@ ands_doi_client_id=
 #
 # SSL Configuration files
 #
-ssl=true
-copy_https_certs_from_local=true
-ssl_certificate_server_dir=/etc/nginx
-ssl_certificate_local_dir=../../catacomb
-ssl_cert_file=*.ala.org.au.crt
-ssl_key_file=ala.org.au.key
-ssl_chain_file=*.ala.org.au.chain.crt
+ssl=false
