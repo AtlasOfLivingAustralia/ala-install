@@ -18,8 +18,9 @@
 - name: set redirect variable, if required
   set_fact: redirect="{{ 'return 301 https://$server_name$request_uri' if ( ssl and force_https|default(true) ) else '' }}"
 
-- name: print redirect
-  debug: msg={{ redirect }}
+- name: make sure required parameters are defined
+  fail: msg="One or more mandatory parameters are not defined - ssl_certificate_server_dir, ssl_cert_file, ssl_key_file"
+  when: ssl and (ssl_key_file is undefined or ssl_cert_file is undefined or ssl_certificate_server_dir is undefined)
 
 - name: set ssl_cert_filepath variable, if required
   set_fact: ssl_cert_filepath={{ssl_certificate_server_dir}}/{{ ssl_cert_file }}
@@ -33,14 +34,17 @@
   set_fact: ssl_chain_filepath={{ssl_certificate_server_dir}}/{{ ssl_chain_file }}
   when: ssl_chain_file is defined and ssl_certificate_server_dir is defined
 
-- name: copy HTTPS certificate files from local
-  copy: src={{item}} dest={{ssl_certificate_server_dir}}
-  with_items:
-    - "{{ssl_certificate_local_dir}}/{{ssl_cert_file}}"
-    - "{{ssl_certificate_local_dir}}/{{ssl_key_file}}"
-    - "{{ssl_certificate_local_dir}}/{{ssl_chain_file}}"
-  when: ssl and copy_https_certs_from_local and ssl_certificate_server_dir is defined
+- name: check whether copying HTTPS certificates from local is required
+  set_fact: copy_https_certs_from_local={{ copy_https_certs_from_local | default(false) }}
 
+- name: copy HTTPS certificate files from local
+  copy: src={{item}} dest={{ssl_certificate_server_dir | default('~') }}
+  with_items:
+    - "{{ssl_certificate_local_dir | default('') }}/{{ssl_cert_file | default('') }}"
+    - "{{ssl_certificate_local_dir | default('') }}/{{ssl_key_file | default('') }}"
+    - "{{ssl_certificate_local_dir | default('') }}/{{ssl_chain_file | default('') }}"
+  when: ssl and copy_https_certs_from_local
+  
 - name: is it picking up from vars
   debug: msg="Nginx vhost vars {{ nginx_sites.keys() }} "
 

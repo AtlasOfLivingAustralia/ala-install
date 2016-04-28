@@ -12,11 +12,15 @@ server {
 {% for s in additional_proxy_pass %}
   location /{{ s.src.replace("/", '') }} { 
     proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header Host $host; 
-    proxy_set_header X-Forwarded-For 
-    $proxy_add_x_forwarded_for; 
-    {{ s.dest }}; 
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 
+{% if s.proxy_pass|default(true) %}
+    proxy_pass {{ s.dest }};
+{% else %}
+    root {{ s.dest }};
+{% endif %}
   }
+
 {% endfor %}   
 {% endif %}
 
