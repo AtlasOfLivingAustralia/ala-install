@@ -8,6 +8,18 @@ server {
 {% endif %}{% endif %}{% endif %}
 {% endfor %}
 
+{% if additional_proxy_pass|default("") != "" %}
+{% for s in additional_proxy_pass %}
+  location /{{ s.src.replace("/", '') }} { 
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header Host $host; 
+    proxy_set_header X-Forwarded-For 
+    $proxy_add_x_forwarded_for; 
+    {{ s.dest }}; 
+  }
+{% endfor %}   
+{% endif %}
+
   # ssl config (partly from nginx role vars/main, but cert paths set in vhost)
   ssl on;
   ssl_protocols {{ nginx_ssl_protocols }};
