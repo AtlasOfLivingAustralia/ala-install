@@ -206,7 +206,6 @@
       </analyzer>
     </fieldType>
 
-
     <!-- A general unstemmed text field - good if one does not know the language of the field -->
     <fieldType name="textgen" class="solr.TextField" positionIncrementGap="100">
       <analyzer type="index">
@@ -228,6 +227,28 @@
       </analyzer>
     </fieldType>
 
+    <!-- A text field that removes accented characters and makes lower-case for canonical scientific name matches  -->
+    <fieldType name="text_bie_canonical" class="solr.TextField" positionIncrementGap="100">
+      <analyzer type="index">
+        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+        <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt" enablePositionIncrements="true" />
+        <filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="0"/>
+	<filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+        <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+        <filter class="solr.StopFilterFactory"
+                ignoreCase="true"
+                words="stopwords.txt"
+                enablePositionIncrements="true"
+                />
+        <filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="0" catenateNumbers="0" catenateAll="0" splitOnCaseChange="0"/>
+	<filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+      </analyzer>
+    </fieldType>
 
     <!-- A general unstemmed text field that indexes tokens normally and also
          reversed (via ReversedWildcardFilterFactory), to enable more efficient
@@ -374,65 +395,66 @@
    <field name="description" type="text" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="content" type="text" indexed="true" stored="true" multiValued="false" omitNorms="false" />
 
-   <!-- Taxa fields -->
-   <field name="taxonConceptID" type="string" indexed="true" stored="true" omitNorms="true" />
-   <field name="taxonGuid" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="parentGuid" type="string" indexed="true" stored="true" omitNorms="true" />
-   <field name="otherGuid" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
-   <field name="synonym" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
-   <field name="scientificName" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="scientificNameAuthorship" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="nameComplete" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="nameFormatted" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="acceptedConceptName" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
-   <field name="acceptedConceptID" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
-   <field name="conservationStatus" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
-   <field name="pestStatus" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" />
-   <field name="commonName" type="text" indexed="true" stored="true" multiValued="true" omitNorms="false" />
-   <field name="commonNameExact" type="lowercase" indexed="true" stored="false" multiValued="true" omitNorms="false"/>
-   <field name="commonNameSort" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
-   <field name="commonNameDisplay" type="string" indexed="false" stored="true" multiValued="false" omitNorms="true" />
-   <field name="commonNameSingle" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
-   <field name="centroid" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
-   <field name="rank" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
-   <field name="rankID" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
+   <!-- Metadata and sources -->
    <field name="datasetID" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="dataProvider" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="uid" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="true" />
-   <field name="occurrenceCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
-   <field name="georeferencedCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
-   <field name="taxonomicStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="establishmentMeans" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="distribution" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="datasetName" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="status" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="source" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="subject" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="format" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="language" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="license" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="rights" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="language" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="priority" type="int" indexed="false" stored="true" required="false" multiValued="false"/>
-   <field name="additionalIdentifiers" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
-   <field name="datasetName" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="rightsHolder" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="acronym" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+
+   <!-- Taxa fields -->
+   <field name="taxonConceptID" type="string" indexed="true" stored="true" omitNorms="true" />
+   <field name="taxonGuid" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="parentGuid" type="string" indexed="true" stored="true" omitNorms="true" />
+   <field name="scientificName" type="string" indexed="true" stored="true" omitNorms="false" />
+   <field name="scientificNameAuthorship" type="string" indexed="true" stored="true" omitNorms="false" />
+   <field name="rank" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
+   <field name="rankID" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
+   <field name="nameComplete" type="string" indexed="true" stored="true" omitNorms="false" />
+   <field name="nameFormatted" type="string" indexed="true" stored="true" omitNorms="false" />
+   <field name="acceptedConceptName" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+   <field name="acceptedConceptID" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+   <field name="taxonomicStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="nomenclaturalStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="scientificNameID" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="nameID" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+
+   <!-- Higher rank information -->
+   <dynamicField name="rk_*"  type="string"  indexed="true"  stored="true"/>
+   <dynamicField name="rkid_*"  type="string"  indexed="true"  stored="true"/>
+
+   <!-- Vernacular name fields -->
+   <field name="commonName" type="text" indexed="true" stored="true" multiValued="true" omitNorms="false" />
+   <field name="commonNameExact" type="lowercase" indexed="true" stored="false" multiValued="true" omitNorms="false"/>
+
+   <!-- Additional information -->
+   <field name="occurrenceCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
+   <field name="establishmentMeans" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="distribution" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="priority" type="int" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="imageAvailable" type="boolean" indexed="true" stored="true"  />
+   <field name="locatedInHubCountry" type="boolean" indexed="true" stored="true"  />
+   <field name="image" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
+   <field name="additionalIdentifiers" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
    <field name="namePublishedIn" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInYear" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
 
-
    <!-- higher taxonomy -->
    <field name="speciesGroup" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" />
    <field name="speciesSubgroup" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" />
-   <!-- Australian states, supports the region functionality -->
-   <field name="imageAvailable" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
-   <field name="image" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
-   <!-- Collection / Institution -->
-   <field name="url" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
-   <field name="acronym" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
-   <field name="institutionType" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
-   
+  
    <!-- WordPress fields -->
    <field name="categories" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
+  
+   <!-- Spatial fields -->
+   <field name="centroid" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
 
    <!-- LinkIdentifier fields -->
    <field name="linkIdentifier" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
@@ -443,22 +465,13 @@
    <field name="auto_text" type="auto_text" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
    <field name="auto_text_edge" type="auto_text_edge" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
    <field name="concat_name" type="concat_name" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
-   <field name="doc_name" type="textgen" indexed="true" stored="true" multiValued="true" omitNorms="false" omitTermFreqAndPositions="false"/>
-   <!--  NC:2013-02-08 remove the omitTermFreqAndPositions because this setting will cause an exception when searching for a phrase -->
+   <field name="doc_name" type="text_bie_canonical" indexed="true" stored="true" multiValued="true" omitNorms="false" omitTermFreqAndPositions="false"/>
    <field name="stopped_common_name" type="stopped_common_name" indexed="true" stored="false" multiValued="true" omitNorms="true" />
-   <field name="name_complete" type="name_complete" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
    <field name="auto_name_exact" type="name_complete" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
-   
+
    <!-- Fields used to rank exact matches higher -->
    <field name="exact_text" type="lowercase" indexed="true" stored="false" omitNorms="true" multiValued="true"/>
    
-   <!-- catchall text field that indexes tokens both normally and in reverse for efficient
-        leading wildcard queries. -->
-   <field name="text_rev" type="text_rev" indexed="true" stored="false" multiValued="true"/>
-
-   <dynamicField name="rk_*"  type="string"  indexed="true"  stored="true"/>
-   <dynamicField name="rkid_*"  type="string"  indexed="true"  stored="true"/>
-
 
      <!-- Dynamic field definitions.  If a field name is not found, dynamicFields
           will be used if the name matches any of the patterns.
@@ -517,17 +530,14 @@
 
    <!-- BIE text field sources -->
    <copyField source="guid" dest="text"/>
-   <copyField source="otherGuid" dest="text"/>
    <copyField source="name" dest="text"/>
    <copyField source="commonName" dest="text"/>
    <copyField source="speciesGroup" dest="text"/>
    <copyField source="speciesSubgroup" dest="text"/>
    <copyField source="acronym" dest="text"/>
    <copyField source="scientificName" dest="text"/>
-   <!-- <copyField source="commonName" dest="text"/> -->
-   <copyField source="pestStatus" dest="text"/>
-   <copyField source="category_*" dest="text"/>
-   <copyField source="conservationStatus" dest="text"/>
+   <copyField source="categories" dest="text"/>
+   <copyField source="conservationStatus*" dest="text"/>
 
    <!-- doc_name is a field used to to search for any document by its name or title via Boost Query -->
    <copyField source="name" dest="doc_name"/>
@@ -539,13 +549,17 @@
    <copyField source="commonName" dest="auto_text"/>
    <copyField source="scientificName" dest="auto_text_edge"/>
    <copyField source="commonName" dest="auto_text_edge"/>
+
    <copyField source="name" dest="exact_text"/>
    <copyField source="acronym" dest="exact_text"/>
    <copyField source="scientificName" dest="exact_text"/>
    <copyField source="commonNameExact" dest="exact_text"/>
+
    <copyField source="scientificName" dest="concat_name"/>
    <copyField source="commonName" dest="concat_name"/>
+
    <copyField source="commonName" dest="stopped_common_name"/>
+
    <copyField source="commonName" dest="auto_name_exact"/>
 
 </schema>
