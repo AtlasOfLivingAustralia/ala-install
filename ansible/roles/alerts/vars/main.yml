@@ -1,5 +1,5 @@
 # assets
-version: {{ alerts_version | default('LATEST') }}
+version: "{{ alerts_version | default('LATEST') }}"
 artifactId: "alerts"
 groupId: "{{ alerts_group_id | default('au.org.ala') }}"
 classifier: ''
