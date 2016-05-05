@@ -42,9 +42,16 @@
   tags:
     - setfacts
 
+- name: set name index date
+  set_fact:
+      name_index_date: 20160428
+  tags:
+    - setfacts
+
 - name: set name index location
   set_fact:
-    name_indexes_repo: http://s3.amazonaws.com/ala-nameindexes/20140610
+    aws_name_indexes_repo: http://s3.amazonaws.com/ala-nameindexes/20140610
+    ala_name_indexes_repo: "http://biocache.ala.org.au/archives/nameindexes/{{name_index_date}}"
   tags:
     - setfacts    
 
@@ -64,8 +71,22 @@
 
 - name: setup name index URLs
   set_fact:
-    col_namematching_url: "{{name_indexes_repo}}/col_namematching.tgz"
-    merged_namematching_url: "{{name_indexes_repo}}/merge_namematching.tgz"
-    ala_namematching_url: "{{name_indexes_repo}}/namematching.tgz"
+    col_namematching_url: "{{aws_name_indexes_repo}}/col_namematching.tgz"
+    merged_namematching_url: "{{aws_name_indexes_repo}}/merge_namematching.tgz"
+    ala_namematching_url: "{{ala_name_indexes_repo}}/namematching-{{name_index_date}}.tgz"
   tags:
     - setfacts    
+
+- name: setup name sources
+  set_fact:
+    ala_name_sources:
+      - AFD
+      - APNI
+      - AusFungi
+      - AusMoss
+      - CAAB
+      - NZOR
+      - CoL
+      - ALA
+  tags:
+    - setfacts
