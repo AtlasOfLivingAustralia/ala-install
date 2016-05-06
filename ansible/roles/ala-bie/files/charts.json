@@ -1,0 +1,42 @@
+{
+  "biocache": {
+    "cl1918": {
+      "title": "By habitat",
+      "chartType": "doughnut",
+      "hideEmptyValues": true
+    },
+    "month": {
+      "title": "By month",
+      "chartType": "bar",
+      "emptyValueMsg": "Month not specified",
+      "hideEmptyValues": true
+    },
+    "year": {
+      "title": "Since 1990",
+      "chartType": "bar",
+      "emptyValueMsg": "Year not specified",
+      "hideEmptyValues": true,
+      "filter": "fq=year:[1990 TO *]"
+    },
+    "decade": {
+      "title": "By decade",
+      "chartType": "bar",
+      "emptyValueMsg": "Year not specified",
+      "hideEmptyValues": true
+    },
+    "collection_uid": {
+      "title": "By collection",
+      "chartType": "horizontal-bar"
+    },
+    "data_resource_uid": {
+      "title": "By dataset",
+      "chartType": "horizontal-bar"
+    },
+    "data_provider_uid": {
+      "title": "By data partner",
+      "chartType": "horizontal-bar",
+      "emptyValueMsg": "Partner not specified",
+      "hideEmptyValues": true
+    }
+  }
+}

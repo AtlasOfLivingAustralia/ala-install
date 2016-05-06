@@ -1,0 +1,43 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - ala-bie
+    - deploy
+    - properties
+    - tomcat_vhost
+    - apache_vhost
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{ data_dir }}/ala-bie/config"
+  tags:
+    - config
+    - ala-bie
+
+
+- name: copy all config.properties
+  template: src=ala-bie-config.properties dest={{data_dir}}/ala-bie/config/ala-bie-config.properties force=yes
+  tags:
+    - webapps
+    - config
+    - ala-bie
+
+#
+# WAR file deployment and virtual host configuration
+#
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ ala_bie_context_path }}' hostname='{{ ala_bie_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - ala-bie
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ ala_bie_war_url }}' context_path='{{ala_bie_context_path}}' hostname='{{ ala_bie_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - ala-bie
+
+- name: copy all data assets
+  copy: src=charts.json dest={{ data_dir }}/ala-bie/config
+  tags:
+    - ala-bie
