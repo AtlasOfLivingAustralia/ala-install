@@ -1,0 +1,66 @@
+# Create a test bie with suite of bie-services
+- hosts: test-bie
+  roles:
+    - common
+    - java
+    - apache
+    - tomcat
+    - apache
+    - solr
+    - mysql
+    - ala-bie
+    - bie-index
+    - namedata
+    - nameindex
+    - species-list
+    - sds
+  vars:
+    ala_base_url: http://www.ala.org.au
+    ala_bie_hostname: "{{test_bie_host}}"
+    ala_bie_context_path: /bie
+    ala_bie_base_url: "http://{{test_bie_host}}"
+    ala_bie_url: "http://{{test_bie_host}}/bie"
+    auth_base_url: https://auth.ala.org.au
+    auth_cas_url: https://auth.ala.org.au/cas
+    bie_base_url: "http://{{test_bie_host}}"
+    bie_index_base_url: "http://{{test_bie_host}}"
+    bie_index_context_path: /bie-index
+    bie_index_hostname: "{{test_bie_host}}"
+    bie_service_base_url: "http://{{test_bie_host}}/bie/ws"
+    biocache_base_url: "http://{{test_biocache_host}}"
+    biocache_service_base_url: "http://{{test_biocache_host}}"
+    biocache_service_url: "http://{{test_biocache_host}}/biocache-service"
+    biocache_solr_url: "http://{{test_biocache_host}}:8080/solr/biocache"
+    bypass_cas: false
+    collectory_base_url: http://collections.ala.org.au
+    collectory_enable_sync: false
+    collectory_url: http://collections.ala.org.au/ws
+    default_common_name_source: National Species Lists
+    default_map_lat: -25.61
+    default_map_lon: 134.35
+    default_map_zoom: 6
+    default_name_source: National Species Lists
+    disable_cas: false
+    field_guide_base_url: http://fieldguide.ala.org.au
+    image_service_url: http://images.ala.org.au
+    index_images: true
+    index_live_url: http://localhost:8080/solr/bie
+    index_offline_url: http://localhost:8080/solr/bie-offline
+    mysql_root_password: Yithian-093
+    nameindex_to_use: ala
+    registry_api_key:
+    sds_url: "http://{{test_bie_host}}"
+    sds_context_path: sds
+    sds_hostname: "{{test_bie_host}}"
+    solr_hostname: localhost:8080
+    solr_url: http://localhost:8080/solr
+    solr_base_url: http://localhost:8080
+    solr_context_path: /solr
+    specieslist_db_name: specieslist
+    specieslist_db_username: specieslist
+    specieslist_db_password: specieslist
+    specieslist_db_hostname: localhost
+    specieslist_hostname: "{{test_bie_host}}"
+    specieslist_url: "http://{{test_bie_host}}/lists"
+    specieslist_base_url:  "http://{{test_bie_host}}/lists"
+    specieslist_context_path: lists

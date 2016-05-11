@@ -44,7 +44,7 @@
 
 - name: set name index date
   set_fact:
-      name_index_date: 20160428
+      name_index_date: 20160509
   tags:
     - setfacts
 

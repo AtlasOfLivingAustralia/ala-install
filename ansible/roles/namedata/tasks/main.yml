@@ -4,6 +4,10 @@
     - deploy
     - config
 
+- name: Unstall unzip (Debian only)
+  apt: pkg=unzip state=present
+  when: ansible_os_family == "Debian"
+
 - name: ensure target directories exist [data subdirectories etc.]
   when: nameindex_variant == "ala"
   file: path={{ data_dir }}/bie/import/{{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
@@ -11,7 +15,6 @@
   tags:
     - config
     - namedata
-
 
 - name: get source name data from ALA
   when: nameindex_variant == "ala"

@@ -1,0 +1,12 @@
+# Set up a test bie/bie-index on a single vagrant machine (called vagrant1) which expects a biocache on another machine (called vagrant2)
+
+[test-bie]
+vagrant1
+
+[test-bie:vars]
+test_bie_host=vagrant1.ala.org.au
+test_biocache_host=vagrant2.ala.org.au
+local_repo_dir=~/.ala
+data_dir=/data
+is_vagrant=true
+tomcat_java_opts = -Xmx3g -Xms2g -XX:MaxPermSize=512m -Xss512k -Djava.awt.headless=true
