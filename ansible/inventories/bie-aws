@@ -3,6 +3,9 @@
 [test-bie]
 bie-aws.ala.org.au
 
+[test-biocache]
+biocache-aws.ala.org.au
+
 [test-bie:vars]
 test_bie_host=bie-aws.ala.org.au
 test_biocache_host=biocache-aws.ala.org.au
@@ -10,3 +13,13 @@ local_repo_dir=~/.ala
 data_dir=/data
 is_vagrant=false
 tomcat_java_opts = -Xmx8g -Xms2g -XX:MaxPermSize=1g -Xss512k -Djava.awt.headless=true
+biocache_local_build=/home/pal155/src/biocache-store/target/biocache-store-1.7.1-SNAPSHOT-distribution.zip
+biocache_opts=-Xmx10g -Xms10g
+
+[test-biocache:vars]
+test_bie_host=bie-aws.ala.org.au
+test_biocache_host=biocache-aws.ala.org.au
+local_repo_dir=~/.ala
+data_dir=/data
+is_vagrant=true
+tomcat_java_opts = -Xmx32g -Xms32g -XX:MaxPermSize=1g -Xss512k -Djava.awt.headless=true

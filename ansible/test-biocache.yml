@@ -1,23 +1,14 @@
 # Create a test bie with suite of bie-services
-- hosts: test-bie
+- hosts: test-biocache
   roles:
     - common
     - java
     - apache
     - tomcat
-    - mysql
-    - logger-service
-    - cassandra
-    - biocache-properties
-    - biocache-cli
-    - biocache-db
-    - ala-bie
-    - bie-index
-    - namedata
+    - solr
+    - { role: biocache-hub, biocache_hub: ala-hub }
+    - biocache-service
     - nameindex
-    - species-list
-    - sds
-    - jenkins
   vars:
     ala_base_url: http://www.ala.org.au
     ala_bie_hostname: "{{test_bie_host}}"
@@ -80,7 +71,7 @@
     logger_db_name: logger
     logger_db_username: logger_user
     logger_db_password: logger_user
-    logger_db_hostname: localhost
+    logger_db_hostname: "{{test_bie_host}}"
     mysql_root_password: Yithian-093
     nameindex_to_use: ala
     registry_api_key:
@@ -96,9 +87,10 @@
     specieslist_db_name: specieslist
     specieslist_db_username: specieslist
     specieslist_db_password: specieslist
-    specieslist_db_hostname: localhost
+    specieslist_db_hostname: "{{test_bie_host}}"
     specieslist_hostname: "{{test_bie_host}}"
     specieslist_url: "http://{{test_bie_host}}/lists"
     specieslist_base_url:  "http://{{test_bie_host}}/lists"
     specieslist_context_path: lists
     userdetails_url: https://auth.ala.org.au/userdetails/userDetails/
+
