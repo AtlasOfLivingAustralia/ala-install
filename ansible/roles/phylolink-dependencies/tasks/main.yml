@@ -27,7 +27,7 @@
     chdir: "~"
 
 - name: download ez_setup
-  get_url: url=https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py dest=~
+  get_url: url=https://bootstrap.pypa.io/ez_setup.py dest=~
 
 - name: install ez_setup
   command: "python ez_setup.py"
