@@ -5,3 +5,4 @@ classifier: ''
 groupId: "au.org.ala"
 packaging: "war"
 biocollect_war_url: "{{maven_repo_ws_url}}"
+
