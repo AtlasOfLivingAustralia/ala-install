@@ -235,7 +235,7 @@
         "facets":[
             {
                 "sort":"index",
-                "field":"collector"
+                "field":"collectors"
             },
             {
                 "sort":"count",
