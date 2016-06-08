@@ -12,15 +12,16 @@ ecodata_hostname=ecodata.vagrant1.ala.org.au
 ecodata_url=http://ecodata.vagrant1.ala.org.au
 ecodata_base_url=http://ecodata.vagrant1.ala.org.au
 ecodata_context_path=
+app_uploads_url=http://ecodata.vagrant1.ala.org.au/document/download?filename=
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
-collectory_url=http://collections.ala.org.au
+collectory_url=http://collectory-dev.ala.org.au/
 imagesService_baseURL=http://images2-dev.ala.org.au
-biocacheService_baseUrl=http://biocache.ala.org.au
-biocollect_base_url=http://biocollect-dev.ala.org.au
-spatial_base_url=http://spatial.ala.org.au
+biocacheService_baseUrl=https://biocache.ala.org.au
+biocollect_base_url=https://biocollect-dev.ala.org.au
+spatial_base_url=https://spatial.ala.org.au
 
 models_path=/data/ecodata/models/
 security_serviceUrl=https://auth.ala.org.au/apikey/ws/check?apikey=

@@ -19,6 +19,13 @@
     - config
     - bie
 
+- name: set data ownership [all data is owned by tomcat]
+  file: path={{data_dir}}/{{bie_hub}}/ owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  tags:
+    - config
+    - bie     
+
+
 - include: ../../apache_vhost/tasks/main.yml context_path='/{{ bie_hub_context_path }}' hostname='{{ bie_hub_hostname }}'
   tags:
     - webapps
