@@ -1,5 +1,5 @@
 - name: show ansible versions
-  debug: msg="You are using Ansible {{ ansible_version.full }}. The current supported version for ala-install is {{ supported_ansible_version.full }}."
+  debug: msg="You are using Ansible {{ ansible_version.full }} on {{ansible_os_family}}. The current supported version for ala-install is {{ supported_ansible_version.full }}."
 
 - name: check the ansible version
   pause: prompt="You are not using the supported version of Ansible. The supported version is {{ supported_ansible_version.full }}. You are using {{ ansible_version.full }}. Proceed at your own risk. Press enter to continue"
@@ -44,14 +44,14 @@
 
 - name: set name index date
   set_fact:
-      name_index_date: 20160509
+      name_index_date: "{{ nameindex_datestamp | default('20160609') }}"
   tags:
     - setfacts
 
 - name: set name index location
   set_fact:
     aws_name_indexes_repo: http://s3.amazonaws.com/ala-nameindexes/20140610
-    ala_name_indexes_repo: "http://biocache.ala.org.au/archives/nameindexes/{{name_index_date}}"
+    ala_name_indexes_repo: "{{ ala_nameindex_source_url | default('http://biocache.ala.org.au/archives/nameindexes') }}/{{name_index_date}}"
   tags:
     - setfacts    
 

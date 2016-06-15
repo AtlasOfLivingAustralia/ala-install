@@ -6,6 +6,7 @@
     - apache
     - tomcat
     - solr
+    - biocache-properties
     - { role: biocache-hub, biocache_hub: ala-hub }
     - biocache-service
     - nameindex
@@ -15,6 +16,7 @@
     ala_bie_context_path: /bie
     ala_bie_base_url: "http://{{test_bie_host}}"
     ala_bie_url: "http://{{test_bie_host}}/bie"
+    allow_registry_updates: false
     auth_base_url: https://auth.ala.org.au
     auth_cas_url: https://auth.ala.org.au/cas
     bie_base_url: "http://{{test_bie_host}}"
@@ -22,8 +24,8 @@
     bie_index_context_path: /bie-index
     bie_index_hostname: "{{test_bie_host}}"
     bie_service_enabled: true
-    bie_service_base_url: "http://{{test_bie_host}}/bie/ws"
-    bie_service_url: "http://{{test_bie_host}}/bie/ws"
+    bie_service_base_url: "http://{{test_bie_host}}/bie-index"
+    bie_service_url: "http://{{test_bie_host}}/bie-index"
     bie_url: "http://{{test_bie_host}}/bie"
     biocache_base_url: "http://{{test_biocache_host}}"
     biocache_db_host: "{{test_bie_host}}"
@@ -35,7 +37,7 @@
     biocache_sds_url: "http://{{test_bie_host}}/sds/sensitive-species-data.xml"
     biocache_service_hostname: "{{test_biocache_host}}"
     biocache_service_url: "http://{{test_biocache_host}}/biocache-service"
-    biocache_service_base_url: "http:{{test_biocache_host}}"
+    biocache_service_base_url: "http://{{test_biocache_host}}/biocache"
     biocache_service_context_path: biocache-service
     biocache_solr_url: "http://{{test_biocache_host}}:8080/solr/biocache"
     bypass_cas: false
@@ -51,7 +53,7 @@
     default_common_name_source: National Species Lists
     default_map_lat: -25.61
     default_map_lon: 134.35
-    default_map_zoom: 6
+    default_map_zoom: 4
     default_name_source: National Species Lists
     disable_cas: false
     field_guide_base_url: http://fieldguide.ala.org.au
@@ -72,6 +74,8 @@
     logger_db_username: logger_user
     logger_db_password: logger_user
     logger_db_hostname: "{{test_bie_host}}"
+    media_store_local: false
+    media_store_url: http://images.ala.org.au
     mysql_root_password: Yithian-093
     nameindex_to_use: ala
     registry_api_key:

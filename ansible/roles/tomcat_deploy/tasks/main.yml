@@ -42,5 +42,12 @@
 
 - name: download from maven repo
   get_url: url={{ war_url }} dest="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" force=true timeout=60
+  when: war_local_build is not defined
+  notify:
+    - restart tomcat
+
+- name: download from local build
+  copy: src={{ war_local_build }} dest="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" force=yes
+  when: war_local_build is defined
   notify:
     - restart tomcat

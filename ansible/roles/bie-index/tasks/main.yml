@@ -20,6 +20,16 @@
     - config
     - bie-index
 
+- name: copy all species list configurations
+  copy: src={{ item }} dest={{data_dir}}/bie-index/config
+  with_items:
+    - conservation-lists.json
+    - image-lists.json
+    - vernacular-lists.json
+  tags:
+    - config
+    - bie-index
+
 - include: ../../apache_vhost/tasks/main.yml context_path='/{{ bie_index_context_path }}' hostname='{{ bie_index_hostname }}'
   tags:
     - webapps
@@ -28,6 +38,15 @@
     - bie-index 
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ bie_index_war_url }}' context_path='{{ bie_index_context_path }}' hostname='{{ bie_index_hostname }}'
+  when: bie_index_local_build is not defined
+  tags:
+    - webapps
+    - tomcat_vhost
+    - deploy
+    - bie-index
+
+- include: ../../tomcat_deploy/tasks/main.yml war_local_build='{{ bie_index_local_build }}' context_path='{{ bie_index_context_path }}' hostname='{{ bie_index_hostname }}'
+  when: bie_index_local_build is defined
   tags:
     - webapps
     - tomcat_vhost

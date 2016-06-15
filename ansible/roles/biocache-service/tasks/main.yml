@@ -13,6 +13,15 @@
     - webapps
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ biocache_service_war_path }}' context_path='{{ biocache_service_context_path }}' hostname='{{ biocache_service_hostname }}'
+  when: biocache_service_local_build is not defined
+  tags:
+    - biocache-service
+    - deploy
+    - tomcat_vhost
+    - webapps
+
+- include: ../../tomcat_deploy/tasks/main.yml war_local_build='{{ biocache_service_local_build }}' context_path='{{ biocache_service_context_path }}' hostname='{{ biocache_service_hostname }}'
+  when: biocache_service_local_build is defined
   tags:
     - biocache-service
     - deploy
