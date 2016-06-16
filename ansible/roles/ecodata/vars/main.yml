@@ -1,7 +1,8 @@
 # assets
-version: "{{ ecodata_version | default('1.4-SNAPSHOT')}}"
+version: "{{ ecodata_version | default('LATEST')}}"
 artifactId: "ecodata"
 classifier: ''
 packaging: "war"
 groupId: "au.org.ala"
 ecodata_war_url: "{{maven_repo_ws_url}}"
+tomcat_java_opts_override: "-Xmx4g -Xms2g -XX:MaxPermSize=256m -Xss256k -XX:+UseG1GC"

@@ -10,7 +10,7 @@
 - debug: msg="war_filename is {{ war_filename }}; tomcat_deploy_dir is {{ tomcat_deploy_dir }}; log_filename is {{ log_filename }}"
 
 - name: create tomcat vhost
-  tomcat_vhost: name={{ hostname }} #remote_ip_valve="true"
+  tomcat_vhost: name={{ hostname }} remote_ip_valve={{tomcat_enable_remote_ip_valve | default(false)}} remote_internal_proxies={{tomcat_remote_internal_proxies | default(None)}}
   when: vhost=="true" or vhost==true or vhost=="True"
   notify:
     - restart tomcat

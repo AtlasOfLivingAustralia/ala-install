@@ -183,7 +183,7 @@ def insert_main_vhost_body(aug, filename, vhost, virtualHostIndex, directiveInde
 
 
 def insert_ssl_configuration(aug, filename, virtualHostIndex, directiveIndex, ssl_cert_filepath, ssl_key_filepath, ssl_chain_filepath):
-    set_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/directive[%(directiveIndex)s]", "SSLEngine on", directiveIndex, virtualHostIndex) 
+    set_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/directive[%(directiveIndex)s]", "SSLEngine on", directiveIndex, virtualHostIndex)
     directiveIndex += 1
     set_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/directive[%(directiveIndex)s]", "SSLProtocol all -SSLv2 -SSLv3", directiveIndex, virtualHostIndex) 
     directiveIndex += 1
@@ -202,6 +202,10 @@ def insert_ssl_configuration(aug, filename, virtualHostIndex, directiveIndex, ss
     if ssl_chain_filepath:
         set_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/directive[%(directiveIndex)s]", "SSLCertificateChainFile %(ssl_chain_filepath)s" % locals(), directiveIndex, virtualHostIndex)
         directiveIndex += 1
+
+    set_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/directive[%(directiveIndex)s]", "RequestHeader set X-Forwarded-Proto \"https\"", directiveIndex, virtualHostIndex)
+    directiveIndex += 1
+
 
     return directiveIndex
 

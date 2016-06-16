@@ -99,7 +99,7 @@
             {
                 "sort":"index",
                 "dwcTerm": "identificationQualifier",
-                "field":"raw_identification_qualifier"
+                "field":"identification_qualifier_s"
             },
             {
                 "sort":"count",
@@ -272,7 +272,7 @@
                 "sort":"index",
                 "dwcTerm": "recordedBy_raw",
                 "description": "Collector",
-                "field":"collector"
+                "field":"collectors"
             },
             {
                 "sort":"count",
