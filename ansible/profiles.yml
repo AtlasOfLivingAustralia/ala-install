@@ -1,13 +1,20 @@
-- hosts: profiles
+- hosts: profiles:sandbox
   roles:
     - java
     - common
     - {role: db-backup, db: mongo}
     - {role: mongodb, mongo_version: "3.0.0"}
+    - cassandra
     - tomcat
     - apache
     - postfix
     - nameindex
     - elasticsearch
+    - solr
+    - biocache-db
+    - biocache-properties
+    - biocache-service
+    - biocache-cli
+    - sandbox
     - profile-service
     - profile-hub
