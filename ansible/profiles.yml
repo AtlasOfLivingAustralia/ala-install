@@ -10,11 +10,11 @@
     - postfix
     - nameindex
     - elasticsearch
-    - solr
     - biocache-db
     - biocache-properties
     - biocache-service
     - biocache-cli
     - sandbox
+    - solr # must be installed AFTER biocache & sandbox, or you get errors complaining about not finding 'collection1'
     - profile-service
     - profile-hub
