@@ -74,7 +74,7 @@ elasticsearch_cluster_name=profiles_es_{{ deployment_env }}
 
 
 [sandbox]
-vagrant
+vagrant1
 
 [sandbox:vars]
 is_vagrant=true
