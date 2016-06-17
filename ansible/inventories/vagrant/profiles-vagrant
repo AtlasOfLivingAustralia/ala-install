@@ -1,5 +1,5 @@
 [profiles]
-vagrant
+vagrant1
 
 [profiles:vars]
 is_vagrant=true
