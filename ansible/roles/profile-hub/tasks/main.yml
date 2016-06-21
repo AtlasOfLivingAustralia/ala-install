@@ -34,7 +34,10 @@
     - properties
 
 - name: copy all template configs
-  template: src=profile-hub-config.properties dest={{data_dir}}/profile-hub/config/profile-hub-config.properties
+  template: src={{ item }} dest={{data_dir}}/profile-hub/config/{{ item }}
+  with_items:
+    - profile-hub-config.properties
+    - help-mappings.json
   tags:
     - profile-hub
     - properties
