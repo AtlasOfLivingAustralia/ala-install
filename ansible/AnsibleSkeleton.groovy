@@ -38,6 +38,10 @@ class AnsibleSkeleton {
                         - include: ../../common/tasks/setfacts.yml
                           tags:
                             - ${appName}
+                            - deploy
+                            - properties
+                            - tomcat_vhost
+                            - ${args.contains('apache') ? 'apache_vhost' : args.contains('nginx') ? 'nginx_vhost' : ''}
                      """.stripIndent(), false)
 
         playbook = new File("${appName}-standalone.yml")
@@ -68,7 +72,7 @@ class AnsibleSkeleton {
     static vars() {
         println "  - Creating vars file..."
         write(vars, "# assets\n" +
-                "version: \"???\"\n" +
+                "version: \"{{ ${appNameVar}_version | default('LATEST') }}\"\n" +
                 "artifactId: \"${appName}\"\n" +
                 "classifier: ''\n" +
                 "groupId: \"au.org.ala\"\n" +
@@ -92,7 +96,7 @@ class AnsibleSkeleton {
                     gateway=false
                     security.cas.adminRole=ROLE_ADMIN
                     
-                    serverURL=https://{{ ${appNameVar}_hostname }}
+                    serverURL=http://{{ ${appNameVar}_hostname }}
                     serverName=http://{{ ${appNameVar}_hostname }}
                     security.cas.appServerName=http://{{ ${appNameVar}_hostname }}
                     grails.serverURL=http://{{ ${appNameVar}_hostname }}{{ ${appNameVar}_context_path }}
@@ -133,6 +137,7 @@ class AnsibleSkeleton {
     static mysql() {
         println "  - Adding mysql stuff..."
 
+        write(playbook, "\n    - {role: db-backup, db: mysql}")        
         write(playbook, "\n    - mysql")
 
         write(tasks, """
@@ -168,6 +173,7 @@ class AnsibleSkeleton {
     static postgresql() {
         println "  - Adding postgresql stuff..."
 
+        write(playbook, "\n    - {role: db-backup, db: postgresql}")
         write(playbook, "\n    - postgresql")
 
         write(tasks, """
@@ -204,10 +210,9 @@ class AnsibleSkeleton {
                     """.stripIndent())
     }
 
-    static tomcat() {
-        println "  - Adding tomcat & apache stuff..."
+    static apache() {
+        println "  - Adding apache stuff..."
         write(playbook, "\n    - apache")
-        write(playbook, "\n    - tomcat")
 
         write(tasks, """
                 #
@@ -218,14 +223,56 @@ class AnsibleSkeleton {
                     - deploy
                     - apache_vhost
                     - ${appName}
+                """.stripIndent())
+    }
 
+    static nginx() {
+        println "  - Adding nginx stuff..."
+        write(playbook, "\n    - nginx")
+
+        write(tasks, """
+                - name: add nginx vhost config
+                  include: ../../nginx/tasks/main.yml
+                  vars:
+                    nginx_sites:
+                      ${appNameVar}:
+                        - listen 80
+                        - listen [::]:80
+                        - server_name {{ ${appNameVar}_hostname }}
+                        - client_max_body_size 500m
+                        - location / { proxy_set_header X-Real-IP \$remote_addr; proxy_set_header Host \$host; proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for; proxy_pass http://127.0.0.1:8080; }
+                    nginx_https_sites:
+                      ${appNameVar}:
+                        - listen 443 spdy
+                        - listen [::]:443 spdy
+                        - server_name {{ ${appNameVar}_hostname }}
+                        - ssl_certificate {{ ${appNameVar}_https_certificate_path }}
+                        - ssl_certificate_key {{ ${appNameVar}_https_certificate_key_path }}
+                        - client_max_body_size 500m
+                        - location / { proxy_set_header X-Real-IP \$remote_addr; proxy_set_header Host \$host; proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for; proxy_pass http://127.0.0.1:8080; }
+                  notify:
+                    - reload nginx
+                  tags:
+                    - ${appName}
+                    - nginx_vhost
+                    - deploy
+                """.stripIndent())
+    }
+        
+    static tomcat() {
+        println "  - Adding tomcat & apache stuff..."
+        write(playbook, "\n    - tomcat")
+
+        write(tasks, """
+                #
+                # WAR file deployment and virtual host configuration
+                #
                 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ ${appNameVar}_war_url }}' context_path='{{${appNameVar}_context_path}}' hostname='{{ ${appNameVar}_hostname }}'
                   tags:
                     - deploy
                     - tomcat_vhost
                     - ${appName}
                 """.stripIndent())
-
     }
 
     static inventory(args) {
@@ -242,6 +289,8 @@ class AnsibleSkeleton {
                 is_vagrant=true
                 local_repo_dir=~/.ala
                 data_dir=/data
+
+                ${appNameVar}_version=???
 
                 ${appNameVar}_hostname=vagrant1.ala.org.au
                 ${appNameVar}_context_path=/???
@@ -266,6 +315,7 @@ class AnsibleSkeleton {
     static mongodb() {
         println "  - Adding mongodb stuff..."
 
+        write(playbook, "\n    - {role: db-backup, db: mongo}")
         write(playbook, "\n    - mongodb")
     }
 

@@ -14,5 +14,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end  
   
   # totally insecure, but this is local dev: make the vagrant defaut the root key
-  config.vm.provision "shell", inline: "sudo cp -r /home/vagrant/.ssh /root/.ssh"
+  config.vm.provision "shell", inline: "sudo cp -r /home/vagrant/.ssh /root/"
 end

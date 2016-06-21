@@ -1,0 +1,11 @@
+# Install mongo db using the default version for the package manage (2.4.9 as of 12/2/16)
+
+- name: install mongo (Debian)
+  apt: pkg="mongodb" state=present update_cache=yes
+  tags:
+    - packages 
+  notify: 
+    - restart tomcat
+  when: ansible_os_family == "Debian"  
+  tags:
+    - mongodb

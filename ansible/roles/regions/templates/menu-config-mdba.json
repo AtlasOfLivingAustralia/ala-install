@@ -1,0 +1,87 @@
+[
+  {
+    "label": "Murray-Darling basin sub-catchments",
+    "fid": "cl3003"
+  },
+  {
+    "label": "Murray-Darling basin surface water plan areas",
+    "fid": "cl10834"
+  },
+  {
+    "label": "Directory of Important Wetlands",
+    "fid": "cl901"
+  },
+  {
+    "label": "RAMSAR wetland regions",
+    "fid": "cl935"
+  },
+  {
+    "label": "States and territories",
+    "fid": "cl22",
+    "exclude": ["Unknown1", "Macquarie Island", "Ashmore and Cartier Islands", "Coral Sea Islands"],
+    "subregions": [
+      {
+        "match_exp": "Australian Capital Territory",
+        "regions_within": [
+          {
+            "label": "Biogeographic (IBRA)",
+            "fid": "cl1048",
+            "regions": [
+              {
+                "label": "Australian Alps"
+              },
+              {
+                "label": "South Eastern Highlands"
+              },
+              {
+                "label": "Sydney Basin"
+              }
+            ]
+          },
+          {
+            "label": "Marine and Coastal (IMCRA)",
+            "fid": "cl21",
+            "regions": [
+              {
+                "label": "Southeast Shelf Transition"
+              }
+            ]
+          },
+          {
+            "label": "Natural Resource Management (NRM)",
+            "fid": "cl916",
+            "regions": [
+              {
+                "label": "ACT"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Local government",
+    "fid": "cl959"
+  },
+  {
+    "label": "Management regions",
+    "fid": "cl916"
+  },
+  {
+    "label": "Indigenous protected areas",
+    "fid": "cl2015"
+  },
+  {
+    "label": "Indigenous land use agreements",
+    "fid": "cl2010"
+  },
+  {
+    "label": "Biogeographic regions",
+    "fid": "cl1048"
+  },
+  {
+    "label": "Collaborative Australian Protected Areas Database",
+    "fid": "cl2079"
+  }
+]

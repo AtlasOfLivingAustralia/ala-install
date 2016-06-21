@@ -1,0 +1,44 @@
+{ "biocache" : {
+    "genus" : {
+        "title": "By genus",
+        "chartType": "doughnut",
+        "emptyValueMsg": "Genus not specified",
+        "hideEmptyValues" : true
+    },
+    "collection_uid":{
+    	"title": "By collection",
+	"chartType": "doughnut",
+	"emptyValueMsg": "Collection not specified",
+	"hideEmptyValues": true
+    },
+    "assertions": {
+	"title":"By data assertion",
+	"chartType": "horizontal-bar",
+	"emptyValueMsg":"Assertion not specified",
+	"hideEmptyValues": true
+    },
+    "type_status":{
+	"title":"By type status (as % of all type specimens)",
+	"chartType": "doughnut",
+	"emptyValueMsg": "Type status not specified",
+	"hideEmptyValues": true
+    },
+    "state_conservation":{
+	"title":"By state conservation status",
+	"chartType":"bar",
+	"emptyValueMsg":"State conservation not specified",
+	"hideEmptyValues": true
+    },
+    "month" : {
+        "title": "By month",
+        "chartType": "bar",
+        "emptyValueMsg": "Month not specified",
+        "hideEmptyValues" : true
+    },
+    "decade" : {
+        "title": "By decade",
+        "chartType": "bar",
+        "emptyValueMsg": "Year not specified",
+        "hideEmptyValues" : true
+    }
+}}

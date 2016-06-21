@@ -34,24 +34,29 @@ options:
     choices: [ "present", "absent" ]
   ssl:
     description:
-      - Whether to enable SSL in the virtual host (default false)
+      - Whether to enable HTTPS in the virtual host (default false)
     required: false
     default: false
-  ssl_cert_file:
+  ssl_cert_filepath:
     description:
-      - Location of the SSL Certificate File to be used when SSL is enabled
+      - Location (combined path and filename) of the HTTPS Certificate File to be used when HTTPS is enabled
     required: false
     default: None
-  ssl_key_file:
+  ssl_key_filepath:
     description:
-      - Location of the SSL Certificate Key file to be used when SSL is enabled
+      - Location (combined path and filename) of the HTTPS Certificate Key file to be used when HTTPS is enabled
     required: false
     default: None
-  ssl_chain_file:
+  ssl_chain_filepath:
     description:
-      - Location of the SSL Certificate Chain file to be used when SSL is enabled
+      - Location (combined path and filename) of the HTTPS Certificate Chain file to be used when HTTPS is enabled
     required: false
     default: None
+  force_https:
+    description:
+        - If true, redirect all http (port 80) requests to https; if false, run app on both 80 and 443
+    required: false
+    default: true
 notes:
    - This module uses I(python-augeas), a Python Augeas binding library. You must ensure that python-agueas is installed
      on the host before using this module.
@@ -90,102 +95,122 @@ def load_augeas_for_file(root="/etc/apache2/sites-available", lens="httpd.lns", 
     return aug
 
 
-def ensure_vhost_exists(aug, vhost, filename, ssl, ssl_cert_file, ssl_key_file, ssl_chain_file):
+def ensure_vhost_exists(aug, vhost, filename, ssl, ssl_cert_filepath, ssl_key_filepath, ssl_chain_filepath, force_https):
     if not filename:
         filename = vhost
 
-    port = "80"
+    # port 80 (http) vhost
+    virtualHostIndex = 1
+    directiveIndex = 1
+    directivePath = "/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/directive[%(directiveIndex)s]"
 
+    aug.set("/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/arg" % locals(), "*:80")
+
+    # Set ServerName directive
+    set_directive(aug, filename, directivePath, "ServerName " + vhost, directiveIndex, virtualHostIndex)
+    directiveIndex += 1
+
+    if force_https and ssl:
+        # redirect 80 to 443
+        set_directive(aug, filename, directivePath, "Redirect permanent / https://" + vhost + "/", directiveIndex, virtualHostIndex)
+    else:
+        # port 80 section is not a redirect to 443
+
+        # remove any existing redirect
+        aug.remove("/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/*[self::directive='Redirect']" % locals())
+
+        # insert vhost main body
+        directiveIndex = insert_main_vhost_body(aug, filename, vhost, virtualHostIndex, directiveIndex, directivePath)
+
+
+    # Add HTTPS vhost configuration if required
     if ssl:
-        port = "443"
-
-    existing = aug.match('/files//VirtualHost[directive="ServerName" and directive/arg="%(vhost)s"]' % locals())
-
-    if len(existing) == 0:
+        # port 443 (https) vhost
+        virtualHostIndex = 2
         directiveIndex = 1
-        directivePath = "/files/%(filename)s.conf/VirtualHost[1]/directive[%(directiveIndex)s]"
 
-        # Add a vhost with some default settings
-        
-        # Create a vhost in filename listening on all IPs on port 80 or 443 if SSL is enabled
-        aug.set("/files/%(filename)s.conf/VirtualHost[1]/arg" % locals(), "*:" + port)
-        
+        aug.set("/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/arg" % locals(), "*:443")
+
         # Set ServerName directive
-        insert_directive(aug, filename, directivePath, "ServerName " + vhost, directiveIndex)
+        set_directive(aug, filename, directivePath, "ServerName " + vhost, directiveIndex, virtualHostIndex)
         directiveIndex += 1
 
-        # Set ServerAdmin directive
-        insert_directive(aug, filename, directivePath, "ServerAdmin " + DEFAULT_SERVER_ADMIN_EMAIL, directiveIndex)
-        directiveIndex += 1
+        # insert vhost main body
+        directiveIndex = insert_main_vhost_body(aug, filename, vhost, virtualHostIndex, directiveIndex, directivePath)
 
-        # Set SSL configuration if required
-        if ssl:
-            directiveIndex = insert_ssl_configuration(aug, filename, directiveIndex, ssl_cert_file, ssl_key_file, ssl_chain_file)
-
-        #Set DocumentRoot directive
-        insert_directive(aug, filename, directivePath, "DocumentRoot " + DEFAULT_DOCUMENT_ROOT % locals(), directiveIndex)
-        directiveIndex += 1
-
-        #Set directory permissions
-        aug.set("/files/%(filename)s.conf/VirtualHost[1]/Directory[1]/arg" % locals(), "/")
-        subDirectivePath = "/files/%(filename)s.conf/VirtualHost[1]/Directory[1]/directive[%(directiveIndex)s]"
-        insert_directive(aug, filename, subDirectivePath, "Require all granted", 1)
-        
-        aug.set("/files/%(filename)s.conf/VirtualHost[1]/Directory[2]/arg" % locals(), DEFAULT_DOCUMENT_ROOT % locals())
-        subDirectivePath = "/files/%(filename)s.conf/VirtualHost[1]/Directory[2]/directive[%(directiveIndex)s]"
-        subDirectiveIndex = 1
-        insert_directive(aug, filename, subDirectivePath, "Options Indexes FollowSymLinks MultiViews", subDirectiveIndex)
-        subDirectiveIndex += 1
-        insert_directive(aug, filename, subDirectivePath, "AllowOverride None", subDirectiveIndex)
-        subDirectiveIndex += 1
-        insert_directive(aug, filename, subDirectivePath, "Order allow,deny", subDirectiveIndex)
-        subDirectiveIndex += 1
-        insert_directive(aug, filename, subDirectivePath, "Allow from all", subDirectiveIndex)
-
-        #Set ErrorLog
-        insert_directive(aug, filename, directivePath, "ErrorLog ${APACHE_LOG_DIR}/error.log", directiveIndex)
-        directiveIndex += 1
-
-        #Set LogLevel
-        insert_directive(aug, filename, directivePath, "LogLevel warn", directiveIndex)
-        directiveIndex += 1
-
-        #Set Access log
-        insert_directive(aug, filename, directivePath, "CustomLog ${APACHE_LOG_DIR}/access.log combined", directiveIndex)
-        directiveIndex += 1
-
-        if ssl:
-            # If SSL is enabled, create a vhost in filename listening on all IPs on port 80 to redirect all traffic to port 443
-            aug.set("/files/%(filename)s.conf/VirtualHost[2]/arg" % locals(), "*:80")
-            directivePath = "/files/%(filename)s.conf/VirtualHost[2]/directive[%(directiveIndex)s]"
-            insert_directive(aug, filename, directivePath, "ServerName " + vhost, 1)
-            insert_directive(aug, filename, directivePath, "Redirect permanent / https://" + vhost + "/", 2)
+        # Add HTTPS config
+        directiveIndex = insert_ssl_configuration(aug, filename, virtualHostIndex, directiveIndex, ssl_cert_filepath, ssl_key_filepath, ssl_chain_filepath)
 
 
-
-def insert_ssl_configuration(aug, filename, directiveIndex, ssl_cert_file, ssl_key_file, ssl_chain_file):
-    insert_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[1]/directive[%(directiveIndex)s]", "SSLEngine on", directiveIndex) 
+def insert_main_vhost_body(aug, filename, vhost, virtualHostIndex, directiveIndex, directivePath):
+    # Set ServerAdmin directive
+    set_directive(aug, filename, directivePath, "ServerAdmin " + DEFAULT_SERVER_ADMIN_EMAIL, directiveIndex, virtualHostIndex)
     directiveIndex += 1
-    insert_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[1]/directive[%(directiveIndex)s]", "SSLProtocol all -SSLv2 -SSLv3", directiveIndex) 
-    directiveIndex += 1
-    insert_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[1]/directive[%(directiveIndex)s]", "SSLCipherSuite ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA", directiveIndex) 
-    directiveIndex += 1
-    if ssl_cert_file:
-        insert_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[1]/directive[%(directiveIndex)s]", "SSLCertificateFile %(ssl_cert_file)s" % locals(), directiveIndex)
-        directiveIndex += 1
 
-    if ssl_key_file:
-        insert_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[1]/directive[%(directiveIndex)s]", "SSLCertificateKeyFile %(ssl_key_file)s" % locals(), directiveIndex)
-        directiveIndex += 1
+    #Set DocumentRoot directive
+    set_directive(aug, filename, directivePath, "DocumentRoot " + DEFAULT_DOCUMENT_ROOT % locals(), directiveIndex, virtualHostIndex)
+    directiveIndex += 1
+
+    #Set directory permissions
+    aug.set("/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/Directory[1]/arg" % locals(), "/")
+    subDirectivePath = "/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/Directory[1]/directive[%(directiveIndex)s]"
+    set_directive(aug, filename, subDirectivePath, "Require all granted", 1, virtualHostIndex)
     
-    if ssl_chain_file:
-        insert_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[1]/directive[%(directiveIndex)s]", "SSLCertificateChainFile %(ssl_chain_file)s" % locals(), directiveIndex)
-        directiveIndex += 1
+    aug.set("/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/Directory[2]/arg" % locals(), DEFAULT_DOCUMENT_ROOT % locals())
+    subDirectivePath = "/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/Directory[2]/directive[%(directiveIndex)s]"
+    subDirectiveIndex = 1
+    set_directive(aug, filename, subDirectivePath, "Options Indexes FollowSymLinks MultiViews", subDirectiveIndex, virtualHostIndex)
+    subDirectiveIndex += 1
+    set_directive(aug, filename, subDirectivePath, "AllowOverride None", subDirectiveIndex, virtualHostIndex)
+    subDirectiveIndex += 1
+    set_directive(aug, filename, subDirectivePath, "Order allow,deny", subDirectiveIndex, virtualHostIndex)
+    subDirectiveIndex += 1
+    set_directive(aug, filename, subDirectivePath, "Allow from all", subDirectiveIndex, virtualHostIndex)
+
+    #Set ErrorLog
+    set_directive(aug, filename, directivePath, "ErrorLog ${APACHE_LOG_DIR}/error.log", directiveIndex, virtualHostIndex)
+    directiveIndex += 1
+
+    #Set LogLevel
+    set_directive(aug, filename, directivePath, "LogLevel warn", directiveIndex, virtualHostIndex)
+    directiveIndex += 1
+
+    #Set Access log
+    set_directive(aug, filename, directivePath, "CustomLog ${APACHE_LOG_DIR}/access.log combined", directiveIndex, virtualHostIndex)
+    directiveIndex += 1
 
     return directiveIndex
 
 
-def insert_directive(aug, filename, path, directive, directiveIndex):
+def insert_ssl_configuration(aug, filename, virtualHostIndex, directiveIndex, ssl_cert_filepath, ssl_key_filepath, ssl_chain_filepath):
+    set_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/directive[%(directiveIndex)s]", "SSLEngine on", directiveIndex, virtualHostIndex)
+    directiveIndex += 1
+    set_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/directive[%(directiveIndex)s]", "SSLProtocol all -SSLv2 -SSLv3", directiveIndex, virtualHostIndex) 
+    directiveIndex += 1
+    set_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/directive[%(directiveIndex)s]", "SSLCipherSuite ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA", directiveIndex, virtualHostIndex)
+    directiveIndex += 1
+    set_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/directive[%(directiveIndex)s]", "SSLHonorCipherOrder on", directiveIndex, virtualHostIndex)
+    directiveIndex += 1
+    if ssl_cert_filepath:
+        set_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/directive[%(directiveIndex)s]", "SSLCertificateFile %(ssl_cert_filepath)s" % locals(), directiveIndex, virtualHostIndex)
+        directiveIndex += 1
+
+    if ssl_key_filepath:
+        set_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/directive[%(directiveIndex)s]", "SSLCertificateKeyFile %(ssl_key_filepath)s" % locals(), directiveIndex, virtualHostIndex)
+        directiveIndex += 1
+    
+    if ssl_chain_filepath:
+        set_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/directive[%(directiveIndex)s]", "SSLCertificateChainFile %(ssl_chain_filepath)s" % locals(), directiveIndex, virtualHostIndex)
+        directiveIndex += 1
+
+    set_directive(aug, filename, "/files/%(filename)s.conf/VirtualHost[%(virtualHostIndex)s]/directive[%(directiveIndex)s]", "RequestHeader set X-Forwarded-Proto \"https\"", directiveIndex, virtualHostIndex)
+    directiveIndex += 1
+
+
+    return directiveIndex
+
+
+def set_directive(aug, filename, path, directive, directiveIndex, virtualHostIndex):
     parts = directive.split(" ")
 
     aug.set(path % locals(), parts[0])
@@ -200,10 +225,11 @@ def main():
             name=dict(required=True),
             filename=dict(default=None, required=False),
             state=dict(default="present", choices=["absent", "present"]),
-            ssl=dict(default=False, required=False, type = "bool" ),
-            ssl_cert_file=dict(default=None, required=False),
-            ssl_key_file=dict(default=None, required=False),
-            ssl_chain_file=dict(default=None, required=False)
+            ssl=dict(default=False, required=False, type="bool"),
+            ssl_cert_filepath=dict(default=None, required=False),
+            ssl_key_filepath=dict(default=None, required=False),
+            ssl_chain_filepath=dict(default=None, required=False),
+            force_https=dict(default=True, required=False, type="bool"),
         ),
         supports_check_mode=True
     )
@@ -212,9 +238,10 @@ def main():
     filename = module.params["filename"]
     state = module.params["state"]
     ssl = module.params["ssl"]
-    ssl_cert_file = module.params["ssl_cert_file"]   
-    ssl_key_file = module.params["ssl_key_file"]   
-    ssl_chain_file = module.params["ssl_chain_file"]   
+    ssl_cert_filepath = module.params["ssl_cert_filepath"]
+    ssl_key_filepath = module.params["ssl_key_filepath"]
+    ssl_chain_filepath = module.params["ssl_chain_filepath"]
+    force_https = module.params["force_https"]
 
     try:
         aug = load_augeas_for_file(check_mode=module.check_mode)
@@ -223,7 +250,7 @@ def main():
         return
 
     if state == 'present':
-        ensure_vhost_exists(aug, vhost, filename, ssl, ssl_cert_file, ssl_key_file, ssl_chain_file)
+        ensure_vhost_exists(aug, vhost, filename, ssl, ssl_cert_filepath, ssl_key_filepath, ssl_chain_filepath, force_https)
     elif state == 'absent':
         module.fail_json(msg="state=absent is not implemented yet, maybe just a2dissite %(filename)s instead?" % locals())
         return

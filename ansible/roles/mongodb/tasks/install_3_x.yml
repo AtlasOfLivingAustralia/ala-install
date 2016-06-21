@@ -1,0 +1,30 @@
+# This script performs all necessary steps to upgrade apt packages to install MongoDB 3.x
+# as per the guide here https://docs.mongodb.org/v3.0/release-notes/3.0-upgrade/ and 
+# https://docs.mongodb.org/v3.0/tutorial/install-mongodb-on-debian/
+
+- name: Import the public key used by the package management system
+  apt_key: keyserver="keyserver.ubuntu.com" id="7F0CEB10"
+  
+- name: Create an apt source file for this version of mongo
+  copy: content="deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.0 main" dest="/etc/apt/sources.list.d/mongodb-org-3.0.list"
+
+# https://docs.mongodb.org/manual/tutorial/transparent-huge-pages/
+- name: copy script to disable transparent huge pages (THP)
+  copy: src="disable-transparent-hugepages" dest="/etc/init.d/disable-transparent-hugepages" mode="755"
+
+- name: Configure the OS to run the script on boot
+  command: update-rc.d disable-transparent-hugepages defaults
+
+- name: Run the script now
+  command: service disable-transparent-hugepages start
+
+- name: install mongo {{ mongo_version }} (Debian)
+  apt: pkg="{{ item }}" state=present update_cache=yes
+  with_items:
+    - mongodb-org={{ mongo_version }}
+    - mongodb-org-server={{ mongo_version }}
+    - mongodb-org-shell={{ mongo_version }}
+    - mongodb-org-mongos={{ mongo_version }}
+    - mongodb-org-tools={{ mongo_version }}
+  notify:
+    - restart tomcat

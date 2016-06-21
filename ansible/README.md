@@ -52,17 +52,24 @@ These roles depend heavily on two inventory properties:
 
 These variables tell the ```tomcat_deploy``` and ```apache_vhost``` roles how to configure your application using the following rules:
 
-1. If ```<projectname>_context_path``` is blank or '/' then:
-  1. Create an Apache Virtual Host for the ```<projectname>_hostname``` with proxy rules to forward all requests to Tomcat (i.e. ```ProxyPass / ajp://localhost:8009/```)
-  2. Create a Tomcat Virtual Host for the ```<projectname>_hostname``` with the application deployed as ROOT.war (so it is the default context).
-2. If ```<projectname>_context_path``` is NOT blank or '/' then:
-  1. Create an Apache Virtual Host for the ```<projectname>_hostname``` with proxy rules to forward the ```<projectname>_context_path``` to the same context on Tomcat (i.e. ```ProxyPass /<projectname>_context_path  ajp://localhost:8009/<projectname>_context_path```)
-      * If a virtual host already exists for ```<projectname>_hostname```, then it will be updated with the new ProxyPass rules.
-   2. Deploy the application as ```<projectname>_context_path.war``` to the webapps/ directory on Tomcat
-   3. Use this option when you have multiple context paths on the same hostname (e.g. my.host.name/app1 and my.host.name/app2).
-3. If ```<projectname>_hostname``` contains a colon (':', indicating that there is a port number) OR is 'localhost' OR is '127.0.0.1' then 
-   1. Do not create any Apache configuration
-   2. Deploy the application as ```<projectname>_context_path.war``` to the webapps/ directory on Tomcat
+1. If ```<projectname>_hostname``` is not empty, not localhost, not the loopback and does not contain a colon:
+    1. If ```<projectname>_context_path``` is blank or "/":
+        1. Create an Apache Virtual Host for the ```<projectname>_hostname``` with proxy rules to forward the root context to Tomcat (i.e. ```ProxyPass / ajp://localhost:8009/```)
+        1. Create a Tomcat Virtual Host for the ```<projectname>_hostname``` with the application deployed as ROOT.war (so it is the default context).
+    1. If ```<projectname>_context_path``` is NOT blank or "/"
+        1. Create an Apache Virtual Host for the ```<projectname>_hostname``` with proxy rules to forward the ```<projectname>_context_path``` context to Tomcat (i.e. ```ProxyPass /<context> ajp://localhost:8009/<conttext>```)
+        1. Create a Tomcat Virtual Host for the ```<projectname>_hostname``` with the application deployed as ```<projectname>_context_path.war```.
+1. If ```<projectname>_hostname``` is empty, localhost, the loopback or contains a colon:
+    1. Do not create any Apache configuration
+    1. Do not create a Tomcat virtual host
+    1. If ```<projectname>_context_path``` is blank or "/":
+        1. Deploy the application as ROOT.war to the webapps/ directory on Tomcat
+    1. If ```<projectname>_context_path``` is NOT blank or "/":
+        1. Deploy the application as ```<projectname>_context_path.war``` to the webapps/ directory on Tomcat
+
+NOTES:
+1. These steps are non-destructive, so if the tomcat or apache vhosts already exists then they will be updated.
+1. You cannot have multiple applications as the root context, so if your playbook/inventory uses ```<projectname>_context_path=``` for multiple applications then you will have a problem.
 
 ## Other optional parameters
 
@@ -79,17 +86,36 @@ will create
 ```
 ProxyPass /biocache-media   !
 ```
+3. ```log_filename``` - the filename of the application's log file, so that the tomcat_deploy role can back it up. If not provided, the war_filename will be used. Do not include the file extension.
 
-### SSL Configuration
+The existing WAR file and log file will be backed up before the new WAR is deployed.
 
-Use the following parameters if you need to enable SSL in your Apache virtual host.
+### HTTPS Configuration
 
-1. ```ssl = true``` - this enables SSL
+HTTPS can be enabled for your playbook by specifying
+
+```
+ssl = true
+```
+
+in your inventory. 
+
+There are two options for installing HTTPS key/cert/etc files on your server:
+
+1. Copy local files to the server; or
+1. Manage them on the server with a tool like SSL Mate (this is the default).
+
+ALA uses option 2.
+
+Use the following parameters if you need to copy local files to your server:
+
+1. ```ssl = true``` - this enables HTTPS
+1. ```copy_https_certs_from_local = true``` - this enables the copy option
 1. ```ssl_certificate_server_dir = /path/to/cert/dir/on/server``` - this is the location on the server for your certificate and key files
-1. ```ssl_certificate_local_dir = /LOCAL/path/to/ssl/files``` - this is the LOCAL file path to the SSL configuration files (key, cert, chain) that need to be deployed to the server
-1. ```ssl_cert_file = filename``` - this is the name of the SSL certificate file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateFile``` directive (to ssl\_certificate\_server\_dir/ssl\_cert\_file).
-1. ```ssl_key_file = filename``` - this is the name of the SSL key file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateKeyFile``` directive (to ssl\_certificate\_server\_dir/ssl\_key\_file).
-1. ```ssl_chain_file = filename``` - this is the name of the SSL certificate chain file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateChainFile``` directive (to ssl\_certificate\_server\_dir/ssl\_chain\_file).
+1. ```ssl_certificate_local_dir = /LOCAL/path/to/ssl/files``` - this is the LOCAL file path to the HTTPS configuration files (key, cert, chain) that need to be deployed to the server
+1. ```ssl_cert_file = filename``` - this is the name of the HTTPS certificate file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateFile``` directive (to ssl\_certificate\_server\_dir/ssl\_cert\_file).
+1. ```ssl_key_file = filename``` - this is the name of the HTTPS key file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateKeyFile``` directive (to ssl\_certificate\_server\_dir/ssl\_key\_file).
+1. ```ssl_chain_file = filename``` - this is the name of the HTTPS certificate chain file, used to copy the file to the server (into ssl\_certificate\_server\_dir) and to set the ```SSLCertificateChainFile``` directive (to ssl\_certificate\_server\_dir/ssl\_chain\_file).
 
 ## Examples
 
@@ -111,7 +137,7 @@ This will ensure that your application can be safely deployed to a non-productio
 
 The AnsibleSkeleton script will create a skeleton properties file for your application, with appropriate variables for the auth servers (```auth_base_url``` and ```auth_cas_url```).
 
-*Auth URLs MUST be accessed via SSL.*
+*Auth URLs MUST be accessed via HTTPS.*
 
 # Sample Inventories
 The inventories/vagrant directory contains inventories for deploying applications to a vagrant instance.

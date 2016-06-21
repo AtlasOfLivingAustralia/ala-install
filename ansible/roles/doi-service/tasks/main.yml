@@ -1,0 +1,52 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - doi-service
+    - deploy
+    - properties
+    - tomcat_vhost
+    - nginx_vhost
+
+#
+# External configuration properties file
+#
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/doi-service/config"
+  tags:
+    - properties
+    - doi-service
+
+- name: copy all config.properties
+  template: src=doi-service-config.properties dest={{data_dir}}/doi-service/config/doi-service-config.properties
+  tags:
+    - properties
+    - doi-service
+
+- name: set data ownership
+  file: path={{data_dir}}/doi-service owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - properties
+    - doi-service
+
+#
+# WAR file deployment and virtual host configuration
+#
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ doi_service_war_url }}' context_path='{{doi_service_context_path}}' hostname='{{ doi_service_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - doi-service
+
+- name: add nginx vhost config
+  include: ../../nginx_vhost/tasks/main.yml
+    context_path='{{ doi_service_context_path }}' 
+    hostname='{{ doi_service_hostname }}'
+  notify:
+    - reload nginx
+  tags:
+    - doi-service
+    - nginx_vhost 
+    - deploy

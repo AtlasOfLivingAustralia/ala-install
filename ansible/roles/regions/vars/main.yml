@@ -1,6 +1,9 @@
+# application versions
+regions_config: "{{regions}}-config.properties"
+
 # assets
-version: "2.4-SNAPSHOT"
-artifactId: "regions"
+version: "2.5-SNAPSHOT"
+artifactId: "{{regions}}"
 classifier: ''
 packaging: "war"
 groupId: "au.org.ala"

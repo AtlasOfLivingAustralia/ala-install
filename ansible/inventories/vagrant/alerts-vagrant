@@ -17,3 +17,23 @@ alerts_db_hostname=localhost
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
+
+occurrence_searchTitle=occurrence search
+occurrence_searchUrl=http://biocache.ala.org.au/occurrences/search?q=passer
+
+regions_searchTitle=ACT
+regions_searchUrl=http://regions.ala.org.au/states/Australian+Capital+Territory
+
+speciesPages_searchTitle=Shingle-back
+speciesPages_searchUrl=http://collections.ala.org.au/public/show/co13
+
+collection_searchTitle=ANIC
+collection_searchUrl=http://collections.ala.org.au/public/show/co13
+
+biocache_url=http://biocache.ala.org.au
+spatial_url=http://spatial.ala.org.au
+collectory_url=http://collections.ala.org.au
+userdetails_url=https://auth.ala.org.au/userdetails
+bie_base_url=http://bie.ala.org.au
+bie_search_path=/search
+ala_base_url=http://ala.org.au

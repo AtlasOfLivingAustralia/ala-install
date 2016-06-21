@@ -1,3 +1,12 @@
+- name: show ansible versions
+  debug: msg="You are using Ansible {{ ansible_version.full }}. The current supported version for ala-install is {{ supported_ansible_version.full }}."
+
+- name: check the ansible version
+  pause: prompt="You are not using the supported version of Ansible. The supported version is {{ supported_ansible_version.full }}. You are using {{ ansible_version.full }}. Proceed at your own risk. Press enter to continue"
+  when: supported_ansible_version.major != ansible_version.major or supported_ansible_version.minor != ansible_version.minor or supported_ansible_version.revision != ansible_version.revision
+  tags:
+    - version_check
+
 - name: set debian variables
   set_fact:
     libtcnative: libtcnative-1
@@ -5,6 +14,7 @@
     tomcat_user: tomcat7
     tomcat_conf: /etc/default/tomcat7
     tomcat_conf_dir: /etc/tomcat7
+    tomcat_log_dir: /var/log/tomcat7
     apache: apache2
     mysql_service: mysql
     cassandra_yaml: /etc/cassandra/cassandra.yaml
@@ -47,7 +57,7 @@
 
 - name: using the GBIF nexus repository
   set_fact:
-    maven_repo_ws_url: "http://repository.gbif.org/service/local/artifact/maven/redirect?r=ala-release&g={{groupId | default('au.org.ala')}}&a={{artifactId | default('')}}&v={{version | default('')}}&e={{packaging | default('war')}}&c={{classifier | default('')}}"
+    maven_repo_ws_url: "http://repository.gbif.org/service/local/artifact/maven/redirect?r={{maven_release_dir | default('ala-release')}}&g={{groupId | default('au.org.ala')}}&a={{artifactId | default('')}}&v={{version | default('')}}&e={{packaging | default('war')}}&c={{classifier | default('')}}"
   when: use_gbif_nexus is defined and use_gbif_nexus == "true"
   tags:
     - setfacts  

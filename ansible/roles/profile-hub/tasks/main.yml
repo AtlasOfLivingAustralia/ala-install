@@ -1,6 +1,10 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - profile-hub
+    - deploy
+    - properties
+    - apache_vhost
+    - tomcat_vhost
 
 #
 # Properties file configuration
@@ -30,7 +34,10 @@
     - properties
 
 - name: copy all template configs
-  template: src=profile-hub-config.properties dest={{data_dir}}/profile-hub/config/profile-hub-config.properties
+  template: src={{ item }} dest={{data_dir}}/profile-hub/config/{{ item }}
+  with_items:
+    - profile-hub-config.properties
+    - help-mappings.json
   tags:
     - profile-hub
     - properties
@@ -65,8 +72,9 @@
 #
 # WAR file deployment and virtual host configuration
 #
-
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ profile_hub_context_path }}' hostname='{{ profile_hub_hostname }}'
+- include: ../../apache_vhost/tasks/main.yml 
+    context_path='{{ profile_hub_context_path }}' 
+    hostname='{{ profile_hub_hostname }}'
   tags:
     - profile-hub
     - deploy

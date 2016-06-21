@@ -1,0 +1,42 @@
+[biocache-cli]
+vagrant1
+
+[biocache-cli:vars]
+is_vagrant=true
+local_repo_dir = ~/.ala
+data_dir=/data
+biocache_opts=-Xmx8g -Xms8g
+
+nameindex_to_use = ala
+sds_enabled = false
+biocache_service_url = http://biocache.ala.org.au/ws
+biocache_service_base_url = http://biocache.ala.org.au
+biocache_db_host = localhost
+biocache_hub_url = http://biocache.ala.org.au
+solr_url = ??
+collectory_url = http://collections.ala.org.au
+userdetails_url = https://auth.ala.org.au/userdetails/userDetails/
+logger_url = http://logger.ala.org.au
+
+media_store_local = true
+media_store_url = 
+
+layers_service_url = 
+layers_service_sampling = true
+
+sample_files = 
+
+default_country = Australia
+
+caches_auth_enabled = true
+caches_log_enabled = true
+caches_collections_enabled = true
+caches_layers_enabled = true
+
+registry_api_key=
+
+volunteer_hub_uid=
+
+upload_user=
+upload_password=
+

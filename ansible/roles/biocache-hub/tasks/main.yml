@@ -53,6 +53,23 @@
     - hub_config
     - biocache_hub    
 
+- name: copy charts.json
+  template: src=config/charts.json dest={{data_dir}}/{{biocache_hub}}/config/charts.json force=yes
+  tags:
+    - webapps
+    - config
+    - hub_config
+    - biocache_hub
+
+- name: copy overlays.json
+  template: src=config/{{overlays_json}} dest={{data_dir}}/{{biocache_hub}}/config/overlays.json force=yes
+  when: overlays_json is defined
+  tags:
+    - webapps
+    - config
+    - hub_config
+    - biocache_hub
+
 - name: set data ownership
   file: path={{data_dir}}/{{biocache_hub}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify:

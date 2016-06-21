@@ -1,7 +1,7 @@
-[regions]
-10.1.1.2
+[regions-ger]
+vagrant1
 
-[regions:vars]
+[regions-ger:vars]
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
@@ -14,12 +14,18 @@ layout_skin=ger
 regions_accordion_panel_maxheight=405px
 regions_map_height=750
 regions_map_bounds=[-13,145,-39,155]
+skin_fluid_layout=false
+skin_breadcrumb="skin.breadcrumb.level1.title=Home\nskin.breadcrumb.level1.path=\nskin.breadcrumb.level2.title=Locations\nskin.breadcrumb.level2.path=/species-by-location/"
+default_region_type=Other regions
+default_region=Great Eastern Ranges Initiative
 
 ala_base_url=http://ala.org.au
 bie_base_url=http://bie.ala.org.au
 biocache_base_url=http://biocache.ala.org.au
+biocache_service_base_url=http://biocache.ala.org.au/ws
 spatial_base_url=http://spatial.ala.org.au
 spatial_base_url_ws=http://spatial.ala.org.au/ws
+geoserver_base_url=http://spatial.ala.org.au/geoserver
 logger_base_url=http://logger.ala.org.au
 alerts_base_url=http://alerts.ala.org.au
 security_cas_login_url=https://auth.ala.org.au/cas/login
@@ -27,3 +33,5 @@ biocache_records_url=http://biocache.vagrant1.ala.org.au/
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
+
+regions=regions-ger

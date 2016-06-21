@@ -77,8 +77,8 @@
             },
             {
                 "sort":"index",
-                "field":"raw_identification_qualifier"
-            },
+                "field":"identification_qualifier_s"
+            },            
             {
                 "sort":"count",
                 "field":"taxonomic_issue"
@@ -122,7 +122,7 @@
             },
             {
                 "sort":"count",
-                "field":"cl918"
+                "field":"cl1918"
             },
             {
                 "sort":"count",
@@ -235,7 +235,7 @@
         "facets":[
             {
                 "sort":"index",
-                "field":"collector"
+                "field":"collectors"
             },
             {
                 "sort":"count",

@@ -1,5 +1,5 @@
 [phylolink]
-phylolink.vagrant1.ala.org.au
+vagrant1
 
 [phylolink:vars]
 is_vagrant=true
@@ -31,3 +31,13 @@ nameindex_to_use=ala
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
+
+#
+# SSL Configuration files
+#
+ssl=false
+copy_https_certs_from_local=true
+ssl_certificate_server_dir=/etc/nginx
+ssl_certificate_local_dir=../../catacomb
+ssl_cert_file=*.ala.org.au.crt
+ssl_key_file=ala.org.au.key

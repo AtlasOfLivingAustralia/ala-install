@@ -5,16 +5,18 @@ vagrant1
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-deployment_env=vagrant1
+deployment_env=vagrant
 
-profile_service_hostname=profiles-ws.vagrant1.ala.org.au
-profile_service_url=http://profiles-ws.vagrant1.ala.org.au
-profile_service_base_url=http://profiles-ws.vagrant1.ala.org.au
+tomcat_java_opts=-Xmx7g -Xms512m -XX:MaxPermSize=512m -Xss256k -Djava.awt.headless=true
+
+profile_service_hostname=profiles-ws.vagrant.ala.org.au
+profile_service_url=http://profiles-ws.vagrant.ala.org.au
+profile_service_base_url=http://profiles-ws.vagrant.ala.org.au
 profile_service_context_path=
 
-profile_hub_hostname=profiles.vagrant1.ala.org.au
-profile_hub_url=http://profiles.vagrant1.ala.org.au
-profile_hub_base_url=http://profiles.vagrant1.ala.org.au
+profile_hub_hostname=profiles.vagrant.ala.org.au
+profile_hub_url=http://profiles.vagrant.ala.org.au
+profile_hub_base_url=http://profiles.vagrant.ala.org.au
 profile_hub_context_path=
 
 auth_base_url=https://auth.ala.org.au
@@ -30,35 +32,92 @@ collectory_base_url=http://collections.ala.org.au
 bie_base_url=http://bie.ala.org.au
 lists_base_url=http://lists.ala.org.au
 biocache_base_url=http://biocache.ala.org.au
-sandbox_base_url=http://sandbox.ala.org.au
+#sandbox_base_url=http://sandbox.ala.org.au
 avh_base_url=http://avh.ala.org.au
 nsl_base_url=https://biodiversity.org.au/test-nsl
 
-image_upload_apikey = 92c5d514-92e6-4faf-9997-b8cef233b883
-profile_service_apikey = 04f4a530-a0b6-4a9f-be4a-4dde9827ae34
+sandbox_upload_directory=/data/sandbox/uploads
+sandbox_base_url=http://profiles.vagrant.ala.org.au
+sandbox_biocache_internal_url=http://localhost:8080/biocache-service
+sandbox_context_path=/sandbox
 
-biodiv_library_api_key=1265b70b-3f49-4e4a-9f9b-a0e5b1033228
+
+image_upload_apikey = 
+profile_service_apikey = 
+uploaded_images_base_url=http://images2-dev.ala.org.au
+
+biodiv_library_api_key=
 
 nameindex_to_use=ala
 
 # ANDS test account details
-ands_doi_app_id=e6f84d76f388c237f1de517e652bc174c47fd6e2
-ands_doi_key=63e0a8c258
-ands_doi_client_id=68
+ands_doi_app_id=
+ands_doi_key=
+ands_doi_client_id=
 
 # Google Analytics account details
-analytics_serviceAccountEmail=742444384775-bvi7i0n5uh7a45qu7324td9hh4i733gn@developer.gserviceaccount.com
-analytics_viewId=108545238
-#analytics_private_key_local_path=/path/to/local/clone/of/ansible-inventories/googleAnalytics/google-analytics-key.p12
-analytics_private_key_local_path=~/projects/ala/ansible-inventories/googleAnalytics/google-analytics-key.p12
+analytics_serviceAccountEmail=
+analytics_viewId=
+analytics_private_key_local_path=
 
 # Feature flags
 disable_authorisation=false
 feature_image_upload=true
 feature_publication=false
 
-apikey_ip_whitelist=152.83.193.212 # Mark's laptop, required to run the bulk import processes
+apikey_ip_whitelist=
 
 # Elastic Search config
 elasticsearch_version=1.7.2
 elasticsearch_cluster_name=profiles_es_{{ deployment_env }}
+
+
+
+[sandbox]
+vagrant1
+
+[sandbox:vars]
+is_vagrant=true
+local_repo_dir = ~/.ala
+data_dir=/data
+
+biocache_db_host = localhost
+cassandra_listen_host = localhost
+collectory_db_host_address = localhost
+collectory_db_host = localhost
+
+biocache_service_hostname = localhost
+biocache_service_url = http://localhost:8080/biocache-service
+biocache_service_base_url = http://localhost:8080
+biocache_service_context_path = /biocache-service
+
+userdetails_url=https://auth.ala.org.au/userdetails/userDetails
+
+collectory_url = http://collections.ala.org.au
+collectory_base_url = http://collections.ala.org.au
+collectory_context_path =
+
+solr_hostname = localhost
+solr_url = http://localhost:8080/solr
+solr_base_url = http://localhost:8080
+solr_context_path = /solr
+
+sandbox_hostname = profiles.vagrant.ala.org.au
+sandbox_url = http://profiles.vagrant.ala.org.au/sandbox
+sandbox_base_url = http://profiles.vagrant.ala.org.au
+sandbox_context_path = /sandbox
+
+biocache_hub_url = nohub
+
+biocache_sds_url = http://sds.ala.org.au
+bie_service_url = http://bie.ala.org.au/ws
+bie_url = http://bie.ala.org.au
+layers_service_url = http://spatial.ala.org.au/ws
+lists_service_url = http://lists.ala.org.au
+logger_url = http://logger.vagrant.ala.org.au
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas
+auth_if_logged_in_pattern=
+
+nameindex_to_use=ala
