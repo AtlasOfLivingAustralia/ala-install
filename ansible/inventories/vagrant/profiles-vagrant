@@ -5,18 +5,18 @@ vagrant1
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-deployment_env=vagrant1
+deployment_env=vagrant
 
-tomcat_java_opts=-Xmx512m -Xms512m -XX:MaxPermSize=128m -Xss256k -Djava.awt.headless=true
+tomcat_java_opts=-Xmx7g -Xms512m -XX:MaxPermSize=512m -Xss256k -Djava.awt.headless=true
 
-profile_service_hostname=profiles-ws.vagrant1.ala.org.au
-profile_service_url=https://profiles-ws.vagrant1.ala.org.au
-profile_service_base_url=https://profiles-ws.vagrant1.ala.org.au
+profile_service_hostname=profiles-ws.vagrant.ala.org.au
+profile_service_url=http://profiles-ws.vagrant.ala.org.au
+profile_service_base_url=http://profiles-ws.vagrant.ala.org.au
 profile_service_context_path=
 
-profile_hub_hostname=profiles.vagrant1.ala.org.au
-profile_hub_url=https://profiles.vagrant1.ala.org.au
-profile_hub_base_url=https://profiles.vagrant1.ala.org.au
+profile_hub_hostname=profiles.vagrant.ala.org.au
+profile_hub_url=http://profiles.vagrant.ala.org.au
+profile_hub_base_url=http://profiles.vagrant.ala.org.au
 profile_hub_context_path=
 
 auth_base_url=https://auth.ala.org.au
@@ -32,9 +32,15 @@ collectory_base_url=http://collections.ala.org.au
 bie_base_url=http://bie.ala.org.au
 lists_base_url=http://lists.ala.org.au
 biocache_base_url=http://biocache.ala.org.au
-sandbox_base_url=http://sandbox.ala.org.au
+#sandbox_base_url=http://sandbox.ala.org.au
 avh_base_url=http://avh.ala.org.au
 nsl_base_url=https://biodiversity.org.au/test-nsl
+
+sandbox_upload_directory=/data/sandbox/uploads
+sandbox_base_url=http://profiles.vagrant.ala.org.au
+sandbox_biocache_internal_url=http://localhost:8080/biocache-service
+sandbox_context_path=/sandbox
+
 
 image_upload_apikey = 
 profile_service_apikey = 
@@ -52,7 +58,7 @@ ands_doi_client_id=
 # Google Analytics account details
 analytics_serviceAccountEmail=
 analytics_viewId=
-analytics_private_key_local_path=/path/to/local/clone/of/ansible-inventories/googleAnalytics/google-analytics-key.p12
+analytics_private_key_local_path=
 
 # Feature flags
 disable_authorisation=false
@@ -66,13 +72,52 @@ elasticsearch_version=1.7.2
 elasticsearch_cluster_name=profiles_es_{{ deployment_env }}
 
 
-#
-# SSL Configuration files
-#
-#ssl=true
-#copy_https_certs_from_local=true
-#ssl_certificate_server_dir=/etc/apache2
-#ssl_certificate_local_dir=../../catacomb
-#ssl_cert_file=ala.org.au.crt
-#ssl_key_file=ala.org.au.key
-#ssl_chain_file=ala.org.au.chain.crt
+
+[sandbox]
+vagrant1
+
+[sandbox:vars]
+is_vagrant=true
+local_repo_dir = ~/.ala
+data_dir=/data
+
+biocache_db_host = localhost
+cassandra_listen_host = localhost
+collectory_db_host_address = localhost
+collectory_db_host = localhost
+
+biocache_service_hostname = localhost
+biocache_service_url = http://localhost:8080/biocache-service
+biocache_service_base_url = http://localhost:8080
+biocache_service_context_path = /biocache-service
+
+userdetails_url=https://auth.ala.org.au/userdetails/userDetails
+
+collectory_url = http://collections.ala.org.au
+collectory_base_url = http://collections.ala.org.au
+collectory_context_path =
+
+solr_hostname = localhost
+solr_url = http://localhost:8080/solr
+solr_base_url = http://localhost:8080
+solr_context_path = /solr
+
+sandbox_hostname = profiles.vagrant.ala.org.au
+sandbox_url = http://profiles.vagrant.ala.org.au/sandbox
+sandbox_base_url = http://profiles.vagrant.ala.org.au
+sandbox_context_path = /sandbox
+
+biocache_hub_url = nohub
+
+biocache_sds_url = http://sds.ala.org.au
+bie_service_url = http://bie.ala.org.au/ws
+bie_url = http://bie.ala.org.au
+layers_service_url = http://spatial.ala.org.au/ws
+lists_service_url = http://lists.ala.org.au
+logger_url = http://logger.vagrant.ala.org.au
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas
+auth_if_logged_in_pattern=
+
+nameindex_to_use=ala
