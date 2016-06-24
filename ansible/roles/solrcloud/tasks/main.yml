@@ -1,0 +1,89 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - solrcloud 
+    - solr_config
+
+- name: Install add-apt-repostory
+  sudo: yes
+  apt: name=software-properties-common state=latest
+  tags:
+    - java8
+
+- name: Add Oracle Java Repository
+  sudo: yes
+  apt_repository: repo='ppa:webupd8team/java'
+  tags:
+    - java8
+
+- name: Accept Java 8 License
+  sudo: yes
+  debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+  tags:
+    - java8
+
+- name: Install Oracle Java 8
+  sudo: yes
+  apt: name={{item}} state=latest
+  with_items:
+    - oracle-java8-installer
+    - ca-certificates
+    - oracle-java8-set-default
+  tags:
+    - java8
+
+- name: Download SOLR 5.5.0
+  get_url: url="http://apache.mirror1.spango.com/lucene/solr/5.5.0/solr-5.5.0.tgz" dest=/tmp/solr-5.5.0.tgz
+  tags:
+    - solrcloud
+
+- name: Extract the install script
+  shell: "tar xzf /tmp/solr-5.5.0.tgz solr-5.5.0/bin/install_solr_service.sh --strip-components=2"
+  tags:  
+    - solrcloud
+    - solr_download
+
+- name: ensure target directories exist [data subdirectories etc.
+  file: path={{item}} state=directory
+  with_items:
+    - "{{data_dir}}/solr/"
+  tags:
+    - solr_config  
+    - solrcloud
+
+- name: Run install script
+  shell: "./install_solr_service.sh /tmp/solr-5.5.0.tgz -d /data/solr -f"
+  tags:  
+    - solrcloud
+
+- name: add common tomcat jars (for SOLR logging and JTS)
+  copy: src=libs/{{item}} dest=/opt/solr/server/lib/ext
+  with_items:
+    - jts-1.13.jar
+  tags:
+    - solrcloud
+
+- name: add common tomcat jars (for SOLR logging and JTS)
+  copy: src=solr/solr.xml dest=/data/solr
+  with_items:
+    - jts-1.13.jar
+  tags:
+    - solrcloud
+
+- name: Stop solr
+  shell: "service solr stop"
+  tags:
+    - solr_config  
+    - solrcloud
+
+- name: copy SOLR config
+  template: src=solr.in.sh dest=/opt/solr/bin
+  tags:
+    - solrcloud
+    - solrcloud_config
+
+- name: Start solr
+  shell: "/opt/solr/bin/solr start -c"
+  tags:  
+    - solrcloud
+    - solr_config  
+
