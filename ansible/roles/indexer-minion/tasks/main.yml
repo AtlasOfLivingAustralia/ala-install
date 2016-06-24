@@ -1,0 +1,45 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - indexer-minion
+
+- name: ensure biocache directory exists
+  file: path=/usr/lib/indexer state=directory
+  tags:
+    - indexer-minion
+
+- name: clean biocache existing extract
+  shell: "rm -Rf /usr/lib/indexer/*"
+  ignore_errors: yes
+  tags:
+    - indexer-minion
+
+- name: copy local biocache store jar
+  copy: src={{ indexer_local_build }} dest="/usr/lib/indexer/indexer.tgz" force=yes
+  tags:
+    - indexer-minion
+
+- name: unjar biocache
+  shell: "tar zxf /usr/lib/indexer/indexer.tgz  -C /usr/lib/indexer/"
+  tags:
+    - indexer-minion 
+
+- name: create the reindex directory
+  file: path={{item}} state=directory mode=777
+  with_items:
+    - "{{data_dir}}/solr5-template"
+    - "{{data_dir}}/solr-create"
+    - "{{data_dir}}/solr"
+    - "{{data_dir}}/tmp/indexing"
+    - "{{data_dir}}/logs"
+  tags:
+    - indexer-minion 
+
+- name: copy solr-template
+  copy: src=solr5-template dest={{data_dir}}/
+  tags:
+    - indexer-minion
+
+- name: unjar biocache
+  shell: "ln -s /usr/lib/indexer/indexer /usr/bin/indexer"
+  tags:
+    - indexer-minion
