@@ -18,6 +18,7 @@
     <sensitivity-category id="P3" name="WA Priority 3" type="Conservation"/>
     <sensitivity-category id="P4" name="WA Priority 4" type="Conservation"/>
     <sensitivity-category id="P5" name="WA Priority 5" type="Conservation"/>
+    <sensitivity-category id="PX" name="WA Priority X" type="Conservation"/>
     <sensitivity-category id="SP" name="WA Specially Protected" type="Conservation"/>
     <sensitivity-category id="C2" name="SA Category 2 Conservation Protected" type="Conservation"/>
     <sensitivity-category id="1"  name="NSW Category 1 Conservation Protected" type="Conservation"/>
@@ -34,4 +35,7 @@
     <sensitivity-category id="PBC8" name="Plant pest has a Transient Population on the supplied date and location" type="Plant_Pest"/>
     <sensitivity-category id="PBC9" name="Plant pest is unreleased Exotic Biological Control Agent" type="Plant_Pest"/>
     <sensitivity-category id="PBC10" name="Identified to Higher taxon that have members that are of Biosecurity Concern" type="Plant_Pest"/>
+    <sensitivity-category id="sensitive species" name="New Zealand sensitive species" type="Conservation"/>
+    <sensitivity-category id="High" name="ACT high priority" type="Conservation"/>
+    <sensitivity-category id="Very High" name="ACT very high priority" type="Conservation"/>
 </sensitivity-categories>

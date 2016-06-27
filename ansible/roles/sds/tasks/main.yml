@@ -9,10 +9,19 @@
     - deploy
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ sds_webapp_url }}' context_path='{{ sds_context_path }}' hostname='{{ sds_hostname }}'
+  when: sds_webapp_local_build is not defined
   tags:
     - sds
     - tomcat_vhost
     - deploy
+
+- include: ../../tomcat_deploy/tasks/main.yml war_local_build='{{ sds_webapp_local_build }}' context_path='{{ sds_context_path }}' hostname='{{ sds_hostname }}'
+  when: sds_webapp_local_build is defined
+  tags:
+    - sds
+    - tomcat_vhost
+    - deploy
+
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
@@ -36,7 +45,7 @@
     - properties
 
 - name: Copy legacy properties file
-  copy: src="sensitivity-zones.xml" dest="{{data_dir}}/sds/sds-config.properties"
+  copy: src="sds-config.properties" dest="{{data_dir}}/sds/sds-config.properties"
   tags:
     - sds
     - properties
