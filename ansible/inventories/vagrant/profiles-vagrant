@@ -25,14 +25,12 @@ apikey_check_url=https://auth.ala.org.au/apikey/ws/check?apikey=
 
 userdetails_base_url=https://auth.ala.org.au/userdetails
 images_base_url=http://images.ala.org.au
-image_upload_base_url=http://biocache.ala.org.au
-image_search_url=http://biocache.ala.org.au/
+image_upload_base_url=http://localhost:8080/biocache-service
 ala_base_url=http://ala.org.au
 collectory_base_url=http://collections.ala.org.au
 bie_base_url=http://bie.ala.org.au
 lists_base_url=http://lists.ala.org.au
 biocache_base_url=http://biocache.ala.org.au
-#sandbox_base_url=http://sandbox.ala.org.au
 avh_base_url=http://avh.ala.org.au
 nsl_base_url=https://biodiversity.org.au/test-nsl
 
@@ -80,6 +78,9 @@ vagrant1
 is_vagrant=true
 local_repo_dir = ~/.ala
 data_dir=/data
+
+biocache_service_version=1.6.1
+sandbox_version=1.1
 
 biocache_db_host = localhost
 cassandra_listen_host = localhost
