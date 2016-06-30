@@ -9,14 +9,14 @@ deployment_env=vagrant
 
 tomcat_java_opts=-Xmx7g -Xms512m -XX:MaxPermSize=512m -Xss256k -Djava.awt.headless=true
 
-profile_service_hostname=profiles-ws.vagrant.ala.org.au
-profile_service_url=http://profiles-ws.vagrant.ala.org.au
-profile_service_base_url=http://profiles-ws.vagrant.ala.org.au
+profile_service_hostname=profiles-ws.vagrant1.ala.org.au
+profile_service_url=http://profiles-ws.vagrant1.ala.org.au
+profile_service_base_url=http://profiles-ws.vagrant1.ala.org.au
 profile_service_context_path=
 
-profile_hub_hostname=profiles.vagrant.ala.org.au
-profile_hub_url=http://profiles.vagrant.ala.org.au
-profile_hub_base_url=http://profiles.vagrant.ala.org.au
+profile_hub_hostname=profiles.vagrant1.ala.org.au
+profile_hub_url=http://profiles.vagrant1.ala.org.au
+profile_hub_base_url=http://profiles.vagrant1.ala.org.au
 profile_hub_context_path=
 
 auth_base_url=https://auth.ala.org.au
@@ -35,7 +35,7 @@ avh_base_url=http://avh.ala.org.au
 nsl_base_url=https://biodiversity.org.au/test-nsl
 
 sandbox_upload_directory=/data/sandbox/uploads
-sandbox_base_url=http://profiles.vagrant.ala.org.au
+sandbox_base_url=http://profiles.vagrant1.ala.org.au
 sandbox_biocache_internal_url=http://localhost:8080/biocache-service
 sandbox_context_path=/sandbox
 
@@ -69,6 +69,9 @@ apikey_ip_whitelist=
 elasticsearch_version=1.7.2
 elasticsearch_cluster_name=profiles_es_{{ deployment_env }}
 
+# Map keys
+map_id=someid
+map_access_key=somekey
 
 
 [sandbox]
@@ -103,9 +106,9 @@ solr_url = http://localhost:8080/solr
 solr_base_url = http://localhost:8080
 solr_context_path = /solr
 
-sandbox_hostname = profiles.vagrant.ala.org.au
-sandbox_url = http://profiles.vagrant.ala.org.au/sandbox
-sandbox_base_url = http://profiles.vagrant.ala.org.au
+sandbox_hostname = profiles.vagrant1.ala.org.au
+sandbox_url = http://profiles.vagrant1.ala.org.au/sandbox
+sandbox_base_url = http://profiles.vagrant1.ala.org.au
 sandbox_context_path = /sandbox
 
 biocache_hub_url = nohub
@@ -115,7 +118,7 @@ bie_service_url = http://bie.ala.org.au/ws
 bie_url = http://bie.ala.org.au
 layers_service_url = http://spatial.ala.org.au/ws
 lists_service_url = http://lists.ala.org.au
-logger_url = http://logger.vagrant.ala.org.au
+logger_url = http://logger.vagrant1.ala.org.au
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
