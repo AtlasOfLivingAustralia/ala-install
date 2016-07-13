@@ -1,4 +1,2 @@
-#solr_war_url: "http://search.maven.org/remotecontent?filepath=org/apache/solr/solr/4.10.0/solr-4.10.0.war"
 artifactId: "solr"
-version: "4.10.4"
-solr_war_url: "http://central.maven.org/maven2/org/apache/solr/solr/4.10.4/solr-4.10.4.war"
+solr_version: "5.5.2"
