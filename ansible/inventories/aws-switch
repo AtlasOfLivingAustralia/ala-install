@@ -22,7 +22,7 @@ biocache_local_build=/home/pal155/src/biocache-store/target/biocache-store-1.7.1
 specieslist_local_build=/home/pal155/src/specieslist-webapp/target/specieslist-webapp-0.17.0.war
 bie_index_local_build=/home/pal155/src/bie-index/target/bie-index-1.1-SNAPSHOT.war
 sds_webapp_local_build=/home/pal155/src/sds-webapp2/target/sds-webapp2-1.1-SNAPSHOT.war
-biocache_opts=-Xmx14g -Xms10g -XX:+UseG1GC
+biocache_opts=-Xmx12g -Xms8g -XX:+UseG1GC
 
 [aws-biocache:vars]
 tomcat_java_opts = -Xmx24g -Xms16g -XX:MaxPermSize=1g -Xss512k -Djava.awt.headless=true
