@@ -432,6 +432,8 @@
    <!-- Vernacular name fields -->
    <field name="commonName" type="text" indexed="true" stored="true" multiValued="true" omitNorms="false" />
    <field name="commonNameExact" type="lowercase" indexed="true" stored="false" multiValued="true" omitNorms="false"/>
+   <field name="commonNameSingle" type="lowercase" indexed="true" stored="true" multiValued="false" omitNorms="false"/>
+
 
    <!-- Additional information -->
    <field name="occurrenceCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
