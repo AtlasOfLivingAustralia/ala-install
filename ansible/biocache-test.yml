@@ -1,0 +1,14 @@
+- hosts: biocache-test
+  roles:
+    - common
+    - java
+    - tomcat
+    - cassandra
+    - apache
+    - nameindex
+    - solr
+    - biocache-db
+    - biocache-properties
+    - biocache-service
+    - { role: biocache-hub, biocache_hub: ala-hub }
+    - biocache-cli
