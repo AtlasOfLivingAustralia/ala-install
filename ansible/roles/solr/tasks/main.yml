@@ -25,8 +25,20 @@
   tags:
     - solr    
 
+- set_fact: tomcat_deploy_dir="/var/lib/{{ tomcat }}/webapps"
+  when: not vhost
+
+- set_fact: tomcat_deploy_dir="/var/lib/{{ tomcat }}/webapps-{{ solr_hostname }}"
+  when: vhost
+
+- set_fact: tomcat_context_dir="/var/lib/{{tomcat}}/conf/Catalina/localhost"
+  when: not vhost
+
+- set_fact: tomcat_context_dir="/var/lib/{{tomcat}}/conf/Catalina/{{ solr_hostname }}"
+  when: vhost
+
 - name: ensure tomcat context directory exists
-  file: path=/usr/share/{{tomcat}}/conf/Catalina/localhost/ state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{ tomcat_context_dir }} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   notify:
     - restart tomcat
   tags:
@@ -34,14 +46,14 @@
     - solr        
 
 - name: copy SOLR context (Redhat)
-  template: src=context/solr.xml dest=/usr/share/{{tomcat}}/conf/Catalina/localhost/solr.xml owner={{tomcat_user}} group={{tomcat_user}}
+  template: src=context/solr.xml dest={{ tomcat_context_dir }}/solr.xml owner={{tomcat_user}} group={{tomcat_user}}
   when: ansible_os_family == "RedHat"
   tags:
     - solr_config
     - solr
 
 - name: copy SOLR context (Debian)
-  template: src=context/solr.xml dest=/var/lib/{{tomcat}}/conf/Catalina/localhost/solr.xml owner={{tomcat_user}} group={{tomcat_user}}
+  template: src=context/solr.xml dest={{ tomcat_context_dir }}/solr.xml owner={{tomcat_user}} group={{tomcat_user}}
   when: ansible_os_family == "Debian"
   tags:
     - solr_config  
