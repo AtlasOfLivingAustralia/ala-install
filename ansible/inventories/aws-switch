@@ -18,7 +18,7 @@ aws-biocache
 
 [aws-bie:vars]
 tomcat_java_opts = -Xmx8g -Xms2g -XX:MaxPermSize=1g -Xss512k -Djava.awt.headless=true
-biocache_local_build=/home/pal155/src/biocache-store/target/biocache-store-1.7.1-SNAPSHOT-distribution.zip
+biocache_local_build=/home/pal155/src/biocache-store/target/biocache-store-1.7.2-SNAPSHOT-distribution.zip
 specieslist_local_build=/home/pal155/src/specieslist-webapp/target/specieslist-webapp-0.17.0.war
 bie_index_local_build=/home/pal155/src/bie-index/target/bie-index-1.1-SNAPSHOT.war
 sds_webapp_local_build=/home/pal155/src/sds-webapp2/target/sds-webapp2-1.1-SNAPSHOT.war
@@ -94,7 +94,7 @@ logger_context_path=
 media_store_local=false
 media_store_url=http://images.ala.org.au
 mysql_root_password=Yithian-093
-nameindex_datestamp=20160728
+nameindex_datestamp=20160811
 nameindex_to_use=ala
 registry_api_key=
 sds_enabled=true
