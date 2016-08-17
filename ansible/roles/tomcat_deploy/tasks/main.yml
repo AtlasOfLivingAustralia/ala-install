@@ -1,23 +1,29 @@
-- set_fact: vhost={{context_path == "" or context_path == "/"}}
-  # note: a context path of / causes problems with CAS authentication, so don't use it with apps that require auth
+- set_fact: root_app={{context_path == "" or context_path == "/"}}
+- set_fact: vhost={{ hostname.find(':') == -1 and hostname.find('localhost') == -1 and hostname.find('127.0.0.1') == -1 }}
 
-- set_fact: war_filename="ROOT" tomcat_deploy_dir="{{ tomcat_dir }}/webapps-{{ hostname }}" log_filename={{ log_filename | default(artifactId) }}
-  when: vhost=="true" or vhost==true or vhost=="True"
+- set_fact: war_filename="ROOT" log_filename={{ log_filename | default(artifactId) }}
+  when: root_app
 
-- set_fact: war_filename="{{ context_path.replace('/', '') }}" tomcat_deploy_dir="{{ tomcat_dir }}/webapps" log_filename={{ log_filename | default(context_path.replace('/', '')) }}
-  when: vhost=="false" or vhost==false or vhost=="False" or vhost is not defined
+- set_fact: war_filename="{{ context_path.replace('/', '') }}" log_filename={{ log_filename | default(context_path.replace('/', '')) }}
+  when: not root_app
+
+- set_fact: tomcat_deploy_dir="{{ tomcat_dir }}/webapps"
+  when: not vhost
+
+- set_fact: tomcat_deploy_dir="{{ tomcat_dir }}/webapps-{{hostname }}"
+  when: vhost
 
 - debug: msg="war_filename is {{ war_filename }}; tomcat_deploy_dir is {{ tomcat_deploy_dir }}; log_filename is {{ log_filename }}"
 
 - name: create tomcat vhost
   tomcat_vhost: name={{ hostname }} remote_ip_valve={{tomcat_enable_remote_ip_valve | default(false)}} remote_internal_proxies={{tomcat_remote_internal_proxies | default(None)}}
-  when: vhost=="true" or vhost==true or vhost=="True"
+  when: vhost
   notify:
     - restart tomcat
 
 - name: ensure tomcat vhost webapps directory exists if necessary
   file: path="{{ tomcat_deploy_dir }}" state=directory owner={{tomcat_user}} group={{tomcat_user}}
-  when: vhost=="true" or vhost==true or vhost=="True"
+  when: vhost
   notify:
     - restart tomcat
 

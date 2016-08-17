@@ -27,13 +27,14 @@
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/sds/config"
+    - "{{data_dir}}/sds/data"
     - "{{data_dir}}/lucene"
   tags:
     - sds
     - properties
 
 - name: Copy sensitivity categories XML
-  copy: src="sensitivity-categories.xml" dest="{{data_dir}}/sds/sensitivity-categories.xml"
+  copy: src="sensitivity-categories.xml" dest="{{data_dir}}/sds/config/sensitivity-categories.xml"
   tags:
     - sds
     - properties

@@ -52,17 +52,24 @@ These roles depend heavily on two inventory properties:
 
 These variables tell the ```tomcat_deploy``` and ```apache_vhost``` roles how to configure your application using the following rules:
 
-1. If ```<projectname>_context_path``` is blank or '/' then:
-  1. Create an Apache Virtual Host for the ```<projectname>_hostname``` with proxy rules to forward all requests to Tomcat (i.e. ```ProxyPass / ajp://localhost:8009/```)
-  2. Create a Tomcat Virtual Host for the ```<projectname>_hostname``` with the application deployed as ROOT.war (so it is the default context).
-2. If ```<projectname>_context_path``` is NOT blank or '/' then:
-  1. Create an Apache Virtual Host for the ```<projectname>_hostname``` with proxy rules to forward the ```<projectname>_context_path``` to the same context on Tomcat (i.e. ```ProxyPass /<projectname>_context_path  ajp://localhost:8009/<projectname>_context_path```)
-      * If a virtual host already exists for ```<projectname>_hostname```, then it will be updated with the new ProxyPass rules.
-   2. Deploy the application as ```<projectname>_context_path.war``` to the webapps/ directory on Tomcat
-   3. Use this option when you have multiple context paths on the same hostname (e.g. my.host.name/app1 and my.host.name/app2).
-3. If ```<projectname>_hostname``` contains a colon (':', indicating that there is a port number) OR is 'localhost' OR is '127.0.0.1' then 
-   1. Do not create any Apache configuration
-   2. Deploy the application as ```<projectname>_context_path.war``` to the webapps/ directory on Tomcat
+1. If ```<projectname>_hostname``` is not empty, not localhost, not the loopback and does not contain a colon:
+    1. If ```<projectname>_context_path``` is blank or "/":
+        1. Create an Apache Virtual Host for the ```<projectname>_hostname``` with proxy rules to forward the root context to Tomcat (i.e. ```ProxyPass / ajp://localhost:8009/```)
+        1. Create a Tomcat Virtual Host for the ```<projectname>_hostname``` with the application deployed as ROOT.war (so it is the default context).
+    1. If ```<projectname>_context_path``` is NOT blank or "/"
+        1. Create an Apache Virtual Host for the ```<projectname>_hostname``` with proxy rules to forward the ```<projectname>_context_path``` context to Tomcat (i.e. ```ProxyPass /<context> ajp://localhost:8009/<conttext>```)
+        1. Create a Tomcat Virtual Host for the ```<projectname>_hostname``` with the application deployed as ```<projectname>_context_path.war```.
+1. If ```<projectname>_hostname``` is empty, localhost, the loopback or contains a colon:
+    1. Do not create any Apache configuration
+    1. Do not create a Tomcat virtual host
+    1. If ```<projectname>_context_path``` is blank or "/":
+        1. Deploy the application as ROOT.war to the webapps/ directory on Tomcat
+    1. If ```<projectname>_context_path``` is NOT blank or "/":
+        1. Deploy the application as ```<projectname>_context_path.war``` to the webapps/ directory on Tomcat
+
+NOTES:
+1. These steps are non-destructive, so if the tomcat or apache vhosts already exists then they will be updated.
+1. You cannot have multiple applications as the root context, so if your playbook/inventory uses ```<projectname>_context_path=``` for multiple applications then you will have a problem.
 
 ## Other optional parameters
 
