@@ -4,8 +4,20 @@
     "fid": "cl3003"
   },
   {
-    "label": "Murray-Darling basin surface water plan areas",
+    "label": "Surface water plan areas",
     "fid": "cl10834"
+  },
+  {
+    "label": "Ground water plan areas",
+    "fid": "cl10835"
+  },
+  {
+    "label": "Surface water sustainable diversion limit areas",
+    "fid": "cl10832"
+  },
+  {
+    "label": "Ground water sustainable diversion limit areas",
+    "fid": "cl10833"
   },
   {
     "label": "Directory of Important Wetlands",
