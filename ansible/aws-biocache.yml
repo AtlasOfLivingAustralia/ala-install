@@ -1,0 +1,12 @@
+# C# Create a collection of species informaton systems on the AWS biocache instance
+- hosts: aws-biocache
+  roles:
+    - common
+    - java
+    - apache
+    - tomcat
+    - solr
+    - biocache-properties
+    - biocache-service
+    - { role: biocache-hub, biocache_hub: ala-hub }
+    - nameindex

@@ -1,0 +1,40 @@
+# Set up test instances on an opensuse localhost
+# Only set up for species-list; add as required
+[localhost]
+localhost ansible_connection=local
+
+[localhost:vars]
+apache=httpd
+auth_base_url= https://auth.ala.org.au
+auth_cas_url= https://auth.ala.org.au/cas
+bie_base_url=http://bie-aws.ala.org.au/bie
+bie_service_base_url=http://bie-aws.ala.org.au/bie-index
+biocache_base_url=http://biocache-aws.ala.org.au
+biocache_service_base_url=http://biocache-aws.ala.org.au/biocache
+cassandra_yaml=/etc/cassandra/conf/cassandra.yaml
+cassandra_user=cassandra
+collectory_enable_sync=false
+collectory_base_url=http://localhost:8080/collectory
+data_dir=/data
+field_guide_base_url=http://fieldguide.ala.org.au
+is_vagrant=false
+libtcnative=tomcat-native
+mysql_service=mysql
+name_index_dir=/data/lucene/namematching
+registry_api_key=
+specieslist_url:=http://localhost:8080/lists
+specieslist_base_url=http://localhost:8080/lists
+specieslist_context_path=lists
+specieslist_db_name=specieslist
+specieslist_db_username=specieslist
+specieslist_db_password=specieslist
+specieslist_db_hostname=localhost
+specieslist_hostname=localhost
+specieslist_url=http://localhost:8080/lists
+tomcat=tomcat
+tomcat_user=tomcat
+tomcat_conf=/etc/tomcat/tomcat.conf
+tomcat_conf_dir=/etc/tomcat
+tomcat_dir=/srv/tomcat
+tomcat_log_dir=/var/log/tomcat
+tomcat_webapps=/srv/tomcat/webapps/

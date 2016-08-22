@@ -1,0 +1,25 @@
+[ala-bie]
+vagrant1
+
+[ala-bie:vars]
+is_vagrant=true
+local_repo_dir=~/.ala
+data_dir=/data
+tomcat_java_opts = -Xmx3g -Xms2g -XX:MaxPermSize=512m -Xss512k -Djava.awt.headless=true
+
+ala_bie_hostname=vagrant1.ala.org.au
+ala_bie_context_path=/bie
+ala_bie_base_url=http://vagrant1.ala.org.au
+ala_bie_url=http://vagrant1.ala.org.au/bie
+
+bie_index_base_url = http://vagrant1.ala.org.au
+bie_index_context_path = /bie-index
+
+auth_base_url = https://auth.ala.org.au
+auth_cas_url = https://auth.ala.org.au/cas
+disable_cas = false
+bypass_cas = false
+
+default_map_lon = 134.35
+default_map_lat = -25.61
+default_map_zoom = 6

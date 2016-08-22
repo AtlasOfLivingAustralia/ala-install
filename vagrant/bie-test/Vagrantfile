@@ -1,0 +1,27 @@
+VAGRANTFILE_API_VERSION = "2"
+
+MACHINES = [ "bie", "biocache" ]
+MACHINE_IPS = { "bie" => "10.1.1.3", "biocache" => "10.1.1.4" }
+MACHINE_PORTS = { "bie" => 2223, "biocache" => 2224 }
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  MACHINES.each do |name|
+    config.vm.define name do |node|
+
+      node.vm.box = "ubuntu/trusty64"
+      node.ssh.insert_key = false
+      node.vm.hostname = "ala.vagrant.test.#{name}"
+      node.vm.network :private_network, ip: MACHINE_IPS[name]
+      node.vm.network :forwarded_port, guest: 22, host: MACHINE_PORTS[name], id: 'ssh'
+
+      # these machines require some memory to operate the apps
+      node.vm.provider "virtualbox" do |v|
+        v.memory = 4096
+      end  
+  
+      # totally insecure, but this is local dev: make the vagrant default the root key
+      node.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+      node.vm.provision "shell", inline: "sudo cp -r /home/vagrant/.ssh /root/"
+    end
+  end
+end

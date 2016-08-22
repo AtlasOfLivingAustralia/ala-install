@@ -1,0 +1,11 @@
+{
+  "defaultVernacularNameField": "name",
+  "defaultNameIdField": "nameID",
+  "defaultStatusField": "status",
+  "defaultLanguageField": "language",
+  "defaultsourceField": "source",
+  "defaultStatus": "common",
+  "defaultLanguage": "en",
+  "lists": [
+  ]
+}

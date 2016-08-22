@@ -1,0 +1,29 @@
+# Set up a test bie/bie-index on AWS
+
+[test-bie]
+bie-aws.ala.org.au
+
+[test-biocache]
+biocache-aws.ala.org.au
+
+[test-bie:vars]
+test_bie_host=bie-aws.ala.org.au
+test_biocache_host=biocache-aws.ala.org.au
+local_repo_dir=~/.ala
+data_dir=/data
+is_vagrant=false
+tomcat_java_opts = -Xmx8g -Xms2g -XX:MaxPermSize=1g -Xss512k -Djava.awt.headless=true
+biocache_local_build=/home/pal155/src/biocache-store/target/biocache-store-1.7.1-SNAPSHOT-distribution.zip
+specieslist_local_build=/home/pal155/src/specieslist-webapp/target/specieslist-webapp-0.17.0.war
+bie_index_local_build=/home/pal155/src/bie-index/target/bie-index-1.1-SNAPSHOT.war
+sds_webapp_local_build=/home/pal155/src/sds-webapp2/target/sds-webapp2-1.1-SNAPSHOT.war
+biocache_opts=-Xmx14g -Xms10g -XX:+UseG1GC
+
+[test-biocache:vars]
+test_bie_host=bie-aws.ala.org.au
+test_biocache_host=biocache-aws.ala.org.au
+local_repo_dir=~/.ala
+data_dir=/data
+is_vagrant=true
+tomcat_java_opts = -Xmx32g -Xms32g -XX:MaxPermSize=1g -Xss512k -Djava.awt.headless=true
+biocache_service_local_build=/home/pal155/src/biocache-service/target/biocache-service.war

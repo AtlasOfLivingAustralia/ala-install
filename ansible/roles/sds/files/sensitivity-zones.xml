@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sensitivity-zones>
     <sensitivity-zone id="AUS" name="Australia" type="Country"/>
+    <sensitivity-zone id="NZ" name="New Zealand" type="Country"/>
     <sensitivity-zone id="NOTAUS" name="Outside Australia" type="Country"/>
     <sensitivity-zone id="ACT" name="Australian Capital Territory" type="State"/>
     <sensitivity-zone id="NSW" name="New South Wales" type="State"/>

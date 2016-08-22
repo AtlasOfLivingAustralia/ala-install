@@ -30,8 +30,14 @@
   tags:
     - "nameindex"  
 
+- name: ensure lucene base directory exists
+  file: path={{ data_dir }}/lucene state=directory
+  tags:
+    - "nameindex"
+
 - name: ensure lucene directory exists 
   file: path={{ data_dir }}/lucene/namematching state=directory
+  when: nameindex_variant != "ala"
   tags:
     - "nameindex"  
 
@@ -40,15 +46,35 @@
   tags:
     - "nameindex"
 
-- name: Download lucene index
+- name: Download lucene index (2014 version)
   get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene/namematching.tgz force={{ force_nameindex_download | default(false) }}
+  when: nameindex_variant != "ala"
+  tags:
+    - "nameindex"
+
+- name: Download lucene index (2016 version)
+  get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene force={{ force_nameindex_download | default(false) }}
+  when: nameindex_variant == "ala"
+  tags:
+    - "nameindex"
+
+- name: unpackage the lucene index if it was newly copied
+  unarchive: src={{ data_dir }}/lucene/namematching.tgz dest={{ data_dir }}/lucene/namematching copy=no
+  when: nameindex_variant != "ala"
   tags:
     - "nameindex"  
 
 - name: unpackage the lucene index if it was newly copied
-  unarchive: src={{ data_dir }}/lucene/namematching.tgz dest={{ data_dir }}/lucene/namematching copy=no
+  unarchive: src={{ data_dir }}/lucene/namematching-{{ name_index_date }}.tgz dest={{ data_dir }}/lucene copy=no group={{ tomcat_user }} owner={{ tomcat_user }}
+  when: nameindex_variant == "ala"
   tags:
-    - "nameindex"  
+    - "nameindex"
+
+- name: link the current lucene index as namematching
+  file: src={{ data_dir }}/lucene/namematching-{{ name_index_date }} dest={{ data_dir }}/lucene/namematching state=link force=yes
+  when: nameindex_variant == "ala"
+  tags:
+    - "nameindex"
 
 # - name: set data ownership [all data is owned by tomcat]
 #   file: path={{data_dir}}/lucene owner={{tomcat_user}} group={{tomcat_user}} recurse=true

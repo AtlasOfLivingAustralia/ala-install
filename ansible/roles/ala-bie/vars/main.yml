@@ -1,0 +1,7 @@
+# assets
+version: "{{ ala_bie_version | default('LATEST') }}"
+artifactId: "ala-bie"
+classifier: ''
+groupId: "au.org.ala"
+packaging: "war"
+ala_bie_war_url: "{{maven_repo_ws_url}}"

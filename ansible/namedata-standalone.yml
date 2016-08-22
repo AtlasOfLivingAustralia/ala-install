@@ -1,0 +1,4 @@
+- hosts: namedata
+  roles:
+    - common
+    - namedata

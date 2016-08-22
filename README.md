@@ -63,7 +63,7 @@ $ vagrant up
 
 The first execution of this downloads the Ubuntu image which can take 20 minutes or more. The ALA sample inventories (in the ansible/inventories/vagrant directory) refer to the VM as 'vagrant1' rather than the IP address. For this to work, you will need to add the following entries to you ```/etc/hosts``` file (alternatively, you can edit the inventory file and replace 'vagrant1' with the IP address of your VM).
 ```
-10.1.1.2  vagrant1 vagrant1.ala.org.au demo.vagrant1.ala.org.au
+10.1.1.3  vagrant1 vagrant1.ala.org.au demo.vagrant1.ala.org.au
 ```
 
 Once ready you can ssh to your VM like so:
@@ -73,10 +73,12 @@ $ ssh vagrant@vagrant1
 ```
 or 
 ```
-$ ssh vagrant@10.1.1.2
-```
+$ ssh vagrant@10.1.1.3
+``` 
 
 with password ```vagrant```.
+
+If your system cannot find a route to 10.1.1.3, you can ssh via `ssh -p 2223 vagrant@localhost` and use `ifconfig -a` to see what your virtual machine thinks is happening.
 
 #### 2. Ansible
 

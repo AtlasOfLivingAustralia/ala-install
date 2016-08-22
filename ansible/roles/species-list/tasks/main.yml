@@ -47,3 +47,17 @@
     - specieslist
     - tomcat_vhost
     - deploy
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ specieslist_war_url }}' context_path='{{ specieslist_context_path }}' hostname='{{ specieslist_hostname }}'
+  when: specieslist_local_build is not defined
+  tags:
+    - specieslist
+    - tomcat_vhost
+    - deploy
+
+- include: ../../tomcat_deploy/tasks/main.yml war_local_build='{{ specieslist_local_build }}' context_path='{{ specieslist_context_path }}' hostname='{{ specieslist_hostname }}'
+  when: specieslist_local_build is defined
+  tags:
+    - specieslist
+    - tomcat_vhost
+    - deploy
