@@ -1,3 +1,12 @@
+- name: show ansible versions
+  debug: msg="You are using Ansible {{ ansible_version.full }} on {{ansible_os_family}}. The current supported version for ala-install is {{ supported_ansible_version.full }}."
+
+- name: check the ansible version
+  pause: prompt="You are not using the supported version of Ansible. The supported version is {{ supported_ansible_version.full }}. You are using {{ ansible_version.full }}. Proceed at your own risk. Press enter to continue"
+  when: supported_ansible_version.major != ansible_version.major or supported_ansible_version.minor != ansible_version.minor or supported_ansible_version.revision != ansible_version.revision
+  tags:
+    - version_check
+
 - name: set debian variables
   set_fact:
     libtcnative: libtcnative-1
@@ -33,9 +42,16 @@
   tags:
     - setfacts
 
+- name: set name index date
+  set_fact:
+      name_index_date: "{{ nameindex_datestamp | default('20160811') }}"
+  tags:
+    - setfacts
+
 - name: set name index location
   set_fact:
-    name_indexes_repo: http://s3.amazonaws.com/ala-nameindexes/20140610
+    aws_name_indexes_repo: http://s3.amazonaws.com/ala-nameindexes/20140610
+    ala_name_indexes_repo: "{{ ala_nameindex_source_url | default('http://biocache.ala.org.au/archives/nameindexes') }}/{{name_index_date}}"
   tags:
     - setfacts    
 
@@ -48,15 +64,31 @@
 
 - name: using the GBIF nexus repository
   set_fact:
-    maven_repo_ws_url: "http://repository.gbif.org/service/local/artifact/maven/redirect?r=ala-release&g={{groupId | default('au.org.ala')}}&a={{artifactId | default('')}}&v={{version | default('')}}&e={{packaging | default('war')}}&c={{classifier | default('')}}"
+    maven_repo_ws_url: "http://repository.gbif.org/service/local/artifact/maven/redirect?r={{maven_release_dir | default('ala-release')}}&g={{groupId | default('au.org.ala')}}&a={{artifactId | default('')}}&v={{version | default('')}}&e={{packaging | default('war')}}&c={{classifier | default('')}}"
   when: use_gbif_nexus is defined and use_gbif_nexus == "true"
   tags:
     - setfacts  
 
 - name: setup name index URLs
   set_fact:
-    col_namematching_url: "{{name_indexes_repo}}/col_namematching.tgz"
-    merged_namematching_url: "{{name_indexes_repo}}/merge_namematching.tgz"
-    ala_namematching_url: "{{name_indexes_repo}}/namematching.tgz"
+    col_namematching_url: "{{aws_name_indexes_repo}}/col_namematching.tgz"
+    merged_namematching_url: "{{aws_name_indexes_repo}}/merge_namematching.tgz"
+    ala_namematching_url: "{{ala_name_indexes_repo}}/namematching-{{name_index_date}}.tgz"
   tags:
     - setfacts    
+
+- name: setup name sources
+  set_fact:
+    ala_name_sources:
+      - AFD
+      - APNI
+      - AusFungi
+      - AusMoss
+      - CAAB
+      - CAAB-Identifier
+      - CAAB-Vernacular
+      - NZOR
+      - CoL
+      - ALA
+  tags:
+    - setfacts

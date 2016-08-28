@@ -3,6 +3,7 @@ vagrant1
 
 [bie-index:vars]
 data_dir=/data
+is_vagrant=true
 tomcat_java_opts = -Xmx512m -Xms512m -XX:MaxPermSize=128m -Xss256k -Djava.awt.headless=true
 
 bie_index_base_url = http://vagrant1.ala.org.au
@@ -24,7 +25,7 @@ index_offline_url = http://localhost:8080/solr/bie-offline
 
 biocache_solr_url = http://localhost:8080/solr/biocache
 index_images = true
-collectory_url = http://collections.ala.org.au/ws
+collectory_url = http://collections.ala.org.au
 
 default_name_source=National Species Lists
 default_common_name_source=National Species Lists

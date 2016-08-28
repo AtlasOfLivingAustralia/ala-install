@@ -1,0 +1,120 @@
+# Set up the BIE/biocache on the AWS servers
+# Note that you will need to set up a biocache-imt.ala.org.au
+#
+# BUGGER BUGGER BUGGER
+# It's not possible at the moment to set up biocache to be the root of biocache.ala.org.au and biocache-service to be on the /ws branch of the same server
+# What to do: Run the ansible install, then move ROOT.war from webapps-biocache.ala.org.au to webapps and remove the virtual host from /etc/tomcat7/server.xml
+# The same will have to be done on BIE for the bie application. No rest for the wicked
+
+[aws-bie]
+bie-aws.ala.org.au
+
+[aws-biocache]
+biocache-aws.ala.org.au
+
+[aws:children]
+aws-bie
+aws-biocache
+
+[aws-bie:vars]
+tomcat_java_opts = -Xmx8g -Xms2g -XX:MaxPermSize=1g -Xss512k -Djava.awt.headless=true
+biocache_local_build=/home/pal155/src/biocache-store/target/biocache-store-1.7.2-SNAPSHOT-distribution.zip
+specieslist_local_build=/home/pal155/src/specieslist-webapp/target/specieslist-webapp-0.17.0.war
+bie_index_local_build=/home/pal155/src/bie-index/target/bie-index-1.1-SNAPSHOT.war
+sds_webapp_local_build=/home/pal155/src/sds-webapp2/target/sds-webapp2-1.1-SNAPSHOT.war
+biocache_opts=-Xmx12g -Xms8g -XX:+UseG1GC
+
+[aws-biocache:vars]
+tomcat_java_opts = -Xmx24g -Xms16g -XX:MaxPermSize=1g -Xss512k -Djava.awt.headless=true
+biocache_service_local_build=/home/pal155/src/biocache-service/target/biocache-service.war
+
+[aws:vars]
+local_repo_dir=~/.ala
+data_dir=/data
+is_vagrant=false
+ala_base_url=http://www.ala.org.au
+ala_bie_hostname=bie.ala.org.au
+ala_bie_context_path=
+ala_bie_base_url=http://bie.ala.org.au
+ala_bie_url=http://bie.ala.org.au
+ala_nameindex_source_url=http://biocache.ala.org.au/archives/nameindexes
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas
+bie_base_url=http://bie.ala.org.au
+bie_index_base_url=http://bie.ala.org.au
+bie_index_context_path=/ws
+bie_index_hostname=bie.ala.org.au
+bie_service_enabled=true
+bie_service_base_url=http://bie.ala.org.au/ws
+bie_service_url=http://bie.ala.org.au/ws
+bie_url=http://bie.ala.org.au
+biocache_base_url=http://biocache.ala.org.au
+biocache_db_host=bie-aws.ala.org.au
+biocache_hub=biocache
+biocache_hub_hostname=biocache.ala.org.au
+biocache_hub_url=http://biocache.ala.org.au
+biocache_hub_base_url=http://biocache.ala.org.au
+biocache_hub_context_path=
+biocache_sds_url=http://sds.ala.org.au/sensitive-species-data.xml
+biocache_service_hostname=biocache.ala.org.au
+biocache_service_url=http://biocache.ala.org.au/ws
+biocache_service_base_url=http://biocache.ala.org.au
+biocache_service_context_path=/ws
+biocache_solr_url=http://biocache-aws.ala.org.au:8080/solr/biocache
+bypass_cas=false
+caches_auth_enabled=true
+caches_log_enabled=true
+caches_collections_enabled=true
+caches_layers_enabled=true
+collectory_hostname=collections.ala.org.au
+collectory_base_url=http://collections.ala.org.au
+collectory_enable_sync=true
+collectory_url=http://collections.ala.org.au
+collectory_context_path=
+default_common_name_source=National Species Lists
+default_map_lat=-25.61
+default_map_lon=134.35
+default_map_zoom=4
+default_name_source=National Species Lists
+disable_cas=false
+field_guide_base_url=http://fieldguide.ala.org.au
+image_service_url=http://images.ala.org.au
+index_images=true
+index_live_url=http://biocache-aws.ala.org.au:8080/solr/bie
+index_offline_url=http://biocache-aws.ala.org.au:8080/solr/bie-offline
+jenkins_ajp_port=-1
+jenkins_port=9192
+layers_service_sampling=true
+layers_service_url=http://spatial.ala.org.au/ws
+lists_service_url=http://lists.ala.org.au
+logger_hostname=logger.ala.org.au
+logger_url=http://logger.ala.org.au
+logger_base_url=http://logger.ala.org.au
+logger_context_path=
+media_store_local=false
+media_store_url=http://images.ala.org.au
+mysql_root_password=Yithian-093
+nameindex_datestamp=20160811
+nameindex_to_use=ala
+registry_api_key=
+sds_enabled=true
+sds_layers_url=http://biocache-imt.ala.org.au/archives/layers/sds-layers.tgz
+sds_url=http://sds.ala.org.au
+sds_context_path=
+sds_hostname=sds.ala.org.au
+skin_taxa_links_base_url=http://bie.ala.org.au/species/
+solr_hostname=biocache-aws.ala.org.au:8080
+solr_url=http://biocache-aws.ala.org.au:8080/solr
+solr_base_url=http://biocache-aws.ala.org.au:8080
+solr_context_path=/solr
+specieslist_context_path=
+specieslist_db_name=specieslist
+specieslist_db_username=specieslist
+specieslist_db_password=specieslist
+specieslist_db_hostname=localhost
+specieslist_hostname=lists.ala.org.au
+specieslist_url=http://lists.ala.org.au
+species_list_url=http://lists.ala.org.au
+specieslist_base_url=http://lists.ala.org.au
+userdetails_url=https://auth.ala.org.au/userdetails/userDetails/
+

@@ -1,5 +1,7 @@
 # assets
-version: "1.3-SNAPHOT"
+version: "{{ taxon_overflow_version | default('LATEST') }}"
 artifactId: "taxon-overflow"
+classifier: ''
 groupId: "au.org.ala"
+packaging: "war"
 taxonoverflow_war_url: "{{maven_repo_ws_url}}"

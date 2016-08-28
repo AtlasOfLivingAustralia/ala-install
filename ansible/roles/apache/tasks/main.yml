@@ -30,6 +30,14 @@
   tags:
     - apache    
 
+- name: Enable headers
+  apache2_module: state=present name=headers
+  when: ansible_os_family == "Debian"
+  notify:
+    - reload apache
+  tags:
+    - apache
+
 - name: Start Apache2 (Debian)
   service: name=apache2 state=restarted
   when: ansible_os_family == "Debian"

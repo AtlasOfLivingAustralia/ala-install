@@ -2,7 +2,7 @@
   roles:
     - phylolink-dependencies
     - web2py
-    - web2PyApps
+    - web2pyApps
     - common
     - nameindex
     - java

@@ -35,12 +35,12 @@
   when: ansible_os_family == "Debian"
   tags: jenkins
 
-- lineinfile: dest=/etc/default/jenkins backrefs=yes regexp=^HTTP_PORT=8080 line=HTTP_PORT=-1
+- lineinfile: dest=/etc/default/jenkins backrefs=yes regexp=^HTTP_PORT= line="HTTP_PORT={{ jenkins_port | default('-1') }}"
   notify: restart jenkins
   when: ansible_os_family == "Debian"
   tags: jenkins
 
-- lineinfile: dest=/etc/default/jenkins backrefs=yes regexp=^AJP_PORT=-1 line=AJP_PORT=9009
+- lineinfile: dest=/etc/default/jenkins backrefs=yes regexp=^AJP_PORT= line="AJP_PORT={{ jenkins_ajp_port | default('9009') }}"
   notify: restart jenkins
   when: ansible_os_family == "Debian"
   tags: jenkins

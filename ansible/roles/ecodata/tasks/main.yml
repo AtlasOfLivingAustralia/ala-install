@@ -44,7 +44,31 @@
     - ecodata
 
 #
+# Override the default memory settings for Tomcat to increase heap space and change the garbage collector
+#
+- name: Override default tomcat memory configuration
+  lineinfile:
+    dest={{tomcat_conf}}
+    regexp="^JAVA_OPTS"
+    line='JAVA_OPTS="{{tomcat_java_opts_override}}"'
+  notify:
+    - restart tomcat
+  tags:
+    - ecodata
+    - deploy
+    - tomcat
+
+#
 # Cron Job configuration
 #
 - name: install cron job for indexing elastic search
   cron: minute=21 hour=22 name="Elastic search indexing" job="wget -O - {{ ecodata_url }}{{ ecodata_context_path }}/admin/reIndexAll >/dev/null 2>&1" user=root state=present
+
+#
+# Copy sensitive data xml file
+#  
+- name: Copy config files to config directory
+  copy: src=sensitive-species-data.xml dest={{data_dir}}/ecodata/config/sensitive-species-data.xml
+  tags:
+    - ecodata
+    - properties  

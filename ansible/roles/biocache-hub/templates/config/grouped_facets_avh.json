@@ -98,7 +98,7 @@
         "facets":[
             {
                 "sort":"index",
-                "field":"collector"
+                "field":"collectors"
             },
             {
                 "sort":"count",
@@ -133,8 +133,20 @@
                 "field":"raw_state_conservation"
             },
             {
+                "sort":"count",
+                "field":"country_conservation"
+            },
+            {
+                "sort":"count",
+                "field":"raw_country_conservation"
+            },
+            {
                 "sort":"index",
                 "field":"event_id"
+            },
+            {
+                "sort":"index",
+                "field":"multimedia"
             }
         ]
     },
@@ -147,6 +159,7 @@
             },
             {
                 "sort":"count",
+                "label":"States including coastal waters",
                 "field":"cl927"
             },
             {
@@ -159,46 +172,67 @@
             },
             {
                 "sort":"count",
+                "label":"Local Government Areas",
                 "field":"cl959"
             },
             {
                 "sort":"count",
-                "field":"cl20"
-            },
-            {
-                "sort":"count",
+                "label":"IBRA 7 Region",
                 "field":"cl1048"
             },
             {
                 "sort":"count",
-                "field":"cl21"
-            },
-            {
-                "sort":"count",
-                "field":"cl966"
-            },
-            {
-                "sort":"count",
-                "field":"cl1918"
-            },
-            {
-                "sort":"count",
-                "field":"cl617"
-            },
-            {
-                "sort":"count",
-                "field":"cl620"
-            },
-            {
-                "sort":"count",
-                "field":"cl958"
-            },
-            {
-                "sort":"count",
+                "label":"IBRA 7 Subregions",
                 "field":"cl1049"
             },
             {
                 "sort":"count",
+                "label":"IMCRA 4 Regions",
+                "field":"cl21"
+            },
+            {
+                "sort":"count",
+                "label":"IMCRA Meso-scale Bioregions",
+                "field":"cl966"
+            },
+            {
+                "sort":"count",
+                "label":"NZ Ecological Districts 1987",
+                "field":"cl2115"
+            },
+            {
+                "sort":"count",
+                "label":"NZ Land Registration Districts",
+                "field":"cl2116"
+            },
+            {
+                "sort":"count",
+                "label":"NZ Land Provinces",
+                "field":"cl2117"
+            },
+            {
+                "sort":"count",
+                "label":"National Dynamic Land Cover",
+                "field":"cl1918"
+            },
+            {
+                "sort":"count",
+                "label":"Vegetation types - native",
+                "field":"cl617"
+            },
+            {
+                "sort":"count",
+                "label":"Vegetation types - present",
+                "field":"cl620"
+            },
+            {
+                "sort":"count",
+                "label":"Commonwealth Electoral Boundaries",
+                "field":"cl958"
+            },
+            {
+                "sort":"count",
+                "label":"NRM Regions",
                 "field":"cl916"
             },
             {

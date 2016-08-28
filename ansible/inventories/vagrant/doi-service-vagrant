@@ -1,8 +1,8 @@
 [doi-service]
-doi.vagrant1.ala.org.au
+vagrant1
 
 [doi-service:vars]
-is_vagrant=false
+is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
@@ -22,5 +22,7 @@ ands_doi_app_id=
 ands_doi_key=
 ands_doi_client_id=
 
-doi_service_https_certificate_path=
-doi_service_https_certificate_key_path=
+#
+# SSL Configuration files
+#
+ssl=false
