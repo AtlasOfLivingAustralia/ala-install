@@ -9,7 +9,7 @@
   when: ansible_os_family == "Debian"
 
 - name: ensure target directories exist [data subdirectories etc.]
-  when: nameindex_variant == "ala"
+  when: namedata_variant == "ala"
   file: path={{ data_dir }}/bie/import/{{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items: "{{ala_name_sources}}"
   tags:
@@ -17,16 +17,16 @@
     - namedata
 
 - name: get source name data from ALA
-  when: nameindex_variant == "ala"
-  get_url: url={{ala_name_indexes_repo}}/{{item}}-{{name_index_date}}.zip dest={{data_dir}}/bie/import force={{ force_nameindex_download | default(false) }}
+  when: namedata_variant == "ala"
+  get_url: url={{ala_name_data_repo}}/{{item}}-{{name_data_date}}.zip dest={{data_dir}}/bie/import force={{ force_namedata_download | default(false) }}
   with_items: "{{ala_name_sources}}"
   tags:
     - config
     - namedata
 
 - name: unpackage source name data
-  when: nameindex_variant == "ala"
-  unarchive: src={{data_dir}}/bie/import/{{item}}-{{name_index_date}}.zip dest={{data_dir}}/bie/import/{{item}} owner={{tomcat_user}} group={{tomcat_user}} copy=no
+  when: namedata_variant == "ala"
+  unarchive: src={{data_dir}}/bie/import/{{item}}-{{name_data_date}}.zip dest={{data_dir}}/bie/import/{{item}} owner={{tomcat_user}} group={{tomcat_user}} copy=no
   with_items: "{{ala_name_sources}}"
   tags:
     - config
