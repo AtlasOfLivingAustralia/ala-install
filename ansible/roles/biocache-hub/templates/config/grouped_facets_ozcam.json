@@ -135,6 +135,10 @@
             {
                 "sort":"index",
                 "field":"event_id"
+            },
+            {
+                "sort":"count",
+                "field":"multimedia"
             }
         ]
     },

@@ -133,8 +133,20 @@
                 "field":"raw_state_conservation"
             },
             {
+                "sort":"count",
+                "field":"country_conservation"
+            },
+            {
+                "sort":"count",
+                "field":"raw_country_conservation"
+            },
+            {
                 "sort":"index",
                 "field":"event_id"
+            },
+            {
+                "sort":"index",
+                "field":"multimedia"
             }
         ]
     },
