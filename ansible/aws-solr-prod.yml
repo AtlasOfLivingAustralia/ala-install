@@ -1,0 +1,8 @@
+# C# Create a collection of species informaton systems on the AWS solr instance
+- hosts: aws-solr-prod
+  roles:
+    - common
+    - java
+    - apache
+    - tomcat
+    - solr
