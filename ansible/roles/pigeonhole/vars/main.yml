@@ -1,5 +1,6 @@
 # assets
 version: "{{ pigeonhole_version | default('LATEST') }}"
+maven_release_dir: "releases"
 artifactId: "pigeonhole"
 groupId: "au.org.ala"
 pigeonhole_war_url: "{{maven_repo_ws_url}}"
