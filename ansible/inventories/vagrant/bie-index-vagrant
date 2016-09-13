@@ -25,7 +25,7 @@ index_offline_url = http://localhost:8080/solr/bie-offline
 
 biocache_solr_url = http://localhost:8080/solr/biocache
 index_images = true
-collectory_url = http://collections.ala.org.au/ws
+collectory_url = http://collections.ala.org.au
 
 default_name_source=National Species Lists
 default_common_name_source=National Species Lists

@@ -1,0 +1,47 @@
+{
+  "boosts": [
+    "record_type:Image^10",
+    "record_type:HumanObservaton^20",
+    "record_type:Observation^20",
+    "-record_type:PreservedSpecimen^20",
+    "data_resource_uid:dr660^500"
+  ],
+  "ranks": [
+    {
+      "rank": "phylum",
+      "idField": null,
+      "nameField": "phylum"
+    },
+    {
+      "rank": "class",
+      "idField": null,
+      "nameField": "class"
+    },
+    {
+      "rank": "order",
+      "idField": null,
+      "nameField": "order"
+    },
+    {
+      "rank": "family",
+      "idField": null,
+      "nameField": "family"
+    },
+    {
+      "rank": "genus",
+      "idField": "genus_guid",
+      "nameField": "genus"
+    },
+    {
+      "rank": "species",
+      "idField": "species_guid",
+      "nameField": "taxon_name"
+    }
+  ],
+  "lists": [
+    {
+      "uid": "dr4778",
+      "imageId": "imageId"
+    }
+  ]
+}

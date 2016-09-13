@@ -1,0 +1,100 @@
+# Create a test bie with suite of bie-services
+- hosts: test-biocache
+  roles:
+    - common
+    - java
+    - apache
+    - tomcat
+    - solr
+    - biocache-properties
+    - { role: biocache-hub, biocache_hub: ala-hub }
+    - biocache-service
+    - nameindex
+  vars:
+    ala_base_url: http://www.ala.org.au
+    ala_bie_hostname: "{{test_bie_host}}"
+    ala_bie_context_path: /bie
+    ala_bie_base_url: "http://{{test_bie_host}}"
+    ala_bie_url: "http://{{test_bie_host}}/bie"
+    allow_registry_updates: false
+    auth_base_url: https://auth.ala.org.au
+    auth_cas_url: https://auth.ala.org.au/cas
+    bie_base_url: "http://{{test_bie_host}}"
+    bie_index_base_url: "http://{{test_bie_host}}"
+    bie_index_context_path: /bie-index
+    bie_index_hostname: "{{test_bie_host}}"
+    bie_service_enabled: true
+    bie_service_base_url: "http://{{test_bie_host}}/bie-index"
+    bie_service_url: "http://{{test_bie_host}}/bie-index"
+    bie_url: "http://{{test_bie_host}}/bie"
+    biocache_base_url: "http://{{test_biocache_host}}"
+    biocache_db_host: "{{test_bie_host}}"
+    biocache_hub: biocache
+    biocache_hub_hostname: "{{test_biocache_host}}"
+    biocache_hub_url: "http://{{test_biocache_host}}/biocache"
+    biocache_hub_base_url:  "http://{{test_biocache_host}}"
+    biocache_hub_context_path: /biocache
+    biocache_sds_url: "http://{{test_bie_host}}/sds/sensitive-species-data.xml"
+    biocache_service_hostname: "{{test_biocache_host}}"
+    biocache_service_url: "http://{{test_biocache_host}}/biocache-service"
+    biocache_service_base_url: "http://{{test_biocache_host}}/biocache"
+    biocache_service_context_path: biocache-service
+    biocache_solr_url: "http://{{test_biocache_host}}:8080/solr/biocache"
+    bypass_cas: false
+    caches_auth_enabled: true
+    caches_log_enabled: true
+    caches_collections_enabled: true
+    caches_layers_enabled: true
+    collectory_hostname: collections.ala.org.au
+    collectory_base_url: http://collections.ala.org.au
+    collectory_enable_sync: false
+    collectory_url: http://collections.ala.org.au
+    collectory_context_path:
+    default_common_name_source: National Species Lists
+    default_map_lat: -25.61
+    default_map_lon: 134.35
+    default_map_zoom: 4
+    default_name_source: National Species Lists
+    disable_cas: false
+    field_guide_base_url: http://fieldguide.ala.org.au
+    image_service_url: http://images.ala.org.au
+    index_images: true
+    index_live_url: "http://{{test_biocache_host}}:8080/solr/bie"
+    index_offline_url: "http://{{test_biocache_host}}:8080/solr/bie-offline"
+    jenkins_ajp_port: -1
+    jenkins_port: 9192
+    layers_service_sampling: true
+    layers_service_url: http://spatial.ala.org.au/ws
+    lists_service_url: "http://{{test_bie_host}}/lists"
+    logger_hostname: "{{test_bie_host}}"
+    logger_url: "http://{{test_bie_host}}/logger"
+    logger_base_url: "http://{{test_bie_host}}"
+    logger_context_path: logger
+    logger_db_name: logger
+    logger_db_username: logger_user
+    logger_db_password: logger_user
+    logger_db_hostname: "{{test_bie_host}}"
+    media_store_local: false
+    media_store_url: http://images.ala.org.au
+    mysql_root_password: Yithian-093
+    nameindex_to_use: ala
+    registry_api_key:
+    sds_enabled: true
+    sds_url: "http://{{test_bie_host}}"
+    sds_context_path: sds
+    sds_hostname: "{{test_bie_host}}"
+    skin_taxa_links_base_url: "http://{{test_bie_host}}/bie/species/"
+    solr_hostname: "{{test_biocache_host}}:8080"
+    solr_url: "http://{{test_biocache_host}}:8080/solr"
+    solr_base_url: "http://{{test_biocache_host}}:8080"
+    solr_context_path: /solr
+    specieslist_db_name: specieslist
+    specieslist_db_username: specieslist
+    specieslist_db_password: specieslist
+    specieslist_db_hostname: "{{test_bie_host}}"
+    specieslist_hostname: "{{test_bie_host}}"
+    specieslist_url: "http://{{test_bie_host}}/lists"
+    specieslist_base_url:  "http://{{test_bie_host}}/lists"
+    specieslist_context_path: lists
+    userdetails_url: https://auth.ala.org.au/userdetails/userDetails/
+

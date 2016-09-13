@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/solr/home"
-     docBase="/var/lib/{{tomcat}}/webapps/solr.war"
+     docBase="{{ tomcat_deploy_dir }}/solr.war"
      allowlinking="true"
      crosscontext="true"
      debug="0"

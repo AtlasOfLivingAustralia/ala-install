@@ -4,46 +4,63 @@
         "facets":[
             {
                 "sort":"index",
+                "dwcTerm": "scientificName",
+                "description": "Matched Scientific Name",
                 "field":"taxon_name"
             },
             {
                 "sort":"index",
+                "dwcTerm": "scientificName_raw",
+                "description": "Scientific Name",
                 "field":"raw_taxon_name"
             },
             {
                 "sort":"index",
+                "description": "Subspecies",
                 "field":"subspecies_name"
             },
             {
                 "sort":"index",
+                "dwcTerm": "specificEpithet_raw",
+                "i18nValues": true,
                 "field":"species"
             },
             {
                 "sort":"index",
+                "dwcTerm": "genus_raw",
                 "field":"genus"
             },
             {
                 "sort":"index",
+                "dwcTerm": "family_raw",
                 "field":"family"
             },
             {
                 "sort":"index",
+                "dwcTerm": "order_raw",
                 "field":"order"
             },
             {
                 "sort":"index",
+                "dwcTerm": "class",
+                "description": "Class - matched",
                 "field":"class"
             },
             {
                 "sort":"index",
+                "dwcTerm": "phylum_raw",
                 "field":"phylum"
             },
             {
                 "sort":"index",
+                "dwcTerm": "kingdom_raw",
                 "field":"kingdom"
             },
             {
                 "sort":"count",
+                "dwcTerm": "taxonRank",
+                "i18nValues": true,
+                "description": "Taxon Rank - matched",
                 "field":"rank"
             },
             {
@@ -56,10 +73,13 @@
             },
             {
                 "sort":"index",
+                "dwcTerm": "vernacularName",
+                "description": "Vernacular Name - matched",
                 "field":"common_name"
             },
             {
                 "sort":"count",
+                "description": "Species subgroups",
                 "field":"species_subgroup"
             },
             {
@@ -73,22 +93,27 @@
         "facets":[
             {
                 "sort":"index",
+                "dwcTerm": "identifiedBy_raw",
                 "field":"identified_by"
             },
             {
                 "sort":"index",
+                "dwcTerm": "identificationQualifier",
                 "field":"identification_qualifier_s"
-            },            
+            },
             {
                 "sort":"count",
+                "description": "Taxon identification issue",
                 "field":"taxonomic_issue"
             },
             {
                 "sort":"index",
+                "dwcTerm": "typeStatus",
                 "field":"type_status"
             },
             {
                 "sort":"index",
+                "dwcTerm": "originalNameUsage",
                 "field":"original_name_usage"
             }
         ]
@@ -98,6 +123,8 @@
         "facets":[
             {
                 "sort":"index",
+                "dwcTerm": "country_raw",
+                "i18nValues": true,
                 "field":"country"
             },
             {
@@ -202,6 +229,7 @@
             },
             {
                 "sort":"index",
+                "description": "Elevation",
                 "field":"elevation_d_rng"
             },
             {
@@ -210,22 +238,29 @@
             },
             {
                 "sort":"count",
+                "description": "Sensitive",
                 "field":"sensitive"
             },
             {
                 "sort":"count",
+                "description": "Species habitats",
                 "field":"species_habitats"
             },
             {
                 "sort":"index",
+                "dwcTerm": "coordinateUncertaintyInMeters",
+                "description": "Coordinate Uncertainty in Metres - parsed",
                 "field":"coordinate_uncertainty"
             },
             {
                 "sort":"count",
+                "i18nValues": true,
+                "description": "Spatial validity",
                 "field":"geospatial_kosher"
             },
             {
                 "sort":"index",
+                "dwcTerm": "locationID",
                 "field":"location_id"
             }
         ]
@@ -235,10 +270,14 @@
         "facets":[
             {
                 "sort":"index",
+                "dwcTerm": "recordedBy_raw",
+                "description": "Collector",
                 "field":"collectors"
             },
             {
                 "sort":"count",
+                "dwcTerm": "sex",
+                "description": "Sex",
                 "field":"raw_sex"
             },
             {
@@ -247,14 +286,18 @@
             },
             {
                 "sort":"count",
+                "dwcTerm": "establishmentMeans",
                 "field":"establishment_means"
             },
             {
                 "sort":"index",
+                "dwcTerm": "month_raw",
+                "i18nValues": true,
                 "field":"month"
             },
             {
                 "sort":"index",
+                "dwcTerm": "year_raw",
                 "field":"year"
             },
             {
@@ -263,14 +306,17 @@
             },
             {
                 "sort":"count",
+                "description": "State conservation",
                 "field":"state_conservation"
             },
             {
                 "sort":"count",
+                "description": "State conservation (unprocessed)",
                 "field":"raw_state_conservation"
             },
             {
                 "sort":"index",
+                "dwcTerm": "eventID",
                 "field":"event_id"
             }
         ]
@@ -280,14 +326,18 @@
         "facets":[
             {
                 "sort":"index",
+                "dwcTerm": "basisOfRecord",
+                "description": "Basis Of Record - processed",
                 "field":"basis_of_record"
             },
             {
                 "sort":"count",
+                "description": "Multimedia",
                 "field":"multimedia"
             },
             {
                 "sort":"index",
+                "description": "Presence/Absence",
                 "field":"occurrence_status_s"
             }
         ]
@@ -297,26 +347,34 @@
         "facets":[
             {
                 "sort":"count",
+                "description": "Sensitive",
                 "field":"sensitive"
             },
             {
                 "sort":"count",
+                "i18nValues": true,
+                "description": "Record issues",
                 "field":"assertions"
             },
             {
                 "sort":"count",
+                "i18nValues": true,
+                "description": "Outlier for layer",
                 "field":"outlier_layer"
             },
             {
                 "sort":"count",
+                "description": "Outlier layer count",
                 "field":"outlier_layer_count"
             },
             {
                 "sort":"count",
+                "i18nValues": true,
                 "field":"user_assertions"
             },
             {
                 "sort":"index",
+                "description": "Assertions by user",
                 "field":"assertion_user_id"
             },
             {
@@ -350,7 +408,13 @@
             },
             {
                 "sort":"count",
+                "description": "Data Resource ID",
                 "field":"data_resource_uid"
+            },
+            {
+                "sort": "count",
+                "dwcTerm": "datasetName",
+                "field": "dataset_name"
             }
         ]
     }

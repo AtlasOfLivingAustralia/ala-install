@@ -1,0 +1,60 @@
+{
+  "defaultSourceField": "status",
+  "lists": [
+    {
+      "uid": "dr656",
+      "field": "conservationStatusAUS_s",
+      "term": "conservationStatusAUS",
+      "label": "AUS"
+    },
+    {
+      "uid": "dr649",
+      "field": "conservationStatusACT_s",
+      "term": "conservationStatusACT",
+      "label": "ACT"
+    },
+    {
+      "uid": "dr650",
+      "field": "conservationStatusNSW_s",
+      "term": "conservationStatusNSW",
+      "label": "NSW"
+    },
+    {
+      "uid": "dr652",
+      "field": "conservationStatusQLD_s",
+      "term": "conservationStatusQLD",
+      "label": "QLD"
+    },
+    {
+      "uid": "dr655",
+      "field": "conservationStatusVIC_s",
+      "term": "conservationStatusVIC",
+      "label": "VIC",
+      "sourceField": "status"
+    },
+    {
+      "uid": "dr654",
+      "field": "conservationStatusTAS_s",
+      "term": "conservationStatusTAS",
+      "label": "TAS"
+    },
+    {
+      "uid": "dr653",
+      "field": "conservationStatusSA_s",
+      "term": "conservationStatusSA",
+      "label": "SA"
+    },
+    {
+      "uid": "dr2201",
+      "field": "conservationStatusWA_s",
+      "term": "conservationStatusWA",
+      "label": "WA"
+    },
+    {
+      "uid": "dr651",
+      "field": "conservationStatusNT_s",
+      "term": "conservationStatusNT",
+      "label": "NT"
+    }
+  ]
+}

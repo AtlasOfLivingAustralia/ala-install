@@ -1,0 +1,2 @@
+# nameindex_to_use - recognised values = 'ala', 'merged', 'col'
+nameindex_variant: "{{ nameindex_to_use | default('col') }}"
