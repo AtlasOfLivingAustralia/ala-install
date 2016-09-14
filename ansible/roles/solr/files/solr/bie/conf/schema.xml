@@ -348,6 +348,7 @@
       <analyzer>
         <tokenizer class="solr.KeywordTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory" />
+        <filter class="solr.ICUFoldingFilterFactory"/><!-- to gracefully handle unicode characters -->
       </analyzer>
     </fieldType>
 
