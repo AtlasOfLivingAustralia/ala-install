@@ -391,38 +391,38 @@
    <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
    <field name="guid" type="string" indexed="true" stored="true" required="true" />
    <field name="idxtype" type="string" indexed="true" stored="true" required="true" />
-   <field name="name" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+   <field name="name" type="lowercase" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="description" type="text" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="content" type="text" indexed="true" stored="true" multiValued="false" omitNorms="false" />
 
    <!-- Metadata and sources -->
    <field name="datasetID" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="datasetName" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="status" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="source" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="subject" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="format" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="language" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="license" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="rights" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="rightsHolder" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="acronym" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+   <field name="datasetName" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="status" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="source" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="subject" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="format" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="language" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="license" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="rights" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="rightsHolder" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="acronym" type="lowercase" indexed="true" stored="true" multiValued="false" omitNorms="false" />
 
    <!-- Taxa fields -->
    <field name="taxonConceptID" type="string" indexed="true" stored="true" omitNorms="true" />
    <field name="taxonGuid" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="parentGuid" type="string" indexed="true" stored="true" omitNorms="true" />
-   <field name="scientificName" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="scientificNameAuthorship" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="rank" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
+   <field name="scientificName" type="lowercase" indexed="true" stored="true" omitNorms="false" />
+   <field name="scientificNameAuthorship" type="lowercase" indexed="true" stored="true" omitNorms="false" />
+   <field name="rank" type="lowercase" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="rankID" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
-   <field name="nameComplete" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="nameFormatted" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="acceptedConceptName" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+   <field name="nameComplete" type="lowercase" indexed="true" stored="true" omitNorms="false" />
+   <field name="nameFormatted" type="lowercase" indexed="true" stored="true" omitNorms="false" />
+   <field name="acceptedConceptName" type="lowercase" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="acceptedConceptID" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
-   <field name="taxonomicStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="nomenclaturalStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="scientificNameID" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="taxonomicStatus" type="lowercase" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="nomenclaturalStatus" type="lowercase" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="scientificNameID" type="lowercase" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="nameID" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
 
    <!-- Higher rank information -->
@@ -437,23 +437,23 @@
 
    <!-- Additional information -->
    <field name="occurrenceCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
-   <field name="establishmentMeans" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="distribution" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="establishmentMeans" type="lowercase" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="distribution" type="lowercase" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="priority" type="int" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="imageAvailable" type="boolean" indexed="true" stored="true"  />
    <field name="locatedInHubCountry" type="boolean" indexed="true" stored="true"  />
    <field name="image" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="additionalIdentifiers" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
-   <field name="namePublishedIn" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="namePublishedIn" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInYear" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
 
    <!-- higher taxonomy -->
-   <field name="speciesGroup" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" />
-   <field name="speciesSubgroup" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" />
+   <field name="speciesGroup" type="lowercase" indexed="true" stored="true" multiValued="true" omitNorms="true" />
+   <field name="speciesSubgroup" type="lowercase" indexed="true" stored="true" multiValued="true" omitNorms="true" />
   
    <!-- WordPress fields -->
-   <field name="categories" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
+   <field name="categories" type="lowercase" indexed="true" stored="true" multiValued="true" omitNorms="false" />
   
    <!-- Spatial fields -->
    <field name="centroid" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
