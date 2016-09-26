@@ -25,12 +25,12 @@ apikey_check_url=https://auth.ala.org.au/apikey/ws/check?apikey=
 
 userdetails_base_url=https://auth.ala.org.au/userdetails
 images_base_url=http://images.ala.org.au
-image_upload_base_url=http://localhost:8080/biocache-service
+image_upload_base_url=http://biocache-test.ala.org.au/ws
 ala_base_url=http://ala.org.au
 collectory_base_url=http://collections.ala.org.au
 bie_base_url=http://bie.ala.org.au
 lists_base_url=http://lists.ala.org.au
-biocache_base_url=http://biocache.ala.org.au
+biocache_base_url=http://biocache-test.ala.org.au
 avh_base_url=http://avh.ala.org.au
 nsl_base_url=https://biodiversity.org.au/test-nsl
 
@@ -38,6 +38,7 @@ sandbox_upload_directory=/data/sandbox/uploads
 sandbox_base_url=http://profiles.vagrant1.ala.org.au
 sandbox_biocache_internal_url=http://localhost:8080/biocache-service
 sandbox_context_path=/sandbox
+sandbox_image_upload_base_url=http://localhost:8080/biocache-service
 
 
 image_upload_apikey = 
@@ -82,7 +83,7 @@ is_vagrant=true
 local_repo_dir = ~/.ala
 data_dir=/data
 
-biocache_service_version=1.6.1
+biocache_service_version=1.8.0
 sandbox_version=1.1
 
 biocache_db_host = localhost
@@ -90,9 +91,9 @@ cassandra_listen_host = localhost
 collectory_db_host_address = localhost
 collectory_db_host = localhost
 
-biocache_service_hostname = localhost
-biocache_service_url = http://localhost:8080/biocache-service
-biocache_service_base_url = http://localhost:8080
+biocache_service_hostname = profiles.vagrant1.ala.org.au
+biocache_service_url = http://profiles.vagrant1.ala.org.au:8080/biocache-service
+biocache_service_base_url = http://profiles.vagrant1.ala.org.au:8080
 biocache_service_context_path = /biocache-service
 
 userdetails_url=https://auth.ala.org.au/userdetails/userDetails
@@ -111,7 +112,11 @@ sandbox_url = http://profiles.vagrant1.ala.org.au/sandbox
 sandbox_base_url = http://profiles.vagrant1.ala.org.au
 sandbox_context_path = /sandbox
 
-biocache_hub_url = nohub
+biocache_hub_hostname = profiles.vagrant1.ala.org.au
+biocache_hub_url = http://profiles.vagrant1.ala.org.au/ala-hub
+biocache_hub_base_url = http://profiles.vagrant1.ala.org.au
+biocache_hub_context_path = /ala-hub
+
 
 biocache_sds_url = http://sds.ala.org.au
 bie_service_url = http://bie.ala.org.au/ws
