@@ -529,6 +529,9 @@
    <!-- WordPress fields -->
    <field name="categories" type="lowercase" indexed="true" stored="true" multiValued="true" omitNorms="false" />
 
+   <!-- Spatial fields -->
+   <field name="centroid" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
+
    <!-- LinkIdentifier fields -->
    <field name="linkIdentifier" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
 
