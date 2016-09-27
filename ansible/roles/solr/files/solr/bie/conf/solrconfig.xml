@@ -1213,19 +1213,6 @@
 
        -->
 
-<!--     <searchComponent name="suggest" class="solr.SuggestComponent">
-      <lst name="suggester">
-        <str name="name">mySuggester</str>
-        <str name="lookupImpl">FuzzyLookupFactory</str>
-        <str name="dictionaryImpl">DocumentDictionaryFactory</str>
-        <str name="field">scientificName</str>
-        <str name="weightField">scientificName</str>
-        <str name="exactMatchFirst">true</str>
-        <str name="suggestAnalyzerFieldType">string</str>
-        <str name="buildOnStartup">true</str>
-      </lst>
-    </searchComponent>      -->  
-
     <!-- Spell Check
 
          The spell check component can return a list of alternative spelling
