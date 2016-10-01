@@ -1154,6 +1154,22 @@
         -->
     </requestHandler>
 
+    <!-- request handler to return typeahead suggestions -->
+    <requestHandler name="/suggest" class="solr.SearchHandler">
+      <lst name="defaults">
+        <str name="echoParams">explicit</str>
+        <str name="defType">edismax</str>
+        <str name="rows">10</str>
+        <str name="fl">guid,scientificName,commonNameSingle,commonName,rank,rankID,score</str>
+        <str name="qf">commonNameSingle_suggest^100 commonNameSingle_suggest_ngram^20.0 scientificName_suggest^80 scientificName_suggest_ngram^15 </str>
+        <str name="pf">commonNameSingle_suggest_edge^50.0 scientificName_suggest_edge^25.0 </str>
+        <str name="group">true</str>
+        <str name="group.field">scientificName_s</str>
+        <str name="sort">score desc, scientificName asc</str>
+        <str name="group.sort">score desc</str>
+      </lst>
+    </requestHandler>
+
     <!-- Search Components
 
          Search components are registered to SolrCore and used by

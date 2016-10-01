@@ -1,0 +1,105 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - cassandra 
+
+########## REDHAT ########## 
+
+- name: setup yum repo
+  copy: src=yum/datastax.repo dest=/etc/yum.repos.d/datastax.repo
+  when: ansible_os_family == "RedHat"   
+
+# Note: Ansible 1.6.x yum does not work with "with_items"
+# This is more verbose, but version safe
+- name: install datastax (Redhat)
+  yum: name={{datastax}} state=present
+  tags:
+    - packages 
+    - cassandra 
+  notify: 
+    - restart cassandra
+  when: ansible_os_family == "RedHat" 
+
+- name: install cassandra (Redhat)
+  yum: name={{cassandra}} state=present
+  tags:
+    - packages 
+    - cassandra 
+  notify: 
+    - restart cassandra
+  when: ansible_os_family == "RedHat" 
+
+########## DEBIAN ########## 
+
+- name: install packages (Debian)
+  apt: name=wget  state=present
+  when: ansible_os_family == "Debian" 
+  tags:
+    - packages 
+    - cassandra 
+
+- name: install packages (Debian)
+  apt: name=software-properties-common  state=present
+  when: ansible_os_family == "Debian" 
+  tags:
+    - packages 
+    - cassandra 
+
+- name: install packages 2 (Debian)
+  apt: name=python-software-properties  state=present
+  when: ansible_os_family == "Debian"
+  tags:
+    - packages 
+    - cassandra 
+
+- name: apt add repository (Debian)
+  shell: 'echo "deb http://debian.datastax.com/datastax-ddc 3.7 main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list'
+  when: ansible_os_family == "Debian"
+  tags:
+    - packages
+    - cassandra
+
+- name: install Cassandra (Debian)
+  apt: name=cassandra state=present update_cache=yes force=yes
+  tags:
+    - packages 
+    - cassandra 
+  notify: 
+    - restart cassandra
+  when: ansible_os_family == "Debian" 
+
+- name: create data directory for cassandra on mounted storage
+  file: path={{ data_dir }}/cassandra3 state=directory owner={{cassandra_user}} group={{cassandra_user}}
+  tags:   
+    - cassandra   
+
+- name: apt add repository (Debian)
+  shell: 'echo "deb http://debian.datastax.com/datastax-ddc 3.7 main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list'
+  when: ansible_os_family == "Debian"
+  tags:
+    - packages
+    - cassandra
+
+- name: create the cassandra yaml from template
+  template: src={{item.src}} dest={{item.dest}} owner={{cassandra_user}} group={{cassandra_user}} force=yes
+  with_items:
+    - { src: cassandra-env.sh, dest: /etc/cassandra/cassandra-env.sh }
+    - { src: cassandra.yaml, dest: /etc/cassandra/cassandra.yaml}
+  notify: 
+    - restart cassandra
+  tags:   
+    - cassandra 
+    - cassandra_yaml    
+
+- name: clean up directories that have been created by initial installation of cassandra 3
+  shell: 'rm -Rf /data/cassandra3/data && rm -Rf /data/cassandra3/commitlog && rm -Rf /var/log/cassandra/* && rm -Rf /var/lib/cassandra/hints'
+  when: ansible_os_family == "Debian"
+  notify: 
+    - restart cassandra  
+  tags:
+    - packages
+    - cassandra
+
+
+
+
+

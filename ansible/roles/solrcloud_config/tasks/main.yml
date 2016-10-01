@@ -18,7 +18,7 @@
     - solrcloud_config
 
 - name: Delete biocache collection if it exists
-  get_url: url="http://127.0.0.1:{{ solr_port }}/solr/admin/collections?action=DELETE&name=biocache" dest=/tmp/delete-collection.txt force=yes
+  get_url: url="http://{{ solr_config_host }}:{{ solr_port }}/solr/admin/collections?action=DELETE&name=biocache" dest=/tmp/delete-collection.txt force=yes
   tags:
     - solrcloud_config
   tags:
@@ -26,7 +26,7 @@
   ignore_errors: True
 
 - name: Create biocache collection
-  get_url: url="http://127.0.0.1:{{ solr_port }}/solr/admin/collections?action=CREATE&property.name=biocache&name=biocache&numShards=4&replicationFactor=1&collection.configName=biocache" dest=/tmp/create-collection.txt force=yes
+  get_url: url="http://{{ solr_config_host }}:{{ solr_port }}/solr/admin/collections?action=CREATE&property.name=biocache&name=biocache&maxShardsPerNode=8&numShards=8&replicationFactor=2&collection.configName=biocache" dest=/tmp/create-collection.txt force=yes timeout=30
   tags:
     - solrcloud_config
     - solrcloud_create_collection

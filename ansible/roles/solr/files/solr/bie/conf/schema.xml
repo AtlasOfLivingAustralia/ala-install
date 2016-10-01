@@ -152,6 +152,79 @@
         </analyzer>
     </fieldType>
 
+    <fieldType name="text_suggest_ngram" class="solr.TextField">
+      <analyzer type="index">
+        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="0" catenateNumbers="0" catenateAll="0" splitOnCaseChange="1"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.EdgeNGramFilterFactory" maxGramSize="20" minGramSize="1"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement="" replace="all"/>
+      </analyzer>
+      <analyzer type="query">
+        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.WordDelimiterFilterFactory" generateWordParts="0" generateNumberParts="0" catenateWords="0" catenateNumbers="0" catenateAll="0" splitOnCaseChange="0"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement="" replace="all"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="^(.{20})(.*)?" replacement="$1" replace="all"/>
+      </analyzer>
+    </fieldType>
+
+    <fieldType name="text_suggest_edge" class="solr.TextField">
+      <analyzer type="index">
+        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([\.,;:-_])" replacement=" " replace="all"/>
+        <filter class="solr.EdgeNGramFilterFactory" maxGramSize="30" minGramSize="1"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement="" replace="all"/>
+      </analyzer>
+      <analyzer type="query">
+        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([\.,;:-_])" replacement=" " replace="all"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement="" replace="all"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="^(.{30})(.*)?" replacement="$1" replace="all"/>
+      </analyzer>
+    </fieldType>
+
+    <!-- text_suggest : Matches whole terms in the suggest text  -->
+    <fieldType name="text_suggest" class="solr.TextField" positionIncrementGap="100">
+      <analyzer type="index">
+        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.WordDelimiterFilterFactory"
+              generateWordParts="1"
+              generateNumberParts="1"
+              catenateWords="1"
+              catenateNumbers="1"
+              catenateAll="1"
+              splitOnCaseChange="1"
+              splitOnNumerics="1"
+              preserveOriginal="1"
+        />
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement=" " replace="all"/>
+      </analyzer>
+      <analyzer type="query">
+        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.WordDelimiterFilterFactory"
+              generateWordParts="0"
+              generateNumberParts="0"
+              catenateWords="0"
+              catenateNumbers="0"
+              catenateAll="0"
+              splitOnCaseChange="0"
+              splitOnNumerics="0"
+        />
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement=" " replace="all"/>
+      </analyzer>
+    </fieldType>
+
     <!-- BIE - A text field that uses WordDelimiterFilter to enable splitting and matching of
         words on case-change, alpha numeric boundaries, and non-alphanumeric chars,
         so that a query of "wifi" or "wi fi" could match a document containing "Wi-Fi".
@@ -455,7 +528,7 @@
   
    <!-- WordPress fields -->
    <field name="categories" type="lowercase" indexed="true" stored="true" multiValued="true" omitNorms="false" />
-  
+
    <!-- Spatial fields -->
    <field name="centroid" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
 
@@ -469,12 +542,35 @@
    <field name="auto_text_edge" type="auto_text_edge" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
    <field name="concat_name" type="concat_name" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
    <field name="doc_name" type="text_bie_canonical" indexed="true" stored="true" multiValued="true" omitNorms="false" omitTermFreqAndPositions="false"/>
+
+   <!-- Fields used by autocomplete /suggest service -->
+   <field name="scientificName_suggest" type="text_suggest" indexed="true" stored="true" multiValued="true"/>
+   <field name="commonNameSingle_suggest" type="text_suggest" indexed="true" stored="true" multiValued="true"/>
+   <field name="commonName_suggest" type="text_suggest" indexed="true" stored="true" multiValued="true"/>
+
+   <field name="scientificName_suggest_edge" type="text_suggest_edge" indexed="true" stored="true" multiValued="true"/>
+   <field name="commonNameSingle_suggest_edge" type="text_suggest_edge" indexed="true" stored="true" multiValued="true"/>
+   <field name="commonName_suggest_edge" type="text_suggest_edge" indexed="true" stored="true" multiValued="true"/>
+
+   <field name="scientificName_suggest_ngram" type="text_suggest_ngram" indexed="true" stored="true" multiValued="true"/>
+   <field name="commonNameSingle_suggest_ngram" type="text_suggest_ngram" indexed="true" stored="true" multiValued="true"/>
+   <field name="commonName_suggest_ngram" type="text_suggest_ngram" indexed="true" stored="true" multiValued="true"/> 
+
+   <field name="scientificName_s" type="string" indexed="true" stored="true" multiValued="false"/>
+   <!-- End of: Fields used by autocomplete /suggest service -->
+
+
+   <!--  NC:2013-02-08 remove the omitTermFreqAndPositions because this setting will cause an exception when searching for a phrase -->
    <field name="stopped_common_name" type="stopped_common_name" indexed="true" stored="false" multiValued="true" omitNorms="true" />
+   <field name="name_complete" type="name_complete" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
    <field name="auto_name_exact" type="name_complete" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
 
    <!-- Fields used to rank exact matches higher -->
    <field name="exact_text" type="lowercase" indexed="true" stored="false" omitNorms="true" multiValued="true"/>
    
+   <!-- catchall text field that indexes tokens both normally and in reverse for efficient
+        leading wildcard queries. -->
+   <field name="text_rev" type="text_rev" indexed="true" stored="false" multiValued="true"/>
 
      <!-- Dynamic field definitions.  If a field name is not found, dynamicFields
           will be used if the name matches any of the patterns.
@@ -564,5 +660,21 @@
    <copyField source="commonName" dest="stopped_common_name"/>
 
    <copyField source="commonName" dest="auto_name_exact"/>
+
+   <!-- suggest -->
+   <!-- suggest fields -->
+   <copyField source="scientificName" dest="scientificName_suggest" />
+   <copyField source="scientificName" dest="scientificName_suggest_edge" />
+   <copyField source="scientificName" dest="scientificName_suggest_ngram" />
+   <copyField source="scientificName" dest="scientificName_s" />
+
+   <copyField source="commonNameSingle" dest="commonNameSingle_suggest" />
+   <copyField source="commonNameSingle" dest="commonNameSingle_suggest_edge" />
+   <copyField source="commonNameSingle" dest="commonNameSingle_suggest_ngram" />
+
+   <copyField source="commonName" dest="commonName_suggest" />
+   <copyField source="commonName" dest="commonName_suggest_edge" />
+   <copyField source="commonName" dest="commonName_suggest_ngram" />
+   <!-- <copyField source="commonName" dest="commonName_s" /> -->
 
 </schema>
