@@ -7,22 +7,22 @@
   file: path=/usr/lib/nameindexer/ state=directory
 
 - name: Download Catalogue of Life 2012
-  get_url: url={{ name_indexes_repo }}/dwca-col.zip dest={{data_dir}}/lucene/sources/dwca-col.zip
+  get_url: url={{ aws_name_indexes_repo }}/dwca-col.zip dest={{data_dir}}/lucene/sources/dwca-col.zip
   tags:  
     - "data_archives"     
 
 - name: Download Catalogue of Life 2012 (Mammals - for testing purposes)
-  get_url: url={{ name_indexes_repo }}/dwca-col-mammals.zip dest={{data_dir}}/lucene/sources/dwca-col-mammals.zip
+  get_url: url={{ aws_name_indexes_repo }}/dwca-col-mammals.zip dest={{data_dir}}/lucene/sources/dwca-col-mammals.zip
   tags:  
     - "data_archives"     
 
 - name: Download IRMNG homonyms
-  get_url: url={{ name_indexes_repo }}/IRMNG_DWC_HOMONYMS.zip dest={{data_dir}}/lucene/sources/IRMNG_DWC_HOMONYMS.zip
+  get_url: url={{ aws_name_indexes_repo }}/IRMNG_DWC_HOMONYMS.zip dest={{data_dir}}/lucene/sources/IRMNG_DWC_HOMONYMS.zip
   tags:  
     - "data_archives"    
 
 - name: Download Catalogue of Life 2012 Vernacular names
-  get_url: url={{ name_indexes_repo }}/col_vernacular.txt.zip dest={{data_dir}}/lucene/sources/col_vernacular.txt.zip
+  get_url: url={{ aws_name_indexes_repo }}/col_vernacular.txt.zip dest={{data_dir}}/lucene/sources/col_vernacular.txt.zip
   tags:  
   - "data_archives"    
 
