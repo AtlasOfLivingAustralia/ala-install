@@ -1,4 +1,4 @@
-, it looks like - include: ../../common/tasks/setfacts.yml
+- include: ../../common/tasks/setfacts.yml
 
 - name: ensure lucene sources directory exists
   file: path=/data/lucene/sources state=directory
