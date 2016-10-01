@@ -71,7 +71,7 @@
 
 - name: setup name index URLs
   set_fact:
-    col_namematching_url: "{{aws_name_indexes_repo}}/col_namematching.tgz"
+    col_namematching_url: "{{aws_name_indexes_repo}}/col_namematching_20160226.tgz"
     merged_namematching_url: "{{aws_name_indexes_repo}}/merge_namematching.tgz"
     ala_namematching_url: "{{ala_name_indexes_repo}}/namematching-{{name_index_date}}.tgz"
   tags:
