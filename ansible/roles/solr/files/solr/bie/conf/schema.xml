@@ -421,7 +421,8 @@
       <analyzer>
         <tokenizer class="solr.KeywordTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory" />
-        <filter class="solr.ICUFoldingFilterFactory"/><!-- to gracefully handle unicode characters -->
+        <!--<filter class="solr.ICUFoldingFilterFactory"/> --> <!-- DM: commented out for now - missing dependencies -->
+        <!-- to gracefully handle unicode characters -->
       </analyzer>
     </fieldType>
 
