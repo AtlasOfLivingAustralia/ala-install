@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - spatial-portal
+    - config    
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ spatial_portal_context_path }}' hostname='{{ spatial_portal_hostname }}'
   tags:
@@ -28,6 +29,7 @@
   template: src=webportal-config.properties dest={{data_dir}}/webportal/config/webportal-config.properties
   tags:
     - spatial-portal 
+    - config
 
 - name: copy all log4j.properties
   template: src=log4j.properties dest={{data_dir}}/webportal/config/log4j.properties
