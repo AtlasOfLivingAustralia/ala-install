@@ -1,0 +1,8 @@
+- hosts: seasonalcalendar-test
+  roles:
+    - java
+    - common
+    - mongodb
+    - tomcat
+    - apache
+    - seasonalcalendar
