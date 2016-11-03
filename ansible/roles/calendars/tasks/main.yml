@@ -1,6 +1,6 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
-    - seasonalcalendar
+    - calendars
     - deploy
 #
 # External configuration properties file
@@ -8,40 +8,40 @@
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
-    - "{{data_dir}}/seasonalcalendar/config"
+    - "{{data_dir}}/calendars/config"
   tags:
     - properties
-    - seasonalcalendar
+    - calendars
 
 - name: copy all config.properties
-  template: src=seasonalcalendar-config.properties dest={{data_dir}}/seasonalcalendar/config/ecodata-config.properties
+  template: src=calendars-config.properties dest={{data_dir}}/calendars/config/calendars-config.properties
   tags:
     - properties
-    - seasonalcalendar
+    - calendars
 
 - name: set data ownership
-  file: path={{data_dir}}/seasonalcalendar owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  file: path={{data_dir}}/calendars owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify:
     - restart tomcat
   tags:
     - properties
-    - seasonalcalendar
+    - calendars
 
 
 #
 # WAR file deployment and virtual host configuration
 #
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ seasonalcalendar_context_path }}' hostname='{{ seasonalcalendar_hostname }}'
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ calendars_context_path }}' hostname='{{ calendars_hostname }}'
   tags:
     - deploy
     - apache_vhost
-    - seasonalcalendar
+    - calendars
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ seasonalcalendar_war_url }}' context_path='{{seasonalcalendar_context_path}}' hostname='{{ seasonalcalendar_hostname }}'
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ calendars_war_url }}' context_path='{{calendars_context_path}}' hostname='{{ calendars_hostname }}'
   tags:
     - deploy
     - tomcat_vhost
-    - seasonalcalendar
+    - calendars
 
 #
 # Override the default memory settings for Tomcat to increase heap space and change the garbage collector
@@ -54,7 +54,7 @@
   notify:
     - restart tomcat
   tags:
-    - seasonalcalendar
+    - calendars
     - deploy
     - tomcat
 
@@ -62,13 +62,13 @@
 # Cron Job configuration
 #
 - name: install cron job for indexing elastic search
-  cron: minute=21 hour=22 name="Elastic search indexing" job="wget -O - {{ seasonalcalendar_url }}{{ seasonalcalendar_context_path }}/admin/reIndexAll >/dev/null 2>&1" user=root state=present
+  cron: minute=21 hour=22 name="Elastic search indexing" job="wget -O - {{ calendars_url }}{{ calendars_context_path }}/admin/reIndexAll >/dev/null 2>&1" user=root state=present
 
 #
 # Copy sensitive data xml file
 #  
 - name: Copy config files to config directory
-  copy: src=sensitive-species-data.xml dest={{data_dir}}/seasonalcalendar/config/sensitive-species-data.xml
+  copy: src=sensitive-species-data.xml dest={{data_dir}}/calendars/config/sensitive-species-data.xml
   tags:
-    - seasonalcalendar
+    - calendars
     - properties  
