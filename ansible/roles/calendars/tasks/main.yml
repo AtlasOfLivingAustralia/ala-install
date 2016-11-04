@@ -6,7 +6,7 @@
 # External configuration properties file
 #
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}} follow=yes
   with_items:
     - "{{data_dir}}/calendars/config"
   tags:
