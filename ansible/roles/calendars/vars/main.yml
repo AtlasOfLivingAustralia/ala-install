@@ -1,0 +1,9 @@
+# assets
+version: "{{ calendars_version | default('LATEST')}}"
+artifactId: "seasonal-calendar"
+classifier: ''
+packaging: "war"
+groupId: "au.org.ala"
+calendars_war_url: "{{maven_repo_ws_url}}"
+tomcat_java_opts_override: "-Xmx4g -Xms2g -XX:MaxPermSize=256m -Xss256k -XX:+UseG1GC"
+

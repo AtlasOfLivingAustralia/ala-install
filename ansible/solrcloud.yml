@@ -4,6 +4,7 @@
 - hosts: solrcloud
   roles:
     - common
+    - java8
     - solrcloud
 - hosts: solrcloud_config
   roles:

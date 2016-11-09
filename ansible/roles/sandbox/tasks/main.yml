@@ -6,7 +6,7 @@
 # WAR file deployment and virtual host configuration
 #
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ sandbox_context_path }}' hostname='{{ sandbox_hostname }}' additional_proxy_pass='{{ additional_proxy_pass }}'
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ sandbox_context_path }}' hostname='{{ sandbox_hostname }}' additional_proxy_pass='{{ additional_proxy_pass_values }}'
   tags:
     - sandbox
     - deploy

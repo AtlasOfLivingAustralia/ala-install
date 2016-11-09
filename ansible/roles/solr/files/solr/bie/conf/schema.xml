@@ -152,6 +152,79 @@
         </analyzer>
     </fieldType>
 
+    <fieldType name="text_suggest_ngram" class="solr.TextField">
+      <analyzer type="index">
+        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="0" catenateNumbers="0" catenateAll="0" splitOnCaseChange="1"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.EdgeNGramFilterFactory" maxGramSize="20" minGramSize="1"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement="" replace="all"/>
+      </analyzer>
+      <analyzer type="query">
+        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.WordDelimiterFilterFactory" generateWordParts="0" generateNumberParts="0" catenateWords="0" catenateNumbers="0" catenateAll="0" splitOnCaseChange="0"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement="" replace="all"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="^(.{20})(.*)?" replacement="$1" replace="all"/>
+      </analyzer>
+    </fieldType>
+
+    <fieldType name="text_suggest_edge" class="solr.TextField">
+      <analyzer type="index">
+        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([\.,;:-_])" replacement=" " replace="all"/>
+        <filter class="solr.EdgeNGramFilterFactory" maxGramSize="30" minGramSize="1"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement="" replace="all"/>
+      </analyzer>
+      <analyzer type="query">
+        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([\.,;:-_])" replacement=" " replace="all"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement="" replace="all"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="^(.{30})(.*)?" replacement="$1" replace="all"/>
+      </analyzer>
+    </fieldType>
+
+    <!-- text_suggest : Matches whole terms in the suggest text  -->
+    <fieldType name="text_suggest" class="solr.TextField" positionIncrementGap="100">
+      <analyzer type="index">
+        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.WordDelimiterFilterFactory"
+              generateWordParts="1"
+              generateNumberParts="1"
+              catenateWords="1"
+              catenateNumbers="1"
+              catenateAll="1"
+              splitOnCaseChange="1"
+              splitOnNumerics="1"
+              preserveOriginal="1"
+        />
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement=" " replace="all"/>
+      </analyzer>
+      <analyzer type="query">
+        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.WordDelimiterFilterFactory"
+              generateWordParts="0"
+              generateNumberParts="0"
+              catenateWords="0"
+              catenateNumbers="0"
+              catenateAll="0"
+              splitOnCaseChange="0"
+              splitOnNumerics="0"
+        />
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement=" " replace="all"/>
+      </analyzer>
+    </fieldType>
+
     <!-- BIE - A text field that uses WordDelimiterFilter to enable splitting and matching of
         words on case-change, alpha numeric boundaries, and non-alphanumeric chars,
         so that a query of "wifi" or "wi fi" could match a document containing "Wi-Fi".
@@ -348,6 +421,8 @@
       <analyzer>
         <tokenizer class="solr.KeywordTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory" />
+        <!--<filter class="solr.ICUFoldingFilterFactory"/> --> <!-- DM: commented out for now - missing dependencies -->
+        <!-- to gracefully handle unicode characters -->
       </analyzer>
     </fieldType>
 
@@ -391,38 +466,38 @@
    <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
    <field name="guid" type="string" indexed="true" stored="true" required="true" />
    <field name="idxtype" type="string" indexed="true" stored="true" required="true" />
-   <field name="name" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+   <field name="name" type="lowercase" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="description" type="text" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="content" type="text" indexed="true" stored="true" multiValued="false" omitNorms="false" />
 
    <!-- Metadata and sources -->
    <field name="datasetID" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="datasetName" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="status" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="source" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="subject" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="format" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="language" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="license" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="rights" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="rightsHolder" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="acronym" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+   <field name="datasetName" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="status" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="source" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="subject" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="format" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="language" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="license" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="rights" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="rightsHolder" type="lowercase" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="acronym" type="lowercase" indexed="true" stored="true" multiValued="false" omitNorms="false" />
 
    <!-- Taxa fields -->
    <field name="taxonConceptID" type="string" indexed="true" stored="true" omitNorms="true" />
    <field name="taxonGuid" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="parentGuid" type="string" indexed="true" stored="true" omitNorms="true" />
-   <field name="scientificName" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="scientificNameAuthorship" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="rank" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
+   <field name="scientificName" type="lowercase" indexed="true" stored="true" omitNorms="false" />
+   <field name="scientificNameAuthorship" type="lowercase" indexed="true" stored="true" omitNorms="false" />
+   <field name="rank" type="lowercase" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="rankID" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
-   <field name="nameComplete" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="nameFormatted" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="acceptedConceptName" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+   <field name="nameComplete" type="lowercase" indexed="true" stored="true" omitNorms="false" />
+   <field name="nameFormatted" type="lowercase" indexed="true" stored="true" omitNorms="false" />
+   <field name="acceptedConceptName" type="lowercase" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="acceptedConceptID" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
-   <field name="taxonomicStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="nomenclaturalStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="scientificNameID" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="taxonomicStatus" type="lowercase" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="nomenclaturalStatus" type="lowercase" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="scientificNameID" type="lowercase" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="nameID" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
 
    <!-- Higher rank information -->
@@ -437,24 +512,24 @@
 
    <!-- Additional information -->
    <field name="occurrenceCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
-   <field name="establishmentMeans" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="distribution" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="establishmentMeans" type="lowercase" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="distribution" type="lowercase" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="priority" type="int" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="imageAvailable" type="boolean" indexed="true" stored="true"  />
    <field name="locatedInHubCountry" type="boolean" indexed="true" stored="true"  />
    <field name="image" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="additionalIdentifiers" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
-   <field name="namePublishedIn" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="namePublishedIn" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInYear" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
 
    <!-- higher taxonomy -->
-   <field name="speciesGroup" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" />
-   <field name="speciesSubgroup" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" />
+   <field name="speciesGroup" type="lowercase" indexed="true" stored="true" multiValued="true" omitNorms="true" />
+   <field name="speciesSubgroup" type="lowercase" indexed="true" stored="true" multiValued="true" omitNorms="true" />
   
    <!-- WordPress fields -->
-   <field name="categories" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
-  
+   <field name="categories" type="lowercase" indexed="true" stored="true" multiValued="true" omitNorms="false" />
+
    <!-- Spatial fields -->
    <field name="centroid" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
 
@@ -468,12 +543,35 @@
    <field name="auto_text_edge" type="auto_text_edge" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
    <field name="concat_name" type="concat_name" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
    <field name="doc_name" type="text_bie_canonical" indexed="true" stored="true" multiValued="true" omitNorms="false" omitTermFreqAndPositions="false"/>
+
+   <!-- Fields used by autocomplete /suggest service -->
+   <field name="scientificName_suggest" type="text_suggest" indexed="true" stored="true" multiValued="true"/>
+   <field name="commonNameSingle_suggest" type="text_suggest" indexed="true" stored="true" multiValued="true"/>
+   <field name="commonName_suggest" type="text_suggest" indexed="true" stored="true" multiValued="true"/>
+
+   <field name="scientificName_suggest_edge" type="text_suggest_edge" indexed="true" stored="true" multiValued="true"/>
+   <field name="commonNameSingle_suggest_edge" type="text_suggest_edge" indexed="true" stored="true" multiValued="true"/>
+   <field name="commonName_suggest_edge" type="text_suggest_edge" indexed="true" stored="true" multiValued="true"/>
+
+   <field name="scientificName_suggest_ngram" type="text_suggest_ngram" indexed="true" stored="true" multiValued="true"/>
+   <field name="commonNameSingle_suggest_ngram" type="text_suggest_ngram" indexed="true" stored="true" multiValued="true"/>
+   <field name="commonName_suggest_ngram" type="text_suggest_ngram" indexed="true" stored="true" multiValued="true"/> 
+
+   <field name="scientificName_s" type="string" indexed="true" stored="true" multiValued="false"/>
+   <!-- End of: Fields used by autocomplete /suggest service -->
+
+
+   <!--  NC:2013-02-08 remove the omitTermFreqAndPositions because this setting will cause an exception when searching for a phrase -->
    <field name="stopped_common_name" type="stopped_common_name" indexed="true" stored="false" multiValued="true" omitNorms="true" />
+   <field name="name_complete" type="name_complete" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
    <field name="auto_name_exact" type="name_complete" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
 
    <!-- Fields used to rank exact matches higher -->
    <field name="exact_text" type="lowercase" indexed="true" stored="false" omitNorms="true" multiValued="true"/>
    
+   <!-- catchall text field that indexes tokens both normally and in reverse for efficient
+        leading wildcard queries. -->
+   <field name="text_rev" type="text_rev" indexed="true" stored="false" multiValued="true"/>
 
      <!-- Dynamic field definitions.  If a field name is not found, dynamicFields
           will be used if the name matches any of the patterns.
@@ -563,5 +661,21 @@
    <copyField source="commonName" dest="stopped_common_name"/>
 
    <copyField source="commonName" dest="auto_name_exact"/>
+
+   <!-- suggest -->
+   <!-- suggest fields -->
+   <copyField source="scientificName" dest="scientificName_suggest" />
+   <copyField source="scientificName" dest="scientificName_suggest_edge" />
+   <copyField source="scientificName" dest="scientificName_suggest_ngram" />
+   <copyField source="scientificName" dest="scientificName_s" />
+
+   <copyField source="commonNameSingle" dest="commonNameSingle_suggest" />
+   <copyField source="commonNameSingle" dest="commonNameSingle_suggest_edge" />
+   <copyField source="commonNameSingle" dest="commonNameSingle_suggest_ngram" />
+
+   <copyField source="commonName" dest="commonName_suggest" />
+   <copyField source="commonName" dest="commonName_suggest_edge" />
+   <copyField source="commonName" dest="commonName_suggest_ngram" />
+   <!-- <copyField source="commonName" dest="commonName_s" /> -->
 
 </schema>

@@ -1,0 +1,12 @@
+- hosts: zookeeper
+  roles:
+    - zookeeper
+- hosts: solrcloud
+  roles:
+    - ebs-setup
+    - common
+    - java8
+    - solrcloud
+- hosts: solrcloud_config
+  roles:
+    - solrcloud_config

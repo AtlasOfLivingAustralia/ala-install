@@ -1,0 +1,31 @@
+- include: ../../common/tasks/setfacts.yml 
+  tags:
+    - java8
+
+- name: Install add-apt-repostory
+  sudo: yes
+  apt: name=software-properties-common state=latest
+  tags:
+    - java8
+
+- name: Add Oracle Java Repository
+  sudo: yes
+  apt_repository: repo='ppa:webupd8team/java'
+  tags:
+    - java8
+
+- name: Accept Java 8 License
+  sudo: yes
+  debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+  tags:
+    - java8
+
+- name: Install Oracle Java 8
+  sudo: yes
+  apt: name={{item}} state=latest
+  with_items:
+    - oracle-java8-installer
+    - ca-certificates
+    - oracle-java8-set-default
+  tags:
+    - java8

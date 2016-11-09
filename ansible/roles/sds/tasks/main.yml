@@ -34,7 +34,7 @@
     - properties
 
 - name: Copy sensitivity categories XML
-  copy: src="sensitivity-categories.xml" dest="{{data_dir}}/sds/config/sensitivity-categories.xml"
+  copy: src="sensitivity-categories.xml" dest="{{data_dir}}/sds/sensitivity-categories.xml"
   tags:
     - sds
     - properties

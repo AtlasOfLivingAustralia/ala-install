@@ -1,0 +1,12 @@
+# The Atlas installation on CSIRO IM&T servers of Collectory
+
+[cassandra3]
+vagrant1
+
+[cassandra3:vars]
+local_repo_dir=~/.ala
+is_vagrant=true
+data_dir=/data
+
+cassandra_listen_host = 10.1.1.3
+cassandra_seeds = 10.1.1.3

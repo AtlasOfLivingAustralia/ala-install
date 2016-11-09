@@ -1,0 +1,20 @@
+- name: create the data directory
+  file: path=/data state=directory mode=777
+  tags:
+    - ebs
+
+- name: Set filesystem
+  command: "mkfs.ext4 /dev/xvdh" 
+  tags:
+    - ebs
+
+- name: Mount EBS volume
+  command: "mount -t ext4 /dev/xvdh /data" 
+  tags:
+    - ebs
+
+- name: Setup mounts on restart
+  mount: name=/data src=/dev/xvdh fstype=ext4 state=present
+  tags:
+    - ebs
+    - ebs_mount
