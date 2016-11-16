@@ -34,6 +34,7 @@
     - /tmp/sourceLogType.sql
     - /tmp/refresh_summary_breakdown_email.sql
     - /tmp/refresh_summary_breakdown_reason.sql
+    - /tmp/refresh_summary_breakdown_source.sql
     - /tmp/refresh_summary_totals.sql
     - /tmp/update_breakdown_summary_information.sql
     - /tmp/definer_user.sql

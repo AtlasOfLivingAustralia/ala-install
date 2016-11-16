@@ -4,6 +4,7 @@
 -- event_summary_breakdown_reason_entity
 -- event_summary_breakdown_email
 -- event_summary_breakdown_email_entity
+-- event_summary_breakdown_reason_source_entity
 delimiter $$
 DROP TRIGGER if exists `logger`.`update_breakdown_summary_information`;
 CREATE
@@ -17,10 +18,12 @@ FOR EACH ROW
     DECLARE new_user_email_category VARCHAR(255) DEFAULT NULL;
     DECLARE new_log_event_type_id INT(11) DEFAULT 0;
     DECLARE new_log_reason_type_id INT(11) DEFAULT 0;
+    DECLARE new_log_source_type_id INT(11) DEFAULT 0;
 
     DECLARE count_summary_total_rows INT(11) DEFAULT 0;
     DECLARE count_breakdown_reason_rows INT(11) DEFAULT 0;
     DECLARE count_breakdown_reason_entity_rows INT(11) DEFAULT 0;
+    DECLARE count_breakdown_reason_source_entity_rows INT(11) DEFAULT 0;
     DECLARE count_breakdown_email_rows INT(11) DEFAULT 0;
     DECLARE count_breakdown_email_entity_rows INT(11) DEFAULT 0;
     DECLARE count_total_detail_rows_for_event INT(11) DEFAULT 0;
@@ -31,9 +34,9 @@ FOR EACH ROW
     SET uid_char = (SUBSTR(NEW.entity_uid, 0, 2));
 
     -- get corresponding information from log_event table
-    SELECT le.month, le.log_event_type_id, IFNULL(le.log_reason_type_id,-1), le.user_email FROM log_event le
+    SELECT le.month, le.log_event_type_id, IFNULL(le.log_reason_type_id,-1), IFNULL(le.log_source_type_id,-1),le.user_email FROM log_event le
     WHERE id = NEW.log_event_id
-    INTO new_month, new_log_event_type_id, new_log_reason_type_id, new_user_email;
+    INTO new_month, new_log_event_type_id, new_log_reason_type_id, new_log_source_type_id, new_user_email;
 
     -- determine how many detail rows have been added for the log event
     SELECT COUNT(*) FROM log_detail est
@@ -77,6 +80,13 @@ FOR EACH ROW
     WHERE esbre.month = new_month AND esbre.entity_uid = NEW.entity_uid
           AND esbre.log_event_type_id = new_log_event_type_id AND esbre.log_reason_type_id = new_log_reason_type_id
     INTO count_breakdown_reason_entity_rows;
+
+    -- determine if there is already a relevant row in the reason/source/entity breakdown table
+    SELECT COUNT(*) FROM event_summary_breakdown_reason_source_entity esbrse
+    WHERE esbrse.month = new_month AND esbrse.entity_uid = NEW.entity_uid
+          AND esbrse.log_event_type_id = new_log_event_type_id AND esbrse.log_reason_type_id = new_log_reason_type_id
+          AND esbrse.log_source_type_id = new_log_source_type_id
+    INTO count_breakdown_reason_source_entity_rows;
 
     -- determine if there is already a relevant row in the email breakdown table
     SELECT COUNT(*) FROM event_summary_breakdown_email esbe
@@ -179,6 +189,20 @@ FOR EACH ROW
       UPDATE event_summary_breakdown_email_entity esbee SET number_of_events = number_of_events + 1, record_count = record_count + NEW.record_count
       WHERE esbee.month = new_month AND esbee.entity_uid = NEW.entity_uid
             AND esbee.log_event_type_id = new_log_event_type_id AND esbee.user_email_category = new_user_email_category;
+    END IF;
+
+    -- ############################################################################################################################################
+
+    -- Update event_summary_breakdown_reason_source_entity
+    IF count_breakdown_reason_source_entity_rows = 0 THEN
+      INSERT INTO event_summary_breakdown_reason_source_entity (month, log_event_type_id, log_reason_type_id, log_source_type_id, entity_uid, number_of_events, record_count)
+      VALUES (new_month, new_log_event_type_id, new_log_reason_type_id, new_log_source_type_id, NEW.entity_uid, 1, NEW.record_count);
+    ELSE
+      -- can always update the number of events here, as there will always be a single to for each entity/log_event
+      UPDATE event_summary_breakdown_reason_source_entity esrbe SET number_of_events = number_of_events + 1, record_count = record_count + NEW.record_count
+      WHERE esrbe.month = new_month AND esrbe.entity_uid = NEW.entity_uid
+            AND esrbe.log_event_type_id = new_log_event_type_id AND esrbe.log_reason_type_id = new_log_reason_type_id
+            AND esrbe.log_source_type_id = new_log_source_type_id;
     END IF;
 
   END
