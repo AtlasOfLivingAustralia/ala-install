@@ -8,19 +8,19 @@
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}} follow=yes
   with_items:
-    - "{{data_dir}}/calendars/config"
+    - "{{data_dir}}/seasonal-calendar/config"
   tags:
     - properties
     - calendars
 
 - name: copy all config.properties
-  template: src=calendars-config.properties dest={{data_dir}}/calendars/config/calendars-config.properties
+  template: src=seasonal-calendar-config.properties dest={{data_dir}}/seasonal-calendar/config/seasonal-calendar-config.properties
   tags:
     - properties
     - calendars
 
 - name: set data ownership
-  file: path={{data_dir}}/calendars owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  file: path={{data_dir}}/seasonal-calendar owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify:
     - restart tomcat
   tags:
@@ -58,17 +58,3 @@
     - deploy
     - tomcat
 
-#
-# Cron Job configuration
-#
-- name: install cron job for indexing elastic search
-  cron: minute=21 hour=22 name="Elastic search indexing" job="wget -O - {{ calendars_url }}{{ calendars_context_path }}/admin/reIndexAll >/dev/null 2>&1" user=root state=present
-
-#
-# Copy sensitive data xml file
-#  
-- name: Copy config files to config directory
-  copy: src=sensitive-species-data.xml dest={{data_dir}}/calendars/config/sensitive-species-data.xml
-  tags:
-    - calendars
-    - properties  
