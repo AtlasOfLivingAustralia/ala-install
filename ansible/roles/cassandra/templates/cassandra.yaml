@@ -485,7 +485,7 @@ compaction_throughput_mb_per_sec: 16
 # Track cached row keys during compaction, and re-cache their new
 # positions in the compacted sstable.  Disable if you use really large
 # key caches.
-compaction_preheat_key_cache: true
+compaction_preheat_key_cache: false
 
 # Throttles all outbound streaming file transfers on this node to the
 # given total throughput in Mbps. This is necessary because Cassandra does
