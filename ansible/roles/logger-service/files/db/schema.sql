@@ -86,6 +86,25 @@ CREATE TABLE `event_summary_breakdown_reason_entity` (
 SET character_set_client = @saved_cs_client;
 
 --
+-- Table structure for table `event_summary_breakdown_reason_entity_source`
+--
+
+DROP TABLE IF EXISTS `event_summary_breakdown_reason_entity_source`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `event_summary_breakdown_reason_entity_source` (
+  `month` varchar(255) NOT NULL,
+  `log_event_type_id` int(11) NOT NULL,
+  `log_reason_type_id` int(11) NOT NULL default '-1',
+  `entity_uid` varchar(255) NOT NULL,
+  `log_source_type_id` int(11) NOT NULL default '-1',
+  `number_of_events` bigint(20) NOT NULL,
+  `record_count` bigint(20) NOT NULL,
+  PRIMARY KEY  (`month`,`log_event_type_id`,`log_reason_type_id`,`entity_uid`, `log_source_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `event_summary_totals`
 --
 
@@ -152,6 +171,8 @@ CREATE TABLE `log_reason_type` (
   `id` int(11) NOT NULL,
   `rkey` varchar(255) default NULL,
   `name` varchar(255) default NULL,
+  default_order int(11) default NULL,
+  is_deprecated tinyint(1) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
