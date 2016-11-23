@@ -1,7 +1,6 @@
 # assets
-version: "2.3.1"
 artifactId: "ala-name-matching"
 classifier: 'distribution'
 packaging: "zip"
 ala_names_distribution_url: "{{ maven_repo_ws_url }}"
-ala_names_version: "2.3.1"
+ala_names_version: "{{ ala_names_version_to_use | default('LATEST') }}"
