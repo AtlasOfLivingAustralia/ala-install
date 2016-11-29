@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - cas
+    - properties
 
 #
 # Database configuration
