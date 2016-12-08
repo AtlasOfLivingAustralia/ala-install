@@ -1,0 +1,42 @@
+- name: setup apt
+  include: apt.yml
+
+- name: Barman | Install Barman
+  apt:
+    name: "{{ item }}"
+    state: "present"
+  with_items:
+    - barman
+
+- name: Barman | create /etc/barman.d
+  file: dest=/etc/barman.d state=directory
+
+- name: Barman | deploy global configuration
+  template: src=barman.conf dest=/etc/barman.conf
+
+#- name: Barman | deploy server specific configuration
+#  template: src=barman.d/template.conf dest=/etc/barman.d/{{ postgres_host_name }}.conf
+
+- name: remove default cron to add log support
+  lineinfile: dest=/etc/cron.d/barman
+              state=absent
+              regexp='^\s*\*\s+\*\s+\*\s+\*\s+\*\s+barman\s*\[\s*-x\s*/usr/bin/barman\s*\]\s*&&\s*/usr/bin/barman\s*-q\s*cron\s?$'
+  tags: cron
+
+- name: replace default cron to add log support
+  cron:
+    name: "barman cron"
+    cron_file: barman
+    user: barman
+    job: "/usr/bin/barman cron 2>&1 | /usr/bin/logger -t barman"
+  tags: cron
+
+- name : Barman | Do a daily backup of all servers
+  cron:
+    hour: 4
+    minute: 4
+    name: "barman backup all"
+    cron_file: barman
+    user: barman
+    job: "/usr/bin/barman backup all 2>&1 | /usr/bin/logger -t barman"
+  tags: cron 
