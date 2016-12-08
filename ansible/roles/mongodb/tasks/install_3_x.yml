@@ -1,12 +1,17 @@
 # This script performs all necessary steps to upgrade apt packages to install MongoDB 3.x
-# as per the guide here https://docs.mongodb.org/v3.0/release-notes/3.0-upgrade/ and 
+# as per the guide here https://docs.mongodb.org/v3.0/release-notes/3.0-upgrade/ and
 # https://docs.mongodb.org/v3.0/tutorial/install-mongodb-on-debian/
 
 - name: Import the public key used by the package management system
-  apt_key: keyserver="keyserver.ubuntu.com" id="7F0CEB10"
-  
+  apt_key: keyserver="keyserver.ubuntu.com" id="EA312927"
+
+- name: Delete keys in sysadmin/.ssh/authoriezd_keys
+  lineinfile: dest=/etc/apt/sources.list.d/mongodb-org-3.0.list
+              state=absent
+              regexp='^deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.0 main$'
+
 - name: Create an apt source file for this version of mongo
-  copy: content="deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.0 main" dest="/etc/apt/sources.list.d/mongodb-org-3.0.list"
+  copy: content="deb http://repo.mongodb.org/apt/debian {{ansible_distribution_release}}/mongodb-org/3.4 main" dest="/etc/apt/sources.list.d/mongodb-org-3.0.list"
 
 # https://docs.mongodb.org/manual/tutorial/transparent-huge-pages/
 - name: copy script to disable transparent huge pages (THP)
