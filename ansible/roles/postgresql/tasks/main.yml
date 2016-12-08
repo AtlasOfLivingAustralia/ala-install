@@ -16,7 +16,6 @@
   apt: pkg={{ item }} state=present update_cache=yes
   with_items:
     - postgresql-9.3-postgis-2.1
-    - pgadmin3
     - postgresql-contrib
     - gdal-bin
 
@@ -61,12 +60,12 @@
 
 - name: install libpq-dev (Debian)
   apt: pkg=libpq-dev  state=present update_cache=yes
-  when: ansible_os_family == "Debian" 
+  when: ansible_os_family == "Debian"
   tags: postgresql
 
 - name: install python-psycopg2 (Debian)
   apt: pkg=python-psycopg2  state=present update_cache=yes
-  when: ansible_os_family == "Debian" 
+  when: ansible_os_family == "Debian"
   tags: postgresql
 
 - name: start postgresql and configure to startup automatically
