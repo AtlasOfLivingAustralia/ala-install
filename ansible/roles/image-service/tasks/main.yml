@@ -30,6 +30,14 @@
     - tomcat_vhost
     - image-service    
 
+- name: ensure www directory exists
+  file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}}
+  with_items:
+    - "/srv/{{ images_hostname }}/www"
+  tags:
+    - properties
+    - image-service
+
 - name: Create symlink to data/biocache-media from /srv/[hostname]/www/html/biocache-media
   command: "ln -s /data/images/store /srv/{{ images_hostname }}/www/store" 
   ignore_errors: yes
