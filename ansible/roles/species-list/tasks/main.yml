@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - specieslist
+    - properties
 
 - name: create DB
   mysql_db: name={{specieslist_db_name}} state=present
