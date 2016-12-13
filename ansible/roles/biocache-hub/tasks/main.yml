@@ -70,6 +70,23 @@
     - hub_config
     - biocache_hub
 
+- name: copy system-message.json
+  template: src=config/system-message.json dest={{data_dir}}/{{biocache_hub}}/config/system-message.json force=yes
+  tags:
+    - webapps
+    - config
+    - hub_config
+    - biocache_hub
+
+- name: copy geolite (only used by ALA version of the hub)
+  copy: src=GeoLiteCity.dat dest={{data_dir}}/{{biocache_hub}}/config/GeoLiteCity.dat
+  when: biocache_hub == 'ala-hub'
+  tags:
+    - webapps
+    - config
+    - hub_config
+    - biocache_hub
+
 - name: set data ownership
   file: path={{data_dir}}/{{biocache_hub}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify:

@@ -4,4 +4,4 @@
     - java
     - tomcat
     - apache
-    - { role: biocache-hub, biocache_hub: ala-hub }
+    - biocache-hub
