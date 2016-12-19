@@ -43,7 +43,8 @@
 - name: copy all data assets
   copy: src=data/config dest={{data_dir}}/biocache owner={{tomcat_user}}  group={{tomcat_user}}
   tags:
-    - biocache-service  
+    - biocache-service
+    - properties
 
 - name: ensure target directories exist [data subdirectories etc.
   file: path={{item.path}} state=directory owner={{tomcat_user}}  group={{tomcat_user}} mode={{ item.perm | default(774) }}
@@ -64,12 +65,14 @@
 - name: copy biocache facets config
   copy: src=config/facets.json dest={{data_dir}}/biocache/config/facets.json
   tags:
-    - biocache-service  
+    - biocache-service
+    - properties
 
 - name: copy biocache logging config
   copy: src=config/log4j.xml dest={{data_dir}}/biocache/config/log4j.xml
   tags:
-    - biocache-service  
+    - biocache-service
+    - properties
 
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/{{item}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true

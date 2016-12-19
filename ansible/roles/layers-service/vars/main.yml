@@ -1,5 +1,5 @@
 layers_service_app: layers-service
-version: "2.0-SNAPSHOT"
+version: "2.1-SNAPSHOT"
 artifactId: "layers-service"
 groupId: "au.org.ala"
 classifier: ""

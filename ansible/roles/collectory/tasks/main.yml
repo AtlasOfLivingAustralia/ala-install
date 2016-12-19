@@ -1,5 +1,6 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
+    - properties
     - collectory
     - webapps
 

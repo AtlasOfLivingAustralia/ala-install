@@ -1,7 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - webapps
-    - config
+    - properties
     - biocache_hub
 
 #
@@ -33,7 +33,7 @@
     - "{{data_dir}}/{{biocache_hub}}/cache"
   tags:
     - webapps
-    - config
+    - properties
     - biocache_hub    
 
 - name: copy grouped_facets.json
@@ -41,7 +41,7 @@
   when: grouped_facets_json is defined
   tags:
     - webapps
-    - config
+    - properties
     - hub_config
     - biocache_hub
 
@@ -49,15 +49,15 @@
   template: src=config/config.properties dest={{data_dir}}/{{biocache_hub}}/config/{{biocache_hub_config}} force=yes
   tags:
     - webapps
-    - config
+    - properties
+    - biocache_hub
     - hub_config
-    - biocache_hub    
 
 - name: copy charts.json
   template: src=config/charts.json dest={{data_dir}}/{{biocache_hub}}/config/charts.json force=yes
   tags:
     - webapps
-    - config
+    - properties
     - hub_config
     - biocache_hub
 
@@ -74,7 +74,7 @@
   template: src=config/system-message.json dest={{data_dir}}/{{biocache_hub}}/config/system-message.json force=yes
   tags:
     - webapps
-    - config
+    - properties
     - hub_config
     - biocache_hub
 
@@ -83,7 +83,7 @@
   when: biocache_hub == 'ala-hub'
   tags:
     - webapps
-    - config
+    - properties
     - hub_config
     - biocache_hub
 
@@ -93,5 +93,5 @@
     - restart tomcat
   tags:
     - webapps
-    - config
+    - properties
     - biocache_hub    

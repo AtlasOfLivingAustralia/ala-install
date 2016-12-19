@@ -1,7 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - webapps
-    - config
+    - properties
     - bie
 
 - name: ensure target directories exist
@@ -9,20 +9,20 @@
   with_items:
     - "{{ data_dir }}/{{ bie_hub | default('generic-bie') }}/config"
   tags:
-    - config
+    - properties
     - bie    
 
 - name: copy all config.properties
   template: src=bie-hub-config.properties dest={{ data_dir }}/{{ bie_hub | default('generic-bie') }}/config/{{ bie_hub | default('generic-bie') }}-config.properties force=yes
   tags:
     - webapps
-    - config
+    - properties
     - bie
 
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/{{ bie_hub | default('generic-bie') }}/ owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   tags:
-    - config
+    - properties
     - bie
 
 - include: ../../apache_vhost/tasks/main.yml context_path='/{{ bie_hub_context_path }}' hostname='{{ bie_hub_hostname }}'
@@ -43,5 +43,5 @@
   copy: src=charts.json dest={{ data_dir }}/{{ bie_hub | default('generic-bie') }}/config
   tags:
     - webapps
-    - config
+    - properties
     - bie

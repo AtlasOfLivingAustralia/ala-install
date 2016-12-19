@@ -1,4 +1,4 @@
-- hosts: ala-hub-standalone
+- hosts: biocache-hub
   roles:
     - common
     - java
