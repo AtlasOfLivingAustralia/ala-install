@@ -20,7 +20,7 @@ ala_base_url = http://ala.org.au
 
 spatial_base_url = http://spatial.vagrant1.ala.org.au
 
-header_footer_base_url = http://www2.ala.org.au/commonui
+header_footer_base_url = https://www2.ala.org.au/commonui
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
