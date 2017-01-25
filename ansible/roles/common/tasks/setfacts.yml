@@ -58,8 +58,8 @@
 - name: set name index location
   set_fact:
     aws_name_indexes_repo: http://s3.amazonaws.com/ala-nameindexes/20140610
-    ala_name_indexes_repo: "{{ ala_nameindex_source_url | default('http://biocache.ala.org.au/archives/nameindexes') }}/{{name_index_date}}"
-    ala_name_data_repo: "{{ ala_namedata_source_url | default('http://biocache.ala.org.au/archives/nameindexes') }}/{{name_data_date}}"
+    ala_name_indexes_repo: "{{ ala_nameindex_source_url | default('http://ala-starr.it.csiro.au/archives/nameindexes') }}/{{name_index_date}}"
+    ala_name_data_repo: "{{ ala_namedata_source_url | default('http://ala-starr.it.csiro.au/archives/nameindexes') }}/{{name_data_date}}"
   tags:
     - setfacts    
 
