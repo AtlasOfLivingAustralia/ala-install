@@ -35,7 +35,6 @@
   with_items:
     - "/srv/{{ images_hostname }}/www"
   tags:
-    - properties
     - image-service
 
 - name: Create symlink to data/biocache-media from /srv/[hostname]/www/html/biocache-media
@@ -49,7 +48,6 @@
   with_items:
     - "{{data_dir}}/images/config"
   tags:
-    - properties
     - image-service
 
 - name: ensure target directories exist [data subdirectories etc.]
@@ -61,7 +59,6 @@
     - "{{data_dir}}/images/incoming"
     - "{{data_dir}}/images/bin/imgcnv"
   tags:
-    - properties
     - image-service
 
 - name: copy all config.properties
@@ -75,7 +72,6 @@
   notify: 
     - restart tomcat
   tags:
-    - properties
     - image-service
 
 - name: set data ownership
@@ -83,5 +79,4 @@
   notify:
     - restart tomcat
   tags:
-    - properties
     - image-service
