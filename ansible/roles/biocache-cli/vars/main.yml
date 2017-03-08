@@ -2,7 +2,7 @@
 version: "{{ biocache_cli_version | default('LATEST') }}"
 artifactId: "biocache-store"
 classifier: "distribution"
-groupId: "au.org.ala"
+groupId: "{{ biocache_cli_group_id | default('au.org.ala') }}"
 # biocache-store is a zip
 packaging: "zip"
 
