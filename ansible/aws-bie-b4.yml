@@ -1,0 +1,13 @@
+# Create a collection of species informaton systems on the AWS BIE instance
+- hosts: bie-b4
+  roles:
+    - common
+    - java
+    - apache
+    - tomcat
+    - solr
+    - biocache-properties
+    - ala-bie
+    - bie-index
+    - namedata
+    - nameindex
