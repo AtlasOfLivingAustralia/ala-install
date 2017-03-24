@@ -1,7 +1,0 @@
-- hosts: tepapa-hub-standalone
-  roles:
-    - common
-    - java
-    - tomcat
-    - apache
-    - { role: biocache-hub, biocache_hub: tepapa-hub, grouped_facets_json: grouped_facets_tepapa.json }
