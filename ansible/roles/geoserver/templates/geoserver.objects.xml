@@ -29,12 +29,11 @@
     <entry key="JDBC_VIRTUAL_TABLE">
       <virtualTable>
         <name>Objects</name>
-        <sql>select * from objects where pid = &apos;%s%&apos;
-</sql>
+        <sql>Select * from objects where pid in (select unnest(string_to_array(&apos;%s%&apos;,&apos;~&apos;)))</sql>
         <escapeSql>false</escapeSql>
         <parameter>
           <name>s</name>
-          <regexpValidator>^[\w\d\s]+$</regexpValidator>
+          <regexpValidator>^[\w\d\s~]+$</regexpValidator>
         </parameter>
       </virtualTable>
     </entry>
