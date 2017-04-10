@@ -18,6 +18,12 @@
     - solrcloud_config
     - zookeeper_config
 
+- name: Upload bie schema(s) to zookeeper
+  shell: "/opt/solr/server/scripts/cloud-scripts/zkcli.sh -cmd upconfig -zkhost {{ solr_zk_host }} -confname bie -solrhome /data/solr -confdir /data/solr_config/bie/conf"
+  tags:
+    - solrcloud_config
+    - zookeeper_config
+
 - name: Delete biocache collection if it exists
   get_url: url="http://{{ solr_config_host }}:{{ solr_port }}/solr/admin/collections?action=DELETE&name=biocache" dest=/tmp/delete-collection.txt force=yes
   tags:
