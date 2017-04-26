@@ -10,7 +10,7 @@
 - name: unjar biocache
   shell: "chmod 777 /opt/solr/server/scripts/cloud-scripts/zkcli.sh"
   tags:
-    - biocache-cli 
+    - solrcloud_config
 
 - name: Upload biocache schema(s) to zookeeper
   shell: "/opt/solr/server/scripts/cloud-scripts/zkcli.sh -cmd upconfig -zkhost {{ solr_zk_host }} -confname biocache -solrhome /data/solr -confdir /data/solr_config/biocache/conf"
