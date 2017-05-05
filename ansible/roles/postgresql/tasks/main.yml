@@ -10,7 +10,7 @@
   tags: postgresql
 
 - name: Setup apt repositories
-  include: apt.yml
+  include: apt.yaml
 
 - name: Install Postgres with PostGIS
   apt: pkg={{ item }} state=present update_cache=yes
@@ -82,9 +82,16 @@
   action: service name=postgresql state=started
   tags: postgresql
 
+- name: install setfacl support
+  become: yes
+  apt: pkg=acl
+  tags: postgresql
+
 - name: ensure postgis_template database exists
   postgresql_db: db=postgis_template state=present
-  sudo_user: postgres
+  #sudo_user: postgres
+  become: yes
+  become_user: postgres
   tags: postgresql
 
 - name: make postgis_template a template
