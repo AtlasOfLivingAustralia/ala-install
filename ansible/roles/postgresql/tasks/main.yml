@@ -9,41 +9,13 @@
     - "../vars/{{ ansible_os_family }}.yml"
   tags: postgresql
 
-- name: install software-properties-common (Debian)
-  apt: pkg=software-properties-common  state=present update_cache=yes
-  when: ansible_os_family == "Debian" 
-  tags: postgresql
-
-- name: install python-pycurl (Debian)
-  apt: pkg=python-pycurl state=present
-  when: ansible_os_family == "Debian" 
-  tags: postgresql
-
-- name: install python-software-properties (Debian)
-  apt: pkg=python-software-properties  state=present
-  when: ansible_os_family == "Debian" 
-  tags: postgresql
-
-- name: Add postgres repository - precise
-  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main' state=present
-  when: ansible_distribution_release == "precise" 
-  tags: postgresql
-
-- name: Add postgres repository - trusty
-  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' state=present
-  when: ansible_distribution_release == "trusty" 
-  tags: postgresql
-
-- name: Add postgres repository key
-  apt_key: url=http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc state=present
-  when: ansible_os_family == "Debian" 
-  tags: postgresql
+- name: Setup apt repositories
+  include: apt.yml
 
 - name: Install Postgres with PostGIS
   apt: pkg={{ item }} state=present update_cache=yes
   with_items:
     - postgresql-9.3-postgis-2.1
-    - pgadmin3
     - postgresql-contrib
     - gdal-bin
 
@@ -88,12 +60,12 @@
 
 - name: install libpq-dev (Debian)
   apt: pkg=libpq-dev  state=present update_cache=yes
-  when: ansible_os_family == "Debian" 
+  when: ansible_os_family == "Debian"
   tags: postgresql
 
 - name: install python-psycopg2 (Debian)
   apt: pkg=python-psycopg2  state=present update_cache=yes
-  when: ansible_os_family == "Debian" 
+  when: ansible_os_family == "Debian"
   tags: postgresql
 
 - name: start postgresql and configure to startup automatically

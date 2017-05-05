@@ -1,0 +1,23 @@
+- name: install software-properties-common (Debian)
+  apt: pkg=software-properties-common  state=present update_cache=yes
+  when: ansible_os_family == "Debian"
+  tags: postgresql
+
+- name: install python-pycurl (Debian)
+  apt: pkg=python-pycurl state=present
+  when: ansible_os_family == "Debian"
+  tags: postgresql
+
+- name: install python-software-properties (Debian)
+  apt: pkg=python-software-properties  state=present
+  when: ansible_os_family == "Debian"
+  tags: postgresql
+
+- name: Add postgres repository key
+  apt_key: url=http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc state=present
+  when: ansible_os_family == "Debian"
+  tags: postgresql
+
+- name: Add postgres repository
+  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ansible_distribution_release}}-pgdg main' state=present
+  tags: postgresql

@@ -36,6 +36,7 @@ caches_layers_enabled = true
 registry_api_key=
 
 volunteer_hub_uid=
+volunteer_dp_uid=
 
 upload_user=
 upload_password=

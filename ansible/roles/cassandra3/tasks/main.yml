@@ -51,8 +51,15 @@
     - packages 
     - cassandra 
 
-- name: apt add repository (Debian)
-  shell: 'echo "deb http://debian.datastax.com/datastax-ddc 3.9 main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list'
+- name: add apt repository (Debian)
+  shell: 'echo "deb http://www.apache.org/dist/cassandra/debian 310x main" | sudo tee /etc/apt/sources.list.d/cassandra.sources.list'
+  when: ansible_os_family == "Debian"
+  tags:
+    - packages
+    - cassandra
+
+- name: add repository key (Debian)
+  shell: 'curl https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add -'
   when: ansible_os_family == "Debian"
   tags:
     - packages
@@ -67,16 +74,18 @@
     - restart cassandra
   when: ansible_os_family == "Debian" 
 
+- name: install Cassandra tools (Debian)
+  apt: name=cassandra-tools state=present update_cache=yes force=yes
+  tags:
+    - packages 
+    - cassandra 
+  notify: 
+    - restart cassandra
+  when: ansible_os_family == "Debian" 
+
 - name: create data directory for cassandra on mounted storage
   file: path={{ data_dir }}/cassandra3 state=directory owner={{cassandra_user}} group={{cassandra_user}}
   tags:   
-    - cassandra   
-
-- name: apt add repository (Debian)
-  shell: 'echo "deb http://debian.datastax.com/datastax-ddc 3.9 main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list'
-  when: ansible_os_family == "Debian"
-  tags:
-    - packages
     - cassandra
 
 - name: create the cassandra yaml from template

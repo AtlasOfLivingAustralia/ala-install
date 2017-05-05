@@ -14,6 +14,7 @@ For APT:
 
 ```
 $ sudo apt-get install software-properties-common python-dev git python-pip
+$ sudo pip install setuptools
 $ sudo pip install -I ansible==[version]
 ```
 

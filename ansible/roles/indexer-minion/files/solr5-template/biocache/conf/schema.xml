@@ -542,7 +542,9 @@
    <field name="taxon_name" type="string" indexed="true" stored="true" multiValued="false"/>
    <!-- Not is use in current biocache -->
    <!-- field name="taxon_name_text" type="text_ws" indexed="true" stored="true" multiValued="false" omitNorms="false" /-->
-   
+
+   <field name="license" type="string" indexed="true" stored="true" multiValued="false"  />
+
    <!-- Not displayed in search results -->
    <!-- field name="author" type="string" indexed="false" stored="true" multiValued="false" omitNorms="false" / -->
    <field name="common_name" type="string" indexed="true" stored="true" multiValued="false" />
