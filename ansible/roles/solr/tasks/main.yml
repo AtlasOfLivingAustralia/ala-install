@@ -1,5 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
+    - apache_vhost
+    - tomcat_vhost
     - solr 
     - solr_config
 
@@ -25,25 +27,39 @@
   tags:
     - solr    
 
-- set_fact: tomcat_deploy_dir="/var/lib/{{ tomcat }}/webapps"
+- set_fact:
+    tomcat_deploy_dir: "/var/lib/{{ tomcat }}/webapps"
   when: not vhost
+  tags:
+    - solr
 
-- set_fact: tomcat_deploy_dir="/var/lib/{{ tomcat }}/webapps-{{ solr_hostname }}"
-  when: vhost
+- set_fact:
+    tomcat_deploy_dir : "/var/lib/{{ tomcat }}/webapps-{{ solr_hostname }}"
+  when: vhost is defined and vhost
+  tags:
+    - solr
 
-- set_fact: tomcat_context_dir="/var/lib/{{tomcat}}/conf/Catalina/localhost"
+- set_fact:
+   tomcat_context_dir : "/var/lib/{{tomcat}}/conf/Catalina/localhost"
   when: not vhost
+  tags:
+    - solr_config
+    - solr
 
-- set_fact: tomcat_context_dir="/var/lib/{{tomcat}}/conf/Catalina/{{ solr_hostname }}"
-  when: vhost
+- set_fact:
+    tomcat_context_dir : "/var/lib/{{tomcat}}/conf/Catalina/{{ solr_hostname }}"
+  when: vhost is defined and vhost
+  tags:
+    - solr_config
+    - solr
 
 - name: ensure tomcat context directory exists
   file: path={{ tomcat_context_dir }} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   notify:
     - restart tomcat
   tags:
-    - solr_config  
-    - solr        
+    - solr_config
+    - solr
 
 - name: copy SOLR context (Redhat)
   template: src=context/solr.xml dest={{ tomcat_context_dir }}/solr.xml owner={{tomcat_user}} group={{tomcat_user}}
