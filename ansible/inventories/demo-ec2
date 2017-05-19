@@ -67,8 +67,8 @@ collectory_db_host = localhost
 collectory_db_user = collectory
 collectory_db_password = password
 
-orgNameLong = UK demo
-orgNameShort = UK demo
+orgNameLong = Sweden demo
+orgNameShort = Sweden demo
 
 # CAS
 uri_filter_pattern = /dummy
@@ -88,9 +88,9 @@ collections_map_lon = -2.547855
 collections_map_zoom = 5
 
 # Project name
-orgNameShort = UK demo
-orgNameLong = UK demo
-region = United Kingdom
+orgNameShort = Sweden demo
+orgNameLong = Sweden demo
+region = Sweden
 
 # EML config
 eml_delivery_point = Smith Street
