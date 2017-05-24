@@ -65,6 +65,22 @@
             {
                 "sort":"count",
                 "field":"interaction"
+            },
+            {
+                "sort":"count",
+                "field":"state_conservation"
+            },
+            {
+                "sort":"count",
+                "field":"raw_state_conservation"
+            },
+            {
+                "sort":"count",
+                "field":"country_conservation"
+            },
+            {
+                "sort":"count",
+                "field":"raw_country_conservation"
             }
         ]
     },
@@ -123,22 +139,6 @@
             {
                 "sort":"index",
                 "field":"occurrence_decade_i"
-            },
-            {
-                "sort":"count",
-                "field":"state_conservation"
-            },
-            {
-                "sort":"count",
-                "field":"raw_state_conservation"
-            },
-            {
-                "sort":"count",
-                "field":"country_conservation"
-            },
-            {
-                "sort":"count",
-                "field":"raw_country_conservation"
             },
             {
                 "sort":"index",
