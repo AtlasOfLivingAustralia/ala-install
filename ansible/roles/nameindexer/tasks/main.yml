@@ -87,7 +87,7 @@
     - "nameindexer"
 
 - name: clean nameindexer existing extract
-  shell: "mv /usr/lib/nameindexer/ala-name-matching-{{ala_names_version}}.jar /usr/lib/nameindexer/nameindexer.jar"
+  shell: "mv /usr/lib/nameindexer/ala-name-matching-{{ ala_names_version }}.jar /usr/lib/nameindexer/nameindexer.jar"
   ignore_errors: yes  
   tags:
     - "nameindexer"

@@ -1,0 +1,9 @@
+[nameindexer]
+vagrant1
+
+[nameindexer:vars]
+is_vagrant=true
+local_repo_dir=~/.ala
+data_dir=/data
+
+nameindex_to_use=ala

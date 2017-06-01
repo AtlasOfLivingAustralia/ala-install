@@ -53,7 +53,7 @@
 - name: add optional additional proxy pass rules (if required)
   apache_proxypass: name={{ hostname }} src={{ item.src }} dest={{ item.dest }} ssl={{ ssl|default(false) }} force_https={{ force_https|default(true) }}
   when: vhost_required and additional_proxy_pass is defined
-  with_items: additional_proxy_pass
+  with_items: "{{ additional_proxy_pass }}"
   notify:
     - reload apache
   tags:

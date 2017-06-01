@@ -44,31 +44,17 @@
     - biocache-cli  
 
 - name: unjar biocache
-  shell: "unzip /usr/lib/biocache/biocache.zip -d /usr/lib/biocache/"
+  unarchive:
+    src: /usr/lib/biocache/biocache.zip
+    dest: /usr/lib/biocache/
+    remote_src: True
   tags:
-    - biocache-cli  
+    - biocache-cli
 
-- name: create the templated biocache.sh
-  template: src=biocache.sh dest=/usr/lib/biocache/biocache mode=777
+- name: make the symlink for /usr/bin/biocache
+  file: src=/usr/lib/biocache/biocache-store-{{ version }}/bin/biocache dest=/usr/bin/biocache state=link
   tags:
-    - biocache-cli  
-
-- name: clean biocache existing extract
-  shell: "mv /usr/lib/biocache/biocache-store-*.jar /usr/lib/biocache/biocache.jar"
-  ignore_errors: yes
-  tags:
-    - biocache-cli  
-
-- name: create biocache executable
-  shell: "cat /usr/lib/biocache/biocache.jar >> /usr/lib/biocache/biocache"
-  ignore_errors: yes  
-  tags:
-    - biocache-cli  
-
-- name: make the symlink for /usr/bin/biocache 
-  file: src=/usr/lib/biocache/biocache dest=/usr/bin/biocache state=link
-  tags:
-    - biocache-cli  
+    - biocache-cli
 
 - name: create the reindex directory
   file: path={{item}} state=directory mode=777
