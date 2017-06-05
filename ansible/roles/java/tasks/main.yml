@@ -6,5 +6,5 @@
   tags:
     - java
 
-- include: oracle-java.yml
+- include: openjdk-java.yml
   when: ansible_os_family == "Debian"
