@@ -49,13 +49,19 @@
     - solr_restart    
 
 - name: copy SOLR config
-  template: src=solr.in.sh dest=/opt/solr/bin
+  template: src=solr.in.sh dest=/opt/solr/bin/
+  tags:
+    - solrcloud
+    - solrcloud_config
+
+- name: copy SOLR config
+  template: src=solr.in.sh dest=/etc/default/
   tags:
     - solrcloud
     - solrcloud_config
 
 - name: Start solr
-  shell: "/opt/solr/bin/solr start -c"
+  shell: "service solr start"
   tags:  
     - solrcloud
     - solr_config  

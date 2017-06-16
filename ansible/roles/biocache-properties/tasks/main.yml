@@ -1,6 +1,6 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
-    - biocache-properties
+    - properties
     - biocache-layers    
 
 - name: ensure target directories exist
@@ -9,31 +9,31 @@
     - "{{data_dir}}/biocache/layers"
     - "{{data_dir}}/biocache/config"    
   tags:
-    - biocache-properties    
+    - properties
 
 - name: copy biocache config properties template 
   template: src={{item}} dest={{data_dir}}/biocache/config/{{item}} mode=0644
   with_items:
     - biocache-config.properties
   tags:
-    - biocache-properties
+    - properties
 
 - name: Download SDS layers
   get_url: url={{ sds_layers_url | default('http://biocache.ala.org.au/archives/layers/sds-layers.tgz') }} dest="{{data_dir}}/biocache/layers/sds-layers.tgz" force=yes
   tags:
-    - biocache-properties
+    - properties
     - biocache-layers   
 
 - name: Extract SDS layers
   shell: "tar zxvf {{data_dir}}/biocache/layers/sds-layers.tgz -C {{data_dir}}/biocache/layers/"
   tags:
-    - biocache-properties
+    - properties
     - biocache-layers    
 
 - name: copy biocache subgroups config
   copy: src=subgroups.json dest={{data_dir}}/biocache/config/subgroups.json
   tags:
-    - biocache-properties 
+    - properties
 
 - name: ensure target directories exist [data subdirectories etc.
   file: path={{item}} state=directory mode=0774

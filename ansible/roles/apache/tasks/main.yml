@@ -16,6 +16,12 @@
   tags:
     - apache
 
+- name: Enable SSL
+  apache2_module: state=present name=ssl
+  when: ansible_os_family == "Debian"
+  tags:
+    - apache
+
 - name: Enable mod_proxy_http (enables mod_proxy transitively)
   apache2_module: state=present name=proxy_http
   when: ansible_os_family == "Debian"

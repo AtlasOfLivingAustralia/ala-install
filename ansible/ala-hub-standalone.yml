@@ -1,7 +1,0 @@
-- hosts: ala-hub-standalone
-  roles:
-    - common
-    - java
-    - tomcat
-    - apache
-    - { role: biocache-hub, biocache_hub: ala-hub }

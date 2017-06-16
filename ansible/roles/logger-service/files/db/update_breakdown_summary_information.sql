@@ -112,8 +112,8 @@ FOR EACH ROW
     ELSEIF count_total_detail_rows_for_event = 1 THEN
 
         -- only update the event count once per event!
-        UPDATE event_summary_totals est SET number_of_events = number_of_events + 1, record_count = record_count + NEW.record_count
-        WHERE est.month = new_month AND est.log_event_type_id = new_log_event_type_id;
+      UPDATE event_summary_totals est SET number_of_events = number_of_events + 1, record_count = record_count + NEW.record_count
+      WHERE est.month = new_month AND est.log_event_type_id = new_log_event_type_id;
 
     END IF;
 
@@ -154,8 +154,8 @@ FOR EACH ROW
 
     ELSEIF count_total_detail_rows_for_event = 1 then
 
-        UPDATE event_summary_breakdown_email esbe SET number_of_events = number_of_events + 1
-        WHERE esbe.month = new_month AND esbe.log_event_type_id = new_log_event_type_id AND esbe.user_email_category = new_user_email_category;
+      UPDATE event_summary_breakdown_email esbe SET number_of_events = number_of_events + 1
+      WHERE esbe.month = new_month AND esbe.log_event_type_id = new_log_event_type_id AND esbe.user_email_category = new_user_email_category;
 
     END IF;
 

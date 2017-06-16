@@ -1,0 +1,7 @@
+- hosts: biocache-hub
+  roles:
+    - common
+    - java
+    - tomcat
+    - apache
+    - biocache-hub

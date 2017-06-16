@@ -3,6 +3,6 @@ version: "2.0.4"
 artifactId: "ala-cas"
 classifier: ''
 packaging: "war"
-cas_war_url: "{{maven_repo_ws_url}}"
+cas_war_url: "{{ maven_repo_ws_url }}"
 
-tomcat_java_opts_override: "-Xmx4g -Xms2g -XX:MaxPermSize=256m -Xss256k -XX:+UseG1GC"
+tomcat_java_opts_override: "{{ tomcat_java_opts_override_value | default('-Xmx4g -Xms2g -XX:MaxPermSize=256m -Xss256k -XX:+UseG1GC') }}"

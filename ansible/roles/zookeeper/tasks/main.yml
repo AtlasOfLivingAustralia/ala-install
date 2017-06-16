@@ -1,0 +1,7 @@
+- name: install zookeeper (Debian)
+  apt: pkg={{item}} state=present update_cache=yes
+  with_items:
+    - zookeeper
+    - zookeeperd
+  tags:
+    - zookeeper

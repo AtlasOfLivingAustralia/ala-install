@@ -1,0 +1,20 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - solr_monit
+
+- name: install monit
+  apt: pkg=monit state=present update_cache=yes
+  tags:
+    - solr_monit
+
+- name: copy monit config
+  copy: src=monitrc dest=/etc/monit/ mode=700
+  notify:
+    - restart monit
+  tags:
+    - solr_monit
+
+- name: reload config
+  shell: "monit reload"
+  tags:
+    - solr_monit
