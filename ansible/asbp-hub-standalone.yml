@@ -1,7 +1,7 @@
 - hosts: asbp-hub-standalone
   roles:
     - common
-    - java
-    - tomcat
+    - java8
+    - tomcat7-java8
     - apache
     - { role: biocache-hub, biocache_hub: asbp-hub, grouped_facets_json: grouped_facets_asbp.json }
