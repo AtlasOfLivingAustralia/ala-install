@@ -211,32 +211,32 @@
                 "field":"cl2117"
             },
             {
-                "sort":"count",
+                "sort":"index",
                 "label":"National Dynamic Land Cover",
                 "field":"cl1918"
             },
             {
-                "sort":"count",
+                "sort":"index",
                 "label":"Vegetation types - native",
                 "field":"cl617"
             },
             {
-                "sort":"count",
+                "sort":"index",
                 "label":"Vegetation types - present",
                 "field":"cl620"
             },
             {
-                "sort":"count",
+                "sort":"index",
                 "label":"Commonwealth Electoral Boundaries",
                 "field":"cl958"
             },
             {
-                "sort":"count",
+                "sort":"index",
                 "label":"NRM Regions",
                 "field":"cl916"
             },
             {
-                "sort":"count",
+                "sort":"index",
                 "field":"species_habitats"
             },
             {
@@ -248,7 +248,7 @@
                 "field":"coordinate_uncertainty"
             },
             {
-                "sort":"count",
+                "sort":"index",
                 "field":"geospatial_kosher"
             },
             {
