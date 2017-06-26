@@ -158,7 +158,7 @@
                 "field":"country"
             },
             {
-                "sort":"count",
+                "sort":"index",
                 "label":"States including coastal waters",
                 "field":"cl927"
             },
@@ -171,42 +171,42 @@
                 "field":"min_elevation_d_rng"
             },
             {
-                "sort":"count",
+                "sort":"index",
                 "label":"Local Government Areas",
                 "field":"cl959"
             },
             {
-                "sort":"count",
+                "sort":"index",
                 "label":"IBRA 7 Region",
                 "field":"cl1048"
             },
             {
-                "sort":"count",
+                "sort":"index",
                 "label":"IBRA 7 Subregions",
                 "field":"cl1049"
             },
             {
-                "sort":"count",
+                "sort":"index",
                 "label":"IMCRA 4 Regions",
                 "field":"cl21"
             },
             {
-                "sort":"count",
+                "sort":"index",
                 "label":"IMCRA Meso-scale Bioregions",
                 "field":"cl966"
             },
             {
-                "sort":"count",
+                "sort":"index",
                 "label":"NZ Ecological Districts 1987",
                 "field":"cl2115"
             },
             {
-                "sort":"count",
+                "sort":"index",
                 "label":"NZ Land Registration Districts",
                 "field":"cl2116"
             },
             {
-                "sort":"count",
+                "sort":"index",
                 "label":"NZ Land Provinces",
                 "field":"cl2117"
             },
