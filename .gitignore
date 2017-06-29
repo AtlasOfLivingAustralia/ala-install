@@ -13,6 +13,9 @@ vagrant/centos/.vagrant
 vagrant/ubuntu-trusty/.vagrant
 vagrant/ubuntu-precise/.vagrant
 vagrant/ubuntu-utopic/.vagrant
+vagrant/ubuntu-xenial/.vagrant
+
+*console.log
 
 .idea/
 
