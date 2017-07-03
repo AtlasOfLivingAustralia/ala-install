@@ -1,12 +1,12 @@
 - hosts: phylolink
   roles:
     - phylolink-dependencies
-    - web2py
-    - web2pyApps
     - common
-    - nameindex
     - java
     - tomcat
+    - nameindex
+    - web2py
+    - web2pyApps
     - nginx
     - phylolink
   sudo: yes
