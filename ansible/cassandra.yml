@@ -1,0 +1,5 @@
+- hosts: cassandra
+  roles:
+    - common
+    - java8
+    - cassandra
