@@ -3,7 +3,7 @@
     - java
     - common
     - {role: db-backup, db: mongo}
-    - {role: mongodb, mongo_version: "3.4.0"}
+    - {role: mongodb, mongo_version: "3.4.6"}
     - cassandra
     - tomcat
     - apache
