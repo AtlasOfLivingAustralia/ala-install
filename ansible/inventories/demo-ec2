@@ -3,7 +3,7 @@
 # An inventory to use to set up a machine on EC2 or other cloud provider.
 # To use this add the following into your /etc/hosts file:
 #
-# 12.12.12.12	ala-demo	ala-demo.org 
+# 12.12.12.12	ala-demo	ala-demo.org
 #
 # You'll need to replace "12.12.12.12" with the IP address of your newly created
 # Ubuntu 14 instance.
@@ -144,9 +144,11 @@ auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
 ####### When near the GBIF building (e.g. in Europe) the GBIF nexus will likely be fastest #########
-use_gbif_nexus=true
+use_gbif_nexus=false
 
-####### Disable SDS checks for the demo
+####### Disable SDS checks for the demo #######
 sds_enabled=false
 
+############### Biocache CLI options ###############
+biocache_opts = -Xmx1g -Xms1g
 
