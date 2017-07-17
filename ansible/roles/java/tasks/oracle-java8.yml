@@ -2,6 +2,19 @@
   tags:
     - java8
 
+- name: Install add-apt-repostory
+  sudo: yes
+  apt: name=software-properties-common state=latest
+  tags:
+    - java8
+
+- name: Add Open JDK8 Repository
+  sudo: yes
+  apt_repository: repo='ppa:openjdk-r/ppa'
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty'
+  tags:
+    - java8
+
 # OpenJDK-8 is needed to fulfill the default JRE role so Tomcat can be installed
 # Note, oracle-java8-set-default is installed later on so it is used by default
 - name: install openjdk 8 java (Debian)
@@ -9,12 +22,6 @@
   when: ansible_os_family == "Debian"
   tags:
     - java
-
-- name: Install add-apt-repostory
-  sudo: yes
-  apt: name=software-properties-common state=latest
-  tags:
-    - java8
 
 - name: Add Oracle Java Repository
   sudo: yes

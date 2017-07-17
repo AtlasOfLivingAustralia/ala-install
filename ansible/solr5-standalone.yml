@@ -1,5 +1,5 @@
 - hosts: solr5-server
   roles:
     - common
-    - java8
+    - java
     - solr5

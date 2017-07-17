@@ -22,10 +22,11 @@
   get_url: url={{ sds_layers_url | default('http://biocache.ala.org.au/archives/layers/sds-layers.tgz') }} dest="{{data_dir}}/biocache/layers/sds-layers.tgz" force=yes
   tags:
     - properties
-    - biocache-layers   
+    - biocache-layers
 
 - name: Extract SDS layers
   shell: "tar zxvf {{data_dir}}/biocache/layers/sds-layers.tgz -C {{data_dir}}/biocache/layers/"
+  when: sds_enabled is defined and sds_enabled
   tags:
     - properties
     - biocache-layers    
@@ -36,22 +37,25 @@
     - properties
 
 - name: ensure target directories exist [data subdirectories etc.
-  file: path={{item}} state=directory mode=0774
+  file: path={{ item }} state=directory mode=0774
   with_items:
-    - "{{data_dir}}/ala/layers/ready/shape"
     - "{{data_dir}}/biocache-load"
     - "{{data_dir}}/biocache-media"
     - "{{data_dir}}/biocache-upload"
     - "{{data_dir}}/biocache-delete"
     - "{{data_dir}}/cache"
     - "{{data_dir}}/tmp"
-    - "{{data_dir}}/offline/exports"    
-    - "{{data_dir}}/tool"  
+    - "{{data_dir}}/offline/exports"
+    - "{{data_dir}}/tool"
+    - "{{data_dir}}/lucene"
+  tags:
+    - properties
 
-# - name: set data ownership [all data is owned by tomcat]
-#   file: path={{data_dir}}/{{item}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-#   with_items:
-#     - biocache 
-#   tags:
-#     - biocache-properties
-#     - biocache-layers    
+- name: ensure target directories exist [data subdirectories etc.
+  file: path={{item}} state=directory mode=0774
+  with_items:
+    - "{{data_dir}}/biocache-load"
+    - "{{data_dir}}/biocache-media"
+  when: media_store_local is defined and media_store_local
+  tags:
+    - properties

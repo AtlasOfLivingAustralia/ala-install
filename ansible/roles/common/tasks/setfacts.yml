@@ -42,6 +42,21 @@
   tags:
     - setfacts
 
+
+- name: set java defaults for java open jdk7
+  set_fact:
+    java_home: /usr/lib/jvm/java-8-oracle
+  when: use_openjdk7 is defined
+  tags:
+    - setfacts
+
+- name: set java defaults for java 8
+  set_fact:
+    java_home: /usr/lib/jvm/java-8-oracle
+  when: use_openjdk7 is not defined
+  tags:
+    - setfacts
+
 - name: set name index date
   set_fact:
       name_index_date: "{{ nameindex_datestamp | default('20160811') }}"
@@ -53,7 +68,6 @@
       name_data_date: "{{ namedata_datestamp | default('20160811') }}"
   tags:
     - setfacts
-
 
 - name: set name index location
   set_fact:

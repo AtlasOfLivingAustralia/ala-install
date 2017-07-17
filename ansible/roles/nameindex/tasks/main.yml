@@ -52,14 +52,8 @@
   tags:
     - "nameindex"
 
-- name: Download lucene index (ALA)
-  get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene force={{ force_nameindex_download | default(false) }}
-  when: nameindex_variant == "ala"
-  tags:
-    - "nameindex"
-
 - name: unpackage the lucene index if it was newly copied
-  unarchive: src={{ data_dir }}/lucene/namematching.tgz dest={{ data_dir }}/lucene/namematching copy=no
+  unarchive: src={{ data_dir }}/lucene/namematching.tgz dest={{ data_dir }}/lucene/ copy=no
   when: nameindex_variant != "ala"
   tags:
     - "nameindex"
@@ -75,8 +69,3 @@
   when: nameindex_variant == "ala"
   tags:
     - "nameindex"
-
-# - name: set data ownership [all data is owned by tomcat]
-#   file: path={{data_dir}}/lucene owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-#   tags:
-#     - "nameindex"
