@@ -70,37 +70,62 @@
   tags:
     - packages 
     - cassandra 
-  notify: 
-    - restart cassandra
-  when: ansible_os_family == "Debian" 
+  when: ansible_os_family == "Debian"
+
+#
+# The following section replaces the default /etc/init.d/cassandra scripts
+# which now have problems on Ubuntu 14 with the latest kernel.
+#
+- name: stop cassandra
+  shell: "service cassandra stop"
+  tags:
+    - cassandra
+
+- name: stop cassandra
+  shell: "ps axf | grep cassandra | grep -v grep | awk '{print $1}' > /tmp/cassandra-pid"
+  tags:
+    - cassandra
+
+- name: stop cassandra really!!!
+  shell: "kill -9 $(cat /tmp/cassandra-pid)"
+  ignore_errors: yes
+  tags:
+    - cassandra
+
+- name: backup existing init.d script
+  shell: "cp /etc/init.d/cassandra /etc/init.d/cassandra_backup"
+  tags:
+    - cassandra
+
+- name: replace existing /etc/init.d/cassandra (due to JSVC problem with ubuntu)
+  copy: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - { src: replacement-init-script.sh, dest: /etc/init.d/cassandra }
+  tags:
+    - cassandra
 
 - name: increase stack size (Debian only)
   lineinfile: dest=/etc/cassandra/cassandra-env.sh regexp=Xss180k line=Xss256k
   when: ansible_os_family == "Debian"
   tags:
-    - cassandra 
+    - cassandra
 
 - name: setup production settings for Cassandra (not overwrites files)
   copy: src={{item.src}} dest={{item.dest}}
   with_items:
     - { src: conf/90-nproc.conf, dest: /etc/security/limits.d/90-nproc.conf }
     - { src: conf/limits.conf, dest: /etc/security/limits.conf }
-  tags:   
-    - cassandra 
+  tags:
+    - cassandra
 
 - name: create data directory for cassandra on mounted storage
   file: path={{ data_dir }}/cassandra state=directory owner={{cassandra_user}} group={{cassandra_user}}
-  tags:   
-    - cassandra   
+  tags:
+    - cassandra
 
 - name: create the cassandra yaml from template
   template: src=cassandra.yaml dest={{cassandra_yaml}} owner={{cassandra_user}} group={{cassandra_user}} force=yes
-  notify: 
+  notify:
     - restart cassandra
-  tags:   
-    - cassandra 
-
-
-
-
-
+  tags:
+    - cassandra
