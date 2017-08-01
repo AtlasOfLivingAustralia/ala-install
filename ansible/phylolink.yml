@@ -9,10 +9,11 @@
     - web2pyApps
     - nginx
     - phylolink
-  sudo: yes
-  sudo_user: root
+  become: yes
+  become_user: root
   vars:
     deleteWeb2py: False
     deletePhylesystem: False
     deleteNCL: False
     deleteToNexml: False
+    ansible_ssh_pipelining: true
