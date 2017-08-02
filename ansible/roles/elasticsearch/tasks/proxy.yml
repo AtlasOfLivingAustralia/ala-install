@@ -2,7 +2,7 @@
 
 - name: elasticsearch-proxy | Encrypt HTTP Auth passwords
   htpasswd: path={{elasticsearch_home}}/.htpasswd name={{item.name}} password={{item.password}}
-  with_items: elasticsearch_proxy_auth_users
+  with_items: "{{ elasticsearch_proxy_auth_users }}"
   when: elasticsearch_proxy_auth
 
 - name: elasticsearch-proxy | Configure nginx as proxy
