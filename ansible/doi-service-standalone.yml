@@ -4,7 +4,7 @@
     - java
     - postfix
     - {role: db-backup, db: mongo}
-    - {role: mongodb, mongo_version: "3.0.0"}
+    - {role: mongodb, mongo_version: "3.4.6"}
     - tomcat
     - nginx
     - doi-service
