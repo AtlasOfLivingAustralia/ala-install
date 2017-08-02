@@ -1,7 +1,0 @@
-- hosts: biocache-cli
-  roles:
-    - common
-    - java8
-    - nameindex
-    - biocache-properties
-    - biocache-cli
