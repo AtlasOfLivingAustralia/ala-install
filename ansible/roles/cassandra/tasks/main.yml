@@ -52,7 +52,7 @@
     - cassandra 
 
 - name: apt add repository (Debian)
-  apt_repository: repo='deb http://debian.datastax.com/community stable main' state=present
+  apt_repository: repo='deb http://debian.datastax.com/community 1.2 main' state=present
   when: ansible_os_family == "Debian"
   tags:
     - packages
