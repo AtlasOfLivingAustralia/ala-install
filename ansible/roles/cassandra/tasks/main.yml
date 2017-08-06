@@ -70,14 +70,14 @@
   tags:
     - packages 
     - cassandra 
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and ansible_distribution_release == "xenial"
 
 - name: install python-support (for cassandra 1.2 on Ubuntu xenial)
   shell: dpkg -i /root/python-support_1.0.15_all.deb
   tags:
     - packages 
     - cassandra 
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and ansible_distribution_release == "xenial"
 
 - name: install Cassandra (Debian)
   apt: name=cassandra=1.2.19 state=present update_cache=yes force=yes
