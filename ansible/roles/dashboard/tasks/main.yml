@@ -6,6 +6,8 @@
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/dashboard/config"
+    - "{{data_dir}}/dashboard/zip"
+    - "{{data_dir}}/dashboard/csv"
   tags:
     - dashboard
     - properties
