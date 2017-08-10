@@ -21,7 +21,19 @@
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ solr_context_path }}' hostname='{{ solr_hostname }}'
   tags:
-    - solr    
+    - solr
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ solr_hostname }}"
+    context_path: "{{ solr_context_path }}"
+  tags:
+    - solr
+    - nginx_vhost
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ solr_war_url }}' context_path='{{ solr_context_path }}' hostname='{{ solr_hostname }}'
   tags:

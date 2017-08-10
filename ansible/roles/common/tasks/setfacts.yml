@@ -100,3 +100,7 @@
       - ALA
   tags:
     - setfacts
+
+- name: set whether webserver is apache or nginx
+  set_fact:
+    webserver_nginx: "{{ webserver_nginx | default(false) }}"

@@ -1,0 +1,10 @@
+
+- name: install apache if configured
+  include_role: name=apache
+  when: not webserver_nginx
+  tags: webserver
+
+- name: install nginx if configured
+  include_role: name=nginx
+  when: webserver_nginx
+  tags: webserver
