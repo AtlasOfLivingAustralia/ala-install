@@ -1,3 +1,8 @@
+- name: determine if a virtual host is required (vhost not required for localhost, 127.0.0.1 or any hostname with a colon in it)
+  set_fact: vhost_required={{ hostname.find(':') == -1 and hostname.find('localhost') == -1 and hostname.find('127.0.0.1') == -1 }}
+
+- name: nginx - is a virtual host required?
+  debug: msg="Virtual Host required for hostname {{hostname}}? {{vhost_required}}"
 
 - name: nginx - check whether HTTPS is supported
   set_fact: ssl={{ ssl | default(false) }}
@@ -36,7 +41,7 @@
     - "{{ssl_certificate_local_dir | default('') }}/{{ssl_cert_file | default('') }}"
     - "{{ssl_certificate_local_dir | default('') }}/{{ssl_key_file | default('') }}"
     - "{{ssl_certificate_local_dir | default('') }}/{{ssl_chain_file | default('') }}"
-  when: ssl and copy_https_certs_from_local
+  when: ssl and copy_https_certs_from_local and vhost_required
 
 - name: nginx - set initial path to root if empty
   set_fact: 
@@ -53,6 +58,7 @@
     mode: 0755 
     owner: root
     group: root
+  when: vhost_required
 
 # check dir exists for servername fragments
 - name: nginx - ensure vhost fragments dir is present
@@ -62,12 +68,14 @@
     mode: 0755 
     owner: root
     group: root
+  when: vhost_required
 
 # copy 10, 20, 90 as http (e.g. dest file might be /etc/nginx/vhost_fragments/bie-test.ala.org.au/http_10_start)
 - name: nginx - add start http fragment
   template:
     src: "fragment_10_start_http.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_10_start"
+  when: vhost_required
 
 - name: nginx - add basic http fragments
   template:
@@ -76,6 +84,7 @@
   with_items:
     - "20_servername"
     - "90_end"
+  when: vhost_required
 
 # if not ssl, delete all https
 - name: nginx - if not using https, delete all https fragments
@@ -83,7 +92,7 @@
     path: "{{item}}"
     state: absent
   with_fileglob: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_"
-  when: not ssl
+  when: (not ssl) and vhost_required
 
 # if not ssl or (ssl and not force_https): copy 50 http
 - name: nginx - if not using force_https, add root http fragment
@@ -92,7 +101,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_{{ item }}"
   with_items:
     - "50_root"
-  when: not ssl or (ssl and not force_https)
+  when: (not ssl or (ssl and not force_https)) and vhost_required
 
 # if not ssl or (ssl and not force_https): copy (70 per path) http
 # basename filter returns last part of path e.g. for /ws returns ws, for / returns empty
@@ -102,14 +111,14 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.path | basename }}"
   with_items:
     - "{{ nginx_paths}} "
-  when: not ssl or (ssl and not force_https)
+  when: (not ssl or (ssl and not force_https)) and vhost_required
 
 # if not ssl or (ssl and not force_https), delete 30 http
 - name: nginx - if not using force_https, delete force_https fragment
   file: 
     path: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_30_force_https"
     state: absent
-  when: not ssl or (ssl and not force_https)
+  when: (not ssl or (ssl and not force_https)) and vhost_required
 
 # if ssl and force_https, copy 30 as http
 - name: nginx - if using force_https, add force_https fragment
@@ -118,13 +127,14 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_{{ item }}"
   with_items:
     - "30_force_https"
-  when: ssl and force_https
+  when: ssl and force_https and vhost_required
 
 # if ssl, copy 10, 20, 40, 50, 90 as https
 - name: nginx - add start https fragment
   template:
     src: "fragment_10_start_https.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_10_start"
+  when: vhost_required
 
 - name: nginx - add basic https fragments
   template:
@@ -135,7 +145,7 @@
     - "40_ssl"
     - "50_root"
     - "90_end"
-  when: ssl
+  when: ssl and vhost_required
 
 # if ssl, copy (70 per path) https
 # example https location for /ws path: /etc/nginx/vhost_fragments/bie-test.ala.org.au/https_70_location_ws
@@ -146,13 +156,14 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.path | basename }}"
   with_items:
     - "{{ nginx_paths }}"
-  when: ssl
+  when: ssl and vhost_required
 
 # assemble servername fragments dir, put in sites-available as servername.conf
 - name: nginx - assemble fragments into nginx vhost config
   assemble:
     src: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}"
     dest: "{{nginx_conf_dir}}/sites-available/{{hostname}}.conf"
+  when: vhost_required
 
 # symlink servername.conf to sites-enabled
 - name: nginx - symlink vhost to sites-enabled
@@ -160,49 +171,6 @@
     state: link
     src: "{{nginx_conf_dir}}/sites-available/{{hostname}}.conf"
     dest: "{{nginx_conf_dir}}/sites-enabled/{{hostname}}.conf"
+  when: vhost_required
   notify:
    - reload nginx
-
-#- name: nginx - check whether http vhost file already exists
-#  stat: path={nginx_conf_dir}}/sites-available/{{hostname}}_http.conf
-#  register: http_vhost_exists
-#
-#- name: nginx - create the vhost for http site
-#  template: src=http_site.conf.j2 dest={{nginx_conf_dir}}/sites-available/{{hostname}}_http.conf
-#  notify:
-#   - reload nginx
-#  when: not http_vhost_exists
-#
-#- name: nginx - modify existing vhost for http site
-#  template: src=http_site.conf.j2 dest={{nginx_conf_dir}}/sites-available/{{hostname}}_http.conf
-#  blockinfile:
-#    path: {{nginx_conf_dir}}/sites-available/{{hostname}}_http.conf
-#    block: |
-#      {{ item.ip }} {{ item.name }}
-#    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.path }}"
-#  with_items: "{{ nginx_paths }}"
-#  notify:
-#   - reload nginx
-#  when: http_vhost_exists
-#
-#- name: nginx - check whether https vhost file already exists
-#  stat: path={nginx_conf_dir}}/sites-available/{{hostname}}_https.conf
-#  register: https_vhost_exists
-#
-#- name: nginx - create the vhost for https site
-#  template: src=https_site.conf.j2 dest={{nginx_conf_dir}}/sites-available/{{hostname}}_https.conf
-#  when: ssl
-#  notify:
-#   - reload nginx
-#  when: not https_vhost_exists
-#
-#- name: nginx - symlink http sites-enabled
-#  file: state=link src={{nginx_conf_dir}}/sites-available/{{hostname}}_http.conf dest={{nginx_conf_dir}}/sites-enabled/{{hostname}}_http.conf
-#  notify:
-#   - reload nginx
-#  
-#- name: nginx - symlink https sites-enabled
-#  file: state=link src={{nginx_conf_dir}}/sites-available/{{hostname}}_https.conf dest={{nginx_conf_dir}}/sites-enabled/{{hostname}}_https.conf
-#  when: ssl
-#  notify:
-#   - reload nginx
