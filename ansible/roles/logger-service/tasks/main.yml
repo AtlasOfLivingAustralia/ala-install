@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - logger-service
+    - properties
 
 - name: create logger DB
   mysql_db: name={{logger_db_name}} state=present

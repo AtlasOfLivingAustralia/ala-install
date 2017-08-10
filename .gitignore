@@ -13,6 +13,9 @@ vagrant/centos/.vagrant
 vagrant/ubuntu-trusty/.vagrant
 vagrant/ubuntu-precise/.vagrant
 vagrant/ubuntu-utopic/.vagrant
+vagrant/ubuntu-xenial/.vagrant
+
+*console.log
 
 .idea/
 
@@ -28,22 +31,6 @@ vagrant/centos/.vagrant/machines/default/virtualbox/action_set_name
 
 vagrant/centos/.vagrant/machines/default/virtualbox/id
 
-ansible/inventories/solr-cloud
 
-ansible/inventories/solr-rufus
-
-ansible/solr-cloud.yml
-
-ansible/roles/zookeeper/tasks/main.yml
-
-ansible/inventories/solr-amazon
-
-ansible/inventories/profiles-nectar
-
-ansible/inventories/profiles
-
-ansible/machine_audit
-
-ansible/inventories/spatial-setup
 
 *.retry

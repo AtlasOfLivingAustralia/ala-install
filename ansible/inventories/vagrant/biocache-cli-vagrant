@@ -8,6 +8,7 @@ data_dir=/data
 biocache_opts=-Xmx8g -Xms8g
 
 nameindex_to_use = ala
+nameindex_user = root
 sds_enabled = false
 biocache_service_url = http://biocache.ala.org.au/ws
 biocache_service_base_url = http://biocache.ala.org.au
@@ -36,6 +37,7 @@ caches_layers_enabled = true
 registry_api_key=
 
 volunteer_hub_uid=
+volunteer_dp_uid=
 
 upload_user=
 upload_password=

@@ -1,9 +1,8 @@
 # remote assets
-version: "{{ biocache_cli_version | default('LATEST') }}"
+version: "{{ biocache_cli_version | default('1.9.2') }}"
 artifactId: "biocache-store"
 classifier: "distribution"
-groupId: "au.org.ala"
+groupId: "{{ biocache_cli_group_id | default('au.org.ala') }}"
 # biocache-store is a zip
 packaging: "zip"
-
 biocache_store_url: "{{maven_repo_ws_url}}"

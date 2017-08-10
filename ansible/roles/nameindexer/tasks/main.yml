@@ -1,10 +1,19 @@
 - include: ../../common/tasks/setfacts.yml
+  tags:  
+    - "data_archives"  
+    - "nameindexer"
 
 - name: ensure lucene sources directory exists
   file: path=/data/lucene/sources state=directory
+  tags:  
+    - "data_archives"  
+    - "nameindexer"  
 
 - name: ensure nameindexer directory exists
   file: path=/usr/lib/nameindexer/ state=directory
+  tags:  
+    - "data_archives"  
+    - "nameindexer"  
 
 - name: Download Catalogue of Life 2012
   get_url: url={{ aws_name_indexes_repo }}/dwca-col.zip dest={{data_dir}}/lucene/sources/dwca-col.zip
@@ -78,7 +87,7 @@
     - "nameindexer"
 
 - name: clean nameindexer existing extract
-  shell: "mv /usr/lib/nameindexer/ala-name-matching-{{ala_names_version}}.jar /usr/lib/nameindexer/nameindexer.jar"
+  shell: "mv /usr/lib/nameindexer/ala-name-matching-{{ ala_names_version }}.jar /usr/lib/nameindexer/nameindexer.jar"
   ignore_errors: yes  
   tags:
     - "nameindexer"

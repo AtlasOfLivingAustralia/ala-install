@@ -3,7 +3,7 @@ datastax: dsc12-1.2.10-1
 cassandra: cassandra12-1.2.10-1
 
 # war location in maven repo
-version: "{{ biocache_service_version | default('LATEST') }}"
+version: "{{ biocache_service_version | default('1.9') }}"
 artifactId: "biocache-service"
 
 # biocache service does not need a value for classifier
@@ -14,5 +14,5 @@ biocache_service_war_path: "{{  biocache_service_maven_repo_ws_url | default(mav
 
 local_repo_dir: ~/.ala
 
-additional_proxy_pass:
-  - { src: "/biocache-media", dest: "!" }
+#additional_proxy_pass:
+#  - { src: "/biocache-media", dest: "!" }

@@ -1,0 +1,39 @@
+#- name: debconf (Debian)
+#  shell: echo deb http://archive.canonical.com/ubuntu oneiric partner | debconf-set-selections
+#  when: ansible_os_family == "Debian"
+#  tags:
+#    - java
+#
+#- name: debconf2 (Debian)
+#  shell: echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
+#  when: ansible_os_family == "Debian"
+#  tags:
+#    - java
+#
+#deb http://archive.canonical.com/ubuntu oneiric partner
+#deb-src http://archive.canonical.com/ubuntu oneiric partner0
+
+#
+#- name: install software-properties-common (Debian)
+#  apt: pkg=software-properties-common  state=present update_cache=yes
+#  when: ansible_os_family == "Debian"
+#  tags:
+#    - java
+#
+#- name: install python-software-properties (Debian)
+#  apt: pkg=python-software-properties  state=present update_cache=yes
+#  when: ansible_os_family == "Debian"
+#  tags:
+#    - java
+#
+#- name: apt-add-repository (Debian)
+#  apt_repository: repo='ppa:openjdk/ppa'
+#  when: ansible_os_family == "Debian"
+#  tags:
+#    - java
+
+- name: install openjdk 7 java (Debian)
+  apt: pkg=openjdk-7-jdk state=present update_cache=yes
+  when: ansible_os_family == "Debian"
+  tags:
+    - java

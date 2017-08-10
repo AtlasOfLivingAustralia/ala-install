@@ -46,13 +46,13 @@
   tags:
     - "nameindex"
 
-- name: Download lucene index (2014 version)
+- name: Download lucene index (2016 version)
   get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene/namematching.tgz force={{ force_nameindex_download | default(false) }}
   when: nameindex_variant != "ala"
   tags:
     - "nameindex"
 
-- name: Download lucene index (2016 version)
+- name: Download lucene index (ALA)
   get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene force={{ force_nameindex_download | default(false) }}
   when: nameindex_variant == "ala"
   tags:
@@ -62,7 +62,7 @@
   unarchive: src={{ data_dir }}/lucene/namematching.tgz dest={{ data_dir }}/lucene/namematching copy=no
   when: nameindex_variant != "ala"
   tags:
-    - "nameindex"  
+    - "nameindex"
 
 - name: unpackage the lucene index if it was newly copied
   unarchive: src={{ data_dir }}/lucene/namematching-{{ name_index_date }}.tgz dest={{ data_dir }}/lucene copy=no group={{ nameindex_user | default(tomcat_user) }} owner="{{ nameindex_user | default(tomcat_user) }}"

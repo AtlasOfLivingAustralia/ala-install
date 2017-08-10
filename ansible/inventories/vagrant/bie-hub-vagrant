@@ -10,7 +10,9 @@ bie_hub_base_url = http://vagrant1.ala.org.au
 bie_hub_context_path = /ala-bie
 bie_hub_hostname = vagrant1.ala.org.au
 
-bie_index_url = http://vagrant1.ala.org.au/bie-index
+bie_index_base_url = http://vagrant1.ala.org.au
+bie_index_context_path = /bie-index
+bie_index_hostname = vagrant1.ala.org.au
 
 bie_service_query_context = 
 biocache_service_query_context = 

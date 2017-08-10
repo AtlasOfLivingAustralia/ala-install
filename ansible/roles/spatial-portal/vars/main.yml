@@ -1,7 +1,7 @@
 # assets
-version: "3.0.0-SNAPSHOT"
-artifactId: "spatial-portal"
-classifier: ''
+version: "{{ spatial_portal_version | default('3.0.0-SNAPSHOT') }}"
+artifactId: "{{ spatial_portal_artifact_id | default('spatial-portal') }}"
+classifier: "{{ spatial_portal_classifier | default('') }}"
 packaging: "war"
-groupId: "au.org.ala"
-spatial_portal_war_url: "{{maven_repo_ws_url}}"
+groupId: "{{ spatial_portal_group_id | default('au.org.ala') }}"
+spatial_portal_war_url: "{{ spatial_hub_maven_repo_ws_url | default(maven_repo_ws_url) }}"

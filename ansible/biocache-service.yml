@@ -6,3 +6,4 @@
     - apache
     - biocache-properties
     - biocache-service
+    - logger-client

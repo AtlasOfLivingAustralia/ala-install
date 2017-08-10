@@ -1,0 +1,84 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - solr5
+    - properties
+
+- name: Download SOLR {{ solr_version }}
+  get_url: url="http://apache.mirror1.spango.com/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
+  tags:
+    - solr5
+
+- name: Extract the install script
+  shell: "tar xzf /tmp/solr-{{ solr_version }}.tgz solr-{{ solr_version }}/bin/install_solr_service.sh --strip-components=2"
+  tags:  
+    - solr5
+
+- name: ensure target directories exist [data subdirectories etc.
+  file: path={{item}} state=directory
+  with_items:
+    - "{{data_dir}}/solr/"
+  tags:
+    - solr5
+
+- name: Run install script
+  shell: "./install_solr_service.sh /tmp/solr-{{ solr_version }}.tgz -d /data/solr -f"
+  tags:  
+    - solr5
+
+- name: add common tomcat jars (for SOLR logging and JTS)
+  copy: src=libs/{{item}} dest=/opt/solr/server/lib/ext
+  with_items:
+    - jts-1.13.jar
+  tags:
+    - solr5
+
+- name: Stop solr
+  shell: "service solr stop"
+  tags:
+    - solr5
+    - solr_restart
+
+- name: copy SOLR config
+  template: src=solr.in.sh dest=/opt/solr/bin force=yes
+  tags:
+    - solr5
+    - properties
+
+- name: ensure target directories exist [data subdirectories etc.
+  file: path={{item}} state=directory owner=solr  group=solr
+  with_items:
+    - "{{data_dir}}/solr/biocache/conf"
+    - "{{data_dir}}/solr/bie/conf"
+    - "{{data_dir}}/solr/biocache/data"
+    - "{{data_dir}}/solr/bie/data"
+
+  tags:
+    - solr5
+    - properties
+
+- name: copy SOLR config files for BIE and Biocache
+  copy: src={{ role_path }}/../solrcloud_config/files/ dest={{data_dir}}/solr owner=solr  group=solr
+  tags:
+    - solr5
+    - properties
+
+- name: set data ownership [all data is owned by solr]
+  file: path={{data_dir}}/solr/ owner=solr  group=solr recurse=true
+  tags:
+    - solr5
+    - properties
+
+- name: set SOLR directory ownership [all data is owned by solr]
+  file: path={{data_dir}}/solr/ owner=solr  group=solr recurse=true
+  tags:
+    - solr5
+    - properties
+
+- name: Start solr
+  shell: "/opt/solr/bin/solr start"
+  tags:  
+    - solr5
+    - solr_restart
+
+
+

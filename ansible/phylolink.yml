@@ -1,18 +1,19 @@
 - hosts: phylolink
   roles:
     - phylolink-dependencies
-    - web2py
-    - web2pyApps
     - common
-    - nameindex
     - java
     - tomcat
+    - nameindex
+    - web2py
+    - web2pyApps
     - nginx
     - phylolink
-  sudo: yes
-  sudo_user: root
+  become: yes
+  become_user: root
   vars:
     deleteWeb2py: False
     deletePhylesystem: False
     deleteNCL: False
     deleteToNexml: False
+    ansible_ssh_pipelining: true

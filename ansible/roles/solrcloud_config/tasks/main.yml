@@ -10,23 +10,27 @@
 - name: unjar biocache
   shell: "chmod 777 /opt/solr/server/scripts/cloud-scripts/zkcli.sh"
   tags:
-    - biocache-cli 
+    - solrcloud_config
 
 - name: Upload biocache schema(s) to zookeeper
   shell: "/opt/solr/server/scripts/cloud-scripts/zkcli.sh -cmd upconfig -zkhost {{ solr_zk_host }} -confname biocache -solrhome /data/solr -confdir /data/solr_config/biocache/conf"
   tags:
     - solrcloud_config
+    - zookeeper_config
+
+- name: Upload bie schema(s) to zookeeper
+  shell: "/opt/solr/server/scripts/cloud-scripts/zkcli.sh -cmd upconfig -zkhost {{ solr_zk_host }} -confname bie -solrhome /data/solr -confdir /data/solr_config/bie/conf"
+  tags:
+    - solrcloud_config
+    - zookeeper_config
 
 - name: Delete biocache collection if it exists
   get_url: url="http://{{ solr_config_host }}:{{ solr_port }}/solr/admin/collections?action=DELETE&name=biocache" dest=/tmp/delete-collection.txt force=yes
-  tags:
-    - solrcloud_config
   tags:
     - solrcloud_create_collection    
   ignore_errors: True
 
 - name: Create biocache collection
-  get_url: url="http://{{ solr_config_host }}:{{ solr_port }}/solr/admin/collections?action=CREATE&property.name=biocache&name=biocache&maxShardsPerNode=8&numShards=8&replicationFactor=2&collection.configName=biocache" dest=/tmp/create-collection.txt force=yes timeout=30
+  get_url: url="http://{{ solr_config_host }}:{{ solr_port }}/solr/admin/collections?action=CREATE&name=biocache&maxShardsPerNode=2&numShards=4&replicationFactor=2&collection.configName=biocache" dest=/tmp/create-collection.txt force=yes timeout=30
   tags:
-    - solrcloud_config
     - solrcloud_create_collection

@@ -7,7 +7,7 @@
   tags:
     - deploy
     - apache_vhost
-    - layers-service   
+    - layers-service
     - webapps 
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ layers_service_war_url }}' context_path='{{ layers_service_context_path }}' hostname='{{ layers_service_hostname }}'
@@ -23,6 +23,7 @@
     - "{{data_dir}}/layers-store/config"
     - "{{data_dir}}/layers-service/config"
     - "{{data_dir}}/layers-service/batch_requests"
+    - "{{data_dir}}/ala/data/layers/raw"
     - "{{data_dir}}/ala/data/layers/ready/shape"
     - "{{data_dir}}/ala/data/layers/ready/shape_diva"
     - "{{data_dir}}/ala/data/layers/ready/diva"
@@ -33,32 +34,38 @@
 - name: copy all config.properties
   template: src=config/layers-store-config.properties dest={{data_dir}}/layers-store/config/layers-store-config.properties
   tags:
-    - layers-service        
+    - layers-service
+    - properties
 
 - name: copy all config.properties
   template: src=config/layers-service-config.properties dest={{data_dir}}/layers-service/config/layers-service-config.properties
   tags:
-    - layers-service          
+    - layers-service
+    - properties
 
 - name: copy all log4j.properties
   template: src=config/log4j.properties dest={{data_dir}}/layers-store/config/log4j.properties
   tags:
-    - layers-service        
+    - layers-service
+    - properties
 
 - name: copy all log4j.properties
   template: src=config/log4j.properties dest={{data_dir}}/layers-service/config/log4j.properties
   tags:
-    - layers-service          
+    - layers-service
+    - properties
 
 - name: copy all data-config.xml
   template: src=config/data.xml dest={{data_dir}}/layers-service/config/layers-service-data-config.xml
   tags:
-    - layers-service          
+    - layers-service
+    - properties
 
 - name: copy all data-config.xml
   template: src=config/data.xml dest={{data_dir}}/layers-store/config/layers-store-data-config.xml
   tags:
-    - layers-service         
+    - layers-service
+    - properties
 
 - name: set data ownership
   file: path={{data_dir}}/layers-store owner={{tomcat_user}} group={{tomcat_user}} recurse=true

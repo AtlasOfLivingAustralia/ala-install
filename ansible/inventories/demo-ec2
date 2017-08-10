@@ -3,7 +3,7 @@
 # An inventory to use to set up a machine on EC2 or other cloud provider.
 # To use this add the following into your /etc/hosts file:
 #
-# 12.12.12.12	ala-demo	ala-demo.org 
+# 12.12.12.12	ala-demo	ala-demo.org
 #
 # You'll need to replace "12.12.12.12" with the IP address of your newly created
 # Ubuntu 14 instance.
@@ -41,6 +41,9 @@ biocache_hub_base_url = http://ala-demo.org
 biocache_hub_context_path = /generic-hub
 userdetails_url=https://auth.ala.org.au/userdetails/userDetails
 
+# this is disabled to avoid startup problems 
+caches_collections_enabled=false
+
 org_url=http://www.csiro.au
 
 orgNameLong=Bla
@@ -67,8 +70,8 @@ collectory_db_host = localhost
 collectory_db_user = collectory
 collectory_db_password = password
 
-orgNameLong = UK demo
-orgNameShort = UK demo
+orgNameLong = Sweden demo
+orgNameShort = Sweden demo
 
 # CAS
 uri_filter_pattern = /dummy
@@ -88,9 +91,9 @@ collections_map_lon = -2.547855
 collections_map_zoom = 5
 
 # Project name
-orgNameShort = UK demo
-orgNameLong = UK demo
-region = United Kingdom
+orgNameShort = Sweden demo
+orgNameLong = Sweden demo
+region = Sweden
 
 # EML config
 eml_delivery_point = Smith Street
@@ -141,7 +144,11 @@ auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
 ####### When near the GBIF building (e.g. in Europe) the GBIF nexus will likely be fastest #########
-use_gbif_nexus=true
+use_gbif_nexus=false
 
-####### Disable SDS checks for the demo
+####### Disable SDS checks for the demo #######
 sds_enabled=false
+
+############### Biocache CLI options ###############
+biocache_opts = -Xmx1g -Xms1g
+

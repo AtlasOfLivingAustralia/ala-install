@@ -10,7 +10,7 @@
   tags: postgresql
 
 - name: Setup apt repositories
-  include: apt.yml
+  include: apt.yaml
 
 - name: Install Postgres with PostGIS
   apt: pkg={{ item }} state=present update_cache=yes
@@ -82,9 +82,16 @@
   action: service name=postgresql state=started
   tags: postgresql
 
+- name: install setfacl support
+  become: yes
+  apt: pkg=acl
+  tags: postgresql
+
 - name: ensure postgis_template database exists
   postgresql_db: db=postgis_template state=present
-  sudo_user: postgres
+  #sudo_user: postgres
+  become: yes
+  become_user: postgres
   tags: postgresql
 
 - name: make postgis_template a template
@@ -96,9 +103,9 @@
   action: command psql -d postgis_template -f {{ item }}
   sudo_user: postgres
   with_items:
-    - /usr/share/postgresql/9.3/contrib/postgis-2.2/postgis.sql
-    - /usr/share/postgresql/9.3/contrib/postgis-2.2/spatial_ref_sys.sql
-    - /usr/share/postgresql/9.3/contrib/postgis-2.2/postgis_comments.sql
+    - /usr/share/postgresql/9.3/contrib/postgis-2.3/postgis.sql
+    - /usr/share/postgresql/9.3/contrib/postgis-2.3/spatial_ref_sys.sql
+    - /usr/share/postgresql/9.3/contrib/postgis-2.3/postgis_comments.sql
   tags: postgresql
 
 #- name: ensure user does not have unnecessary privilege

@@ -1,29 +1,45 @@
 - name: determine if a virtual host is required (vhost not required for localhost, 127.0.0.1 or any hostname with a colon in it)
   set_fact: vhost_required={{ hostname.find(':') == -1 and hostname.find('localhost') == -1 and hostname.find('127.0.0.1') == -1 }}
+  tags:
+    - apache
 
 - name: Is a virtual host required?
   debug: msg="Virtual Host required for hostname {{hostname}}? {{vhost_required}}"
+  tags:
+    - apache
 
 - name: check whether HTTPS is required
   set_fact: ssl={{ ssl | default(false) }}
+  tags:
+    - apache
 
 - name: Is HTTPS required?
   debug: msg="HTTPS required for hostname {{hostname}}? {{ssl}}"
+  tags:
+    - apache
 
 - name: Should HTTP redirect to HTTPS?
   debug: msg="Force HTTPS for hostname {{hostname}}? {{force_https|default(true)}}"
+  tags:
+    - apache
 
 - name: set ssl_cert_filepath variable, if required
   set_fact: ssl_cert_filepath={{ssl_certificate_server_dir}}/{{ ssl_cert_file }}
   when: ssl_cert_file is defined and ssl_certificate_server_dir is defined
+  tags:
+    - apache
 
 - name: set ssl_key_filepath variable, if required
   set_fact: ssl_key_filepath={{ssl_certificate_server_dir}}/{{ ssl_key_file }}
   when: ssl_key_file is defined and ssl_certificate_server_dir is defined
+  tags:
+    - apache
 
 - name: set ssl_chain_filepath variable, if required
   set_fact: ssl_chain_filepath={{ssl_certificate_server_dir}}/{{ ssl_chain_file }}
   when: ssl_chain_file is defined and ssl_certificate_server_dir is defined
+  tags:
+    - apache
 
 - name: ensure apache vhost exists
   apache_vhost: name={{ hostname }} ssl={{ ssl|default(false) }} force_https={{ force_https|default(true) }} ssl_cert_filepath={{ ssl_cert_filepath|default(false) }} ssl_key_filepath={{ ssl_key_filepath|default(false) }} ssl_chain_filepath={{ ssl_chain_filepath|default(false) }}
@@ -31,13 +47,17 @@
   when: vhost_required
   notify:
     - reload apache
+  tags:
+    - apache
 
 - name: add optional additional proxy pass rules (if required)
   apache_proxypass: name={{ hostname }} src={{ item.src }} dest={{ item.dest }} ssl={{ ssl|default(false) }} force_https={{ force_https|default(true) }}
   when: vhost_required and additional_proxy_pass is defined
-  with_items: additional_proxy_pass
+  with_items: "{{ additional_proxy_pass | default([]) }}"
   notify:
     - reload apache
+  tags:
+    - apache
 
 - name: ensure proxy pass exists for apache (without default context)
   apache_proxypass: name={{ hostname }} src={{ item.src }} dest={{ item.dest }} ssl={{ ssl|default(false) }} force_https={{ force_https|default(true) }}
@@ -46,36 +66,54 @@
     - { src: "/{{ context_path.replace('/', '') }}", dest: "ajp://localhost:8009/{{ context_path.replace('/', '') }}" }
   notify:
     - reload apache
+  tags:
+    - apache
 
 - name: create a proxy pass rule for the root context (if required)
   apache_proxypass: name={{ hostname }} src="/" dest="ajp://localhost:8009/{{ proxy_root_context_to }}/" ssl={{ ssl|default(false) }} force_https={{ force_https|default(true) }}
   when: proxy_root_context_to is defined
   notify:
     - reload apache
+  tags:
+    - apache
 
 - name: ensure www directory exists
   file: path=/srv/{{ hostname }}/www state=directory owner={{tomcat_user}} group={{tomcat_user}}
   notify:
     - reload apache
+  tags:
+    - apache
 
 - name: ensure HTTPS certificate directory exists (if required)
   file: path={{ ssl_certificate_server_dir }} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   when: ssl and ssl_certificate_server_dir is defined
+  tags:
+    - apache
 
 - name: check whether copying HTTPS certificates from local is required
   set_fact: copy_https_certs_from_local={{ copy_https_certs_from_local | default(false) }}
+  tags:
+    - apache
 
 - name: set local directory for HTTPS certificate copy
   set_fact: ssl_certificate_local_dir={{ ssl_certificate_local_dir | default('ssl_certificate_local_dir_not_set') }}
+  tags:
+    - apache
 
 - name: set ssl_cert_file if undefined
   set_fact: ssl_cert_file={{ ssl_cert_file | default('ssl_cert_file_not_set') }}
+  tags:
+    - apache
 
 - name: set ssl_key_file if undefined
   set_fact: ssl_key_file={{ ssl_key_file | default('ssl_key_file_not_set') }}
+  tags:
+    - apache
 
 - name: set ssl_chain_file if undefined
   set_fact: ssl_chain_file={{ ssl_chain_file | default('ssl_chain_file_not_set') }}
+  tags:
+    - apache
 
 - name: copy HTTPS certificate files from local
   copy: src={{item}} dest={{ssl_certificate_server_dir}}
@@ -86,6 +124,8 @@
   when: ssl and copy_https_certs_from_local and ssl_certificate_server_dir is defined
   notify:
     - reload apache
+  tags:
+    - apache
 
 - name: Enable vhost for Apache
   command: a2ensite {{ hostname }}.conf
@@ -94,11 +134,17 @@
     creates: /etc/apache2/sites-enabled/{{hostname}}
   notify: 
     - reload apache
+  tags:
+    - apache
 
 - name: Enable SSL module for Apache (if required)
   apache2_module: state=present name=ssl
   when: ssl is defined and ssl
+  tags:
+    - apache
 
 - name: Add the virtual host to the /etc/hosts file for Vagrant instances
   lineinfile: dest=/etc/hosts regexp="^127.0.0.1 {{hostname}}$" line="127.0.0.1 {{ hostname }}" state=present
   when: is_vagrant is defined and is_vagrant
+  tags:
+    - apache
