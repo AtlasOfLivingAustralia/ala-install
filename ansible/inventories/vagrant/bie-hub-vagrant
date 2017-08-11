@@ -35,7 +35,7 @@ default_map_zoom = 6
 image_thumbnail_url = http://images.ala.org.au/image/proxyImageThumbnail?imageId=
 
 # Header and footer
-ala_base_url = http://www.ala.org.au
+ala_base_url = https://www.ala.org.au
 bie_base_url = http://vagrant1.ala.org.au/ala-bie
 
 biocache_query_context = 
