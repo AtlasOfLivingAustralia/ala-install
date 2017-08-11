@@ -11,7 +11,7 @@ pigeonhole_url=http://vagrant1.ala.org.au/pigeonhole
 pigeonhole_base_url=http://vagrant1.ala.org.au
 pigeonhole_context_path=pigeonhole
 
-bie_baseUrl = http://bie.ala.org.au
+bie_baseUrl = https://bie.ala.org.au
 biocache_baseUrl = http://biocache.ala.org.au/ws
 ecodata_baseUrl = http://ecodata.ala.org.au
 
