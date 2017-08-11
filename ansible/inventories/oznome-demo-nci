@@ -10,7 +10,7 @@ oznome_demo_hostname=oznome-demo.ala.org.au
 oznome_demo_context_path=
 oznome_demo_base_url=http://oznome-demo.ala.org.au
 
-ala_base_url=http://ala.org.au
+ala_base_url=https://www.ala.org.au
 bie_base_url=https://bie.ala.org.au
 biocache_base_url=http://biocache.ala.org.au
 spatial_base_url=http://spatial.ala.org.au

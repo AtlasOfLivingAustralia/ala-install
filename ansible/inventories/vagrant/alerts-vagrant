@@ -36,4 +36,4 @@ collectory_url=http://collections.ala.org.au
 userdetails_url=https://auth.ala.org.au/userdetails
 bie_base_url=https://bie.ala.org.au
 bie_search_path=/search
-ala_base_url=http://ala.org.au
+ala_base_url=https://www.ala.org.au
