@@ -11,7 +11,7 @@ tviewer_context_path=/tviewer
 tviewer_base_url=http://vagrant1.ala.org.au
 tviewer_url=http://vagrant1.ala.org.au/tviewer
 
-bie_base_url = http://bie.ala.org.au
+bie_base_url = https://bie.ala.org.au
 biocache_base_url = http://biocache.ala.org.au
 biocache_services_url = http://biocache.ala.org.au/ws
 spatial_base_url = http://spatial.ala.org.au

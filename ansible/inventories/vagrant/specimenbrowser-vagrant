@@ -11,7 +11,7 @@ specimenbrowser_context_path=/specimenbrowser
 specimenbrowser_base_url=http://vagrant1.ala.org.au
 specimenbrowser_url=http://vagrant1.ala.org.au/specimenbrowser
 
-bie_base_url = http://bie.ala.org.au
+bie_base_url = https://bie.ala.org.au
 biocache_base_url = http://biocache.ala.org.au
 biocache_services_url = http://biocache.ala.org.au/ws
 collectory_base_url = http://collections.ala.org.au
