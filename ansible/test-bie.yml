@@ -19,7 +19,7 @@
     - sds
     - jenkins
   vars:
-    ala_base_url: http://www.ala.org.au
+    ala_base_url: https://www.ala.org.au
     ala_bie_hostname: "{{test_bie_host}}"
     ala_bie_context_path: /bie
     ala_bie_base_url: "http://{{test_bie_host}}"
