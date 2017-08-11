@@ -11,7 +11,7 @@ dashboard_url=http://dashboard.vagrant1.ala.org.au/
 dashboard_base_url=http://dashboard.vagrant1.ala.org.au/
 dashboard_context_path=
 
-biocache_base_url=http://biocache.ala.org.au
+biocache_base_url=https://biocache.ala.org.au
 spatial_base_url=http://spatial.ala.org.au
 logger_base_url=http://logger.ala.org.au
 collectory_base_url=http://collections.ala.org.au
