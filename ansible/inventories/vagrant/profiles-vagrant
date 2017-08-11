@@ -26,7 +26,7 @@ apikey_check_url=https://auth.ala.org.au/apikey/ws/check?apikey=
 userdetails_base_url=https://auth.ala.org.au/userdetails
 images_base_url=http://images.ala.org.au
 image_upload_base_url=http://biocache-test.ala.org.au/ws
-ala_base_url=http://ala.org.au
+ala_base_url=https://www.ala.org.au
 collectory_base_url=http://collections.ala.org.au
 bie_base_url=https://bie.ala.org.au
 lists_base_url=http://lists.ala.org.au

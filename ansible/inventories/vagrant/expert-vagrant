@@ -16,7 +16,7 @@ bie_services_base_url = http://bie.vagrant1.ala.org.au/ws
 
 biocache_base_url = http://biocache.vagrant1.ala.org.au
 
-ala_base_url = http://ala.org.au
+ala_base_url = https://www.ala.org.au
 
 spatial_base_url = http://spatial.vagrant1.ala.org.au
 

@@ -162,7 +162,7 @@ $ ansible-playbook -i inventories/solr-amazon solr-standalone.yml --private-key 
 ## Required inventory properties
 Most ALA playbooks will require at a minimum the following set of inventory properties:
 
-* ```<applicationName>_hostname``` - The hostname portion of the url used to access the deployed service (e.g. 'ala.org.au' in the url http://ala.org.au/myApp)
-* ```<applicationName>_context_path``` - The context path portion of the url used to access the deployed service (e.g. 'myApp' in the url http://ala.org.au/myApp). Note: this property should be blank for the context root, NOT a slash).
+* ```<applicationName>_hostname``` - The hostname portion of the url used to access the deployed service (e.g. 'ala.org.au' in the url https://www.ala.org.au/myApp)
+* ```<applicationName>_context_path``` - The context path portion of the url used to access the deployed service (e.g. 'myApp' in the url https://www.ala.org.au/myApp). Note: this property should be blank for the context root, NOT a slash).
 * ```auth_base_url``` - The HTTP*S* URL of the authentication server (e.g. https://auth.ala.org.au)
 * ```auth_cas_url``` - The HTTP*S* URL of the CAS application on the authentication server (e.g. https://auth.ala.org.au/cas)
