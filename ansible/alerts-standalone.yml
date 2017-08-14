@@ -4,6 +4,6 @@
     - postfix    
     - java
     - tomcat
-    - apache
+    - webserver
     - mysql    
     - alerts

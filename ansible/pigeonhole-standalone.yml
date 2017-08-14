@@ -3,5 +3,5 @@
     - common
     - java
     - tomcat
-    - apache
+    - webserver
     - pigeonhole

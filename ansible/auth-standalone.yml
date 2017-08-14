@@ -5,7 +5,7 @@
     - postfix
     - tomcat
     - mysql
-    - apache
+    - webserver
     - cas2
     - userdetails
     - apikey

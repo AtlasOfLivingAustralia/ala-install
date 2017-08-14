@@ -5,5 +5,5 @@
     - common
     - java
     - tomcat
-    - apache
+    - webserver
     - dashboard

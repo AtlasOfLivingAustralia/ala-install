@@ -3,7 +3,7 @@
     - common
     - java
     - tomcat
-    - apache
+    - webserver
     - biocache-properties
     - biocache-service
     - logger-client

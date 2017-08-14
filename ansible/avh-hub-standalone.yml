@@ -3,6 +3,6 @@
     - common
     - java
     - tomcat
-    - apache
+    - webserver
     - { role: biocache-hub, biocache_hub: avh-hub, grouped_facets_json: grouped_facets_avh.json }
  # - { role: biocache-hub, biocache_hub: avh-hub, proxy_root_context_to: avh-hub }
