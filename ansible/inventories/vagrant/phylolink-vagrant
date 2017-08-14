@@ -6,6 +6,8 @@ is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
+webserver_nginx=true
+
 phylolink_db_password=h#1%&4
 phylolink_hostname=phylolink.vagrant1.ala.org.au
 phylolink_url=http://phylolink.vagrant1.ala.org.au
