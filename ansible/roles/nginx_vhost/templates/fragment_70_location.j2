@@ -6,7 +6,9 @@
         proxy_set_header X-Forwarded-Port $server_port;
         proxy_read_timeout 10m;
         proxy_pass {{ item.proxy_pass }};
-{% else %}
+{% elif item.alias is defined %}
         alias {{ item.alias }};
+{% else %}
+        try_files {{ item.try_files }};
 {% endif %}
     }
