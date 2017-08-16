@@ -46,6 +46,19 @@
     - webapi
     - apache_vhost
     - deploy
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ webapi_hostname }}"
+    context_path: "{{ webapi_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - webapi
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ webapi_war_url }}' context_path='{{ webapi_context_path }}' hostname='{{ webapi_hostname }}'
   tags:

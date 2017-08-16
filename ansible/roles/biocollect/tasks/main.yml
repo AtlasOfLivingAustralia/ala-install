@@ -15,6 +15,19 @@
     - deploy
     - apache_vhost
     - biocollect
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ biocollect_hostname }}"
+    context_path: "{{ biocollect_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - biocollect
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ biocollect_war_url }}' context_path='{{biocollect_context_path}}' hostname='{{ biocollect_hostname }}'
   tags:

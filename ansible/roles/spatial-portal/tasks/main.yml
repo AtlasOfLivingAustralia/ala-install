@@ -8,6 +8,19 @@
     - deploy
     - apache_vhost
     - spatial-portal
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ spatial_portal_hostname }}"
+    context_path: "{{ spatial_portal_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - spatial-portal
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ spatial_portal_war_url }}' context_path='{{ spatial_portal_context_path }}' hostname='{{ spatial_portal_hostname }}'
   tags:
