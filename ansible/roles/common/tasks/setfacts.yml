@@ -16,6 +16,7 @@
     tomcat_conf_dir: /etc/tomcat7
     tomcat_log_dir: /var/log/tomcat7
     apache: apache2
+    nginx: nginx
     mysql_service: mysql
     cassandra_yaml: /etc/cassandra/cassandra.yaml
     cassandra_user: cassandra
@@ -33,6 +34,7 @@
     tomcat_conf: /etc/tomcat6/tomcat6.conf
     tomcat_conf_dir: /etc/tomcat6
     apache: httpd
+    nginx: nginx
     mysql_service: mysqld
     cassandra_yaml: /etc/cassandra/conf/cassandra.yaml
     cassandra_user: cassandra
