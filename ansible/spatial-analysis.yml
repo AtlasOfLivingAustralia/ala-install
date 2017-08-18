@@ -3,5 +3,5 @@
     - java
     - common
     - tomcat
-    - apache
+    - webserver
     - spatial-analysis

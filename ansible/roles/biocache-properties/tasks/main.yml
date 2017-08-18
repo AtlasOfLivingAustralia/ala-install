@@ -25,7 +25,7 @@
     - biocache-layers   
 
 - name: Extract SDS layers
-  shell: "tar zxvf {{data_dir}}/biocache/layers/sds-layers.tgz -C {{data_dir}}/biocache/layers/"
+  unarchive: src="{{data_dir}}/biocache/layers/sds-layers.tgz" dest="{{data_dir}}/biocache/layers/" copy=no
   tags:
     - properties
     - biocache-layers    

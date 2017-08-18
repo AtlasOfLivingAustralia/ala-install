@@ -3,5 +3,5 @@
     - common
     - java
     - tomcat
-    - apache
+    - webserver
     - { role: biocache-hub, biocache_hub: generic-hub, proxy_root_context_to: generic-hub }

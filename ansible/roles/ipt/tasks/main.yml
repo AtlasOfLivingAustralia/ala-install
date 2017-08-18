@@ -3,6 +3,19 @@
     - ipt
     - apache_vhost
     - deploy
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ ipt_hostname }}"
+    context_path: "{{ ipt_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - ipt
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ ipt_war_url }}' context_path='{{ipt_context_path}}' hostname='{{ ipt_hostname }}'
   tags:

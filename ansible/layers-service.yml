@@ -3,7 +3,7 @@
     - java
     - common
     - tomcat
-    - apache
+    - webserver
     - postgresql
     - layers-db
     - geoserver    

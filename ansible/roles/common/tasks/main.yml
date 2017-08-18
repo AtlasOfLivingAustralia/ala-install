@@ -10,15 +10,15 @@
 # before scripts are ran.
 # On Nectar & EC2 Ubuntu VMs this is usually /mnt  
 
-- file: path={{ data_dir }} state=directory mode=0755 force=yes follow=yes
+- file: path="{{ data_dir }}" state=directory mode=0755 force=yes follow=yes
   when: is_vagrant is defined and is_vagrant
   tags: common  
 
-- file: src={{data_dir}} dest=/data state=link
+- file: src="{{data_dir}}" dest=/data state=link
   when: symlink_to_data_dir is defined and symlink_to_data_dir
   tags: common
 
-- stat: path={{ data_dir }}
+- stat: path="{{ data_dir }}"
   register: data_dir_stat
   tags: common
 

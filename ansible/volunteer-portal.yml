@@ -2,7 +2,7 @@
   roles:
     - common
     - java
-    - apache
+    - webserver
     - tomcat
     - postgresql
     - volunteer_portal

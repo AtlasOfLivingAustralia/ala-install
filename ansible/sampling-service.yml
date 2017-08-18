@@ -3,6 +3,6 @@
     - java
     - common
     - tomcat
-    - apache
+    - webserver
     - sampling-service
     - sampling-service-apache

@@ -6,6 +6,36 @@
     - tomcat_vhost
     - apache_vhost
 
+- name: ensure config dir exists
+  file: path={{ data_dir }}/{{ bie_hub }}/config state=directory
+
+- include: ../../apache_vhost/tasks/main.yml context_path='/{{ ala_bie_context_path }}' hostname='{{ ala_bie_hostname }}'
+  tags:
+    - webapps
+    - apache_vhost
+    - deploy
+    - ala-bie
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ ala_bie_hostname }}"
+    context_path: "{{ ala_bie_context_path }}"
+  tags:
+    - webapps
+    - nginx_vhost
+    - deploy
+    - ala-bie
+  when: webserver_nginx
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ ala_bie_war_url }}' context_path='{{ ala_bie_context_path }}' hostname='{{ ala_bie_hostname }}'
+  tags:
+    - ala-bie
+    - tomcat_vhost
+    - deploy
+
 - name: copy all data assets
   copy: src=charts.json dest={{ data_dir }}/{{ bie_hub }}/config
   tags:

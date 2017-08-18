@@ -40,13 +40,13 @@
     - tomcat_vhost
     - doi-service
 
-- name: add nginx vhost config
-  include: ../../nginx_vhost/tasks/main.yml
-    context_path='{{ doi_service_context_path }}' 
-    hostname='{{ doi_service_hostname }}'
-  notify:
-    - reload nginx
+- name: add nginx vhost
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ doi_service_hostname }}"
+    context_path: "{{ doi_service_context_path }}"
   tags:
+    - nginx_vhost
     - doi-service
-    - nginx_vhost 
     - deploy

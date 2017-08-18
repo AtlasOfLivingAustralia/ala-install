@@ -11,6 +11,19 @@
     - sandbox
     - deploy
     - apache_vhost
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ sandbox_hostname }}"
+    context_path: "{{ sandbox_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - sandbox
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ sandbox_war_url }}' context_path='{{ sandbox_context_path }}' hostname='{{ sandbox_hostname }}'
   tags:

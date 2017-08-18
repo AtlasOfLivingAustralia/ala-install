@@ -23,6 +23,19 @@
     - pigeonhole
     - apache_vhost
     - deploy
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ pigeonhole_hostname }}"
+    context_path: "{{ pigeonhole_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - pigeonhole
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ pigeonhole_war_url }}' context_path='{{ pigeonhole_context_path }}' hostname='{{ pigeonhole_hostname }}'
   tags:

@@ -7,6 +7,19 @@
     - sds
     - apache_vhost
     - deploy
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ sds_hostname }}"
+    context_path: "{{ sds_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - sds
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ sds_webapp_url }}' context_path='{{ sds_context_path }}' hostname='{{ sds_hostname }}'
   when: sds_webapp_local_build is not defined

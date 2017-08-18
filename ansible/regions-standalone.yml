@@ -2,6 +2,6 @@
   roles:
     - { role: common, regions: regions }
     - { role: java, regions: regions }
-    - apache
+    - webserver
     - tomcat
     - { role: regions, regions: regions }

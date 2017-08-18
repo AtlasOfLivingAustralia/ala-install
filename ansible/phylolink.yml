@@ -7,7 +7,7 @@
     - nameindex
     - web2py
     - web2pyApps
-    - nginx
+    - webserver
     - phylolink
   become: yes
   become_user: root

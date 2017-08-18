@@ -35,6 +35,19 @@
     - deploy
     - apache_vhost
     - tviewer
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ tviewer_hostname }}"
+    context_path: "{{ tviewer_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - tviewer
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ tviewer_war_url }}' context_path='{{tviewer_context_path}}' hostname='{{ tviewer_hostname }}'
   tags:
