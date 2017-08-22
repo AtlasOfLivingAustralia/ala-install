@@ -1,5 +1,4 @@
-fieldguide_app: fieldguide
-version: "2.0"
+version: "{{ fieldguide_version | default('LATEST') }}"
 artifactId: "fieldguide"
 classifier: ''
 packaging: "war"

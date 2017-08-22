@@ -2,6 +2,9 @@
   tags:
     - fieldguide
 
+- set_fact: fieldguide_app={{ artifactId }}
+  when: fieldguide_app is undefined
+
 #
 # WAR file deployment and virtual host configuration
 #
@@ -40,12 +43,13 @@
   with_items:
     - "{{data_dir}}/{{fieldguide_app}}/config"
     - "{{data_dir}}/{{fieldguide_app}}/store"
+    - "{{data_dir}}/{{fieldguide_app}}/queue"
   tags:
     - fieldguide
     - properties
 
 - name: copy all config.properties
-  template: src=config/config.properties dest={{data_dir}}/{{fieldguide_app}}/config/{{fieldguide_app}}-config.properties
+  template: src=fieldguide-config.properties dest={{data_dir}}/{{fieldguide_app}}/config/{{fieldguide_app}}-config.properties
   tags:
     - fieldguide
     - properties
