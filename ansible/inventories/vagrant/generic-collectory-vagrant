@@ -35,8 +35,8 @@ uri_filter_pattern = /admin.*,/collection.*,/institution.*,/contact.*,/reports.*
 api_key= to_be_added
 
 # Biocache integration
-biocache_hub_url=http://biocache.ala.org.au
-biocache_service_url=http://biocache.ala.org.au
+biocache_hub_url=https://biocache.ala.org.au
+biocache_service_url=https://biocache.ala.org.au
 
 # Map config
 collections_map_lon = 134

@@ -17,10 +17,10 @@ skin_breadcrumb="skin.breadcrumb.level1.title=Home\nskin.breadcrumb.level1.path=
 default_region_type=Major drainage divisions
 default_region=DARLING RIVER
 
-ala_base_url=http://ala.org.au
-bie_base_url=http://bie.ala.org.au
-biocache_base_url=http://biocache.ala.org.au
-biocache_service_base_url=http://biocache.ala.org.au/ws
+ala_base_url=https://www.ala.org.au
+bie_base_url=https://bie.ala.org.au
+biocache_base_url=https://biocache.ala.org.au
+biocache_service_base_url=https://biocache.ala.org.au/ws
 spatial_base_url=http://spatial.ala.org.au
 spatial_base_url_ws=http://spatial.ala.org.au/ws
 geoserver_base_url=http://spatial.ala.org.au/geoserver

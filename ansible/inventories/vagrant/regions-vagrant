@@ -11,10 +11,10 @@ regions_context_path=
 regions_base_url=http://regions.vagrant1.ala.org.au
 regions_base_url=http://regions.vagrant1.ala.org.au
 
-ala_base_url=http://ala.org.au
-bie_base_url=http://bie.ala.org.au
-biocache_base_url=http://biocache.ala.org.au
-biocache_service_base_url=http://biocache.ala.org.au/ws
+ala_base_url=https://www.ala.org.au
+bie_base_url=https://bie.ala.org.au
+biocache_base_url=https://biocache.ala.org.au
+biocache_service_base_url=https://biocache.ala.org.au/ws
 spatial_base_url=http://spatial.ala.org.au
 spatial_base_url_ws=http://spatial.ala.org.au/ws
 geoserver_base_url=http://spatial.ala.org.au/geoserver

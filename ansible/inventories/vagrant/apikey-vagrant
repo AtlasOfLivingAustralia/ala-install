@@ -19,5 +19,5 @@ apikey_db_hostname=localhost
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
-ala_base_url=http://www.ala.org.au
-bie_base_url= http://bie.ala.org.au
+ala_base_url=https://www.ala.org.au
+bie_base_url= https://bie.ala.org.au

@@ -31,4 +31,4 @@ default_name_source=National Species Lists
 default_common_name_source=National Species Lists
 image_service_url = http://images.ala.org.au
 
-ala_base_url = http://www.ala.org.au
+ala_base_url = https://www.ala.org.au
