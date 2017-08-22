@@ -1,0 +1,46 @@
+# The AMRIN vagrant installation
+  
+[amrin-hub-standalone]
+vagrant1
+
+[amrin-hub-standalone:vars]
+is_vagrant=true
+local_repo_dir = ~/.ala
+data_dir=/srv/data
+
+biocache_db_host = localhost
+cassandra_listen_host = localhost
+
+biocache_service_hostname = vagrant1.ala.org.au:8080
+biocache_service_url = http://vagrant1.ala.org.au:8080/biocache-service
+biocache_service_base_url = http://vagrant1.ala.org.au:8080
+biocache_service_context_path = /biocache-service
+userdetails_url=https://auth.ala.org.au/userdetails/userDetails
+
+biocache_hub_hostname=amrin.vagrant1.ala.org.au
+biocache_hub_url = http://amrin.vagrant1.ala.org.au/appd-hub
+biocache_hub_base_url = http://amrin.vagrant1.ala.org.au
+biocache_hub_context_path = /amrin-hub
+
+solr_hostname = vagrant1.ala.org.au:8080
+solr_url = http://vagrant1.ala.org.au:8080/solr
+solr_base_url = http://vagrant1.ala.org.au:8080
+solr_context_path = /solr
+
+sds_hostname = sds.vagrant1.ala.org.au
+sds_url = http://sds.vagrant1.ala.org.au
+sds_base_url = http://sds.vagrant1.ala.org.au
+sds_context_path = 
+
+collectory_hostname = collections.vagrant1.ala.org.au
+collectory_url = http://collections.vagrant1.ala.org.au
+collectory_base_url = http://collections.vagrant1.ala.org.au
+collectory_context_path = 
+
+logger_hostname=logger.vagrant1.ala.org.au
+logger_url=http://logger.vagrant1.ala.org.au
+logger_base_url=http://logger.vagrant1.ala.org.au/
+logger_context_path=
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas
