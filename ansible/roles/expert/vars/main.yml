@@ -1,7 +1,7 @@
 # assets
-version: "0.2"
+version: "{{ expert_version | default('LATEST') }}"
 artifactId: "expert"
 classifier: ''
 packaging: "war"
 groupId: "au.org.ala"
-expert_war_url: "{{maven_repo_ws_url}}"
+dashboard_war_url: "{{maven_repo_ws_url}}"
