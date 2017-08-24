@@ -46,20 +46,20 @@
 
 - name: set name index date
   set_fact:
-      name_index_date: "{{ nameindex_datestamp | default('20160811') }}"
+      name_index_date: "{{ nameindex_datestamp | default('latest') }}"
   tags:
     - setfacts
 
 - name: set name data date
   set_fact:
-      name_data_date: "{{ namedata_datestamp | default('20160811') }}"
+      name_data_date: "{{ namedata_datestamp | default('latest') }}"
   tags:
     - setfacts
 
 
 - name: set name index location
   set_fact:
-    aws_name_indexes_repo: http://s3.amazonaws.com/ala-nameindexes/20140610
+    aws_name_indexes_repo: http://s3.amazonaws.com/ala-nameindexes/latest
     ala_name_indexes_repo: "{{ ala_nameindex_source_url | default('http://ala-starr.it.csiro.au/archives/nameindexes') }}/{{name_index_date}}"
     ala_name_data_repo: "{{ ala_namedata_source_url | default('http://ala-starr.it.csiro.au/archives/nameindexes') }}/{{name_data_date}}"
   tags:
