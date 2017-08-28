@@ -5,7 +5,7 @@
     - tomcat
     - cassandra
     - mysql
-    - apache
+    - webserver
     - nameindex
     - solr
     - logger-client

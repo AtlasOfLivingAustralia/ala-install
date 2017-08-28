@@ -3,5 +3,5 @@
     - common
     - java
     - tomcat
-    - apache
+    - webserver
     - { role: biocache-hub, biocache_hub: obis-hub, grouped_facets_json: grouped_facets_obis.json }

@@ -51,7 +51,7 @@
     hostname: "{{ specieslist_hostname }}"
     context_path: "{{ specieslist_context_path }}"
   tags:
-    - webapps
+    - specieslist
     - nginx_vhost
     - deploy
   when: webserver_nginx

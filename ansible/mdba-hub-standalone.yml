@@ -3,7 +3,7 @@
     - common
     - java
     - tomcat
-    - apache
+    - webserver
     - {
     role: biocache-hub,
     biocache_hub: mdba-hub,

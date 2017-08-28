@@ -3,6 +3,6 @@
     - common
     - java
     - mongodb
-    - apache
+    - webserver
     - tomcat
     - oznome-demo

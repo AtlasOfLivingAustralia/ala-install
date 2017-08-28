@@ -45,7 +45,7 @@
     hostname: "{{ bie_index_hostname }}"
     context_path: "{{ bie_index_context_path }}"
   tags:
-    - webapps
+    - bie-index
     - nginx_vhost
     - deploy
   when: webserver_nginx

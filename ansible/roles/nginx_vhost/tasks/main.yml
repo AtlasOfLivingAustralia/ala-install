@@ -14,11 +14,7 @@
   debug: msg="HTTPS required for hostname {{hostname}}? {{ssl}}"
 
 - name: nginx - should HTTP redirect to HTTPS?
-  debug: msg="Force HTTPS for hostname {{hostname}}? {{force_https}}"
-
-#- name: nginx - set redirect variable, if required
-#  set_fact: redirect="return 301 https://$server_name$request_uri;"
-#  when: ssl and force_https
+  debug: msg="Force HTTPS for hostname {{hostname}}? {{ssl and force_https}}"
 
 - name: nginx - make sure required parameters are defined
   fail: msg="One or more mandatory parameters are not defined - ssl_certificate_server_dir, ssl_cert_file, ssl_key_file. If you don't want https, set ssl=false in inventory."
@@ -49,7 +45,7 @@
       - path: "/"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:8080/"
-  when: (context_path is none) or (context_path|trim == '')
+  when: ((context_path is none) or (context_path|trim == '')) and nginx_paths is not defined
 
 - name: nginx - ensure sites-available dir is present
   file: 
@@ -134,7 +130,7 @@
   template:
     src: "fragment_10_start_https.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_10_start"
-  when: vhost_required
+  when: ssl and vhost_required
 
 - name: nginx - add basic https fragments
   template:
@@ -164,6 +160,8 @@
     src: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}"
     dest: "{{nginx_conf_dir}}/sites-available/{{hostname}}.conf"
   when: vhost_required
+  notify:
+   - reload nginx
 
 # symlink servername.conf to sites-enabled
 - name: nginx - symlink vhost to sites-enabled
@@ -174,3 +172,4 @@
   when: vhost_required
   notify:
    - reload nginx
+

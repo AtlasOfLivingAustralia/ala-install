@@ -6,7 +6,7 @@
     - {role: mongodb, mongo_version: "3.4.6"}
     - cassandra
     - tomcat
-    - apache
+    - webserver
     - postfix
     - nameindex
     - elasticsearch

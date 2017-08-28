@@ -9,6 +9,19 @@
     - apache_vhost
     - layers-service
     - webapps 
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ layers_service_hostname }}"
+    context_path: "{{ layers_service_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - layers-service
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ layers_service_war_url }}' context_path='{{ layers_service_context_path }}' hostname='{{ layers_service_hostname }}'
   tags:

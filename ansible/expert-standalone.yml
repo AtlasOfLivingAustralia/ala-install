@@ -1,7 +1,7 @@
 - hosts: expert
   roles:
     - common
-    - java
-    - apache
-    - tomcat
+    - java8
+    - webserver
+    - tomcat7-java8
     - expert

@@ -2,6 +2,9 @@
   tags:
     - fieldguide
 
+- set_fact: fieldguide_app={{ artifactId }}
+  when: fieldguide_app is undefined
+
 #
 # WAR file deployment and virtual host configuration
 #
@@ -11,6 +14,19 @@
     - fieldguide
     - deploy
     - apache_vhost
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ fieldguide_hostname }}"
+    context_path: "{{ fieldguide_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - fieldguide
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ fieldguide_war_url }}' context_path='{{ fieldguide_context_path }}' hostname='{{ fieldguide_hostname }}'
   tags:
@@ -27,12 +43,13 @@
   with_items:
     - "{{data_dir}}/{{fieldguide_app}}/config"
     - "{{data_dir}}/{{fieldguide_app}}/store"
+    - "{{data_dir}}/{{fieldguide_app}}/queue"
   tags:
     - fieldguide
     - properties
 
 - name: copy all config.properties
-  template: src=config/config.properties dest={{data_dir}}/{{fieldguide_app}}/config/{{fieldguide_app}}-config.properties
+  template: src=fieldguide-config.properties dest={{data_dir}}/{{fieldguide_app}}/config/{{fieldguide_app}}-config.properties
   tags:
     - fieldguide
     - properties

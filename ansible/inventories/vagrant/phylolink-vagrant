@@ -6,6 +6,8 @@ is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
+webserver_nginx=true
+
 phylolink_db_password=h#1%&4
 phylolink_hostname=phylolink.vagrant1.ala.org.au
 phylolink_url=http://phylolink.vagrant1.ala.org.au
@@ -36,8 +38,4 @@ auth_cas_url=https://auth.ala.org.au/cas
 # SSL Configuration files
 #
 ssl=false
-copy_https_certs_from_local=true
-ssl_certificate_server_dir=/etc/nginx
-ssl_certificate_local_dir=../../catacomb
-ssl_cert_file=*.ala.org.au.crt
-ssl_key_file=ala.org.au.key
+copy_https_certs_from_local=false

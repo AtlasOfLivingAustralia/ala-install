@@ -4,5 +4,5 @@
     - common
     - mongodb
     - tomcat
-    - apache
+    - webserver
     - calendars

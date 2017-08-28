@@ -56,6 +56,19 @@
     - profile-service
     - deploy
     - apache_vhost
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ profile_service_hostname }}"
+    context_path: "{{ profile_service_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - profile-service
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ profile_service_war_url }}' context_path='{{ profile_service_context_path }}' hostname='{{ profile_service_hostname }}'
   tags:

@@ -3,7 +3,7 @@
   roles:
     - common
     - java
-    - apache
+    - webserver
     - tomcat
     - solr
     - biocache-properties

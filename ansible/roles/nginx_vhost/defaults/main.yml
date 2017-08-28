@@ -1,2 +1,11 @@
 ---
 redirect: ''
+nginx_conf_dir: '/etc/nginx'
+ssl: true
+force_https: true
+nginx_root: "/srv/{{ hostname }}/www/"
+context_path: '/'
+nginx_paths:
+  - path: "{{ context_path }}"
+    is_proxy: true
+    proxy_pass: "http://127.0.0.1:8080/"

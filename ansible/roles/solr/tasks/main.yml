@@ -22,6 +22,7 @@
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ solr_context_path }}' hostname='{{ solr_hostname }}'
   tags:
     - solr
+    - apache_vhost
   when: not webserver_nginx
 
 - name: add nginx vhost if configured

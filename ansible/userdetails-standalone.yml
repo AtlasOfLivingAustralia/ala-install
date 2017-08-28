@@ -5,5 +5,5 @@
     - postfix
     - tomcat
     - mysql
-    - apache
+    - webserver
     - userdetails
