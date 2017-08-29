@@ -6,6 +6,9 @@ is_vagrant=true
 local_repo_dir = ~/.ala
 data_dir=/data
 
+#biocache_service_url = http://biocache.ala.org.au/ws
+#biocache_service_base_url = http://biocache.ala.org.au
+
 biocache_service_url = http://biocache.vagrant1.ala.org.au/ws
 biocache_service_base_url = http://biocache.vagrant1.ala.org.au
 biocache_service_context_path = ws
@@ -35,3 +38,8 @@ biocache_api_key=invalidkey
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
+
+force_geolite2_city_db_download=true
+geolite2_city_db_download_url=https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz
+
+#biocache_hub_maven_repo_ws_url=http://nexus.ala.org.au/service/local/artifact/maven/redirect?r=snapshots&g=au.org.ala&a=ala-hub&v=2.4-SNAPSHOT&p=war
