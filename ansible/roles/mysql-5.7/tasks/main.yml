@@ -26,7 +26,7 @@
 
 - name: set mysql variable - sql-mode
   mysql_variables: variable=sql_mode value={{ mysql_variable_sql_mode | default('STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION')}}
-  when: set_sql_mode
+  when: set_sql_mode is defined
 
 - name: warn about using the default root user password
   debug: msg="You are installing MySQL with a default root password of 'password'. Are you sure you want to do that? Specify a real password in your inventory file using the variable mysql_root_password."
