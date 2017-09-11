@@ -44,10 +44,13 @@
   with_items:
     - "{{data_dir}}/{{biocache_hub}}/config"
     - "{{data_dir}}/{{biocache_hub}}/cache"
+    - "{{data_dir}}/{{biocache_hub}}/download"
+    - "{{data_dir}}/{{biocache_hub}}/geolite_db"
   tags:
     - webapps
     - properties
-    - biocache_hub    
+    - biocache_hub
+    - geolite_db
 
 - name: copy grouped_facets.json
   template: src=config/{{grouped_facets_json}} dest={{data_dir}}/{{biocache_hub}}/config/{{grouped_facets_json}} force=yes
@@ -91,14 +94,46 @@
     - hub_config
     - biocache_hub
 
-- name: copy geolite (only used by ALA version of the hub)
-  copy: src=GeoLiteCity.dat dest={{data_dir}}/{{biocache_hub}}/config/GeoLiteCity.dat
+- name: Setup GeoLite2 City database (only used by ALA version of the hub)
+  block:
+  - set_fact:
+      geolite_db_archive: "{{data_dir}}/{{biocache_hub}}/download/GeoLite2-City.tar.gz"
+      geolite_db_extracted: "{{data_dir}}/{{biocache_hub}}/geolite_db"
+      geolite_db_file: "GeoLite2-City.mmdb"
+      geolite_db_file_link: "{{data_dir}}/{{biocache_hub}}/config/GeoLite2-City.mmdb"
+    tags:
+      - setfacts
+
+  - name: Download GeoLite2 City database (only used by ALA version of the hub)
+    get_url: url={{geolite2_city_db_download_url}} dest={{geolite_db_archive}} force={{ force_geolite2_city_db_download | default(false) }}
+    register: was_file_downloaded
+
+  - name: Cleaning GeoLite2 City database extracted directory if new archive was just downloaded
+    block:
+    - name: Cleaning GeoLite2 City database extracted directory if new archive was just downloaded
+      file: path="{{geolite_db_extracted}}/" state=absent
+    - file: path="{{geolite_db_extracted}}/" state=directory
+    when: was_file_downloaded.changed
+
+  - name: Unpackage GeoLite2 City database
+    unarchive: src={{geolite_db_archive}} dest={{geolite_db_extracted}} copy=no group={{ nameindex_user | default(tomcat_user) }} owner="{{ nameindex_user | default(tomcat_user) }}"
+
+  - name: Find extracted GeoLite2 City database file
+    find: paths={{geolite_db_extracted}} patterns={{geolite_db_file}} recurse=yes file_type=file
+    register: find_result
+
+  - name: Link GeoLite2 City database file
+    file: src="{{item.path}}" dest={{geolite_db_file_link}} state=link force=yes
+    with_items: "{{find_result.files}}"
+    notify:
+      - restart tomcat
   when: biocache_hub == 'ala-hub'
   tags:
     - webapps
     - properties
     - hub_config
     - biocache_hub
+    - geolite_db
 
 - name: set data ownership
   file: path={{data_dir}}/{{biocache_hub}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
@@ -107,4 +142,5 @@
   tags:
     - webapps
     - properties
-    - biocache_hub    
+    - biocache_hub
+    - geolite_db
