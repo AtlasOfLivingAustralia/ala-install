@@ -39,13 +39,18 @@
     - "{{ssl_certificate_local_dir | default('') }}/{{ssl_chain_file | default('') }}"
   when: ssl and copy_https_certs_from_local and vhost_required
 
+- name: nginx - check context path
+  set_fact:
+    context_path="/"
+  when: ((context_path is none) or (context_path|trim == ''))
+
 - name: nginx - set initial path to root if empty
   set_fact: 
     nginx_paths:
-      - path: "/"
+      - path: "{{context_path}}"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:8080/"
-  when: ((context_path is none) or (context_path|trim == '')) and nginx_paths is not defined
+  when: nginx_paths is not defined
 
 - name: nginx - ensure sites-available dir is present
   file: 
