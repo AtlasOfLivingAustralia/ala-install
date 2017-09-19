@@ -1,5 +1,5 @@
 [species-list]
-lists-vagrant1.ala.org.au
+vagrant1
 
 [species-list:vars]
 is_vagrant=true
