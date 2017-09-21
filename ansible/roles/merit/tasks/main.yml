@@ -1,0 +1,61 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - deploy
+    - apache_vhost
+    - tomcat_vhost
+    - merit
+
+#
+# WAR file deployment and virtual host configuration
+#
+- include: ../../apache_vhost/tasks/main.yml
+    context_path='{{ merit_context_path }}'
+    hostname='{{ merit_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - merit
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ merit_hostname }}"
+    context_path: "{{ merit_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - merit
+  when: webserver_nginx
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ merit_war_url }}' context_path='{{merit_context_path}}' hostname='{{ merit_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - merit
+
+#
+# External configuration properties file
+#
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/fieldcapture/config"
+  tags:
+    - properties
+    - merit
+
+- name: copy all config.properties
+  template: src=fieldcapture-config.properties dest={{data_dir}}/fieldcapture/config/fieldcapture-config.properties
+  tags:
+    - properties
+    - merit
+
+- name: set data ownership
+  file: path={{data_dir}}/fieldcapture owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - properties
+    - merit
