@@ -9,6 +9,7 @@
   when: ansible_os_family == "Debian"
   tags:
     - java
+  ignore_errors: yes
 
 - name: Install add-apt-repostory
   sudo: yes

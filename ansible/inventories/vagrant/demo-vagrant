@@ -130,3 +130,9 @@ use_gbif_nexus=true
 
 ####### Disable SDS checks for the demo
 sds_enabled=false
+
+# Disabled caches - the collections cache is problematic when collectory + biocache on same server
+caches_auth_enabled=false
+caches_log_enabled=false
+caches_collections_enabled=false
+caches_layers_enabled=false
