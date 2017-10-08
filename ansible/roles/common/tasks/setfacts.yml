@@ -90,16 +90,7 @@
 - name: setup name sources
   set_fact:
     ala_name_sources:
-      - AFD
-      - APNI
-      - AusFungi
-      - AusMoss
-      - CAAB
-      - CAAB-Identifier
-      - CAAB-Vernacular
-      - NZOR
-      - CoL
-      - ALA
+      - combined
   tags:
     - setfacts
 

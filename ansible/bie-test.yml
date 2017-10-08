@@ -1,0 +1,14 @@
+# Test BIE only.  set target (i.e. server to deploy to) e.g. ansible-playbook bie-test.yml --extra-vars 'target=bie-test' -i path/to/inventory --ask-sudo-pass
+- hosts: bie-test
+  roles:
+    - common
+    - java8
+    - webserver
+    - tomcat7-java8
+    - bie-hub
+    - bie-index
+    - solr
+    - biocache-properties
+    - namedata
+    - nameindex
+  become: yes

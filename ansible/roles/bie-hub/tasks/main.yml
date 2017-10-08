@@ -53,7 +53,10 @@
     - bie
 
 - name: copy all data assets
-  copy: src=charts.json dest={{ data_dir }}/{{ bie_hub | default('generic-bie') }}/config
+  copy: src={{item}} dest={{ data_dir }}/{{ bie_hub | default('generic-bie') }}/config
+  with_items:
+    - charts.json
+    - languages.json
   tags:
     - webapps
     - properties
