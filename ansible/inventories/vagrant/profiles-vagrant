@@ -118,7 +118,7 @@ biocache_hub_base_url = http://profiles.vagrant1.ala.org.au
 biocache_hub_context_path = /ala-hub
 
 
-biocache_sds_url = http://sds.ala.org.au
+biocache_sds_url = https://sds.ala.org.au
 bie_service_url = https://bie.ala.org.au/ws
 bie_url = https://bie.ala.org.au
 layers_service_url = http://spatial.ala.org.au/ws
