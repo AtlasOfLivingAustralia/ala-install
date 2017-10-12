@@ -42,4 +42,4 @@ auth_cas_url=https://auth.ala.org.au/cas
 force_geolite2_city_db_download=true
 geolite2_city_db_download_url=https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz
 
-#biocache_hub_maven_repo_ws_url=http://nexus.ala.org.au/service/local/artifact/maven/redirect?r=snapshots&g=au.org.ala&a=ala-hub&v=2.4-SNAPSHOT&p=war
+#biocache_hub_maven_repo_ws_url=https://nexus.ala.org.au/service/local/artifact/maven/redirect?r=snapshots&g=au.org.ala&a=ala-hub&v=2.4-SNAPSHOT&p=war
