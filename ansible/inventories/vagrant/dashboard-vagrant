@@ -15,7 +15,7 @@ biocache_base_url=https://biocache.ala.org.au
 spatial_base_url=http://spatial.ala.org.au
 logger_base_url=http://logger.ala.org.au
 collectory_base_url=https://collections.ala.org.au
-volunteer_base_url=http://volunteer.ala.org.au
+volunteer_base_url=https://volunteer.ala.org.au
 images_base_url=http://images.ala.org.au
 
 auth_base_url=https://auth.ala.org.au
