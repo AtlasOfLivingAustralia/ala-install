@@ -38,7 +38,7 @@ bugherd_integration=true
 
 api_key=INSERT_API_KEY_HERE
 
-mdba_base_url=http://mdba-test.ala.org.au
+mdba_base_url=https://mdba-test.ala.org.au
 
 #ssl=false
 #force_https=true
