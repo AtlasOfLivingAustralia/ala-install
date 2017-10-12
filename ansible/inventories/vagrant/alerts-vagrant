@@ -22,7 +22,7 @@ occurrence_searchTitle=occurrence search
 occurrence_searchUrl=https://biocache.ala.org.au/occurrences/search?q=passer
 
 regions_searchTitle=ACT
-regions_searchUrl=http://regions.ala.org.au/states/Australian+Capital+Territory
+regions_searchUrl=https://regions.ala.org.au/states/Australian+Capital+Territory
 
 speciesPages_searchTitle=Shingle-back
 speciesPages_searchUrl=https://collections.ala.org.au/public/show/co13
