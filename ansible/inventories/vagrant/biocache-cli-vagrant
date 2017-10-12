@@ -17,7 +17,7 @@ biocache_hub_url = https://biocache.ala.org.au
 solr_url = ??
 collectory_url = https://collections.ala.org.au
 userdetails_url = https://auth.ala.org.au/userdetails/userDetails/
-logger_url = http://logger.ala.org.au
+logger_url = https://logger.ala.org.au
 
 media_store_local = true
 media_store_url = 

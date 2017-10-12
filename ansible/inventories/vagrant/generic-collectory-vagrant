@@ -67,7 +67,7 @@ api_key_check_enabled = true
 gbifApiUrl=http://api.gbif.org/v1
 
 # Logger URL
-logger_url = http://logger.ala.org.au/service
+logger_url = https://logger.ala.org.au/service
 
 # Auth server
 auth_base_url=https://auth.ala.org.au
