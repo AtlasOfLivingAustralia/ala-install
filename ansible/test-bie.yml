@@ -53,9 +53,9 @@
     caches_collections_enabled: true
     caches_layers_enabled: true
     collectory_hostname: collections.ala.org.au
-    collectory_base_url: http://collections.ala.org.au
+    collectory_base_url: https://collections.ala.org.au
     collectory_enable_sync: false
-    collectory_url: http://collections.ala.org.au
+    collectory_url: https://collections.ala.org.au
     collectory_context_path:
     default_common_name_source: National Species Lists
     default_map_lat: -25.61

@@ -15,7 +15,7 @@ biocache_service_base_url = https://biocache.ala.org.au
 biocache_db_host = localhost
 biocache_hub_url = https://biocache.ala.org.au
 solr_url = ??
-collectory_url = http://collections.ala.org.au
+collectory_url = https://collections.ala.org.au
 userdetails_url = https://auth.ala.org.au/userdetails/userDetails/
 logger_url = http://logger.ala.org.au
 
