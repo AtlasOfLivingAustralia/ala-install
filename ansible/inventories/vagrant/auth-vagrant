@@ -45,7 +45,7 @@ user_store_db_encoding_algorithm=MD5
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
-sightings_base_url=http://sightings.ala.org.au
+sightings_base_url=https://sightings.ala.org.au
 spatial_base_url=http://spatial.ala.org.au
 volunteer_base_url=https://volunteer.ala.org.au
 lists_base_url=https://lists.ala.org.au
