@@ -22,7 +22,7 @@ biocache_service_url = https://biocache.ala.org.au/ws
 
 profile_service_url = https://profiles-ws-dev.ala.org.au
 collectory_url = https://collections.ala.org.au
-lists_url = http://lists.ala.org.au
+lists_url = https://lists.ala.org.au
 alerts_url = http://alerts.ala.org.au
 sightings_url = http://sightings.ala.org.au/
 auth_base_url = https://auth.ala.org.au

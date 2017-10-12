@@ -29,7 +29,7 @@ image_upload_base_url=http://biocache-test.ala.org.au/ws
 ala_base_url=https://www.ala.org.au
 collectory_base_url=https://collections.ala.org.au
 bie_base_url=https://bie.ala.org.au
-lists_base_url=http://lists.ala.org.au
+lists_base_url=https://lists.ala.org.au
 biocache_base_url=http://biocache-test.ala.org.au
 avh_base_url=http://avh.ala.org.au
 nsl_base_url=https://biodiversity.org.au/test-nsl
@@ -122,7 +122,7 @@ biocache_sds_url = http://sds.ala.org.au
 bie_service_url = https://bie.ala.org.au/ws
 bie_url = https://bie.ala.org.au
 layers_service_url = http://spatial.ala.org.au/ws
-lists_service_url = http://lists.ala.org.au
+lists_service_url = https://lists.ala.org.au
 logger_url = http://logger.vagrant1.ala.org.au
 
 auth_base_url=https://auth.ala.org.au

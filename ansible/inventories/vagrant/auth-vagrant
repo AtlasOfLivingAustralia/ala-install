@@ -48,7 +48,7 @@ auth_cas_url=https://auth.ala.org.au/cas
 sightings_base_url=http://sightings.ala.org.au
 spatial_base_url=http://spatial.ala.org.au
 volunteer_base_url=http://volunteer.ala.org.au
-lists_base_url=http://lists.ala.org.au
+lists_base_url=https://lists.ala.org.au
 biocache_base_url=https://biocache.ala.org.au
 alerts_base_url=http://alerts.ala.org.au
 
