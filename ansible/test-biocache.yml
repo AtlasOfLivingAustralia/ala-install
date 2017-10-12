@@ -56,7 +56,7 @@
     default_map_zoom: 4
     default_name_source: National Species Lists
     disable_cas: false
-    field_guide_base_url: http://fieldguide.ala.org.au
+    field_guide_base_url: https://fieldguide.ala.org.au
     image_service_url: http://images.ala.org.au
     index_images: true
     index_live_url: "http://{{test_biocache_host}}:8080/solr/bie"
