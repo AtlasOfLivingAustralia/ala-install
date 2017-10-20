@@ -2,9 +2,9 @@
 
 - include_vars: "{{ansible_distribution}}.yml"
 
-- name: Install Java-8
+- name: Install Java-7
   include_role:
-    name: java8
+    name: java
 
 - name: elasticsearch-install | Add repository keys
   apt_key: keyserver="{{item.server}}" id="{{item.key}}" state=present
