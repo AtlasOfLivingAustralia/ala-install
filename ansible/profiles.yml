@@ -1,7 +1,7 @@
 - hosts: profiles:sandbox
   roles:
-    - java
     - common
+    - java8
     - {role: db-backup, db: mongo}
     - {role: mongodb, mongo_version: "3.4.6"}
     - cassandra
