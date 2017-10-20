@@ -19,7 +19,27 @@
 
 - name: Add Oracle Java Repository
   sudo: yes
-  apt_repository: repo='ppa:webupd8team/java'
+  apt_repository: 
+    repo: 'ppa:webupd8team/java'
+    update_cache: yes
+  tags:
+    - java8
+
+- name: Accept Java 8 License
+  sudo: yes
+  debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+  tags:
+    - java8
+
+# Need to attempt to install oracle java8 before the files that we may need to patch are in location, so ignore errors for this attempt
+- name: Install Oracle Java 8 (before possibly patching files)
+  sudo: yes
+  apt: name={{item}} state=latest
+  with_items:
+    - oracle-java8-installer
+    - ca-certificates
+    - oracle-java8-set-default
+  ignore_errors: yes
   tags:
     - java8
 
@@ -34,13 +54,7 @@
   tags:
     - java8
 
-- name: Accept Java 8 License
-  sudo: yes
-  debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
-  tags:
-    - java8
-
-- name: Install Oracle Java 8
+- name: Install Oracle Java 8 (after possibly patching files)
   sudo: yes
   apt: name={{item}} state=latest
   with_items:
