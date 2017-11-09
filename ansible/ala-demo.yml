@@ -1,8 +1,8 @@
 - hosts: ala-demo
   roles:
     - common
-    - java
-    - tomcat
+    - java8
+    - tomcat7-java8
     - cassandra
     - mysql
     - webserver

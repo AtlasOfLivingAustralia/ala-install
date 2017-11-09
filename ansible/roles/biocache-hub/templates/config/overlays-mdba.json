@@ -5,64 +5,64 @@
     "layer": "ALA:Objects",
     "viewparams": "s:6239153",
     "show": true,
-    "url": "http://spatial.ala.org.au/geoserver/ALA/wms"
+    "url": "https://spatial.ala.org.au/geoserver/ALA/wms"
   },
   {
     "name": "Murray-Darling Basin Sustainable Rivers Audit (SRA) Valleys",
     "opacity": "0.5",
     "layer": "ALA:MDB_SRA_valleys",
     "viewparams": "",
-    "url": "http://spatial.ala.org.au/geoserver/gwc/service/wms"
+    "url": "https://spatial.ala.org.au/geoserver/gwc/service/wms"
   },
   {
     "name": "Murray-Darling Basin Sustainable Rivers Audit (SRA) Zones",
     "opacity": "0.5",
     "layer": "ALA:MDB_SRA_zones",
     "viewparams": "",
-    "url": "http://spatial.ala.org.au/geoserver/gwc/service/wms"
+    "url": "https://spatial.ala.org.au/geoserver/gwc/service/wms"
   },
   {
     "name": "Murray-Darling Basin Authority Water Quality Zones",
     "opacity": "0.5",
     "layer": "ALA:MDB_water_quality_zones",
     "viewparams": "",
-    "url": "http://spatial.ala.org.au/geoserver/gwc/service/wms"
+    "url": "https://spatial.ala.org.au/geoserver/gwc/service/wms"
   },
   {
     "name": "Murray-Darling Basin Ground Water Plan Areas",
     "opacity": "0.5",
     "layer": "ALA:mdb_ground_water_water_resource_plan_areas",
     "viewparams": "",
-    "url": "http://spatial.ala.org.au/geoserver/gwc/service/wms"
+    "url": "https://spatial.ala.org.au/geoserver/gwc/service/wms"
   },
   {
     "name": "Murray-Darling Basin Surface Water SDL Resource Units",
     "opacity": "0.5",
     "layer": "ALA:mdb_surface_water_sdl_resource_units",
-    "url": "http://spatial.ala.org.au/geoserver/gwc/service/wms"
+    "url": "https://spatial.ala.org.au/geoserver/gwc/service/wms"
   },
   {
     "name": "Murray-Darling Basin Ground Water SDL Resource Units",
     "opacity": "0.5",
     "layer": "ALA:mdb_ground_water_sdl_resource_units",
-    "url": "http://spatial.ala.org.au/geoserver/gwc/service/wms"
+    "url": "https://spatial.ala.org.au/geoserver/gwc/service/wms"
   },
   {
     "name": "Murray-Darling Basin Surface Water Plan Areas",
     "opacity": "0.5",
     "layer": "ALA:mdb_surface_water_water_resource_plan_areas",
-    "url": "http://spatial.ala.org.au/geoserver/gwc/service/wms"
+    "url": "https://spatial.ala.org.au/geoserver/gwc/service/wms"
   },
   {
     "name": "Murray-Darling Basin Wetlands",
     "opacity": "0.5",
     "layer": "ALA:wetlands_mdb_name_only",
-    "url": "http://spatial.ala.org.au/geoserver/gwc/service/wms"
+    "url": "https://spatial.ala.org.au/geoserver/gwc/service/wms"
   },
   {
     "name": "Murray-Darling Basin Wetland Groups",
     "opacity": "0.5",
     "layer": "ALA:wetlands_mdb_group_only",
-    "url": "http://spatial.ala.org.au/geoserver/gwc/service/wms"
+    "url": "https://spatial.ala.org.au/geoserver/gwc/service/wms"
   }
 ]

@@ -10,13 +10,6 @@
   apt_repository: repo="{{item}}" update_cache=yes
   with_items: "{{ elasticsearch_apt_repos }}"
 
-- name: elasticsearch-install | Accept Oracle license
-  shell: echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections; echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
-         creates=/usr/lib/jvm/java-7-oracle
-
-- name: elasticsearch-install | Install Java
-  apt: pkg={{elasticsearch_apt_java_package}}
-
 - name: elasticsearch-install | Check for Elasticsearch already installed
   stat: path={{elasticsearch_home}}/lib/elasticsearch-{{elasticsearch_version}}.jar
   register: version_exists

@@ -1,8 +1,8 @@
 - hosts: ecodata
   roles:
-    - java
     - common
+    - java8
     - mongodb
-    - tomcat
+    - tomcat7-java8
     - webserver
     - ecodata
