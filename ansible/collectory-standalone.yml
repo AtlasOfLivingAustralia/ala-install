@@ -2,7 +2,8 @@
   roles:
     - common
     - java8
+    - webserver
     - mysql-5.7
     - tomcat7-java8
-    - webserver
     - collectory
+  become: yes
