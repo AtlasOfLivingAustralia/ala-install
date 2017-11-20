@@ -11,13 +11,13 @@ expert_context_path=/expert
 expert_base_url=http://vagrant1.ala.org.au
 expert_url=http://vagrant1.ala.org.au/expert
 
-ala_base_url=https://ala.org.au
+ala_base_url=https://www.ala.org.au
 bie_base_url=https://bie.ala.org.au
 biocache_base_url=https://biocache.ala.org.au
 spatial_base_url=http://spatial.ala.org.au
-logger_base_url=http://logger.ala.org.au
-collectory_base_url=http://collections.ala.org.au
-volunteer_base_url=http://volunteer.ala.org.au
+logger_base_url=https://logger.ala.org.au
+collectory_base_url=https://collections.ala.org.au
+volunteer_base_url=https://volunteer.ala.org.au
 images_base_url=http://images.ala.org.au
 
 security_cas_login_url=https://auth.ala.org.au/cas/login

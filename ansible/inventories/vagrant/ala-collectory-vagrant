@@ -35,8 +35,8 @@ uri_filter_pattern = /admin.*,/collection.*,/institution.*,/contact.*,/reports.*
 api_key= to_be_added
 
 # Biocache integration
-biocache_hub_url=http://biocache.ala.org.au
-biocache_service_url=http://biocache.ala.org.au
+biocache_hub_url=https://biocache.ala.org.au
+biocache_service_url=https://biocache.ala.org.au
 
 # Map config
 collections_map_lon = 134
@@ -67,7 +67,7 @@ api_key_check_enabled = true
 gbifApiUrl=http://api.gbif.org/v1
 
 # Logger URL
-logger_url = http://logger.ala.org.au/service
+logger_url = https://logger.ala.org.au/service
 
 # Auth server
 auth_base_url=https://auth.ala.org.au
