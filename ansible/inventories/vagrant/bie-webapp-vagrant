@@ -31,7 +31,7 @@ alerts_base_url=http://alerts.vagrant1.ala.org.au
 
 sightings_base_url=http://sightings.vagrant1.ala.org.au
 
-header_footer_base_url=https://www2.ala.org.au/commonui
+header_footer_base_url=https://www.ala.org.au/commonui
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas

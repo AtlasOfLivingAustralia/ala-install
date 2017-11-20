@@ -46,6 +46,7 @@ logger_url = http://logger.vagrant1.ala.org.au
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 userdetails_url=https://auth.ala.org.au/userdetails/userDetails
+doi_service_url=http://doi.vagrant1.ala.org.au/api
 
 #
 # Configuration properties
@@ -60,3 +61,10 @@ sample_files = none
 default_country = 
 layers_service_sampling = true
 bie_service_enabled = false
+
+download_email_subject=VAGRANT - ALA Occurrence Download Complete - [filename]
+download_email_body=Your download is available on the URL:<br><br>[url].<br><br>When using this dataset please use the following citation:<br><br><cite>Atlas of Living Australia occurrence download at [searchUrl] accessed on [date].</cite><br><br>Also cite the contributing data providers which are listed in the included "citation.csv" file.<br><br>More information can be found at <a href='https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/'>citing the ALA</a>.
+download_readme_content=When using this dataset please use the following citation:<br><br>Atlas of Living Australia occurrence download at [searchUrl] accessed on [date].<br><br>Data contributed by the following providers:<br>[dataProviders]<br>More information can be found at <a href='https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/'>citing the ALA</a>.<br><br>
+
+download_doi_email_body=Your download can be accessed on the page:<br><br>[url] <br><br>The DOI for this download is [doi] <br><br>The file "doi.json" contains the metadata for the DOI. <br><br>When using this dataset please use the following citation: <br><br><cite>Atlas of Living Australia occurrence download at [searchUrl] accessed on [date].</cite> <br><br>Also cite the contributing data providers which are listed in the included "citation.csv" file.<br><br>More information can be found at <a href="https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/">citing the ALA</a>.
+download_doi_readme_content=When using this dataset please use the following citation:<br><br>Atlas of Living Australia occurrence download at [searchUrl] accessed on [date].<br><br>DOI: [doi] available at [url]<br><br>Data contributed by the following providers:<br>[dataProviders]<br>More information can be found at <a href='https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/'>citing the ALA</a>.<br><br>

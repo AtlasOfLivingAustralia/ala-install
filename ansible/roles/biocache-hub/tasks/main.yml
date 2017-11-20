@@ -105,7 +105,7 @@
       - setfacts
 
   - name: Download GeoLite2 City database (only used by ALA version of the hub)
-    get_url: url={{geolite2_city_db_download_url}} dest={{geolite_db_archive}} force={{ force_geolite2_city_db_download | default(false) }}
+    get_url: url={{geolite2_city_db_download_url | default('https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz')}} dest={{geolite_db_archive}} force={{ force_geolite2_city_db_download | default(false) }}
     register: was_file_downloaded
 
   - name: Cleaning GeoLite2 City database extracted directory if new archive was just downloaded
