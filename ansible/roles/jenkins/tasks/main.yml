@@ -46,15 +46,15 @@
    - proxy_ajp
    - ssl
   notify: restart apache
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and not webserver_nginx
   tags: jenkins
 
 - copy: src=000-default.conf dest=/etc/apache2/sites-available/000-default.conf
   notify: reload apache
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and not webserver_nginx
   tags: jenkins
 
 - template: src=default-ssl.conf.j2 dest=/etc/apache2/sites-available/default-ssl.conf
   notify: reload apache
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and not webserver_nginx
   tags: jenkins

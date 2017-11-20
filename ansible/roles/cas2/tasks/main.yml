@@ -91,6 +91,8 @@
   tags:
     - cas
     - apache_vhost
+  when: not webserver_nginx
+
 
 - include: ../../apache_vhost/tasks/main.yml 
      context_path='{{ cas_context_path }}' 
