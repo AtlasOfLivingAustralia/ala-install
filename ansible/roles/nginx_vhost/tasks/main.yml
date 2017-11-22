@@ -99,6 +99,15 @@
     - "50_root"
   when: (not ssl or (ssl and not force_https)) and vhost_required
 
+# if not ssl or (ssl and not force_https): copy 60 robots
+- name: if not using force_https, add robots http fragment
+  template:
+    src: "fragment_{{ item }}.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_{{ item }}"
+  with_items:
+    - "60_robots"
+  when: (not ssl or (ssl and not force_https)) and vhost_required
+
 # if not ssl or (ssl and not force_https): copy (70 per path) http
 # basename filter returns last part of path e.g. for /ws returns ws, for / returns empty
 - name: if not using force_https, add location http fragments
@@ -140,6 +149,7 @@
     - "20_servername"
     - "40_ssl"
     - "50_root"
+    - "60_robots"
     - "90_end"
   when: ssl and vhost_required
 
