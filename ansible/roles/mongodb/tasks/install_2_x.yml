@@ -2,10 +2,9 @@
 
 - name: install mongo (Debian)
   apt: pkg="mongodb" state=present update_cache=yes
-  tags:
-    - packages 
   notify: 
     - restart tomcat
   when: ansible_os_family == "Debian"  
   tags:
+    - packages
     - mongodb

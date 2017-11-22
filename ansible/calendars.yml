@@ -1,0 +1,10 @@
+# set target (i.e. server to deploy to) e.g. ansible-playbook calendars.yml --extra-vars 'target=nectar-calendars' -i path/to/inventory --ask-sudo-pass
+- hosts: '{{ target }}'
+  roles:
+    - java8
+    - common
+    - mongodb
+    - tomcat7-java8
+    - webserver
+    - calendars
+  become: yes
