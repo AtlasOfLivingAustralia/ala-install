@@ -15,9 +15,10 @@
 - name: Install Postgres with PostGIS
   apt: pkg={{ item }} state=present update_cache=yes
   with_items:
-    - postgresql-9.3-postgis-2.1
-    - postgresql-contrib
+    - postgresql-9.6-postgis-2.4
+    - postgresql-contrib-9.6
     - gdal-bin
+    - libgdal-java
 
 - name: install yum repo
   yum: name=http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-centos93-9.3-1.noarch.rpm state=present
@@ -74,7 +75,7 @@
   tags: postgresql
 
 - name: wait for postgresql restart
-  command: sleep 2
+  command: sleep 5
   when: started.changed
   tags: postgresql
 
@@ -103,9 +104,9 @@
   action: command psql -d postgis_template -f {{ item }}
   sudo_user: postgres
   with_items:
-    - /usr/share/postgresql/9.3/contrib/postgis-2.3/postgis.sql
-    - /usr/share/postgresql/9.3/contrib/postgis-2.3/spatial_ref_sys.sql
-    - /usr/share/postgresql/9.3/contrib/postgis-2.3/postgis_comments.sql
+    - /usr/share/postgresql/9.6/contrib/postgis-2.4/postgis.sql
+    - /usr/share/postgresql/9.6/contrib/postgis-2.4/spatial_ref_sys.sql
+    - /usr/share/postgresql/9.6/contrib/postgis-2.4/postgis_comments.sql
   tags: postgresql
 
 #- name: ensure user does not have unnecessary privilege
