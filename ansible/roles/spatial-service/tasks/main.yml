@@ -31,12 +31,19 @@
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
+    - "{{data_dir}}/spatial-service/config"
     - "{{data_dir}}/ala/data/runtime/files"
   tags:
     - spatial-service
 
 - name: copy all config.properties
   template: src=spatial-service-config.properties dest={{data_dir}}/spatial-service/config/spatial-service-config.properties
+  tags:
+    - spatial-service
+    - config
+
+- name: copy all spatial-service-data-config xml
+  template: src=spatial-service-data-config.xml dest={{data_dir}}/spatial-service/config/spatial-service-data-config.xml
   tags:
     - spatial-service
     - config
