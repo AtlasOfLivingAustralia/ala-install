@@ -1,0 +1,7 @@
+# assets
+version: "{{ spatial_service_version | default('0.3-SNAPSHOT') }}"
+artifactId: "{{ spatial_service_artifact_id | default('spatial-service') }}"
+classifier: "{{ spatial_service_classifier | default('') }}"
+packaging: "war"
+groupId: "{{ spatial_service_group_id | default('au.org.ala') }}"
+spatial_service_war_url: "{{ spatial_service_maven_repo_ws_url | default(maven_repo_ws_url) }}"
