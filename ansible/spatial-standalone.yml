@@ -4,5 +4,6 @@
     - java8
     - tomcat7-java8
     - webserver
+    - postgresql
     - spatial-service
     - spatial-hub
