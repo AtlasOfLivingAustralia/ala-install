@@ -10,6 +10,17 @@
   tags:
     - geonetwork
 
+- name: configure tomcat geonetwork data dir
+  lineinfile:
+    dest={{tomcat_conf}}
+    line='CATALINA_OPTS="${CATALINA_OPTS} -Dgeonetwork.dir={{data_dir}}/ala/data/"'
+  notify:
+    - restart tomcat
+  when: ansible_os_family == "Debian"
+  tags:
+    - tomcat
+    - geonetwork
+
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
@@ -48,7 +59,3 @@
     - restart tomcat
   tags:
     - geonetwork
-
-
-
-
