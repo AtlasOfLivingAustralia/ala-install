@@ -1,0 +1,54 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - geonetwork
+
+- name: packages
+  apt: pkg={{ item }} update_cache=yes state=latest
+  with_items:
+    - curl
+    - unzip
+  tags:
+    - geonetwork
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/ala/data/"
+  tags:
+    - geonetwork
+
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ geonetwork_context_path }}' hostname='{{ geonetwork_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - geonetwork
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ geonetwork_hostname }}"
+    context_path: "{{ geonetwork_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - geonetwork
+  when: webserver_nginx
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ geonetwork_war_url }}' context_path='{{ geonetwork_context_path }}' hostname='{{ geonetwork_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - geonetwork
+
+- name: set data ownership
+  file: path={{data_dir}}/ala owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - geonetwork
+
+
+
+

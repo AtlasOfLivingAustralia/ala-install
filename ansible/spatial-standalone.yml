@@ -6,5 +6,6 @@
     - webserver
     - postgresql
     - geoserver
+    - geonetwork
     - spatial-service
     - spatial-hub
