@@ -1,0 +1,6 @@
+groupId: ""
+version: ""
+artifactId: ""
+packaging: ""
+classifier: ""
+geonetwork_war_url: "https://nchc.dl.sourceforge.net/project/geonetwork/GeoNetwork_opensource/v3.2.2/geonetwork.war"

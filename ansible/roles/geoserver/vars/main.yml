@@ -1,5 +1,5 @@
 groupId: "org.geoserver"
-version: "{{ geoserver_version | default('2.8.1') }}"
+version: "{{ geoserver_version | default('2.11.1') }}"
 artifactId: "geoserver"
 packaging: "war"
 classifier: "war"

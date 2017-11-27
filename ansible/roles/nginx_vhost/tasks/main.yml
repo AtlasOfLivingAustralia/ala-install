@@ -44,8 +44,8 @@
     nginx_paths:
       - path: "{{context_path | default('/', True)}}"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:8080/"
-  when: nginx_paths is not defined
+        proxy_pass: "http://127.0.0.1:8080{{context_path | default('/', True)}}"
+  when: nginx_paths is not defined or (nginx_paths | trim == '')
 
 - name: ensure sites-available dir is present
   file: 
@@ -182,4 +182,8 @@
   when: vhost_required
   notify:
    - reload nginx
+
+- name: unset nginx_paths
+  set_fact:
+    nginx_paths: ''
 
