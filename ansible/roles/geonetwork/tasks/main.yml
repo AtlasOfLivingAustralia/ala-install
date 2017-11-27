@@ -66,6 +66,12 @@
     - geonetwork
     - config
 
+- name: replace config-db/postgis-alternate-datasource.xml file
+  template: src=postgis-alternate-datasource.xml dest=/var/lib/tomcat7/webapps-spatial.ala.org.au/geonetwork/WEB-INF/config-db/postgis-alternate-datasource.xml
+  tags:
+    - geonetwork
+    - config
+
 - name: replace config-node/srv.xml file
   template: src=srv.xml dest=/var/lib/tomcat7/webapps-spatial.ala.org.au/geonetwork/WEB-INF/config-node/srv.xml
   notify:
