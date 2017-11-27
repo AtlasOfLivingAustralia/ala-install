@@ -18,7 +18,6 @@
     - postgresql-9.6-postgis-2.4
     - postgresql-contrib-9.6
     - gdal-bin
-    - libgdal-java
 
 - name: install yum repo
   yum: name=http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-centos93-9.3-1.noarch.rpm state=present
