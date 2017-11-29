@@ -48,9 +48,20 @@
   when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ geonetwork_war_url }}' context_path='{{ geonetwork_context_path }}' hostname='{{ geonetwork_hostname }}'
+  notify:
+    - restart tomcat
   tags:
     - deploy
     - tomcat_vhost
+    - geonetwork
+
+- name: set war ownership
+  file: path="/var/lib/tomcat7/webapps-{{ geonetwork_hostname }}" owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - tomcat_vhost
+    - deploy
     - geonetwork
 
 - name: set data ownership
@@ -59,6 +70,16 @@
     - restart tomcat
   tags:
     - geonetwork
+
+- name: start
+  service: name=tomcat7 state=started enabled=yes
+
+- name: wait for geonetwork servlet to deploy in tomcat
+  wait_for:
+    path: "/var/lib/tomcat7/webapps-{{ geonetwork_hostname }}/geonetwork/WEB-INF/config-db/postgres-postgis.xml"
+  tags:
+    - geonetwork
+    - tomcat_vhost
 
 - name: replace config-db/postgres-postgis.xml file
   template: src=postgres-postgis.xml dest="/var/lib/tomcat7/webapps-{{ geonetwork_hostname }}/geonetwork/WEB-INF/config-db/postgres-postgis.xml"
