@@ -72,7 +72,7 @@
     - geonetwork
 
 - name: start
-  service: name=tomcat7 state=started enabled=yes
+  service: name=tomcat7 state=restarted enabled=yes
 
 - name: wait for geonetwork servlet to deploy in tomcat
   wait_for:
