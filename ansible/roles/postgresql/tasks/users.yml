@@ -8,12 +8,12 @@
 - name: read public key for user barman
   shell: cat ~/.ssh/id_rsa.pub
   register: barman_key
-  sudo_user: barman
+  become_user: barman
   changed_when: no
 
 - name: read public key for user postgres
   shell: cat ~/.ssh/id_rsa.pub
-  sudo_user: postgres
+  become_user: postgres
   register: postgres_key
   delegate_to: "{{ postgres_host }}"
   changed_when: no
@@ -28,24 +28,24 @@
 - name: ensure known_hosts file exists on barman
   file: dest=~/.ssh/known_hosts state=touch
   changed_when: false
-  sudo_user: barman
+  become_user: barman
 
 - name: ensure known_hosts file exists on postgres
   file: dest=~/.ssh/known_hosts state=touch
   changed_when: false
-  sudo_user: postgres
+  become_user: postgres
   delegate_to: "{{ postgres_host }}"
 
 - name: get postgres rsa key
   shell: ssh-keyscan -t rsa {{ postgres_host }}
-  sudo_user: barman
+  become_user: barman
   register: postgres_rsa_key
   changed_when: no
   tags: keys
 
 - name: get barman rsa key
   shell: ssh-keyscan -t rsa {{ barman_ip }}
-  sudo_user: postgres
+  become_user: postgres
   register: barman_rsa_key
   delegate_to: "{{ postgres_host }}"
   changed_when: no
@@ -53,24 +53,24 @@
 
 - name: ensure we have postgres key in known hosts file for barman
   lineinfile: dest=~/.ssh/known_hosts regexp="^{{ postgres_host }}\s+ssh-rsa\s+.*" line="{{ postgres_rsa_key.stdout }}"
-  sudo_user: barman
+  become_user: barman
   tags: keys
 
 - name: ensure we have barman key in known hosts file for postgres
   lineinfile: dest=~/.ssh/known_hosts regexp="^{{ barman_ip }}\s+ssh-rsa\s+.*" line="{{ barman_rsa_key.stdout }}"
-  sudo_user: postgres
+  become_user: postgres
   delegate_to: "{{ postgres_host }}"
   tags: keys
 
 - name: create barman superuser on postgres
   postgresql_user: name=barman password={{ postgres_barman_pass }} role_attr_flags=SUPERUSER
   delegate_to: "{{ postgres_host }}"
-  sudo_user: postgres
+  become_user: postgres
 
 - name: create db for user barman
   postgresql_db: name=barman
   delegate_to: "{{ postgres_host }}"
-  sudo_user: postgres
+  become_user: postgres
 
 # hostname:port:database:username:password
 - name: setup access for barman user
@@ -80,4 +80,4 @@
               state=present
               create=yes
               mode=600
-  sudo_user: barman
+  become_user: barman
