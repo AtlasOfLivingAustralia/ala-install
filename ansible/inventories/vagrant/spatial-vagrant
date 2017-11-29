@@ -39,6 +39,8 @@ postgis_password=password
 webserver_nginx=true
 robots_disallow=["/ws", "/geoserver", "/geonetwork"]
 
+ssl=false
+
 ###
 # Geonetwork
 ###
@@ -65,6 +67,8 @@ postgis_password=password
 
 webserver_nginx=true
 robots_disallow=["/ws", "/geoserver", "/geonetwork"]
+
+ssl=false
 
 ###
 # Spatial service
@@ -104,6 +108,8 @@ auth_cas_url=https://auth.ala.org.au/cas
 webserver_nginx=true
 robots_disallow=["/ws", "/geoserver", "/geonetwork"]
 
+ssl=false
+
 ###
 # Spatial hub
 ###
@@ -132,3 +138,5 @@ tomcat_java_opts = -Xmx1g -Xms1g -XX:MaxPermSize=128m -Xss256k -Djava.awt.headle
 
 webserver_nginx=true
 robots_disallow=["/ws", "/geoserver", "/geonetwork"]
+
+ssl=false
