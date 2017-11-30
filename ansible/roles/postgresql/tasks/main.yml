@@ -89,19 +89,19 @@
 
 - name: ensure postgis_template database exists
   postgresql_db: db=postgis_template state=present
-  #sudo_user: postgres
+  #become_user: postgres
   become: yes
   become_user: postgres
   tags: postgresql
 
 - name: make postgis_template a template
   action: command psql -d postgis_template -c "UPDATE pg_database SET datistemplate=true WHERE datname='postgis_template';"
-  sudo_user: postgres
+  become_user: postgres
   tags: postgresql
 
 - name: run the postgis SQL scripts
   action: command psql -d postgis_template -f {{ item }}
-  sudo_user: postgres
+  become_user: postgres
   with_items:
     - /usr/share/postgresql/9.6/contrib/postgis-2.4/postgis.sql
     - /usr/share/postgresql/9.6/contrib/postgis-2.4/spatial_ref_sys.sql

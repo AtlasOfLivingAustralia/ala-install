@@ -4,7 +4,7 @@
 
 - name: ensure layersdb exists
   action: command createdb -T postgis_template {{ layers_db_name | default('layersdb') }}
-  sudo_user: postgres
+  become_user: postgres
   ignore_errors: yes
   register: dbschema
   tags:
@@ -13,7 +13,7 @@
 
 - name: ensure user postgres access
   action: postgresql_user db=layersdb user=postgres password="postgres" priv=ALL state=present
-  sudo_user: postgres
+  become_user: postgres
   tags:
     - layers-db
     - createdb
@@ -27,7 +27,7 @@
 
 - name: load schema
   action: command psql {{ layers_db_name | default('layersdb') }} -f "/tmp/layersdb.schema.sql"
-  sudo_user: postgres
+  become_user: postgres
   when: dbschema.changed
   tags:
     - layers-db
@@ -35,7 +35,7 @@
 
 - name: placeholder data for geoserver
   action: command psql {{ layers_db_name | default('layersdb') }} -c "insert into objects (id, pid, name, the_geom) select '1', '1', 'test', st_geomfromtext('POLYGON((112.0 -44.0,154.0 -44.0,154.0 -9.0,112.0 -9.0,112.0 -44.0))', 4326);insert into distributions (geom_idx,the_geom) select 1, st_geomfromtext('POLYGON((112.0 -44.0,154.0 -44.0,154.0 -9.0,112.0 -9.0,112.0 -44.0))', 4326);"
-  sudo_user: postgres
+  become_user: postgres
   when: dbschema.changed
   ignore_errors: yes
   tags:
