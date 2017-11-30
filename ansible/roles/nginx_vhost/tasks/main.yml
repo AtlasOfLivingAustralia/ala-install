@@ -47,6 +47,9 @@
         proxy_pass: "http://127.0.0.1:8080{{context_path | default('/', True)}}"
   when: nginx_paths is not defined or (nginx_paths | trim == '')
 
+- name: debug - check nginx_paths value
+  debug: msg="nginx_paths value is {{nginx_paths}}"
+
 - name: ensure sites-available dir is present
   file: 
     path: "{{nginx_conf_dir}}/sites-available"

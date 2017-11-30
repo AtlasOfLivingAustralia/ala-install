@@ -8,6 +8,8 @@
         proxy_pass {{ item.proxy_pass }};
 {% elif item.alias is defined %}
         alias {{ item.alias }};
+{% elif item.rewrite is defined %}
+        return 301 {{ item.rewrite }};
 {% else %}
         try_files {{ item.try_files }};
 {% endif %}
