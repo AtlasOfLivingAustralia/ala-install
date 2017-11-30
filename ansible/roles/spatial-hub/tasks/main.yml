@@ -31,7 +31,7 @@
     nginx_paths:
       - path: "/files"
         is_proxy: false
-        alias: "{{ data_dir }}/ala/runtime/files"
+        alias: "{{ data_dir }}/ala/runtime/files/"
   tags:
     - nginx_vhost
     - deploy
