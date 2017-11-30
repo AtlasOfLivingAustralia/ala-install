@@ -3,8 +3,9 @@
     - common
     - java8
     - tomcat7-java8
-    - nameindex    
+    - nameindex
     - webserver
     - biocache-properties
     - biocache-service
     - { role: biocache-hub, biocache_hub: ala-hub }
+

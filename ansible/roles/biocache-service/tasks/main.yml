@@ -1,9 +1,9 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
-    - apache_vhost
     - tomcat_vhost
     - biocache-service
     - webapps
+    - nginx_vhost
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ biocache_service_context_path }}' hostname='{{ biocache_service_hostname }}' 
   tags:
@@ -17,8 +17,15 @@
   include_role:
     name: nginx_vhost
   vars:
-    hostname: "{{ biocache_service_hostname }}"
-    context_path: "{{ biocache_service_context_path }}"
+   hostname: "{{ biocache_service_hostname }}"
+   context_path: "{{ biocache_service_context_path }}"
+   nginx_paths:
+      - path: "{{biocache_service_context_path}}"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080/{{biocache_service_context_path}}"
+      - path: "/biocache-download"
+        is_proxy: false
+        alias: "{{download_dir}}"
   tags:
     - nginx_vhost
     - deploy
@@ -71,6 +78,7 @@
     - { path: "{{data_dir}}/tmp" }
     - { path: "{{data_dir}}/offline/exports" }
     - { path: "{{data_dir}}/tool" }
+    - { path: "{{data_dir}}/biocache-download", perm: 755 }
     - { path: "{{data_dir}}/biocache-download/tmp" }
   tags:
     - biocache-service
