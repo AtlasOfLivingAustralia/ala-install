@@ -22,6 +22,22 @@
     - spatial-hub
   when: webserver_nginx
 
+- name: Add proxy paths for grandfathered routes
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ spatial_hub_hostname }}"
+    context_path: "{{ spatial_hub_context_path }}"
+    nginx_paths:
+      - path: "/files"
+        is_proxy: false
+        alias: "{{ data_dir }}/ala/runtime/files"
+  tags:
+    - nginx_vhost
+    - deploy
+    - spatial-hub
+  when: webserver_nginx
+
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ spatial_hub_war_url }}' context_path='{{ spatial_hub_context_path }}' hostname='{{ spatial_hub_hostname }}'
   tags:
     - deploy
