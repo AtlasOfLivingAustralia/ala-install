@@ -29,9 +29,12 @@
     hostname: "{{ spatial_hub_hostname }}"
     context_path: "{{ spatial_hub_context_path }}"
     nginx_paths:
-      - path: "/files"
+      - path: "{{ spatial_hub_context_path }}files"
         is_proxy: false
         alias: "{{ data_dir }}/ala/runtime/files/"
+      - path: "{{spatial_hub_context_path}}webportal"
+        is_proxy: false
+        rewrite: "{{ spatial_hub_context_path }}"
   tags:
     - nginx_vhost
     - deploy
