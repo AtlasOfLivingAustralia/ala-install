@@ -22,6 +22,28 @@
     - spatial-service
   when: webserver_nginx
 
+- name: Add proxy paths for grandfathered routes
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ spatial_service_hostname }}"
+    context_path: "{{ spatial_service_context_path }}"
+    nginx_paths:
+      - path: "/alaspatial"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080{{spatial_service_context_path}}"
+      - path: "/layers-service"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080{{spatial_service_context_path}}"
+      - path: "/actions"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080{{spatial_service_context_path}}/actions"
+  tags:
+    - nginx_vhost
+    - deploy
+    - spatial-service
+  when: webserver_nginx
+
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ spatial_service_war_url }}' context_path='{{ spatial_service_context_path }}' hostname='{{ spatial_service_hostname }}'
   tags:
     - deploy
