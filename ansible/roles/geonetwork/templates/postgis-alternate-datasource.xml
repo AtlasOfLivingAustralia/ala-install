@@ -45,10 +45,10 @@
           http://docs.geotools.org/latest/userguide/library/data/datastore.html
         </description>
         <entry key="dbtype" value="postgis"/>
-        <entry key="user" value="{{ postgis_username }}"/>
-        <entry key="passwd" value="{{ postgis_password }}"/>
-        <entry key="host" value="{{ postgis_host }}"/>
-        <entry key="port" value="{{ postgis_port }}"/>
+        <entry key="user" value="{{ postgresql_username }}"/>
+        <entry key="passwd" value="{{ postgresql_password }}"/>
+        <entry key="host" value="{{ postgresql_host }}"/>
+        <entry key="port" value="{{ postgresql_port }}"/>
         <entry key="database" value="{{ geonetwork_database }}"/>
         <entry key="schema" value="public"/>
         <entry key="Loose bbox" value="true"/>

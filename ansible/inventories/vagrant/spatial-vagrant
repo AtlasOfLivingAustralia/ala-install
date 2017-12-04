@@ -31,9 +31,15 @@ geoserver_app=geoserver
 geoserver_username=admin
 geoserver_password=password
 
+layers_db_host=localhost
+layers_db_port=5432
+layers_db_name=layersdb
+layers_db_user=postgres
+layers_db_password=password
+
 postgresql_host=localhost
 postgresql_port=5432
-postgresql_db=layersdb
+postgresql_database=layersdb
 postgresql_user=postgres
 postgresql_password=password
 
@@ -61,10 +67,16 @@ geonetwork_username=admin
 geonetwork_password=password
 geonetwork_database=geonetwork
 
+layers_db_host=localhost
+layers_db_port=5432
+layers_db_name=layersdb
+layers_db_user=postgres
+layers_db_password=password
+
 postgresql_host=localhost
 postgresql_port=5432
-postgresql_db=layersdb
-postgresql_username=postgres
+postgresql_database=layersdb
+postgresql_user=postgres
 postgresql_password=password
 
 webserver_nginx=true
@@ -93,10 +105,16 @@ geoserver_url=http://vagrant1.ala.org.au/geoserver
 geoserver_username=admin
 geoserver_password=password
 
-postgresql_host=vagrant1.ala.org.au
+layers_db_host=localhost
+layers_db_port=5432
+layers_db_name=layersdb
+layers_db_user=postgres
+layers_db_password=password
+
+postgresql_host=localhost
 postgresql_port=5432
-postgresql_db=layersdb
-postgresql_username=postgres
+postgresql_database=layersdb
+postgresql_user=postgres
 postgresql_password=password
 
 spatial_service_api_key=get-me-an-api-key
