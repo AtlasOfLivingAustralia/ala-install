@@ -43,6 +43,6 @@
   </bean>
 
   <bean id="jdbcURL" class="java.lang.String">
-    <constructor-arg value="jdbc:postgresql_postGIS://{{ postgis_host }}:{{ postgis_port }}/{{ geonetwork_database }}"/>
+    <constructor-arg value="jdbc:postgresql_postGIS://{{ postgresql_host }}:{{ postgresql_port }}/{{ geonetwork_database }}"/>
   </bean>
 </beans>

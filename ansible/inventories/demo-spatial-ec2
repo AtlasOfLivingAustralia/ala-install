@@ -23,10 +23,10 @@ geoserver_app=geoserver
 geoserver_username=admin
 geoserver_password=geoserver
 
-postgis_host=localhost
-postgis_port=5432
-postgis_username=postgres
-postgis_password=postgres
+postgresql_host=localhost
+postgresql_port=5432
+postgresql_username=postgres
+postgresql_password=postgres
 
 [layers-service:vars]
 is_vagrant=true
