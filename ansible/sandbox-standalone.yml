@@ -2,6 +2,6 @@
   roles:
     - common
     - java
-    - apache
+    - webserver
     - tomcat
     - sandbox

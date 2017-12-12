@@ -1,59 +1,86 @@
 ---
-nginx_redhat_pkg:
-  - nginx
+# Used only for Debian/Ubuntu installation, as the -t option for apt.
+nginx_default_release: ""
 
-nginx_ubuntu_pkg:
-  - python-selinux
-  - nginx
+# Used only for Redhat installation, enables source Nginx repo.
+nginx_yum_repo_enabled: true
 
-nginx_suse_pkg:
-  - nginx
+# Use the official Nginx PPA for Ubuntu, and the version to use if so.
+nginx_ppa_use: false
+nginx_ppa_version: stable
 
-yum_epel_repo: epel
-yum_base_repo: base
+# The name of the nginx package to install.
+nginx_package_name: "nginx"
 
-nginx_official_repo: True
+nginx_conf_template: "nginx.conf.j2"
+nginx_vhost_template: "vhost.j2"
 
-keep_only_specified: False
+nginx_worker_processes: "{{ ansible_processor_vcpus | default(ansible_processor_count) }}"
+nginx_worker_connections: "1024"
+nginx_multi_accept: "off"
 
-nginx_installation_type: "packages"
-nginx_binary_name: "nginx"
-nginx_service_name: "{{nginx_binary_name}}"
-nginx_conf_dir: "/etc/nginx"
+nginx_error_log: "/var/log/nginx/error.log warn"
+nginx_access_log: "/var/log/nginx/access.log main buffer=16k"
 
-nginx_user: "{% if ansible_os_family == 'RedHat' or ansible_os_family == 'Suse' %}nginx{% elif ansible_os_family == 'Debian' %}www-data{% endif %}"
-nginx_group: "{{nginx_user}}"
+nginx_sendfile: "on"
+nginx_tcp_nopush: "on"
+nginx_tcp_nodelay: "on"
 
-nginx_worker_processes: "{{ ansible_processor_vcpus }}"
-nginx_worker_rlimit_nofile: 1024
-nginx_log_dir: "/var/log/nginx"
+nginx_keepalive_timeout: "65"
+nginx_keepalive_requests: "100"
 
-nginx_events_params:
-  - worker_connections {% if nginx_max_clients is defined %}{{nginx_max_clients}}{% else %}512{% endif %}
+nginx_server_tokens: "on"
 
-nginx_http_params:
-  - sendfile "on"
-  - tcp_nopush "on"
-  - tcp_nodelay "on"
-  - keepalive_timeout "65"
-  - access_log "{{nginx_log_dir}}/access.log"
-  - error_log "{{nginx_log_dir}}/error.log"
-  - server_tokens off
-  - types_hash_max_size 2048
+nginx_client_max_body_size: "64m"
 
-nginx_sites:
-  default:
-     - listen 80 default_server
-     - server_name _
-     - root "/usr/share/nginx/html"
-     - index index.html
-nginx_https_sites: []
-nginx_remove_sites: []
+nginx_server_names_hash_bucket_size: "64"
 
-nginx_configs: {}
-nginx_remove_configs: []
+nginx_proxy_cache_path: ""
 
-nginx_auth_basic_files: {}
-nginx_remove_auth_basic_files: []
+nginx_extra_conf_options: ""
+# Example extra main options, used within the main nginx's context:
+#   nginx_extra_conf_options: |
+#     env VARIABLE;
+#     include /etc/nginx/main.d/*.conf;
 
-nginx_daemon_mode: "on"
+nginx_extra_http_options: ""
+# Example extra http options, printed inside the main server http config:
+#    nginx_extra_http_options: |
+#      proxy_buffering    off;
+#      proxy_set_header   X-Real-IP $remote_addr;
+#      proxy_set_header   X-Scheme $scheme;
+#      proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+#      proxy_set_header   Host $http_host;
+
+nginx_remove_default_vhost: false
+nginx_vhosts: []
+# Example vhost below, showing all available options:
+# - listen: "80" # default: "80"
+#   server_name: "example.com" # default: N/A
+#   root: "/var/www/example.com" # default: N/A
+#   index: "index.html index.htm" # default: "index.html index.htm"
+#   filename: "example.com.conf" # Can be used to set the filename of the vhost file.
+#
+#   # Properties that are only added if defined:
+#   server_name_redirect: "www.example.com" # default: N/A
+#   error_page: ""
+#   access_log: ""
+#   error_log: ""
+#   extra_parameters: "" # Can be used to add extra config blocks (multiline).
+#   template: "" # Can be used to override the `nginx_vhost_template` per host.
+#   state: "absent" # To remove the vhost configuration.
+
+nginx_upstreams: []
+# - name: myapp1
+#   strategy: "ip_hash" # "least_conn", etc.
+#   keepalive: 16 # optional
+#   servers: {
+#     "srv1.example.com",
+#     "srv2.example.com weight=3",
+#     "srv3.example.com"
+#   }
+
+nginx_log_format: |
+  '$remote_addr - $remote_user [$time_local] "$request" '
+  '$status $body_bytes_sent "$http_referer" '
+  '"$http_user_agent" "$http_x_forwarded_for"'

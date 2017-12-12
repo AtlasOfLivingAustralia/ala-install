@@ -3,6 +3,6 @@
     - common
     - java
     - tomcat
-    - apache
+    - webserver
     - mysql    
     - ozatlas-proxy

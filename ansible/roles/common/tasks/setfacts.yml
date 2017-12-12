@@ -16,6 +16,7 @@
     tomcat_conf_dir: /etc/tomcat7
     tomcat_log_dir: /var/log/tomcat7
     apache: apache2
+    nginx: nginx
     mysql_service: mysql
     cassandra_yaml: /etc/cassandra/cassandra.yaml
     cassandra_user: cassandra
@@ -33,6 +34,7 @@
     tomcat_conf: /etc/tomcat6/tomcat6.conf
     tomcat_conf_dir: /etc/tomcat6
     apache: httpd
+    nginx: nginx
     mysql_service: mysqld
     cassandra_yaml: /etc/cassandra/conf/cassandra.yaml
     cassandra_user: cassandra
@@ -59,19 +61,19 @@
 
 - name: set name index date
   set_fact:
-      name_index_date: "{{ nameindex_datestamp | default('20160811') }}"
+      name_index_date: "{{ nameindex_datestamp | default('latest') }}"
   tags:
     - setfacts
 
 - name: set name data date
   set_fact:
-      name_data_date: "{{ namedata_datestamp | default('20160811') }}"
+      name_data_date: "{{ namedata_datestamp | default('latest') }}"
   tags:
     - setfacts
 
 - name: set name index location
   set_fact:
-    aws_name_indexes_repo: http://s3.amazonaws.com/ala-nameindexes/20140610
+    aws_name_indexes_repo: http://s3.amazonaws.com/ala-nameindexes/latest
     ala_name_indexes_repo: "{{ ala_nameindex_source_url | default('http://ala-starr.it.csiro.au/archives/nameindexes') }}/{{name_index_date}}"
     ala_name_data_repo: "{{ ala_namedata_source_url | default('http://ala-starr.it.csiro.au/archives/nameindexes') }}/{{name_data_date}}"
   tags:
@@ -79,7 +81,7 @@
 
 - name: using the ALA nexus repository
   set_fact:
-    maven_repo_ws_url: "http://nexus.ala.org.au/service/local/artifact/maven/redirect?r={{maven_release_dir | default('public')}}&g={{groupId | default('au.org.ala')}}&a={{artifactId | default('')}}&v={{version | default('')}}&e={{packaging | default('war')}}&c={{classifier | default('')}}"
+    maven_repo_ws_url: "https://nexus.ala.org.au/service/local/artifact/maven/redirect?r={{maven_release_dir | default('public')}}&g={{groupId | default('au.org.ala')}}&a={{artifactId | default('')}}&v={{version | default('')}}&e={{packaging | default('war')}}&c={{classifier | default('')}}"
   when: use_gbif_nexus is not defined or use_gbif_nexus == "false"
   tags:
     - setfacts  
@@ -102,15 +104,10 @@
 - name: setup name sources
   set_fact:
     ala_name_sources:
-      - AFD
-      - APNI
-      - AusFungi
-      - AusMoss
-      - CAAB
-      - CAAB-Identifier
-      - CAAB-Vernacular
-      - NZOR
-      - CoL
-      - ALA
+      - combined
   tags:
     - setfacts
+
+- name: set whether webserver is apache or nginx
+  set_fact:
+    webserver_nginx: "{{ webserver_nginx | default(false) }}"

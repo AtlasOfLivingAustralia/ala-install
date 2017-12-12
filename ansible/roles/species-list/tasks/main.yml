@@ -42,6 +42,19 @@
     - specieslist
     - apache_vhost
     - deploy
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ specieslist_hostname }}"
+    context_path: "{{ specieslist_context_path }}"
+  tags:
+    - specieslist
+    - nginx_vhost
+    - deploy
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ specieslist_war_url }}' context_path='{{ specieslist_context_path }}' hostname='{{ specieslist_hostname }}'
   tags:

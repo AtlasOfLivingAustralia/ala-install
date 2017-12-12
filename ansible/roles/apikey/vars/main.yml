@@ -1,5 +1,5 @@
 # assets
-version: "0.4"
+version: "{{ apikey_version | default('0.4') }}"
 artifactId: "apikey"
 classifier: ''
 packaging: "war"

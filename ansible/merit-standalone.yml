@@ -1,0 +1,7 @@
+- hosts: fieldcapture
+  roles:
+    - common
+    - java8
+    - webserver
+    - tomcat7-java8
+    - merit

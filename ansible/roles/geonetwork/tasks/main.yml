@@ -1,0 +1,108 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - geonetwork
+
+- name: packages
+  apt: pkg={{ item }} update_cache=yes state=latest
+  with_items:
+    - curl
+    - unzip
+  tags:
+    - geonetwork
+
+- name: configure tomcat geonetwork data dir
+  lineinfile:
+    dest={{tomcat_conf}}
+    line='CATALINA_OPTS="${CATALINA_OPTS} -Dgeonetwork.dir={{data_dir}}/ala/data/geonetwork/"'
+  notify:
+    - restart tomcat
+  when: ansible_os_family == "Debian"
+  tags:
+    - tomcat
+    - geonetwork
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/ala/data/geonetwork/"
+  tags:
+    - geonetwork
+
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ geonetwork_context_path }}' hostname='{{ geonetwork_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - geonetwork
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ geonetwork_hostname }}"
+    context_path: "{{ geonetwork_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - geonetwork
+  when: webserver_nginx
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ geonetwork_war_url }}' context_path='{{ geonetwork_context_path }}' hostname='{{ geonetwork_hostname }}'
+  notify:
+    - restart tomcat
+  tags:
+    - deploy
+    - tomcat_vhost
+    - geonetwork
+
+- name: set war ownership
+  file: path="/var/lib/tomcat7/webapps-{{ geonetwork_hostname }}" owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - tomcat_vhost
+    - deploy
+    - geonetwork
+
+- name: set data ownership
+  file: path={{data_dir}}/ala owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - geonetwork
+
+- name: start
+  service: name=tomcat7 state=restarted enabled=yes
+
+- name: wait for geonetwork servlet to deploy in tomcat
+  wait_for:
+    path: "/var/lib/tomcat7/webapps-{{ geonetwork_hostname }}/geonetwork/WEB-INF/config-db/postgres-postgis.xml"
+  tags:
+    - geonetwork
+    - tomcat_vhost
+
+- name: replace config-db/postgres-postgis.xml file
+  template: src=postgres-postgis.xml dest="/var/lib/tomcat7/webapps-{{ geonetwork_hostname }}/geonetwork/WEB-INF/config-db/postgres-postgis.xml"
+  tags:
+    - geonetwork
+    - config
+
+- name: replace config-db/postgis-alternate-datasource.xml file
+  template: src=postgis-alternate-datasource.xml dest="/var/lib/tomcat7/webapps-{{ geonetwork_hostname }}/geonetwork/WEB-INF/config-db/postgis-alternate-datasource.xml"
+  tags:
+    - geonetwork
+    - config
+
+- name: replace config-db/jdbc.properties file
+  template: src=jdbc.properties dest="/var/lib/tomcat7/webapps-{{ geonetwork_hostname }}/geonetwork/WEB-INF/config-db/jdbc.properties"
+  tags:
+    - geonetwork
+    - config
+
+- name: replace config-node/srv.xml file
+  template: src=srv.xml dest="/var/lib/tomcat7/webapps-{{ geonetwork_hostname }}/geonetwork/WEB-INF/config-node/srv.xml"
+  notify:
+    - restart tomcat
+  tags:
+    - geonetwork
+    - config

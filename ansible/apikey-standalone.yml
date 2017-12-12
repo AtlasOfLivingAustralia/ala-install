@@ -3,6 +3,6 @@
     - common
     - java
     - mysql
-    - apache
+    - webserver
     - tomcat
     - apikey

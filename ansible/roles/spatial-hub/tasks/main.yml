@@ -1,0 +1,74 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - spatial-hub
+    - config    
+
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ spatial_hub_context_path }}' hostname='{{ spatial_hub_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - spatial-hub
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ spatial_hub_hostname }}"
+    context_path: "{{ spatial_hub_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - spatial-hub
+  when: webserver_nginx
+
+- name: Add proxy paths for grandfathered routes
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ spatial_hub_hostname }}"
+    context_path: "{{ spatial_hub_context_path }}"
+    nginx_paths:
+      - path: "{{ spatial_hub_context_path }}files"
+        is_proxy: false
+        alias: "{{ data_dir }}/ala/runtime/files/"
+      - path: "{{spatial_hub_context_path}}webportal"
+        is_proxy: false
+        rewrite: "{{ spatial_hub_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - spatial-hub
+  when: webserver_nginx
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ spatial_hub_war_url }}' context_path='{{ spatial_hub_context_path }}' hostname='{{ spatial_hub_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - spatial-hub
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/spatial-hub/config/"
+    - "{{data_dir}}/ala/runtime/files/"
+  tags:
+    - spatial-hub
+
+- name: copy all config.properties
+  template: src=spatial-hub-config.properties dest={{data_dir}}/spatial-hub/config/spatial-hub-config.properties
+  tags:
+    - spatial-hub 
+    - config
+
+- name: copy all log4j.properties
+  template: src=log4j.properties dest={{data_dir}}/spatial-hub/config/log4j.properties
+  tags:
+    - spatial-hub
+
+- name: set data ownership
+  file: path={{data_dir}}/ala/data/ owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify: 
+    - restart tomcat
+  tags:
+    - spatial-hub

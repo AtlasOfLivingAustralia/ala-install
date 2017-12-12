@@ -4,12 +4,12 @@
     - java
     - tomcat
     - cassandra
-    - apache
+    - webserver
     - nameindex
     - solr
     - biocache-db
     - biocache-properties
     - biocache-service
-    - { role: biocache-hub, biocache_hub: appd-hub, proxy_root_context_to: appd-hub }
+    - { role: biocache-hub, biocache_hub: appd-hub, proxy_root_context_to: appd-hub, grouped_facets_json: grouped_facets_appd.json }
     - biocache-cli
     - appd

@@ -21,7 +21,7 @@
 - name: configure geoserver data dir
   lineinfile:
     dest={{tomcat_conf}}
-    line='CATALINA_OPTS="-DGEOSERVER_DATA_DIR={{data_dir}}/ala/data/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/ala/data/geoserver_data_dir/gwc"'
+    line='CATALINA_OPTS="${CATALINA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/ala/data/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/ala/data/geoserver_data_dir/gwc"'
   notify:
     - restart tomcat
   when: ansible_os_family == "Debian"
@@ -34,6 +34,19 @@
     - deploy
     - apache_vhost
     - geoserver
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ geoserver_hostname }}"
+    context_path: "{{ geoserver_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - geoserver
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ geoserver_war_url }}' context_path='{{ geoserver_context_path }}' hostname='{{ geoserver_hostname }}'
   tags:

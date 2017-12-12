@@ -1,15 +1,5 @@
 - include: ../../common/tasks/setfacts.yml
 
-- name: accept java 6 license
-  shell: echo oracle-java6-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
-  when: ansible_os_family == "Debian" 
-  tags: jenkins
-
-- name: accept java 8 license
-  shell: echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
-  when: ansible_os_family == "Debian" 
-  tags: jenkins
-
 - apt_key: url="http://pkg.jenkins-ci.org/{{ jenkins_channel }}/jenkins-ci.org.key" state=present
   when: ansible_os_family == "Debian"
   tags: jenkins
@@ -21,9 +11,6 @@
 - name: install packages
   apt: name={{ item }} state=present
   with_items:
-   - oracle-java6-installer
-   - oracle-java8-installer
-   - openjdk-7-jdk
    - jenkins
    - git
   when: ansible_os_family == "Debian"
@@ -59,15 +46,15 @@
    - proxy_ajp
    - ssl
   notify: restart apache
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and not webserver_nginx
   tags: jenkins
 
 - copy: src=000-default.conf dest=/etc/apache2/sites-available/000-default.conf
   notify: reload apache
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and not webserver_nginx
   tags: jenkins
 
 - template: src=default-ssl.conf.j2 dest=/etc/apache2/sites-available/default-ssl.conf
   notify: reload apache
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and not webserver_nginx
   tags: jenkins

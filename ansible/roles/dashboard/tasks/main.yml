@@ -6,6 +6,8 @@
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/dashboard/config"
+    - "{{data_dir}}/dashboard/zip"
+    - "{{data_dir}}/dashboard/csv"
   tags:
     - dashboard
     - properties
@@ -33,6 +35,19 @@
     - dashboard
     - apache_vhost
     - deploy
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ dashboard_hostname }}"
+    context_path: "{{ dashboard_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - dashboard
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ dashboard_war_url }}' context_path='{{ dashboard_context_path }}' hostname='{{ dashboard_hostname }}'
   tags:

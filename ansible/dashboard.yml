@@ -1,0 +1,7 @@
+- hosts: dashboard
+  roles:
+    - java8
+    - common
+    - tomcat7-java8
+    - webserver
+    - dashboard

@@ -36,8 +36,6 @@
 
 - name: add common tomcat jars (for SOLR logging and JTS)
   copy: src=solr/solr.xml dest=/data/solr
-  with_items:
-    - jts-1.13.jar
   tags:
     - solrcloud
 

@@ -1,0 +1,7 @@
+# assets
+version: "{{ spatial_hub_version | default('0.2-SNAPSHOT') }}"
+artifactId: "{{ spatial_hub_artifact_id | default('spatial-hub') }}"
+classifier: "{{ spatial_hub_classifier | default('') }}"
+packaging: "war"
+groupId: "{{ spatial_hub_group_id | default('au.org.ala') }}"
+spatial_hub_war_url: "{{ spatial_hub_maven_repo_ws_url | default(maven_repo_ws_url) }}"

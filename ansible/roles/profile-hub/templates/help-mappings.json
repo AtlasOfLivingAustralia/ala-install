@@ -23,6 +23,7 @@
     "profile.edit.optionsMenu": "editingProfiles.html#optionsMenu",
 
     "opus.edit.siteOverview": "opusConfig.html#siteOverview",
+    "opus.edit.masterList": "opusConfig.html#masterlist",
     "opus.edit.accessControl": "opusConfig.html#accessControl",
     "opus.edit.branding": "opusConfig.html#branding",
     "opus.edit.profileEditingOptions": "opusConfig.html#profileEditingOptions",

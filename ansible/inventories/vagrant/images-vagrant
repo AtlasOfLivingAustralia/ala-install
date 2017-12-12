@@ -17,4 +17,4 @@ images_db_username = images
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
-collectory_url=http://collections.ala.org.au
+collectory_url=https://collections.ala.org.au

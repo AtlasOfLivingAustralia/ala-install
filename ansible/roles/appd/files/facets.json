@@ -139,7 +139,7 @@
       },
       {
         "sort":"count",
-        "field":"data_resource_uid"
+        "field":"dataset_name"
       },
       {
         "sort":"count",

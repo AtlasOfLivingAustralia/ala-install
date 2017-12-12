@@ -1,0 +1,9 @@
+version: "{{ ala_bie_version | default('LATEST') }}"
+artifactId: "ala-bie"
+groupId: "{{ ala_bie_group_id | default('au.org.ala') }}"
+classifier: ''
+packaging: "war"
+ala_bie_war_url: "{{ ala_bie_maven_repo_ws_url | default(maven_repo_ws_url) }}"
+
+#additional_proxy_pass:
+#  - { src: "/subgroups.json", dest: "!" }

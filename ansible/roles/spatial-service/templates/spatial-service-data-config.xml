@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p"
+   xsi:schemaLocation="
+      http://www.springframework.org/schema/beans 
+      http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+      http://www.springframework.org/schema/context 
+      http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+ 
+ 
+   <bean id="sessionFactory"
+    class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+      <property name="dataSource" ref="dataSource" />
+      <property name="packagesToScan" value="org.baeldung.spring.persistence.model" />
+      <property name="hibernateProperties">
+         <props>
+            <prop key="hibernate.hbm2ddl.auto">update</prop>
+            <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</prop>
+         </props>
+      </property>
+   </bean>
+ 
+   <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+                                destroy-method="close"
+                                p:driverClass="org.postgresql.Driver"
+                                p:jdbcUrl="jdbc:postgresql://{{layers_db_host}}/{{layers_db_name}}"
+                                p:user="{{layers_db_username}}"
+                                p:password="{{layers_db_password}}"
+                                p:acquireIncrement="5"
+                                p:idleConnectionTestPeriod="60"
+                                p:maxPoolSize="80"
+                                p:maxStatements="10"
+                                p:minPoolSize="4" />
+ 
+   <bean id="transactionManager"
+    class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+      <property name="sessionFactory" ref="sessionFactory" />
+   </bean>
+ 
+   <bean id="persistenceExceptionTranslationPostProcessor"
+    class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+ 
+</beans>

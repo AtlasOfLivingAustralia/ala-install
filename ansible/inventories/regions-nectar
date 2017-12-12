@@ -11,12 +11,12 @@ regions_context_path=
 regions_base_url=http://regions.nectar.ala.org.au
 regions_base_url=http://regions.nectar.ala.org.au
 
-ala_base_url=http://ala.org.au
-bie_base_url=http://bie.ala.org.au
-biocache_base_url=http://biocache.ala.org.au
+ala_base_url=https://www.ala.org.au
+bie_base_url=https://bie.ala.org.au
+biocache_base_url=https://biocache.ala.org.au
 spatial_base_url=http://spatial.ala.org.au
-logger_base_url=http://logger.ala.org.au
-alerts_base_url=http://alerts.ala.org.au
+logger_base_url=https://logger.ala.org.au
+alerts_base_url=https://alerts.ala.org.au
 security_cas_login_url=https://auth.ala.org.au/cas/login
 biocache_records_url=http://biocache.vagrant1.ala.org.au/
 

@@ -2,8 +2,8 @@
   roles:
     - common
     - postfix    
-    - java
-    - tomcat
-    - apache
-    - mysql    
+    - java8
+    - tomcat7-java8
+    - webserver
+    - mysql-5.7    
     - alerts

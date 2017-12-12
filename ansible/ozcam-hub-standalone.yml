@@ -3,5 +3,5 @@
     - common
     - java8
     - tomcat7-java8
-    - apache
+    - webserver
     - { role: biocache-hub, biocache_hub: ozcam-hub, grouped_facets_json: grouped_facets_ozcam.json }

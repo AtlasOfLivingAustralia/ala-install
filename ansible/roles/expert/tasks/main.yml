@@ -9,6 +9,7 @@
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/expert/config"
+    - "{{data_dir}}/expert/images"
   tags:
     - properties
     - expert
@@ -35,6 +36,19 @@
     - deploy
     - apache_vhost
     - expert
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ expert_hostname }}"
+    context_path: "{{ expert_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - expert
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ expert_war_url }}' context_path='{{expert_context_path}}' hostname='{{ expert_hostname }}'
   tags:

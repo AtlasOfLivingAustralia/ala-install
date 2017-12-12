@@ -7,12 +7,13 @@
     - nameindex
     - web2py
     - web2pyApps
-    - nginx
+    - webserver
     - phylolink
-  sudo: yes
-  sudo_user: root
+  become: yes
+  become_user: root
   vars:
     deleteWeb2py: False
     deletePhylesystem: False
     deleteNCL: False
     deleteToNexml: False
+    ansible_ssh_pipelining: true

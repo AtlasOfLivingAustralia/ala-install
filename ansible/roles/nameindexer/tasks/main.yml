@@ -18,22 +18,26 @@
 - name: Download Catalogue of Life 2012
   get_url: url={{ aws_name_indexes_repo }}/dwca-col.zip dest={{data_dir}}/lucene/sources/dwca-col.zip
   tags:  
-    - "data_archives"     
+    - "data_archives"
+    - "nameindexer"
 
 - name: Download Catalogue of Life 2012 (Mammals - for testing purposes)
   get_url: url={{ aws_name_indexes_repo }}/dwca-col-mammals.zip dest={{data_dir}}/lucene/sources/dwca-col-mammals.zip
   tags:  
-    - "data_archives"     
+    - "data_archives"
+    - "nameindexer"
 
 - name: Download IRMNG homonyms
   get_url: url={{ aws_name_indexes_repo }}/IRMNG_DWC_HOMONYMS.zip dest={{data_dir}}/lucene/sources/IRMNG_DWC_HOMONYMS.zip
   tags:  
-    - "data_archives"    
+    - "data_archives"
+    - "nameindexer"
 
 - name: Download Catalogue of Life 2012 Vernacular names
   get_url: url={{ aws_name_indexes_repo }}/col_vernacular.txt.zip dest={{data_dir}}/lucene/sources/col_vernacular.txt.zip
   tags:  
-  - "data_archives"    
+    - "data_archives"
+    - "nameindexer"
 
 - name: Unstall unzip (Debian only)
   apt: pkg=unzip state=present
@@ -42,22 +46,26 @@
 - name: Unzip COL data archives
   shell: "unzip -u {{data_dir}}/lucene/sources/dwca-col.zip -d {{data_dir}}/lucene/sources/"
   tags:  
-    - "data_archives"    
+    - "data_archives"
+    - "nameindexer"
 
 - name: Unzip COL data archives
   shell: "unzip -u {{data_dir}}/lucene/sources/dwca-col-mammals.zip -d {{data_dir}}/lucene/sources/"
   tags:  
-    - "data_archives"    
+    - "data_archives"
+    - "nameindexer"
 
 - name: Unzip IRMNG data archives
   shell: "unzip -u {{data_dir}}/lucene/sources/IRMNG_DWC_HOMONYMS.zip -d {{data_dir}}/lucene/sources/IRMNG_DWC_HOMONYMS"
   tags:  
-    - "data_archives"    
+    - "data_archives"
+    - "nameindexer"
 
 - name: Unzip common names data archives
   shell: "unzip -u {{data_dir}}/lucene/sources/col_vernacular.txt.zip -d {{data_dir}}/lucene/sources/"
   tags:  
-    - "data_archives"     
+    - "data_archives"
+    - "nameindexer"
 
 # - name: Upload from local M2 name matching distribution zip (LOCAL)
 #   copy: src="/Users/mar759/.m2/repository/au/org/ala/ala-name-matching/2.1-SNAPSHOT/ala-name-matching-2.1-SNAPSHOT-distribution.zip" dest="/usr/lib/nameindexer/nameindexer.zip" force=yes
@@ -67,7 +75,7 @@
 - name: Download name matching distribution zip
   get_url: url="{{ ala_names_distribution_url }}" dest="/usr/lib/nameindexer/nameindexer.zip" force=yes
   tags:  
-    - "nameindexer"  
+    - "nameindexer"
 
 - name: install unzip (Debian only)
   apt: pkg=unzip state=present
@@ -80,6 +88,8 @@
 
 - name: copy logging config
   copy: src=lib/log4j.xml dest=/usr/lib/nameindexer/log4j.xml
+  tags:
+    - "nameindexer"
 
 - name: create the templated nameindexer.sh
   template: src=nameindexer.sh dest=/usr/lib/nameindexer/nameindexer mode=777

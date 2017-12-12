@@ -1,0 +1,8 @@
+---
+redirect: ''
+nginx_conf_dir: '/etc/nginx'
+ssl: true
+force_https: true
+nginx_root: "/srv/{{ hostname }}/www/"
+context_path: '/'
+robots_disallow: [""]

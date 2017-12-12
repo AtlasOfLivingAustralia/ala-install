@@ -16,14 +16,14 @@
 
 - name: create DB
   postgresql_db: name=phylolink
-  sudo_user: postgres
+  become_user: postgres
   tags:
     - phylolink
     - db
 
 - name: create DB user
   command: "psql -d phylolink -c \"create user phylo with password '{{phylolink_db_password}}'\""
-  sudo_user: postgres
+  become_user: postgres
   ignore_errors: yes
   tags:
     - phylolink
@@ -55,16 +55,16 @@
     - phylolink
     - properties
 
-- name: add nginx vhost config
-  include: ../../nginx_vhost/tasks/main.yml
-    context_path='{{ phylolink_context_path }}' 
-    hostname='{{ phylolink_hostname }}'
-  notify:
-    - reload nginx
+- name: add nginx vhost
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ phylolink_hostname }}"
+    context_path: "{{ phylolink_context_path }}"
   tags:
-    - phylolink
-    - nginx_vhost 
+    - nginx_vhost
     - deploy
+    - phylolink
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ phylolink_war_url }}' context_path='{{ phylolink_context_path }}' hostname='{{ phylolink_hostname }}'
   tags:

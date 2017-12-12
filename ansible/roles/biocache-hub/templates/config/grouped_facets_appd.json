@@ -1,0 +1,196 @@
+
+[
+    {
+        "title":"Taxon",
+        "facets":[
+            {
+                "sort":"index",
+                "field":"taxon_name"
+            },
+            {
+                "sort":"index",
+                "field":"raw_taxon_name"
+            },
+            {
+                "sort":"index",
+                "field":"common_name"
+            },
+            {
+                "sort":"index",
+                "field":"subspecies_name"
+            },
+            {
+                "sort":"index",
+                "field":"species"
+            },
+            {
+                "sort":"index",
+                "field":"genus"
+            },
+            {
+                "sort":"index",
+                "field":"family"
+            },
+            {
+                "sort":"index",
+                "field":"order"
+            },
+            {
+                "sort":"index",
+                "field":"class"
+            },
+            {
+                "sort":"index",
+                "field":"phylum"
+            },
+            {
+                "sort":"index",
+                "field":"kingdom"
+            },
+            {
+                "sort":"index",
+                "field":"species_group"
+            },
+            {
+                "sort":"count",
+                "field":"species_subgroup"
+            },
+            {
+                "sort":"count",
+                "field":"rank"
+            }
+        ]
+    },
+    {
+        "title":"Taxonomic",
+        "facets":[
+            {
+                "sort":"index",
+                "field":"hostFamily"
+            },
+            {
+                "sort":"index",
+                "field":"hostGenus"
+            },
+            {
+                "sort":"index",
+                "field":"hostSpecificEpithet"
+            },
+            {
+                "sort":"index",
+                "field":"hostVernacularName"
+            }
+        ]
+    },
+    {
+        "title":"Geospatial",
+        "facets":[
+            {
+                "sort": "index",
+                "field": "country"
+            },
+            {
+                "sort": "count",
+                "field": "state"
+            },
+            {
+                "sort": "count",
+                "field": "cl1048"
+            },
+            {
+                "sort": "count",
+                "field": "cl21"
+            },
+            {
+                "sort": "count",
+                "field": "cl966"
+            },
+            {
+                "sort": "count",
+                "field": "cl23"
+            },
+            {
+                "sort": "count",
+                "field": "species_habitats"
+            },
+            {
+                "sort": "count",
+                "field": "geospatial_kosher"
+            }
+        ]
+    },
+    {
+        "title":"Record details",
+        "facets":[
+            {
+                "sort":"index",
+                "field":"collector"
+            },
+            {
+                "sort":"index",
+                "field":"month"
+            },
+            {
+                "sort":"index",
+                "field":"year"
+            },
+            {
+                "sort":"index",
+                "field":"occurrence_decade_i"
+            },
+            {
+                "sort":"count",
+                "field":"data_resource_uid"
+            },
+            {
+                "sort":"count",
+                "field":"interceptionClassification"
+            }
+        ]
+    },
+    {
+        "title":"Assertions",
+        "facets":[
+            {
+                "sort":"count",
+                "field":"sensitive"
+            },
+            {
+                "sort":"count",
+                "field":"assertions"
+            },
+            {
+                "sort":"count",
+                "field":"outlier_layer"
+            },
+            {
+                "sort":"count",
+                "field":"outlier_layer_count"
+            },
+            {
+                "sort":"count",
+                "field":"user_assertions"
+            },
+            {
+                "sort":"index",
+                "field":"assertion_user_id"
+            },
+            {
+                "sort":"count",
+                "field":"duplicate_status"
+            },
+            {
+                "sort":"count",
+                "field":"name_match_metric"
+            },
+            {
+                "sort":"count",
+                "field":"taxonomic_issue"
+            },
+            {
+                "sort":"count",
+                "field":"duplicate_type"
+            }
+        ]
+    }
+]

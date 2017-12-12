@@ -6,9 +6,9 @@ is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
-specieslist_hostname=lists.vagrant1.ala.org.au
-specieslist_url=http://lists.vagrant1.ala.org.au
-specieslist_base_url=http://lists.vagrant1.ala.org.au
+specieslist_hostname=lists-vagrant1.ala.org.au
+specieslist_url=http://lists-vagrant1.ala.org.au
+specieslist_base_url=http://lists-vagrant1.ala.org.au
 specieslist_context_path=
 
 specieslist_db_name=specieslist
@@ -17,17 +17,31 @@ specieslist_db_password=specieslist
 specieslist_db_hostname=localhost
 
 collectory_enable_sync=false
-collectory_base_url=http://collections.ala.org.au
-biocache_base_url=http://biocache.ala.org.au
-biocache_service_base_url=http://biocache.ala.org.au/ws
-ala_base_url=http://www.ala.org.au
-bie_base_url=http://bie.ala.org.au
-bie_service_base_url=http://bie.ala.org.au/ws
-field_guide_base_url=http://fieldguide.ala.org.au
+collectory_base_url=https://collections.ala.org.au
+biocache_base_url=https://biocache.ala.org.au
+biocache_service_base_url=https://biocache.ala.org.au/ws
+ala_base_url=https://www.ala.org.au
+bie_base_url=https://bie.ala.org.au
+bie_service_base_url=https://bie.ala.org.au/ws
+field_guide_base_url=https://fieldguide.ala.org.au
 
 registry_api_key=
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
+#
+# SSL Configuration files
+#
+ssl=true
+ssl_certificate_server_dir=/etc/sslmate
+ssl_cert_file=*.ala.org.au.crt
+ssl_key_file=*.ala.org.au.key
+ssl_chain_file=*.ala.org.au.chain.crt
+
 nameindex_to_use=ala
+header_and_footer_baseurl=https://www.ala.org.au/commonui-bs3
+iconic_species_uid=drt1502348249607
+nameindex_datestamp=20170413
+webserver_nginx=true
+set_sql_mode=true

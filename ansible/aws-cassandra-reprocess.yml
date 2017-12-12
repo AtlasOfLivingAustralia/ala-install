@@ -1,0 +1,12 @@
+# Cassandra instance for reprocessing name data
+- hosts: aws-cassandra-reprocess
+  roles:
+    - common
+    - java8
+    - cassandra
+    - biocache-properties
+    - biocache-cli
+    - biocache-db
+    - nameindex
+    - jenkins
+  become: yes

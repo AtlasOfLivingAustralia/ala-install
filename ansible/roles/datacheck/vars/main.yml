@@ -3,4 +3,4 @@ datacheck: datacheck
 
 # assets
 #datacheck_war_url: "{{maven_repo}}/au/org/ala/datacheck/datacheck.war"
-datacheck_war_url: http://nexus.ala.org.au/service/local/artifact/maven/redirect?r=releases&g=au.org.ala&a=sandbox&v=LATEST&e=war
+datacheck_war_url: https://nexus.ala.org.au/service/local/artifact/maven/redirect?r=releases&g=au.org.ala&a=sandbox&v=LATEST&e=war

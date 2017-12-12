@@ -11,12 +11,12 @@ sightings_context_path=
 sightings_base_url=http://sightings.vagrant1.ala.org.au
 sightings_url=http://sightings.vagrant1.ala.org.au
 
-ala_base_url = http://www.ala.org.au/
+ala_base_url = https://www.ala.org.au/
 bie_base_url = http://bie.vagrant1.ala.org.au/
 biocache_base_url = http://biocache.vagrant1.ala.org.au/
 userdetails_url = https://auth.vagrant1.ala.org.au/userdetails/userDetails/getUserListWithIds
 userdetails_emails_url = https://auth.vagrant1.ala.org.au/userdetails/userDetails/getUserListFull
-header_footer_base_url = https://www2.ala.org.au/commonui
+header_footer_base_url = https://www.ala.org.au/commonui
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas

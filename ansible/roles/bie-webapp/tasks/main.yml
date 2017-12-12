@@ -35,6 +35,19 @@
     - deploy
     - apache_vhost
     - bie-webapp
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ bie_webapp_hostname }}"
+    context_path: "{{ bie_webapp_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - bie-webapp
+  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ bie_webapp_war_url }}' context_path='{{bie_webapp_context_path}}' hostname='{{ bie_webapp_hostname }}'
   tags:
