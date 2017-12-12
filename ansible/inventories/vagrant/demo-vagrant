@@ -157,3 +157,4 @@ ssl=false
 
 nameindex_variant=ala
 nameindex_datestamp=20171012
+aws_nameindex_source_url=http://s3.amazonaws.com/ala-nameindexes/20150701
