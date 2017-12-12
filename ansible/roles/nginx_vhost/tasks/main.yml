@@ -93,6 +93,10 @@
   with_fileglob: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_"
   when: (not ssl) and vhost_required
 
+- name: create root directory
+  file: path="{{ nginx_root }}" state=directory mode=0755 force=yes follow=yes
+  when: (not ssl) and vhost_required
+
 # if not ssl or (ssl and not force_https): copy 50 http
 - name: if not using force_https, add root http fragment
   template:

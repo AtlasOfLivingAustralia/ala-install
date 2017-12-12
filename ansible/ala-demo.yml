@@ -4,18 +4,18 @@
     - java8
     - tomcat7-java8
     - cassandra
-    - mysql
+    - mysql-5.7
     - webserver
     - nameindex
     - solr
     - logger-client
     - biocache-db
-    - biocache-properties    
+    - biocache-properties
     - biocache-service
     - { role: biocache-hub, biocache_hub: generic-hub }
     - collectory
     - sandbox
     - biocache-cli
-    - nameindexer    
+    - nameindexer
     - logger-service
     - demo

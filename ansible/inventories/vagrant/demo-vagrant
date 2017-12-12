@@ -8,6 +8,9 @@ data_dir=/data
 
 demo_hostname = demo.vagrant1.ala.org.au
 
+#biocache_hub_version = 2.5-SNAPSHOT
+biocache_service_version=1.9.2-SNAPSHOT
+
 ####################### Biocache #######################
 
 biocache_db_host = localhost
@@ -18,6 +21,18 @@ biocache_service_base_url = http://demo.vagrant1.ala.org.au
 biocache_service_context_path = /biocache-service
 logging_enabled=true
 default_country=Australia
+
+download_url=http://demo.vagrant1.ala.org.au/biocache-download
+download_dir=/data/biocache-download/biocache-download/
+download_auth_sensitive=true
+
+download_email_subject=VAGRANT - ALA Occurrence Download Complete - [filename]
+download_email_body=Your download is available on the URL:<br><br>[url]<br><br>When using this dataset please use the following citation:<br><br><cite>Atlas of Living Australia occurrence download at <a href='[searchUrl]'>[queryTitle]</a> accessed on [date].</cite><br><br>Also cite the contributing data providers which are listed in the included "citation.csv" file.<br><br>More information can be found at <a href='https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/'>citing the ALA</a>.
+download_readme_content=When using this dataset please use the following citation:<br><br>Atlas of Living Australia occurrence download at <a href='[searchUrl]'>[queryTitle]</a> accessed on [date].<br><br>Data contributed by the following providers:<br>[dataProviders]<br>More information can be found at <a href='https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/'>citing the ALA</a>.<br><br>
+
+download_doi_email_body=Your download can be accessed on the page:<br><br><a href='[url]'>[url]</a> <br><br>The DOI for this download is [doi] <br><br>When using this dataset please use the following citation: <br><br><cite>Atlas of Living Australia occurrence download at <a href='[searchUrl]'>[queryTitle]</a> accessed on [date].</cite> <br><br>Also cite the contributing data providers which are listed in the included "citation.csv" file.<br><br>More information can be found at <a href='https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/'>citing the ALA</a>.
+download_doi_readme_content=When using this dataset please use the following citation:<br><br>Atlas of Living Australia occurrence download at <a href='[searchUrl]'>[queryTitle]</a> accessed on [date].<br><br>DOI: [doi] available at <a href='[url]'>[url]</a><br><br>Data contributed by the following providers:<br>[dataProviders]<br>More information can be found at <a href='https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/'>citing the ALA</a>.<br><br>
+
 
 ####################### Hub #######################
 
@@ -126,7 +141,7 @@ auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
 ####### When near the GBIF building (e.g. in Europe) the GBIF nexus will likely be fastest #########
-use_gbif_nexus=true
+use_gbif_nexus=false
 
 ####### Disable SDS checks for the demo
 sds_enabled=false
@@ -136,3 +151,9 @@ caches_auth_enabled=false
 caches_log_enabled=false
 caches_collections_enabled=false
 caches_layers_enabled=false
+
+webserver_nginx=true
+ssl=false
+
+nameindex_variant=ala
+nameindex_datestamp=20171012
