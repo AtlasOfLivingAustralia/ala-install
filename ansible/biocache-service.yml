@@ -3,7 +3,11 @@
     - common
     - java8
     - tomcat7-java8
+    - cassandra
     - webserver
+    - nameindex
+    - solr
+    - biocache-db
     - biocache-properties
     - biocache-service
     - logger-client
