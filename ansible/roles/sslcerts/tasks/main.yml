@@ -1,0 +1,63 @@
+- name: set ssl_cert_filepath variable, if required
+  set_fact: ssl_cert_filepath={{ssl_certificate_server_dir}}/{{ ssl_cert_file }}
+  when: ssl_cert_file is defined and ssl_certificate_server_dir is defined
+  tags:
+    - sslcerts
+
+- name: set ssl_key_filepath variable, if required
+  set_fact: ssl_key_filepath={{ssl_certificate_server_dir}}/{{ ssl_key_file }}
+  when: ssl_key_file is defined and ssl_certificate_server_dir is defined
+  tags:
+    - sslcerts
+
+- name: set ssl_chain_filepath variable, if required
+  set_fact: ssl_chain_filepath={{ssl_certificate_server_dir}}/{{ ssl_chain_file }}
+  when: ssl_chain_file is defined and ssl_certificate_server_dir is defined
+  tags:
+    - sslcerts
+
+- name: ensure HTTPS certificate directory exists (if required)
+  file: path={{ ssl_certificate_server_dir }} state=directory
+  when: ssl_certificate_server_dir is defined
+  tags:
+    - sslcerts
+
+- name: check whether copying HTTPS certificates from local is required
+  set_fact: copy_https_certs_from_local={{ copy_https_certs_from_local | default(false) }}
+  tags:
+    - apache
+
+- name: set local directory for HTTPS certificate copy
+  set_fact: ssl_certificate_local_dir={{ ssl_certificate_local_dir | default('ssl_certificate_local_dir_not_set') }}
+  tags:
+    - sslcerts
+
+- name: set ssl_cert_file if undefined
+  set_fact: ssl_cert_file={{ ssl_cert_file | default('ssl_cert_file_not_set') }}
+  tags:
+    - apache
+
+- name: set ssl_key_file if undefined
+  set_fact: ssl_key_file={{ ssl_key_file | default('ssl_key_file_not_set') }}
+  tags:
+    - sslcerts
+
+- name: set ssl_chain_file if undefined
+  set_fact: ssl_chain_file={{ ssl_chain_file | default('ssl_chain_file_not_set') }}
+  tags:
+    - sslcerts
+
+- name: copy HTTPS certificate files from local
+  copy: src={{item}} dest={{ssl_certificate_server_dir}}
+  with_items:
+    - "{{ssl_certificate_local_dir}}/{{ssl_cert_file}}"
+    - "{{ssl_certificate_local_dir}}/{{ssl_key_file}}"
+    - "{{ssl_certificate_local_dir}}/{{ssl_chain_file}}"
+  when: copy_https_certs_from_local and ssl_certificate_server_dir is defined
+  notify:
+    - reload apache
+    - restart tomcat
+  tags:
+    - sslcerts
+    - apache
+    - tomcat
