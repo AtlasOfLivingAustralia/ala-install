@@ -51,6 +51,14 @@
   tags:
     - biocache-cli
 
+- name: reset biocache java memory default
+  replace:
+    dest: /usr/lib/biocache/biocache-store-{{ version }}/bin/biocache
+    regexp: '[-]Xm([s|x])\d\dg'
+    replace: '-Xm\g<1>1g'
+  tags:
+    - biocache-cli
+
 - name: make the symlink for /usr/bin/biocache
   file: src=/usr/lib/biocache/biocache-store-{{ version }}/bin/biocache dest=/usr/bin/biocache state=link
   tags:
