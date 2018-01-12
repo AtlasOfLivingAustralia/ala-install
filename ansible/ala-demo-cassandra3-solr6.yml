@@ -1,0 +1,26 @@
+- hosts: all
+  gather_facts: False
+  tasks:
+  - name: install python 2
+    raw: sudo bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qy python-minimal)"
+
+- hosts: ala-demo
+  roles:
+    - common
+    - java
+    - tomcat
+    - cassandra3
+    - mysql-5.7
+    - webserver
+    - nameindex
+    - solr5
+    - logger-client
+    - biocache-properties
+    - { role: biocache-db,      use_cassandra3 : true }
+    - { role: biocache-service, biocache_service_version: 2.0-SNAPSHOT }
+    - { role: biocache-hub,     biocache_hub: ala-hub, biocache_hub_version: "2.4-SNAPSHOT" }
+    - { role: collectory,       collectory_app: ala-collectory }
+    - { role: biocache-cli,     biocache_cli_version: 2.1 }
+#    - nameindexer
+    - logger-service
+    - demo

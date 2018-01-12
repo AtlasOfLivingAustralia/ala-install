@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - solr5
+    - solr5_create_cores
     - properties
 
 - name: Download SOLR {{ solr_version }}
@@ -32,6 +33,12 @@
   tags:
     - solr5
 
+- name: set SOLR directory ownership [all data is owned by solr]
+  file: path=/opt/solr/ owner=solr  group=solr recurse=true
+  tags:
+    - solr5
+    - properties
+
 - name: Stop solr
   shell: "service solr stop"
   tags:
@@ -57,28 +64,40 @@
     - properties
 
 - name: copy SOLR config files for BIE and Biocache
-  copy: src={{ role_path }}/../solrcloud_config/files/ dest={{data_dir}}/solr owner=solr  group=solr
+  copy: src={{ role_path }}/../solrcloud_config/files/{{ item }}/conf dest={{ data_dir }}/solr/{{ item }}/ owner=solr  group=solr
+  with_items:
+    - "biocache"
+    - "bie"
+    - "bie-offline"
   tags:
     - solr5
     - properties
 
 - name: set data ownership [all data is owned by solr]
-  file: path={{data_dir}}/solr/ owner=solr  group=solr recurse=true
-  tags:
-    - solr5
-    - properties
-
-- name: set SOLR directory ownership [all data is owned by solr]
-  file: path={{data_dir}}/solr/ owner=solr  group=solr recurse=true
+  file: path="{{ data_dir }}/solr/" owner=solr  group=solr recurse=true
   tags:
     - solr5
     - properties
 
 - name: Start solr
-  shell: "/opt/solr/bin/solr start"
-  tags:  
+  shell: "service solr start"
+  tags:
     - solr5
     - solr_restart
+
+- name: Create SOLR cores
+  get_url: url="{{ solr_base_url }}/solr/admin/cores?action=CREATE&name={{ item }}&instanceDir=/data/solr/{{ item }}&config=solrconfig.xml&dataDir=data" force=yes timeout=30 dest=/tmp/
+  with_items:
+    - "biocache"
+    - "bie"
+    - "bie-offline"
+  tags:
+    - solr5
+    - solr5_create_cores
+
+
+
+
 
 
 

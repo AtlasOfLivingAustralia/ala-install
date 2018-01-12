@@ -1,5 +1,5 @@
 # application versions
-biocache_hub_config: "{{biocache_hub}}-config.properties"
+biocache_hub_config: "{{ biocache_hub }}-config.properties"
 
 collectory: collectory
 

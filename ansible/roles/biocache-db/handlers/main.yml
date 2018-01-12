@@ -3,3 +3,6 @@
 
 - name: configure cassandra
   shell: 'cassandra-cli < /tmp/cassandra-schema.txt'
+
+- name: configure cassandra
+  shell: 'cqlsh < /tmp/cassandra3-schema.txt'

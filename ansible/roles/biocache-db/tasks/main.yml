@@ -9,6 +9,7 @@
   copy: src={{item}} dest=/tmp
   with_items:
     - cassandra/cassandra-schema.txt
+    - cassandra/cassandra3-schema.txt
   tags:
     - biocache_db
 
@@ -17,12 +18,26 @@
   tags:
     - biocache_db
 
-- name: ensure cassandra is running
+- name: ensure cassandra 1.x is running
   wait_for: port=9160 delay=30
+  when: use_cassandra3 is not defined
   tags:
     - biocache_db
 
-- name: create schema
+- name: ensure cassandra 3.x is running
+  wait_for: port=9042 delay=30
+  when: use_cassandra3 is defined
+  tags:
+    - biocache_db
+
+- name: create schema (cassandra 1)
   shell: "cassandra-cli < /tmp/cassandra-schema.txt"
+  when: use_cassandra3 is not defined
+  tags:
+    - biocache_db
+
+- name: create schema  (cassandra 3)
+  shell: "cqlsh < /tmp/cassandra3-schema.txt"
+  when: use_cassandra3 is defined
   tags:
     - biocache_db

@@ -1,4 +1,5 @@
-- include: ../../common/tasks/setfacts.yml
+- name: setup sandbox
+  include: ../../common/tasks/setfacts.yml
   tags:
     - sandbox
 
@@ -6,7 +7,8 @@
 # WAR file deployment and virtual host configuration
 #
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ sandbox_context_path }}' hostname='{{ sandbox_hostname }}' additional_proxy_pass='{{ additional_proxy_pass_values }}'
+- name: setup apache for sandbox
+  include: ../../apache_vhost/tasks/main.yml context_path='{{ sandbox_context_path }}' hostname='{{ sandbox_hostname }}' additional_proxy_pass='{{ additional_proxy_pass_values }}'
   tags:
     - sandbox
     - deploy
@@ -25,11 +27,21 @@
     - sandbox
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ sandbox_war_url }}' context_path='{{ sandbox_context_path }}' hostname='{{ sandbox_hostname }}'
+- name: setup tomcat for sandbox
+  include: ../../tomcat_deploy/tasks/main.yml war_url='{{ sandbox_war_url }}' context_path='{{ sandbox_context_path }}' hostname='{{ sandbox_hostname }}'
   tags:
     - sandbox
     - deploy
     - tomcat_vhost
+
+- name: ensure target apache directories exist
+  file: path={{item}} state=directory
+  with_items:
+    - "/srv/{{ sandbox_hostname }}/www/"
+  tags:
+    - sandbox
+    - deploy
+    - apache_vhost
 
 - name: Redirect to datacheck 
   template: src=index.html dest=/srv/{{ sandbox_hostname }}/www/index.html owner={{tomcat_user}} group={{tomcat_user}}
