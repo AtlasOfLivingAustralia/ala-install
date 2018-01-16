@@ -33,11 +33,7 @@ auth_cas_url=https://auth.ala.org.au/cas
 #
 # SSL Configuration files
 #
-ssl=true
-ssl_certificate_server_dir=/etc/sslmate
-ssl_cert_file=*.ala.org.au.crt
-ssl_key_file=*.ala.org.au.key
-ssl_chain_file=*.ala.org.au.chain.crt
+ssl=false
 
 nameindex_datestamp = 20171012
 nameindex_to_use=ala
