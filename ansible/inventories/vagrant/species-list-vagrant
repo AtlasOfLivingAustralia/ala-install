@@ -39,9 +39,9 @@ ssl_cert_file=*.ala.org.au.crt
 ssl_key_file=*.ala.org.au.key
 ssl_chain_file=*.ala.org.au.chain.crt
 
+nameindex_datestamp = 20171012
 nameindex_to_use=ala
 header_and_footer_baseurl=https://www.ala.org.au/commonui-bs3
 iconic_species_uid=drt1502348249607
-nameindex_datestamp=20170413
 webserver_nginx=true
 set_sql_mode=true

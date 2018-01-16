@@ -47,6 +47,7 @@ uploaded_images_base_url=http://images2-dev.ala.org.au
 
 biodiv_library_api_key=
 
+nameindex_datestamp = 20171012
 nameindex_to_use=ala
 
 # ANDS test account details
@@ -129,4 +130,5 @@ auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 auth_if_logged_in_pattern=
 
+nameindex_datestamp = 20171012
 nameindex_to_use=ala
