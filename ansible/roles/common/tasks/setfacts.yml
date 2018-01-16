@@ -59,7 +59,7 @@
 
 - name: set name index location
   set_fact:
-    aws_name_indexes_repo: "{{ aws_nameindex_source_url | default('http://s3.amazonaws.com/ala-nameindexes/latest') }}"
+    aws_name_indexes_repo: "{{ aws_nameindex_source_url | default('https://s3.amazonaws.com/ala-nameindexes/latest') }}"
     ala_name_indexes_repo: "{{ ala_nameindex_source_url | default('https://archives.ala.org.au/archives/nameindexes') }}/{{name_index_date}}"
     ala_name_data_repo: "{{ ala_namedata_source_url | default('https://archives.ala.org.au/archives/nameindexes') }}/{{name_data_date}}"
   tags:
