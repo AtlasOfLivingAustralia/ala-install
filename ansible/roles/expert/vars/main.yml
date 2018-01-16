@@ -4,4 +4,4 @@ artifactId: "expert"
 classifier: ''
 packaging: "war"
 groupId: "au.org.ala"
-dashboard_war_url: "{{maven_repo_ws_url}}"
+expert_war_url: "{{maven_repo_ws_url}}"
