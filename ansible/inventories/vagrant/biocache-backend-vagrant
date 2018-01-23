@@ -72,13 +72,7 @@ download_url=http://biocache.vagrant1.ala.org.au/biocache-download
 download_dir=/data/biocache-download/biocache-download/
 download_auth_sensitive=true
 
-
 download_email_subject=VAGRANT - ALA Occurrence Download Complete - [filename]
-download_email_body=Your download is available on the URL:<br><br>[url]<br><br>When using this dataset please use the following citation:<br><br><cite>Atlas of Living Australia occurrence download at <a href='[searchUrl]'>[queryTitle]</a> accessed on [date].</cite><br><br>Also cite the contributing data providers which are listed in the included "citation.csv" file.<br><br>More information can be found at <a href='https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/'>citing the ALA</a>.
-download_readme_content=When using this dataset please use the following citation:<br><br>Atlas of Living Australia occurrence download at <a href='[searchUrl]'>[queryTitle]</a> accessed on [date].<br><br>Data contributed by the following providers:<br>[dataProviders]<br>More information can be found at <a href='https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/'>citing the ALA</a>.<br><br>
-
-download_doi_email_body=Your download can be accessed on the page:<br><br><a href='[url]'>[url]</a> <br><br>The DOI for this download is [doi] <br><br>When using this dataset please use the following citation: <br><br><cite>Atlas of Living Australia occurrence download at <a href='[searchUrl]'>[queryTitle]</a> accessed on [date].</cite> <br><br>Also cite the contributing data providers which are listed in the included "citation.csv" file.<br><br>More information can be found at <a href='https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/'>citing the ALA</a>.
-download_doi_readme_content=When using this dataset please use the following citation:<br><br>Atlas of Living Australia occurrence download at <a href='[searchUrl]'>[queryTitle]</a> accessed on [date].<br><br>DOI: [doi] available at <a href='[url]'>[url]</a><br><br>Data contributed by the following providers:<br>[dataProviders]<br>More information can be found at <a href='https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/'>citing the ALA</a>.<br><br>
 
 webserver_nginx=true
 ssl=false

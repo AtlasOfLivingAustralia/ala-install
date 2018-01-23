@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://www.ala.org.au/commonui-bs3/css/ala-styles.css" rel="stylesheet"
+          media="screen,print"/>
+    <!--<title>Title</title>-->
+    <style>
+        /* The only override we need from ala-styles.css */
+
+        body {
+            padding-top: 0px;
+        }
+
+        /* DOI - taken from GBIF */
+        .doi {
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 4px 6px;
+            white-space:nowrap;
+            white-space:nowrap;
+        }
+        .doi-sm {
+            font-size: 13px;
+            padding: 2px 0;
+        }
+        .doi span:first-of-type {
+            -webkit-transition: all .3s ease;
+            transition: all .3s ease;
+            background: #D5502A ;
+            /*#09c;*/
+            padding: 4px 6px;
+            /*border-radius: 5px 0 0 5px;*/
+            color: #fff;
+            border-right-width: 0;
+            border-color:#D5502A;
+            /*#09c;*/
+        }
+        .doi span:last-of-type {
+            color: #333;
+            background: #fff;
+            text-decoration: none;
+            padding: 4px 6px;
+            /*border-radius: 0 5px 5px 0;*/
+            border-left-width: 0;
+        }
+        .doi span {
+            border: 1px solid #adadad;
+        }
+        .doi:hover span:first-of-type {
+            background: #D5502A;
+            /*#004d66; */
+            border-color: #D5502A;
+            /*#004d66;*/
+        }
+        .doi:hover span:last-of-type {
+            background: #f9f9f9;
+        }
+
+    </style>
+</head>
+<body>
+When using this dataset please use the following citation:<br><br>
+<cite>Atlas of Living Australia occurrence download at <a href='[searchUrl]'>[searchUrl]</a> accessed on [date].</cite> <br><br>
+The DOI <span class="doi doi-sm"><span>DOI</span><span>[doi]</span></span> for this download is available at <a href='[url]'>[url]</a><br><br>
+Data contributed by the following providers:<br>
+[dataProviders]<br>
+More information can be found at <a href='https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/'>citing the ALA</a>.<br><br>
+</body>
+</html>
