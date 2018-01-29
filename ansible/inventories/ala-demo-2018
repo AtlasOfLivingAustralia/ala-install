@@ -19,14 +19,13 @@ living-atlas.org
 # Mounted storage is usually /mnt on EC2. Create a symlink to /mnt -> /data
 data_dir=/data
 
-#ansible_python_interpreter=/usr/bin/python3
-
 demo_hostname = living-atlas.org
 
 ####################### Biocache ##############################################
 
 biocache_db_host = localhost
 biocache_db_type = cassandra3
+biocache_db_port = 9042
 cassandra_listen_host = localhost
 biocache_service_hostname = living-atlas.org
 
@@ -46,20 +45,20 @@ userdetails_url = https://auth.ala.org.au/userdetails/userDetails
 
 google_apikey = AIzaSyBaR40F58E7J7RyeIT7VC_1MoEfdD2hmGU
 
-# this is disabled to avoid startup problems 
+# this is disabled to avoid startup problems
 caches_collections_enabled = false
 
-org_url = http://www.csiro.au
+org_url = http://living-atlas.org
 
 orgNameLong = Living Atlas Demo
 orgNameShort = Living Atlas Demo
 
-explore_your_area_lat = 54.00366
-explore_your_area_lng = -2.547855
-explore_your_area_location = Leipzig
+explore_your_area_lat = 40.4111
+explore_your_area_lng = 40.4111
+explore_your_area_location = Madrid
 
-map_default_latitude = 54.00366
-map_default_longitude = -2.547855
+map_default_latitude = 40.4111
+map_default_longitude = 40.4111
 map_default_zoom = 5
 
 skin_layout = ala
@@ -102,14 +101,14 @@ collections_map_zoom = 5
 # Project name
 orgNameShort = Living Atlas demo
 orgNameLong = Living Atlas demo
-region = Germany
+region = Spain
 
 # EML config
 eml_delivery_point = Smith Street
 eml_city = Leipzig
-eml_admin_area = Germany
+eml_admin_area = Spain
 eml_postal_code = S21 2SS
-eml_country = Germany
+eml_country = Spain
 
 # Disable UI components
 disable_map = true
@@ -151,18 +150,67 @@ logger_db_password = logger_user
 logger_db_hostname = localhost
 
 ############### Auth Server #########
+
 auth_base_url = https://auth.ala.org.au
 auth_cas_url = https://auth.ala.org.au/cas
 
 ####### When near the GBIF building (e.g. in Europe) the GBIF nexus will likely be fastest #########
-use_gbif_nexus=false
+
+use_gbif_nexus = false
 
 ####### Disable SDS checks for the demo #######
-sds_enabled=false
+
+sds_enabled = false
 
 ############### Biocache CLI options ###############
+
 biocache_opts = -Xmx1g -Xms1g
 
 ############## Base header / footer ###############
 header_and_footer_baseurl = http://living-atlas.org
 
+######### Species list ##############
+
+specieslist_hostname = living-atlas.org
+specieslist_url = http://living-atlas.org/specieslists
+specieslist_base_url = http://living-atlas.org
+specieslist_context_path = /specieslists
+specieslist_db_hostname = localhost
+specieslist_db_name = specieslists
+specieslist_db_username = specieslists
+specieslist_db_password = password
+collectory_enable_sync = false
+registry_api_key =
+biocache_base_url = http://living-atlas.org/ala-hub
+bie_service_base_url = http://living-atlas.org/bie-index
+field_guide_base_url =
+
+############# BIE index ################
+
+bie_index_base_url = http://living-atlas.org
+bie_index_context_path = /bie-index
+bie_index_hostname = living-atlas.org
+
+index_live_url = http://localhost:8983/solr/bie
+index_offline_url = http://localhost:8983/solr/bie-offline
+
+biocache_solr_url = http://localhost:8983/solr/biocache
+collectory_url = http://living-atlas.org/collectory
+
+disable_cas = true
+bypass_cas = true
+
+index_images = true
+
+############# BIE Hub ################
+
+bie_base_url = http://living-atlas.org
+bie_hub = ala-bie
+bie_hub_base_url = http://living-atlas.org
+bie_hub_context_path = /ala-bie
+bie_hub_hostname = living-atlas.org
+
+############# GBIF Name matching index
+
+custom_namematching_url = https://s3.amazonaws.com/ala-nameindexes/latest/namematching-gbif.tgz
+nameindex_variant = cstom

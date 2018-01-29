@@ -37,7 +37,6 @@
   file: path=/opt/solr/ owner=solr  group=solr recurse=true
   tags:
     - solr5
-    - properties
 
 - name: Stop solr
   shell: "service solr stop"
@@ -54,17 +53,16 @@
 - name: ensure target directories exist [data subdirectories etc.
   file: path={{item}} state=directory owner=solr  group=solr
   with_items:
-    - "{{data_dir}}/solr/biocache/conf"
-    - "{{data_dir}}/solr/bie/conf"
-    - "{{data_dir}}/solr/biocache/data"
-    - "{{data_dir}}/solr/bie/data"
-
+    - "{{data_dir}}/solr/data/biocache/conf"
+    - "{{data_dir}}/solr/data/bie/conf"
+    - "{{data_dir}}/solr/data/biocache/data"
+    - "{{data_dir}}/solr/data/bie/data"
   tags:
     - solr5
     - properties
 
 - name: copy SOLR config files for BIE and Biocache
-  copy: src={{ role_path }}/../solrcloud_config/files/{{ item }}/conf dest={{ data_dir }}/solr/{{ item }}/ owner=solr  group=solr
+  copy: src={{ role_path }}/../solrcloud_config/files/{{ item }}/conf dest={{ data_dir }}/solr/data/{{ item }}/ owner=solr  group=solr
   with_items:
     - "biocache"
     - "bie"
@@ -86,11 +84,12 @@
     - solr_restart
 
 - name: Create SOLR cores
-  get_url: url="{{ solr_base_url }}/solr/admin/cores?action=CREATE&name={{ item }}&instanceDir=/data/solr/{{ item }}&config=solrconfig.xml&dataDir=data" force=yes timeout=30 dest=/tmp/
+  get_url: url="{{ solr_base_url }}/solr/admin/cores?action=CREATE&name={{ item }}&instanceDir=/data/solr/data/{{ item }}&config=solrconfig.xml&dataDir=data" force=yes timeout=30 dest=/tmp/
   with_items:
     - "biocache"
     - "bie"
     - "bie-offline"
+  ignore_errors: True
   tags:
     - solr5
     - solr5_create_cores

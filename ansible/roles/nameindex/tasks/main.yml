@@ -1,6 +1,11 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
-    - "nameindex"  
+    - "nameindex"
+
+- debug:
+    msg: "nameindex_variant == {{ nameindex_variant }}"
+  tags:
+    - "nameindex"
 
 - name: set name index to use (COL)
   set_fact:
@@ -59,7 +64,7 @@
     - "nameindex"
 
 - name: unpackage the lucene index if it was newly copied
-  unarchive: src={{ data_dir }}/lucene/namematching-{{ name_index_date }}.tgz dest={{ data_dir }}/lucene copy=no group={{ nameindex_user | default(tomcat_user) }} owner="{{ nameindex_user | default(tomcat_user) }}"
+  unarchive: src={{ data_dir }}/lucene/namematching-{{ name_index_date }}.tgz dest={{ data_dir }}/lucene/namematching copy=no group={{ nameindex_user | default(tomcat_user) }} owner="{{ nameindex_user | default(tomcat_user) }}"
   when: nameindex_variant == "ala"
   tags:
     - "nameindex"
