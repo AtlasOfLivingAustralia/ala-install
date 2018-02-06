@@ -1,0 +1,28 @@
+- name: ensure pg running
+  service:
+    name: {{postgres_service}}
+    state: started
+
+- name: create pg DB user {{pg_db_user}}
+  postgresql_user:
+    name: {{ pg_db_user }}
+    password: {{ pg_db_password }}
+    state: present
+  tags:
+    - pg_instance
+
+- name: create pg DB {{ pg_db_name }}
+  postgresql_db:
+    name: {{ pg_db_name }}
+    owner: {{ pg_db_user }}
+    state: present
+  tags:
+    - pg_instance
+
+- name: enable extensions for {{ pg_db_name }}
+  postgresql_ext:
+    name: {{ item }}
+    db: {{ pg_db_name }}
+  with_items: "{{ pg_extensions }}"
+  tags:
+    - pg_instance

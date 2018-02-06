@@ -17,10 +17,12 @@ auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
 # ANDS test account details
+mock_doi_provider=true
 ands_doi_mint_url=https://services.ands.org.au/doi/1.1/
 ands_doi_app_id=
 ands_doi_key=
 ands_doi_client_id=
+
 
 #
 # SSL Configuration files

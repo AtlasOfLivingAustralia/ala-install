@@ -3,41 +3,82 @@
     - doi-service
     - deploy
     - properties
-    - tomcat_vhost
     - nginx_vhost
+
+#
+# JAR file deployment
+#
+#- include: ../../exec_jar/tasks/main.yml jar_url='{{ doi_service_jar_url }}' service_name='doi-service'
+- name: add jar and service
+  include_role:
+    name: exec_jar
+  vars:
+    service_name: doi-service
+    jar_url: '{{ doi_service_jar_url }}'
+  tags:
+    - deploy
+    - service
+    - doi-service
 
 #
 # External configuration properties file
 #
-- name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+- name: ensure target directories exist [data subdirectories etc.
+  file:
+    path: {{item}}
+    state: directory
+    owner: doi-service
+    group: doi-service
   with_items:
+    - "{{data_dir}}/doi-service"
     - "{{data_dir}}/doi-service/config"
   tags:
     - properties
     - doi-service
 
-- name: copy all config.properties
-  template: src=doi-service-config.properties dest={{data_dir}}/doi-service/config/doi-service-config.properties
-  tags:
-    - properties
-    - doi-service
-
 - name: set data ownership
-  file: path={{data_dir}}/doi-service owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify:
-    - restart tomcat
+  file:
+    path: {{data_dir}}/doi-service
+    owner: doi-service
+    group: doi-service
+    recurse: true
   tags:
     - properties
     - doi-service
 
-#
-# WAR file deployment and virtual host configuration
-#
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ doi_service_war_url }}' context_path='{{doi_service_context_path}}' hostname='{{ doi_service_hostname }}'
+
+- name: ensure db
+  include_role:
+    name: pg-instance
+  vars:
+    pg_db_name: {{pg_db_name}}
+    pg_db_user: {{pg_db_user}}
+    pg_db_password: {{pg_db_password}}
+    pg_extensions:
+      - citext
+      - pgcrypto
   tags:
-    - deploy
-    - tomcat_vhost
+    - properties
+    - db
+    - doi-service
+
+- name: copy all config.properties
+  template:
+    src: doi-service-config.properties
+    dest: {{data_dir}}/doi-service/config/doi-service-config.properties
+    owner: doi-service
+    group: doi-service
+  notify:
+    - restart doi-service
+  tags:
+    - properties
+    - doi-service
+
+- name: started
+  service:
+    name: doi-service
+    status: started
+  tags:
     - doi-service
 
 - name: add nginx vhost
