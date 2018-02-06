@@ -132,7 +132,7 @@ CREATE TABLE occ.qa (
     AND speculative_retry = '99PERCENTILE';
 
 CREATE TABLE occ.occ (
-    rowkey text,
+    rowkey text PRIMARY KEY ,
     "dataResourceUid" text,
     "IdentificationQualifierProcessor_qa" text,
     "_class" text,
@@ -516,7 +516,6 @@ CREATE TABLE occ.occ (
     "userId_p" text,
     "userQualityAssertion" text,
     "userVerified" text,
-    uuid text,
     "validDistribution" text,
     "verbatimCoordinateSystem" text,
     "verbatimCoordinates" text,
@@ -541,10 +540,9 @@ CREATE TABLE occ.occ (
     "waterBody" text,
     year text,
     year_p text,
-    zone text,
-    PRIMARY KEY (rowkey, "dataResourceUid")
-) WITH CLUSTERING ORDER BY ("dataResourceUid" ASC)
-    AND bloom_filter_fp_chance = 0.01
+    zone text
+    )
+    WITH bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
     AND comment = ''
     AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}

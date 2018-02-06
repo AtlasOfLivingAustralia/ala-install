@@ -3,7 +3,7 @@
     - "nameindex"
 
 - debug:
-    msg: "nameindex_variant == {{ nameindex_variant }}"
+    msg: "the selected nameindex_variant == {{ nameindex_variant }}"
   tags:
     - "nameindex"
 
@@ -12,39 +12,39 @@
     lucene_namematching_url: "{{ col_namematching_url }}"
   when: nameindex_variant == "col"
   tags:
-    - "nameindex"  
+    - "nameindex"
 
 - name: set name index to use (Merged)
   set_fact:
     lucene_namematching_url: "{{ merged_namematching_url }}"
   when: nameindex_variant == "merged"
   tags:
-    - "nameindex"  
+    - "nameindex"
 
 - name: set name index to use (ALA)
   set_fact:
     lucene_namematching_url: "{{ ala_namematching_url }}"
   when: nameindex_variant == "ala"
   tags:
-    - "nameindex"  
+    - "nameindex"
 
 - name: set name index to use (Custom)
   set_fact:
     lucene_namematching_url: "{{ custom_namematching_url }}"
   when: nameindex_variant == "custom"
   tags:
-    - "nameindex"  
+    - "nameindex"
 
 - name: ensure lucene base directory exists
   file: path={{ data_dir }}/lucene state=directory
   tags:
     - "nameindex"
 
-- name: ensure lucene directory exists 
+- name: ensure lucene directory exists
   file: path={{ data_dir }}/lucene/namematching state=directory
   when: nameindex_variant != "ala"
   tags:
-    - "nameindex"  
+    - "nameindex"
 
 - name: debug
   debug: msg="Downloading {{ nameindex_variant }} index from {{ lucene_namematching_url }}"

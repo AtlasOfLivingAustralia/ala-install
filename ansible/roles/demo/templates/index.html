@@ -13,7 +13,7 @@
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
-        <h1>{{ orgNameLong }} - Living Atlases demo</h1>
+        <h1>{{ orgNameLong }}</h1>
         <p>This is a landing page with links through to the components now installed on this server.
         <br/>
            This demo was installed using 
@@ -22,6 +22,7 @@
         </p>
        </div>
     </div>
+
     <div class="container">
       <!-- Example row of columns -->
       <div class="row">
@@ -92,11 +93,41 @@
             <p> The location of these files is <span class="code">/srv/{{ demo_hostname }}/www/</span> on this machine. <p>
         </div>
       </div>
+      <div class="row">
+        <div id="species-list" class="col-md-4">
+              <h2>Species lists</h2>
+              <p>
+                  The Species lists component consists of 1 web applications now running in Tomcat on this server:
+                  <ul>
+                      <li><a href="{{specieslist_context_path}}">Species lists</a> - Reskinnable front end UI</li>
+                  </ul>
+              </p>
+          </div>
+        <div id="bie" class="col-md-4">
+              <h2>Species pages</h2>
+              <p>
+                  The Species pages (BIE) consists of 2 web applications now running in Tomcat on this server:
+                  <ul>
+                      <li><a href="{{bie_hub_context_path}}">BIE UI</a> - Reskinnable front end UI</li>
+                      <li><a href="{{bie_index_context_path}}">BIE web services</a>  - taxonomy search services</li>
+                  </ul>
+              </p>
+          </div>
+        <div id="name-indexes" class="col-md-4">
+              <h2>Name indexes</h2>
+              <p>
+                  Lucene name indexes have been installed in the
+                  <span class="code">/data/lucene</span> directory.
+                  Use the <span class="code">nameindexer</span> tool
+                  and your own DwCA to generate a new index. See
+                  <a href="https://github.com/AtlasOfLivingAustralia/ala-name-matching">here</a>
+                  for more details on the structure of the DwCA required.
+              </p>
+          </div>
       </div>
-      <hr>
 
       <footer>
-        <p>
+        <p style="padding:20px;">
         &copy; <a href="https://www.ala.org.au">Atlas of Living Australia 2018</a>
 
         - Machine setup up on {{ansible_date_time.date}}. Running

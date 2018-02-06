@@ -18,7 +18,7 @@
     - demo
 
 - name: Copy welcome page and base banner / footer
-  template: src={{ item }} dest=/srv/{{ demo_hostname }}/www/ mode=0666
+  template: src={{ item }} dest=/srv/{{ demo_hostname }}/www/ mode=0666 force=yes
   with_items:
     - "index.html"
     - "footer.html"

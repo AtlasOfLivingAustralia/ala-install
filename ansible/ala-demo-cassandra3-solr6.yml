@@ -4,10 +4,10 @@
   - name: install python 2
     raw: sudo bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qy python-minimal)"
 
-- hosts: ala-demo
+- hosts: all
   roles:
     - common
-    - java
+    - java # https://issues.apache.org/jira/browse/CASSANDRA-14173
     - tomcat
     - cassandra3
     - mysql-5.7
@@ -21,9 +21,9 @@
     - { role: biocache-hub,     biocache_hub: ala-hub, biocache_hub_version: "2.5-SNAPSHOT" }
     - { role: collectory,       collectory_app: ala-collectory, collectory_version: "1.4" }
     - { role: biocache-cli,     biocache_cli_version: "2.2-SNAPSHOT" }
-    - { role: nameindexer,      ala_name_matching_version: "3.0" }
+    - { role: nameindexer,      ala_name_matching_version: "3.1" }
     - { role: logger-service,   logger_version: "2.3.5" }
-    - { role: species-list,     specieslist_version: "2.0.3" }
+    - { role: species-list,     specieslist_version: "3.0-SNAPSHOT" }
     - { role: bie-index,        bie_index_version: "1.4.1.1" }
     - { role: bie-hub,          bie_hub: ala-bie, bie_hub_version: "1.4.1" }
     - demo
