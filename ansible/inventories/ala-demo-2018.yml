@@ -60,6 +60,8 @@ caches_collections_enabled = false
 
 org_url = http://living-atlas.org
 
+
+skin_orgNameLong = Living Atlas Demo
 orgNameLong = Living Atlas Demo
 orgNameShort = Living Atlas Demo
 
@@ -220,10 +222,16 @@ index_images = true
 
 ############# BIE Hub ################
 
-bie_base_url = http://living-atlas.org
+bie_skin_layout = generic
 bie_hub = ala-bie
 bie_hub_base_url = http://living-atlas.org
 bie_hub_context_path = /ala-bie
 bie_hub_hostname = living-atlas.org
+species_list_url = http://living-atlas.org/specieslists
+sightings_url =
+alerts_url =
+spatial_url =
 
+bie_base_url = http://living-atlas.org/ala-bie
+ala_base_url = http://living-atlas.org
 
