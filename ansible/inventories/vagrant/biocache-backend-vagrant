@@ -51,7 +51,8 @@ logger_url = http://logger.vagrant1.ala.org.au
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 userdetails_url=https://auth.ala.org.au/userdetails/userDetails
-doi_service_url=http://doi.vagrant1.ala.org.au/api/
+doi_service_url=http://doi.vagrant1.ala.org.au
+doi_service_api_url=http://doi.vagrant1.ala.org.au/api/
 doi_service_apiKey = insert_an_api_key_here
 
 #
@@ -72,7 +73,7 @@ download_url=http://biocache.vagrant1.ala.org.au/biocache-download
 download_dir=/data/biocache-download/biocache-download/
 download_auth_sensitive=true
 
-download_email_subject=VAGRANT - ALA Occurrence Download Complete - [filename]
+download_email_subject=VAGRANT - [hubName] Occurrence Download Complete - [filename]
 
 webserver_nginx=true
 ssl=false
