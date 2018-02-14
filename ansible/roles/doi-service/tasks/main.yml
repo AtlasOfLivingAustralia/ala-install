@@ -11,9 +11,9 @@
 #- include: ../../exec_jar/tasks/main.yml jar_url='{{ doi_service_jar_url }}' service_name='doi-service'
 - name: add jar and service
   include_role:
-    name: exec_jar
+    name: exec-jar
   vars:
-    service_name: doi-service
+    service_name: "doi-service"
     jar_url: '{{ doi_service_jar_url }}'
   tags:
     - deploy
@@ -23,22 +23,23 @@
 #
 # External configuration properties file
 #
-- name: ensure target directories exist [data subdirectories etc.
+- name: ensure target directories exist data subdirectories etc.
   file:
-    path: {{item}}
+    path: "{{item}}"
     state: directory
     owner: doi-service
     group: doi-service
   with_items:
     - "{{data_dir}}/doi-service"
     - "{{data_dir}}/doi-service/config"
+    - "{{data_dir}}/doi-service/logs"
   tags:
     - properties
     - doi-service
 
 - name: set data ownership
   file:
-    path: {{data_dir}}/doi-service
+    path: "{{data_dir}}/doi-service"
     owner: doi-service
     group: doi-service
     recurse: true
@@ -46,26 +47,10 @@
     - properties
     - doi-service
 
-
-- name: ensure db
-  include_role:
-    name: pg-instance
-  vars:
-    pg_db_name: {{pg_db_name}}
-    pg_db_user: {{pg_db_user}}
-    pg_db_password: {{pg_db_password}}
-    pg_extensions:
-      - citext
-      - pgcrypto
-  tags:
-    - properties
-    - db
-    - doi-service
-
 - name: copy all config.properties
   template:
-    src: doi-service-config.properties
-    dest: {{data_dir}}/doi-service/config/doi-service-config.properties
+    src: doi-service-config.yml
+    dest: "{{data_dir}}/doi-service/config/doi-service-config.yml"
     owner: doi-service
     group: doi-service
   notify:
@@ -74,10 +59,22 @@
     - properties
     - doi-service
 
-- name: started
+- name: copy logback config
+  template:
+    src: logback.groovy
+    dest: "{{data_dir}}/doi-service/config/logback.groovy"
+    owner: doi-service
+    group: doi-service
+  notify:
+    - restart doi-service
+  tags:
+    - properties
+    - doi-service
+
+- name: Restart doi service
   service:
     name: doi-service
-    status: started
+    state: restarted
   tags:
     - doi-service
 
@@ -87,7 +84,14 @@
   vars:
     hostname: "{{ doi_service_hostname }}"
     context_path: "{{ doi_service_context_path }}"
+    nginx_paths:
+      - path: "{{ doi_service_context_path }}"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080/{{ doi_service_context_path }}"
+  notify:
+    - reload nginx
   tags:
     - nginx_vhost
     - doi-service
     - deploy
+  when: webserver_nginx

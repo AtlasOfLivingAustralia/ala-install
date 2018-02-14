@@ -8,13 +8,13 @@
 
 - name: Install PostGIS if required
   apt:
-    pkg: {{ item }}
+    pkg: "{{ item }}"
     state: present
     update_cache: yes
   when: postgis_version != ""
   with_items:
-    - postgresql-{{pg_version}}-postgis-{{postgis_version}}
-    - gdal-bin
+    - "postgresql-{{pg_version}}-postgis-{{postgis_version}}"
+    - "gdal-bin"
   tags: postgresql
 
 - name: ensure postgis_template database exists
@@ -39,9 +39,9 @@
   action: command psql -d postgis_template -f {{ item }}
   sudo_user: postgres
   with_items:
-    - /usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version}}/postgis.sql
-    - /usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version}}/spatial_ref_sys.sql
-    - /usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version}}/postgis_comments.sql
+    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version}}/postgis.sql"
+    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version}}/spatial_ref_sys.sql"
+    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version}}/postgis_comments.sql"
   tags:
     - postgresql
     - postgis

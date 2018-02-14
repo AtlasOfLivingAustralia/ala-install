@@ -10,14 +10,14 @@
 
 - name: Install Postgres
   apt:
-    pkg: {{ item }}
+    pkg: "{{ item }}"
     state: present
     update_cache: yes
   with_items:
-    - postgresql-{{pg_version}}
-    - postgresql-contrib
-    - libpq-dev
-    - python-psycopg2
+    - "postgresql-{{pg_version}}"
+    - "postgresql-contrib"
+    - "libpq-dev"
+    - "python-psycopg2"
   tags: postgresql
 
 - include: postgis.yml
@@ -25,7 +25,7 @@
 
 - name: start postgresql and configure to startup automatically
   service:
-    name: {{ postgresql_service }}
+    name: "{{ postgresql_service }}"
     state: started
     enabled: yes
   register: started

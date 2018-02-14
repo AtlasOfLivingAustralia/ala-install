@@ -14,60 +14,60 @@
 
 - name: "Create system user for {{service_name}}"
   user:
-    name: {{service_name}}
+    name: "{{service_name}}"
     state: present
-    system: admin
+    system: yes
   tag: service
 
 - name: "Create {{service_name}} dir"
   file:
-    path: /opt/atlas/{{service_name}}
+    path: "/opt/atlas/{{service_name}}"
     state: directory
-    owner: {{service_name}}
-    group: {{service_name}}
+    owner: "{{service_name}}"
+    group: "{{service_name}}"
     mode: 0755
   tag: service
 
 - name: "Create {{service_name}} service file"
   template:
     src: systemd.service
-    dest: /etc/systemd/system/{{service_name}}.service
-    register: service
+    dest: "/etc/systemd/system/{{service_name}}.service"
+  register: service
   tag: service
 
 - name: "Reload services"
   when: service.changed
   systemd:
+    name: "{{service_name}}"
     daemon-reload: yes
   tag: service
 
 - name: "Enable service"
   systemd:
-    name: {{service_name}}
+    name: "{{service_name}}"
     enabled: true
     state: stopped
   tag: service
 
 - name: "Download {{service_name}} JAR"
   get_url:
-    url: {{jar_url}}
-    dest: /opt/atlas/{{service_name}}/{{service_name}}.jar
+    url: "{{jar_url}}"
+    dest: "/opt/atlas/{{service_name}}/{{service_name}}.jar"
     mode: u=rwx,g=rx,o=rx
-    owner: {{service_name}}
-    group: {{service_name}}
+    owner: "{{service_name}}"
+    group: "{{service_name}}"
   tag: service
 
 - name: "Set {{service_name}} JAR config"
   template:
-    src: service.config
-    dest: /opt/atlas/{{service_name}}/{{service_name}}.conf
-    owner: {{service_name}}
-    group: {{service_name}}
+    src: service.conf
+    dest: "/opt/atlas/{{service_name}}/{{service_name}}.conf"
+    owner: "{{service_name}}"
+    group: "{{service_name}}"
   tag: service
 
 - name: "Start {{service_name}} service"
   systemd:
-    name: {{service_name}}
+    name: "{{service_name}}"
     state: started
-  when: {{start_service:false}}
   tag: service

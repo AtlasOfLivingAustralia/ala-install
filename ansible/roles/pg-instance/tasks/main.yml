@@ -1,28 +1,31 @@
 - name: ensure pg running
   service:
-    name: {{postgres_service}}
+    name: "{{postgres_service}}"
     state: started
+    enabled: yes
 
-- name: create pg DB user {{pg_db_user}}
-  postgresql_user:
-    name: {{ pg_db_user }}
-    password: {{ pg_db_password }}
-    state: present
+- name: create pg DB user "{{db_user}}"
+  postgresql_user: name={{ db_user }} password={{ db_password }} state=present encrypted=True
+  become_user: postgres
+  sudo: True
   tags:
     - pg_instance
 
-- name: create pg DB {{ pg_db_name }}
-  postgresql_db:
-    name: {{ pg_db_name }}
-    owner: {{ pg_db_user }}
-    state: present
+- name: create pg DB "{{ db_name }}"
+  postgresql_db: name={{ db_name }} owner={{ db_user }} state=present
+  become_user: postgres
+  sudo: True
   tags:
     - pg_instance
 
-- name: enable extensions for {{ pg_db_name }}
+- name: enable extensions for "{{ db_name }}"
   postgresql_ext:
-    name: {{ item }}
-    db: {{ pg_db_name }}
-  with_items: "{{ pg_extensions }}"
+    name: "{{ item }}"
+    db: "{{ db_name }}"
+  with_items:
+    - citext
+    - pgcrypto
+  become_user: postgres
+  sudo: True
   tags:
     - pg_instance

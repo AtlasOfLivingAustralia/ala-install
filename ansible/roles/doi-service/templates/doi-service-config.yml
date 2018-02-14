@@ -1,4 +1,4 @@
-deployment_env={{ deployment_env }}
+deployment_env: {{ deployment_env }}
 
 #
 # CAS Config
@@ -16,14 +16,14 @@ security:
     ip:
       whitelist:
 
+logging:
+  config: {{ data_dir }}/doi-service/config/logback.groovy
+
 serverURL: https://{{ doi_service_hostname }}
 serverName: https://{{ doi_service_hostname }}
 
 server:
   contextPath: {{ doi_service_context_path }}
-
-grails:
-  serverURL: https://{{ doi_service_hostname }}{{ doi_service_context_path }}
 
 support:
   email: {{ support_email | default('support@ala.org.au') }}
@@ -47,6 +47,7 @@ doi:
     provider: {{ doi_storage_provider | default('LOCAL') }}
 
 grails:
+  serverURL: https://{{ doi_service_hostname }}{{ doi_service_context_path }}
   plugin:
     awssdk:
       region: {{ doi_aws_region | default('ap-southeast-2') }}
@@ -62,6 +63,6 @@ file:
 googleAnalyticsId: UA-4355440-1
 
 dataSource:
-  url: jdbc:postgresql://{{pg_hostname}}/{{pg_db_name}}
-  username: {{pg_db_user}}
-  password: {{pg_db_password}}
+  url: jdbc:postgresql://{{db_hostname}}/{{db_name}}
+  username: {{db_user}}
+  password: {{db_password}}
