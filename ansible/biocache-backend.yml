@@ -3,9 +3,9 @@
     - common
     - java8
     - cassandra
-    - nameindex
+#    - nameindex
     - biocache-db
     - biocache-properties
     - biocache-cli
     - jenkins
-    - apache    
+    - apache

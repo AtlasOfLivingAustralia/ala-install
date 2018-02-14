@@ -5,8 +5,6 @@ vagrant1
 local_repo_dir = ~/.ala
 data_dir=/srv/data
 is_vagrant=true
-symlink_to_data_dir=true
-
 #
 # Services deployed as part of this script
 #
