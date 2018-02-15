@@ -7,7 +7,7 @@ local_repo_dir=~/.ala
 data_dir=/data
 deployment_env=vagrant
 
-tomcat_java_opts=-Xmx7g -Xms512m -XX:MaxPermSize=512m -Xss256k -Djava.awt.headless=true
+tomcat_java_opts=-Xmx7g -Xms512m -Xss256k -Djava.awt.headless=true
 
 profile_service_hostname=profiles-ws.vagrant1.ala.org.au
 profile_service_url=http://profiles-ws.vagrant1.ala.org.au
@@ -24,7 +24,7 @@ auth_cas_url=https://auth.ala.org.au/cas
 apikey_check_url=https://auth.ala.org.au/apikey/ws/check?apikey=
 
 userdetails_base_url=https://auth.ala.org.au/userdetails
-images_base_url=http://images.ala.org.au
+images_base_url=https://images.ala.org.au
 image_upload_base_url=http://biocache-test.ala.org.au/ws
 ala_base_url=https://www.ala.org.au
 collectory_base_url=https://collections.ala.org.au
@@ -122,7 +122,7 @@ biocache_hub_context_path = /ala-hub
 biocache_sds_url = https://sds.ala.org.au
 bie_service_url = https://bie.ala.org.au/ws
 bie_url = https://bie.ala.org.au
-layers_service_url = http://spatial.ala.org.au/ws
+layers_service_url = https://spatial.ala.org.au/ws
 lists_service_url = https://lists.ala.org.au
 logger_url = http://logger.vagrant1.ala.org.au
 

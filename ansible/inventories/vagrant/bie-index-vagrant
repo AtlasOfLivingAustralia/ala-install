@@ -4,7 +4,7 @@ vagrant1
 [bie-index:vars]
 data_dir=/data
 is_vagrant=true
-tomcat_java_opts = -Xmx512m -Xms512m -XX:MaxPermSize=128m -Xss256k -Djava.awt.headless=true
+tomcat_java_opts = -Xmx512m -Xms512m -Xss256k -Djava.awt.headless=true
 
 bie_index_base_url = http://vagrant1.ala.org.au
 bie_index_context_path = /bie-index
@@ -29,6 +29,6 @@ collectory_url = https://collections.ala.org.au
 
 default_name_source=National Species Lists
 default_common_name_source=National Species Lists
-image_service_url = http://images.ala.org.au
+image_service_url = https://images.ala.org.au
 
 ala_base_url = https://www.ala.org.au
