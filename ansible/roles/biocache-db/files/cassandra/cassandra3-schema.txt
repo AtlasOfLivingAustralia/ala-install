@@ -218,7 +218,6 @@ CREATE TABLE occ.occ (
     day_p text,
     "decimalLatitude" text,
     "decimalLatitude_p" text,
-    "decimalLatitudelatitude" text,
     "decimalLongitude" text,
     "decimalLongitude_p" text,
     "defaultValuesUsed" text,

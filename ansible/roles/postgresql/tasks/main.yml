@@ -1,4 +1,5 @@
 - include: ../../common/tasks/setfacts.yml
+  tags: postgresql
 
 # tasks file for ntp
 - name: Gather OS Specific Variables
@@ -11,6 +12,7 @@
 
 - name: Setup apt repositories
   include: apt.yaml
+  tags: postgresql
 
 - name: Install Postgres with PostGIS
   apt: pkg="{{ item }}" state="present" update_cache="yes"

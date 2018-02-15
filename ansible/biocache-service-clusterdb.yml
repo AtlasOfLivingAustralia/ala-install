@@ -1,11 +1,11 @@
-- hosts: biocache-test
+- hosts: biocache-service-clusterdb
   roles:
     - common
     - java
     - tomcat
-    - nameindex
     - webserver
+    - nameindex
     - biocache-properties
+    - nameindex
     - biocache-service
-    - { role: biocache-hub, biocache_hub: ala-hub }
-
+    - logger-client

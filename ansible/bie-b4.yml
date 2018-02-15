@@ -2,9 +2,9 @@
 - hosts: bie-b4
   roles:
    - common
-   - java8
+   - java
    - webserver
-   - tomcat7-java8
+   - tomcat
    - solr
    - biocache-properties
    - bie-hub

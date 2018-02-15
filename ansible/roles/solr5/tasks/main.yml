@@ -23,6 +23,7 @@
 
 - name: Run install script
   shell: "./install_solr_service.sh /tmp/solr-{{ solr_version }}.tgz -d /data/solr -f"
+  sudo: yes
   tags:  
     - solr5
 
@@ -49,6 +50,13 @@
   tags:
     - solr5
     - properties
+
+- name: copy SOLR config /etc/default
+  template: src=solr.in.sh dest=/etc/default force=yes
+  tags:
+    - solr5
+    - properties
+
 
 - name: ensure target directories exist [data subdirectories etc.
   file: path={{item}} state=directory owner=solr  group=solr

@@ -11,6 +11,7 @@
     - tomcat
     - cassandra3
     - mysql-5.7
+    - postgresql
     - webserver
     - nameindex
     - solr5
@@ -26,4 +27,5 @@
     - { role: species-list,     specieslist_version: "3.0-SNAPSHOT" }
     - { role: bie-index,        bie_index_version: "1.4.1.1" }
     - { role: bie-hub,          bie_hub: ala-bie, bie_hub_version: "1.4.1" }
+    - { role: image-service,    images_version: "0.8" }
     - demo

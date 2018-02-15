@@ -13,11 +13,11 @@
 ###############################################################################
 
 [nameindexer]
-18.196.108.248
+52.28.65.182
 
 [nameindexer:vars]
 data_dir=/data
 
 nameindexer_opts=-Xmx4g -Xms4g
 
-ala_name_matching_version=3.0
+ala_name_matching_version=3.1-SNAPSHOT

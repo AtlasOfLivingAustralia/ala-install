@@ -33,7 +33,6 @@ biocache_db_type = cassandra3
 biocache_db_port = 9042
 cassandra_listen_host = localhost
 biocache_service_hostname = living-atlas.org
-
 biocache_service_url = http://living-atlas.org/biocache-service
 biocache_service_base_url = http://living-atlas.org
 biocache_service_context_path = /biocache-service
@@ -44,6 +43,9 @@ layers_service_sampling = false
 enable_lists = true
 lists_service_url = http://living-atlas.org/specieslists
 registry_api_key = dummy-registry-api-key
+commonname_lang = en
+media_store_local = false
+media_store_url=http://living-atlas.org/images
 
 ####################### Hub ###################################################
 
@@ -53,28 +55,33 @@ biocache_hub_base_url = http://living-atlas.org
 biocache_hub_context_path = /ala-hub
 userdetails_url = https://auth.ala.org.au/userdetails/userDetails
 
-google_apikey = AIzaSyBaR40F58E7J7RyeIT7VC_1MoEfdD2hmGU
+google_apikey = AIzaSyAJDtEeoy7Sc9pij2TAoVnmTwA34Q-2VHk
 
 # this is disabled to avoid startup problems
 caches_collections_enabled = false
 
 org_url = http://living-atlas.org
 
-
 skin_orgNameLong = Living Atlas Demo
 orgNameLong = Living Atlas Demo
 orgNameShort = Living Atlas Demo
 
-explore_your_area_lat = 40.4111
-explore_your_area_lng = 40.4111
+explore_your_area_lat = 40.4168
+explore_your_area_lng = -3.7038
 explore_your_area_location = Madrid
 
-map_default_latitude = 40.4111
-map_default_longitude = 40.4111
+map_default_latitude = 40.4168
+map_default_longitude = -3.7038
 map_default_zoom = 5
 
 skin_layout = generic
 skin_fluid_layout = true
+
+use_ala_image_service = true
+image_service_url = http://living-atlas.org/images
+image_service_viewer_url = http://living-atlas.org/images/image/viewer?imageId=
+image_service_metadata_url = http://living-atlas.org/images/image/details?imageId=
+alwaysshow_imagetab = true
 
 ####################### Collectory ############################################
 
@@ -92,7 +99,7 @@ bypass_cas = true
 api_key = dummy-registry-api-key
 
 # Google maps
-google_apikey = AIzaSyBaR40F58E7J7RyeIT7VC_1MoEfdD2hmGU
+google_apikey = AIzaSyAJDtEeoy7Sc9pij2TAoVnmTwA34Q-2VHk
 
 orgNameLong = Living Atlas demo
 orgNameShort = Living Atlas demo
@@ -110,8 +117,8 @@ api_key = to_be_added
 skin = ala
 
 # Map config
-collections_map_lat = 54.00366
-collections_map_lon = -2.547855
+collections_map_lat = 40.4168
+collections_map_lon = -3.7038
 collections_map_zoom = 5
 
 # Project name
@@ -139,6 +146,9 @@ gbifApiUrl = http://api.gbif.org/v1
 
 # Logger URL
 logger_webservice_url = http://living-atlas.org/logger-service/service
+
+# Species list tool
+species_list_tool_url = http://living-atlas.org/specieslists
 
 ####################### SOLR #######################
 
@@ -235,3 +245,11 @@ spatial_url =
 bie_base_url = http://living-atlas.org/ala-bie
 ala_base_url = http://living-atlas.org
 
+####### Images #######
+
+images_url = http://living-atlas.org
+images_base_url = http://living-atlas.org
+images_context_path = /images
+images_hostname = living-atlas.org
+images_db_password = images
+images_db_username = images

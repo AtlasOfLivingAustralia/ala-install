@@ -1,5 +1,6 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
+    - properties
     - biocache-properties
     - biocache-layers    
 
@@ -9,6 +10,7 @@
     - "{{data_dir}}/biocache/layers"
     - "{{data_dir}}/biocache/config"    
   tags:
+    - properties
     - biocache-properties
 
 - name: copy biocache config properties template 
@@ -16,12 +18,14 @@
   with_items:
     - biocache-config.properties
   tags:
+    - properties
     - biocache-properties
 
 - name: Download SDS layers
   get_url: url={{ sds_layers_url | default('https://biocache.ala.org.au/archives/layers/sds-layers.tgz') }} dest="{{data_dir}}/biocache/layers/sds-layers.tgz" force=yes
   when: sds_enabled is defined and sds_enabled == "true"
   tags:
+    - properties
     - biocache-properties
     - biocache-layers   
 
@@ -29,12 +33,14 @@
   unarchive: src="{{data_dir}}/biocache/layers/sds-layers.tgz" dest="{{data_dir}}/biocache/layers/" copy=no
   when: sds_enabled is defined and sds_enabled == "true"
   tags:
+    - properties
     - biocache-properties
     - biocache-layers    
 
 - name: copy biocache subgroups config
   copy: src=subgroups.json dest={{data_dir}}/biocache/config/subgroups.json
   tags:
+    - properties
     - biocache-properties
 
 - name: ensure target directories exist [data subdirectories etc.
@@ -50,6 +56,7 @@
     - "{{data_dir}}/tool"
     - "{{data_dir}}/lucene"
   tags:
+    - properties
     - biocache-properties
 
 # - name: set data ownership [all data is owned by tomcat]

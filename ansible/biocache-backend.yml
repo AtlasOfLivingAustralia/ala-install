@@ -1,11 +1,18 @@
+- hosts: all
+  gather_facts: False
+  tasks:
+  - name: install python 2
+    raw: sudo bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qy python-minimal)"
+
+
 - hosts: biocache
   roles:
     - common
-    - java8
-    - cassandra
+    - java
+    - cassandra3
     - nameindex
-    - biocache-db
     - biocache-properties
-    - biocache-cli
+    - { role: biocache-db,      use_cassandra3 : true }
+    - { role: biocache-cli,     biocache_cli_version: "2.2-SNAPSHOT" }
+    - { role: nameindexer,      ala_name_matching_version: "3.1" }
     - jenkins
-    - apache    
