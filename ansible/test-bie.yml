@@ -64,7 +64,7 @@
     default_name_source: National Species Lists
     disable_cas: false
     field_guide_base_url: https://fieldguide.ala.org.au
-    image_service_url: http://images.ala.org.au
+    image_service_url: https://images.ala.org.au
     index_images: true
     index_live_url: "http://{{test_biocache_host}}:8080/solr/bie"
     index_offline_url: "http://{{test_biocache_host}}:8080/solr/bie-offline"
@@ -82,7 +82,7 @@
     logger_db_password: logger_user
     logger_db_hostname: localhost
     media_store_local: false
-    media_store_url: http://images.ala.org.au
+    media_store_url: https://images.ala.org.au
     mysql_root_password: Yithian-093
     nameindex_to_use: ala
     registry_api_key:

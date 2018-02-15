@@ -18,7 +18,7 @@ spatial_base_url=http://spatial.ala.org.au
 logger_base_url=https://logger.ala.org.au
 collectory_base_url=https://collections.ala.org.au
 volunteer_base_url=https://volunteer.ala.org.au
-images_base_url=http://images.ala.org.au
+images_base_url=https://images.ala.org.au
 
 security_cas_login_url=https://auth.ala.org.au/cas/login
 auth_base_url=https://auth.ala.org.au
