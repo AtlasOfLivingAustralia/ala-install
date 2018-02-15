@@ -1,67 +1,85 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
-    - "nameindex"
+    - "nameindex"  
 
-- debug:
-    msg: "the selected nameindex_variant == {{ nameindex_variant }}"
-  tags:
-    - "nameindex"
+## Setup the name index to use based on nameindex_variant
 
 - name: set name index to use (COL)
   set_fact:
     lucene_namematching_url: "{{ col_namematching_url }}"
   when: nameindex_variant == "col"
   tags:
-    - "nameindex"
+    - "nameindex"  
 
 - name: set name index to use (Merged)
   set_fact:
     lucene_namematching_url: "{{ merged_namematching_url }}"
   when: nameindex_variant == "merged"
   tags:
-    - "nameindex"
+    - "nameindex"  
 
 - name: set name index to use (ALA)
   set_fact:
     lucene_namematching_url: "{{ ala_namematching_url }}"
   when: nameindex_variant == "ala"
   tags:
-    - "nameindex"
+    - "nameindex"  
 
 - name: set name index to use (Custom)
   set_fact:
     lucene_namematching_url: "{{ custom_namematching_url }}"
   when: nameindex_variant == "custom"
   tags:
+    - "nameindex"  
+
+- name: name index URL is
+  debug: msg="Downloading {{ nameindex_variant }} index from {{ lucene_namematching_url }}"
+  tags:
     - "nameindex"
+
+## Ensure that data_dir/lucene exists as a directory
 
 - name: ensure lucene base directory exists
   file: path={{ data_dir }}/lucene state=directory
   tags:
     - "nameindex"
 
-- name: ensure lucene directory exists
-  file: path={{ data_dir }}/lucene/namematching state=directory
-  tags:
-    - "nameindex"
+## If ALA, perform the following steps to download the index, give it the correct file permissions and symlink it
 
-- name: debug
-  debug: msg="Downloading {{ nameindex_variant }} index from {{ lucene_namematching_url }}"
-  tags:
-    - "nameindex"
-
-- name: Download lucene index
-  get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene/namematching.tgz force={{ force_nameindex_download | default(false) }}
-  tags:
-    - "nameindex"
-
-- name: unpackage the lucene index if it was newly copied
-  unarchive: src={{ data_dir }}/lucene/namematching.tgz dest={{data_dir}}/lucene/ copy=no force={{ force_nameindex_download | default(false) }}
-  tags:
-    - "nameindex"
-
-- name: link the current lucene index as namematching
-  file: src={{ data_dir }}/lucene/namematching-{{ name_index_date }} dest={{ data_dir }}/lucene/namematching state=link force=yes
+- name: Download lucene index (ALA)
+  get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene force={{ force_nameindex_download | default(false) }}
   when: nameindex_variant == "ala"
+  tags:
+    - "nameindex"
+
+- name: unpackage the lucene index if it was newly copied (ALA)
+  unarchive: src={{ data_dir }}/lucene/namematching-{{ name_index_date }}.tgz dest={{ data_dir }}/lucene/ copy=no group={{ nameindex_user | default(tomcat_user) }} owner="{{ nameindex_user | default(tomcat_user) }}"
+  when: nameindex_variant == "ala"
+  tags:
+    - "nameindex"
+
+- name: link the current lucene index as namematching (ALA)
+  file: src={{ data_dir }}/lucene/namematching-{{ name_index_date }}/ dest={{ data_dir }}/lucene/namematching state=link force=yes
+  when: nameindex_variant == "ala"
+  tags:
+    - "nameindex"
+
+## Else if not ALA, perform the following steps (apparently the date and file permissions do not matter for non-ALA users...)
+
+- name: ensure lucene namematching directory exists (not ALA)
+  file: path={{ data_dir }}/lucene/namematching state=directory
+  when: nameindex_variant != "ala"
+  tags:
+    - "nameindex"  
+
+- name: Download lucene index (not ALA)
+  get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene/namematching.tgz force={{ force_nameindex_download | default(false) }}
+  when: nameindex_variant != "ala"
+  tags:
+    - "nameindex"
+
+- name: unpackage the lucene index if it was newly copied (not ALA)
+  unarchive: src={{ data_dir }}/lucene/namematching.tgz dest={{ data_dir }}/lucene/namematching/ copy=no
+  when: nameindex_variant != "ala"
   tags:
     - "nameindex"

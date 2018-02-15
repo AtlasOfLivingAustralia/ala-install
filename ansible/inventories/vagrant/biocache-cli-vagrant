@@ -5,8 +5,9 @@ vagrant1
 is_vagrant=true
 local_repo_dir = ~/.ala
 data_dir=/data
-biocache_opts=-Xmx8g -Xms8g
+biocache_opts=-Xmx2g -Xms2g
 
+nameindex_datestamp = 20171012
 nameindex_to_use = ala
 nameindex_user = root
 sds_enabled = false

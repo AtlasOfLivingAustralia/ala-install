@@ -1,10 +1,10 @@
 # ALA Installation Scripts
-This project contains [Ansible](http://www.ansible.com/) playbooks for setting up ALA components on Ubuntu 14 machines.
+This project contains [Ansible](http://www.ansible.com/) playbooks for setting up ALA components on Ubuntu 16 machines.
 This project includes a playbook for setting up the [ALA demo ](http://ala-demo.gbif.org).
 
 ## Ansible version
 
-### The current supported version is: **2.4.2.0**
+### The current supported version is: **2.4.3.0**
 
 The playbooks and roles in this repository have been developed and tested against the above version.
 
@@ -51,14 +51,14 @@ $ wget https://releases.hashicorp.com/vagrant/1.7.4/vagrant_1.7.4_x86_64.deb
 $ sudo dpkg -i vagrant_1.7.4_x86_64.deb
 ```
 
-The ```vagrant/ubuntu-trusty``` directory contains configurations that can used with [VirtualBox](https://www.virtualbox.org/) to bring up a VH for deploying against.  
+The ```vagrant/ubuntu-xenial``` directory contains configurations that can used with [VirtualBox](https://www.virtualbox.org/) to bring up a VH for deploying against.  
 
-This is included only to simplify local testing, but any server Ubuntu 14.x could be used.  
+This is included only to simplify local testing, but any server Ubuntu 16.x could be used.  
 
 To create a virtual machine with vagrant:
 
 ```
-$ cd vagrant/ubuntu-trusty
+$ cd vagrant/ubuntu-xenial
 $ vagrant up
 ```
 
@@ -99,17 +99,17 @@ Once completed successfully you can view the demo on http://demo.vagrant1.ala.or
 ## Installing the ALA demo on EC2 or other cloud providers
 
 There is an inventory you can use to setup the demo on a cloud provider [here](ansible/inventories/demo-ec2).
-An Ubuntu 14 instance with 15GB of RAM and 4 CPUs is recommended. The scripts where tested on 30th April 2015 and took approximately 20 mins to run on a EC2 instance.
+An Ubuntu 16 instance with 15GB of RAM and 4 CPUs is recommended. The scripts where tested on 30th April 2015 and took approximately 20 mins to run on a EC2 instance.
 
 Here are the steps to run with this inventory:
 
- *  Create your Ubuntu 14 instance. Make sure your machine is open on *ports 22, 80 and 443*. 
+ *  Create your Ubuntu 16 instance. Make sure your machine is open on *ports 22, 80 and 443*. 
 
  *  Add the following to your */etc/hosts* file on the machine your are running ansible from (e.g. your laptop):
 ```
 12.12.12.12	ala-demo	ala-demo.org 
 ```
-You'll need to replace "12.12.12.12" with the IP address of your newly created Ubuntu 14 instance.
+You'll need to replace "12.12.12.12" with the IP address of your newly created Ubuntu 16 instance.
 
  * Run the following:
 ```

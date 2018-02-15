@@ -55,9 +55,10 @@
   file: src=/usr/lib/biocache/biocache-store-{{ version }}/bin/biocache dest=/usr/bin/biocache state=link
   tags:
     - biocache-cli
+    - biocache-cli-symlink
 
 - name: replace the environmentSetupFile
-  template: src=environmentSetupFile.sh dest=/usr/lib/biocache/biocache-store-{{ version }}/bin/environmentSetupFile.sh force=yes mode=777
+  template: src=environmentSetupFile.sh dest=/usr/lib/biocache/biocache-store-{{ version }}/bin/environmentSetupFile.sh force=yes mode=755
   tags:
     - biocache-cli
 
