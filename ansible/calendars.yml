@@ -4,7 +4,7 @@
     - java
     - common
     - mongodb
-    - tomcat7-java8
+    - tomcat
     - webserver
     - calendars
   become: yes

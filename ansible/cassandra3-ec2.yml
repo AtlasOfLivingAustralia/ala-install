@@ -2,5 +2,5 @@
   roles:
     - ebs-setup
     - common
-    - java8
+    - java
     - cassandra3

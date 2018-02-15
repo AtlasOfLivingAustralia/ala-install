@@ -4,6 +4,6 @@
     - java
     - webserver
     - mysql-5.7
-    - tomcat7-java8
+    - tomcat
     - collectory
   become: yes
