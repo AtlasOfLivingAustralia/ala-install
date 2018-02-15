@@ -1,8 +1,8 @@
 - hosts: species-list
   roles:
     - common
-    - java8
-    - tomcat7-java8
+    - java
+    - tomcat
     - webserver
     - mysql-5.7
     - nameindex

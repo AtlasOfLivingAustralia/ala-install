@@ -2,9 +2,9 @@
 - hosts: bie-test
   roles:
     - common
-    - java8
+    - java
     - webserver
-    - tomcat7-java8
+    - tomcat
     - bie-hub
     - bie-index
     - solr

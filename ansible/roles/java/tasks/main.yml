@@ -1,10 +1,7 @@
 - include: ../../common/tasks/setfacts.yml 
 
-- name: install Java (RedHat)
-  yum: name=java7 state=present
-  when: ansible_os_family == "RedHat" 
-  tags:
-    - java
-
 - include: openjdk-java.yml
-  when: ansible_os_family == "Debian"
+  when: use_openjdk7 is defined and use_openjdk7
+
+- include: oracle-java8.yml
+  when: use_openjdk7 is not defined

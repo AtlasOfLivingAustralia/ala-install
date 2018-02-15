@@ -1,11 +1,11 @@
 - hosts: profiles:sandbox
   roles:
     - common
-    - java8
+    - java
     - {role: db-backup, db: mongo}
     - {role: mongodb, mongo_version: "3.4.6"}
     - cassandra
-    - tomcat7-java8
+    - tomcat
     - webserver
     - postfix
     - nameindex

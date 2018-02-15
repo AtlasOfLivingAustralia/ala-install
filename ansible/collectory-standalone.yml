@@ -1,9 +1,9 @@
 - hosts: collectory
   roles:
     - common
-    - java8
+    - java
     - webserver
     - mysql-5.7
-    - tomcat7-java8
+    - tomcat
     - collectory
   become: yes

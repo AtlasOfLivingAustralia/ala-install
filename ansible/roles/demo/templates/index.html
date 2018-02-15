@@ -2,18 +2,18 @@
 <html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="css/bootstrap-theme.css">
+	<script src="js/bootstrap.js"></script>
+    <style>
+        .code { font-family: "Courier New"; }
+    </style>
 </head>	
 <body>
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
-        <h1>Atlas of Living Australia - demo</h1>
+        <h1>{{ orgNameLong }}</h1>
         <p>This is a landing page with links through to the components now installed on this server.
         <br/>
            This demo was installed using 
@@ -26,7 +26,7 @@
     <div class="container">
       <!-- Example row of columns -->
       <div class="row">
-        <div class="col-md-4">
+        <div id="occurrence-store" class="col-md-4">
           <h2>Occurrence store</h2>
           <p> 
           	The occurrence store should now be setup. This application consists of 
@@ -34,8 +34,8 @@
           	<ul>
               <li><a href="{{biocache_hub_context_path}}">Occurrence search</a> - Reskinnable front end UI</li>              
               <li><a href="{{biocache_hub_context_path}}/explore/your-area?default=true">Explore your area</a>  - Reskinnable front end UI</li>
-          	  <li><a href="{{biocache_service_context_path}}">Web services</a></li>
-          	  <li><a href="{{solr_context_path}}">Apache SOLR</a></li>
+          	  <li><a href="{{biocache_service_context_path}}">Web services</a> - the JSON/WMS webservices</li>
+          	  <li><a href="{{solr_base_url}}">Apache SOLR</a> - the index used for searching</li>
           	</ul>	
 			There is also a command line tool now installed that can be started with the command "biocache".
 			This tool can be used for loading data and running processes across the data.
@@ -47,18 +47,19 @@
           		<ul>
           			<li><a href="http://cassandra.apache.org/">Apache Cassandra</a></li>
           		</ul>
-            Cassandra can be accessed directly using the command-line tool <a href="http://wiki.apache.org/cassandra/CassandraCli">cassandra-cli</a>.
+            Cassandra can be accessed directly using the command-line tool
+            <a class="code" href="https://docs.datastax.com/en/cql/3.1/cql/cql_reference/cqlsh.html">cqlsh</a>.
           </p>
         </div>
-
-        <div class="col-md-4">
-          <h2>Collectory</h2>
+        <div id="data-registry" class="col-md-4">
+          <h2>Data registry</h2>
           <p>
-          	The collectory is now setup and installed.	This is an application for editing metadata
+          	The Data registry (called the 'collectory') is now setup and installed.
+              This is an application for editing metadata
           	for collections, institutions and data resources.
       		<ul>
 				<li><a href="{{collectory_context_path}}">Collections browser</a></li>
-        <li><a href="{{collectory_context_path}}/datasets">Datasets browser</a></li>
+                <li><a href="{{collectory_context_path}}/datasets">Datasets browser</a></li>
 				<li><a href="{{collectory_context_path}}/ws">Web services</a></li>
 				<li><a href="{{collectory_context_path}}/admin">Admin interface</a></li>
 			</ul>
@@ -66,28 +67,68 @@
           <h4>Further information</h4>
           <p>
           	As part of the installation the following tools are installed:
-          		<ul>
-          			<li><a href="http://www.mysql.com/">MySQL</a></li>
-          		</ul>
-            MySQL can be accessed directly using the command-line tool "mysql".
+            <ul>
+                <li><a class="code" href="http://www.mysql.com/">MySQL</a></li>
+            </ul>
+            MySQL can be accessed directly using the command-line tool <span class="code">mysql</span>.
           </p>
        </div>
-        <div class="col-md-4">
-          <h2>Sandbox</h2>
-          <p>The sandbox can be used to quickly load a dataset into the occurrence store for visualisation.<br/>
-            There is support for loading CSV data.
+        <div id="skinning" class="col-md-4">
+          <h2>Bootstrap 3</h2>
+          <p>
+              The applications use Bootstrap 3 for layout and styling.
+              For more information on Bootstrap see the documentation.
+              The location of the CSS/JS bootstrap files is
+              <span class="code">/srv/{{ demo_hostname }}/www/ </span>
+               on this machine. <p>
           </p>
-		  <ul>
-				<li><a href="{{sandbox_context_path}}">Front end UI</a></li>
-			</ul>
+          <h2>Styling these apps</h2>
+          <p>
+              These applications are use a banner, footer and head html block that you can customise.
+          <ul>
+            <li><a class="code" href="{{ header_and_footer_baseurl}}/banner.html">banner.html</a> - the top section added to all pages. Typically a navigation menu</li>
+            <li><a class="code" href="{{ header_and_footer_baseurl}}/footer.html">footer.html</a> - the bottom section added to all pages. Typically a navigation menu</li>
+            <li><a class="code" href="{{ header_and_footer_baseurl}}/head.html">head.html</a> - a block of html that is added to the <span class="code">&lt;head/&gt;</span> section added to all pages.  This could include references to custom CSS.</li>
+          </ul>
+            <p> The location of these files is <span class="code">/srv/{{ demo_hostname }}/www/</span> on this machine. <p>
         </div>
       </div>
-
-      <hr>
+      <div class="row">
+        <div id="species-list" class="col-md-4">
+              <h2>Species lists</h2>
+              <p>
+                  The Species lists component consists of 1 web applications now running in Tomcat on this server:
+                  <ul>
+                      <li><a href="{{specieslist_context_path}}">Species lists</a> - Reskinnable front end UI</li>
+                  </ul>
+              </p>
+          </div>
+        <div id="bie" class="col-md-4">
+              <h2>Species pages</h2>
+              <p>
+                  The Species pages (BIE) consists of 2 web applications now running in Tomcat on this server:
+                  <ul>
+                      <li><a href="{{bie_hub_context_path}}">BIE UI</a> - Reskinnable front end UI</li>
+                      <li><a href="{{bie_index_context_path}}">BIE web services</a>  - taxonomy search services</li>
+                  </ul>
+              </p>
+          </div>
+        <div id="name-indexes" class="col-md-4">
+              <h2>Name indexes</h2>
+              <p>
+                  Lucene name indexes have been installed in the
+                  <span class="code">/data/lucene</span> directory.
+                  Use the <span class="code">nameindexer</span> tool
+                  and your own DwCA to generate a new index. See
+                  <a href="https://github.com/AtlasOfLivingAustralia/ala-name-matching">here</a>
+                  for more details on the structure of the DwCA required.
+              </p>
+          </div>
+      </div>
 
       <footer>
-        <p>
-        &copy; <a href="https://www.ala.org.au">Atlas of Living Australia 2015</a>
+        <p style="padding:20px;">
+        &copy; <a href="https://www.ala.org.au">Atlas of Living Australia 2018</a>
 
         - Machine setup up on {{ansible_date_time.date}}. Running
            {{ansible_distribution}} 
@@ -95,6 +136,5 @@
       </p>
       </footer>
     </div> <!-- /container -->
-
 </body>
 </html>

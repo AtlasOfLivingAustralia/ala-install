@@ -2,6 +2,7 @@
   tags:
     - specieslist
     - properties
+    - dbfix
 
 - name: create DB
   mysql_db: name={{specieslist_db_name}} state=present
@@ -14,6 +15,23 @@
   tags:
     - specieslist
     - db
+
+- name: copy SQL fix script for mysql 5.7
+  copy: src=ONLY_FULL_GROUP_BY.sql dest=/tmp/
+  tags:
+    - specieslist
+    - db
+    - dbfix
+
+- name: Run SQL fix for mysql 5.7
+  mysql_db:
+    state: import
+    name: all
+    target: /tmp/ONLY_FULL_GROUP_BY.sql
+  tags:
+    - specieslist
+    - db
+    - dbfix
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}

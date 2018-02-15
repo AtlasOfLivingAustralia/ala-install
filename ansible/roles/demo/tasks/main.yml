@@ -1,15 +1,50 @@
 - include: ../../common/tasks/setfacts.yml
+  tags:
+    - demo
 
 - name: Add entries for demo into hosts file
   lineinfile: dest=/etc/hosts regexp='^127\.0\.0\.1' line="127.0.0.1 localhost {{ demo_hostname | default('') }} ala.vagrant.dev ala demo.vagrant1.ala.org.au vagrant1.ala.org.au" owner=root group=root mode=0644
 
 - name: Ensure data directory exists
-  file: path=/srv/{{ demo_hostname }}/www/html state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path=/srv/{{ demo_hostname }}/www/{{ item }} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - html
+    - css
+    - js
+    - Downloads/
+    - Downloads/bootstrap-3.3.4-dist
+    - Downloads/bootstrap-3.3.4-dist/fonts/
   tags:
     - demo
 
-- name: Copy welcome page (Debian)
-  template: src=index.html dest=/srv/{{ demo_hostname }}/www/index.html mode=0666
+- name: Copy welcome page and base banner / footer
+  template: src={{ item }} dest=/srv/{{ demo_hostname }}/www/ mode=0666 force=yes
+  with_items:
+    - "index.html"
+    - "footer.html"
+    - "head.html"
+    - "banner.html"
+  tags:
+    - demo
+
+- name: Copy CSS
+  copy: src={{ item }} dest=/srv/{{ demo_hostname }}/www/css/
+  with_fileglob:
+    - "css/*"
+  tags:
+    - demo
+
+- name: Copy fonts
+  copy: src={{ item }} dest=/srv/{{ demo_hostname }}/www/Downloads/bootstrap-3.3.4-dist/fonts/
+  with_fileglob:
+    - "fonts/*"
+  tags:
+    - demo
+
+- name: Copy JS
+  copy: src={{ item }} dest=/srv/{{ demo_hostname }}/www/js/
+  with_fileglob:
+    - "js/*"
   tags:
     - demo
 
@@ -19,19 +54,13 @@
   tags:
     - demo
 
-- name: Create symlink to data/biocache-media from /srv/[hostname]/www/html/biocache-media
-  command: "ln -sf /data/biocache-media  /srv/{{ demo_hostname }}/www/html/biocache-media" 
-  ignore_errors: yes
-  tags: 
-    - demo
-
 - name: Finish message
   debug: msg="That's ready! You can now access your ALA demo instance at http://{{ demo_hostname }}"
   tags: 
     - demo  
 
 - name: set redhat variables
-  command: "usermod -a -G {{ tomcat_user }} ubuntu" 
+  command: "usermod -a -G {{ tomcat_user }} ubuntu"
   when: ansible_os_family == "Debian"
   ignore_errors: yes
 

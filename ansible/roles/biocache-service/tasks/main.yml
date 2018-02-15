@@ -3,6 +3,7 @@
     - tomcat_vhost
     - biocache-service
     - webapps
+    - properties
     - nginx_vhost
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ biocache_service_context_path }}' hostname='{{ biocache_service_hostname }}' 

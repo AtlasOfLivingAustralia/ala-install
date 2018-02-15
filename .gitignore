@@ -34,3 +34,5 @@ vagrant/centos/.vagrant/machines/default/virtualbox/id
 
 
 *.retry
+
+ansible/roles/alerts/tasks/main.yml

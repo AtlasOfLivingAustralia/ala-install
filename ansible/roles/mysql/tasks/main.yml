@@ -1,24 +1,23 @@
 - include: ../../common/tasks/setfacts.yml
-
-- name: install mysql (RedHat)
-  yum: name={{item}} state=present
-  with_items:
-    - mysql-server
-    - MySQL-python
   tags:
-    - packages 
-  register: mysql_installed
-  notify: 
-    - restart mysql
-  when: ansible_os_family == "RedHat"
+    - mysql
 
-- name: install mysql (Debian)
-  apt: pkg={{item}} state=present
+- name: Install add-apt-repostory
+  apt_repository:
+    repo: deb http://archive.ubuntu.com/ubuntu trusty universe
+    state: present
+
+- name: mysql | Install MySQL Packages
+  sudo: yes
+  apt: pkg={{ item }} state=latest
   with_items:
     - mysql-server-5.6
+    - mysql-client-5.6
     - python-mysqldb
+  update_cache: yes
   tags:
-    - packages 
+    - packages
+    - mysql
   register: mysql_installed
   notify: 
     - restart mysql
@@ -27,6 +26,8 @@
 - name: warn about using the default root user password
   debug: msg="You are installing MySQL with a default root password of 'password'. Are you sure you want to do that? Specify a real password in your inventory file using the variable mysql_root_password."
   when: mysql_installed.changed and  mysql_root_password is not defined
+  tags:
+    - mysql
 
 - name: change root user password on first run
   mysql_user: name=root password={{ mysql_root_password | default('password') }} priv=*.*:ALL,GRANT host={{ item }}
@@ -36,19 +37,29 @@
     - ::1
     - localhost
   when: mysql_installed.changed
+  tags:
+    - mysql
 
 - name: delete anonymous MySQL user for the host
   mysql_user: user="" host="{{ansible_hostname}}" login_user="root" login_password={{ mysql_root_password | default('password') }} state="absent"
   when: mysql_installed.changed
+  tags:
+    - mysql
 
 - name: delete anyonmous MySQL user for localhost
   mysql_user: user="" login_user="root" login_password={{ mysql_root_password | default('password') }} state="absent"
   when: mysql_installed.changed
+  tags:
+    - mysql
 
 - name: drop test database
   mysql_db: name="test" login_user="root" login_password={{ mysql_root_password | default('password') }} state="absent"
   when: mysql_installed.changed
+  tags:
+    - mysql
 
-- name: create my.cnf file 
+- name: create my.cnf file
   template: src=my.cnf dest=/root/.my.cnf owner=root mode=0600
   when: mysql_installed.changed
+  tags:
+    - mysql
