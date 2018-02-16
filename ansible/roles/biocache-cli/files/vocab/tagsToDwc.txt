@@ -1,0 +1,11 @@
+geocode:accuracy	coordinateUncertaintyInMeters
+geocode:method	georeferenceProtocol
+geocode:country	country
+geocode:alt	verbatimElevation
+geo:accuracy	coordinateUncertaintyInMeters
+geo:method	georeferenceProtocol
+geo:country	country
+geo:alt	verbatimElevation
+geo:province	stateProvince
+geo:lon	decimalLongitude
+geo:lat	decimalLatitude
