@@ -1,0 +1,53 @@
+kingdom
+subkingdom
+superphylum
+phylum	div	division
+subphylum
+cohort
+superclass
+class	cl
+subclass	subcl
+infraclass
+superorder	superordo
+order	ordo
+suborder	subordo
+infraorder
+parvorder
+superfamily
+family	fam
+subfamily	subf	subfam	Aggregate Genera
+tribe	trib
+subtribe	subtrib
+suprageneric	suprageneric taxon of undefined rank	Higher Taxon
+genus	gen
+nothogenus
+subgenus	subgen	Aggregate Species
+section	sect
+subsection	subsect
+series	ser
+subseries	subser
+speciesgroup
+speciessubgroup
+species	sp
+nothospecies
+subspecies	subsp
+nothosubspecies
+variety	var
+nothovariety
+form	form taxon
+nothoform
+biovar
+serovar
+cultivar
+pathovar
+infraspecific
+aberration
+mutation
+race
+confersubspecies
+formaspecialis
+hybrid
+subvariety	subvar
+infrageneric
+supergenericname
+unranked

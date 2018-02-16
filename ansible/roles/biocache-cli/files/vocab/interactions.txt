@@ -1,0 +1,22 @@
+DetritivoreOn	DetritivoreOn
+Endozoochore	Endozoochore
+EpiphyticOn	EpiphyticOn
+HasDetritivore	HasDetritivore
+HasEndozoochore	HasEndozoochore
+HasEpiphyte	HasEpiphyte
+HasInquiline	HasInquiline
+HasKleptoparasite	HasKleptoparasite
+HasSaprotroph	HasSaprotroph
+InfectedBy	InfectedBy
+Infects	Infects	Host
+InhabitedBy	InhabitedBy
+Inhabits	Inhabits
+Inquiline	Inquiline
+KleptoparasiticOn	KleptoparasiticOn
+Mutualism	Mutualism
+OccursWith	OccursWith
+PollinatedBy	PollinatedBy
+Pollinates	Pollinates
+Predates	Predates
+PreyOf	PreyOf
+SaprotrophicOn	SaprotrophicOn

@@ -3,7 +3,7 @@
     - common
     - java
     - cassandra
-#    - nameindex
+    - nameindex
     - biocache-db
     - biocache-properties
     - biocache-cli

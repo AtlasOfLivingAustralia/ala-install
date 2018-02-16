@@ -1,0 +1,383 @@
+field	dataType	sourceField	multi	storedAsArray	extraFields	isMiscProperty
+id	string	uuid	F	F		F
+row_key	string	rowKey	F	F		F
+occurrence_id	string	occurrenceID	F	F		F
+data_hub_uid	string	dataHubUid	T	T	T	F
+data_hub	string	dataHub_p	F	F	F	F
+data_provider_uid	string	dataProviderUid_p	F	F	dataProviderUid	F
+data_provider	string	dataProviderName_p	F	F	dataProviderName	F
+data_resource_uid	string	dataResourceUid	F	F	dataResourceUid_p	F
+data_resource	string	dataResourceName_p	F	F	dataResourceName	F
+institution_uid	string	institutionUid_p	F	F		F
+institution_code	string	institutionCode	F	F		F
+institution_name	string	institutionName_p	F	F		F
+collection_uid	string	collectionUid_p	F	F		F
+collection_code	string	collectionCode	F	F		F
+collection_name	string	collectionName_p	F	F		F
+catalogue_number	string	catalogNumber	F	F		F
+taxon_concept_lsid	string	taxonConceptID_p	F	F		F
+occurrence_date	date	eventDate_p	F	F		F
+# occurrence_year - need to ensure length of 4 and append "-01-01T00:00:00Z"	F
+# occurrence_decade_i - truncate occurrence_year to end with 0
+taxon_name	string	scientificName_p	F	F		F
+raw_taxon_name	string	scientificName	F	F		F
+common_name	string	vernacularName_p	F	F		F
+names_and_lsid	string	scientificName_p,taxonConceptID_p,vernacularName_p,kingdom_p,family_p	F	F		F
+common_name_and_lsid	string	vernacularName_p,scientificName_p,taxonConceptID_p,kingdom_p,family_p	F	F		F
+rank	string	taxonRank_p	F	F		F
+rank_id	int	taxonRankID_p	F	F		F
+# raw_taxon_name - need to construct a raw scientific name if the scientific name does not exist	F
+raw_common_name	string	vernacularName	F	F		F
+# multimedia - if length of images_p > 3 then Multimedia else None	F
+# image_url	- images_p(0)
+species_group	string	speciesGroups_p	T	T		F
+country_code	string	countryCode	F	F		F
+country	string	country_p	F	F		F
+lft	int	left_p	F	F		F
+rgt	int	right_p	F	F		F
+kingdom	string	kingdom_p	F	F		F
+phylum	string	phylum_p	F	F		F
+class	string	classs_p	F	F		F
+order	string	order_p	F	F		F
+family	string	family_p	F	F		F
+genus	string	genus_p	F	F		F
+genus_guid	string	genusID_p	F	F		F
+species	string	species_p	F	F		F
+species_guid	string	speciesID_p	F	F		F
+subspecies_name	string	subspecies_p	F	F		F
+state	string	stateProvince_p	F	F		F
+latitude	double	decimalLatitude_p	F	F		F
+longitude	double	decimalLongitude_p	F	F		F
+# lat_long - comma concat of decimalLatitude_p,decimalLongitude_p	F
+# point-1 - coordinates rounded to the supplied precision	F
+# point-0.1	F
+# point-0.01	F
+# point-0.02    F
+# point-0.001	F
+# point-0.0001	F
+year	string	year_p	F	F		F
+month	string	month_p	F	F		F
+basis_of_record	string	basisOfRecord_p	F	F		F
+raw_basis_of_record	string	basisOfRecord	F	F		F
+type_status	string	typeStatus_p	F	F		F
+raw_type_status	string	typeStatus	F	F		F
+taxonomic_kosher	string	taxonomicallyKosher	F	F		F
+# geospatial_kosher - only test for value if the lat/long are supplied 	F
+# assertions - need to obtain a list of assertions that have failed	F
+location_remarks	string	locationRemarks	F	F		F
+occurrence_remarks	string	occurrenceRemarks	F	F		F
+# citation - not being used at the moment	F
+user_assertions	string	userQualityAssertion	F	F		F
+# system_assertions - if length of qualityAssertion > 3 true else false	F
+user_id	string	recordedBy	F	F		F
+collector	string	recordedBy	F	F		F
+# state_conservation - first value of CSV stateConservation_p	F
+# raw_state_conservation - second value of stateConservation_p	F
+# sensitive - when dataGeneralizations_p contains "already generalised" then alreadyGeneralised when originalSensitiveValues.length >3 then generalised	F
+coordinate_uncertainty	double	coordinateUncertaintyInMeters_p	F	F		F
+provenance	string	provenance_p	F	F		F
+# subspecies_guid - if rankid > 7000 taxonConceptID_p	F
+# subspecies_name - if rank_id > 7 then scientificName_p	F
+interaction	string	interactions_p	T	T		F
+last_assertion_date	date	lastUserAssertionDate	F	F		F
+last_load_date	date	lastModifiedTime	F	F		F
+last_processed_date	date	lastModifiedTime_p	F	F		F
+modified_date	date	modified_p	F	F		F
+license	string	license_p	F	F		F
+establishment_means	string	establishmentMeans_p	T	F		F
+original_name_usage	string	originalNameUsage	F	F	typifiedName	F
+duplicate_inst	string	duplicates	T	F		F
+record_number	string	recordNumber	F	F		F
+first_loaded_date	date	firstLoaded	F	F		F
+name_match_metric	string	nameMatchMetric_p	F	F		F
+life_stage	string	phenology	F	F		F
+outlier_layer	string	outlierForLayers_p	T	T		F
+# outlier_layer_count - based on the count in outlier_layer	F
+taxonomic_issue	string	taxonomicIssue_p	F	F		F
+raw_identification_qualifier	string	identificationQualifier	F	F		F
+species_habitats	string	speciesHabitats_p	T	T		F
+identified_by	string	identifiedBy	F	F		F
+identified_date	date	dateIdentified_p	F	F		F
+# sensitive_latitude - extracted from original values	F
+# sensitive_longitude -extracted from original values	F
+elevation_d	double	verbatimElevation_p	F	F		F
+min_elevation_d	double	minimumElevationInMeters_p	F	F		F
+max_elevation_d	double	maximumElevationInMeters_p	F	F		F
+depth_d	double	verbatimDepth_p	F	F		F
+min_depth_d	double	minimumDepthInMeters_p	F	F		F
+max_depth_d	double	maximumDepthInMeters_p	F	F		F
+raw_latitude	string	decimalLatitude	F	F		F
+raw_longitude	string	decimalLongitude	F	F		F
+raw_locality	string	locality	F	F		F
+raw_sex	string	sex	F	F		F
+raw_datum	string	geodeticDatum	F	F		F
+collector_text	string	recordedBy	F	F		F
+collectors	string	recordedBy_p	F	F		F
+duplicate_record	string	associatedOccurrences_p	T	T		F
+duplicate_status	string	duplicationStatus_p	T	T		F
+duplicate_type	string	duplicationType_p	T	T		F
+event_id	string	eventID	F	F		F
+location_id	string	locationId	F	F		F
+occurrence_details	string	occurrenceDetails	F	F		F
+record_type	string	basisOfRecord_p	F	F		F
+rights	string	rights	F	F		F
+alau_user_id	string	userId	F	F		F
+all_image_url	string	images_p	T	T		F
+dataset_name	string	datasetName	F	F		F
+distance_outside_expert_range	double	distanceOutsideExpertRange_p	F	F		F
+	string	acceptedNameUsage	F	F	F	F
+	string	acceptedNameUsageID	F	F	F	F
+	string	associatedMedia	T	T	F	F
+	string	associatedOccurrences	T	T	F	F
+	string	associatedOrganisms	F	F	F	F
+	string	associatedReferences	T	T	F	F
+	string	associatedSequences	T	T	F	F
+	string	associatedTaxa	T	T	F	F
+	string	attr_qa	T	T	F	F
+	string	australianHerbariumRegion	F	F	F	F
+	string	bed	F	F	F	F
+	string	behavior	F	F	F	F
+	string	bibliographicCitation	F	F	F	F
+	string	bor_qa	T	T	F	F
+	string	citation	F	F	F	F
+	string	class_qa	T	T	F	F
+	string	classID_p	F	F	F	F
+	string	classs	F	F	F	F
+	string	collectionCode_p	F	F	F	F
+	string	collectionID	F	F	F	F
+	string	continent	F	F	F	F
+	string	coordinatePrecision	F	F	F	F
+	string	coordinatePrecision_p	F	F	F	F
+	string	coordinateUncertaintyInMeters	F	F	F	F
+	string	country	F	F	F	F
+	string	county	F	F	F	F
+	string	cultivarName	F	F	F	F
+	string	cultivated	F	F	F	F
+	string	dataGeneralizations	F	F	F	F
+	string	dataGeneralizations_p	F	F	F	F
+	string	dataHubUid_p	T	T	F	F
+	string	dataProviderUid	F	F	F	F
+	string	datasetID	F	F	F	F
+	string	dateDeleted	F	F	F	F
+	string	dateIdentified	F	F	F	F
+	string	day	F	F	F	F
+	string	day_p	F	F	F	F
+	string	decimalLatitudelatitude	F	F	F	F
+	string	default_qa	T	T	F	F
+	string	defaultValuesUsed	F	F	F	F
+	string	deleted	F	F	F	F
+	string	disposition	F	F	F	F
+	string	distanceOutsideExpertRange	F	F	F	F
+	string	duplicates_qa	F	F	F	F
+	string	duplicatesOriginalInstitutionID	F	F	F	F
+	string	duplicatesOriginalUnitID	F	F	F	F
+	string	dynamicProperties	F	F	F	F
+	string	earliestAgeOrLowestStage	F	F	F	F
+	string	earliestEonOrLowestEonothem	F	F	F	F
+	string	earliestEpochOrLowestSeries	F	F	F	F
+	string	earliestEraOrLowestErathem	F	F	F	F
+	string	earliestPeriodOrLowestSystem	F	F	F	F
+	string	easting	F	F	F	F
+	string	endDayOfYear	F	F	F	F
+	string	establishmentMeans	F	F	F	F
+	string	event_qa	T	T	F	F
+	string	eventDate	F	F	F	F
+	string	eventRemarks	F	F	F	F
+	string	eventTime	F	F	F	F
+	string	family	F	F	F	F
+	string	familyID_p	F	F	F	F
+	string	fieldNotes	F	F	F	F
+	string	fieldNumber	F	F	F	F
+	string	footprintSpatialFit	F	F	F	F
+	string	footprintSRS	F	F	F	F
+	string	footprintWKT	F	F	F	F
+	string	formation	F	F	F	F
+	string	generalisedLocality	F	F	F	F
+	string	generalisedMeters	F	F	F	F
+	string	genus	F	F	F	F
+	string	geodeticDatum_p	F	F	F	F
+	string	geologicalContextID	F	F	F	F
+	string	georeferencedBy	F	F	F	F
+	string	georeferencedBy_p	F	F	F	F
+	string	georeferencedDate	F	F	F	F
+	string	georeferencedDate_p	F	F	F	F
+	string	georeferenceProtocol	F	F	F	F
+	string	georeferenceProtocol_p	F	F	F	F
+	string	georeferenceRemarks	F	F	F	F
+	string	georeferenceSources	F	F	F	F
+	string	georeferenceSources_p	F	F	F	F
+	string	georeferenceVerificationStatus	F	F	F	F
+	string	georeferenceVerificationStatus_p	F	F	F	F
+	string	geospatialIssue	F	F	F	F
+geospatial_kosher	string	geospatiallyKosher	F	F	F	F
+	string	global	F	F	F	F
+	string	group	F	F	F	F
+	string	gridReference	F	F	F	F
+	string	habitat	F	F	F	F
+	string	habitat_p	F	F	F	F
+	string	higherClassification	F	F	F	F
+	string	higherGeography	F	F	F	F
+	string	higherGeographyID	F	F	F	F
+	string	highestBiostratigraphicZone	F	F	F	F
+	string	identificationID	F	F	F	F
+	string	identificationReferences	F	F	F	F
+	string	identificationReferences_p	F	F	F	F
+	string	identificationRemarks	F	F	F	F
+	string	identificationVerificationStatus	F	F	F	F
+	string	identifiedBy_p	F	F	F	F
+	string	identifierBy	F	F	F	F
+	string	identifierRole	F	F	F	F
+	string	image_qa	T	T	F	F
+	string	images	T	T	F	F
+	string	individualCount	F	F	F	F
+	string	individualID	F	F	F	F
+	string	informationWithheld	F	F	F	F
+	string	informationWithheld_p	F	F	F	F
+	string	infraspecificEpithet	F	F	F	F
+	string	institutionCode_p	F	F	F	F
+	string	institutionID	F	F	F	F
+	string	institutionName	F	F	F	F
+	string	island	F	F	F	F
+	string	islandGroup	F	F	F	F
+	string	kingdom	F	F	F	F
+	string	kingdomID_p	F	F	F	F
+	string	language	F	F	F	F
+	string	latestAgeOrHighestStage	F	F	F	F
+	string	latestEonOrHighestEonothem	F	F	F	F
+	string	latestEpochOrHighestSeries	F	F	F	F
+	string	latestEraOrHighestErathem	F	F	F	F
+	string	latestPeriodOrHighestSystem	F	F	F	F
+	string	latestEonOrHighestEonothem	F	F	F	F
+	string	license	F	F	F	F
+	string	lifeStage	F	F	F	F
+	string	lithostratigraphicTerms	F	F	F	F
+	string	loc_qa	T	T	F	F
+	string	locality_p	F	F	F	F
+	string	locationAccordingTo	F	F	F	F
+	string	locationDetermined	F	F	F	F
+	string	locationRemarks	F	F	F	F
+	string	lowestBiostratigraphicZone	F	F	F	F
+	string	materialSampleID	F	F	F	F
+	string	maximumDepthInMeters	F	F	F	F
+	string	maximumDistanceAboveSurfaceInMeters	F	F	F	F
+	string	maximumElevationInMeters	F	F	F	F
+	string	measurementAccuracy	F	F	F	F
+	string	measurementDeterminedBy	F	F	F	F
+	string	measurementDeterminedDate	F	F	F	F
+	string	measurementID	F	F	F	F
+	string	measurementMethod	F	F	F	F
+	string	measurementRemarks	F	F	F	F
+	string	measurementType	F	F	F	F
+	string	measurementUnit	F	F	F	F
+	string	measurementValue	F	F	F	F
+	string	member	F	F	F	F
+	string	minimumDepthInMeters	F	F	F	F
+	string	minimumDistanceAboveSurfaceInMeters	F	F	F	F
+	string	minimumElevationInMeters	F	F	F	F
+	string	modified	F	F	F	F
+	string	month	F	F	F	F
+	string	municipality	F	F	F	F
+	string	nameAccordingTo	F	F	F	F
+	string	nameAccordingTo_p	F	F	F	F
+	string	nameAccordingToID	F	F	F	F
+	string	nameParseType_p	F	F	F	F
+	string	namePublishedIn	F	F	F	F
+	string	namePublishedInID	F	F	F	F
+	string	namePublishedInYear	F	F	F	F
+	string	naturalOccurrence	F	F	F	F
+	string	nearNamedPlaceRelationTo	F	F	F	F
+	string	nomenclaturalCode	F	F	F	F
+	string	nomenclaturalCode_p	F	F	F	F
+	string	nomenclaturalStatus	F	F	F	F
+	string	northing	F	F	F	F
+	string	occurrenceRemarks	F	F	F	F
+	string	occurrenceStatus	F	F	F	F
+occurrenceStatus	string	occurrenceStatus_p	F	F	F	F
+	string	offline_qa	T	T	F	F
+	string	order	F	F	F	F
+	string	orderID_p	F	F	F	F
+	string	organismID	F	F	F	F
+	string	organismName	F	F	F	F
+	string	organismQuantity	F	F	F	F
+	string	organismQuantityType	F	F	F	F
+	string	organismRemarks	F	F	F	F
+	string	organismScope	F	F	F	F
+	string	originalNameUsageID	F	F	F	F
+	string	originalSensitiveValues	F	F	F	F
+	string	otherCatalogNumbers	F	F	F	F
+	string	ownerInstitutionCode	F	F	F	F
+	string	parentEventID	F	F	F	F
+	string	parentNameUsage	F	F	F	F
+	string	parentNameUsageID	F	F	F	F
+	string	photoPageUrl	F	F	F	F
+	string	phylum	F	F	F	F
+	string	phylumID_p	F	F	F	F
+	string	pointRadiusSpatialFit	F	F	F	F
+	string	portalId	F	F	F	F
+	string	preferredFlag	F	F	F	F
+	string	preparations	F	F	F	F
+	string	previousIdentifications	F	F	F	F
+	string	queryAssertions_p	T	T	F	F
+	string	references	F	F	F	F
+	string	relatedResourceID	F	F	F	F
+	string	relationshipAccordingTo	F	F	F	F
+	string	relationshipEstablishedDate	F	F	F	F
+	string	relationshipOfResource	F	F	F	F
+	string	relationshipRemarks	F	F	F	F
+	string	resourceID	F	F	F	F
+	string	resourceRelationshipID	F	F	F	F
+	string	rightsholder	F	F	F	F
+	string	samplingEffort	F	F	F	F
+	string	samplingProtocol	F	F	F	F
+	string	samplingProtocol_p	F	F	F	F
+	string	sampleSizeUnit	F	F	F	F
+	string	sampleSizeValue	F	F	F	F
+	string	scientificNameAddendum	F	F	F	F
+	string	scientificNameAuthorship	F	F	F	F
+	string	scientificNameID	F	F	F	F
+	string	scientificNameWithoutAuthor	F	F	F	F
+	string	secondaryCollectors	F	F	F	F
+	string	sounds	T	T	F	F
+	string	sounds_p	T	T	F	F
+	string	species	F	F	F	F
+	string	specificEpithet	F	F	F	F
+	string	startDayOfYear	F	F	F	F
+	string	state	F	F	F	F
+	string	stateConservation_p	F	F	F	F
+	string	stateProvince	F	F	F	F
+	string	subfamily	F	F	F	F
+	string	subgenus	F	F	F	F
+	string	subspecies	F	F	F	F
+	string	subspeciesID_p	F	F	F	F
+	string	superfamily	F	F	F	F
+	string	taxonConceptID	F	F	F	F
+	string	taxonID	F	F	F	F
+	string	taxonomicStatus	F	F	F	F
+	string	taxonRank	F	F	F	F
+	string	taxonRemarks	F	F	F	F
+	string	type	F	F	F	F
+	string	type_qa	T	T	F	F
+	string	typeStatusQualifier	F	F	F	F
+	string	typifiedName	F	F	F	F
+	string	userId_p	F	F	F	F
+	string	userVerified	F	F	F	F
+	string	validDistribution	F	F	F	F
+	string	verbatimCoordinates	F	F	F	F
+	string	verbatimCoordinateSystem	F	F	F	F
+	string	verbatimDateIdentified	F	F	F	F
+	string	verbatimDepth	F	F	F	F
+	string	verbatimElevation	F	F	F	F
+	string	verbatimEventDate	F	F	F	F
+	string	verbatimLatitude	F	F	F	F
+	string	verbatimLocality	F	F	F	F
+	string	verbatimLongitude	F	F	F	F
+	string	verbatimSRS	F	F	F	F
+	string	verbatimTaxonRank	F	F	F	F
+	string	verificationDate	F	F	F	F
+	string	verificationNotes	F	F	F	F
+	string	verifier	F	F	F	F
+	string	videos	T	T	F	F
+	string	videos_p	T	T	F	F
+	string	waterBody	F	F	F	F
+	string	year	F	F	F	F
+	string	zone	F	F	F	F

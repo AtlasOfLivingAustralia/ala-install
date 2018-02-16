@@ -1,0 +1,2 @@
+Adult	mature
+Juvenile	infant
