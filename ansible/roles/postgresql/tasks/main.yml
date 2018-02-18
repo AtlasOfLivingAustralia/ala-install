@@ -14,12 +14,14 @@
   include: apt.yaml
   tags: postgresql
 
+# Note: postgis is required to get the "shp2pgsql" binary, which is missing from postgres-9.2-postgis-2.4
 - name: Install Postgres with PostGIS
   apt: pkg="{{ item }}" state="present" update_cache="yes"
   with_items:
     - postgresql-9.6-postgis-2.4
     - postgresql-contrib-9.6
     - gdal-bin
+    - postgis
   tags:
     - postgresql
   register: postgresql_installed
