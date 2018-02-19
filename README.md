@@ -91,7 +91,7 @@ To run Ansible against your vagrant instance you need to locate the correct key 
 
 ```
 $ cd ansible
-$ ansible-playbook -i inventories/vagrant/demo-vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key --user vagrant --sudo
+$ ansible-playbook -i inventories/vagrant/demo-vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key --user vagrant --become
 ```
 
 Once completed successfully you can view the demo on http://demo.vagrant1.ala.org.au/ 
@@ -113,7 +113,7 @@ You'll need to replace "12.12.12.12" with the IP address of your newly created U
 
  * Run the following:
 ```
-ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem --user ubuntu --sudo -i ansible/inventories/demo-ec2 ansible/ala-demo.yml
+ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem --user ubuntu --become -i ansible/inventories/demo-ec2 ansible/ala-demo.yml
 ```
  * View http://ala-demo.org
  
@@ -127,7 +127,7 @@ ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem --user ubuntu --sudo -i a
 The ```inventories/vagrant/``` directory contains sample inventories for most playbooks that will work against a Ubuntu Vagrant virtual machine. To use these inventories, add an entry for ```vagrant1``` and ```vagrant1.ala.org.au``` to your hosts file, or edit the inventory file and replace the hostnames and URLs, then run
 
 ```
-ansible-playbook -i inventories/vagrant/<inventoryFile> <playbook>.yml --private-key ~/.vagrant.d/insecure_private_key --user vagrant --sudo
+ansible-playbook -i inventories/vagrant/<inventoryFile> <playbook>.yml --private-key ~/.vagrant.d/insecure_private_key --user vagrant --become
 ```
 
 The inventory files can easily be modified to work against other virtual machines or servers (e.g. Nectar or CSIRO) simply by modifying the server and host names appropriately.
@@ -140,7 +140,7 @@ In each case you will need to create an inventory file that points to your VM(s)
 
 For IM&T virtual machines:
 ```
-$ ansible-playbook -i inventories/demo ala-demo.yml --user <CSIRO_IDENT> --sudo --ask-pass --ask-sudo-pass
+$ ansible-playbook -i inventories/demo ala-demo.yml --user <CSIRO_IDENT> --become --ask-pass --ask-sudo-pass
 ```
 
 For Nectar VMs:
@@ -151,12 +151,12 @@ Note Nectar VMs will require an edit of the /etc/hosts file on the VM so that it
 
 For Vagrant VMs:
 ```
-$ ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key --user vagrant
+$ ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key --user vagrant --become
 ```
 
 For EC2 instances:
 ```
-$ ansible-playbook -i inventories/solr-amazon solr-standalone.yml --private-key ~/.ssh/dmartin-amazon.pem --user ubuntu --sudo
+$ ansible-playbook -i inventories/solr-amazon solr-standalone.yml --private-key ~/.ssh/dmartin-amazon.pem --user ubuntu --become
 ```
 
 ## Required inventory properties
