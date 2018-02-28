@@ -2,6 +2,13 @@
         add_header  Content-Type  text/plain;
         return 200 
 "User-agent: *
-Disallow: {{ robots_disallow|join('\nDisallow: ') }}
+Disallow: {{ robots_disallow_paths|join('\nDisallow: ') }}
+
+{% for item in robots_disallow_useragents %}
+User-agent: {{ item }}
+Disallow: /
+{% endfor %}
 ";
+
+
     }
