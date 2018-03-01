@@ -45,6 +45,7 @@ postgresql_password=password
 
 webserver_nginx=true
 robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
+robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
 
 ssl=false
 
@@ -81,6 +82,7 @@ postgresql_password=password
 
 webserver_nginx=true
 robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
+robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
 
 ssl=false
 
@@ -128,6 +130,7 @@ auth_cas_url=https://auth.ala.org.au/cas
 
 webserver_nginx=true
 robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
+robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
 
 ssl=false
 
@@ -159,5 +162,6 @@ tomcat_java_opts = -Xmx1g -Xms1g -Xss256k -Djava.awt.headless=true
 
 webserver_nginx=true
 robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
+robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
 
 ssl=false
