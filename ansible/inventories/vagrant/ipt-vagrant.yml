@@ -1,0 +1,11 @@
+# IPT installation
+[ipt]
+ipt.ala.org.au
+  
+[ipt:vars]
+data_dir = /data
+
+ipt_url = http://ipt.ala.org.au
+ipt_base_url = http://ipt.ala.org.au
+ipt_context_path = 
+ipt_hostname = ipt.ala.org.au

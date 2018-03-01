@@ -1,0 +1,22 @@
+- include: ../../common/tasks/setfacts.yml
+
+- name: download lucene 5 core and backward-codecs
+  get_url:
+    url: "{{ item }}"
+    dest: "/tmp/"
+  with_items:
+    - "http://central.maven.org/maven2/org/apache/lucene/lucene-core/5.5.1/lucene-core-5.5.1.jar"
+    - "http://central.maven.org/maven2/org/apache/lucene/lucene-backward-codecs/5.5.1/lucene-backward-codecs-5.5.1.jar"
+  tags:
+    - "lucene4to5"
+
+- name: convert name index from lucene 4 to 5
+  command: java -cp lucene-core-5.5.1.jar:lucene-backward-codecs-5.5.1.jar org.apache.lucene.index.IndexUpgrader -delete-prior-commits {{ data_dir }}/lucene/namematching/{{ item }} chdir=/tmp/
+  with_items:
+    - "cb"
+    - "id"
+    - "irmng"
+    - "vernacular"
+  ignore_errors: true
+  tags:
+    - "lucene4to5"
