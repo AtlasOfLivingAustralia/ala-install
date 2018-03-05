@@ -1,6 +1,6 @@
 - include: ../../common/tasks/setfacts.yml 
   tags:
-    - java8
+    - java
 
 # OpenJDK-8 is needed to fulfill the default JRE role so Tomcat can be installed
 # Note, oracle-java8-set-default is installed later on so it is used by default
@@ -15,7 +15,7 @@
   become: yes
   apt: name=software-properties-common state=latest
   tags:
-    - java8
+    - java
 
 - name: Add Oracle Java Repository
   become: yes
@@ -23,13 +23,13 @@
     repo: 'ppa:webupd8team/java'
     update_cache: yes
   tags:
-    - java8
+    - java
 
 - name: Accept Java 8 License
   become: yes
   debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
   tags:
-    - java8
+    - java
 
 # Need to attempt to install oracle java8 before the files that we may need to patch are in location, so ignore errors for this attempt
 - name: Install Oracle Java 8 (before possibly patching files)
@@ -41,7 +41,7 @@
     - oracle-java8-set-default
   ignore_errors: yes
   tags:
-    - java8
+    - java
 
 - name: Fix Webupd8 Team failing to update and Oracle removing old download
   become: yes
@@ -52,7 +52,7 @@
     sed -i 's|SHA256SUM_TGZ="c78200ce409367b296ec39be4427f020e2c585470c4eed01021feada576f027f"|SHA256SUM_TGZ="68ec82d47fd9c2b8eb84225b6db398a72008285fafc98631b1ff8d2229680257"|' oracle-java8-installer.* &&
     sed -i 's|J_DIR=jdk1.8.0_151|J_DIR=jdk1.8.0_162|' oracle-java8-installer.*
   tags:
-    - java8
+    - java
 
 - name: Switch oracle jdk 8 from security (b161) to bug fix+security (b162)
   become: yes
@@ -63,7 +63,7 @@
     sed -i 's|SHA256SUM_TGZ="6dbc56a0e3310b69e91bb64db63a485bd7b6a8083f08e48047276380a0e2021e"|SHA256SUM_TGZ="68ec82d47fd9c2b8eb84225b6db398a72008285fafc98631b1ff8d2229680257"|' oracle-java8-installer.* &&
     sed -i 's|J_DIR=jdk1.8.0_161|J_DIR=jdk1.8.0_162|' oracle-java8-installer.*
   tags:
-    - java8
+    - java
 
 - name: Install Oracle Java 8 (after possibly patching files)
   become: yes
@@ -73,4 +73,4 @@
     - ca-certificates
     - oracle-java8-set-default
   tags:
-    - java8
+    - java
