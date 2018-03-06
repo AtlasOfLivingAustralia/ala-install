@@ -6,9 +6,9 @@ is_vagrant=false
 local_repo_dir=~/.ala
 data_dir=/data
 
-dashboard_hostname=dashboard.vagrant1.ala.org.au
-dashboard_url=http://dashboard.vagrant1.ala.org.au/
-dashboard_base_url=http://dashboard.vagrant1.ala.org.au/
+dashboard_hostname = dashboard.vagrant1.ala.org.au
+dashboard_url = http://dashboard.vagrant1.ala.org.au/
+dashboard_base_url = http://dashboard.vagrant1.ala.org.au/
 dashboard_context_path=
 
 biocache_base_url=https://biocache.ala.org.au
