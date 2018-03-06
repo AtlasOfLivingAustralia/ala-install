@@ -1,5 +1,5 @@
 # common variables across all roles
-tomcat_java_opts: -Xmx2g -Xms2g -XX:MaxPermSize=256m -Xss256k -Djava.awt.headless=true
+tomcat_java_opts: -Xmx2g -Xms2g -Xss256k -Djava.awt.headless=true
 tomcat_control_port: 8005
 tomcat_http: true
 tomcat_http_port: 8080

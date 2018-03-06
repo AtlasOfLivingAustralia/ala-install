@@ -9,6 +9,6 @@ test_biocache_host=vagrant2.ala.org.au
 local_repo_dir=~/.ala
 data_dir=/data
 is_vagrant=true
-tomcat_java_opts = -Xmx2g -Xms2g -XX:MaxPermSize=512m -Xss512k -Djava.awt.headless=true
+tomcat_java_opts = -Xmx2g -Xms2g -Xss512k -Djava.awt.headless=true
 biocache_local_build=/home/pal155/src/biocache-store/target/biocache-store-1.7.1-SNAPSHOT-distribution.zip
 biocache_opts=-Xmx4g -Xms1g

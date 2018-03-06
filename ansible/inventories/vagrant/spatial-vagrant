@@ -44,7 +44,8 @@ postgresql_username=postgres
 postgresql_password=password
 
 webserver_nginx=true
-robots_disallow=["/ws", "/geoserver", "/geonetwork"]
+robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
+robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
 
 ssl=false
 
@@ -80,7 +81,8 @@ postgresql_username=postgres
 postgresql_password=password
 
 webserver_nginx=true
-robots_disallow=["/ws", "/geoserver", "/geonetwork"]
+robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
+robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
 
 ssl=false
 
@@ -121,13 +123,14 @@ spatial_service_api_key=get-me-an-api-key
 spatial_service_slave_key=create-shared-key
 spatial_service_service_key=create-shared-key
 
-spatial_service_remote_url=http://spatial-test.ala.org.au/spatial-service
+spatial_service_remote_url=https://nectar-spatial-staging.ala.org.au/spatial-service
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
 webserver_nginx=true
-robots_disallow=["/ws", "/geoserver", "/geonetwork"]
+robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
+robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
 
 ssl=false
 
@@ -155,9 +158,10 @@ sandbox_biocache_service_url=http://sandbox.ala.org.au/biocache-service
 google_api_key=get-a-google-api-key
 spatial_hub_api_key=get-an-ala-api-key
 
-tomcat_java_opts = -Xmx1g -Xms1g -XX:MaxPermSize=128m -Xss256k -Djava.awt.headless=true
+tomcat_java_opts = -Xmx1g -Xms1g -Xss256k -Djava.awt.headless=true
 
 webserver_nginx=true
-robots_disallow=["/ws", "/geoserver", "/geonetwork"]
+robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
+robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
 
 ssl=false
