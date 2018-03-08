@@ -8,19 +8,30 @@
 
 - include: apt.yaml
 
+- set_fact:
+    postgresql_packages: [ "libpq-dev", "python-psycopg2" ]
+
+- name: Set postgresql package name
+  set_fact:
+    postgresql_packages: "{{postgresql_packages}} + [ 'postgresql-{{pg_version}}-postgis-{{postgis_version}}', 'postgresql-{{pg_version}}-postgis-{{postgis_version}}-scripts', 'postgresql-contrib-{{pg_version}}' ]"
+  when: postgis_version is defined
+
+- name: Set postgresql package name
+  set_fact:
+    postgresql_packages: "{{postgresql_packages}} + [ 'postgresql-{{pg_version}}', 'postgresql-contrib-{{pg_version}}']"
+  when: postgis_version is not defined
+
 - name: Install Postgres
   apt:
     pkg: "{{ item }}"
     state: present
     update_cache: yes
-  with_items:
-    - "postgresql-{{pg_version}}"
-    - "postgresql-contrib"
-    - "libpq-dev"
-    - "python-psycopg2"
+  with_items: "{{ postgresql_packages }}"
   tags: postgresql
 
-- include: postgis.yml
+# PostGIS 2.2+ only needs CREATE EXTENSION postgis; on the target DB
+- debug:
+    msg: "PostGIS-enabled databases also need a corresponding pg_instance role with postgis in the extensions list"
   when: postgis_version is defined
 
 - name: start postgresql and configure to startup automatically
