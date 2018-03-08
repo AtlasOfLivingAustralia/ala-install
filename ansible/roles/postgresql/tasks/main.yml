@@ -1,5 +1,14 @@
 - include: ../../common/tasks/setfacts.yml
 
+# tasks file for ntp
+- name: Gather OS Specific Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "../vars/{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
+    - "../vars/{{ ansible_distribution }}.yml"
+    - "../vars/{{ ansible_os_family }}.yml"
+  tags: postgresql
+
 - include: ./old.yml
   when: ansible_os_family == "RedHat" or pg_version is not defined
   tags:
