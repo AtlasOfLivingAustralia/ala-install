@@ -1,3 +1,0 @@
-dependencies:
-  - { role: augeas }
-  - { role: java8 }

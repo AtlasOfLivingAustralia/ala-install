@@ -1,0 +1,4 @@
+- hosts: all
+  roles:
+   - common
+   - lucene4to5

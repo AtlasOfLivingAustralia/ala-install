@@ -2,9 +2,9 @@
 - hosts: '{{ target }}'
   roles:
     - common
-    - java8
+    - java
     - webserver
-    - tomcat7-java8
+    - tomcat
     - mysql-5.7
     - solr
     - biocache-properties

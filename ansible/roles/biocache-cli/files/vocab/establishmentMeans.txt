@@ -1,0 +1,17 @@
+cultivated	cultivated
+not cultivated	not cultivated
+assumed to be cultivated	assumed to be cultivated
+no information	no information
+not applicable	not applicable
+doubtfully cultivated	doubtfully cultivated
+formerly cultivated (extinct)	formerly cultivated (extinct)
+not native	not native
+native	native
+formerly native (extinct)	formerly native (extinct)
+possibly cultivated	possibly cultivated
+presumably cultivated	presumably cultivated
+assumed to be native	assumed to be native
+none of the above	none of the above
+doubtfully native	doubtfully native
+unknown	unknown
+

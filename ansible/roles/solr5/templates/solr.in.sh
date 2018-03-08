@@ -84,7 +84,7 @@ SOLR_OPTS="$SOLR_OPTS -Xss256k"
 
 # Path to a directory for Solr to store cores and their data. By default, Solr will use server/solr
 # If solr.xml is not stored in ZooKeeper, this directory needs to contain solr.xml
-SOLR_HOME={{ solr_home | default('/data/solr/') }}
+SOLR_HOME={{ solr_home | default('/data/solr/data') }}
 
 # Solr provides a default Log4J configuration properties file in server/resources
 # however, you may want to customize the log settings and file appender location

@@ -1,0 +1,29 @@
+{
+  "biocache": {
+    "month": {
+      "title": "By month",
+      "chartType": "bar",
+      "emptyValueMsg": "Month not specified",
+      "hideEmptyValues": false
+    },
+    "year": {
+      "title": "By year",
+      "chartType": "bar",
+      "emptyValueMsg": "Year not specified",
+      "hideEmptyValues": true,
+      "filter": ""
+    },
+    "assertions": {
+      "title": "By data quality",
+      "chartType": "horizontal-bar",
+      "emptyValueMsg": "",
+      "hideEmptyValues": true
+    },
+    "family": {
+      "title": "By family",
+      "chartType": "doughnut",
+      "emptyValueMsg": "",
+      "hideEmptyValues": true
+    }
+  }
+}

@@ -9,6 +9,7 @@
 
 - name: Setup apt repositories
   include: apt.yaml
+  tags: postgresql
 
 - name: Install Postgres with PostGIS
   apt: pkg="{{ item }}" state="present" update_cache="yes"
@@ -22,6 +23,15 @@
   notify:
     - restart postgresql
   when: ansible_os_family == "Debian"
+
+# Note: postgis is required to get the "shp2pgsql" binary, which is missing from postgres-9.6-postgis-2.4
+# Not pulling in recommended packages as that would pull in postgres-10, where we want to use postgres-9.6 at this point
+- name: Install separate postgis package to get shp2pgsql binary
+  apt: pkg="postgis" state="present" update_cache="yes" install_recommends="no"
+  become: yes
+  tags:
+    - postgresql
+  register: postgresql_installed
 
 - name: install yum repo
   yum: name="http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-centos93-9.3-1.noarch.rpm" state="present"

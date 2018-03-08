@@ -1,0 +1,5 @@
+Male	M
+Female	F
+unknowable
+undetermined
+hermaphrodite

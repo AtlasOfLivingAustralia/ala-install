@@ -1,4 +1,25 @@
 { "biocache" : {
+  "license" : {
+    "title": "By licence",
+    "chartType": "doughnut",
+    "emptyValueMsg": "Licence not specified",
+    "hideEmptyValues" : true,
+    "includeOther" : "false"
+  },
+    "month" : {
+      "title": "By month",
+      "chartType": "bar",
+      "emptyValueMsg": "Month not specified",
+      "hideEmptyValues" : true,
+      "includeOther" : "false"
+    },
+    "occurrence_decade_i" : {
+      "title": "By decade",
+      "chartType": "bar",
+      "emptyValueMsg": "Year not specified",
+      "hideEmptyValues" : true,
+      "includeOther" : "false"
+    },
     "genus" : {
         "title": "By genus",
         "chartType": "doughnut",
@@ -6,18 +27,18 @@
         "hideEmptyValues" : true,
         "includeOther" : "false"
     },
-    "collection_uid":{
-    	"title": "By collection",
-	"chartType": "doughnut",
-	"emptyValueMsg": "Collection not specified",
-	"hideEmptyValues": true,
+    "family" : {
+      "title": "By family",
+      "chartType": "doughnut",
+      "emptyValueMsg": "Family not specified",
+      "hideEmptyValues" : true,
       "includeOther" : "false"
     },
     "assertions": {
-	"title":"By data assertion",
-	"chartType": "horizontal-bar",
-	"emptyValueMsg":"Assertion not specified",
-	"hideEmptyValues": true,
+      "title":"By data assertion",
+      "chartType": "horizontal-bar",
+      "emptyValueMsg":"Assertion not specified",
+      "hideEmptyValues": true,
       "includeOther" : "false"
     },
     "type_status":{
@@ -25,27 +46,6 @@
 	"chartType": "doughnut",
 	"emptyValueMsg": "Type status not specified",
 	"hideEmptyValues": true,
-      "includeOther" : "false"
-    },
-    "state_conservation":{
-	"title":"By state conservation status",
-	"chartType":"bar",
-	"emptyValueMsg":"State conservation not specified",
-	"hideEmptyValues": true,
-      "includeOther" : "false"
-    },
-    "month" : {
-        "title": "By month",
-        "chartType": "bar",
-        "emptyValueMsg": "Month not specified",
-        "hideEmptyValues" : true,
-      "includeOther" : "false"
-    },
-    "decade" : {
-        "title": "By decade",
-        "chartType": "bar",
-        "emptyValueMsg": "Year not specified",
-        "hideEmptyValues" : true,
       "includeOther" : "false"
     }
 }}

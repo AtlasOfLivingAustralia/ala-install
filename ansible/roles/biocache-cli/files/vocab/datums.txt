@@ -1,0 +1,10 @@
+EPSG:4326	epsg4326	4326
+WGS84	world geodetic system
+WGS72
+WGS66
+WGS60
+GDA94	AGD84/66	AGD66	AGD84
+NAD27
+Campo Inchauspe
+European 1950
+Clarke 1866

@@ -32,7 +32,7 @@ default_map_lon = -4.505723
 default_map_lat = 56.998999
 default_map_zoom = 6
 
-image_thumbnail_url = http://images.ala.org.au/image/proxyImageThumbnail?imageId=
+image_thumbnail_url = https://images.ala.org.au/image/proxyImageThumbnail?imageId=
 
 # Header and footer
 ala_base_url = https://www.ala.org.au

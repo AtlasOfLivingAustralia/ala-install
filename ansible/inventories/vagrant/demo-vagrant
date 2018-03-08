@@ -26,7 +26,7 @@ download_url=http://demo.vagrant1.ala.org.au/biocache-download
 download_dir=/data/biocache-download/biocache-download/
 download_auth_sensitive=true
 
-download_email_subject=VAGRANT - ALA Occurrence Download Complete - [filename]
+download_email_subject=VAGRANT - [hubName] Occurrence Download Complete - [filename]
 
 ####################### Hub #######################
 

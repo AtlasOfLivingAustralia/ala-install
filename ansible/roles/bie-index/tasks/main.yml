@@ -2,6 +2,7 @@
   tags:
     - webapps
     - config
+    - properties
     - bie-index
 
 - name: ensure target directories exist [data subdirectories etc.]
@@ -11,6 +12,7 @@
     - "{{ data_dir }}/bie/import"     
   tags:
     - config
+    - properties
     - bie-index
 
 - name: copy all config.properties
@@ -18,6 +20,7 @@
   tags:
     - webapps
     - config
+    - properties
     - bie-index
 
 - name: copy all species list configurations
@@ -28,6 +31,7 @@
     - vernacular-lists.json
   tags:
     - config
+    - properties
     - bie-index
 
 - include: ../../apache_vhost/tasks/main.yml context_path='/{{ bie_index_context_path }}' hostname='{{ bie_index_hostname }}'

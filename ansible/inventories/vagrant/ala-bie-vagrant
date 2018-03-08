@@ -5,7 +5,7 @@ vagrant1
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-tomcat_java_opts = -Xmx3g -Xms2g -XX:MaxPermSize=512m -Xss512k -Djava.awt.headless=true
+tomcat_java_opts = -Xmx3g -Xms2g -Xss512k -Djava.awt.headless=true
 
 ala_bie_hostname=vagrant1.ala.org.au
 ala_bie_context_path=/bie

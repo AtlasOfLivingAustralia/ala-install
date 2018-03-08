@@ -2,7 +2,7 @@
 - hosts: aws-cassandra-reprocess
   roles:
     - common
-    - java8
+    - java
     - cassandra
     - biocache-properties
     - biocache-cli

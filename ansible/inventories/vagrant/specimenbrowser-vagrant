@@ -18,7 +18,7 @@ collectory_base_url = https://collections.ala.org.au
 collectory_services_url = https://collections.ala.org.au/ws
 spatial_base_url = http://spatial.ala.org.au
 ala_base_url = https://www.ala.org.au
-ala_image_info_url = http://images.ala.org.au/ws/getImageInfo/
+ala_image_info_url = https://images.ala.org.au/ws/getImageInfo/
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas

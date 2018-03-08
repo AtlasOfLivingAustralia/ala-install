@@ -1,13 +1,14 @@
 - hosts: biocache
   roles:
     - common
-    - java8
-    - tomcat7-java8
+    - java
+    - tomcat
     - cassandra
     - webserver
     - nameindex
     - solr
     - biocache-db
     - biocache-properties
+    - nameindex
     - biocache-service
     - logger-client

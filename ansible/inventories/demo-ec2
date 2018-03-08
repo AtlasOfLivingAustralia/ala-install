@@ -150,5 +150,5 @@ use_gbif_nexus=false
 sds_enabled=false
 
 ############### Biocache CLI options ###############
-biocache_opts = -Xmx1g -Xms1g
+biocache_opts = -Xmx2g -Xms2g
 

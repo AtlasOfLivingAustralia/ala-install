@@ -72,7 +72,7 @@
   lineinfile: " 
     dest={{tomcat_conf}}
     regexp=^JAVA_HOME
-    line='JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64'"
+    line='JAVA_HOME={{ java_home }}'"
   notify: 
     - restart tomcat    
   when: ansible_os_family == "Debian"

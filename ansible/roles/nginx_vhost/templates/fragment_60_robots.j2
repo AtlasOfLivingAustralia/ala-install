@@ -1,7 +1,23 @@
     location = /robots.txt {
         add_header  Content-Type  text/plain;
         return 200 
-"User-agent: *
-Disallow: {{ robots_disallow|join('\nDisallow: ') }}
+"
+{% if robots_disallow_paths is defined and robots_disallow_paths|length > 0 %}
+# Disallow particular paths for all user agents
+User-agent: *
+{% for item in robots_disallow_paths %}
+Disallow: {{ item }}
+{% endfor %}
+{% endif %}
+
+{% if robots_disallow_useragents is defined and robots_disallow_useragents|length > 0 %}
+# Disallow entire user agents
+{% for item in robots_disallow_useragents %}
+User-agent: {{ item }}
+Disallow: /
+
+{% endfor %}
+{% endif %}
 ";
-    }
+
+}

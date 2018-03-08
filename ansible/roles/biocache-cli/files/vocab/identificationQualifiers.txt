@@ -1,0 +1,30 @@
+[Certain]
+certain
+confident
+confirm(ed)
+positive
+verified
+
+[Uncertain]
+?
+cf.
+aff.
+unknown
+not certain
+negative
+uncertain
+uncertainty
+incorrect
+possible
+probable
+sp.
+sp
+unnamed
+unsure
+forsan
+near
+x
+not sure
+not confirm(ed)
+not correct
+unconfirm(ed)

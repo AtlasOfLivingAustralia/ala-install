@@ -1,11 +1,11 @@
 - hosts: biocache
   roles:
     - common
-    - java8
+    - java
     - cassandra
     - nameindex
     - biocache-db
     - biocache-properties
     - biocache-cli
     - jenkins
-    - apache    
+    - apache

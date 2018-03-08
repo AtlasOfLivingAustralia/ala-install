@@ -515,6 +515,7 @@
    <field name="verbatimNomenclaturalCode" type="lowercase" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="verbatimTaxonomicStatus" type="lowercase" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="verbatimNomenclaturalStatus" type="lowercase" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="score" type="int" indexed="false" stored="true" required="false" multiValued="false"/>
 
    <!-- Additional information -->
    <field name="occurrenceCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
@@ -530,7 +531,16 @@
    <field name="namePublishedIn" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInYear" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
-
+   <field name="taxonRemarks" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="temporal" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="locationID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="locality" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="countryCode" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="sex" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="lifeStage" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="isPlural" type="boolean" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="organismPart" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="labels" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
    <!-- higher taxonomy -->
    <field name="speciesGroup" type="lowercase" indexed="true" stored="true" multiValued="true" omitNorms="true" />
    <field name="speciesSubgroup" type="lowercase" indexed="true" stored="true" multiValued="true" omitNorms="true" />
