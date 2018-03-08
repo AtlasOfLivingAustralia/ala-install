@@ -9,17 +9,13 @@
 - include: apt.yaml
 
 - set_fact:
-    postgresql_packages: [ "libpq-dev", "python-psycopg2" ]
+    postgresql_packages: [ "libpq-dev", "python-psycopg2", "postgresql-{{pg_version}}", "postgresql-contrib-{{pg_version}}" ]
 
 - name: Set postgresql package name
   set_fact:
-    postgresql_packages: "{{postgresql_packages}} + [ 'postgresql-{{pg_version}}-postgis-{{postgis_version}}', 'postgresql-{{pg_version}}-postgis-{{postgis_version}}-scripts', 'postgresql-contrib-{{pg_version}}' ]"
+    postgresql_packages: "{{postgresql_packages}} + [ 'postgresql-{{pg_version}}-postgis-{{postgis_version}}', 'postgresql-{{pg_version}}-postgis-{{postgis_version}}-scripts', 'gdal-bin' ]"
   when: postgis_version is defined
-
-- name: Set postgresql package name
-  set_fact:
-    postgresql_packages: "{{postgresql_packages}} + [ 'postgresql-{{pg_version}}', 'postgresql-contrib-{{pg_version}}']"
-  when: postgis_version is not defined
+  tags: postgresql
 
 - name: Install Postgres
   apt:
@@ -28,8 +24,22 @@
     update_cache: yes
   with_items: "{{ postgresql_packages }}"
   tags: postgresql
+  register: postgresql_installed
+  notify:
+    - restart postgresql
 
-# PostGIS 2.2+ only needs CREATE EXTENSION postgis; on the target DB
+# Note: postgis is required to get the "shp2pgsql" binary, which is missing from postgres-9.6-postgis-2.4
+# Not pulling in recommended packages as that would pull in postgres-10
+- name: Install separate postgis package to get shp2pgsql binary
+  apt: pkg="postgis" state="present" update_cache="yes" install_recommends="no"
+  when: postgis_version is defined
+  tags:
+    - postgresql
+  register: postgresql_installed
+  notify:
+    - restart postgresql
+
+# PostGIS 2.2+ only needs CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology; etc on the target DB
 - debug:
     msg: "PostGIS-enabled databases also need a corresponding pg_instance role with postgis in the extensions list"
   when: postgis_version is defined
