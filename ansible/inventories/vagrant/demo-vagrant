@@ -9,7 +9,7 @@ data_dir=/data
 demo_hostname = demo.vagrant1.ala.org.au
 
 #biocache_hub_version = 2.5-SNAPSHOT
-biocache_service_version=1.9.2-SNAPSHOT
+biocache_service_version=1.9.2
 
 ####################### Biocache #######################
 
