@@ -39,6 +39,11 @@
     - "{{ssl_certificate_local_dir | default('') }}/{{ssl_chain_file | default('') }}"
   when: ssl and copy_https_certs_from_local and vhost_required
 
+- name: set context path to root by default
+  set_fact: 
+    context_path: "/"
+  when: context_path is not defined or (context_path | trim == '')
+
 - name: set nginx_paths with root path by default
   set_fact: 
     nginx_paths:
