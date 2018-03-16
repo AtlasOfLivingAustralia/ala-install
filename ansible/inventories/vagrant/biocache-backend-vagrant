@@ -18,7 +18,7 @@ biocache_service_base_url = http://vagrant1.ala.org.au
 biocache_service_context_path = /biocache-service
 
 biocache_hub_version = 2.5-SNAPSHOT
-biocache_service_version=1.9.2-SNAPSHOT
+biocache_service_version=1.9.2
 
 
 biocache_hub_hostname = biocache.vagrant1.ala.org.au

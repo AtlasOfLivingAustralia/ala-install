@@ -1,0 +1,47 @@
+- name: install setfacl support
+  become: yes
+  apt:
+    pkg: acl
+  tags:
+    - postgresql
+    - postgis
+
+- name: Install PostGIS if required
+  apt:
+    pkg: "{{ item }}"
+    state: present
+    update_cache: yes
+  when: postgis_version != ""
+  with_items:
+    - "postgresql-{{pg_version}}-postgis-{{postgis_version}}"
+    - "gdal-bin"
+  tags: postgresql
+
+- name: ensure postgis_template database exists
+  postgresql_db:
+    db: postgis_template
+    state: present
+  #sudo_user: postgres
+  become: yes
+  become_user: postgres
+  tags:
+    - postgresql
+    - postgis
+
+- name: make postgis_template a template
+  action: command psql -d postgis_template -c "UPDATE pg_database SET datistemplate=true WHERE datname='postgis_template';"
+  sudo_user: postgres
+  tags:
+    - postgresql
+    - postgis
+
+- name: run the postgis SQL scripts
+  action: command psql -d postgis_template -f {{ item }}
+  sudo_user: postgres
+  with_items:
+    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version}}/postgis.sql"
+    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version}}/spatial_ref_sys.sql"
+    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version}}/postgis_comments.sql"
+  tags:
+    - postgresql
+    - postgis

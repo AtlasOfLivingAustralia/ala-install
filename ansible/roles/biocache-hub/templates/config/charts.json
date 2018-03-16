@@ -1,4 +1,11 @@
 { "biocache" : {
+  "license" : {
+    "title": "By licence",
+    "chartType": "doughnut",
+    "emptyValueMsg": "Licence not specified",
+    "hideEmptyValues" : true,
+    "includeOther" : "false"
+  },
     "month" : {
       "title": "By month",
       "chartType": "bar",
@@ -6,7 +13,7 @@
       "hideEmptyValues" : true,
       "includeOther" : "false"
     },
-    "decade" : {
+    "occurrence_decade_i" : {
       "title": "By decade",
       "chartType": "bar",
       "emptyValueMsg": "Year not specified",

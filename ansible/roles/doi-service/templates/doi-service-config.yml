@@ -1,0 +1,68 @@
+deployment_env: {{ deployment_env }}
+
+#
+# CAS Config
+#
+security:
+  cas:
+    casServerName: {{ auth_base_url }}
+    casServerUrlPrefix: {{ auth_cas_url }}
+    casServerLoginUrl: {{ auth_cas_url }}/login
+    casServerLogoutUrl: {{ auth_cas_url }}/logout
+    appServerName: https://{{ doi_service_hostname }}
+  apikey:
+    check:
+      serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
+    ip:
+      whitelist:
+
+logging:
+  config: {{ data_dir }}/doi-service/config/logback.groovy
+
+serverURL: https://{{ doi_service_hostname }}
+serverName: https://{{ doi_service_hostname }}
+
+server:
+  contextPath: {{ doi_service_context_path }}
+
+support:
+  email: {{ support_email | default('support@ala.org.au') }}
+
+ands:
+  doi:
+    service:
+      url: {{ ands_doi_mint_url }}
+    app:
+      id: {{ ands_doi_app_id }}
+    key: {{ ands_doi_key }}
+    client:
+      id: {{ ands_doi_client_id }}
+
+ala:
+  base:
+    url: https://www.ala.org.au
+
+doi:
+  storage:
+    provider: {{ doi_storage_provider | default('LOCAL') }}
+
+grails:
+  serverURL: https://{{ doi_service_hostname }}{{ doi_service_context_path }}
+  plugin:
+    awssdk:
+      region: {{ doi_aws_region | default('ap-southeast-2') }}
+      s3:
+        accessKey: {{ doi_aws_s3_access_key }}
+        secretKey: {{ doi_aws_s3_secret_key }}
+        bucket: {{ doi_aws_s3_bucket }}
+        region: {{ doi_aws_region | default('ap-southeast-2') }}
+
+file:
+  store: {{ doi_file_store | default('/data/doi-service/files') }}
+
+googleAnalyticsId: UA-4355440-1
+
+dataSource:
+  url: jdbc:postgresql://{{db_hostname}}/{{db_name}}
+  username: {{db_user}}
+  password: {{db_password}}

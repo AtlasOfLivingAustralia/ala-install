@@ -5,4 +5,5 @@ ssl: true
 force_https: true
 nginx_root: "/srv/{{ hostname }}/www/"
 context_path: '/'
-robots_disallow: [""]
+robots_disallow_paths: [""]
+robots_disallow_useragents: []

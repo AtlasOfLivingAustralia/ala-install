@@ -5,6 +5,8 @@
     - webapps
     - properties
     - nginx_vhost
+    - symlinks
+    - apache_vhost
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ biocache_service_context_path }}' hostname='{{ biocache_service_hostname }}' 
   tags:
@@ -26,7 +28,7 @@
         proxy_pass: "http://127.0.0.1:8080/{{biocache_service_context_path}}"
       - path: "/biocache-download"
         is_proxy: false
-        alias: "{{download_dir}}"
+        alias: "{{ download_dir }}"
   tags:
     - nginx_vhost
     - deploy
@@ -111,7 +113,18 @@
     - tool       
     - biocache-download
   tags:
-    - biocache-service    
+    - biocache-service
+
+- name: create download and media symlinks
+  file:
+     src: "{{ download_dir }}"
+     dest: "/srv/{{ biocache_service_hostname }}/www/biocache-download"
+     state: link
+  when: not webserver_nginx
+  tags:
+    - biocache-service
+    - symlinks
+
 
 - name: set permissions for biocache-load [TODO - more restrictive permissions]
   file: path={{data_dir}}/biocache-load mode=777

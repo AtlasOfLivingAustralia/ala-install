@@ -1,0 +1,155 @@
+# tasks file for ntp
+- name: Gather OS Specific Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "../vars/{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
+    - "../vars/{{ ansible_distribution }}.yml"
+    - "../vars/{{ ansible_os_family }}.yml"
+  tags: postgresql
+
+- debug:
+    msg: "WARNING YOU ARE USING THE DEPRECATED LEGACY POSTGRES SUPPORT ROLE, PLEASE UPDATE INVENTORY TO USE NEW ROLE + pg_instance BY PROVIDING pg_version AND OPTIONALLY postgis_version VARIABLES AND ADDING pg_instance ROLES AS APPROPRIATE"
+
+- name: Setup apt repositories
+  include: apt.yaml
+  tags: postgresql
+
+- name: Install Postgres with PostGIS
+  apt: pkg="{{ item }}" state="present" update_cache="yes"
+  with_items:
+    - postgresql-9.6-postgis-2.4
+    - postgresql-contrib-9.6
+    - gdal-bin
+  tags:
+    - postgresql
+  register: postgresql_installed
+  notify:
+    - restart postgresql
+  when: ansible_os_family == "Debian"
+
+# Note: postgis is required to get the "shp2pgsql" binary, which is missing from postgres-9.6-postgis-2.4
+# Not pulling in recommended packages as that would pull in postgres-10, where we want to use postgres-9.6 at this point
+- name: Install separate postgis package to get shp2pgsql binary
+  apt: pkg="postgis" state="present" update_cache="yes" install_recommends="no"
+  become: yes
+  tags:
+    - postgresql
+  register: postgresql_installed
+
+- name: install yum repo
+  yum: name="http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-centos93-9.3-1.noarch.rpm" state="present"
+  tags:
+    - postgresql
+  when: ansible_os_family == "RedHat"
+
+  # TODO: This assumes Centos 6.4.  Add centos 5,7 variants, rhel variants?
+- name: install postgres (RedHat)
+  yum: name="{{ item }}" state="present"
+  with_items:
+   - postgresql93-server
+   - postgresql93-devel
+   - postgresql93-python
+   - python-psycopg2
+  tags:
+    - postgresql
+  register: postgresql_installed
+  notify:
+    - restart postgresql
+  when: ansible_os_family == "RedHat"
+
+- name: initdb if doesn't exist (RedHat)
+  command: "service {{ postgresql_service }} initdb"
+  args:
+    creates: /var/lib/pgsql/9.3/data/postgresql.conf # Could have used any file here, this may not be the best choice
+  when: ansible_os_family == "RedHat"
+  tags: postgresql
+
+- name: enable host md5 auth (RedHat)
+  lineinfile: dest="/var/lib/pgsql/9.3/data/pg_hba.conf" backrefs="yes" regexp="host    all             all             127.0.0.1/32            ident" line="host    all             all             127.0.0.1/32            md5"
+  when: ansible_os_family == "RedHat"
+  notify: restart postgresql
+  tags: postgresql
+
+- name: enable host md5 auth (RedHat)
+  lineinfile: dest="/var/lib/pgsql/9.3/data/pg_hba.conf" backrefs="yes" regexp="host    all             all             ::1/128                 ident" line="host    all             all             ::1/128            md5"
+  when: ansible_os_family == "RedHat"
+  notify: restart postgresql
+  tags: postgresql
+
+- name: Restart postgresql server
+  service: name="{{ postgresql_service }}" state="started" enabled="yes"
+  tags: postgresql
+
+- name: Create Postgresql password
+  postgresql_user: name="{{ postgresql_user }}" password="{{ postgresql_password }}" role_attr_flags="CREATEDB,SUPERUSER"
+  become: yes
+  become_user: postgres
+  when: postgresql_installed.changed
+  tags: postgresql
+
+- name: install libpq-dev (Debian)
+  apt: pkg="libpq-dev" state="present" update_cache="yes"
+  when: ansible_os_family == "Debian"
+  tags: postgresql
+
+- name: install python-psycopg2 (Debian)
+  apt: pkg="python-psycopg2" state="present" update_cache="yes"
+  when: ansible_os_family == "Debian"
+  tags: postgresql
+
+- name: start postgresql and configure to startup automatically
+  service: name="{{ postgresql_service }}" state="started" enabled="yes"
+  register: started
+  tags: postgresql
+
+- name: wait for postgresql restart
+  command: sleep 5
+  when: started.changed
+  tags: postgresql
+
+- name: ensure postgresql server is running
+  action: service name="postgresql" state="started"
+  become: yes
+  tags: postgresql
+
+- name: install setfacl support
+  apt: pkg="acl"
+  become: yes
+  tags: postgresql
+
+- name: ensure postgis_template database exists
+  postgresql_db: db="postgis_template" state="present"
+  become: yes
+  become_user: postgres
+  tags: postgresql
+
+- name: make postgis_template a template
+  action: command psql -d postgis_template -c "UPDATE pg_database SET datistemplate=true WHERE datname='postgis_template';"
+  become: yes
+  become_user: postgres
+  tags: postgresql
+
+- name: run the postgis SQL scripts
+  action: command psql -d postgis_template -f {{ item }}
+  become: yes
+  become_user: postgres
+  with_items:
+    - /usr/share/postgresql/9.6/contrib/postgis-2.4/postgis.sql
+    - /usr/share/postgresql/9.6/contrib/postgis-2.4/spatial_ref_sys.sql
+    - /usr/share/postgresql/9.6/contrib/postgis-2.4/postgis_comments.sql
+  tags: postgresql
+
+- name: Create Postgresql database
+  postgresql_db: name="{{ postgresql_db }}" template="postgis_template"
+  become: yes
+  become_user: postgres
+  when: postgresql_installed.changed
+  tags: postgresql
+
+#- name: ensure user does not have unnecessary privilege
+#  postgresql_user: name="{{postgres_dbuser}}" role_attr_flags="NOSUPERUSER,NOCREATEDB"
+#  ignore_errors: yes
+
+# sudo -u postgres psql
+# ALTER USER postgres PASSWORD 'password';
+#  psql -U postgres -h localhost  //should work

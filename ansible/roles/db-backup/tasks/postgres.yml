@@ -1,4 +1,4 @@
-- debug: msg = "Backing up Postgres database {{ db_name }} on localhost:5432' to {{ backup_dir | default('/data') }}"
+- debug: msg = "Backing up Postgres database {{ db_name }} to {{ backup_dir | default('/data') }}"
   tags:
     - db
     - backup

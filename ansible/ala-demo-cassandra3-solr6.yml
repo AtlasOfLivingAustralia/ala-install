@@ -7,7 +7,7 @@
 - hosts: all
   roles:
     - common
-    - java # https://issues.apache.org/jira/browse/CASSANDRA-14173
+    - java
     - tomcat
     - cassandra3
     - mysql-5.7

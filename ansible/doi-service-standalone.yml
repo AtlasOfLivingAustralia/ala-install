@@ -1,10 +1,10 @@
 - hosts: doi-service
   roles:
     - common
-    - java
     - postfix
-    - {role: db-backup, db: mongo}
-    - {role: mongodb, mongo_version: "3.4.6"}
-    - tomcat
+    - {role: db-backup, db: postgres}
+    - {role: postgresql, pg_version: "9.6"}
+    - {role: pg_instance, extensions: ["citext", "pg_crypto"]}
     - nginx
+    - {role: nginx_vhost, hostname: "{{ doi_service_hostname }}", context_path: "{{ doi_service_context_path }}"}
     - doi-service
