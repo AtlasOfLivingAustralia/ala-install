@@ -33,12 +33,17 @@
     - bie    
   when: not webserver_nginx
 
+# Trove path is needed until trove API cleanly supports https
 - name: add nginx vhost if configured
   include_role:
     name: nginx_vhost
   vars:
     hostname: "{{ bie_hub_hostname }}"
     context_path: "{{ bie_hub_context_path }}"
+    nginx_paths:
+      - is_proxy_rewite: true
+      - path: "/trove"
+      - proxy_pass: http://api.trove.nla.gov.au
   tags:
     - nginx_vhost
     - deploy

@@ -1,0 +1,4 @@
+local_repo_dir: ~/.ala
+data_dir: /data
+# Jenkins LTS channel is debian-stable, bleeding edge is debian
+jenkins_channel: debian-stable
