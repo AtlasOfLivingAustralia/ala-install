@@ -40,7 +40,7 @@
 ## Ensure that data_dir/lucene exists as a directory
 
 - name: ensure lucene base directory exists
-  file: path={{ data_dir }}/lucene state=directory
+  file: path={{ data_dir }}/lucene state=directory mode=0755
   tags:
     - "nameindex"
 
