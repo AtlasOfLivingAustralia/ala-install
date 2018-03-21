@@ -11,7 +11,7 @@ data_dir=/data
 
 biocache_service_url = http://biocache.vagrant1.ala.org.au/ws
 biocache_service_base_url = http://biocache.vagrant1.ala.org.au
-biocache_service_context_path = ws
+biocache_service_context_path = /ws
 
 biocache_hub_url = http://biocache.vagrant1.ala.org.au
 biocache_hub_base_url = http://biocache.vagrant1.ala.org.au

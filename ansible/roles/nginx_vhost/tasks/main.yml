@@ -4,7 +4,7 @@
 - name: is a virtual host required?
   debug: msg="Virtual Host required for hostname {{hostname}}? {{vhost_required}}"
 
-- name: check whether HTTPS is supported
+- name: check whether HTTPS is required
   set_fact: ssl={{ ssl | default(false) }}
 
 - name: check whether we are rewriting HTTP to HTTPS
@@ -13,8 +13,8 @@
 - name: is HTTPS required?
   debug: msg="HTTPS required for hostname {{hostname}}? {{ssl}}"
 
-- name: should HTTP redirect to HTTPS?
-  debug: msg="Force HTTPS for hostname {{hostname}}? {{ssl and force_https}}"
+- name: will HTTP rewrite to HTTPS?
+  debug: msg="Rewrite HTTPS for hostname {{hostname}}? {{ssl and force_https}}"
 
 - name: make sure required parameters are defined
   fail: msg="One or more mandatory parameters are not defined - ssl_certificate_server_dir, ssl_cert_file, ssl_key_file. If you don't want https, set ssl=false in inventory."

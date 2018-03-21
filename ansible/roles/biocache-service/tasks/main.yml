@@ -16,6 +16,15 @@
     - webapps
   when: not webserver_nginx
 
+- name: set nginx proxy target if configured
+  set_fact: 
+    biocache_service_proxy_target: "{{biocache_service_context_path}}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - biocache-service
+  when: webserver_nginx and biocache_service_proxy_target is not defined
+
 - name: add nginx vhost if configured
   include_role:
     name: nginx_vhost
@@ -25,7 +34,7 @@
    nginx_paths:
       - path: "{{biocache_service_context_path}}"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:8080/{{biocache_service_context_path}}"
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}"
       - path: "/biocache-download"
         is_proxy: false
         alias: "{{ download_dir }}"
