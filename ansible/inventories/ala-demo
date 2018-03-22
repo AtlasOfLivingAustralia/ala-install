@@ -46,6 +46,7 @@ registry_api_key = dummy-registry-api-key
 commonname_lang = en
 media_store_local = false
 media_store_url=http://living-atlas.org/images
+download_dir=/data/biocache-download
 
 ####################### Hub ###################################################
 
@@ -90,6 +91,8 @@ downloads_indexed_fields_url=http://living-atlas.org/biocache-service/index/fiel
 downloads.fieldguideDownloadUrl =
 downloads.staticDownloadsUrl =
 downloads.termsOfUseUrl =
+
+
 
 
 ####################### Collectory ############################################
