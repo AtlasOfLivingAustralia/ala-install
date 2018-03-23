@@ -83,3 +83,15 @@
   when: nameindex_variant != "ala"
   tags:
     - "nameindex"
+
+- name: check whether lucene 4 to 5 conversion is required
+  set_fact: lucene4to5convert={{ lucene4to5convert | default(false) }}
+  tags:
+    - "nameindex"
+
+- name: convert lucene index from 4 to 5, if configured
+  include_role:
+    name: lucene4to5
+  when: lucene4to5convert
+  tags:
+    - "nameindex"
