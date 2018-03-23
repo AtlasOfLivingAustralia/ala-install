@@ -1,0 +1,12 @@
+# default vhost, handling AWS Elastic Load Balancer health checks
+
+server {
+    listen {{ aws_elb_default_port | default('80') }} default_server;
+    server_name  _;
+
+    if ($http_user_agent !~* "ELB-HealthChecker/2.0") {
+        return 403;
+    }
+
+    root   {{ aws_elb_default_root | default('/var/www/html') }};
+    index  {{ aws_elb_default_index | default('index.html') }};

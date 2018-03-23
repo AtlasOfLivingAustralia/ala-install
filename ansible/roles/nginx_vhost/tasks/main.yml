@@ -195,6 +195,55 @@
   notify:
    - reload nginx
 
+- name: check whether we need a default vhost for Amazon load balancer health checks
+  set_fact: aws_elb_healthcheck_default={{ aws_elb_healthcheck_default | default(false) }}
+
+- name: ensure fragments dir for default vhost for Amazon load balancer health checks is present
+  file: 
+    path: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default"
+    state: directory
+    mode: 0755 
+    owner: root
+    group: root
+  when: aws_elb_healthcheck_default and vhost_required
+
+- name: add start of default vhost for Amazon load balancer health checks, if configured
+  template:
+    src: "aws_elb_default_start.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default/10_aws_elb_default_start"
+  when: aws_elb_healthcheck_default and vhost_required
+
+- name: add location fragment for default vhost for Amazon load balancer health checks
+  template:
+    src: "fragment_70_location.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default/70_location_{{ item.path | basename }}"
+  with_items:
+    - "{{ nginx_paths }}"
+  when: aws_elb_healthcheck_default and vhost_required
+
+- name: add end of default vhost for Amazon load balancer health checks, if configured
+  template:
+    src: "aws_elb_default_end.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default/90_aws_elb_default_end"
+  when: aws_elb_healthcheck_default and vhost_required
+
+- name: assemble fragments into default vhost for Amazon load balancer health checks
+  assemble:
+    src: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default"
+    dest: "{{nginx_conf_dir}}/sites-available/aws_elb_default.conf"
+  when: aws_elb_healthcheck_default and vhost_required
+  notify:
+   - reload nginx
+
+- name: symlink default vhost for Amazon load balancer health checks to sites-enabled
+  file:
+    state: link
+    src: "{{nginx_conf_dir}}/sites-available/aws_elb_default.conf"
+    dest: "{{nginx_conf_dir}}/sites-enabled/aws_elb_default.conf"
+  when: aws_elb_healthcheck_default and vhost_required
+  notify:
+   - reload nginx
+
 - name: unset nginx_paths
   set_fact:
     nginx_paths: ''
