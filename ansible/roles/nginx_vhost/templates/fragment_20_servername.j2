@@ -1,1 +1,5 @@
+{% if webserver_extra_servernames|length == 0 %}
     server_name {{ hostname }};
+{% else %}
+    server_name {{ hostname }} {{ webserver_extra_servernames|join(' ') }};
+{% endif %}
