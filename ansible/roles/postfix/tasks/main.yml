@@ -1,5 +1,17 @@
 - name: Install Postfix mail server
   apt: pkg="postfix" state=present
+  when: ansible_os_family == "Debian"
+  register: postfix_installed
   tags:
     - postfix
   
+- name: Restrict Postfix to localhost
+  lineinfile:
+    dest='/etc/postfix/main.cf'
+    regexp="^inet_interfaces"
+    line='inet_interfaces = localhost'
+  notify:
+    - restart postfix
+  when: ansible_os_family == "Debian"
+  tags:
+    - postfix

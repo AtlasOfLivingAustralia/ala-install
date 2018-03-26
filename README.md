@@ -151,7 +151,7 @@ Note Nectar VMs will require an edit of the /etc/hosts file on the VM so that it
 
 For Vagrant VMs:
 ```
-$ ansible-playbook -i inventories/vagrant ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key --user vagrant --become
+$ ansible-playbook -i ansible/inventories/ala-demo ansible/ala-demo.yml --private-key ~/.vagrant.d/insecure_private_key --user vagrant --become
 ```
 
 For EC2 instances:
