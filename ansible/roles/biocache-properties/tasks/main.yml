@@ -54,7 +54,6 @@
     - "{{data_dir}}/tmp"
     - "{{data_dir}}/offline/exports"    
     - "{{data_dir}}/tool"
-    - "{{data_dir}}/lucene"
   tags:
     - properties
     - biocache-properties

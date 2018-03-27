@@ -20,3 +20,9 @@
 
 - name: restart nginx
   service: name={{nginx}} state=restarted
+
+- name: reload postfix
+  service: name={{postfix}} state=reloaded
+
+- name: restart postfix
+  service: name={{postfix}} state=restarted

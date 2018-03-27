@@ -17,6 +17,7 @@
     tomcat_log_dir: /var/log/tomcat7
     apache: apache2
     nginx: nginx
+    postfix: postfix
     mysql_service: mysql
     cassandra_yaml: /etc/cassandra/cassandra.yaml
     cassandra_user: cassandra

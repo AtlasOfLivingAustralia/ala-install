@@ -1,20 +1,20 @@
 - name: determine if a virtual host is required (vhost not required for localhost, 127.0.0.1 or any hostname with a colon in it)
   set_fact: vhost_required={{ hostname.find(':') == -1 and hostname.find('localhost') == -1 and hostname.find('127.0.0.1') == -1 }}
 
-- name: is a virtual host required?
-  debug: msg="Virtual Host required for hostname {{hostname}}? {{vhost_required}}"
+#- name: is a virtual host required?
+#  debug: msg="Virtual Host required for hostname {{hostname}}? {{vhost_required}}"
 
-- name: check whether HTTPS is supported
+- name: check whether HTTPS is required
   set_fact: ssl={{ ssl | default(false) }}
 
 - name: check whether we are rewriting HTTP to HTTPS
   set_fact: force_https={{ force_https | default(false) }}
 
-- name: is HTTPS required?
-  debug: msg="HTTPS required for hostname {{hostname}}? {{ssl}}"
+#- name: is HTTPS required?
+#  debug: msg="HTTPS required for hostname {{hostname}}? {{ssl}}"
 
-- name: should HTTP redirect to HTTPS?
-  debug: msg="Force HTTPS for hostname {{hostname}}? {{ssl and force_https}}"
+#- name: will HTTP rewrite to HTTPS?
+#  debug: msg="Rewrite HTTPS for hostname {{hostname}}? {{ssl and force_https}}"
 
 - name: make sure required parameters are defined
   fail: msg="One or more mandatory parameters are not defined - ssl_certificate_server_dir, ssl_cert_file, ssl_key_file. If you don't want https, set ssl=false in inventory."
@@ -39,6 +39,16 @@
     - "{{ssl_certificate_local_dir | default('') }}/{{ssl_chain_file | default('') }}"
   when: ssl and copy_https_certs_from_local and vhost_required
 
+- name: set context path to root by default
+  set_fact: 
+    context_path: "/"
+  when: context_path is not defined or (context_path | trim == '')
+
+- name: set webserver_extra_servernames empty by default
+  set_fact: 
+    webserver_extra_servernames: []
+  when: webserver_extra_servernames is not defined or (webserver_extra_servernames | trim == '')
+
 - name: set nginx_paths with root path by default
   set_fact: 
     nginx_paths:
@@ -47,8 +57,8 @@
         proxy_pass: "http://127.0.0.1:8080{{context_path | default('/', True)}}"
   when: nginx_paths is not defined or (nginx_paths | trim == '')
 
-- name: debug - check nginx_paths value
-  debug: msg="nginx_paths value is {{nginx_paths}}"
+#- name: debug - check nginx_paths value
+#  debug: msg="nginx_paths value is {{nginx_paths}}"
 
 - name: ensure sites-available dir is present
   file: 
@@ -187,6 +197,55 @@
     src: "{{nginx_conf_dir}}/sites-available/{{hostname}}.conf"
     dest: "{{nginx_conf_dir}}/sites-enabled/{{hostname}}.conf"
   when: vhost_required
+  notify:
+   - reload nginx
+
+- name: check whether we need a default vhost for Amazon load balancer health checks
+  set_fact: aws_elb_healthcheck_default={{ aws_elb_healthcheck_default | default(false) }}
+
+- name: ensure fragments dir for default vhost for Amazon load balancer health checks is present
+  file: 
+    path: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default"
+    state: directory
+    mode: 0755 
+    owner: root
+    group: root
+  when: aws_elb_healthcheck_default and vhost_required
+
+- name: add start of default vhost for Amazon load balancer health checks, if configured
+  template:
+    src: "aws_elb_default_start.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default/10_aws_elb_default_start"
+  when: aws_elb_healthcheck_default and vhost_required
+
+- name: add location fragment for default vhost for Amazon load balancer health checks
+  template:
+    src: "fragment_70_location.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default/70_location_{{ item.path | basename }}"
+  with_items:
+    - "{{ nginx_paths }}"
+  when: aws_elb_healthcheck_default and vhost_required
+
+- name: add end of default vhost for Amazon load balancer health checks, if configured
+  template:
+    src: "aws_elb_default_end.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default/90_aws_elb_default_end"
+  when: aws_elb_healthcheck_default and vhost_required
+
+- name: assemble fragments into default vhost for Amazon load balancer health checks
+  assemble:
+    src: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default"
+    dest: "{{nginx_conf_dir}}/sites-available/aws_elb_default.conf"
+  when: aws_elb_healthcheck_default and vhost_required
+  notify:
+   - reload nginx
+
+- name: symlink default vhost for Amazon load balancer health checks to sites-enabled
+  file:
+    state: link
+    src: "{{nginx_conf_dir}}/sites-available/aws_elb_default.conf"
+    dest: "{{nginx_conf_dir}}/sites-enabled/aws_elb_default.conf"
+  when: aws_elb_healthcheck_default and vhost_required
   notify:
    - reload nginx
 

@@ -38,7 +38,7 @@
     biocache_service_hostname: "{{test_biocache_host}}"
     biocache_service_url: "http://{{test_biocache_host}}/biocache-service"
     biocache_service_base_url: "http://{{test_biocache_host}}/biocache"
-    biocache_service_context_path: biocache-service
+    biocache_service_context_path: /biocache-service
     biocache_solr_url: "http://{{test_biocache_host}}:8080/solr/biocache"
     bypass_cas: false
     caches_auth_enabled: true
