@@ -1,1 +1,1 @@
-supported_ansible_version: {full: 2.4.3.x, major: 2, minor: 4, revision: 3}
+supported_ansible_version: {full: 2.5.0.x, major: 2, minor: 5, revision: 0}
