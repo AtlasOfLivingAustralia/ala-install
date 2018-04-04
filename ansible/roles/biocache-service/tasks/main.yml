@@ -90,6 +90,7 @@
     - { path: "{{data_dir}}/tmp" }
     - { path: "{{data_dir}}/offline/exports" }
     - { path: "{{data_dir}}/tool" }
+    - { path: "{{data_dir}}/output/heatmap" }
     - { path: "{{data_dir}}/biocache-download", perm: 755 }
     - { path: "{{data_dir}}/biocache-download/tmp" }
   tags:
