@@ -236,7 +236,7 @@
             },
             {
                 "sort":"index",
-                "field":"occurrence_status_s"
+                "field":"occurrence_status"
             }
         ]
     },
