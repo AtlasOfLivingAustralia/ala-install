@@ -1,108 +1,57 @@
-- include: ../../common/tasks/setfacts.yml
-  tags:
-    - userdetails
-    - properties
-
-#
-# Database configuration
-#
-
-- name: create database
-  mysql_db: name={{user_store_db_name}} state=present
-  register: dbschema
-  tags:
-    - userdetails
-    - db
-
-- name: create userdetails DB user
-  mysql_user: name={{user_store_db_username}} password={{user_store_db_password}} priv=*.*:ALL state=present
-  tags:
-    - userdetails
-    - db
-
-- name: copy transient files to tmp (schemas etc)
-  copy: src={{item}} dest=/tmp
+- name: ensure target directories exist data subdirectories etc.
+  file:
+    path: "{{item}}"
+    state: directory
+    owner: userdetails
+    group: userdetails
   with_items:
-    - db/
-  tags:
-    - userdetails
-    - db
-        
-- name: create schema, stored procs and reference data
-  mysql_db: name={{user_store_db_name}} state=import target={{item}}
-  with_items:
-    - /tmp/schema.sql
-  when: dbschema.changed
-  tags:
-    - userdetails
-    - db
-
-#
-# Properties and data directory configuration
-#
-
-- name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
-  with_items:
+    - "{{data_dir}}/userdetails"
     - "{{data_dir}}/userdetails/config"
+    - "{{data_dir}}/userdetails/"
   tags:
-    - userdetails
     - properties
-
-- name: copy all config.properties
-  template: src=userdetails-config.properties dest={{data_dir}}/userdetails/config/userdetails-config.properties
-  tags:
     - userdetails
-    - properties
 
 - name: set data ownership
-  file: path={{data_dir}}/userdetails owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify: 
-    - restart tomcat
+  file:
+    path: "{{data_dir}}/userdetails"
+    owner: userdetails
+    group: userdetails
+    recurse: true
   tags:
-    - userdetails
     - properties
-
-#
-# WAR file deployment and virtual host configuration
-#
-
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ userdetails_context_path }}' hostname='{{ userdetails_hostname }}'
-  tags:
     - userdetails
-    - deploy
-    - apache_vhost
-  when: not webserver_nginx
 
-- name: add nginx vhost if configured
-  include_role:
-    name: nginx_vhost
-  vars:
-    hostname: "{{ userdetails_hostname }}"
-    context_path: "{{ userdetails_context_path }}"
-  tags:
-    - nginx_vhost
-    - deploy
-    - userdetails
-  when: webserver_nginx
-
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ userdetails_war_url }}' context_path='{{ userdetails_context_path }}' hostname='{{ userdetails_hostname }}'
-  tags:
-    - userdetails
-    - deploy
-    - tomcat_vhost
-
-#
-# Override the default memory settings for Tomcat to increase heap space and change the garbage collector
-#
-- name: Override default tomcat memory configuration
-  lineinfile:
-    dest={{tomcat_conf}}
-    regexp="^JAVA_OPTS"
-    line='JAVA_OPTS="{{tomcat_java_opts_override}}"'
+- name: copy application.yml
+  template:
+    src: application.yml
+    dest: "{{data_dir}}/userdetails/config/application.yml"
+    owner: userdetails
+    group: userdetails
   notify:
-    - restart tomcat
+    - restart userdetails
   tags:
+    - properties
     - userdetails
+
+- name: copy logback config
+  template:
+    src: logback.groovy
+    dest: "{{data_dir}}/userdetails/config/logback.groovy"
+    owner: userdetails
+    group: userdetails
+  tags:
+    - properties
+    - userdetails
+
+- name: add jar and service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: "userdetails"
+    jar_url: '{{ userdetails_service_jar_url }}'
+  tags:
     - deploy
-    - tomcat
+    - service
+    - userdetails
+

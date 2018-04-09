@@ -1,0 +1,84 @@
+- name: "Ensure system user for CAS"
+  user:
+    name: cas
+    state: present
+    system: yes
+  tags:
+  - service
+  - cas
+
+- name: ensure target directories exist data subdirectories etc.
+  file:
+    path: "{{item}}"
+    state: directory
+    owner: cas
+    group: cas
+  with_items:
+    - "{{data_dir}}/cas"
+    - "{{data_dir}}/cas/config"
+    - "{{data_dir}}/cas/"
+  tags:
+    - properties
+    - cas
+
+- name: set data ownership
+  file:
+    path: "{{data_dir}}/cas"
+    owner: cas
+    group: cas
+    recurse: true
+  tags:
+    - properties
+    - cas
+
+- name: copy application.yml
+  template:
+    src: application.yml
+    dest: "{{data_dir}}/cas/config/application.yml"
+    owner: cas
+    group: cas
+  notify:
+    - restart cas
+  tags:
+    - properties
+    - cas
+
+- name: copy logback config
+  template:
+    src: log4j2.xml
+    dest: "{{data_dir}}/cas/config/log4j2.xml"
+    owner: cas
+    group: cas
+  tags:
+    - properties
+    - cas
+
+- name: copy pwe.properties
+  template:
+    src: pwe.properties
+    dest: "{{data_dir}}/cas/config/pwe.properties"
+    owner: cas
+    group: cas
+  notify:
+    - restart cas
+  tags:
+    - properties
+    - cas
+
+- name: add jar and service
+  include_role:
+    name: exec-jar
+  vars:
+    extra_params:
+    - key: cas.standalone.config
+      value: /data/cas/config
+    - key: ala.password.properties
+      value: /data/cas/config/pwe.properties
+    log_config_filename: 'log4j2.xml'
+    service_name: "cas"
+    jar_url: '{{ cas_service_jar_url }}'
+  tags:
+    - deploy
+    - service
+    - cas
+

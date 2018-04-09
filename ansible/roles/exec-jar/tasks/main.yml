@@ -14,10 +14,11 @@
 
 - name: "Create system user for {{service_name}}"
   user:
-    name: "{{service_name}}"
+    name: "{{ service_owner | default(service_name) }}"
     state: present
     system: yes
   tag: service
+  when: {{ create_user | true }}
 
 - name: "Create {{service_name}} dir"
   file:
@@ -54,8 +55,8 @@
     url: "{{jar_url}}"
     dest: "/opt/atlas/{{service_name}}/{{service_name}}.jar"
     mode: u=rwx,g=rx,o=rx
-    owner: "{{service_name}}"
-    group: "{{service_name}}"
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_group | default(service_name) }}"
     force: yes
   tag: service
 
@@ -63,8 +64,8 @@
   template:
     src: service.conf
     dest: "/opt/atlas/{{service_name}}/{{service_name}}.conf"
-    owner: "{{service_name}}"
-    group: "{{service_name}}"
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_group | default(service_name) }}"
   tag: service
 
 - name: "Start {{service_name}} service"

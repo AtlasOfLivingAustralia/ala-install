@@ -3,7 +3,7 @@ Description={{service_name}}
 After=syslog.target
 
 [Service]
-User={{service_name}}
+User={{ service_owner | default(service_name) }}
 ExecStart=/opt/atlas/{{service_name}}/{{service_name}}.jar
 SuccessExitStatus=143
 

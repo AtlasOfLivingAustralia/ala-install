@@ -1,7 +1,7 @@
 # assets
-version: "{{ apikey_version | default('0.4') }}"
-artifactId: "apikey"
-classifier: ''
-packaging: "war"
+version: "{{ apikey_version | default('LATEST') }}"
+artifactId: "apikey" 
+classifier: 'exec'
+packaging: "jar"
 groupId: "au.org.ala"
-apikey_war_url: "{{maven_repo_ws_url}}"
+userdetails_war_url: "{{maven_repo_ws_url}}"

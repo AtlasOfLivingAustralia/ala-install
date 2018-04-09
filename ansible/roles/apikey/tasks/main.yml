@@ -1,92 +1,57 @@
-- include: ../../common/tasks/setfacts.yml
-  tags:
-    - apikey
-
-#
-# Database configuration items
-#
-- name: create database
-  mysql_db: name={{apikey_db_name}} state=present
-  register: dbschema
-  tags:
-    - db
-    - apikey
-
-- name: create DB user
-  mysql_user: name={{apikey_db_username}} password={{ apikey_db_password}} priv=*.*:ALL state=present
-  register: dbuser
-  tags:
-    - db
-    - apikey
-
-- name: copy transient files to tmp (schemas etc)
-  copy: src={{item}} dest=/tmp
+- name: ensure target directories exist data subdirectories etc.
+  file:
+    path: "{{item}}"
+    state: directory
+    owner: apikey
+    group: apikey
   with_items:
-    - apikey_schema.sql
-  when: dbschema.changed
-  tags:
-    - db
-    - apikey
-
-- name: create schema, stored procs and reference data
-  mysql_db: name={{apikey_db_name}} state=import target={{item}}
-  with_items:
-    - /tmp/apikey_schema.sql
-  when: dbschema.changed
-  tags:
-    - db
-    - apikey
-
-
-#
-# External configuration properties file
-#
-- name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
-  with_items:
+    - "{{data_dir}}/apikey"
     - "{{data_dir}}/apikey/config"
-  tags:
-    - properties
-    - apikey
-
-- name: copy all config.properties
-  template: src=apikey-config.properties dest={{data_dir}}/apikey/config/apikey-config.properties
+    - "{{data_dir}}/apikey/"
   tags:
     - properties
     - apikey
 
 - name: set data ownership
-  file: path={{data_dir}}/apikey owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify:
-    - restart tomcat
+  file:
+    path: "{{data_dir}}/apikey"
+    owner: apikey
+    group: apikey
+    recurse: true
   tags:
     - properties
     - apikey
 
-#
-# WAR file deployment and virtual host configuration
-#
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ apikey_context_path }}' hostname='{{ apikey_hostname }}'
+- name: copy application.yml
+  template:
+    src: application.yml
+    dest: "{{data_dir}}/apikey/config/application.yml"
+    owner: apikey
+    group: apikey
+  notify:
+    - restart apikey
   tags:
-    - deploy
-    - apache_vhost
+    - properties
     - apikey
-  when: not webserver_nginx
 
-- name: add nginx vhost if configured
+- name: copy logback config
+  template:
+    src: logback.groovy
+    dest: "{{data_dir}}/apikey/config/logback.groovy"
+    owner: apikey
+    group: apikey
+  tags:
+    - properties
+    - apikey
+
+- name: add jar and service
   include_role:
-    name: nginx_vhost
+    name: exec-jar
   vars:
-    hostname: "{{ apikey_hostname }}"
-    context_path: "{{ apikey_context_path }}"
+    service_name: "apikey"
+    jar_url: '{{ apikey_service_jar_url }}'
   tags:
-    - nginx_vhost
     - deploy
+    - service
     - apikey
-  when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ apikey_war_url }}' context_path='{{apikey_context_path}}' hostname='{{ apikey_hostname }}'
-  tags:
-    - deploy
-    - tomcat_vhost
-    - apikey

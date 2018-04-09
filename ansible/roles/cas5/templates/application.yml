@@ -1,0 +1,147 @@
+info:
+  description: ALA CAS Configuration
+server:
+  port: {{ cas_server_port | default('9000') }}
+  session:
+    timeout: {{ cas_session_timeout | default('86400') }}  # seconds, 24 hours
+  ssl:
+    enabled: false
+    key-store: 
+jndi:
+  hikari:
+    - name: jdbccas
+      driverClass: com.mysql.jdbc.Driver
+      url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull
+      user: {{ cas_db_username | default('cas') }}
+      password: {{ cas_db_password | default('password') }}
+      dataSourceProperties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+flyway:
+  baselineOnMigrate: {{ cas_db_migration_baseline | true }}
+  url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull
+  user: {{ cas_db_migration_user | 'root' }}
+  password: {{ cas_db_migration_password | 'password' }}
+
+logging:
+  config: "{{ log4j2_config_location | default('file:/data/cas/config/log4j2.xml') }}"
+
+cas:
+  server:
+    name: {{ cas_server_name }}
+    prefix: ${cas.server.name}/{{ cas_context_path | default('cas') }}
+  adminPagesSecurity:
+    ip: {{ cas_admin_pages_ip | default('.*') }}
+    actuatorEndpointsEnabled: true
+  jdbc:
+    showSql: false
+  authn:
+    jdbc:
+      query:
+        - dataSourceName: java:comp/env/jdbccas
+        - dataSourceName: java:comp/env/jdbccas
+    attributeRepository:
+      jdbc:
+        - dataSourceName: java:comp/env/jdbccas
+    pac4j:
+      typedIdUsed: true
+      facebook:
+        # fields:
+        id: {{ pac4j_facebook_consumer_key }}
+        secret: {{ pac4j_facebook_consumer_secret }}
+        scope: public_profile,email
+      twitter:
+        id: {{ pac4j_twitter_consumer_key }}
+        secret: {{ pac4j_twitter_consumer_secret }}
+      google:
+        scope: EMAIL_AND_PROFILE
+        id: {{ pac4j_google_consumer_key }}
+        secret: {{ pac4j_google_consumer_secret }}
+    oidc:
+      issuer: ${cas.server.name}/cas/oidc
+      jwksFile: file:/data/cas/keystore.jwks
+  monitor:
+    endpoints:
+      enabled: true
+    jdbc:
+      validationQuery: /* ping */ SELECT 1
+      dataSourceName: java:comp/env/jdbccas
+  serviceRegistry:
+    initFromJson: true
+    mongo:
+      sslEnabled: {{ cas_services_ssl_enabled | default('false') }}
+      clientUri: {{ cas_services_uri | default('') }}
+      host: {{ cas_services_host | default('localhost') }}
+      port: {{ cas_services_port | default('27017') }}
+      replicaSet: {{ cas_services_replica_set | default('') }}
+      collection: {{ cas_services_collection | default('services') }}
+      databaseName: {{ cas_services_db | default('cas-service-registry') }}
+      authenticationDatabaseName: {{ cas_services_auth_db | default('') }}
+      userId: {{ cas_services_username | default('cas') }}
+      password: {{ cas_services_password | default('password') }}
+  ticket:
+    rememberMe:
+      enabled: true
+    registry:
+      mongo:
+        sslEnabled: {{ cas_tickets_ssl_enabled | default('false') }}
+        clientUri: {{ cas_tickets_uri | default('') }}
+        host: {{ cas_tickets_host | default('localhost') }}
+        port: {{ cas_tickets_port | default('27017') }}
+        replicaSet: {{ cas_tickets_replica_set | default('') }}
+        databaseName: {{ cas_tickets_db | default('cas-ticket-registry') }}
+        authenticationDatabaseName: {{ cas_tickets_auth_db | default('') }}
+        userId: {{ cas_tickets_username | default('cas') }}
+        password: {{ cas_tickets_password | default('password') }}
+  tgc:
+    crypto:
+      enabled: false
+  webflow:
+    crypto:
+      signing:
+        key: {{ cas_webflow_signing_key }}
+      encryption:
+        key: {{ cas_webflow_encryption_key }}
+auth:
+  creator:
+    userCreatePassword: {{ cas_user_create_password }}
+    jdbc:
+      dataSourceName: java:comp/env/jdbccas
+      sql: sp_create_user
+
+# Enable these for Spring Boot actuator (required for Spring Boot Admin client)
+
+endpoints:
+  enabled: {{ endpoints_enabled }}
+security:
+  user:
+    name: {{ cas_endpoint_user | default('admin') }}
+    password: {{ cas_endpoint_password | default('secret') }}
+    role:
+      - ACTUATOR
+  basic:
+    enabled: true
+    authorizeMode: role
+    realm: ALA CAS
+    path:
+      - /status/**
+management:
+  security:
+    enabled: true
+    roles: ACTUATOR
+spring:
+  boot:
+    admin:
+      url: {{ bootadmin_url | default('https://bootadmin.ala.org.au') }}
+      username: {{ bootadmin_username }}
+      password: {{ bootadmin_password }}
+      client:
+        enabled: true
+        service-base-url: ${cas.server.name}
+        managementUrl: ${cas.server.prefix}/status
+        name: ALA CAS
+        metadata:
+          user:
+            name: ${security.user.name}
+            password: ${security.user.password}

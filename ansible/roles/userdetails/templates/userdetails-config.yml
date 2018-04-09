@@ -1,0 +1,121 @@
+# CAS Config
+security:
+    cas:
+        casServerName: {{ cas_server_name }}
+        casServerUrlPrefix: ${security.cas.casServerName}/cas/
+        loginUrl: ${security.cas.casServerUrlPrefix}/login
+        logoutUrl: ${security.cas.casServerUrlPrefix}/logout
+        appServerName: {{ userdetails_server_name }}
+
+serverURL: {{ userdetails_server_name }}
+serverName: {{ userdetails_server_name }}
+grails:
+    serverURL: {{ userdetails_server_name }}{{ userdetails_context_path }}
+server:
+    port: {{ userdetails_port | default('9001') }}
+    contextPath: /{{ userdetails_context_path }}
+endpoints:
+    enabled: true
+redirectAfterFirstLogin: {{ userdetails_server_name }}{{ userdetails_context_path }}/myprofile"
+
+# Data source configuration
+dataSource:
+    dbCreate: "none"
+    url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull
+    username: {{ userdetails_db_username | default(cas_db_username) | default('cas') }}
+    password: {{ userdetails_db_password | default(cas_db_password) | default('password') }}
+
+oauth:
+    providers:
+        flickr:
+            key: {{ oauth_providers_flickr_key }}
+            secret: {{ oauth_providers_flickr_secret }}
+            callback: {{ userdetails_server_name }}{{ userdetails_context_path }}/profile/flickrCallback
+password:
+    encoder: {{ user_store_db_encoder | default('bcrypt') }} # or legacy
+bcrypt:
+    strength: {{ user_store_db_bcrypt_strength | default('10') }}
+#encoding:
+#    algorithm: {{ user_store_db_encoding_algorithm }}
+#    salt: {{ user_store_db_encoding_salt }}
+
+
+
+ala:
+    baseURL: {{ ala_baseurl | default('https://www.ala.org.au') }}
+
+supportEmail: {{ support_email | default('support@ala.org.au') }}
+homeUrl: {{ ala_baseurl | default('https://www.ala.org.au') }}
+mainTitle: {{ orgNameLong | default('Atlas of Living Australia') }}
+emailSenderTitle: {{ orgNameLong | default('Atlas of Living Australia') }}
+emailSender: {{ support_email | default('support@ala.org.au') }}
+
+sightings.url: {{ sightings_base_url }}/mine
+spatial.url: {{ spatial_base_url }}/actions/dashboard
+volunteer.url: {{ volunteer_base_url }}/user/myStats
+lists.url: {{ lists_base_url }}/speciesList/list
+biocache.search.url: {{ biocache_base_url }}/occurrences/search
+alerts.url: {{ alerts_base_url }}
+
+# this property is read/used by ala-auth-plugin (included by userdetails)
+userDetails:
+    url: {{ userdetails_base_url }}{{ userdetails_context_path }}
+
+# Header and footer
+headerAndFooter.baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3')}}
+ala.baseURL: {{ ala_base_url | default('https://www.ala.org.au')}}
+bie.baseURL: {{ bie_base_url | default('https://bie.ala.org.au')}}
+bie.searchPath: {{ bie_search_path | default('/search') }}
+
+# Skin options
+skin.layout: {{ skin_layout | default('ala') }}
+skin.fluidLayout: {{ skin_fluid_layout | default('') }}
+skin.orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}
+skin.orgNameShort: {{ orgNameShort | default('ALA') }}
+skin.favicon: {{ skin_favicon | default('https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png') }}
+
+# API key for external apps
+webservice.apiKey: {{ api_key }}
+
+# Default primary fields for Export to CSV functionality
+admin.export.csv.primary.fields: {{ admin_export_csv_primary_fields | default('id,userName,firstName,lastName,email,activated,locked,created')}}
+
+endpoints:
+  enabled: {{ endpoints_enabled | default('true') }}
+security:
+  user:
+    name: {{ userdetails_endpoint_user | default('admin') }}
+    password: {{ userdetails_endpoint_password | default('secret') }}
+    role:
+      - ACTUATOR
+  basic:
+    enabled: true
+    authorizeMode: role
+    realm: ALA CAS
+    path:
+      - /status/**
+management:
+  security:
+    enabled: true
+    roles: ACTUATOR
+spring:
+  boot:
+    admin:
+      url: {{ bootadmin_url | default('https://bootadmin.ala.org.au') }}
+      username: {{ bootadmin_username }}
+      password: {{ bootadmin_password }}
+      client:
+        enabled: true
+        service-base-url: ${grails.serverURL}
+        managementUrl: ${grails.serverURL}/status
+        name: User Details
+        metadata:
+          user:
+            name: ${security.user.name}
+            password: ${security.user.password}
+  session:
+    store-type: {{ spring_session_store_type | default('none') }}
+    {% if spring_session_store_type == 'redis' %}redis:
+      host: {{ spring_session_redis_host }}
+      password: {{ spring_session_redis_password }}
+      port: {{ spring_session_redis_port | default('6379') }}

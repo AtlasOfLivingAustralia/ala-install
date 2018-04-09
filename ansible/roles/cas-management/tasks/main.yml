@@ -1,0 +1,62 @@
+- name: ensure target directories exist data subdirectories etc.
+  file:
+    path: "{{item}}"
+    state: directory
+    owner: cas
+    group: cas
+  with_items:
+    - "{{data_dir}}/cas-management"
+    - "{{data_dir}}/cas-management/config"
+    - "{{data_dir}}/cas-management/"
+  tags:
+    - properties
+    - cas-management
+
+- name: set data ownership
+  file:
+    path: "{{data_dir}}/cas-management"
+    owner: cas
+    group: cas
+    recurse: true
+  tags:
+    - properties
+    - cas-management
+
+- name: copy application.yml
+  template:
+    src: application.yml
+    dest: "{{data_dir}}/cas-management/config/application.yml"
+    owner: cas
+    group: cas
+  notify:
+    - restart cas-management
+  tags:
+    - properties
+    - cas-management
+
+- name: copy logback config
+  template:
+    src: log4j2.xml
+    dest: "{{data_dir}}/cas-management/config/log4j2.xml"
+    owner: cas
+    group: cas
+  tags:
+    - properties
+    - cas-management
+
+- name: add jar and service
+  include_role:
+    name: exec-jar
+  vars:
+    extra_params:
+    - key: cas.standalone.config
+      value: /data/cas-management/config
+    log_config_filename: 'log4j2.xml'
+    service_name: "cas-management"
+    service_owner: 'cas'
+    service_group: 'cas'
+    jar_url: '{{ cas_management_service_jar_url }}'
+  tags:
+    - deploy
+    - service
+    - cas

@@ -1,0 +1,123 @@
+- hosts: cas-servers
+  serial:
+  - 1
+  - "100%"
+  tasks:
+  - include_role:
+      name: common
+  - include_role:
+      name: postfix
+  - include_role:
+      name: webserver
+    vars:
+      webserver_nginx: true
+  - copy:
+      src: "{{ cas_db_dump }}"
+      dest: /tmp/cas.sql
+    when: cas_db_dump is defined
+  - copy:
+      src: "{{ apikey_db_dump }}"
+      dest: /tmp/apikey.sql
+    when: apikey_db_dump is defined
+  - apt_key:
+      keyserver: keyserver.ubuntu.com
+      id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5 #mongo
+  - apt_repository:
+      repo: deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/3.6 multiverse
+      state: present
+  - apt:
+      name: "{{ item }}"
+    with_items:
+    - mysql-client
+    - python-mysqldb
+    - mongodb-org-shell
+    - python-pymongo
+  - mysql_db:
+      state: import
+      name: "{{ cas_db_name | default('emmet') }}"
+      target: /tmp/cas.sql
+      login_host: "{{ cas_db_hostname }}"
+      login_port: "{{ cas_db_port | default('3306') }}"
+      login_user: "{{ mysql_root_username }}"
+      login_password: "{{ mysql_root_password }}"
+    when: cas_db_dump is defined
+    run_once: true
+  - mysql_db:
+      state: import
+      name: "{{ apikey_db_name | default('apikey') }}"
+      target: /tmp/apikey.sql
+      login_host: "{{ apikey_db_hostname }}"
+      login_port: "{{ apikey_db_port | default('3306') }}"
+      login_user: "{{ mysql_root_username }}"
+      login_password: "{{ mysql_root_password }}"
+    when: apikey_db_dump is defined
+    run_once: true
+  - mysql_db:
+      state: present
+      name: "{{ cas_db_name | default('emmet') }}"
+      login_host: "{{ cas_db_hostname }}"
+      login_port: "{{ cas_db_port | default('3306') }}"
+      login_user: "{{ mysql_root_username }}"
+      login_password: "{{ mysql_root_password }}"
+    run_once: true
+  - mysql_db:
+      state: present
+      name: "{{ apikey_db_name | default('apikey') }}"
+      login_host: "{{ apikey_db_hostname }}"
+      login_port: "{{ apikey_db_port | default('3306') }}"
+      login_user: "{{ mysql_root_username }}"
+      login_password: "{{ mysql_root_password }}"
+    run_once: true
+  - mysql_user:
+      login_host: "{{ cas_db_hostname }}"
+      login_port: "{{ cas_db_port | default('3306') }}"
+      login_user: "{{ mysql_root_username }}"
+      login_password: "{{ mysql_root_password }}"
+      user: "{{ item.user }}"
+      password: "{{ item.password }}"
+      priv: "{{ item.priv }}"
+    with_items:
+    - { user: "{{ cas_flyway_username }}", password: "{{ cas_flyway_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:ALL" }
+    - { user: "{{ cas_db_username }}", password: "{{ cas_db_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:INSERT,SELECT,UPDATE,DELETE,EXECUTE,TRIGGER" }
+    - { user: "{{ apikey_db_username }}", password: "{{ apikey_db_password }}", priv: "{{ apikey_db_name | default('apikey') }}.*:ALL" }
+    run_once: true
+  - mongodb_user:
+      user: "{{ item.user }}"
+      password: "{{ item.password }}"
+      database: "{{ item.database }}"
+      roles: "{{ item.roles }}"
+      replica_set: "{{ item.replica_set }}"
+      ssl: "{{ item.ssl }}"
+      state: present
+      login_host: "{{ item.login_host }}"
+      login_port: "{{ item.login_port }}"
+      login_user: "{{ item.login_user }}"
+      login_password: "{{ item.login_password }}"
+    with_items:
+    - { login_host: "{{ cas_tickets_host }}", login_port: "{{ cas_tickets_port | default('27017') }}", login_user: "{{ mongodb_root_username }}", login_password: "{{ mongodb_root_password }}", user: "{{ cas_tickets_username }}", password: "{{ cas_tickets_password }}", database: "{{ cas_tickets_db | default('cas-ticket-registry') }}", replica_set: "{{ cas_tickets_replica_set | default('') }}", ssl: "{{ cas_tickets_ssl_enabled | default('false') }}", roles: 'readWrite' }
+    - { login_host: "{{ cas_services_host }}", login_port: "{{ cas_services_port | default('27017') }}", login_user: "{{ mongodb_root_username }}", login_password: "{{ mongodb_root_password }}", user: "{{ cas_services_username }}", password: "{{ cas_services_password }}", database: "{{ cas_services_db | default('cas-service-registry' ) }}", replica_set: "{{ cas_services_replica_set | default('') }}", ssl: "{{ cas_services_ssl_enabled | default('false') }}", roles: 'readWrite' }
+    run_once: true
+  - include_role:
+      name: cas5
+  - include_role:
+      name: cas-management
+  - include_role:
+      name: userdetails
+  - include_role:
+      name: apikey
+  - include_role:
+      name: nginx_vhost
+    vars:
+      hostname: "{{ cas_hostname }}"
+      context_path: "{{ item.context }}"
+      nginx_paths:
+      - path: "{{ item.context }}"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:{{item.port}}/{{ item.context }}"
+    with_items:
+    - { context: "{{ cas_context_path | 'cas' }}", port: "{{ cas_port | '9000' }}" }
+    - { context: "{{ cas_management_context_path | 'cas-management' }}", port: "{{ cas_management_port | '8070' }}" }
+    - { context: "{{ userdetails_context_path | 'userdetails' }}", port: "{{ userdetails_port | '9001' }}" }
+    - { context: "{{ apikey_context_path | 'apikey' }}", port: "{{ apikey_port | '9002' }}" }
+    notify:
+    - reload nginx
