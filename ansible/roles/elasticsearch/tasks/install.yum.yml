@@ -15,4 +15,4 @@
   yum: pkg=java
 
 - name: Install Elasticsearch.
-  yum: pkg=elasticsearch state=installed
+  yum: pkg=elasticsearch state=present
