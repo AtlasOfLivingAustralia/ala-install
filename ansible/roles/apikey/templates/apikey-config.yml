@@ -1,33 +1,48 @@
 # CAS Config
 security:
-    cas:
-        casServerName: {{ cas_server_name }}
-        casServerUrlPrefix: ${security.cas.casServerName}/{{ cas_context_path | default('cas') }}
-        loginUrl: ${security.cas.casServerUrlPrefix}/login
-        logoutUrl: ${security.cas.casServerUrlPrefix}/logout
-        appServerName: {{ apikey_server_name }}
+  cas:
+    casServerName: {{ cas_server_name }}
+    casServerUrlPrefix: ${security.cas.casServerName}/{{ cas_context_path | default('cas') }}
+    loginUrl: ${security.cas.casServerUrlPrefix}/login
+    logoutUrl: ${security.cas.casServerUrlPrefix}/logout
+    appServerName: {{ apikey_server_name }}
+  user:
+    name: {{ apikey_endpoint_user | default('admin') }}
+    password: {{ apikey_endpoint_password | default('secret') }}
+    role:
+      - ACTUATOR
+  basic:
+    enabled: true
+    authorizeMode: role
+    realm: ALA CAS
+    path:
+      - /status/**
+endpoints:
+  enabled: {{ endpoints_enabled | default('true') }}
+management:
+  security:
+    enabled: true
+    roles: ACTUATOR
 
 serverURL: {{ apikey_server_name }}
 serverName: {{ apikey_server_name }}
 grails:
-    serverURL: {{ apikey_server_name }}{{ apikey_context_path | default('apikey') }}
+  serverURL: {{ apikey_server_name }}/{{ apikey_context_path | default('apikey') }}
 server:
-    port: {{ apikey_port | default('9002') }}
-    contextPath: /{{ apikey_context_path | default('apikey') }}
-endpoints:
-    enabled: true
+  port: {{ apikey_port | default('9002') }}
+  contextPath: /{{ apikey_context_path | default('apikey') }}
 
 # Data source configuration
 dataSource:
-    dbCreate: "none"
-    url: jdbc:mysql://{{ apikey_db_hostname | default('localhost') }}:{{ apikey_db_port | default('3306') }}/{{ apikey_db_name | default('apikey') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull
-    username: {{ apikey_db_username }}
-    password: {{ apikey_db_password }}
+  dbCreate: "none"
+  url: jdbc:mysql://{{ apikey_db_hostname | default('localhost') }}:{{ apikey_db_port | default('3306') }}/{{ apikey_db_name | default('apikey') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull
+  username: {{ apikey_db_username }}
+  password: {{ apikey_db_password }}
 flyway:
   baselineOnMigrate: {{ apikey_db_migration_baseline | default('true') }}
 
 ala:
-    baseURL: {{ ala_baseurl | default('https://www.ala.org.au') }}
+  baseURL: {{ ala_baseurl | default('https://www.ala.org.au') }}
 
 supportEmail: {{ support_email | default('support@ala.org.au') }}
 homeUrl: {{ ala_baseurl | default('https://www.ala.org.au') }}
@@ -44,7 +59,7 @@ alerts.url: {{ alerts_base_url }}
 
 # this property is read/used by ala-auth-plugin (included by apikey)
 userDetails:
-    url: {{ userdetails_base_url }}{{ userdetails_context_path | default('userdetails') }}
+  url: {{ userdetails_base_url }}/{{ userdetails_context_path | default('userdetails') }}/
 
 # Header and footer
 headerAndFooter.baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3')}}
@@ -59,24 +74,6 @@ skin.orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}
 skin.orgNameShort: {{ orgNameShort | default('ALA') }}
 skin.favicon: {{ skin_favicon | default('https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png') }}
 
-endpoints:
-  enabled: {{ endpoints_enabled | default('true') }}
-security:
-  user:
-    name: {{ apikey_endpoint_user | default('admin') }}
-    password: {{ apikey_endpoint_password | default('secret') }}
-    role:
-      - ACTUATOR
-  basic:
-    enabled: true
-    authorizeMode: role
-    realm: ALA CAS
-    path:
-      - /status/**
-management:
-  security:
-    enabled: true
-    roles: ACTUATOR
 spring:
   boot:
     admin:
@@ -94,8 +91,9 @@ spring:
             password: ${security.user.password}
   session:
     store-type: {{ spring_session_store_type | default('none') }}
-    {% if spring_session_store_type == 'redis' %}redis:
-      host: {{ spring_session_redis_host }}
-      password: {{ spring_session_redis_password }}
-      port: {{ spring_session_redis_port | default('6379') }}
+    {% if spring_session_store_type == 'redis' %}disable-redis-config-action: {{ is_secured_redis | default('false') | bool }}
+  redis:
+    host: {{ spring_session_redis_host }}
+    password: {{ spring_session_redis_password }}
+    port: {{ spring_session_redis_port | default('6379') }}
 {% endif %}

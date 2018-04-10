@@ -21,8 +21,8 @@ jndi:
 flyway:
   baselineOnMigrate: {{ cas_db_migration_baseline | default('true') }}
   url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull
-  user: {{ cas_db_migration_user | default('root') }}
-  password: {{ cas_db_migration_password | default('password') }}
+  user: {{ cas_flyway_username | default('root') }}
+  password: {{ cas_flyway_password | default('password') }}
 
 logging:
   config: "{{ log4j2_config_location | default('file:/data/cas/config/log4j2.xml') }}"

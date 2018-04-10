@@ -1,4 +1,6 @@
 - hosts: cas-servers
+  vars:
+    webserver_nginx: true
   serial:
   - 1
   - "100%"
@@ -27,8 +29,6 @@
       name: postfix
   - include_role:
       name: webserver
-    vars:
-      webserver_nginx: true
   - copy:
       src: "{{ cas_db_dump }}"
       dest: /tmp/cas.sql
@@ -76,11 +76,12 @@
       user: "{{ item.user }}"
       password: "{{ item.password }}"
       priv: "{{ item.priv }}"
+      host: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
     with_items:
     - { user: "{{ cas_flyway_username }}", password: "{{ cas_flyway_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:ALL", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
     - { user: "{{ cas_db_username }}", password: "{{ cas_db_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:INSERT,SELECT,UPDATE,DELETE,EXECUTE,TRIGGER", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
     - { user: "{{ apikey_db_username }}", password: "{{ apikey_db_password }}", priv: "{{ apikey_db_name | default('apikey') }}.*:ALL", login_host: "{{ apikey_db_hostname }}", login_port: "{{ apikey_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
-    run_once: true
+    # run_once: true # need to run this for each host ip
     # Won't work with MongoDB Atlas instance
 #   - mongodb_user:
 #       user: "{{ item.user }}"
@@ -99,6 +100,7 @@
 #     - { login_host: "{{ cas_tickets_host }}", login_port: "{{ cas_tickets_port | default('27017') }}", login_user: "{{ mongodb_root_username }}", login_password: "{{ mongodb_root_password }}", login_database: "{{ mongodb_root_database | default('admin') }}", user: "{{ cas_tickets_username }}", password: "{{ cas_tickets_password }}", database: "{{ cas_tickets_db | default('cas-ticket-registry') }}", replica_set: "{{ cas_tickets_replica_set | default('') }}", ssl: "{{ cas_tickets_ssl_enabled | default('false') }}", roles: 'readWrite' }
 #     - { login_host: "{{ cas_services_host }}", login_port: "{{ cas_services_port | default('27017') }}", login_user: "{{ mongodb_root_username }}", login_password: "{{ mongodb_root_password }}", login_database: "{{ mongodb_root_database | default('admin') }}", user: "{{ cas_services_username }}", password: "{{ cas_services_password }}", database: "{{ cas_services_db | default('cas-service-registry' ) }}", replica_set: "{{ cas_services_replica_set | default('') }}", ssl: "{{ cas_services_ssl_enabled | default('false') }}", roles: 'readWrite' }
 #     run_once: true
+    # TODO Add mongo http api call instead?
   - include_role:
       name: cas5
   - include_role:
@@ -113,7 +115,7 @@
       hostname: "{{ cas_hostname }}"
       context_path: "{{ item.context }}"
       nginx_paths:
-      - path: "{{ item.context }}"
+      - path: "/{{ item.context }}"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:{{item.port}}/{{ item.context }}"
     with_items:
