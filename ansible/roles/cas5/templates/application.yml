@@ -19,10 +19,10 @@ jndi:
         prepStmtCacheSize: 250
         prepStmtCacheSqlLimit: 2048
 flyway:
-  baselineOnMigrate: {{ cas_db_migration_baseline | true }}
+  baselineOnMigrate: {{ cas_db_migration_baseline | default('true') }}
   url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull
-  user: {{ cas_db_migration_user | 'root' }}
-  password: {{ cas_db_migration_password | 'password' }}
+  user: {{ cas_db_migration_user | default('root') }}
+  password: {{ cas_db_migration_password | default('password') }}
 
 logging:
   config: "{{ log4j2_config_location | default('file:/data/cas/config/log4j2.xml') }}"
@@ -105,7 +105,7 @@ cas:
         key: {{ cas_webflow_encryption_key }}
 auth:
   creator:
-    userCreatePassword: {{ cas_user_create_password }}
+    userCreatePassword: {{ user_create_password }}
     jdbc:
       dataSourceName: java:comp/env/jdbccas
       sql: sp_create_user
@@ -130,6 +130,7 @@ management:
   security:
     enabled: true
     roles: ACTUATOR
+{% if bootadmin_enabled %}
 spring:
   boot:
     admin:
@@ -145,3 +146,4 @@ spring:
           user:
             name: ${security.user.name}
             password: ${security.user.password}
+{% endif %}

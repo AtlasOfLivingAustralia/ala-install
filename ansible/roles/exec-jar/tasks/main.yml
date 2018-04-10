@@ -6,49 +6,55 @@
     pkg: openjdk-8-jre-headless
     state: present
     update_cache: yes
-  tag: service
+  tags: 
+  - service
 
 - set_fact:
     java_home: /usr/lib/jvm/java-8-openjdk-amd64/
-  tag: service
+  tags:
+  - service
 
 - name: "Create system user for {{service_name}}"
   user:
     name: "{{ service_owner | default(service_name) }}"
     state: present
     system: yes
-  tag: service
-  when: {{ create_user | true }}
+  tags:
+  - service
 
 - name: "Create {{service_name}} dir"
   file:
     path: "/opt/atlas/{{service_name}}"
     state: directory
-    owner: "{{service_name}}"
-    group: "{{service_name}}"
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_owner | default(service_name) }}"
     mode: 0755
-  tag: service
+  tags: 
+  - service
 
 - name: "Create {{service_name}} service file"
   template:
     src: systemd.service
     dest: "/etc/systemd/system/{{service_name}}.service"
   register: service
-  tag: service
+  tags:
+  - service
 
 - name: "Reload services"
   when: service.changed
   systemd:
     name: "{{service_name}}"
     daemon-reload: yes
-  tag: service
+  tags:
+  - service
 
 - name: "Enable service"
   systemd:
     name: "{{service_name}}"
     enabled: true
     state: stopped
-  tag: service
+  tags:
+  - service
 
 - name: "Download {{service_name}} JAR"
   get_url:
@@ -58,7 +64,8 @@
     owner: "{{ service_owner | default(service_name) }}"
     group: "{{ service_group | default(service_name) }}"
     force: yes
-  tag: service
+  tags:
+  - service
 
 - name: "Set {{service_name}} JAR config"
   template:
@@ -66,10 +73,12 @@
     dest: "/opt/atlas/{{service_name}}/{{service_name}}.conf"
     owner: "{{ service_owner | default(service_name) }}"
     group: "{{ service_group | default(service_name) }}"
-  tag: service
+  tags:
+  - service
 
 - name: "Start {{service_name}} service"
   systemd:
     name: "{{service_name}}"
     state: started
-  tag: service
+  tags:
+  - service

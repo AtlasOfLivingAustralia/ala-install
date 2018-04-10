@@ -4,4 +4,4 @@ artifactId: "apikey"
 classifier: 'exec'
 packaging: "jar"
 groupId: "au.org.ala"
-userdetails_war_url: "{{maven_repo_ws_url}}"
+apikey_jar_url: "{{maven_repo_ws_url}}"

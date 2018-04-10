@@ -1,3 +1,11 @@
+- name: "set facts"
+  include_role:
+    name: common
+    tasks_from: setfacts
+  tags:
+  - setfacts
+  - cas-management
+
 - name: ensure target directories exist data subdirectories etc.
   file:
     path: "{{item}}"
@@ -22,10 +30,10 @@
     - properties
     - cas-management
 
-- name: copy application.yml
+- name: copy application.properties
   template:
-    src: application.yml
-    dest: "{{data_dir}}/cas-management/config/application.yml"
+    src: application.properties
+    dest: "{{data_dir}}/cas-management/config/application.properties"
     owner: cas
     group: cas
   notify:
@@ -55,7 +63,7 @@
     service_name: "cas-management"
     service_owner: 'cas'
     service_group: 'cas'
-    jar_url: '{{ cas_management_service_jar_url }}'
+    jar_url: '{{ cas_management_jar_url }}'
   tags:
     - deploy
     - service

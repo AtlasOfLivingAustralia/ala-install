@@ -1,3 +1,11 @@
+- name: "set facts"
+  include_role:
+    name: common
+    tasks_from: setfacts
+  tags:
+  - setfacts
+  - cas
+
 - name: "Ensure system user for CAS"
   user:
     name: cas
@@ -76,7 +84,7 @@
       value: /data/cas/config/pwe.properties
     log_config_filename: 'log4j2.xml'
     service_name: "cas"
-    jar_url: '{{ cas_service_jar_url }}'
+    jar_url: '{{ cas_jar_url }}'
   tags:
     - deploy
     - service

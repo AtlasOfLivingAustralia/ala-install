@@ -1,3 +1,20 @@
+- name: "set facts"
+  include_role:
+    name: common
+    tasks_from: setfacts
+  tags:
+  - setfacts
+  - userdetails
+
+- name: "Create system user for userdetails"
+  user:
+    name: userdetails
+    state: present
+    system: yes
+  tags:
+  - user
+  - userdetails
+
 - name: ensure target directories exist data subdirectories etc.
   file:
     path: "{{item}}"
@@ -22,10 +39,10 @@
     - properties
     - userdetails
 
-- name: copy application.yml
+- name: copy userdetails-config.yml
   template:
-    src: application.yml
-    dest: "{{data_dir}}/userdetails/config/application.yml"
+    src: userdetails-config.yml
+    dest: "{{data_dir}}/userdetails/config/userdetails-config.yml"
     owner: userdetails
     group: userdetails
   notify:
@@ -49,7 +66,7 @@
     name: exec-jar
   vars:
     service_name: "userdetails"
-    jar_url: '{{ userdetails_service_jar_url }}'
+    jar_url: '{{ userdetails_jar_url }}'
   tags:
     - deploy
     - service

@@ -2,7 +2,7 @@
 security:
     cas:
         casServerName: {{ cas_server_name }}
-        casServerUrlPrefix: ${security.cas.casServerName}/cas/
+        casServerUrlPrefix: ${security.cas.casServerName}/{{ cas_context_path | default('cas') }}
         loginUrl: ${security.cas.casServerUrlPrefix}/login
         logoutUrl: ${security.cas.casServerUrlPrefix}/logout
         appServerName: {{ userdetails_server_name }}
@@ -10,13 +10,13 @@ security:
 serverURL: {{ userdetails_server_name }}
 serverName: {{ userdetails_server_name }}
 grails:
-    serverURL: {{ userdetails_server_name }}{{ userdetails_context_path }}
+    serverURL: {{ userdetails_server_name }}{{ userdetails_context_path | default('userdetails') }}
 server:
     port: {{ userdetails_port | default('9001') }}
-    contextPath: /{{ userdetails_context_path }}
+    contextPath: /{{ userdetails_context_path  | default('userdetails') }}
 endpoints:
     enabled: true
-redirectAfterFirstLogin: {{ userdetails_server_name }}{{ userdetails_context_path }}/myprofile"
+redirectAfterFirstLogin: {{ userdetails_server_name }}{{ userdetails_context_path  | default('userdetails') }}/myprofile"
 
 # Data source configuration
 dataSource:
@@ -30,7 +30,7 @@ oauth:
         flickr:
             key: {{ oauth_providers_flickr_key }}
             secret: {{ oauth_providers_flickr_secret }}
-            callback: {{ userdetails_server_name }}{{ userdetails_context_path }}/profile/flickrCallback
+            callback: {{ userdetails_server_name }}{{ userdetails_context_path | default('userdetails') }}/profile/flickrCallback
 password:
     encoder: {{ user_store_db_encoder | default('bcrypt') }} # or legacy
 bcrypt:
@@ -59,7 +59,7 @@ alerts.url: {{ alerts_base_url }}
 
 # this property is read/used by ala-auth-plugin (included by userdetails)
 userDetails:
-    url: {{ userdetails_base_url }}{{ userdetails_context_path }}
+    url: {{ userdetails_base_url }}{{ userdetails_context_path | default('userdetails') }}
 
 # Header and footer
 headerAndFooter.baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3')}}
@@ -119,3 +119,4 @@ spring:
       host: {{ spring_session_redis_host }}
       password: {{ spring_session_redis_password }}
       port: {{ spring_session_redis_port | default('6379') }}
+{% endif %}

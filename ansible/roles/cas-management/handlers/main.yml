@@ -1,0 +1,2 @@
+- name: restart cas-management
+  service: name=cas-management state=restarted

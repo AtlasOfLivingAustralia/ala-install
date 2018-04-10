@@ -3,5 +3,5 @@ version: "{{ cas5_version | default('LATEST') }}"
 artifactId: "cas"
 classifier: 'exec'
 groupId: "au.org.ala"
-packaging: "jar"
-doi_service_jar_url: "{{maven_repo_ws_url}}"
+packaging: "war"
+cas_jar_url: "{{maven_repo_ws_url}}"

@@ -1,3 +1,20 @@
+- name: "set facts"
+  include_role:
+    name: common
+    tasks_from: setfacts
+  tags:
+  - setfacts
+  - apikey
+
+- name: "Create system user for apikey"
+  user:
+    name: apikey
+    state: present
+    system: yes
+  tags:
+  - user
+  - apikey
+
 - name: ensure target directories exist data subdirectories etc.
   file:
     path: "{{item}}"
@@ -22,10 +39,10 @@
     - properties
     - apikey
 
-- name: copy application.yml
+- name: copy apikey-config.yml
   template:
-    src: application.yml
-    dest: "{{data_dir}}/apikey/config/application.yml"
+    src: apikey-config.yml
+    dest: "{{data_dir}}/apikey/config/apikey-config.yml"
     owner: apikey
     group: apikey
   notify:
@@ -49,7 +66,7 @@
     name: exec-jar
   vars:
     service_name: "apikey"
-    jar_url: '{{ apikey_service_jar_url }}'
+    jar_url: '{{ apikey_jar_url }}'
   tags:
     - deploy
     - service
