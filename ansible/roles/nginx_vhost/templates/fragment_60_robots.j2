@@ -8,6 +8,7 @@ User-agent: *
 {% for item in robots_disallow_paths %}
 Disallow: {{ item }}
 {% endfor %}
+Crawl-delay: 30
 {% endif %}
 
 {% if robots_disallow_useragents is defined and robots_disallow_useragents|length > 0 %}
