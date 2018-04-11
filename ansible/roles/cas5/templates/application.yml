@@ -103,12 +103,29 @@ cas:
         key: {{ cas_webflow_signing_key }}
       encryption:
         key: {{ cas_webflow_encryption_key }}
-auth:
+
+ala:
+  cookie:
+    domain: {{ auth_cookie_domain | default('ala.org.au') }}
+    secure: {{ auth_cookie_secure | default('false') }}
+    httpOnly: {{ auth_cookie_httpOnly | default('true') }}
+    maxAge: {{ auth_cookie_maxAge | default('-1') }}
+    name: {{ auth_cookie_name | default('ALA-Auth') }}
+    path: {{ auth_cookie_path | default('/') }}
   creator:
     userCreatePassword: {{ user_create_password }}
     jdbc:
       dataSourceName: java:comp/env/jdbccas
-      sql: sp_create_user
+  skin:
+    baseUrl: {{ ala_base_url | default('https://www.ala.org.au')}}
+    headerFooterUrl: {{ header_and_footer_baseurl | default('${ala.skin.baseUrl}/commonui-bs3')}}/
+    favIconBaseUrl: {{ skin_favicon_baseurl | default('${ala.skin.baseUrl}/wp-content/themes/ala-wordpress-theme/img/favicon/') }}
+    bieBaseUrl: {{ bie_base_url | default('https://bie.ala.org.au')}}
+    bieSearchPath: {{ bie_search_path | default('/search') }}
+    userDetailsUrl: {{ userdetails_base_url }}/{{ userdetails_context_path | default('userdetails') }}/
+    orgShortName: {{ orgNameShort | default('ALA') }}
+    orgLongName: {{ orgNameLong | default('Atlas of Living Australia') }}
+    orgNameKey: {{ orgNameKey | default('ala') }}
 
 # Enable these for Spring Boot actuator (required for Spring Boot Admin client)
 

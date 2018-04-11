@@ -83,8 +83,8 @@ bie.baseURL: {{ bie_base_url | default('https://bie.ala.org.au')}}
 bie.searchPath: {{ bie_search_path | default('/search') }}
 
 # Skin options
-skin.layout: {{ skin_layout | default('ala') }}
-skin.fluidLayout: {{ skin_fluid_layout | default('') }}
+skin.layout: {{ skin_layout | default('ala-main') }}
+skin.fluidLayout: {{ skin_fluid_layout | default('false') }}
 skin.orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}
 skin.orgNameShort: {{ orgNameShort | default('ALA') }}
 skin.favicon: {{ skin_favicon | default('https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png') }}
@@ -105,7 +105,7 @@ spring:
         enabled: true
         service-base-url: ${grails.serverURL}
         managementUrl: ${grails.serverURL}/status
-        name: User Details
+        name: {{ userdetails_bootadmin_client_name | default('User Details') }}
         metadata:
           user:
             name: ${security.user.name}
