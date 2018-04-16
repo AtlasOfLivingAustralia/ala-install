@@ -112,3 +112,10 @@
 - name: set whether webserver is apache or nginx
   set_fact:
     webserver_nginx: "{{ webserver_nginx | default(false) }}"
+
+- name: set deployment packaging
+  set_fact:
+      exec_jar: "{{ true | default(false) }}"
+  when: packaging is defined and packaging == "jar"
+  tags:
+    - setfacts

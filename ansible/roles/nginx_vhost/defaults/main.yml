@@ -7,3 +7,4 @@ nginx_root: "/srv/{{ hostname }}/www/"
 context_path: '/'
 robots_disallow_paths: [""]
 robots_disallow_useragents: []
+tomcat_server_port: '8080'

@@ -5,7 +5,7 @@
     - biocache_hub
 
 #
-# WAR file deployment and Apache/Tomcat virtual host configuration
+# Apache/Tomcat virtual host configuration
 #
 
 - include: ../../apache_vhost/tasks/main.yml context_path='/{{ biocache_hub_context_path }}' hostname='{{ biocache_hub_hostname }}'
@@ -22,22 +22,54 @@
   vars:
     hostname: "{{ biocache_hub_hostname }}"
     context_path: "{{ biocache_hub_context_path }}"
+    tomcat_server_port: "{{ biocache_hub_tomcat_server_port }}"
   tags:
     - nginx_vhost
     - deploy
     - biocache_hub
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ biocache_hub_war_url }}' context_path='{{ biocache_hub_context_path }}' hostname='{{ biocache_hub_hostname }}'
+#
+# WAR/JAR file deployment
+#
+- name: add jar and service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: '{{ biocache_hub }}'
+    jar_url: '{{ biocache_hub_artifact_url }}'
+  tags:
+    - deploy
+    - service
+    - biocache_hub
+  when: exec_jar
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ biocache_hub_artifact_url }}' context_path='{{ biocache_hub_context_path }}' hostname='{{ biocache_hub_hostname }}'
   tags:
     - webapps
     - tomcat_vhost
     - deploy
-    - biocache_hub    
+    - biocache_hub
+  when: not exec_jar
 
 #
 # Properties and data file configuration
 #
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{biocache_hub}} group={{biocache_hub}}
+  with_items:
+    - "{{data_dir}}/{{biocache_hub}}/config"
+    - "{{data_dir}}/{{biocache_hub}}/cache"
+    - "{{data_dir}}/{{biocache_hub}}/download"
+    - "{{data_dir}}/{{biocache_hub}}/geolite_db"
+    - "{{data_dir}}/{{biocache_hub}}/logs"
+  tags:
+    - webapps
+    - properties
+    - biocache_hub
+    - geolite_db
+  when: exec_jar
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
@@ -51,6 +83,7 @@
     - properties
     - biocache_hub
     - geolite_db
+  when: not exec_jar
 
 - name: copy grouped_facets.json
   template: src=config/{{grouped_facets_json}} dest={{data_dir}}/{{biocache_hub}}/config/{{grouped_facets_json}} force=yes
@@ -93,6 +126,15 @@
     - properties
     - hub_config
     - biocache_hub
+
+- name: copy logback config
+  template: src=config/logback.groovy dest={{data_dir}}/{{biocache_hub}}/config/logback.groovy  owner={{biocache_hub}} group={{biocache_hub}}
+  notify:
+    - restart {{ biocache_hub }}
+  tags:
+    - properties
+    - biocache_hub
+    - hub_config
 
 - name: Setup GeoLite2 City database (only used by ALA version of the hub)
   block:
@@ -144,3 +186,25 @@
     - properties
     - biocache_hub
     - geolite_db
+  when: not exec_jar
+
+- name: set data ownership
+  file:
+    path: "{{data_dir}}/{{biocache_hub}}"
+    owner: "{{biocache_hub}}"
+    group: "{{biocache_hub}}"
+    recurse: true
+  notify:
+     - restart {{biocache_hub}}
+  tags:
+    - properties
+    - biocache_hub
+  when: exec_jar
+
+- name: Restart {{ biocache_hub }} service
+  service:
+    name: "{{ biocache_hub }}"
+    state: restarted
+  tags:
+    - biocache_hub
+  when: exec_jar
