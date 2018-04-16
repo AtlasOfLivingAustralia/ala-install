@@ -22,7 +22,7 @@
   vars:
     hostname: "{{ biocache_hub_hostname }}"
     context_path: "{{ biocache_hub_context_path }}"
-    tomcat_server_port: "{{ biocache_hub_tomcat_server_port }}"
+    tomcat_server_port: "{{ biocache_server_port }}"
   tags:
     - nginx_vhost
     - deploy
