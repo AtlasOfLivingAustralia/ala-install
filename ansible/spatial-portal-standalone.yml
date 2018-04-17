@@ -1,8 +1,0 @@
-- hosts: spatial-portal
-  roles:
-    - java
-    - common
-    - tomcat
-    - webserver
-    - wkhtmltopdf
-    - spatial-portal
