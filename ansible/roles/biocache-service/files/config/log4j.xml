@@ -1,7 +1,7 @@
 <!DOCTYPE log4j:configuration  SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
     <!--<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">-->
-    <!--<param name="Threshold" value="ERROR"/>-->
+    <!--<param name="Threshold" value="WARN"/>-->
     <!--<layout class="org.apache.log4j.PatternLayout">-->
     <!--<param name="ConversionPattern" value="%d %-5p: [%c{1}] - %m%n"/>-->
     <!--</layout>-->
@@ -13,10 +13,11 @@
     <appender name="FILE" class="org.apache.log4j.RollingFileAppender">
         <param name="File" value="${catalina.base}/logs/biocache-service.log"/>
         <param name="Append" value="true"/>
-        <param name="Threshold" value="ERROR"/>
+        <param name="Threshold" value="DEBUG"/>
         <param name="MaxFileSize" value="200MB"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d [%c{5}] %m%n"/>
+            <!--<param name="ConversionPattern" value="%d [%c{5}] %m%n"/>-->
+            <param name="ConversionPattern" value="%d [%t] %p %4c  (%F:%L) - %m%n"/>
         </layout>
         <filter class="org.apache.log4j.varia.LevelMatchFilter">
             <param name="LevelToMatch" value="REMOTE#org.ala.client.appender.RestLevel" />
@@ -36,49 +37,49 @@
         <appender-ref ref="ALA_LOGGER" />
     </appender>
     <category name="org.ala.biocache">
-        <priority value="WARN"/>
+        <priority value="DEBUG"/>
     </category>
     <category name="au.org.ala.biocache">
-        <priority value="WARN"/>
+        <priority value="DEBUG"/>
     </category>
     <category name="au.org.ala">
-        <priority value="WARN"/>
+        <priority value="INFO"/>
     </category>
     <category name="org.scale7">
-        <priority value="ERROR"/>
+        <priority value="WARN"/>
     </category>
     <category name="au.org.ala.sds.model">
-        <priority value="ERROR"/>
+        <priority value="WARN"/>
     </category>
     <category name="au.org.ala.cas">
-        <priority value="ERROR"/>
+        <priority value="WARN"/>
     </category>
     <category name="org.jasig">
-        <priority value="ERROR"/>
+        <priority value="WARN"/>
     </category>
     <category name="org.springframework">
-        <priority value="ERROR"/>
+        <priority value="WARN"/>
     </category>
     <category name="org.apache">
-        <priority value="ERROR"/>
+        <priority value="WARN"/>
     </category>
     <category name="httpclient">
-        <priority value="ERROR"/>
+        <priority value="WARN"/>
     </category>
     <category name="org.hibernate">
-        <priority value="ERROR"/>
+        <priority value="WARN"/>
     </category>
     <category name="net.sf">
-        <priority value="ERROR"/>
+        <priority value="WARN"/>
     </category>
     <category name="org.springframework.aop.interceptor.cache">
-        <priority value="ERROR"/>
+        <priority value="WARN"/>
     </category>
     <category name="org.springframework.jdbc.core">
-        <priority value="ERROR"/>
+        <priority value="WARN"/>
     </category>
     <category name="org.quartz">
-        <priority value="ERROR"/>
+        <priority value="WARN"/>
     </category>
     <root>
         <priority value ="WARN" />
