@@ -54,7 +54,7 @@
     nginx_paths:
       - path: "{{context_path | default('/', True)}}"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:8080{{context_path | default('/', True)}}"
+        proxy_pass: "http://127.0.0.1:{{tomcat_server_port | default('8080', True)}}{{context_path | default('/', True)}}"
   when: nginx_paths is not defined or (nginx_paths | trim == '')
 
 #- name: debug - check nginx_paths value
