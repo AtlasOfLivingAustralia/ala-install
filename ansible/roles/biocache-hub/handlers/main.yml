@@ -6,3 +6,6 @@
 
 - name: restart apache
   service: name={{apache}} state=restarted
+
+- name: restart {{ biocache_hub }}
+  service: name={{biocache_hub}} state=restarted

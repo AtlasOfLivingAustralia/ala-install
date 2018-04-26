@@ -113,9 +113,16 @@
   set_fact:
     webserver_nginx: "{{ webserver_nginx | default(false) }}"
 
+- name: set exec_jar as default value
+  set_fact:
+      exec_jar: false
+  tags:
+    - setfacts
+
 - name: set deployment packaging
   set_fact:
-      exec_jar: "{{ true | default(false) }}"
+      exec_jar: true
   when: packaging is defined and packaging == "jar"
   tags:
     - setfacts
+

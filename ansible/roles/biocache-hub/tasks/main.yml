@@ -129,8 +129,6 @@
 
 - name: copy logback config
   template: src=config/logback.groovy dest={{data_dir}}/{{biocache_hub}}/config/logback.groovy  owner={{biocache_hub}} group={{biocache_hub}}
-  notify:
-    - restart {{ biocache_hub }}
   tags:
     - properties
     - biocache_hub
@@ -159,6 +157,11 @@
 
   - name: Unpackage GeoLite2 City database
     unarchive: src={{geolite_db_archive}} dest={{geolite_db_extracted}} copy=no group={{ nameindex_user | default(tomcat_user) }} owner="{{ nameindex_user | default(tomcat_user) }}"
+    when: not exec_jar
+
+  - name: Unpackage GeoLite2 City database
+    unarchive: src={{geolite_db_archive}} dest={{geolite_db_extracted}} copy=no group={{ nameindex_user | default(biocache_hub) }} owner="{{ nameindex_user | default(biocache_hub) }}"
+    when: exec_jar
 
   - name: Find extracted GeoLite2 City database file
     find: paths={{geolite_db_extracted}} patterns={{geolite_db_file}} recurse=yes file_type=file
@@ -167,8 +170,6 @@
   - name: Link GeoLite2 City database file
     file: src="{{item.path}}" dest={{geolite_db_file_link}} state=link force=yes
     with_items: "{{find_result.files}}"
-    notify:
-      - restart tomcat
   when: biocache_hub == 'ala-hub'
   tags:
     - webapps
