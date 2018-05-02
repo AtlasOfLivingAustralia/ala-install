@@ -128,7 +128,7 @@
     - biocache_hub
 
 - name: copy logback config
-  template: src=config/logback.groovy dest={{data_dir}}/{{biocache_hub}}/config/logback.groovy  owner={{biocache_hub}} group={{biocache_hub}}
+  template: src=config/logback.groovy dest={{data_dir}}/{{biocache_hub}}/config/logback.groovy  owner={{tomcat_user}} group={{tomcat_user}}
   tags:
     - properties
     - biocache_hub
