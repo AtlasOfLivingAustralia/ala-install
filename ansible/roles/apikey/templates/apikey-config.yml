@@ -92,6 +92,8 @@ spring:
   session:
     store-type: {{ spring_session_store_type | default('none') }}
     {% if spring_session_store_type == 'redis' %}disable-redis-config-action: {{ is_secured_redis | default('false') | bool }}
+    redis:
+      namespace: {{ apikey_redis_namespace | default('apikey') }}
   redis:
     host: {{ spring_session_redis_host }}
     password: {{ spring_session_redis_password }}
