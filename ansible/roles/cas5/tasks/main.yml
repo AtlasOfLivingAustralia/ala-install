@@ -78,7 +78,7 @@
     name: exec-jar
   vars:
     extra_params:
-    - key: cas.standalone.config
+    - key: cas.standalone.configurationDirectory
       value: /data/cas/config
     - key: ala.password.properties
       value: /data/cas/config/pwe.properties

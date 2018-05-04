@@ -57,7 +57,7 @@
     name: exec-jar
   vars:
     extra_params:
-    - key: cas.standalone.config
+    - key: cas.standalone.configurationDirectory
       value: /data/cas-management/config
     log_config_filename: 'log4j2.xml'
     service_name: "cas-management"
