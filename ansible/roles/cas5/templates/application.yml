@@ -147,8 +147,9 @@ management:
   security:
     enabled: true
     roles: ACTUATOR
-{% if bootadmin_enabled %}
+
 spring:
+{% if bootadmin_enabled %}
   boot:
     admin:
       url: {{ bootadmin_url | default('https://bootadmin.ala.org.au') }}
@@ -163,4 +164,13 @@ spring:
           user:
             name: ${security.user.name}
             password: ${security.user.password}
+{% endif %}
+  session:
+    store-type: {{ spring_session_store_type | default('none') }}
+    {% if spring_session_store_type == 'redis' %}disable-redis-config-action: {{ is_secured_redis | default('false') | bool }}
+  redis:
+    host: {{ spring_session_redis_host }}
+    password: {{ spring_session_redis_password }}
+    port: {{ spring_session_redis_port | default('6379') }}
+
 {% endif %}
