@@ -9,7 +9,7 @@ server:
     key-store: 
 jndi:
   hikari:
-    - name: jdbccas
+    jdbccas:
       driverClass: com.mysql.jdbc.Driver
       url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull
       user: {{ cas_db_username | default('cas') }}
@@ -37,15 +37,14 @@ cas:
   jdbc:
     showSql: false
   authn:
-    jdbc:
-      query:
-        - dataSourceName: java:comp/env/jdbccas
-        - dataSourceName: java:comp/env/jdbccas
-    attributeRepository:
-      jdbc:
-        - dataSourceName: java:comp/env/jdbccas
     pac4j:
       typedIdUsed: true
+      cookie:
+        crypto:
+          signing:
+            key: {{ pac4j_cookie_signing_key }}
+          encryption:
+            key: {{ pac4j_cookie_encryption_key }}
       facebook:
         # fields:
         id: {{ pac4j_facebook_consumer_key }}
@@ -81,8 +80,6 @@ cas:
       userId: {{ cas_services_username | default('cas') }}
       password: {{ cas_services_password | default('password') }}
   ticket:
-    rememberMe:
-      enabled: true
     registry:
       mongo:
         sslEnabled: {{ cas_tickets_ssl_enabled | default('false') }}
