@@ -11,8 +11,13 @@
     ssl_stapling on;
     ssl_stapling_verify on;
     
+{% if force_https %}
+    # Force HTTPS was configured, so setting STS value to 1 year (31536000 seconds)
+    add_header Strict-Transport-Security "max-age=31536000" always;
+{% else %}
     # Testing HSTS with 1 hour (3600 seconds) intervals so we can rollback if necessary
     add_header Strict-Transport-Security "max-age=3600" always;
+{% endif %}
 
     # Secure referrer policy to avoid leaking paths, which can include auth ticket information
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
