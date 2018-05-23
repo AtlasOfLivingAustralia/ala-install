@@ -47,10 +47,11 @@
 # replace the commented out java_opts that ships with the CentOS install which is:
 # JAVA_OPTS="-Xminf0.1 -Xmaxf0.3"        
 - name: configure tomcat memory (RedHat)
-  lineinfile: 
-    dest={{tomcat_conf}}
-    regexp="^JAVA_OPTS"
-    line='JAVA_OPTS="${JAVA_OPTS} {{tomcat_java_opts}} -Djavax.sql.DataSource.Factory=org.apache.commons.dbcp.BasicDataSourceFactory"'
+  blockinfile:
+    path={{tomcat_conf}}
+    marker="# {mark} Configure Tomcat Memory (Ansible managed)"
+    block='JAVA_OPTS="${JAVA_OPTS} {{tomcat_java_opts}} -Djavax.sql.DataSource.Factory=org.apache.commons.dbcp.BasicDataSourceFactory"'
+    backup=yes
   notify: 
     - restart tomcat
   when: ansible_os_family == "RedHat"
@@ -58,10 +59,11 @@
     - tomcat
 
 - name: configure tomcat memory (Debian)
-  lineinfile: 
-    dest={{tomcat_conf}}
-    regexp="^JAVA_OPTS"
-    line='JAVA_OPTS="${JAVA_OPTS} {{tomcat_java_opts}}"'
+  blockinfile:
+    path={{tomcat_conf}}
+    marker="# {mark} Configure Tomcat Memory (Ansible managed)"
+    block='JAVA_OPTS="${JAVA_OPTS} {{tomcat_java_opts}}"'
+    backup=yes
   notify: 
     - restart tomcat
   when: ansible_os_family == "Debian"
