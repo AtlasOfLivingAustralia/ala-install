@@ -41,14 +41,15 @@ Below are some instructions for setting up the [ALA demo](http://ala-demo.gbif.o
 
 #### 1. Vagrant
 [Vagrant](http://www.vagrantup.com) can be used to test ansible playbooks on your local machine. To use this, you will need to install
-[VirtualBox](https://www.virtualbox.org) and [Vagrant](http://www.vagrantup.com). We recommend using vagrant version 1.7.x. Earlier versions of vagrant will not work with the ```VagrantFile``` in this repository.
+[VirtualBox](https://www.virtualbox.org) and [Vagrant](http://www.vagrantup.com). We recommend using vagrant version 2.0.4. Earlier versions of vagrant will not work with the ```VagrantFile``` in this repository.
 
 For Debian/Ubuntu:
 ```
 $ sudo apt-get install virtualbox virtualbox-dkms virtualbox-qt
 $ cd ~/Downloads
-$ wget https://releases.hashicorp.com/vagrant/1.7.4/vagrant_1.7.4_x86_64.deb
-$ sudo dpkg -i vagrant_1.7.4_x86_64.deb
+$ wget https://releases.hashicorp.com/vagrant/2.0.4/vagrant_2.0.4_x86_64.deb
+$ sudo dpkg -i vagrant_2.0.4_x86_64.deb
+$ vagrant plugin install vagrant-disksize
 ```
 
 The ```vagrant/ubuntu-xenial``` directory contains configurations that can used with [VirtualBox](https://www.virtualbox.org/) to bring up a VH for deploying against.  
@@ -64,7 +65,7 @@ $ vagrant up
 
 The first execution of this downloads the Ubuntu image which can take 20 minutes or more. The ALA sample inventories (in the ansible/inventories/vagrant directory) refer to the VM as 'vagrant1' rather than the IP address. For this to work, you will need to add the following entries to you ```/etc/hosts``` file (alternatively, you can edit the inventory file and replace 'vagrant1' with the IP address of your VM).
 ```
-10.1.1.3  vagrant1 vagrant1.ala.org.au demo.vagrant1.ala.org.au
+10.1.1.4  vagrant1 vagrant1.ala.org.au demo.vagrant1.ala.org.au
 ```
 
 Once ready you can ssh to your VM like so:
@@ -74,12 +75,19 @@ $ ssh vagrant@vagrant1
 ```
 or 
 ```
-$ ssh vagrant@10.1.1.3
+$ ssh vagrant@10.1.1.4
 ``` 
 
 with password ```vagrant```.
 
-If your system cannot find a route to 10.1.1.3, you can ssh via `ssh -p 2223 vagrant@localhost` and use `ifconfig -a` to see what your virtual machine thinks is happening.
+If your system cannot find a route to 10.1.1.4, you can ssh via `ssh -p 2223 vagrant@localhost` and use `ifconfig -a` to see what your virtual machine thinks is happening.
+
+You need to disable strict host key checking in ssh, you will need to create or only add the folling entries to you ```~/.ssh/config``` file (alternatively, you can configure this).
+
+```
+Host *
+    StrictHostKeyChecking no
+```
 
 #### 2. Ansible
 

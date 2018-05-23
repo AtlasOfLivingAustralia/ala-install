@@ -4,7 +4,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.box = "ubuntu/xenial64"
   config.ssh.insert_key = false
-  config.vm.hostname = "ala.vagrant.dev"
+  config.vm.hostname = "demo.vagrant1.ala.org.au"
   config.vm.network :private_network, ip: "10.1.1.4"
   config.vm.network :forwarded_port, guest: 22, host: 2224, id: 'ssh'
 
@@ -12,7 +12,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider "virtualbox" do |v|
     v.memory = 6144
   end  
-  
+
+  # these machines require some disk size to operate the apps
+  config.disksize.size = '20GB'
+
+  # these machines require some installed apps
+  config.vm.provision :shell, inline: "sudo apt-get install python -y"
+
   # totally insecure, but this is local dev: make the vagrant default the root key
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
   config.vm.provision "shell", inline: "sudo cp -r /home/vagrant/.ssh /root/"
