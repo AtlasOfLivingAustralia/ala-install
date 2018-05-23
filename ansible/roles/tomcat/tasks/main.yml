@@ -50,7 +50,7 @@
   lineinfile: 
     dest={{tomcat_conf}}
     regexp="^JAVA_OPTS"
-    line='JAVA_OPTS="{{tomcat_java_opts}} -Djavax.sql.DataSource.Factory=org.apache.commons.dbcp.BasicDataSourceFactory"'
+    line='JAVA_OPTS="${JAVA_OPTS} {{tomcat_java_opts}} -Djavax.sql.DataSource.Factory=org.apache.commons.dbcp.BasicDataSourceFactory"'
   notify: 
     - restart tomcat
   when: ansible_os_family == "RedHat"
@@ -61,7 +61,7 @@
   lineinfile: 
     dest={{tomcat_conf}}
     regexp="^JAVA_OPTS"
-    line='JAVA_OPTS="{{tomcat_java_opts}}"'
+    line='JAVA_OPTS="${JAVA_OPTS} {{tomcat_java_opts}}"'
   notify: 
     - restart tomcat
   when: ansible_os_family == "Debian"
