@@ -62,6 +62,9 @@ $ cd vagrant/ubuntu-xenial
 $ vagrant up
 ```
 
+*Double check IP address in Vagrantfile*
+
+
 The first execution of this downloads the Ubuntu image which can take 20 minutes or more. The ALA sample inventories (in the ansible/inventories/vagrant directory) refer to the VM as 'vagrant1' rather than the IP address. For this to work, you will need to add the following entries to you ```/etc/hosts``` file (alternatively, you can edit the inventory file and replace 'vagrant1' with the IP address of your VM).
 ```
 10.1.1.3  vagrant1 vagrant1.ala.org.au demo.vagrant1.ala.org.au
@@ -72,6 +75,7 @@ Once ready you can ssh to your VM like so:
 ```
 $ ssh vagrant@vagrant1
 ```
+
 or 
 ```
 $ ssh vagrant@10.1.1.3
@@ -79,6 +83,10 @@ $ ssh vagrant@10.1.1.3
 
 with password ```vagrant```.
 
+You may get public key denied error, then you can try:
+```
+ssh vagrant@10.1.1.4 -i ~/.vagrant.d/insecure_private_key
+```
 If your system cannot find a route to 10.1.1.3, you can ssh via `ssh -p 2223 vagrant@localhost` and use `ifconfig -a` to see what your virtual machine thinks is happening.
 
 #### 2. Ansible
@@ -145,7 +153,11 @@ $ ansible-playbook -i inventories/demo ala-demo.yml --user <CSIRO_IDENT> --becom
 
 For Nectar VMs:
 ```
-$ ansible-playbook -i inventories/nectar-sandbox sandbox.yml --private-key <PATH_TO_YOUR_PEM_FILE> --user root
+$ ansible-playbook -i inventories/sandbox-nectar sandbox.yml --private-key <PATH_TO_YOUR_PEM_FILE> --user root
+```
+If you do not have private key of root, you can use your own id as follows: Make sure you have sudo permission
+```
+ansible-playbook -i ~/src/ansible-inventories/sandbox-nectar sandbox.yml --private-key <private key path> --user <id> -s --ask-sudo-pass
 ```
 Note Nectar VMs will require an edit of the /etc/hosts file on the VM so that it recognises its own host name.
 
