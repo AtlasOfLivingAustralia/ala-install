@@ -152,3 +152,15 @@ ssl=false
 nameindex_variant=ala
 nameindex_datestamp=20171012
 #aws_nameindex_source_url=http://s3.amazonaws.com/ala-nameindexes/20150701
+
+############## Base header / footer ###############
+header_and_footer_baseurl = http://demo.vagrant1.ala.org.au
+
+######### Species list ##############
+specieslist_context_path = /specieslists
+
+############# BIE index ################
+bie_index_context_path = /bie-index
+
+############# BIE Hub ################
+bie_hub_context_path = /ala-bie
