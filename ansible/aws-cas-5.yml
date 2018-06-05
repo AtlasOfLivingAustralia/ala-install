@@ -103,12 +103,24 @@
     # TODO Add mongo http api call instead?
   - include_role:
       name: cas5
+    vars:
+      min_memory: "{{ cas_min_memory | default('512m') }}"
+      max_memory: "{{ cas_max_memory | default('2g') }}"
   - include_role:
       name: cas-management
+    vars:
+      min_memory: "{{ cas_management_min_memory | default('256m') }}"
+      max_memory: "{{ cas_management_max_memory | default('1g') }}"
   - include_role:
       name: userdetails
+    vars:
+      min_memory: "{{ userdetails_min_memory | default('256m') }}"
+      max_memory: "{{ userdetails_max_memory | default('1g') }}"
   - include_role:
       name: apikey
+    vars:
+      min_memory: "{{ apikey_min_memory | default('256m') }}"
+      max_memory: "{{ apikey_max_memory | default('1g') }}"
   - include_role:
       name: nginx_vhost
     vars:
