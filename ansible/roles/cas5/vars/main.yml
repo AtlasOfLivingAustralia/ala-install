@@ -1,5 +1,5 @@
 # assets
-version: "{{ cas5_version | default('LATEST') }}"
+version: "{{ cas_version | default('LATEST') }}"
 artifactId: "cas"
 classifier: 'exec'
 groupId: "au.org.ala"

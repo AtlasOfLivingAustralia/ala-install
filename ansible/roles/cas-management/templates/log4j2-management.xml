@@ -6,7 +6,7 @@
         Default log directory is the current directory but that can be overridden with -Dcas.log.dir=<logdir>
         Or you can change this property to a new default
         -->
-        <Property name="cas.log.dir" >.</Property>
+        <Property name="LOG_DIR" >.</Property>
         <!-- To see more CAS specific logging, adjust this property to info or debug or run server with -Dcas.log.leve=debug -->
         <Property name="cas.log.level" >info</Property>
     </Properties>
@@ -14,14 +14,15 @@
         <Console name="console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d %p [%c] - &lt;%m&gt;%n"/>
         </Console>
-        <RollingFile name="cas-management" fileName="${sys:cas.log.dir}/cas-management.log" append="true"
-                     filePattern="${sys:cas.log.dir}/cas-management-%d{yyyy-MM-dd-HH}-%i.log.gz">
+        <RollingFile name="cas-management" fileName="${env:LOG_DIR}/cas-management.log" append="true"
+                     filePattern="${env:LOG_DIR}/cas-management.%i.log">
             <PatternLayout pattern="%d %p [%c] - %m%n"/>
             <Policies>
                 <OnStartupTriggeringPolicy />
-                <SizeBasedTriggeringPolicy size="512 KB"/>
-                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+                <!-- <TimeBasedTriggeringPolicy /> -->
             </Policies>
+            <DefaultRolloverStrategy max="7"/>
         </RollingFile>
     </Appenders>
     <Loggers>
@@ -36,7 +37,7 @@
         <AsyncLogger name="org.apereo.inspektr.audit.support.Slf4jLoggingAuditTrailManager" level="info"/>
         <Root level="warn">
             <AppenderRef ref="cas-management"/>
-            <AppenderRef ref="console"/>
+            <!-- <AppenderRef ref="console"/> -->
         </Root>
     </Loggers>
 </Configuration>

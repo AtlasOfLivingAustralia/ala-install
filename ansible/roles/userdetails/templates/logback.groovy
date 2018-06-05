@@ -10,7 +10,7 @@ conversionRule 'clr', ColorConverter
 conversionRule 'wex', WhitespaceThrowableProxyConverter
 
 // See http://logback.qos.ch/manual/groovy.html for details on configuration
-def loggingDir = './logs'
+def loggingDir = System.getenv('LOG_DIR') ?: System.getProperty('logDir', './logs')
 def appName = 'userdetails'
 def TOMCAT_LOG = 'TOMCAT_LOG'
 switch (Environment.current) {
@@ -69,11 +69,7 @@ root(WARN, [TOMCAT_LOG])
     (OFF): [],
     (ERROR): [
         'grails.spring.BeanBuilder',
-        'grails.plugin.webxml',
-        'grails.plugin.cache.web.filter',
-        'grails.app.services.org.grails.plugin.resource',
-        'grails.app.taglib.org.grails.plugin.resource',
-        'grails.app.resourceMappers.org.grails.plugin.resource'
+        'grails.plugin.cache.web.filter'
     ],
     (WARN): [
         'au.org.ala.cas.client'

@@ -25,6 +25,7 @@
     - "{{data_dir}}/apikey"
     - "{{data_dir}}/apikey/config"
     - "{{data_dir}}/apikey/"
+    - "/var/log/atlas/apikey"
   tags:
     - properties
     - apikey

@@ -10,7 +10,7 @@ conversionRule 'clr', ColorConverter
 conversionRule 'wex', WhitespaceThrowableProxyConverter
 
 // See http://logback.qos.ch/manual/groovy.html for details on configuration
-def loggingDir = './logs'
+def loggingDir = System.getenv('LOG_DIR') ?: System.getProperty('logDir', './logs')
 def appName = 'apikey'
 def TOMCAT_LOG = 'TOMCAT_LOG'
 switch (Environment.current) {

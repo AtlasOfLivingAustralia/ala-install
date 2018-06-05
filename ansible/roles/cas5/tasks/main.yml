@@ -25,6 +25,7 @@
     - "{{data_dir}}/cas"
     - "{{data_dir}}/cas/config"
     - "{{data_dir}}/cas/"
+    - /var/log/atlas/cas/
   tags:
     - properties
     - cas

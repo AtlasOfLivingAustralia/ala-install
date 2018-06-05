@@ -1,11 +1,20 @@
 # TODO multiple java versions
 # Java home on different systems?
 # Could delegate via dependency?
-- name: Install Java
+
+- name: Update apt
   apt:
-    pkg: openjdk-8-jre-headless
-    state: present
     update_cache: yes
+  tags:
+  - service
+
+- name: Install dependencies
+  apt:
+    name: "{{item}}"
+    state: present
+  with_items:
+  - python-lxml
+  - openjdk-8-jre-headless
   tags: 
   - service
 
@@ -57,13 +66,26 @@
   - service
 
 - name: "Download {{service_name}} JAR"
-  get_url:
-    url: "{{jar_url}}"
+  maven_artifact:
+    group_id: "{{groupId}}"
+    artifact_id: "{{artifactId}}"
+    version: "{{version|default('latest')}}"
+    extension: "{{packaging|default('jar')}}"
+    classifier: "{{classifier|default('')}}"
+    repository_url: "{{maven_repo_url}}"
+    timeout: 30
     dest: "/opt/atlas/{{service_name}}/{{service_name}}.jar"
     mode: u=rwx,g=rx,o=rx
     owner: "{{ service_owner | default(service_name) }}"
     group: "{{ service_group | default(service_name) }}"
-    force: yes
+  # get_url:
+  #   url: "{{jar_url}}"
+  #   timeout: "30"
+  #   dest: "/opt/atlas/{{service_name}}/{{service_name}}.jar"
+  #   mode: u=rwx,g=rx,o=rx
+  #   owner: "{{ service_owner | default(service_name) }}"
+  #   group: "{{ service_group | default(service_name) }}"
+  #   force: yes
   tags:
   - service
 

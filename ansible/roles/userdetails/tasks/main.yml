@@ -25,6 +25,7 @@
     - "{{data_dir}}/userdetails"
     - "{{data_dir}}/userdetails/config"
     - "{{data_dir}}/userdetails/"
+    - "/var/log/atlas/userdetails"
   tags:
     - properties
     - userdetails
