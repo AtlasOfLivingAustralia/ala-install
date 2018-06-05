@@ -102,6 +102,7 @@ cas:
         key: {{ cas_webflow_encryption_key }}
 
 ala:
+  userDetailsBaseUrl: {{ userdetails_base_url }}/{{ userdetails_context_path | default('userdetails') }}/
   cookie:
     domain: {{ auth_cookie_domain | default('ala.org.au') }}
     secure: {{ auth_cookie_secure | default('false') }}
@@ -109,10 +110,13 @@ ala:
     maxAge: {{ auth_cookie_maxAge | default('-1') }}
     name: {{ auth_cookie_name | default('ALA-Auth') }}
     path: {{ auth_cookie_path | default('/') }}
-  creator:
+  userCreator:
     userCreatePassword: {{ user_create_password }}
     jdbc:
       dataSourceName: java:comp/env/jdbccas
+      enableUpdateLastLoginTime: {{ cas_update_last_login | default('true') }}
+      enableRequestExtraAttributes: {{ cas_request_extra_attrs | default('true') }}
+      enableUpdateLegacyPasswords: {{ cas_update_legacy_passwords | default('true') }}
   skin:
     baseUrl: {{ ala_base_url | default('https://www.ala.org.au')}}
     headerFooterUrl: {{ header_and_footer_baseurl | default('${ala.skin.baseUrl}/commonui-bs3')}}/
