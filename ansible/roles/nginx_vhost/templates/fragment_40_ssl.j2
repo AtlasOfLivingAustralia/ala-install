@@ -22,4 +22,13 @@
     # Secure referrer policy to avoid leaking paths, which can include auth ticket information
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 
+    # Deny framing (If applications use iframe legitimately, this could be configurable)
+    add_header X-Frame-Options DENY always;
+    
+    # Disable browser sniffing away from the header declared content type
+    add_header X-Content-Type-Options nosniff always;
+
+    # Enable inbuilt browser XSS protection
+    add_header X-XSS-Protection "1; mode=block" always;
+
 {% endif %}
