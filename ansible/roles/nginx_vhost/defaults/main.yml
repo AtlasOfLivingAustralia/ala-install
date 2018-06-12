@@ -5,6 +5,9 @@ ssl: true
 force_https: true
 nginx_root: "/srv/{{ hostname }}/www/"
 context_path: '/'
-robots_disallow_paths: [""]
-robots_disallow_useragents: []
+robots_disallow_paths: ["/"]
+robots_disallow_useragents: ["Semrush"]
 tomcat_server_port: '8080'
+frame_options_header: true
+content_type_options_header: true
+xss_protection_header: false
