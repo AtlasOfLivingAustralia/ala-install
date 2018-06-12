@@ -61,7 +61,6 @@
   systemd:
     name: "{{service_name}}"
     enabled: true
-    state: stopped
   tags:
   - service
 
@@ -86,6 +85,7 @@
   #   owner: "{{ service_owner | default(service_name) }}"
   #   group: "{{ service_group | default(service_name) }}"
   #   force: yes
+  notify: "restart {{service_name}}"
   tags:
   - service
 
@@ -95,12 +95,14 @@
     dest: "/opt/atlas/{{service_name}}/{{service_name}}.conf"
     owner: "{{ service_owner | default(service_name) }}"
     group: "{{ service_group | default(service_name) }}"
+  notify: "restart {{service_name}}"
   tags:
   - service
 
-- name: "Start {{service_name}} service"
-  systemd:
-    name: "{{service_name}}"
-    state: started
-  tags:
-  - service
+# Don't force start the service, rely on the handlers to do it
+# - name: "Start {{service_name}} service"
+#   systemd:
+#     name: "{{service_name}}"
+#     state: started
+#   tags:
+#   - service
