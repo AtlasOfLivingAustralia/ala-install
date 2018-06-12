@@ -31,6 +31,8 @@ cas:
   server:
     name: {{ cas_server_name }}
     prefix: ${cas.server.name}/{{ cas_context_path | default('cas') }}
+  host:
+    name: {{ cas_host_name }}
   adminPagesSecurity:
     ip: {{ cas_admin_pages_ip | default('.*') }}
     actuatorEndpointsEnabled: true

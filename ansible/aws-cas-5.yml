@@ -7,18 +7,18 @@
   tasks:
   - include_role:
       name: common
-  - apt_key:
-      keyserver: keyserver.ubuntu.com
-      id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5 #mongo
-  - apt_repository:
-      repo: deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/3.6 multiverse
-      state: present
+#   - apt_key:
+#       keyserver: keyserver.ubuntu.com
+#       id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5 #mongo
+#   - apt_repository:
+#       repo: deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/3.6 multiverse
+#       state: present
   - apt:
       name: "{{ item }}"
     with_items:
     - mysql-client
     - python-mysqldb
-    - mongodb-org-shell
+    # - mongodb-org-shell
 #     - python-pip
 #   - apt:
 #       name: python-pymongo
@@ -81,7 +81,6 @@
     - { user: "{{ cas_flyway_username }}", password: "{{ cas_flyway_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:ALL", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
     - { user: "{{ cas_db_username }}", password: "{{ cas_db_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:INSERT,SELECT,UPDATE,DELETE,EXECUTE,TRIGGER", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
     - { user: "{{ apikey_db_username }}", password: "{{ apikey_db_password }}", priv: "{{ apikey_db_name | default('apikey') }}.*:ALL", login_host: "{{ apikey_db_hostname }}", login_port: "{{ apikey_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
-    # run_once: true # need to run this for each host ip
     # Won't work with MongoDB Atlas instance
 #   - mongodb_user:
 #       user: "{{ item.user }}"
@@ -124,7 +123,7 @@
   - include_role:
       name: nginx_vhost
     vars:
-      hostname: "{{ cas_hostname }}"
+      hostname: "{{ cas_host_name }}"
       context_path: "{{ item.context }}"
       nginx_paths:
       - path: "/{{ item.context }}"
