@@ -80,6 +80,7 @@
     with_items:
     - { user: "{{ cas_flyway_username }}", password: "{{ cas_flyway_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:ALL", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
     - { user: "{{ cas_db_username }}", password: "{{ cas_db_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:INSERT,SELECT,UPDATE,DELETE,EXECUTE,TRIGGER", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
+    - { user: "{{ cas_db_username }}", password: "{{ cas_db_password }}", priv: "mysql.proc:SELECT", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
     - { user: "{{ apikey_db_username }}", password: "{{ apikey_db_password }}", priv: "{{ apikey_db_name | default('apikey') }}.*:ALL", login_host: "{{ apikey_db_hostname }}", login_port: "{{ apikey_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
     # Won't work with MongoDB Atlas instance
 #   - mongodb_user:
