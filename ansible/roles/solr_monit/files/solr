@@ -1,0 +1,4 @@
+check process solr with pidfile /data/solr/solr-8983.pid
+   start program = "/usr/sbin/service solr start"
+   stop program  = "/usr/sbin/service solr stop"
+   if failed host 127.0.0.1 port 8983 then restart
