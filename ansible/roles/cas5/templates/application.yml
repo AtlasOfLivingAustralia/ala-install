@@ -81,6 +81,7 @@ cas:
       authenticationDatabaseName: {{ cas_services_auth_db | default('') }}
       userId: {{ cas_services_username | default('cas') }}
       password: {{ cas_services_password | default('password') }}
+      timeout: {{ cas_services_timeout | default('PT5S') }}
   ticket:
     registry:
       mongo:
@@ -93,6 +94,7 @@ cas:
         authenticationDatabaseName: {{ cas_tickets_auth_db | default('') }}
         userId: {{ cas_tickets_username | default('cas') }}
         password: {{ cas_tickets_password | default('password') }}
+        timeout: {{ cas_tickets_timeout | default('PT15S') }}
   tgc:
     crypto:
       enabled: false
