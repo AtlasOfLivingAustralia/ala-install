@@ -38,6 +38,15 @@
       dest: /tmp/apikey.sql
     when: apikey_db_dump is defined
   - mysql_db:
+      state: absent
+      name: "{{ cas_db_name | default('emmet') }}"
+      login_host: "{{ cas_db_hostname }}"
+      login_port: "{{ cas_db_port | default('3306') }}"
+      login_user: "{{ mysql_root_username }}"
+      login_password: "{{ mysql_root_password }}"
+    when: cas_db_dump is defined
+    run_once: true
+  - mysql_db:
       state: import
       name: "{{ cas_db_name | default('emmet') }}"
       target: /tmp/cas.sql
