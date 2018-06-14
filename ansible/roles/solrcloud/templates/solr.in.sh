@@ -64,15 +64,19 @@ SOLR_HOST="{{ solr_host }}"
 # to monitor the JVM hosting Solr; set to "false" to disable that behavior
 # (false is recommended in production environments)
 {% if solr_jmx_port is defined %}
-ENABLE_REMOTE_JMX_OPTS="true"
-RMI_PORT="10058"
+# The usual solr method includes the instruction "-Dcom.sun.management.jmxremote.local.only=false" which may be hampering zabbix connecting to JMX
+#ENABLE_REMOTE_JMX_OPTS="true"
+#RMI_PORT="{{ solr_jmx_port }}"
+# Alternative to the above is to manually include the necessary JMX properties
+ENABLE_REMOTE_JMX_OPTS="false"
+SOLR_OPTS="$SOLR_OPTS -Djava.rmi.server.hostname={{ solr_host }}"
+SOLR_OPTS="$SOLR_OPTS -Dcom.sun.management.jmxremote"
+SOLR_OPTS="$SOLR_OPTS -Dcom.sun.management.jmxremote.port={{ solr_jmx_port }}"
+SOLR_OPTS="$SOLR_OPTS -Dcom.sun.management.jmxremote.rmi.port={{ solr_jmx_port }}"
+SOLR_OPTS="$SOLR_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
+SOLR_OPTS="$SOLR_OPTS -Dcom.sun.management.jmxremote.ssl=false"
 # JMX monitoring needs IPV4 preferred
 SOLR_OPTS="$SOLR_OPTS -Djava.net.preferIPv4Stack=true"
-#SOLR_OPTS="$SOLR_OPTS -Djava.rmi.server.hostname={{ solr_host }}"
-#SOLR_OPTS="$SOLR_OPTS -Dcom.sun.management.jmxremote"
-#SOLR_OPTS="$SOLR_OPTS -Dcom.sun.management.jmxremote.port={{ solr_jmx_port }}"
-#SOLR_OPTS="$SOLR_OPTS -Dcom.sun.management.jmxremote.rmi.port={{ solr_jmx_port }}"
-#SOLR_OPTS="$SOLR_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
 {% else %}
 ENABLE_REMOTE_JMX_OPTS="false"
 {% endif %}
