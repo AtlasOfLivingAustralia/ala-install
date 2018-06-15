@@ -22,18 +22,18 @@
     # Secure referrer policy to avoid leaking paths, which can include auth ticket information
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 
-{% if frame_options_header %}
-    # Deny framing (If applications use iframe legitimately, this could be configurable)
+{% if frame_options_header is defined and frame_options_header == true %}
+    # Deny framing (Reenable using frame_options_header)
     add_header X-Frame-Options DENY always;
 {% endif %}
 
-{% if content_type_options_header %}
-    # Disable browser sniffing away from the header declared content type
+{% if content_type_options_header is defined and content_type_options_header == true %}
+    # Disable browser sniffing away from the header declared content type (Reenable using content_type_options_header)
     add_header X-Content-Type-Options nosniff always;
 {% endif %}
 
-{% if xss_protection_header %}
-    # Enable inbuilt browser XSS protection
+{% if xss_protection_header is defined and xss_protection_header == true %}
+    # Enable inbuilt browser XSS protection (Disable using xss_protection_header)
     add_header X-XSS-Protection "1; mode=block" always;
 {% endif %}
 
