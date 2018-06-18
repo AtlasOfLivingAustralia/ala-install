@@ -79,10 +79,9 @@ SOLR_OPTS="$SOLR_OPTS -Dcom.sun.management.jmxremote.ssl=false"
 SOLR_OPTS="$SOLR_OPTS -Djava.net.preferIPv4Stack=true"
 {% else %}
 ENABLE_REMOTE_JMX_OPTS="false"
-{% endif %}
-
 # The script will use SOLR_PORT+10000 for the RMI_PORT or you can set it here
 # RMI_PORT=18983
+{% endif %}
 
 # Set the thread stack size
 SOLR_OPTS="$SOLR_OPTS -Xss256k"
@@ -92,7 +91,7 @@ SOLR_OPTS="$SOLR_OPTS -Xss256k"
 # -a option on start script, those options will be appended as well. Examples:
 #SOLR_OPTS="$SOLR_OPTS -Dsolr.autoSoftCommit.maxTime=3000"
 #SOLR_OPTS="$SOLR_OPTS -Dsolr.autoCommit.maxTime=60000"
-#SOLR_OPTS="$SOLR_OPTS -Dsolr.clustering.enabled=true"
+SOLR_OPTS="$SOLR_OPTS -Dsolr.clustering.enabled={{ solr_clustering_enabled | default('false') }}"
 
 # Location where the bin/solr script will save PID files for running instances
 # If not set, the script will create PID files in $SOLR_TIP/bin

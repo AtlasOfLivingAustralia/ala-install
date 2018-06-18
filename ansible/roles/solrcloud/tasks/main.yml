@@ -34,7 +34,6 @@
     - "/opt/solr"
     - "/opt/solr-{{ solr_version }}"
   tags:
-    - solr_config  
     - solrcloud
 
 - name: Extract the install script
