@@ -12,5 +12,5 @@ check host solrhttp with address 127.0.0.1
        port 8983
        protocol http
        and request /solr/admin/collections?action=clusterstatus&wt=json&indent=true
-       for 3 cycles
+       for 2 cycles
    then restart
