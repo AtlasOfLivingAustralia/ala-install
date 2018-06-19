@@ -1,5 +1,6 @@
 # application versions
 # assets
+collectory_version: "1.5.1"
 version: "{{ collectory_version | default('LATEST') }}"
 
 artifactId: "{{ collectory_app | default('generic-collectory') }}"
