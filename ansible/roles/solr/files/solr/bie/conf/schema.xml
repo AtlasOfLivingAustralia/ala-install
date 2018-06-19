@@ -531,7 +531,8 @@
    <field name="namePublishedIn" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInYear" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
-   <field name="taxonRemarks" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="taxonRemarks" type="lowercase" indexed="false" stored="true" required="false" multiValued="true"/>
+   <field name="provenance" type="lowercase" indexed="false" stored="true" required="false" multiValued="true"/>
    <field name="temporal" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="locationID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="locality" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>

@@ -63,10 +63,25 @@ SOLR_HOST="{{ solr_host }}"
 # Set to true to activate the JMX RMI connector to allow remote JMX client applications
 # to monitor the JVM hosting Solr; set to "false" to disable that behavior
 # (false is recommended in production environments)
+{% if solr_jmx_port is defined %}
+# The usual solr method includes the instruction "-Dcom.sun.management.jmxremote.local.only=false" which may be hampering zabbix connecting to JMX
+#ENABLE_REMOTE_JMX_OPTS="true"
+#RMI_PORT="{{ solr_jmx_port }}"
+# Alternative to the above is to manually include the necessary JMX properties
 ENABLE_REMOTE_JMX_OPTS="false"
-
+SOLR_OPTS="$SOLR_OPTS -Djava.rmi.server.hostname={{ solr_host }}"
+SOLR_OPTS="$SOLR_OPTS -Dcom.sun.management.jmxremote"
+SOLR_OPTS="$SOLR_OPTS -Dcom.sun.management.jmxremote.port={{ solr_jmx_port }}"
+SOLR_OPTS="$SOLR_OPTS -Dcom.sun.management.jmxremote.rmi.port={{ solr_jmx_port }}"
+SOLR_OPTS="$SOLR_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
+SOLR_OPTS="$SOLR_OPTS -Dcom.sun.management.jmxremote.ssl=false"
+# JMX monitoring needs IPV4 preferred
+SOLR_OPTS="$SOLR_OPTS -Djava.net.preferIPv4Stack=true"
+{% else %}
+ENABLE_REMOTE_JMX_OPTS="false"
 # The script will use SOLR_PORT+10000 for the RMI_PORT or you can set it here
 # RMI_PORT=18983
+{% endif %}
 
 # Set the thread stack size
 SOLR_OPTS="$SOLR_OPTS -Xss256k"
@@ -76,11 +91,11 @@ SOLR_OPTS="$SOLR_OPTS -Xss256k"
 # -a option on start script, those options will be appended as well. Examples:
 #SOLR_OPTS="$SOLR_OPTS -Dsolr.autoSoftCommit.maxTime=3000"
 #SOLR_OPTS="$SOLR_OPTS -Dsolr.autoCommit.maxTime=60000"
-#SOLR_OPTS="$SOLR_OPTS -Dsolr.clustering.enabled=true"
+SOLR_OPTS="$SOLR_OPTS -Dsolr.clustering.enabled={{ solr_clustering_enabled | default('false') }}"
 
 # Location where the bin/solr script will save PID files for running instances
 # If not set, the script will create PID files in $SOLR_TIP/bin
-#SOLR_PID_DIR=
+SOLR_PID_DIR={{ solr_home | default('/data/solr') }}
 
 # Path to a directory for Solr to store cores and their data. By default, Solr will use server/solr
 # If solr.xml is not stored in ZooKeeper, this directory needs to contain solr.xml

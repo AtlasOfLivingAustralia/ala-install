@@ -2,13 +2,29 @@
   tags:
     - solr_monit
 
+# Enable the following manually to purge broken monit setup
+#- name: uninstall monit to remove broken config
+#  apt: pkg=monit state=absent purge=yes force=yes update_cache=yes
+#  tags:
+#    - solr_monit
+
 - name: install monit
   apt: pkg=monit state=present update_cache=yes
   tags:
     - solr_monit
 
-- name: copy monit config
-  copy: src=monitrc dest=/etc/monit/ mode=700
+- name: copy monit solr config
+  copy: src=solr dest=/etc/monit/conf-available/ mode=700
+  notify:
+    - restart monit
+  tags:
+    - solr_monit
+
+- name: enable monit solr config
+  file:
+    src: "/etc/monit/conf-available/solr"
+    dest: "/etc/monit/conf-enabled/solr"
+    state: link
   notify:
     - restart monit
   tags:

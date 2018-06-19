@@ -11,10 +11,30 @@
     ssl_stapling on;
     ssl_stapling_verify on;
     
+{% if force_https %}
+    # Force HTTPS was configured, so setting STS value to 1 year (31536000 seconds)
+    add_header Strict-Transport-Security "max-age=31536000" always;
+{% else %}
     # Testing HSTS with 1 hour (3600 seconds) intervals so we can rollback if necessary
     add_header Strict-Transport-Security "max-age=3600" always;
+{% endif %}
 
     # Secure referrer policy to avoid leaking paths, which can include auth ticket information
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+{% if frame_options_header is defined and frame_options_header == true %}
+    # Deny framing (Reenable using frame_options_header)
+    add_header X-Frame-Options DENY always;
+{% endif %}
+
+{% if content_type_options_header is defined and content_type_options_header == true %}
+    # Disable browser sniffing away from the header declared content type (Reenable using content_type_options_header)
+    add_header X-Content-Type-Options nosniff always;
+{% endif %}
+
+{% if xss_protection_header is defined and xss_protection_header == true %}
+    # Enable inbuilt browser XSS protection (Disable using xss_protection_header)
+    add_header X-XSS-Protection "1; mode=block" always;
+{% endif %}
 
 {% endif %}

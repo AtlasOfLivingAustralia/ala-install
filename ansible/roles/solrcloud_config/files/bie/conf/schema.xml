@@ -371,8 +371,19 @@
    <field name="rightsHolder" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedIn" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInYear" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
-   <field name="namePublishedInID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="namePublishedInID" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="taxonRemarks" type="lowercase" indexed="false" stored="true" required="false" multiValued="true"/>
+   <field name="provenance" type="lowercase" indexed="false" stored="true" required="false" multiValued="true"/>
    <field name="locatedInHubCountry" type="boolean" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="temporal" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="locationID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="locality" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="countryCode" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="sex" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="lifeStage" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="isPlural" type="boolean" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="organismPart" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="labels" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
 
    <!-- higher taxonomy -->
    <field name="speciesGroup" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" />

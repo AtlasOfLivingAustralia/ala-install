@@ -27,6 +27,10 @@
     - sandbox
   when: webserver_nginx
 
+- debug: msg="Testing sandbox war url - {{ sandbox_war_url }} , path - {{ sandbox_context_path }} "
+  tags:
+     - sandbox
+
 - name: setup tomcat for sandbox
   include: ../../tomcat_deploy/tasks/main.yml war_url='{{ sandbox_war_url }}' context_path='{{ sandbox_context_path }}' hostname='{{ sandbox_hostname }}'
   tags:
