@@ -79,6 +79,21 @@
     group: root
   when: vhost_required
 
+- name: ensure nginx cache dir is present if configured
+  file: 
+    path: "{{nginx_cache_path}}"
+    state: directory
+    mode: 0755 
+    owner: www-data
+    group: www-data
+  when: vhost_required and nginx_cache
+
+- name: add cache fragment if configured
+  template:
+    src: "fragment_05_cache.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_05_cache"
+  when: vhost_required and nginx_cache
+
 # copy 10, 20, 90 as http (e.g. dest file might be /etc/nginx/vhost_fragments/bie-test.ala.org.au/http_10_start)
 - name: add start http fragment
   template:
