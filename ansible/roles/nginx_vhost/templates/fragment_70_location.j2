@@ -16,7 +16,7 @@
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Port $server_port;
         proxy_read_timeout 10m;
-{% if nginx_cache %}
+{% if nginx_cache and item.use_cache is defined and item.use_cache %}
         proxy_cache {{ nginx_cache_zone }};
 {% endif %}
         proxy_pass {{ item.proxy_pass }};
