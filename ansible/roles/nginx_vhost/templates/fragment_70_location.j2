@@ -9,6 +9,9 @@
             return 444;
         }
 {% endif %}
+{% if item.rewrite_path is defined and item.rewrite_path %}
+        rewrite ^ {{item.rewrite_path}}$1;
+{% endif %}
 {% if item.is_proxy %}
         # proxy_set_header Host $host;
         proxy_set_header Host {{ hostname }};
