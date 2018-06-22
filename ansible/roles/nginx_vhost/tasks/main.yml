@@ -279,6 +279,14 @@
   tags:
     - nginx_vhost
 
+- name: remove symlink to default vhost, if Amazon load balancer health checks vhost configured
+  file: 
+    path: "{{nginx_conf_dir}}/sites-enabled/default"
+    state: absent
+  when: aws_elb_healthcheck_default and vhost_required
+  tags:
+    - nginx_vhost
+
 - name: ensure fragments dir for default vhost for Amazon load balancer health checks is present
   file: 
     path: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default"
