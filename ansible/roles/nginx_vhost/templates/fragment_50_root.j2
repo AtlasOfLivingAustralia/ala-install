@@ -5,4 +5,10 @@
 {% if ssl %}
     # If ssl is supported, then push this policy to all users who understand it to trigger HSTS
     add_header Content-Security-Policy upgrade-insecure-requests;
+
+{% endif %}
+{% if nginx_cache %}
+    # If caching is enabled, add a header to track cache hits/misses/etc.
+    add_header X-Cache-Status $upstream_cache_status;
+
 {% endif %}
