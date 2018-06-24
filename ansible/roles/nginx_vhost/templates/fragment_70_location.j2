@@ -24,7 +24,7 @@
     {% if nginx_cache_lock is defined and nginx_cache_lock %}
         # Avoid concurrent requests for the same item by adding a lock to cache requests for the same key
         proxy_cache_lock on;
-        proxy_cache_lock_age {{ nginx_cache_lock_age | default ('5s') }}
+        proxy_cache_lock_age {{ nginx_cache_lock_age | default ('5s') }};
         proxy_cache_lock_timeout {{ nginx_cache_lock_timeout | default('5s') }};
     {% endif %}
     {% if nginx_proxy_ignore_client_abort is defined and nginx_proxy_ignore_client_abort %}
