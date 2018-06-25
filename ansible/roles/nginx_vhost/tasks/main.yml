@@ -244,7 +244,7 @@
 - name: add location https fragments
   template:
     src: "fragment_70_location.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.path | basename }}"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}"
   with_items:
     - "{{ nginx_paths }}"
   when: ssl and vhost_required
@@ -309,7 +309,7 @@
 - name: add location fragment for default vhost for Amazon load balancer health checks
   template:
     src: "fragment_70_location.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default/70_location_{{ item.path | basename }}"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default/70_location_{{ item.sort_label | default(item.path | basename) }}"
   with_items:
     - "{{ nginx_paths }}"
   when: aws_elb_healthcheck_default and vhost_required
