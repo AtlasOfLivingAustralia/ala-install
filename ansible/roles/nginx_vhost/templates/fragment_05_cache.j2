@@ -4,5 +4,5 @@ proxy_cache_path {{ nginx_cache_path }} levels=1:2
 
 # Cache HTTP 200 for as long as we have the cache setup for
 proxy_cache_valid 200 {{ nginx_cache_valid_time }};
-# Cache all other HTTP codes for a separate time that should be much shorter (defaults to 0s if not set)
+# Cache all other HTTP codes for a separate time that should be much shorter or 0 to disable caching of other codes
 proxy_cache_valid any {{ nginx_cache_invalid_time }};
