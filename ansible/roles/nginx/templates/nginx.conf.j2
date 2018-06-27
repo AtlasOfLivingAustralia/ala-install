@@ -47,7 +47,11 @@ http {
 {% endblock %}
 
 {% block http_gzip %}
-    # gzip on;
+{% if nginx_gzip_enabled %}
+    gzip on;
+    gzip_types {{ nginx_gzip_types }};
+    gzip_min_length {{ nginx_gzip_min_length }};
+{% endif %}
 {% endblock %}
 
 {% if nginx_extra_http_options %}
