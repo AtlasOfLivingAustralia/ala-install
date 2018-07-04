@@ -13,7 +13,7 @@
       "hideEmptyValues" : true,
       "includeOther" : "false"
     },
-    "occurrence_decade_i" : {
+    "decade" : {
       "title": "By decade",
       "chartType": "bar",
       "emptyValueMsg": "Year not specified",
