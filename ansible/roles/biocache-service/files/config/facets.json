@@ -301,6 +301,11 @@
                 "field":"year"
             },
             {
+                "sort":"count",
+                "description": "Date precision",
+                "field":"date_precision"
+            },            
+            {
                 "sort":"index",
                 "field":"occurrence_decade_i"
             },
@@ -390,6 +395,10 @@
     {
         "title":"Attribution",
         "facets":[
+            {
+                "sort":"count",
+                "field":"license"
+            },        
             {
                 "sort":"count",
                 "field":"alau_user_id"
