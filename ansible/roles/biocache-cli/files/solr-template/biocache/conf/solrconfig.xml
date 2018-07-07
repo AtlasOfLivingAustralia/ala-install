@@ -35,7 +35,7 @@
          that you fully re-index after changing this setting as it can
          affect both how text is indexed and queried.
     -->
-    <luceneMatchVersion>4.4</luceneMatchVersion>
+    <luceneMatchVersion>6.4.1</luceneMatchVersion>
 
     <!-- <lib/> directives can be used to instruct Solr to load an Jars
          identified and use them to resolve any "plugins" specified in
@@ -69,22 +69,22 @@
          The examples below can be used to load some solr-contribs along
          with their external dependencies.
       -->
-    <lib dir="../../../contrib/extraction/lib" regex=".*\.jar" />
-    <lib dir="../../../dist/" regex="solr-cell-\d.*\.jar" />
+    <!-- <lib dir="../../../contrib/extraction/lib" regex=".*\.jar" /> -->
+    <!-- <lib dir="../../../dist/" regex="solr-cell-\d.*\.jar" /> -->
 
-    <lib dir="../../../contrib/clustering/lib/" regex=".*\.jar" />
-    <lib dir="../../../dist/" regex="solr-clustering-\d.*\.jar" />
+    <!-- <lib dir="../../../contrib/clustering/lib/" regex=".*\.jar" /> -->
+    <!-- <lib dir="../../../dist/" regex="solr-clustering-\d.*\.jar" /> -->
 
-    <lib dir="../../../contrib/langid/lib/" regex=".*\.jar" />
-    <lib dir="../../../dist/" regex="solr-langid-\d.*\.jar" />
+    <!-- <lib dir="../../../contrib/langid/lib/" regex=".*\.jar" /> -->
+    <!-- <lib dir="../../../dist/" regex="solr-langid-\d.*\.jar" /> -->
 
-    <lib dir="../../../contrib/velocity/lib" regex=".*\.jar" />
-    <lib dir="../../../dist/" regex="solr-velocity-\d.*\.jar" />
+    <!-- <lib dir="../../../contrib/velocity/lib" regex=".*\.jar" /> -->
+    <!-- <lib dir="../../../dist/" regex="solr-velocity-\d.*\.jar" /> -->
 
     <!-- If a 'dir' option (with or without a regex) is used and nothing
          is found that matches, it will be ignored
       -->
-    <lib dir="/total/crap/dir/ignored" />
+    <!-- <lib dir="/total/crap/dir/ignored" /> -->
 
     <!-- an exact 'path' can be used instead of a 'dir' to specify a
          specific jar file.  This will cause a serious error to be logged
@@ -439,7 +439,7 @@
              be based on the last SolrCore to be initialized.
 
           -->
-        <maxBooleanClauses>102400</maxBooleanClauses>
+        <maxBooleanClauses>1024</maxBooleanClauses>
 
 
         <!-- Solr Internal Query Caches
@@ -474,8 +474,8 @@
                    and old cache.
           -->
         <filterCache class="solr.FastLRUCache"
-                     size="512"
-                     initialSize="512"
+                     size="4096"
+                     initialSize="2048"
                      autowarmCount="0"/>
 
         <!-- Query Result Cache
@@ -484,8 +484,8 @@
              (DocList) based on a query, a sort, and the range of documents requested.
           -->
         <queryResultCache class="solr.LRUCache"
-                          size="512"
-                          initialSize="512"
+                          size="4096"
+                          initialSize="2048"
                           autowarmCount="0"/>
 
         <!-- Document Cache
@@ -495,8 +495,8 @@
              this cache will not be autowarmed.
           -->
         <documentCache class="solr.LRUCache"
-                       size="512"
-                       initialSize="512"
+                       size="4096"
+                       initialSize="2048"
                        autowarmCount="0"/>
 
         <!-- Field Value Cache
@@ -505,12 +505,10 @@
              by document id.  The fieldValueCache is created by default
              even if not configured here.
           -->
-        <!--
            <fieldValueCache class="solr.FastLRUCache"
-                            size="512"
-                            autowarmCount="128"
+                            size="4096"
+                            autowarmCount="2048"
                             showItems="32" />
-          -->
 
         <!-- Custom Cache
 
@@ -678,7 +676,7 @@
           -->
         <requestParsers enableRemoteStreaming="true"
                         multipartUploadLimitInKB="2048000"
-                        formdataUploadLimitInKB="2048"/>
+                        formdataUploadLimitInKB="32768"/>
 
         <!-- HTTP Caching
 
@@ -687,8 +685,11 @@
              The options below instruct Solr not to output any HTTP Caching
              related headers
           -->
-        <httpCaching never304="true" />
-        <!-- If you include a <cacheControl> directive, it will be used to
+        <!-- <httpCaching never304="true" /> -->
+        <httpCaching lastModFrom="openTime" never304="false">
+       		<cacheControl>max-age=600, public</cacheControl>
+      	</httpCaching>
+	<!-- If you include a <cacheControl> directive, it will be used to
              generate a Cache-Control header (as well as an Expires header
              if the value contains "max-age=")
 
@@ -978,7 +979,7 @@
     </requestHandler>
 
     <!-- for back compat with clients using /update/json and /update/csv -->
-    <requestHandler name="/update/json" class="solr.JsonUpdateRequestHandler">
+<!--     <requestHandler name="/update/json" class="solr.JsonUpdateRequestHandler">
         <lst name="defaults">
             <str name="stream.contentType">application/json</str>
         </lst>
@@ -987,7 +988,7 @@
         <lst name="defaults">
             <str name="stream.contentType">application/csv</str>
         </lst>
-    </requestHandler>
+    </requestHandler> -->
 
     <!-- Solr Cell Update Request Handler
 
@@ -1071,8 +1072,8 @@
          Admin Handlers - This will register all the standard admin
          RequestHandlers.
       -->
-    <requestHandler name="/admin/"
-                    class="solr.admin.AdminHandlers" />
+    <!--     <requestHandler name="/admin/"
+                    class="solr.admin.AdminHandlers" />  --> 
     <!-- This single handler is equivalent to the following... -->
     <!--
        <requestHandler name="/admin/luke"       class="solr.admin.LukeRequestHandler" />
@@ -1126,7 +1127,7 @@
 
          http://wiki.apache.org/solr/SolrReplication
 
-         It is also neccessary for SolrCloud to function (in Cloud model, the
+         It is also neccessary for SolrCloud to function (in Cloud mode, the
          replication handler is used to bulk transfer segments when nodes
          are added or need to recover).
 
@@ -1616,7 +1617,7 @@
       -->
     <!-- Deduplication
 
-         An example tool update processor that creates the "id" field
+         An example dedup update processor that creates the "id" field
          on the fly based on the hash code of some other fields.  This
          example has overwriteDupes set to false since we are using the
          id field as the signatureField and Solr will maintain
