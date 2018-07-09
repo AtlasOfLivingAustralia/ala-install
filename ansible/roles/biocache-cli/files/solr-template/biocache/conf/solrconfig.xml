@@ -507,7 +507,7 @@
           -->
            <fieldValueCache class="solr.FastLRUCache"
                             size="4096"
-                            autowarmCount="2048"
+                            autowarmCount="128"
                             showItems="32" />
 
         <!-- Custom Cache
