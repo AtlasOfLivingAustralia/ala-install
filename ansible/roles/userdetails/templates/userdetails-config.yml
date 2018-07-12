@@ -69,7 +69,8 @@ sightings.url: {{ sightings_base_url }}/mine
 spatial.url: {{ spatial_base_url }}/actions/dashboard
 volunteer.url: {{ volunteer_base_url }}/user/myStats
 lists.url: {{ lists_base_url }}/speciesList/list
-biocache.search.url: {{ biocache_base_url }}/occurrences/search
+biocache.search.url: {{ biocache_base_url }}/occurrences/search/?q=*%3A*&fq=assertion_user_id%3A
+biocache.myDownloads.url: {{ biocache_base_url }}/download/myDownloads/
 alerts.url: {{ alerts_base_url }}
 
 # this property is read/used by ala-auth-plugin (included by userdetails)
