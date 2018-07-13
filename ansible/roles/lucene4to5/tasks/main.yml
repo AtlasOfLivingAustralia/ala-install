@@ -5,8 +5,8 @@
     url: "{{ item }}"
     dest: "/tmp/"
   with_items:
-    - "http://central.maven.org/maven2/org/apache/lucene/lucene-core/5.5.1/lucene-core-5.5.1.jar"
-    - "http://central.maven.org/maven2/org/apache/lucene/lucene-backward-codecs/5.5.1/lucene-backward-codecs-5.5.1.jar"
+    - "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.5.1/lucene-core-5.5.1.jar"
+    - "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-backward-codecs/5.5.1/lucene-backward-codecs-5.5.1.jar"
   tags:
     - "lucene4to5"
 
