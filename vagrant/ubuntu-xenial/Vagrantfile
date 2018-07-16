@@ -1,5 +1,10 @@
 VAGRANTFILE_API_VERSION = "2"
 
+# The vagrant-disksize plugin is required for this vagrant file
+unless Vagrant.has_plugin?("vagrant-disksize")
+  raise 'vagrant-disksize plugin is not installed! Run \'vagrant plugin install vagrant-disksize\''
+end
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.box = "ubuntu/xenial64"
