@@ -2,6 +2,6 @@
   roles:
     - common
     - java
-    - tomcat
+    - { role: tomcat, when: not exec_jar }
     - webserver
     - { role: biocache-hub, biocache_hub: asbp-hub, grouped_facets_json: grouped_facets_asbp.json }

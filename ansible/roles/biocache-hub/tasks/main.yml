@@ -128,11 +128,12 @@
     - biocache_hub
 
 - name: copy logback config
-  template: src=config/logback.groovy dest={{data_dir}}/{{biocache_hub}}/config/logback.groovy  owner={{tomcat_user}} group={{tomcat_user}}
+  template: src=config/logback.groovy dest={{data_dir}}/{{biocache_hub}}/config/logback.groovy  owner={{biocache_hub}} group={{biocache_hub}}
   tags:
     - properties
     - biocache_hub
     - hub_config
+  when: exec_jar
 
 - name: Setup GeoLite2 City database (only used by ALA version of the hub)
   block:
