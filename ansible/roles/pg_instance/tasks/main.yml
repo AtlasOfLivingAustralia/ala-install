@@ -16,14 +16,14 @@
 - name: create pg DB user "{{db_user}}"
   postgresql_user: name={{ db_user }} password={{ db_password }} state=present encrypted=True
   become_user: postgres
-  sudo: True
+  become: yes
   tags:
     - pg_instance
 
 - name: create pg DB "{{ db_name }}"
   postgresql_db: name={{ db_name }} owner={{ db_user }} state=present
   become_user: postgres
-  sudo: True
+  become: yes
   tags:
     - pg_instance
 
@@ -33,6 +33,6 @@
     db: "{{ db_name }}"
   with_items: "{{ extensions }}"
   become_user: postgres
-  sudo: True
+  become: yes
   tags:
     - pg_instance
