@@ -72,7 +72,7 @@
   tags:
     - setfacts
 
-- name: set name index location
+- name: set name index location with date {{name_index_date}}
   set_fact:
     aws_name_indexes_repo: "{{ aws_nameindex_source_url | default('https://s3.amazonaws.com/ala-nameindexes/latest') }}"
     ala_name_indexes_repo: "{{ ala_nameindex_source_url | default('https://archives.ala.org.au/archives/nameindexes') }}/{{name_index_date}}"
