@@ -45,6 +45,12 @@
     - "nameindex"
 
 ## If ALA, perform the following steps to download the index, give it the correct file permissions and symlink it
+- name: DEBUG- Download lucene index (ALA)
+  debug:
+    msg: "lucene_namematching_url={{ lucene_namematching_url }}, force_nameindex_download:{{ force_nameindex_download }}, nameindex_variant={{nameindex_variant}}"
+    verbosity: 1
+  tags:
+    - "nameindex"
 
 - name: Download lucene index (ALA)
   get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene force={{ force_nameindex_download | default(false) }}
