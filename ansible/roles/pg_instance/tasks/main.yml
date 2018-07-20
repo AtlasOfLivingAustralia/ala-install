@@ -15,7 +15,7 @@
 
 - name: create pg DB user "{{db_user}}"
   postgresql_user: name={{ db_user }} password={{ db_password }} state=present encrypted=True
-  become_user: root
+  become_user: postgres
   become: yes
   tags:
     - pg_instance
