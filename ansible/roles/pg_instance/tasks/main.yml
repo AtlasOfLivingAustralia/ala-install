@@ -17,6 +17,8 @@
   postgresql_user: name={{ db_user }} password={{ db_password }} state=present encrypted=True
   become_user: postgres
   become: yes
+  vars:
+    ansible_ssh_pipelining: true
   tags:
     - pg_instance
 
@@ -24,6 +26,8 @@
   postgresql_db: name={{ db_name }} owner={{ db_user }} state=present
   become_user: postgres
   become: yes
+  vars:
+    ansible_ssh_pipelining: true
   tags:
     - pg_instance
 
@@ -34,5 +38,7 @@
   with_items: "{{ extensions }}"
   become_user: postgres
   become: yes
+  vars:
+    ansible_ssh_pipelining: true
   tags:
     - pg_instance
