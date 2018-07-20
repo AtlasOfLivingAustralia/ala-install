@@ -53,6 +53,6 @@
   tags: postgresql
 
 - name: wait for postgresql restart
-  command: sleep 2
+  command: sleep 5
   when: started.changed
   tags: postgresql
