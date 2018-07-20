@@ -11,7 +11,7 @@
 - set_fact:
     postgresql_packages: [ "libpq-dev", "python-psycopg2", "postgresql-{{pg_version}}", "postgresql-contrib-{{pg_version}}" ]
 
-- name: Set postgresql package name
+- name: Set postgis package names
   set_fact:
     postgresql_packages: "{{postgresql_packages}} + [ 'postgresql-{{pg_version}}-postgis-{{postgis_version}}', 'postgresql-{{pg_version}}-postgis-{{postgis_version}}-scripts', 'gdal-bin' ]"
   when: postgis_version is defined
