@@ -54,7 +54,7 @@
       - path: "/biocache-download"
         sort_label: "5_download"
         is_proxy: false
-        alias: "{{ download_dir }}"
+        alias: "{{ download_dir | default('/data/biocache-download') }}"
   tags:
     - nginx_vhost
     - deploy
@@ -144,7 +144,7 @@
 
 - name: create download and media symlinks
   file:
-     src: "{{ download_dir }}"
+     src: "{{ download_dir | default('/data/biocache-download') }}"
      dest: "/srv/{{ biocache_service_hostname }}/www/biocache-download"
      state: link
   when: not webserver_nginx
