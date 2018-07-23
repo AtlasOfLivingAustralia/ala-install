@@ -64,7 +64,7 @@
     jenkins_ajp_port: -1
     jenkins_port: 9192
     layers_service_sampling: true
-    layers_service_url: http://spatial.ala.org.au/ws
+    layers_service_url: https://spatial.ala.org.au/ws
     lists_service_url: "http://{{test_bie_host}}/lists"
     logger_hostname: "{{test_bie_host}}"
     logger_url: "http://{{test_bie_host}}/logger"

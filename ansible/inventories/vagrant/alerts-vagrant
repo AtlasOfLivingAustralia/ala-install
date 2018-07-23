@@ -31,7 +31,7 @@ collection_searchTitle=ANIC
 collection_searchUrl=https://collections.ala.org.au/public/show/co13
 
 biocache_url=https://biocache.ala.org.au
-spatial_url=http://spatial.ala.org.au
+spatial_url=https://spatial.ala.org.au
 collectory_url=https://collections.ala.org.au
 userdetails_url=https://auth.ala.org.au/userdetails
 bie_base_url=https://bie.ala.org.au

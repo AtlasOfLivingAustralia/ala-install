@@ -16,7 +16,7 @@ biocache_base_url = https://biocache.ala.org.au
 biocache_services_url = https://biocache.ala.org.au/ws
 collectory_base_url = https://collections.ala.org.au
 collectory_services_url = https://collections.ala.org.au/ws
-spatial_base_url = http://spatial.ala.org.au
+spatial_base_url = https://spatial.ala.org.au
 ala_base_url = https://www.ala.org.au
 ala_image_info_url = https://images.ala.org.au/ws/getImageInfo/
 
