@@ -1,8 +1,5 @@
 # The SDS installation on CSIRO IM&T VM
   
-[common]
-vagrant1
-
 [sds]
 vagrant1
 
