@@ -1,17 +1,28 @@
 {
   "biocache": {
+    "state" : {
+      "title": "By State",
+      "chartType": "doughnut",
+      "emptyValueMsg": "State not specified",
+      "hideEmptyValues" : true
+    },
+    "type_status" : {
+      "title": "Type Status",
+      "chartType": "doughnut",
+      "emptyValueMsg": "Type not specified",
+      "hideEmptyValues" : true
+    },
     "month": {
       "title": "By month",
       "chartType": "bar",
       "emptyValueMsg": "Month not specified",
-      "hideEmptyValues": false
+      "hideEmptyValues": true
     },
-    "year": {
-      "title": "By year",
+    "decade": {
+      "title": "By decade",
       "chartType": "bar",
       "emptyValueMsg": "Year not specified",
-      "hideEmptyValues": true,
-      "filter": ""
+      "hideEmptyValues": true
     },
     "assertions": {
       "title": "By data quality",
