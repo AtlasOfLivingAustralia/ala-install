@@ -179,7 +179,7 @@ spring:
     host: {{ spring_session_redis_host }}
     password: {{ spring_session_redis_password }}
     port: {{ spring_session_redis_port | default('6379') }}
-    {% if spring_session_redis_clustered %}
+    {% if spring_session_redis_clustered is sameas true %}
     cluster:
       nodes: {{ spring_session_redis_host }}:{{ spring_session_redis_port | default('6379') }}
     {% endif %}
