@@ -74,13 +74,8 @@ The first execution of this downloads the Ubuntu image which can take 20 minutes
 Once ready you can ssh to your VM like so:
 
 ```
-$ ssh vagrant@vagrant1
+$ vagrant ssh
 ```
-
-or 
-```
-$ ssh vagrant@10.1.1.4
-``` 
 
 with password ```vagrant```.
 
