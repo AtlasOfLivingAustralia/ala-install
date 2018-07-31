@@ -74,6 +74,8 @@ http {
 {% endfor %}
 {% endblock %}
 
+    proxy_http_version 1.1;
+
 {% block http_includes %}
     include {{ nginx_conf_path }}/*.conf;
 {% if nginx_conf_path != nginx_vhost_path %}
