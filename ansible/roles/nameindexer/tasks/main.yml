@@ -4,7 +4,7 @@
     - "nameindexer"
 
 - name: ensure lucene sources directory exists
-  file: path=/data/lucene/sources state=directory
+  file: path={{data_dir}}/lucene/sources state=directory
   tags:  
     - "data_archives"  
     - "nameindexer"  
