@@ -124,6 +124,10 @@
                 "sort":"index",
                 "field":"occurrence_year"
             },
+            {
+                "sort":"index",
+                "field":"occurrence_decade_i"
+            },
             {  
                 "sort":"count",
                 "field":"state_conservation"
