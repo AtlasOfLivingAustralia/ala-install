@@ -126,7 +126,11 @@
     - properties
 
 - name: set data ownership [all data is owned by tomcat]
-  file: path={{data_dir}}/{{item}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+# FIXME: The ansible file module fails with a recursion limit issue that "chown" isn't prone to
+#  file: path={{data_dir}}/{{item}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  shell: "chown -R {{ tomcat_user }}:{{ tomcat_user }} {{ item }}"
+  args:
+    chdir: "{{ data_dir }}"
   with_items:
     - biocache
     - ala
