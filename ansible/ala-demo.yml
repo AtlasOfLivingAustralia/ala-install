@@ -14,6 +14,10 @@
     - biocache-service
     - { role: biocache-hub, biocache_hub: generic-hub }
     - collectory
+    - role: species-list
+      vars:
+        biocache_service_base_url: "{{biocache_service_url}}"
+        biocache_base_url: "{{biocache_hub_url}}"
     - sandbox
     - biocache-cli
     - nameindexer
