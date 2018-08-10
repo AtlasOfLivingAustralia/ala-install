@@ -8,24 +8,36 @@ data_dir=/data
 
 demo_hostname = demo.vagrant1.ala.org.au
 
-#biocache_hub_version = 2.5-SNAPSHOT
-biocache_service_version=1.9.2
 
-####################### Biocache #######################
+############# GBIF Name matching index
+
+custom_namematching_url = https://s3.amazonaws.com/ala-nameindexes/latest/namematching-gbif-lucene5.tgz
+nameindex_to_use = custom
+
+####################### Biocache ##############################################
 
 biocache_db_host = localhost
+biocache_db_type = cassandra3
+biocache_db_port = 9042
 cassandra_listen_host = localhost
 biocache_service_hostname = demo.vagrant1.ala.org.au
 biocache_service_url = http://demo.vagrant1.ala.org.au/biocache-service
 biocache_service_base_url = http://demo.vagrant1.ala.org.au
 biocache_service_context_path = /biocache-service
-logging_enabled=true
-default_country=Australia
+logging_enabled = true
+default_country = Australia
 
-download_url=http://demo.vagrant1.ala.org.au/biocache-download
+layers_service_url =
+layers_service_sampling = false
+enable_lists = true
+lists_service_url = http://demo.vagrant1.ala.org.au/specieslists
+registry_api_key = dummy-registry-api-key
+commonname_lang = en
+media_store_local = false
+media_store_url=http://demo.vagrant1.ala.org.au/images
 download_dir=/data/biocache-download/biocache-download/
+download_url=http://demo.vagrant1.ala.org.au/biocache-download
 download_auth_sensitive=true
-
 download_email_subject=VAGRANT - [hubName] Occurrence Download Complete - [filename]
 
 ####################### Hub #######################
@@ -36,7 +48,7 @@ biocache_hub_base_url = http://demo.vagrant1.ala.org.au
 biocache_hub_context_path = /generic-hub
 userdetails_url=https://auth.ala.org.au/userdetails/userDetails
 
-org_url=http://www.csiro.au
+org_url = http://www.csiro.au
 
 orgNameLong=Bla
 orgNameShort=bla
@@ -60,9 +72,16 @@ collectory_db_host_address = localhost
 collectory_db_host = localhost
 collectory_db_user = collectory
 collectory_db_password = password
+bypass_cas = true
 
-orgNameLong = UK demo
-orgNameShort = UK demo
+# API key that support registry updates
+api_key = dummy-registry-api-key
+
+# Google maps
+google_apikey = AIzaSyAJDtEeoy7Sc9pij2TAoVnmTwA34Q-2VHk
+
+orgNameLong = Living Atlas Demo
+orgNameShort = Living Atlas Demo
 
 # CAS
 uri_filter_pattern = /dummy
@@ -71,10 +90,10 @@ uri_filter_pattern = /dummy
 security_bypass = true
 
 # External API access
-api_key= to_be_added
+api_key = to_be_added
 
 # Skinning
-skin = generic
+skin = ala
 
 # Map config
 collections_map_lat = 54.00366
@@ -107,13 +126,20 @@ gbifApiUrl=http://api.gbif.org/v1
 # Logger URL
 logger_webservice_url = http://demo.vagrant1.ala.org.au/logger-service/service
 
+# Species list tool
+species_list_tool_url = http://demo.vagrant1.ala.org.au/specieslists
+
 ####################### SOLR #######################
 
 solr_hostname = demo.vagrant1.ala.org.au
-solr_url = http://demo.vagrant1.ala.org.au/solr
-solr_base_url = http://demo.vagrant1.ala.org.au
+# solr_url = http://demo.vagrant1.ala.org.au:8983/solr/biocache
+solr_url = http://demo.vagrant1.ala.org.au:8983/solr
+solr_base_url = http://demo.vagrant1.ala.org.au:8983
 solr_context_path = /solr
+solr_host = demo.vagrant1.ala.org.au
+solr_port = 8983
 
+solr_heap = 10g
 sandbox_hostname = demo.vagrant1.ala.org.au
 sandbox_url = http://demo.vagrant1.ala.org.au/sandbox
 sandbox_base_url = http://demo.vagrant1.ala.org.au
@@ -135,10 +161,11 @@ auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
 ####### When near the GBIF building (e.g. in Europe) the GBIF nexus will likely be fastest #########
-use_gbif_nexus=false
+
+use_gbif_nexus = false
 
 ####### Disable SDS checks for the demo
-sds_enabled=false
+sds_enabled = false
 
 # Disabled caches - the collections cache is problematic when collectory + biocache on same server
 caches_auth_enabled=false
@@ -153,30 +180,68 @@ nameindex_variant=ala
 nameindex_datestamp=20171012
 #aws_nameindex_source_url=http://s3.amazonaws.com/ala-nameindexes/20150701
 
+############### Biocache CLI options ###############
+
+biocache_opts = -Xmx1g -Xms1g
+
 ############## Base header / footer ###############
 header_and_footer_baseurl = http://demo.vagrant1.ala.org.au
 
 ######### Species list ##############
 
+specieslist_hostname = demo.vagrant1.ala.org.au
+specieslist_url = http://demo.vagrant1.ala.org.au/specieslists
+specieslist_base_url = http://demo.vagrant1.ala.org.au
 specieslist_context_path = /specieslists
-specieslist_hostname=demo.vagrant1.ala.org.au
-specieslist_url=http://demo.vagrant1.ala.org.au/specieslists
-specieslist_base_url=http://demo.vagrant1.ala.org.au
-
-specieslist_db_name=specieslist
-specieslist_db_username=specieslist
-specieslist_db_password=specieslist
-specieslist_db_hostname=localhost
-
-collectory_enable_sync=false
+specieslist_db_hostname = localhost
+specieslist_db_name = specieslists
+specieslist_db_username = specieslists
+specieslist_db_password = password
+collectory_enable_sync = false
 registry_api_key=
 iconic_species_uid=drt1502348249607
+biocache_base_url = http://demo.vagrant1.ala.org.au/ala-hub
 bie_service_base_url=http://demo.vagrant1.ala.org.au/bie-index
 bie_base_url=http://demo.vagrant1.ala.org.au/ala-bie
 field_guide_base_url=
 
 ############# BIE index ################
+
+bie_index_base_url = http://demo.vagrant1.ala.org.au
 bie_index_context_path = /bie-index
+bie_index_hostname = demo.vagrant1.ala.org.au
+
+index_live_url = http://localhost:8983/solr/bie
+index_offline_url = http://localhost:8983/solr/bie-offline
+
+biocache_solr_url = http://localhost:8983/solr/biocache
+collectory_url = http://demo.vagrant1.ala.org.au/collectory
+
+disable_cas = true
+bypass_cas = true
+
+index_images = true
 
 ############# BIE Hub ################
+
+bie_skin_layout = generic
+bie_hub = ala-bie
+bie_hub_base_url = http://demo.vagrant1.ala.org.au
 bie_hub_context_path = /ala-bie
+bie_hub_hostname = demo.vagrant1.ala.org.au
+species_list_url = http://demo.vagrant1.ala.org.au/specieslists
+sightings_url =
+alerts_url =
+spatial_url =
+
+bie_base_url = http://demo.vagrant1.ala.org.au/ala-bie
+ala_base_url = http://demo.vagrant1.ala.org.au
+
+####### Images #######
+
+images_url = http://demo.vagrant1.ala.org.au
+images_base_url = http://demo.vagrant1.ala.org.au
+images_context_path = /images
+images_hostname = demo.vagrant1.ala.org.au
+images_db_password = images
+images_db_username = images

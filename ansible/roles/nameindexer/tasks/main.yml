@@ -82,7 +82,7 @@
   when: ansible_os_family == "Debian"
 
 - name: Unzip distribution zip file
-  shell: "unzip -u /usr/lib/nameindexer/nameindexer.zip -d /usr/lib/nameindexer/"
+  shell: "unzip -o -u /usr/lib/nameindexer/nameindexer.zip -d /usr/lib/nameindexer/"
   tags:
     - "nameindexer"
 
