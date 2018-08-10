@@ -1,0 +1,5 @@
+---
+
+# Customise both of these for larger or smaller heap sizes
+cassandra_max_heap_size: "2G"
+cassandra_heap_newsize: "400M"
