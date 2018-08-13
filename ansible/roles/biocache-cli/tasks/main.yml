@@ -3,6 +3,7 @@
     - biocache-cli
     - vocabs
     - properties
+    - biocache-cli-update
 
 - name: ensure biocache directory exists
   file: path=/usr/lib/biocache state=directory
@@ -27,7 +28,7 @@
     - biocache-cli
     - properties
 
-- name: copy SOLR config
+- name: copy vocabs
   copy: src={{ item }} dest=/data/biocache
   with_items:
     - "vocab"
@@ -41,14 +42,16 @@
   when: biocache_local_build is not defined
   tags:
     - biocache-cli  
-    - download-zip  
+    - download-zip
+    - biocache-cli-update
 
 - name: copy local biocache store jar
   copy: src={{biocache_local_build}} dest="/usr/lib/biocache/biocache.zip" force=yes
   when: biocache_local_build is defined
   tags:
     - biocache-cli  
-    - download-zip  
+    - download-zip
+    - biocache-cli-update
 
 - name: install unzip (Debian only)
   apt: pkg=unzip state=present
@@ -63,17 +66,20 @@
     remote_src: True
   tags:
     - biocache-cli
+    - biocache-cli-update
 
 - name: make the symlink for /usr/bin/biocache
   file: src=/usr/lib/biocache/biocache-store-{{ version }}/bin/biocache dest=/usr/bin/biocache state=link
   tags:
     - biocache-cli
     - biocache-cli-symlink
+    - biocache-cli-update
 
 - name: replace the environmentSetupFile
   template: src=environmentSetupFile.sh dest=/usr/lib/biocache/biocache-store-{{ version }}/bin/environmentSetupFile.sh force=yes mode=755
   tags:
     - biocache-cli
+    - biocache-cli-update
 
 - name: create the reindex directory
   file: path={{item}} state=directory mode=777
