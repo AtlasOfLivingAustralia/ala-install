@@ -25,8 +25,7 @@ biocache_service_url = http://demo.vagrant1.ala.org.au/biocache-service
 biocache_service_base_url = http://demo.vagrant1.ala.org.au
 biocache_service_context_path = /biocache-service
 logging_enabled = true
-default_country = Australia
-
+default_country =
 layers_service_url =
 layers_service_sampling = false
 enable_lists = true
@@ -43,9 +42,9 @@ download_email_subject=VAGRANT - [hubName] Occurrence Download Complete - [filen
 ####################### Hub #######################
 
 biocache_hub_hostname = demo.vagrant1.ala.org.au
-biocache_hub_url = http://demo.vagrant1.ala.org.au/generic-hub
+biocache_hub_url = http://demo.vagrant1.ala.org.au/ala-hub
 biocache_hub_base_url = http://demo.vagrant1.ala.org.au
-biocache_hub_context_path = /generic-hub
+biocache_hub_context_path = /ala-hub
 userdetails_url=https://auth.ala.org.au/userdetails/userDetails
 
 org_url = http://www.csiro.au
@@ -63,7 +62,7 @@ map_default_zoom = 5
 
 ####################### Collectory #######################
 
-collectory_app = generic-collectory
+collectory_app = ala-collectory
 collectory_hostname = demo.vagrant1.ala.org.au
 collectory_url = http://demo.vagrant1.ala.org.au/collectory
 collectory_base_url = http://demo.vagrant1.ala.org.au
@@ -139,7 +138,7 @@ solr_context_path = /solr
 solr_host = demo.vagrant1.ala.org.au
 solr_port = 8983
 
-solr_heap = 10g
+solr_heap = 2g
 sandbox_hostname = demo.vagrant1.ala.org.au
 sandbox_url = http://demo.vagrant1.ala.org.au/sandbox
 sandbox_base_url = http://demo.vagrant1.ala.org.au
