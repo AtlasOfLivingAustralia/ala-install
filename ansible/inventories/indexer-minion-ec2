@@ -1,8 +1,0 @@
-[indexer-minion]
-54.66.122.231
-54.66.122.233
-54.66.122.238
-54.66.122.240
-  
-[indexer-minion:vars]
-data_dir=/data
