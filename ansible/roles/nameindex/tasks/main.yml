@@ -52,8 +52,8 @@
   tags:
     - "nameindex"
 
-- name: Download lucene index (ALA)
-  get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene force={{ force_nameindex_download | default(false) }}
+- name: Download lucene index (ALA) - please note, this step takes a long time. If it causes an issue, use '--skip-tags nameindex' to bypass it
+  get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene force={{ force_nameindex_download | default(false) }} timeout=10000
   when: nameindex_variant == "ala"
   tags:
     - "nameindex"
@@ -78,8 +78,8 @@
   tags:
     - "nameindex"  
 
-- name: Download lucene index (not ALA)
-  get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene/namematching.tgz force={{ force_nameindex_download | default(false) }}
+- name: Download lucene index (non-ALA) - please note, this step takes a long time. If it causes an issue, use '--skip-tags nameindex' to bypass it, to complete an installation
+  get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene/namematching.tgz force={{ force_nameindex_download | default(false) }} timeout=10000
   when: nameindex_variant != "ala"
   tags:
     - "nameindex"
