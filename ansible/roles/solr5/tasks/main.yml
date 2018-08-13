@@ -63,8 +63,10 @@
   with_items:
     - "{{data_dir}}/solr/data/biocache/conf"
     - "{{data_dir}}/solr/data/bie/conf"
+    - "{{data_dir}}/solr/data/bie-offline/conf"
     - "{{data_dir}}/solr/data/biocache/data"
     - "{{data_dir}}/solr/data/bie/data"
+    - "{{data_dir}}/solr/data/bie-offline/data"
   tags:
     - solr5
     - properties

@@ -24,7 +24,7 @@
     - { role: biocache-cli,     biocache_cli_version: "2.2" }
     - { role: nameindexer,      ala_name_matching_version: "3.1" }
     - { role: logger-service,   logger_version: "2.3.5" }
-    - { role: species-list,     specieslist_version: "3.0" }
+    - { role: species-list,     specieslist_version: "3.0", biocache_service_base_url: "{{biocache_service_url}}",  biocache_base_url: "{{biocache_hub_url}}"  }
     - { role: bie-index,        bie_index_version: "1.4.1.1" }
     - { role: bie-hub,          bie_hub: ala-bie, bie_hub_version: "1.4.1" }
     - { role: image-service,    images_version: "0.8" }
