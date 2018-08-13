@@ -1,25 +1,31 @@
-- hosts: ala-demo
+- hosts: all
+  gather_facts: False
+  tasks:
+  - name: install python 2
+    raw: sudo bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qy python-minimal)"
+
+- hosts: all
   roles:
     - common
     - java
     - tomcat
-    - cassandra
+    - cassandra3
     - mysql-5.7
+    - postgresql
     - webserver
     - nameindex
-    - solr
+    - solr5
     - logger-client
-    - biocache-db
     - biocache-properties
-    - biocache-service
-    - { role: biocache-hub, biocache_hub: generic-hub }
-    - collectory
-    - role: species-list
-      vars:
-        biocache_service_base_url: "{{biocache_service_url}}"
-        biocache_base_url: "{{biocache_hub_url}}"
-    - sandbox
-    - biocache-cli
-    - nameindexer
-    - logger-service
+    - { role: biocache-db,      use_cassandra3 : true }
+    - { role: biocache-service, biocache_service_version: "2.1.7" }
+    - { role: biocache-hub,     biocache_hub: ala-hub, biocache_hub_version: "3.0.5" }
+    - { role: collectory,       collectory_app: ala-collectory, collectory_version: "1.5.4" }
+    - { role: biocache-cli,     biocache_cli_version: "2.3.5" }
+    - { role: nameindexer,      ala_name_matching_version: "3.1" }
+    - { role: logger-service,   logger_version: "2.3.5" }
+    - { role: species-list,     specieslist_version: "3.0" }
+    - { role: bie-index,        bie_index_version: "1.4.2.2" }
+    - { role: bie-hub,          bie_hub: ala-bie, bie_hub_version: "1.4.1" }
+    - { role: image-service,    images_version: "0.9" }
     - demo
