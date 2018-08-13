@@ -1,5 +1,4 @@
 field	dataType	sourceField	multi	storedAsArray	extraFields	isMiscProperty
-id	string	uuid	F	F		F
 row_key	string	rowKey	F	F		F
 occurrence_id	string	occurrenceID	F	F		F
 data_hub_uid	string	dataHubUid	T	T	T	F

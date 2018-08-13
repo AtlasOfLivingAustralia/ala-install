@@ -1,7 +1,6 @@
 Day	D
 Day Range	DD
 Year	Y
-Before Year	-Y
 Year Range	YY
 Month Range	OO
 Month	O	M	MON	Mnth
