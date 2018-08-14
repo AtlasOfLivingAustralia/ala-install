@@ -131,8 +131,7 @@ species_list_tool_url = http://demo.vagrant1.ala.org.au/specieslists
 ####################### SOLR #######################
 
 solr_hostname = demo.vagrant1.ala.org.au
-# solr_url = http://demo.vagrant1.ala.org.au:8983/solr/biocache
-solr_url = http://demo.vagrant1.ala.org.au:8983/solr
+solr_url = http://demo.vagrant1.ala.org.au:8983/solr/biocache
 solr_base_url = http://demo.vagrant1.ala.org.au:8983
 solr_context_path = /solr
 solr_host = demo.vagrant1.ala.org.au
@@ -181,7 +180,7 @@ nameindex_datestamp=20171012
 
 ############### Biocache CLI options ###############
 
-biocache_opts = -Xmx1g -Xms1g
+biocache_opts = -Xmx512m -Xms512m
 
 ############## Base header / footer ###############
 header_and_footer_baseurl = http://demo.vagrant1.ala.org.au
