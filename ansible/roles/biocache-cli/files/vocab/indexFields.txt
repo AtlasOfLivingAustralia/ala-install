@@ -54,7 +54,7 @@ longitude	double	decimalLongitude_p	F	F		F
 # point-0.02    F
 # point-0.001	F
 # point-0.0001	F
-year	string	year_p	F	F		F
+year	int	year_p	F	F		F
 month	string	month_p	F	F		F
 basis_of_record	string	basisOfRecord_p	F	F		F
 raw_basis_of_record	string	basisOfRecord	F	F		F

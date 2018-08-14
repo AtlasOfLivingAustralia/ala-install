@@ -80,6 +80,7 @@
   tags:
     - solr5
     - properties
+    - solr5_create_cores
 
 - name: set data ownership [all data is owned by solr]
   file: path="{{ data_dir }}/solr/" owner=solr  group=solr recurse=true
@@ -92,6 +93,7 @@
   tags:
     - solr5
     - solr_restart
+    - solr5_create_cores
 
 - name: Create SOLR cores
   get_url: url="{{ solr_base_url }}/solr/admin/cores?action=CREATE&name={{ item }}&instanceDir=/data/solr/data/{{ item }}&config=solrconfig.xml&dataDir=data" force=yes timeout=30 dest=/tmp/
