@@ -10,7 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # these machines require some memory to operate the apps
   config.vm.provider "virtualbox" do |v|
-    v.memory = 6144
+    v.memory = 8192
   end  
   
   # totally insecure, but this is local dev: make the vagrant default the root key

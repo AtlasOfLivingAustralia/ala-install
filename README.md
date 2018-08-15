@@ -35,9 +35,9 @@ ERROR: apache2_module is not a legal parameter in an Ansible task or handler.
 ```
 then you have an older version of Ansible.
 
-## Setup the ALA demo
+## Setup the Living Atlas demo
 
-Below are some instructions for setting up the [ALA demo](http://ala-demo.gbif.org) with Ansible & Vagrant on your local machine.
+Below are some instructions for setting up the Living Atlas demo with Ansible & Vagrant on your local machine or laptop.
 
 #### 1. Vagrant
 [Vagrant](http://www.vagrantup.com) can be used to test ansible playbooks on your local machine. To use this, you will need to install
@@ -114,7 +114,7 @@ Once completed successfully you can view the demo on http://demo.vagrant1.ala.or
 
 ## Installing the ALA demo on EC2 or other cloud providers
 
-There is an inventory you can use to setup the demo on a cloud provider [here](ansible/inventories/demo-ec2).
+There is an inventory you can use to setup the demo on a cloud provider [here](ansible/inventories/living-atlas).
 An Ubuntu 16 instance with 15GB of RAM and 4 CPUs is recommended. The scripts where tested on 30th April 2015 and took approximately 20 mins to run on a EC2 instance.
 
 Here are the steps to run with this inventory:
@@ -129,14 +129,13 @@ You'll need to replace "12.12.12.12" with the IP address of your newly created U
 
  * Run the following:
 ```
-ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem --user ubuntu --become -i ansible/inventories/demo-ec2 ansible/ala-demo.yml
+ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem --user ubuntu --become -i ansible/inventories/living-atlas ansible/ala-demo.yml
 ```
- * View http://ala-demo.org
+ * View http://living-atlas.org
  
 ##### That worked, now what do I do ?
  * Have a look at the [documentation](https://github.com/AtlasOfLivingAustralia/documentation/wiki/First-data-resource) and load a data resource.
- * Or, load occurrence data in CSV format into the application using the sandbox which can be found at [http://ala-demo.org/sandbox](http://ala-demo.org/sandbox) using your new VM.
- 
+
 
 ### Vagrant
 

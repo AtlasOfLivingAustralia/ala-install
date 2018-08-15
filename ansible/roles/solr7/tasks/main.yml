@@ -1,0 +1,120 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - solr7
+    - solr7_create_cores
+    - properties
+
+- name: Download SOLR {{ solr_version }}
+  get_url: url="http://apache.mirror1.spango.com/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
+  tags:
+    - solr7
+
+- name: Extract the install script
+  shell: "tar xzf /tmp/solr-{{ solr_version }}.tgz solr-{{ solr_version }}/bin/install_solr_service.sh --strip-components=2"
+  tags:  
+    - solr7
+
+- name: ensure target directories exist [data subdirectories etc.
+  file: path={{item}} state=directory
+  with_items:
+    - "{{data_dir}}/solr/"
+  tags:
+    - solr7
+
+- name: Run install script
+  shell: "./install_solr_service.sh /tmp/solr-{{ solr_version }}.tgz -d /data/solr -f"
+  sudo: yes
+  tags:  
+    - solr7
+
+- name: add common tomcat jars (for SOLR logging and JTS)
+  copy: src=libs/{{item}} dest=/opt/solr/server/lib/ext
+  with_items:
+    - jts-core-1.15.1.jar
+    - jts-io-common-1.15.1.jar
+  tags:
+    - solr7
+
+- name: set SOLR directory ownership [all data is owned by solr]
+  file: path=/opt/solr/ owner=solr  group=solr recurse=true
+  tags:
+    - solr7
+
+- name: Stop solr
+  shell: "service solr stop"
+  tags:
+    - solr7
+    - solr_restart
+
+- name: copy SOLR config
+  template: src=solr.in.sh dest=/opt/solr/bin force=yes
+  tags:
+    - solr7
+    - properties
+
+- name: copy SOLR config /etc/default
+  template: src=solr.in.sh dest=/etc/default force=yes
+  tags:
+    - solr7
+    - properties
+
+- name: ensure target directories exist [data subdirectories etc.
+  file: path={{item}} state=directory owner=solr  group=solr
+  with_items:
+    - "{{data_dir}}/solr/data/biocache/conf"
+    - "{{data_dir}}/solr/data/bie/conf"
+    - "{{data_dir}}/solr/data/bie-offline/conf"
+    - "{{data_dir}}/solr/data/biocache/data"
+    - "{{data_dir}}/solr/data/bie/data"
+    - "{{data_dir}}/solr/data/bie-offline/data"
+  tags:
+    - solr7
+    - properties
+
+- name: copy SOLR config files for BIE and Biocache
+  copy: src={{ role_path }}/../solrcloud_config/files/{{ item }}/conf dest={{ data_dir }}/solr/data/{{ item }}/ owner=solr  group=solr
+  with_items:
+    - "biocache"
+    - "bie"
+    - "bie-offline"
+  tags:
+    - solr7
+    - properties
+    - solr7_create_cores
+
+- name: set data ownership [all data is owned by the unix user solr]
+  file: path="{{ data_dir }}/solr/" owner=solr  group=solr recurse=true
+  tags:
+    - solr7
+    - properties
+
+- name: Start solr
+  shell: "service solr start"
+  tags:
+    - solr7
+    - solr_restart
+    - solr7_create_cores
+
+- name: Ensure SOLR is running
+  wait_for: port=8983 delay=60
+  tags:
+    - solr7
+    - solr7_create_cores
+
+- name: Create SOLR cores
+  get_url: url="{{ solr_base_url }}/solr/admin/cores?action=CREATE&name={{ item }}&instanceDir=/data/solr/data/{{ item }}&config=solrconfig.xml&dataDir=data" force=yes timeout=30 dest=/tmp/
+  with_items:
+    - "biocache"
+    - "bie"
+    - "bie-offline"
+  ignore_errors: True
+  tags:
+    - solr7
+    - solr7_create_cores
+
+
+
+
+
+
+
