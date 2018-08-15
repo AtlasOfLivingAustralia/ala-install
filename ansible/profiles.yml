@@ -15,6 +15,6 @@
     - biocache-service
     - biocache-cli
     - sandbox
-    - solr # must be installed AFTER biocache & sandbox, or you get errors complaining about not finding 'collection1'
+    - solr4 # must be installed AFTER biocache & sandbox, or you get errors complaining about not finding 'collection1'
     - profile-service
     - profile-hub
