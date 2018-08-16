@@ -15,7 +15,7 @@ nameindex_to_use = custom
 
 ############# Tomcat
 
-tomcat_java_opts = -Xmx1g -Xms1g -Xss256k -Djava.awt.headless=true
+tomcat_java_opts = -Xmx2g -Xms2g -Xss256k -Djava.awt.headless=true
 
 ####################### Biocache ##############################################
 
