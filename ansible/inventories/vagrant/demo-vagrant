@@ -8,6 +8,10 @@ data_dir=/data
 
 demo_hostname = demo.vagrant1.ala.org.au
 
+
+# Home URL in breadcrumb
+skin_home_url = http://demo.vagrant1.ala.org.au
+
 ############# GBIF Name matching index
 
 custom_namematching_url = https://s3.amazonaws.com/ala-nameindexes/latest/namematching-gbif-lucene5.tgz
@@ -41,6 +45,7 @@ download_dir=/data/biocache-download/biocache-download/
 download_url=http://demo.vagrant1.ala.org.au/biocache-download
 download_auth_sensitive=true
 download_email_subject=VAGRANT - [hubName] Occurrence Download Complete - [filename]
+download_solr_only = true
 
 ####################### Hub #######################
 

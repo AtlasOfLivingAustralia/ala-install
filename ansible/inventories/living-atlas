@@ -20,6 +20,7 @@ living-atlas.org
 data_dir=/data
 
 demo_hostname = living-atlas.org
+skin_home_url = http://living-atlas.org
 
 ############# GBIF Name matching index
 
@@ -92,6 +93,7 @@ downloads_indexed_fields_url=http://living-atlas.org/biocache-service/index/fiel
 downloads_fieldguide_download_url =
 downloads_static_downloads_url =
 downloads_terms_of_use =
+download_solr_only = true
 
 ####################### Collectory ############################################
 
