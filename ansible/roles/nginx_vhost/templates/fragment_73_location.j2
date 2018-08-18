@@ -1,11 +1,5 @@
-{% if item.path|length == 0 %}
-    location / {
-{% elif item.path|first == '/' %}
-    location {{ item.path }} {
-{% else %}
-    location /{{ item.path }} {
-{% endif %}
 {% if robots_disallow_useragents is defined and robots_disallow_useragents|length > 0 %}
+        # These user agents are never allowed access to this location
         # Telling NGINX to return 444 is a special pseudo response code that immediately cuts the TCP connection with no response
         if ($http_user_agent ~* ({{ robots_disallow_useragents|join('|') }}) ) {
             return 444;
@@ -45,4 +39,3 @@
 {% else %}
         try_files {{ item.try_files }};
 {% endif %}
-    }

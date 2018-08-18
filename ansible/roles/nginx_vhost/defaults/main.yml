@@ -7,6 +7,13 @@ nginx_root: "/srv/{{ hostname }}/www/"
 context_path: '/'
 robots_disallow_paths: ["/"]
 robots_disallow_useragents: ["Semrush"]
+# If either of the following are set to true, a default host will be created
+# Any existing default host will be deactivated from sites-enabled, but left in sites-available
+aws_elb_healthcheck_default: false
+nginx_default_vhost_required: false
+# Customise the following to allow specific user agents to access the default vhost
+# Set to an empty list to allow all user agents to access the default vhost
+ala_default_allowed_useragents: ["ELB-HealthChecker"]
 tomcat_server_port: '8080'
 frame_options_header: true
 content_type_options_header: true

@@ -1,0 +1,7 @@
+{% if ala_default_allowed_useragents|length > 0 %}
+        # Only allow these useragents to access the default vhost for application-specific locations
+        # Telling NGINX to return 444 is a special pseudo response code that immediately cuts the TCP connection with no response
+        if ($http_user_agent !~* ({{ ala_default_allowed_useragents|join('|') }}) ) {
+            return 444;
+        }
+{% endif %}

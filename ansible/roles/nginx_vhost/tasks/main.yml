@@ -94,6 +94,15 @@
   tags:
     - nginx_vhost
 
+# clear directory for vhost fragments
+- name: clear directory for vhost fragments
+  file: 
+    path: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}"
+    state: absent
+  when: vhost_required
+  tags:
+    - nginx_vhost
+
 # check dir exists for servername fragments
 - name: ensure vhost fragments dir is present
   file: 
@@ -187,8 +196,32 @@
 # basename filter returns last part of path e.g. for /ws returns ws, for / returns empty
 - name: if not using force_https, add location http fragments
   template:
-    src: "fragment_70_location.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}"
+    src: "fragment_70_location_start.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_70_start"
+  with_items:
+    - "{{ nginx_paths}} "
+  when: (not ssl or (ssl and not force_https)) and vhost_required
+  tags:
+    - nginx_vhost
+
+# if not ssl or (ssl and not force_https): copy (73 per path) http
+# basename filter returns last part of path e.g. for /ws returns ws, for / returns empty
+- name: if not using force_https, add location http fragments
+  template:
+    src: "fragment_73_location.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_73_content"
+  with_items:
+    - "{{ nginx_paths}} "
+  when: (not ssl or (ssl and not force_https)) and vhost_required
+  tags:
+    - nginx_vhost
+
+# if not ssl or (ssl and not force_https): copy (75 per path) http
+# basename filter returns last part of path e.g. for /ws returns ws, for / returns empty
+- name: if not using force_https, add location http fragments
+  template:
+    src: "fragment_75_location_end.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_75_end"
   with_items:
     - "{{ nginx_paths}} "
   when: (not ssl or (ssl and not force_https)) and vhost_required
@@ -239,12 +272,38 @@
     - nginx_vhost
 
 # if ssl, copy (70 per path) https
-# example https location for /ws path: /etc/nginx/vhost_fragments/bie-test.ala.org.au/https_70_location_ws
+# example https location for /ws path: /etc/nginx/vhost_fragments/bie-test.ala.org.au/https_70_location_start_ws
 # basename filter returns last part of path e.g. for /ws returns ws, for / returns empty
 - name: add location https fragments
   template:
-    src: "fragment_70_location.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}"
+    src: "fragment_70_location_start.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_70_start"
+  with_items:
+    - "{{ nginx_paths }}"
+  when: ssl and vhost_required
+  tags:
+    - nginx_vhost
+
+# if ssl, copy (73 per path) https
+# example https location for /ws path: /etc/nginx/vhost_fragments/bie-test.ala.org.au/https_73_location_ws
+# basename filter returns last part of path e.g. for /ws returns ws, for / returns empty
+- name: add location https fragments
+  template:
+    src: "fragment_73_location.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_73_content"
+  with_items:
+    - "{{ nginx_paths }}"
+  when: ssl and vhost_required
+  tags:
+    - nginx_vhost
+
+# if ssl, copy (75 per path) https
+# example https location for /ws path: /etc/nginx/vhost_fragments/bie-test.ala.org.au/https_75_location_end_ws
+# basename filter returns last part of path e.g. for /ws returns ws, for / returns empty
+- name: add location https fragments
+  template:
+    src: "fragment_75_location_end.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_75_end"
   with_items:
     - "{{ nginx_paths }}"
   when: ssl and vhost_required
@@ -279,67 +338,10 @@
   tags:
     - nginx_vhost
 
-- name: remove symlink to default vhost, if Amazon load balancer health checks vhost configured
-  file: 
-    path: "{{nginx_conf_dir}}/sites-enabled/default"
-    state: absent
-  when: aws_elb_healthcheck_default and vhost_required
-  tags:
-    - nginx_vhost
-
-- name: ensure fragments dir for default vhost for Amazon load balancer health checks is present
-  file: 
-    path: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default"
-    state: directory
-    mode: 0755 
-    owner: root
-    group: root
-  when: aws_elb_healthcheck_default and vhost_required
-  tags:
-    - nginx_vhost
-
-- name: add start of default vhost for Amazon load balancer health checks, if configured
-  template:
-    src: "aws_elb_default_start.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default/10_aws_elb_default_start"
-  when: aws_elb_healthcheck_default and vhost_required
-  tags:
-    - nginx_vhost
-
-- name: add location fragment for default vhost for Amazon load balancer health checks
-  template:
-    src: "fragment_70_location.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default/70_location_{{ item.sort_label | default(item.path | basename) }}"
-  with_items:
-    - "{{ nginx_paths }}"
-  when: aws_elb_healthcheck_default and vhost_required
-  tags:
-    - nginx_vhost
-
-- name: add end of default vhost for Amazon load balancer health checks, if configured
-  template:
-    src: "aws_elb_default_end.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default/90_aws_elb_default_end"
-  when: aws_elb_healthcheck_default and vhost_required
-  tags:
-    - nginx_vhost
-
-- name: assemble fragments into default vhost for Amazon load balancer health checks
-  assemble:
-    src: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default"
-    dest: "{{nginx_conf_dir}}/sites-available/aws_elb_default.conf"
-  when: aws_elb_healthcheck_default and vhost_required
-  notify:
-   - reload nginx
-  tags:
-    - nginx_vhost
-
-- name: symlink default vhost for Amazon load balancer health checks to sites-enabled
-  file:
-    state: link
-    src: "{{nginx_conf_dir}}/sites-available/aws_elb_default.conf"
-    dest: "{{nginx_conf_dir}}/sites-enabled/aws_elb_default.conf"
-  when: aws_elb_healthcheck_default and vhost_required
+- name: "Default host"
+  include: "defaulthost.yml"
+  when:
+    - aws_elb_healthcheck_default and vhost_required
   notify:
    - reload nginx
   tags:

@@ -1,0 +1,17 @@
+# default vhost, handling AWS Elastic Load Balancer health checks and localhost status checks
+
+server {
+    listen {{ aws_elb_default_port | default('80') }} default_server;
+    server_name  _;
+
+    root   {{ aws_elb_default_root | default('/var/www/html') }};
+    index  {{ aws_elb_default_index | default('index.html') }};
+
+    # Only allow access to /nginx_status from localhost
+    location /nginx_status {
+        stub_status on;
+        access_log off;
+        allow 127.0.0.1;
+        allow ::1;
+        deny all;
+    }

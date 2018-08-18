@@ -1,0 +1,7 @@
+{% if item.path|length == 0 %}
+    location / {
+{% elif item.path|first == '/' %}
+    location {{ item.path }} {
+{% else %}
+    location /{{ item.path }} {
+{% endif %}

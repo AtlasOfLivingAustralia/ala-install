@@ -1,0 +1,134 @@
+- name: check whether we need a default vhost for ala
+  set_fact: ala_default_vhost=True
+  when: aws_elb_healthcheck_default or nginx_default_vhost_required
+  tags:
+    - nginx_vhost
+
+- name: remove symlink to default vhost so we can replace with the ala_default that we can track
+  file:
+    path: "{{nginx_conf_dir}}/sites-enabled/default"
+    state: absent
+  when: ala_default_vhost and vhost_required
+  tags:
+    - nginx_vhost
+
+- name: remove deprecated default aws_elb_default vhost configuration from sites-enabled if it exists for backwards compatibility
+  file:
+    path: "{{nginx_conf_dir}}/sites-enabled/aws_elb_default.conf"
+    state: absent
+  when: ala_default_vhost and vhost_required
+  notify:
+   - reload nginx
+  tags:
+    - nginx_vhost
+
+- name: remove previous fragments dir for aws_elb_default
+  file:
+    path: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default"
+    state: absent
+  when: ala_default_vhost and vhost_required
+  tags:
+    - nginx_vhost
+
+- name: remove previous fragments dir for ala_default
+  file:
+    path: "{{nginx_conf_dir}}/vhost_fragments/ala_default"
+    state: absent
+  when: ala_default_vhost and vhost_required
+  tags:
+    - nginx_vhost
+
+- name: ensure fragments dir for default vhost for ala is present
+  file:
+    path: "{{nginx_conf_dir}}/vhost_fragments/ala_default"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+  when: ala_default_vhost and vhost_required
+  tags:
+    - nginx_vhost
+
+- name: add start of default vhost for ala
+  template:
+    src: "ala_default_start.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/10_ala_default_start"
+  when: ala_default_vhost and vhost_required
+  tags:
+    - nginx_vhost
+
+- name: add start location fragment for default vhost for Amazon load balancer health checks
+  template:
+    src: "fragment_70_location_start.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/70_location_{{ item.sort_label | default(item.path | basename) }}_70_start"
+  with_items:
+    - "{{ nginx_paths }}"
+  when: ala_default_vhost and vhost_required
+  tags:
+    - nginx_vhost
+
+- name: add default contents location fragment for default vhost for Amazon load balancer health checks
+  template:
+    src: "fragment_71_location_default.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/70_location_{{ item.sort_label | default(item.path | basename) }}_71_default"
+  with_items:
+    - "{{ nginx_paths }}"
+  when: ala_default_vhost and vhost_required
+  tags:
+    - nginx_vhost
+
+- name: add usual contents location fragment for default vhost for Amazon load balancer health checks
+  template:
+    src: "fragment_73_location.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/70_location_{{ item.sort_label | default(item.path | basename) }}_73_content"
+  with_items:
+    - "{{ nginx_paths }}"
+  when: ala_default_vhost and vhost_required
+  tags:
+    - nginx_vhost
+
+- name: add end location fragment for default vhost for Amazon load balancer health checks
+  template:
+    src: "fragment_75_location_end.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/70_location_{{ item.sort_label | default(item.path | basename) }}_75_end"
+  with_items:
+    - "{{ nginx_paths }}"
+  when: ala_default_vhost and vhost_required
+  tags:
+    - nginx_vhost
+
+- name: add end of default vhost for ala
+  template:
+    src: "ala_default_end.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/90_ala_default_end"
+  when: ala_default_vhost and vhost_required
+  tags:
+    - nginx_vhost
+
+- name: assemble fragments into default vhost for Amazon load balancer health checks
+  assemble:
+    src: "{{nginx_conf_dir}}/vhost_fragments/ala_default"
+    dest: "{{nginx_conf_dir}}/sites-available/ala_default.conf"
+  when: ala_default_vhost and vhost_required
+  notify:
+   - reload nginx
+  tags:
+    - nginx_vhost
+
+- name: symlink default vhost for Amazon load balancer health checks to sites-enabled
+  file:
+    state: link
+    src: "{{nginx_conf_dir}}/sites-available/ala_default.conf"
+    dest: "{{nginx_conf_dir}}/sites-enabled/ala_default.conf"
+  when: ala_default_vhost and vhost_required
+  notify:
+   - reload nginx
+  tags:
+    - nginx_vhost
+
+- name: unset ala_default_vhost
+  set_fact:
+    ala_default_vhost: False
+  tags:
+    - nginx_vhost
+
