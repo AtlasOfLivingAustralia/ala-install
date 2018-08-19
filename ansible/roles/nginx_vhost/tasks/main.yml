@@ -99,7 +99,7 @@
   file: 
     path: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}"
     state: absent
-  when: vhost_required
+  when: vhost_required and clear_vhost_fragments
   tags:
     - nginx_vhost
 

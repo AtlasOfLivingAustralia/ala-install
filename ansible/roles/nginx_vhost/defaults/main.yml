@@ -26,3 +26,4 @@ nginx_cache_size: "2g"
 nginx_cache_time: "60m"
 nginx_cache_valid_time: "60m"
 nginx_cache_invalid_time: "0s"
+clear_vhost_fragments: false
