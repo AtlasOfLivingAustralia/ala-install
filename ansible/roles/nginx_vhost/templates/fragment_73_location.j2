@@ -23,6 +23,9 @@
         proxy_cache_lock_age {{ nginx_cache_lock_age | default ('5s') }};
         proxy_cache_lock_timeout {{ nginx_cache_lock_timeout | default('5s') }};
     {% endif %}
+    {% if item.force_cache is defined and item.force_cache %}
+        proxy_cache_valid 200 {{ nginx_cache_valid_time }}; 
+    {% endif %}
     {% if nginx_proxy_ignore_client_abort is defined and nginx_proxy_ignore_client_abort %}
         # Enable the cache to be populated even if the client aborts the request if it eventually succeeds
         proxy_ignore_client_abort on;

@@ -47,11 +47,36 @@
         is_proxy: true
         use_cache: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/wms/reflect"
+      - path: "{{biocache_service_context_path}}/webportal/wms/image"
+        sort_label: "3_wms_webportal_image"
+        is_proxy: true
+        use_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/webportal/wms/image"
+      - path: "{{biocache_service_context_path}}/mapping/wms/image"
+        sort_label: "3_wms_mapping_image"
+        is_proxy: true
+        use_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/wms/image"
       - path: "{{biocache_service_context_path}}/occurrence/legend"
         sort_label: "4_occurrence_legend"
         is_proxy: true
         use_cache: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrence/legend"
+      - path: "{{biocache_service_context_path}}/occurrences/legend"
+        sort_label: "4_occurrences_legend"
+        is_proxy: true
+        use_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrences/legend"
+      - path: "{{biocache_service_context_path}}/webportal/legend"
+        sort_label: "4_webportal_legend"
+        is_proxy: true
+        use_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/webportal/legend"
+      - path: "{{biocache_service_context_path}}/mapping/legend"
+        sort_label: "4_mapping_legend"
+        is_proxy: true
+        use_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/legend"
       - path: "{{biocache_service_context_path}}/occurrences/taxaCount"
         sort_label: "4_occurrences_taxacount"
         is_proxy: true
@@ -67,16 +92,47 @@
         is_proxy: true
         use_cache: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/density/map"
+      - path: "{{biocache_service_context_path}}/occurrences/static"
+        sort_label: "6_occurrences_static"
+        is_proxy: true
+        use_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrences/static"
       - path: "{{biocache_service_context_path}}/assertions/user/codes"
         sort_label: "7_assertions_user_codes"
         is_proxy: true
         use_cache: true
+        force_cache: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/assertions/user/codes"
       - path: "{{biocache_service_context_path}}/webportal/bbox"
         sort_label: "7_webportal_bbox"
         is_proxy: true
         use_cache: true
+        force_cache: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/webportal/bbox"
+      - path: "{{biocache_service_context_path}}/mapping/bbox"
+        sort_label: "7_mapping_bbox"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/bbox"
+      - path: "{{biocache_service_context_path}}/webportal/bounds"
+        sort_label: "7_webportal_bounds"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/webportal/bounds"
+      - path: "{{biocache_service_context_path}}/mapping/bounds"
+        sort_label: "7_mapping_bounds"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/bounds"
+      - path: "{{biocache_service_context_path}}/chart"
+        sort_label: "7_chart"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/chart"
       - path: "{{biocache_service_context_path}}"
         sort_label: "8_ws"
         is_proxy: true
