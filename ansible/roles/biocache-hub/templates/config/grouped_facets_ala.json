@@ -120,6 +120,10 @@
                 "sort":"index",
                 "field":"year"
             },
+            {
+                "sort":"count",
+                "field":"date_precision"
+            },
             {  
                 "sort":"index",
                 "field":"occurrence_year"
@@ -181,11 +185,7 @@
                 "sort":"count",
                 "field":"cl21"
             },
-            {  
-                "sort":"index",
-                "field":"biogeographic_region"
-            },
-            {  
+            {
                 "sort":"count",
                 "field":"cl1918"
             },
@@ -275,7 +275,11 @@
     },
     {  
         "title":"Attribution",
-        "facets":[  
+        "facets":[
+            {
+                "sort":"count",
+                "field":"license"
+            },
             {  
                 "sort":"count",
                 "field":"alau_user_id"
