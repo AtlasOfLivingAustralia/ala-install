@@ -341,7 +341,7 @@
 - name: "Default host"
   include: "defaulthost.yml"
   when:
-    - aws_elb_healthcheck_default and vhost_required
+    - ( aws_elb_healthcheck_default or nginx_default_vhost_required ) and vhost_required
   notify:
    - reload nginx
   tags:
