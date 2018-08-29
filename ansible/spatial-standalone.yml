@@ -6,7 +6,7 @@
     - webserver
     - postgresql
     - geonetwork
-    #- geoserver
-    #- layers-db
-    #- spatial-service
-    #- spatial-hub
+    - geoserver
+    - layers-db
+    - spatial-service
+    - spatial-hub

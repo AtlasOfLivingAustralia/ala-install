@@ -150,10 +150,3 @@
   when: postgresql_installed.changed
   tags: postgresql
 
-#- name: ensure user does not have unnecessary privilege
-#  postgresql_user: name="{{postgres_dbuser}}" role_attr_flags="NOSUPERUSER,NOCREATEDB"
-#  ignore_errors: yes
-
-# sudo -u postgres psql
-# ALTER USER postgres PASSWORD 'password';
-#  psql -U postgres -h localhost  //should work

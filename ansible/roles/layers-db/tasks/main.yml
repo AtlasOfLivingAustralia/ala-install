@@ -11,12 +11,12 @@
     - layers-db
     - createdb
 
-- name: ensure user postgres access
-  action: postgresql_user db=layersdb user=postgres password="postgres" priv=ALL state=present
-  become_user: postgres
-  tags:
-    - layers-db
-    - createdb
+#- name: ensure user postgres access
+#  action: postgresql_user db=layersdb user=postgres password="postgres" priv=ALL state=present
+#  become_user: postgres
+#  tags:
+#    - layers-db
+#    - createdb
 
 - name: download layersdb schema
   command: "wget {{layersdb_schema_url}} --output-document=/tmp/layersdb.schema.sql"
