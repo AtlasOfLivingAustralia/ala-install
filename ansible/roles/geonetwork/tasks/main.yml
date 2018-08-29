@@ -10,24 +10,6 @@
   tags:
     - geonetwork
 
-- name: configure tomcat geonetwork data dir
-  lineinfile:
-    dest={{tomcat_conf}}
-    line='CATALINA_OPTS="${CATALINA_OPTS} -Dgeonetwork.dir={{data_dir}}/ala/data/geonetwork/"'
-  notify:
-    - restart tomcat
-  when: ansible_os_family == "Debian"
-  tags:
-    - tomcat
-    - geonetwork
-
-- name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
-  with_items:
-    - "{{data_dir}}/ala/data/geonetwork/"
-  tags:
-    - geonetwork
-
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ geonetwork_context_path }}' hostname='{{ geonetwork_hostname }}'
   tags:
     - deploy
@@ -87,18 +69,6 @@
   tags:
     - geonetwork
     - tomcat_vhost
-
-#- name: replace config-db/postgres-postgis.xml file
-#  template: src=postgres-postgis.xml dest="/var/lib/tomcat7/webapps-{{ geonetwork_hostname }}/geonetwork/WEB-INF/config-db/postgres-postgis.xml"
-#  tags:
-#    - geonetwork
-#    - config
-
-#- name: replace config-db/postgis-alternate-datasource.xml file
-#  template: src=postgis-alternate-datasource.xml dest="/var/lib/tomcat7/webapps-{{ geonetwork_hostname }}/geonetwork/WEB-INF/config-db/postgis-alternate-datasource.xml"
-#  tags:
-#    - geonetwork
-#    - config
 
 - name: replace config-db/jdbc.properties file
   template: src=jdbc.properties dest="/var/lib/tomcat7/webapps-{{ geonetwork_hostname }}/geonetwork/WEB-INF/config-db/jdbc.properties"
