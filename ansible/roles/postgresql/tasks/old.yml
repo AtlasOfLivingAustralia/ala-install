@@ -81,10 +81,10 @@
   tags: postgresql
 
 - name: Create Postgresql password
-  postgresql_user: name="{{ postgresql_user }}" password="{{ postgresql_password }}" role_attr_flags="CREATEDB,SUPERUSER"
+  postgresql_user: name="{{ postgresql_username }}" password="{{ postgresql_password }}" role_attr_flags="CREATEDB,SUPERUSER"
   become: yes
   become_user: postgres
-  when: postgresql_installed.changed
+  #when: postgresql_installed.changed
   tags: postgresql
 
 - name: install libpq-dev (Debian)
@@ -118,16 +118,20 @@
   tags: postgresql
 
 - name: ensure postgis_template database exists
-  postgresql_db: db="postgis_template" state="present"
+  postgresql_db:
+    db: "postgis_template"
+    state: "present"
   become: yes
   become_user: postgres
   tags: postgresql
 
-- name: make postgis_template a template
+- name: make postgis_template a template fix 2
   action: command psql -d postgis_template -c "UPDATE pg_database SET datistemplate=true WHERE datname='postgis_template';"
   become: yes
   become_user: postgres
-  tags: postgresql
+  tags:
+    - postgresql
+    - dbtest
 
 - name: run the postgis SQL scripts
   action: command psql -d postgis_template -f {{ item }}
