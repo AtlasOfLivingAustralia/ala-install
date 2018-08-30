@@ -13,8 +13,25 @@
   tags:
     - solr_monit
 
+- name: install wget
+  apt: pkg=wget state=present update_cache=yes
+  tags:
+    - solr_monit
+
+- name: install jq
+  apt: pkg=jq state=present update_cache=yes
+  tags:
+    - solr_monit
+
 - name: copy monit solr config
   copy: src=solr dest=/etc/monit/conf-available/ mode=700
+  notify:
+    - restart monit
+  tags:
+    - solr_monit
+
+- name: copy monit solr rebalance leaders script
+  copy: src=rebalanceleaders.sh dest=/usr/local/bin/ mode=755
   notify:
     - restart monit
   tags:
