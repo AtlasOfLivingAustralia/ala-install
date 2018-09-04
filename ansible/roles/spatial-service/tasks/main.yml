@@ -56,11 +56,13 @@
     - tomcat_vhost
     - spatial-service
 
+
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/spatial-service/config"
     - "{{data_dir}}/ala/data/runtime/files"
+    - "{{data_dir}}/spatial-data"
   tags:
     - spatial-service
 

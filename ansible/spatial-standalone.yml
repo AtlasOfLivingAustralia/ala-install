@@ -5,8 +5,8 @@
     - tomcat
     - webserver
     - postgresql
+    - layers-db
     - geonetwork
     - geoserver
-    - layers-db
     - spatial-service
     - spatial-hub
