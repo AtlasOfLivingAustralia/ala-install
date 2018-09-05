@@ -26,6 +26,6 @@
     - { role: logger-service,   logger_version: "2.3.5" }
     - { role: species-list,     specieslist_version: "3.0" }
     - { role: bie-index,        bie_index_version: "1.4.2.2" }
-    - { role: bie-hub,          bie_hub: ala-bie, bie_hub_version: "1.4.2" }
+    - { role: bie-hub,          bie_hub: ala-bie, bie_hub_version: "1.4.3" }
     - { role: image-service,    images_version: "0.9" }
     - demo
