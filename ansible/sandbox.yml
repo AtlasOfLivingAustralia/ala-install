@@ -9,7 +9,7 @@
     - biocache-db
     - biocache-properties
     - biocache-service
-    - { role: biocache-hub, biocache_hub: ala-hub }
+    - { role: biocache-hub, biocache_hub: ala-hub, grouped_facets_json: grouped_facets_sandbox.json }
     - sandbox
-    - solr    
+    - solr4
     - biocache-cli
