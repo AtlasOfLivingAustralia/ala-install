@@ -4,6 +4,7 @@
     - collectory
     - webapps
     - deploy
+    - config
 
 - name: ensure mysql is running (this is idempotent so safe)
   service: name={{ mysql_service }} state=started
@@ -48,6 +49,7 @@
   with_items:
     - config/collectory-config.properties
   tags:
+    - config
     - properties
     - collectory
 
