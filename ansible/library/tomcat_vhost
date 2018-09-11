@@ -249,7 +249,7 @@ def main():
             unpack_wars=dict(default="true", type="bool"),
             remote_ip_valve=dict(default="false", type="bool"),
             remote_internal_proxies=dict(default=None, required=False),
-            access_log_valve=dict(default="true", type="bool"),
+            access_log_valve=dict(default="false", type="bool"),
             state=dict(default="present", choices=["absent", "present"]),
             tomcat_conf_dir=dict(default=None, required=False)
         ),
