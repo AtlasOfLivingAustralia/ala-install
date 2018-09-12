@@ -18,7 +18,7 @@
     - logger-client
     - biocache-properties
     - { role: biocache-db,      use_cassandra3 : true }
-    - { role: biocache-service, biocache_service_version: "2.1.7" }
+    - { role: biocache-service, biocache_service_version: "2.1.11" }
     - { role: biocache-hub,     biocache_hub: ala-hub, biocache_hub_version: "3.0.6" }
     - { role: collectory,       collectory_app: ala-collectory, collectory_version: "1.5.4" }
     - { role: biocache-cli,     biocache_cli_version: "2.3.7" }
