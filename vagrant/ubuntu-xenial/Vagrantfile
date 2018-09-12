@@ -12,7 +12,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.hostname = "vagrant1.ala.org.au"
   config.vm.network :private_network, ip: "10.1.1.4"
   config.vm.network :forwarded_port, guest: 22, host: 2224, id: 'ssh'
-  #config.vm.network :forwarded_port, guest: 80, host: 8000
+  config.vm.network :forwarded_port, guest: 5432, host: 5432 
+ #config.vm.network :forwarded_port, guest: 80, host: 8000
+  config.vm.synced_folder "/data/spatial-data", "/data/spatial-data"
 
   # these machines require some memory to operate the apps
   config.vm.provider "virtualbox" do |v|

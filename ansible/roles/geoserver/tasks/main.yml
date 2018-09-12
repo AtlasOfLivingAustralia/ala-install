@@ -77,25 +77,13 @@
   tags:
     - geoserver
 
-#- name: enable self admin for changing password via rest api
-#  lineinfile:
-#    dest="{{data_dir}}/ala/data/geoserver_data_dir/security/rest.properties"
-#    line='/rest/security/self/**;GET,POST,PUT,DELETE=ROLE_AUTHENTICATED'
-#  tags:
-#    - password
-#    - geoserver
-#
-#- name: change admin's password
-#  uri:
-#    url: "{{ geoserver_url }}/rest/security/self/password"
-#    method: "PUT"
-#    body: "{ 'newPassword': '{{ geoserver_password }}' }"
-#    status_code: 200
-#    headers:
-#      Content-Type: "application/json"
-#  tags:
-#     - password
-#     - geoserver
+- name: enable self admin for changing password via rest api
+  lineinfile:
+    dest="{{data_dir}}/ala/data/geoserver_data_dir/security/rest.properties"
+    line='/rest/security/self/**;GET,POST,PUT=ROLE_AUTHENTICATED'
+  tags:
+    - password
+    - geoserver
 
 
 - name: set data ownership
@@ -104,9 +92,6 @@
     - restart tomcat
   tags:
     - geoserver
-
-
-
 
 
 - name: copy geoserver script
@@ -133,6 +118,48 @@
   command: "chmod a+x {{data_dir}}/geoserver.sh"
   tags:
     - geoserver
+
+
+- name: restart tomcat to bring config effective
+  command: "/etc/init.d/tomcat7 restart"
+  tags:
+    - geoserver
+  become: true
+
+- name: restart nginx (Both service need to be restarted)
+  command: "service nginx restart"
+  tags:
+    - geoserver
+  become: true
+
+
+- name: "wait for geoserver to come up"
+  uri:
+    url: "{{ geoserver_url }}"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 20
+  delay: 5
+  tags:
+    - geoserver
+
+
+#- name: change admin's password
+#  uri:
+#    url: "{{ geoserver_url }}/rest/security/self/password"
+#    method: "PUT"
+#    user: 'admin'
+#    password: 'geoserver'
+#    force_basic_auth: yes
+#    body: '{ "newPassword": "{{ geoserver_password }}" }'
+#    status_code: 200
+#    headers:
+#      Content-Type: "application/json"
+#  tags:
+#     - password
+#     - geoserver
+
 - debug: "finish geoserver setup by running {{data_dir}}/geoserver.sh"
 
 - name: Runing geoserver.sh

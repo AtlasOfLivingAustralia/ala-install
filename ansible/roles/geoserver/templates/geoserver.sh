@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#update geoserver password
+curl -v -u admin:geoserver -XPUT -H "Content-type: application/xml" -d "<userPassword><newPassword>{{geoserver_password}}</newPassword></userPassword>" {{geoserver_url}}/rest/security/self/password
+
 mkdir {{tomcat_webapps}}geoserver/data/layout
 wget -O {{tomcat_webapps}}geoserver/data/layout/scale.xml https://github.com/AtlasOfLivingAustralia/spatial-database/raw/master/scale.xml
 
