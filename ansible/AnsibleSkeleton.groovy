@@ -183,7 +183,7 @@ class AnsibleSkeleton {
                     - name: create database
                       postgresql_db: name={{${appNameVar}_db_name}} state=present
                       become_user: postgres
-                      sudo: True
+                      become: yes
                       register: dbschema
                       tags:
                         - db
@@ -192,7 +192,7 @@ class AnsibleSkeleton {
                     - name: create database user
                       postgresql_user: db={{${appNameVar}_db_name}} name={{${appNameVar}_db_username}} password={{${appNameVar}_db_password}} priv=ALL state=present
                       become_user: postgres
-                      sudo: True
+                      become: yes
                       register: dbuser
                       tags:
                         - db

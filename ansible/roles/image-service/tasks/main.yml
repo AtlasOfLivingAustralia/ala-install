@@ -5,7 +5,7 @@
 - name: create images database
   postgresql_db: name=images
   become_user: postgres
-  sudo: True
+  become: yes
   tags:
     - db
     - image-service
@@ -13,7 +13,7 @@
 - name: create database user images 
   postgresql_user: db=images name={{ images_db_username }} password={{ images_db_password }} priv=ALL state=present
   become_user: postgres
-  sudo: True
+  become: yes
   tags:
     - db
     - image-service
