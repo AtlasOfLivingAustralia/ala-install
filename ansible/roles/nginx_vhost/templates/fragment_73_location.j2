@@ -1,21 +1,10 @@
-{% if nginx_set_real_ips is defined and nginx_set_real_ips|length > 0 %}
-        # These IP addresses are trusted to send the correct information in X-Forwarded-For headers
-{% for next_set_real_ip in nginx_set_real_ips %}
-        set_real_ip_from {{ next_set_real_ip }};
-{% endfor %}
-        real_ip_header X-Forwarded-For;
-        real_ip_recursive on;
-{% endif %}
 {% if robots_disallow_ips is defined and robots_disallow_ips|length > 0 %}
-        # These IP addresses are never allowed to access this location
-{% for next_ip in robots_disallow_ips %}
-        deny {{ next_ip }};
-{% endfor %}
+        if ($blocked_ip) {
+            return 403;
+        }
 {% endif %}
 {% if robots_disallow_useragents is defined and robots_disallow_useragents|length > 0 %}
-        # These user agents are never allowed access to this location
-        # Telling NGINX to return 444 is a special pseudo response code that immediately cuts the TCP connection with no response
-        if ($http_user_agent ~* ({{ robots_disallow_useragents|join('|') }}) ) {
+        if ($blocked_user_agent) {
             return 444;
         }
 {% endif %}
