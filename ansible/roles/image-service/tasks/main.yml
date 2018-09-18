@@ -31,6 +31,8 @@
   vars:
     hostname: "{{ images_hostname }}"
     context_path: "{{ images_context_path }}"
+  notify:
+    - restart nginx
   tags:
     - nginx_vhost
     - deploy
@@ -48,12 +50,6 @@
   with_items:
     - "/srv/{{ images_hostname }}/www"
   tags:
-    - image-service
-
-- name: Create symlink to data/biocache-media from /srv/[hostname]/www/html/biocache-media
-  command: "ln -s /data/images/store /srv/{{ images_hostname }}/www/store" 
-  ignore_errors: yes
-  tags: 
     - image-service
 
 - name: ensure target directories exist [data subdirectories etc.]
@@ -74,6 +70,12 @@
   tags:
     - image-service
 
+- name: Create symlink to data/images/store from /srv/[hostname]/www/store
+  command: "ln -s {{ data_dir }}/images/store /srv/{{ images_hostname }}/www/store" 
+  ignore_errors: yes
+  tags: 
+    - image-service
+
 - name: copy all config.properties
   template: src=config/config.properties dest={{data_dir}}/images/config/images-config.properties
   tags:
@@ -88,7 +90,9 @@
     - image-service
 
 - name: set data ownership
-  file: path={{data_dir}}/images owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+# FIXME: This fails when data_dir is /data, per our standard layout, because a symlink from /data/images/store/store to /data/images/store confuses the ansible file role
+#  file: path={{data_dir}}/images owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  shell: "chown -R {{ tomcat_user }}:{{ tomcat_user }} {{ data_dir }}/images"
   notify:
     - restart tomcat
   tags:
