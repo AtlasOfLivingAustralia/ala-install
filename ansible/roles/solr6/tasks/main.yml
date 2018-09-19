@@ -23,7 +23,7 @@
 
 - name: Run install script
   shell: "./install_solr_service.sh /tmp/solr-{{ solr_version }}.tgz -d /data/solr -f"
-  sudo: yes
+  become: yes
   tags:  
     - solr5
 

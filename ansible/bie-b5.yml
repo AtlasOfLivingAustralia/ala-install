@@ -1,4 +1,4 @@
-# full BIE.  set target (i.e. server to deploy to) e.g. ansible-playbook bie-b5.yml --extra-vars 'target=bie-test' -i path/to/inventory --ask-sudo-pass
+# full BIE.  set target (i.e. server to deploy to) e.g. ansible-playbook bie-b5.yml --extra-vars 'target=bie-test' -i path/to/inventory --ask-become-pass
 - hosts: '{{ target }}'
   roles:
     - common

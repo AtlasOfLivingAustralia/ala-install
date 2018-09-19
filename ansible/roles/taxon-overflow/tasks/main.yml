@@ -5,7 +5,7 @@
 - name: create DB
   postgresql_db: name={{taxonoverflow_db_name | default('taxonoverflow') }} state=present
   become_user: postgres
-  sudo: True
+  become: yes
   tags:
     - db
     - taxonoverflow
@@ -13,7 +13,7 @@
 - name: create database user 
   postgresql_user: db={{taxonoverflow_db_name | default('taxonoverflow')}} name={{taxonoverflow_db_username | default('postgres')}} password={{taxonoverflow_db_password | default('postgres')}} priv=ALL state=present
   become_user: postgres
-  sudo: True
+  become: yes
   tags:
     - db
     - taxonoverflow

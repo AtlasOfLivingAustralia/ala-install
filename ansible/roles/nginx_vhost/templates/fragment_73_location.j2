@@ -1,7 +1,10 @@
+{% if robots_disallow_ips is defined and robots_disallow_ips|length > 0 %}
+        if ($blocked_ip) {
+            return 403;
+        }
+{% endif %}
 {% if robots_disallow_useragents is defined and robots_disallow_useragents|length > 0 %}
-        # These user agents are never allowed access to this location
-        # Telling NGINX to return 444 is a special pseudo response code that immediately cuts the TCP connection with no response
-        if ($http_user_agent ~* ({{ robots_disallow_useragents|join('|') }}) ) {
+        if ($blocked_user_agent) {
             return 444;
         }
 {% endif %}

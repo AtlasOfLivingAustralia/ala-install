@@ -5,8 +5,15 @@ ssl: true
 force_https: true
 nginx_root: "/srv/{{ hostname }}/www/"
 context_path: '/'
+# By default, no robots should be accessing any servers, customise this in your inventory to allow access to specific paths
 robots_disallow_paths: ["/"]
+# Semrush completely ignore robots.txt, so banning them by default from all of our servers
 robots_disallow_useragents: ["Semrush"]
+# Add IPs to this list in your inventory to disallow specific IP addresses in nginx
+robots_disallow_ips: []
+# Add IPs to this list that are known to send correct x-forwarded-for headers, and can hence be safely relied on
+# https://nginx.org/en/docs/http/ngx_http_realip_module.html
+nginx_set_real_ips: []
 # If either of the following are set to true, a default host will be created
 # Any existing default host will be deactivated from sites-enabled, but left in sites-available
 aws_elb_healthcheck_default: false
@@ -26,4 +33,5 @@ nginx_cache_size: "2g"
 nginx_cache_time: "60m"
 nginx_cache_valid_time: "60m"
 nginx_cache_invalid_time: "0s"
+# Set this to true in your inventory if you know that you are only deploying a single nginx_vhost and you want to clear previous versions before deploying each time
 clear_vhost_fragments: false

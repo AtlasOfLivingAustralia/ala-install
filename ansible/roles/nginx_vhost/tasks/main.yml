@@ -126,6 +126,14 @@
   tags:
     - nginx_vhost
 
+- name: add blocking fragment
+  template:
+    src: "fragment_03_blocking.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_03_blocking"
+  when: vhost_required
+  tags:
+    - nginx_vhost
+
 - name: add cache fragment if configured
   template:
     src: "fragment_05_cache.j2"
