@@ -152,6 +152,11 @@
         use_cache: true
         force_cache: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/chart"
+      - path: "{{biocache_service_context_path}}/occurrences/index/download"
+        sort_label: "7_occurrences_index_download"
+        block_by_arguments: "{{ biocache_service_online_download_argument_blocking }}"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrences/index/download"
       - path: "{{biocache_service_context_path}}"
         sort_label: "8_ws"
         is_proxy: true

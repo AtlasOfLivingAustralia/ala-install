@@ -1,0 +1,5 @@
+---
+# Set this to a list of dictionaries with the key "field" containing the argument field name and the key "value" being the blocking pattern to use
+biocache_service_online_download_argument_blocking: []
+# Eg., use the following in your ansible inventory file to block based on sourceTypeId equal to 0
+# biocache_service_online_download_argument_blocking=[{ "field": "sourceTypeId", "value": "0", "comparison": "=" }]
