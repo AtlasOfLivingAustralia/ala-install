@@ -2,7 +2,7 @@
 regions_config: "{{regions}}-config.properties"
 
 # assets
-version: "2.5-SNAPSHOT"
+version: "{{ regions_version | default('LATEST') }}"
 artifactId: "{{ regions | default('regions')}}"
 classifier: ''
 packaging: "war"
