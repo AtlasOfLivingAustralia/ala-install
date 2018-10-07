@@ -81,6 +81,14 @@
   tags:
     - tomcat
 
+- name: ensure tomcat temp directory exists
+  file: path={{ tomcat_temp_directory | default('/data/tmp/tomcat7-tomcat7-tmp') }} state=directory owner={{ tomcat_user }} group={{ tomcat_user }}
+  notify:
+    - restart tomcat
+  when: ansible_os_family == "Debian"
+  tags:
+    - tomcat
+
 - name: configure tomcat temp directory (Debian)
   blockinfile:
     path={{tomcat_conf}}
