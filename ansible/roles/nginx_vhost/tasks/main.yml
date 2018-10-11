@@ -94,15 +94,6 @@
   tags:
     - nginx_vhost
 
-# clear directory for vhost fragments
-- name: clear directory for vhost fragments
-  file: 
-    path: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}"
-    state: absent
-  when: vhost_required and clear_vhost_fragments
-  tags:
-    - nginx_vhost
-
 # check dir exists for servername fragments
 - name: ensure vhost fragments dir is present
   file: 

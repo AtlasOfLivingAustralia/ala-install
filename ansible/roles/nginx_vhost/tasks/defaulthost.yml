@@ -30,14 +30,6 @@
   tags:
     - nginx_vhost
 
-- name: remove previous fragments dir for ala_default
-  file:
-    path: "{{nginx_conf_dir}}/vhost_fragments/ala_default"
-    state: absent
-  when: ala_default_vhost and vhost_required
-  tags:
-    - nginx_vhost
-
 - name: ensure fragments dir for default vhost for ala is present
   file:
     path: "{{nginx_conf_dir}}/vhost_fragments/ala_default"

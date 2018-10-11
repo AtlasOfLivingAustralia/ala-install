@@ -85,3 +85,6 @@ nginx_upstreams: []
 #   }
 
 nginx_log_format: '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for"'
+
+# Add strings to this list containing the vhost fragment directory names to clear
+nginx_vhost_fragments_to_clear: []
