@@ -29,7 +29,12 @@ map $http_user_agent $blocked_user_agent {
     # These user agents are never allowed access to this location
     # Telling NGINX to return 444 is a special pseudo response code that immediately cuts the TCP connection with no response
 {% for next_disallowed_user_agent in robots_disallow_useragents %}
+{% if next_disallowed_user_agent|trim == "" %}
+    # Blocking requests with empty user agent header
+    "" 1;
+{% else %}
     "~{{ next_disallowed_user_agent }}" 1;
+{% endif %}
 {% endfor %}
 }
 {% endif %}
