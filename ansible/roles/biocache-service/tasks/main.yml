@@ -211,6 +211,11 @@
     - biocache-service
     - properties
 
+- name: copy all config.properties
+  template: src=config/download-doi-email.html dest={{data_dir}}/biocache/config/
+  tags:
+    - spatial-analysis
+
 - name: ensure target directories exist [data subdirectories etc.
   file: path={{item.path}} state=directory owner={{tomcat_user}}  group={{tomcat_user}} mode={{ item.perm | default(774) }}
   with_items:

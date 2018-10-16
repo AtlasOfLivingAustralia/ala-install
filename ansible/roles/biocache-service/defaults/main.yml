@@ -3,3 +3,5 @@
 biocache_service_online_download_argument_blocking: []
 # Eg., use the following in your ansible inventory file to block based on sourceTypeId equal to 0
 # biocache_service_online_download_argument_blocking=[{ "field": "sourceTypeId", "value": "0", "comparison": "=" }]
+# Default value for doi to use in email templates
+doi_service_url: "https://doi.ala.org.au"
