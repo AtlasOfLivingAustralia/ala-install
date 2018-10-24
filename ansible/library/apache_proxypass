@@ -161,7 +161,7 @@ def main():
 
     try:
         aug = load_augeas_for_file(check_mode=module.check_mode)
-    except Exception, e:
+    except Exception as e:
         module.fail_json(msg="unable to connect to Augeas: %s" % e)
         return
 
@@ -184,7 +184,7 @@ def main():
             remove_proxy_pass(aug, filename, vhost, src, dest, proxy_vhosts)
             module.fail_json(msg="state=absent is not implemented yet" % locals())
             return
-    except Exception, e:
+    except Exception as e:
         module.fail_json(msg="an error occurred while making changes: %s" % e)
         return
 
@@ -195,7 +195,7 @@ def main():
         aug.close()
         changed = True if saved else False
         module.exit_json(changed=True if saved else False, name=vhost, saved=saved, errors=errors)
-    except Exception, e:
+    except Exception as e:
         module.fail_json(msg="exception while performing augeas operations: %s" % e)
 
 # import module snippets

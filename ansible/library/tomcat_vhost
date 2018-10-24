@@ -281,7 +281,7 @@ def main():
 
     try:
         aug = load_augeas_for_file(root=tomcat_conf_dir, check_mode=module.check_mode)
-    except Exception, e:
+    except Exception as e:
         module.fail_json(msg="unable to connect to Augeas: %s" % e)
         return
 
@@ -301,7 +301,7 @@ def main():
         if saved and not module.check_mode:
             xml_lint(tomcat_conf_dir + "/server.xml")
         module.exit_json(changed=True if saved else False, name=host, saved=saved, errors=errors)
-    except Exception, e:
+    except Exception as e:
         module.fail_json(msg="exception while performing augeas operations: %s" % e)
 
 # import module snippets
