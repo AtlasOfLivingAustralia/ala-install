@@ -195,7 +195,7 @@ def create_vhost(aug, host, aliases=[], app_base=None, deploy_on_startup=True, a
                    "proxiesHeader": "X-Forwarded-By"
                  }
         if remote_internal_proxies:
-            print remote_internal_proxies
+            print(remote_internal_proxies)
             params['internalProxies']= remote_internal_proxies
         add_valve(aug, "host", "org.apache.catalina.valves.RemoteIpValve", params)
     else:
