@@ -4,7 +4,7 @@ This project includes a playbook for setting up the [ALA demo ](http://ala-demo.
 
 ## Ansible version
 
-### The current supported version is: **2.5.4**
+### The current supported version is: **2.7.0**
 
 The playbooks and roles in this repository have been developed and tested against the above version.
 
