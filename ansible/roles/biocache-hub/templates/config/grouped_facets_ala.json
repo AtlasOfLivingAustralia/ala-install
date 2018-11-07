@@ -265,11 +265,11 @@
             },
             {  
                 "sort":"count",
-                "field":"duplicate_status"
+                "field":"duplicate_record"
             },
             {  
                 "sort":"count",
-                "field":"duplicate_type"
+                "field":"duplicate_status"
             }
         ]
     },
