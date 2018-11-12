@@ -23,14 +23,14 @@
     - tomcat
 
 - name: install libtcnative-1 (Debian)
-  apt: pkg={{libtcnative}} state=present update_cache=yes
+  apt: pkg={{libtcnative}} state=latest update_cache=yes
   when: ansible_os_family == "Debian" and tomcat_apr == true
   tags:
     - packages
     - tomcat
 
 - name: install tomcat (Debian)
-  apt: pkg={{tomcat}} state=present update_cache=yes
+  apt: pkg={{tomcat}} state=latest update_cache=yes
   when: ansible_os_family == "Debian"
   register: tomcat_installed
   tags:

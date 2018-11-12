@@ -53,17 +53,17 @@
   tags:
     - setfacts
 
-- name: set java defaults for openjdk8
-  set_fact:
-    java_home: /usr/lib/jvm/java-8-openjdk-amd64
-  when: use_openjdk8 is defined and use_openjdk8
-  tags:
-    - setfacts
-
 - name: set java defaults for oracle java 8
   set_fact:
     java_home: /usr/lib/jvm/java-8-oracle
-  when: use_openjdk7 is not defined and use_openjdk8 is not defined
+  when: use_oraclejava8 is defined and use_oraclejava8
+  tags:
+    - setfacts
+
+- name: set java defaults for openjdk8
+  set_fact:
+    java_home: /usr/lib/jvm/java-8-openjdk-amd64
+  when: use_openjdk7 is not defined and use_oraclejava8 is not defined
   tags:
     - setfacts
 
