@@ -1,0 +1,16 @@
+- include: ../../common/tasks/setfacts.yml 
+  tags:
+    - java
+
+- name: install openjdk 8 java (Debian)
+  apt: pkg=openjdk-8-jdk state=present update_cache=yes
+  when: ansible_os_family == "Debian"
+  tags:
+    - java
+
+- name: install ca-certificates (Debian)
+  apt: pkg=ca-certificates state=present update_cache=yes
+  when: ansible_os_family == "Debian"
+  tags:
+    - java
+

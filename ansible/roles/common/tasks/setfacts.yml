@@ -45,18 +45,25 @@
   tags:
     - setfacts
 
-
-- name: set java defaults for java open jdk7
+# FIXME: oracle-java-8 is used regardless of the setting for use_openjdk7
+- name: set java defaults for openjdk7
   set_fact:
     java_home: /usr/lib/jvm/java-8-oracle
-  when: use_openjdk7 is defined
+  when: use_openjdk7 is defined and use_openjdk7
   tags:
     - setfacts
 
-- name: set java defaults for java 8
+- name: set java defaults for openjdk8
+  set_fact:
+    java_home: /usr/lib/jvm/java-8-openjdk-amd64
+  when: use_openjdk8 is defined and use_openjdk8
+  tags:
+    - setfacts
+
+- name: set java defaults for oracle java 8
   set_fact:
     java_home: /usr/lib/jvm/java-8-oracle
-  when: use_openjdk7 is not defined
+  when: use_openjdk7 is not defined and use_openjdk8 is not defined
   tags:
     - setfacts
 

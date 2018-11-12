@@ -3,5 +3,8 @@
 - include: openjdk-java.yml
   when: use_openjdk7 is defined and use_openjdk7
 
+- include: openjdk-java-8.yml
+  when: use_openjdk8 is defined and use_openjdk8
+
 - include: oracle-java8.yml
-  when: use_openjdk7 is not defined
+  when: use_openjdk7 is not defined and use_openjdk8 is not defined
