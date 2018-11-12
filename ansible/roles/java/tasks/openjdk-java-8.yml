@@ -14,3 +14,18 @@
   tags:
     - java
 
+# Optionally remove Oracle Java 8 if they explicitly chose OpenJDK8
+# In future, will remove Oracle Java 8 by default here
+- name: Remove Oracle Java 8 (using OpenJDK8 instead)
+  become: yes
+  apt: pkg=oracle-java8-installer name={{item}} state=absent
+  when: ansible_os_family == "Debian" and use_openjdk8 is defined
+  tags:
+    - java
+
+- name: Remove Oracle Java 8 as default JDK
+  become: yes
+  apt: pkg=oracle-java8-set-default name={{item}} state=absent
+  when: ansible_os_family == "Debian"
+  tags:
+    - java
