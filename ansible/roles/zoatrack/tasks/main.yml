@@ -1,0 +1,40 @@
+- name: R packges | Install R Packages
+  sudo: yes
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - libgdal-dev
+    - libproj-dev
+    - libxml2-dev
+    - libnetcdf-dev
+    - netcdf-binmysql-server-5.6
+  update_cache: yes
+  tags:
+    - R packages
+  register: r_installed
+
+- name: Making sure R is installed (debian/ubuntu apt)
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - r-base-core
+    - r-base-dev
+
+- name: Adding R packages
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{item}}' %in% installed.packages()[,'Package'])) install.packages(pkgs={{item}}, repos=c('http://cran.csiro.au/'))"
+  with_items:
+    - Rserve
+    - sp
+    - ade4
+    - adehabitatHR
+    - adehabitatMA
+    - maptools
+    - shapefiles
+    - rgdal
+    - alphahull
+    - raster
+    - plyr
+    - spatstat
+    - Grid2Polygons
+    - RColorBrewer
+    - googleVis
+    - spacetime
+    - plotKML

@@ -1,0 +1,8 @@
+#vagrant ssh-config | grep IdentityFile
+#  result should be your private key and not
+#   .vagrant/machines/default/virtualbox/private_key
+
+# ansible-playbook --private-key=~/.vagrant.d/insecure_private_key -u vagrant -i ~/src/ala-install/ansible/inventories/vagrant/zoatrack-vagrant ~/src/ala-install/ansible/zoatrack.yml
+- hosts: zoatrack
+  roles:
+    - zoatrack

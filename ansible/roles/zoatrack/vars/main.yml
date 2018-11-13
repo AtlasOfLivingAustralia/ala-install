@@ -1,0 +1,7 @@
+# assets
+version: "{{ zoatrack_version | default('0.2-SNAPSHOT') }}"
+artifactId: "{{ zoatrack__artifact_id | default('spatial-hub') }}"
+classifier: "{{ zoatrack__classifier | default('') }}"
+packaging: "war"
+groupId: "{{ zoatrack__group_id | default('au.org.ala') }}"
+spatial_hub_war_url: "{{ zoatrack__maven_repo_ws_url | default(maven_repo_ws_url) }}"
