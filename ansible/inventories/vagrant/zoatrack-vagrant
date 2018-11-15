@@ -1,3 +1,40 @@
 # The Atlas installation on CSIRO IM&T servers of Zookeeper
+[all:vars]
+    webserver_nginx=false
+    data_dir=/data
+
+
 [zoatrack]
-    vagrant1
+    vagrant2
+
+[geoserver]
+    vagrant2
+
+
+[zoatrack:vars]
+
+    tomcat_java_opts = -Xmx1g -Xms1g -Xss512k -Djava.awt.headless=true
+
+    pg_service=postgresql-9.1
+    pg_version=9.1
+    pg_gis_version=2.2
+    linux_version=xenial
+
+    pg_user=oztrack
+    pg_password=changeme
+    pg_database=oztrack
+
+
+
+ [geoserver:vars]
+     geoserver_hostname= vagrant2.ala.org.au
+     geoserver_url=http://vagrant2.ala.org.au/geoserver
+     geoserver_base_url=http://vagrant2.ala.org.au
+     geoserver_context_path=/geoserver
+     geoserver_app=geoserver
+
+     geoserver_username=admin
+     #geoserver_password=geoserver #default
+     geoserver_password=password
+
+

@@ -1,13 +1,12 @@
-- name: R packges | Install R Packages
-  sudo: yes
+- name: 3rd libs
   apt: pkg={{ item }} state=latest
   with_items:
     - libgdal-dev
     - libproj-dev
     - libxml2-dev
     - libnetcdf-dev
-    - netcdf-binmysql-server-5.6
-  update_cache: yes
+    - netcdf-bin
+
   tags:
     - R packages
   register: r_installed
@@ -19,7 +18,7 @@
     - r-base-dev
 
 - name: Adding R packages
-  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{item}}' %in% installed.packages()[,'Package'])) install.packages(pkgs={{item}}, repos=c('http://cran.csiro.au/'))"
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{item}}' %in% installed.packages()[,'Package'])) install.packages('{{item}}', repos=c('https://cran.csiro.au/'))"
   with_items:
     - Rserve
     - sp
@@ -38,3 +37,123 @@
     - googleVis
     - spacetime
     - plotKML
+    - nc
+    - ncdf
+
+- name: Download kftrack & ukfsst
+  get_url:
+    url: '{{ item }}'
+    dest: /tmp
+  with_items:
+    - https://github.com/positioning/kalmanfilter/raw/master/downloads/R3x/64bit/linux/kftrack_0.70-x64.tar.gz
+    - https://github.com/positioning/kalmanfilter/raw/master/downloads/R3x/64bit/linux/ukfsst_0.3-x64.tar.gz
+
+- name: Install kftrack & ukfsst
+  sudo: yes
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "install.packages('{{ item }}')"
+  with_items:
+    - /tmp/kftrack_0.70-x64.tar.gz
+    - /tmp/ukfsst_0.3-x64.tar.gz
+
+- name: Add postgres repository key
+  apt_key: url=http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc state=present
+  tags: postgresql
+
+- name: Add postgres repository
+  sudo: yes
+  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main' state=present
+  tags: postgresql
+
+#- apt_repository:
+#    repo: ppa:ubuntugis/ubuntugis-unstable
+#    state: present
+
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+
+- name: Install PostgreSQL
+  apt: pkg={{ item }} state=present
+  with_items:
+    - postgresql-{{ pg_version }}
+    - postgresql-client-{{ pg_version }}
+    - postgresql-{{ pg_version }}-postgis-{{ pg_gis_version }}
+    - postgresql-contrib-{{ pg_version }}
+  register: postgresql_installed
+  tags: postgresql
+
+
+#- name: Install PostgreSQL adapter for the Python programming language
+- pip:
+    name: psycopg2
+    state: forcereinstall
+  tags: postgresql
+
+- name: Set Postgre auth
+  lineinfile: dest="/etc/postgresql/9.1/main/pg_hba.conf" backrefs="yes" regexp="local   all             all                                     peer" line="local   all             all                                     md5"
+  tags: setup_pg
+
+#- name: Restart postgresql server
+#  service: name="postgresql" state="started" enabled="yes"
+#  tags: setup_pg
+
+- name: Create zoatrack PG password
+  postgresql_user: name="{{ pg_user }}" password="{{ pg_password }}" role_attr_flags="CREATEDB,SUPERUSER"
+  become: yes
+  become_user: postgres
+  tags: init_db
+
+- name: Create zoatrack PG db
+  postgresql_db: name="{{ pg_database }}" owner="{{ pg_user }}"
+  become: yes
+  become_user: postgres
+  tags: init_db
+
+#- name: Generate init sql script from template
+#  template:  src="init_db.sql" dest="/tmp/zoatrack_init_db.sql"
+#  tags: init_db
+
+- name: import postgis functions
+  become: yes
+  become_user: postgres
+  command: "psql {{ item }}"
+  with_items:
+    - -d {{ pg_database }} -f /usr/share/postgresql/{{ pg_version }}/contrib/postgis-{{ pg_gis_version }}/postgis.sql
+    - -d {{ pg_database }} -f /usr/share/postgresql/{{ pg_version }}/contrib/postgis-{{ pg_gis_version }}/spatial_ref_sys.sql
+  register: psql_log
+  tags: init_db,init_gis
+
+
+- debug: msg="{{ psql_log }}"
+  tags: init_gis
+
+#- name: Init zoatrack db
+#  become: yes
+#  become_user: postgres
+#  shell: "psql -f /tmp/zoatrack_init_db.sql"
+#  tags: init_db,init_gis
+
+
+#sudo -u postgres psql -d oztrack -c "alter table geometry_columns owner to oztrack;"
+#sudo -u postgres psql -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
+#sudo -u postgres psql -d oztrack -c "alter view geography_columns owner to oztrack;"
+#sudo -u postgres psql -d oztrack -c 'create extension "uuid-ossp";'
+
+- name: alter oztrack db
+  become: yes
+  become_user: postgres
+  command: "psql {{ item }}"
+  with_items:
+    - -d {{ pg_database }} -c "alter table geometry_columns owner to {{ pg_database }} ;"
+    - -d {{ pg_database }} -f "alter table spatial_ref_sys owner to {{ pg_database }} ;"
+    - -d {{ pg_database }} -f "alter view geography_columns owner to {{ pg_database }} ;"
+    - -d {{ pg_database }} -f "create extension "uuid-ossp";"
+
+  register: psql_log
+  tags: init_db, alter_db
+
+-
+
+
