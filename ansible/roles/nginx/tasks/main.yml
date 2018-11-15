@@ -2,33 +2,51 @@
 # Variable setup.
 - name: Include OS-specific variables.
   include_vars: "{{ ansible_os_family }}.yml"
+  tags:
+    - nginx
 
 - name: Define nginx_user.
   set_fact:
     nginx_user: "{{ __nginx_user }}"
   when: nginx_user is not defined
+  tags:
+    - nginx
 
 # Setup/install tasks.
 - include: setup-RedHat.yml
   when: ansible_os_family == 'RedHat'
+  tags:
+    - nginx
 
 - include: setup-Ubuntu.yml
   when: ansible_distribution == 'Ubuntu'
+  tags:
+    - nginx
 
 - include: setup-Debian.yml
   when: ansible_os_family == 'Debian'
+  tags:
+    - nginx
 
 - include: setup-FreeBSD.yml
   when: ansible_os_family == 'FreeBSD'
+  tags:
+    - nginx
 
 - include: setup-OpenBSD.yml
   when: ansible_os_family == 'OpenBSD'
+  tags:
+    - nginx
 
 - include: setup-Archlinux.yml
   when: ansible_os_family == 'Archlinux'
+  tags:
+    - nginx
 
 # Vhost configuration.
 - include: vhosts.yml
+  tags:
+    - nginx
 
 # Nginx setup.
 - name: Copy nginx configuration in place.
@@ -40,6 +58,10 @@
     mode: 0644
   notify:
     - reload nginx
+  tags:
+    - nginx
 
 - name: Ensure nginx is started and enabled to start at boot.
   service: name=nginx state=started enabled=yes
+  tags:
+    - nginx

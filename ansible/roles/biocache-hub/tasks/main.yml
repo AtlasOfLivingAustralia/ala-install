@@ -3,6 +3,8 @@
     - webapps
     - properties
     - biocache_hub
+    - hub_config
+    - facets_config
 
 #
 # Apache/Tomcat virtual host configuration
@@ -93,6 +95,7 @@
     - properties
     - hub_config
     - biocache_hub
+    - facets_config
 
 - name: copy all config.properties
   template: src=config/config.properties dest={{data_dir}}/{{biocache_hub}}/config/{{biocache_hub_config}} force=yes

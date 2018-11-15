@@ -23,14 +23,14 @@
     - tomcat
 
 - name: install libtcnative-1 (Debian)
-  apt: pkg={{libtcnative}} state=present update_cache=yes
+  apt: pkg={{libtcnative}} state=latest update_cache=yes
   when: ansible_os_family == "Debian" and tomcat_apr == true
   tags:
     - packages
     - tomcat
 
 - name: install tomcat (Debian)
-  apt: pkg={{tomcat}} state=present update_cache=yes
+  apt: pkg={{tomcat}} state=latest update_cache=yes
   when: ansible_os_family == "Debian"
   register: tomcat_installed
   tags:
@@ -77,6 +77,26 @@
     line='JAVA_HOME={{ java_home }}'"
   notify: 
     - restart tomcat    
+  when: ansible_os_family == "Debian"
+  tags:
+    - tomcat
+
+- name: ensure tomcat temp directory exists
+  file: path={{ tomcat_temp_directory | default('/data/tmp/tomcat7-tomcat7-tmp') }} state=directory owner={{ tomcat_user }} group={{ tomcat_user }}
+  notify:
+    - restart tomcat
+  when: ansible_os_family == "Debian"
+  tags:
+    - tomcat
+
+- name: configure tomcat temp directory (Debian)
+  blockinfile:
+    path={{tomcat_conf}}
+    marker="# {mark} Configure Tomcat Temp Directory, which will be created and destroyed every time tomcat starts and stops (Ansible managed)"
+    block='JVM_TMP="{{ tomcat_temp_directory | default('/data/tmp/tomcat7-tomcat7-tmp')}}"'
+    backup=yes
+  notify:
+    - restart tomcat
   when: ansible_os_family == "Debian"
   tags:
     - tomcat

@@ -94,15 +94,6 @@
   tags:
     - nginx_vhost
 
-# clear directory for vhost fragments
-- name: clear directory for vhost fragments
-  file: 
-    path: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}"
-    state: absent
-  when: vhost_required and clear_vhost_fragments
-  tags:
-    - nginx_vhost
-
 # check dir exists for servername fragments
 - name: ensure vhost fragments dir is present
   file: 
@@ -123,6 +114,14 @@
     owner: www-data
     group: www-data
   when: vhost_required and nginx_cache
+  tags:
+    - nginx_vhost
+
+- name: add blocking fragment
+  template:
+    src: "fragment_03_blocking.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_03_blocking"
+  when: vhost_required
   tags:
     - nginx_vhost
 
@@ -341,7 +340,7 @@
 - name: "Default host"
   include: "defaulthost.yml"
   when:
-    - aws_elb_healthcheck_default and vhost_required
+    - ( aws_elb_healthcheck_default or nginx_default_vhost_required ) and vhost_required
   notify:
    - reload nginx
   tags:

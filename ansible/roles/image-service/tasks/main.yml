@@ -5,7 +5,7 @@
 - name: create images database
   postgresql_db: name=images
   become_user: postgres
-  sudo: True
+  become: yes
   tags:
     - db
     - image-service
@@ -13,7 +13,7 @@
 - name: create database user images 
   postgresql_user: db=images name={{ images_db_username }} password={{ images_db_password }} priv=ALL state=present
   become_user: postgres
-  sudo: True
+  become: yes
   tags:
     - db
     - image-service
@@ -31,6 +31,17 @@
   vars:
     hostname: "{{ images_hostname }}"
     context_path: "{{ images_context_path }}"
+    nginx_paths:
+      - path: "{{ images_context_path }}"
+        sort_label: "1_ws"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080{{ images_context_path }}"
+      - path: "/store"
+        sort_label: "2_store"
+        is_proxy: false
+        alias: "{{ data_dir }}/images/store"
+  notify:
+    - restart nginx
   tags:
     - nginx_vhost
     - deploy
@@ -48,12 +59,6 @@
   with_items:
     - "/srv/{{ images_hostname }}/www"
   tags:
-    - image-service
-
-- name: Create symlink to data/biocache-media from /srv/[hostname]/www/html/biocache-media
-  command: "ln -s /data/images/store /srv/{{ images_hostname }}/www/store" 
-  ignore_errors: yes
-  tags: 
     - image-service
 
 - name: ensure target directories exist [data subdirectories etc.]
@@ -74,6 +79,14 @@
   tags:
     - image-service
 
+# Only create the symlink for apache hosts, as nginx has an inbuilt rule for this
+- name: Create symlink to data/images/store from /srv/[hostname]/www/store
+  command: "ln -s {{ data_dir }}/images/store /srv/{{ images_hostname }}/www/store" 
+  ignore_errors: yes
+  when: not webserver_nginx
+  tags: 
+    - image-service
+
 - name: copy all config.properties
   template: src=config/config.properties dest={{data_dir}}/images/config/images-config.properties
   tags:
@@ -88,7 +101,9 @@
     - image-service
 
 - name: set data ownership
-  file: path={{data_dir}}/images owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+# FIXME: This fails when data_dir is /data, per our standard layout, because a symlink from /data/images/store/store to /data/images/store confuses the ansible file role
+#  file: path={{data_dir}}/images owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  shell: "chown -R {{ tomcat_user }}:{{ tomcat_user }} {{ data_dir }}/images"
   notify:
     - restart tomcat
   tags:

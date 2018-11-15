@@ -44,7 +44,7 @@
     - biocache-properties
 
 - name: ensure target directories exist [data subdirectories etc.
-  file: path={{ item }} state=directory mode=0774
+  file: path={{ item }} state=directory mode=0775
   with_items:
     - "{{data_dir}}/biocache-load"
     - "{{data_dir}}/biocache-media"

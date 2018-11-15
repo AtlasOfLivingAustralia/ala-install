@@ -2,9 +2,23 @@ check process solr with pidfile /data/solr/solr-8983.pid
    start program = "/usr/sbin/service solr start"
    restart program = "/usr/sbin/service solr restart"
    stop program  = "/usr/sbin/service solr stop"
-   if failed host 127.0.0.1 port 8983 then restart
+   if not exist 
+   then restart
+   else if succeeded then
+       exec '/usr/local/bin/rebalanceleaders.sh'
 
-check host solrhttp with address 127.0.0.1
+check host solrportactive with address 127.0.0.1
+   start program = "/usr/sbin/service solr start"
+   restart program = "/usr/sbin/service solr restart"
+   stop program  = "/usr/sbin/service solr stop"
+   if failed 
+       host 127.0.0.1 
+       port 8983 
+   then restart
+   else if succeeded then
+       exec '/usr/local/bin/rebalanceleaders.sh'
+
+check host solrhttpclusterstatus with address 127.0.0.1
    start program = "/usr/sbin/service solr start"
    restart program = "/usr/sbin/service solr restart"
    stop program  = "/usr/sbin/service solr stop"
@@ -14,3 +28,5 @@ check host solrhttp with address 127.0.0.1
        and request /solr/admin/collections?action=clusterstatus&wt=json&indent=true
        for 2 cycles
    then restart
+   else if succeeded then
+       exec '/usr/local/bin/rebalanceleaders.sh'

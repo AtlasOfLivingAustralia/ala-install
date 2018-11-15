@@ -14,9 +14,11 @@ Crawl-delay: 30
 {% if robots_disallow_useragents is defined and robots_disallow_useragents|length > 0 %}
 # Disallow entire user agents
 {% for item in robots_disallow_useragents %}
+{% if item|trim != "" %}
 User-agent: {{ item }}
 Disallow: /
 
+{% endif %}
 {% endfor %}
 {% endif %}
 ";

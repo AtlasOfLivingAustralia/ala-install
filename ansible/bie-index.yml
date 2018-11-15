@@ -4,5 +4,5 @@
     - java
     - webserver
     - tomcat
-    - solr
+    - solr4
     - bie-index

@@ -1,9 +1,20 @@
+{% if robots_disallow_ips is defined and robots_disallow_ips|length > 0 %}
+        if ($blocked_ip) {
+            return 403;
+        }
+{% endif %}
 {% if robots_disallow_useragents is defined and robots_disallow_useragents|length > 0 %}
-        # These user agents are never allowed access to this location
-        # Telling NGINX to return 444 is a special pseudo response code that immediately cuts the TCP connection with no response
-        if ($http_user_agent ~* ({{ robots_disallow_useragents|join('|') }}) ) {
+        if ($blocked_user_agent) {
             return 444;
         }
+{% endif %}
+{% if item.block_by_arguments is defined and item.block_by_arguments|length > 0 %}
+        # These query argument and value combinations were specified in the ansible configuration to be blocked for this location
+{% for next_block_by_argument in item.block_by_arguments %}
+        if ( $arg_{{ next_block_by_argument.field }} {{ next_block_by_argument.comparison | default('~') }} "{{ next_block_by_argument.value }}" ) {
+            return 403;
+        }
+{% endfor %}
 {% endif %}
 {% if item.rewrite_path is defined and item.rewrite_path %}
         rewrite ^ {{item.rewrite_path}}$1;

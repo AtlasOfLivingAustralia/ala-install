@@ -195,7 +195,7 @@ def create_vhost(aug, host, aliases=[], app_base=None, deploy_on_startup=True, a
                    "proxiesHeader": "X-Forwarded-By"
                  }
         if remote_internal_proxies:
-            print remote_internal_proxies
+            print(remote_internal_proxies)
             params['internalProxies']= remote_internal_proxies
         add_valve(aug, "host", "org.apache.catalina.valves.RemoteIpValve", params)
     else:
@@ -249,7 +249,7 @@ def main():
             unpack_wars=dict(default="true", type="bool"),
             remote_ip_valve=dict(default="false", type="bool"),
             remote_internal_proxies=dict(default=None, required=False),
-            access_log_valve=dict(default="true", type="bool"),
+            access_log_valve=dict(default="false", type="bool"),
             state=dict(default="present", choices=["absent", "present"]),
             tomcat_conf_dir=dict(default=None, required=False)
         ),
@@ -281,7 +281,7 @@ def main():
 
     try:
         aug = load_augeas_for_file(root=tomcat_conf_dir, check_mode=module.check_mode)
-    except Exception, e:
+    except Exception as e:
         module.fail_json(msg="unable to connect to Augeas: %s" % e)
         return
 
@@ -301,7 +301,7 @@ def main():
         if saved and not module.check_mode:
             xml_lint(tomcat_conf_dir + "/server.xml")
         module.exit_json(changed=True if saved else False, name=host, saved=saved, errors=errors)
-    except Exception, e:
+    except Exception as e:
         module.fail_json(msg="exception while performing augeas operations: %s" % e)
 
 # import module snippets

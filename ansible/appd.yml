@@ -6,7 +6,7 @@
     - cassandra
     - webserver
     - nameindex
-    - solr
+    - solr4
     - biocache-db
     - biocache-properties
     - biocache-service

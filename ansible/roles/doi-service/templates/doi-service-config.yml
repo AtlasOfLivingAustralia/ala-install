@@ -66,3 +66,6 @@ dataSource:
   url: jdbc:postgresql://{{db_hostname}}/{{db_name}}
   username: {{db_user}}
   password: {{db_password}}
+
+collections:
+  baseUrl: {{ collections_url | default('https://collections.ala.org.au') }}

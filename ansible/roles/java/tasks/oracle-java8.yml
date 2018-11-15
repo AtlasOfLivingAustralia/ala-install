@@ -6,7 +6,7 @@
 # Note, oracle-java8-set-default is installed later on so it is used by default
 - name: install openjdk 8 java (Debian)
   apt: pkg=openjdk-8-jdk state=present update_cache=yes
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and use_oraclejava8 is defined
   tags:
     - java
   ignore_errors: yes
@@ -14,6 +14,7 @@
 - name: Install add-apt-repostory
   become: yes
   apt: name=software-properties-common state=latest
+  when: ansible_os_family == "Debian" and use_oraclejava8 is defined
   tags:
     - java
 
@@ -22,12 +23,14 @@
   apt_repository: 
     repo: 'ppa:webupd8team/java'
     update_cache: yes
+  when: ansible_os_family == "Debian" and use_oraclejava8 is defined
   tags:
     - java
 
 - name: Accept Java 8 License
   become: yes
   debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+  when: ansible_os_family == "Debian" and use_oraclejava8 is defined
   tags:
     - java
 
@@ -40,6 +43,7 @@
     - ca-certificates
     - oracle-java8-set-default
   ignore_errors: yes
+  when: ansible_os_family == "Debian" and use_oraclejava8 is defined
   tags:
     - java
 
@@ -47,22 +51,11 @@
   become: yes
   shell: >
     cd /var/lib/dpkg/info &&
-    sed -i 's|JAVA_VERSION=8u171|JAVA_VERSION=8u181|' oracle-java8-installer.* &&
-    sed -i 's|PARTNER_URL=http://download.oracle.com/otn-pub/java/jdk/8u171-b11/512cd62ec5174c3487ac17c61aaa89e8/|PARTNER_URL=http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/|' oracle-java8-installer.* &&
-    sed -i 's|SHA256SUM_TGZ="b6dd2837efaaec4109b36cfbb94a774db100029f98b0d78be68c27bec0275982"|SHA256SUM_TGZ="1845567095bfbfebd42ed0d09397939796d05456290fb20a83c476ba09f991d3"|' oracle-java8-installer.* &&
-    sed -i 's|J_DIR=jdk1.8.0_171|J_DIR=jdk1.8.0_181|' oracle-java8-installer.*
-  tags:
-    - java
-
-# Run again with 8u172 as the basis for servers that were on that version instead
-- name: Fix Webupd8 Team failing to update and Oracle removing old download (part 2)
-  become: yes
-  shell: >
-    cd /var/lib/dpkg/info &&
-    sed -i 's|JAVA_VERSION=8u172|JAVA_VERSION=8u181|' oracle-java8-installer.* &&
-    sed -i 's|PARTNER_URL=http://download.oracle.com/otn-pub/java/jdk/8u172-b11/a58eab1ec242421181065cdc37240b08/|PARTNER_URL=http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/|' oracle-java8-installer.* &&
-    sed -i 's|SHA256SUM_TGZ="28a00b9400b6913563553e09e8024c286b506d8523334c93ddec6c9ec7e9d346"|SHA256SUM_TGZ="1845567095bfbfebd42ed0d09397939796d05456290fb20a83c476ba09f991d3"|' oracle-java8-installer.* &&
-    sed -i 's|J_DIR=jdk1.8.0_172|J_DIR=jdk1.8.0_181|' oracle-java8-installer.*
+    sed -i 's|JAVA_VERSION=8u181|JAVA_VERSION=8u191|' oracle-java8-installer.* &&
+    sed -i 's|PARTNER_URL=http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/|PARTNER_URL=https://download.oracle.com/otn-pub/java/jdk/8u191-b12/2787e4a523244c269598db4e85c51e0c/|' oracle-java8-installer.* &&
+    sed -i 's|SHA256SUM_TGZ="1845567095bfbfebd42ed0d09397939796d05456290fb20a83c476ba09f991d3"|SHA256SUM_TGZ="53c29507e2405a7ffdbba627e6d64856089b094867479edc5ede4105c1da0d65"|' oracle-java8-installer.* &&
+    sed -i 's|J_DIR=jdk1.8.0_181|J_DIR=jdk1.8.0_191|' oracle-java8-installer.*
+  when: ansible_os_family == "Debian" and use_oraclejava8 is defined
   tags:
     - java
 
@@ -73,5 +66,6 @@
     - oracle-java8-installer
     - ca-certificates
     - oracle-java8-set-default
+  when: ansible_os_family == "Debian" and use_oraclejava8 is defined
   tags:
     - java

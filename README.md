@@ -4,7 +4,7 @@ This project includes a playbook for setting up the [ALA demo ](http://ala-demo.
 
 ## Ansible version
 
-### The current supported version is: **2.5.4**
+### The current supported version is: **2.7.0**
 
 The playbooks and roles in this repository have been developed and tested against the above version.
 
@@ -155,7 +155,7 @@ In each case you will need to create an inventory file that points to your VM(s)
 
 For IM&T virtual machines:
 ```
-$ ansible-playbook -i inventories/demo ala-demo.yml --user <CSIRO_IDENT> --become --ask-pass --ask-sudo-pass
+$ ansible-playbook -i inventories/demo ala-demo.yml --user <CSIRO_IDENT> --become --ask-pass --ask-become-pass
 ```
 
 For Nectar VMs:
@@ -164,7 +164,7 @@ $ ansible-playbook -i inventories/sandbox-nectar sandbox.yml --private-key <PATH
 ```
 If you do not have private key of root, you can use your own id as follows: Make sure you have sudo permission
 ```
-ansible-playbook -i ~/src/ansible-inventories/sandbox-nectar sandbox.yml --private-key <private key path> --user <id> -s --ask-sudo-pass
+ansible-playbook -i ~/src/ansible-inventories/sandbox-nectar sandbox.yml --private-key <private key path> --user <id> --become --ask-become-pass
 ```
 Note Nectar VMs will require an edit of the /etc/hosts file on the VM so that it recognises its own host name.
 

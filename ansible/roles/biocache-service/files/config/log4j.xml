@@ -13,7 +13,7 @@
     <appender name="FILE" class="org.apache.log4j.RollingFileAppender">
         <param name="File" value="${catalina.base}/logs/biocache-service.log"/>
         <param name="Append" value="true"/>
-        <param name="Threshold" value="DEBUG"/>
+        <param name="Threshold" value="INFO"/>
         <param name="MaxFileSize" value="200MB"/>
         <layout class="org.apache.log4j.PatternLayout">
             <!--<param name="ConversionPattern" value="%d [%c{5}] %m%n"/>-->
@@ -37,10 +37,10 @@
         <appender-ref ref="ALA_LOGGER" />
     </appender>
     <category name="org.ala.biocache">
-        <priority value="DEBUG"/>
+        <priority value="INFO"/>
     </category>
     <category name="au.org.ala.biocache">
-        <priority value="DEBUG"/>
+        <priority value="INFO"/>
     </category>
     <category name="au.org.ala">
         <priority value="INFO"/>
