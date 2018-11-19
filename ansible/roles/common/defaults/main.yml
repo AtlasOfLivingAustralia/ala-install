@@ -1,1 +1,3 @@
 packaging: "war"
+tomcat_package: "tomcat7"
+tomcat_user: "tomcat7"

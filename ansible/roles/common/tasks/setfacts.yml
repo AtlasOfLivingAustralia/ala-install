@@ -9,20 +9,20 @@
 
 - name: set debian variables
   set_fact:
-    libtcnative: libtcnative-1
-    tomcat: tomcat7
-    tomcat_user: tomcat7
-    tomcat_conf: /etc/default/tomcat7
-    tomcat_conf_dir: /etc/tomcat7
-    tomcat_log_dir: /var/log/tomcat7
-    apache: apache2
-    nginx: nginx
-    postfix: postfix
-    mysql_service: mysql
-    cassandra_yaml: /etc/cassandra/cassandra.yaml
-    cassandra_user: cassandra
-    tomcat_dir: /var/lib/tomcat7
-    tomcat_webapps: /var/lib/tomcat7/webapps/
+    libtcnative: "libtcnative-1"
+    tomcat: "{{ tomcat_package }}"
+    tomcat_user: "{{ tomcat_user }}"
+    tomcat_conf: "/etc/default/{{ tomcat_package }}"
+    tomcat_conf_dir: "/etc/{{ tomcat_package }}"
+    tomcat_log_dir: "/var/log/{{ tomcat_package }}"
+    apache: "apache2"
+    nginx: "nginx"
+    postfix: "postfix"
+    mysql_service: "mysql"
+    cassandra_yaml: "/etc/cassandra/cassandra.yaml"
+    cassandra_user: "cassandra"
+    tomcat_dir: "/var/lib/{{ tomcat_package }}"
+    tomcat_webapps: "/var/lib/{{ tomcat_package }}/webapps/"
   when: ansible_os_family == "Debian"
   tags:
     - setfacts
