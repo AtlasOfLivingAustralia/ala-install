@@ -1,0 +1,14 @@
+- name: reload apache
+  service:
+     name: apache2
+     state: restarted
+
+- name: reload tomcat
+  service:
+     name: tomcat7
+     state: restarted
+
+- name: reload shibd
+  service:
+     name: shibd
+     state: restarted

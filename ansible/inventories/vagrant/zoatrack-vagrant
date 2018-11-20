@@ -1,13 +1,22 @@
 # The Atlas installation on CSIRO IM&T servers of Zookeeper
 [all:vars]
     webserver_nginx=false
+#    ssl=true
+#    ssl_certificate_server_dir=/etc/sslmate
+#    ssl_cert_file=*.ala.org.au.chained.crt
+#    ssl_key_file=*.ala.org.au.key
+#    ssl_chain_file=*.ala.org.au.chain.crt
+#    force_https=true
+
     data_dir=/data
+    hostname=vagrant2.ala.org.au
+    tomcat_conf=/etc/default/tomcat7
+    oztrack_home=/data/oztrack/
+    oztrack_custom_property_file=oztrack.custom.properties
+
 
 
 [zoatrack]
-    vagrant2
-
-[geoserver]
     vagrant2
 
 
@@ -15,26 +24,21 @@
 
     tomcat_java_opts = -Xmx1g -Xms1g -Xss512k -Djava.awt.headless=true
 
-    pg_service=postgresql-9.1
-    pg_version=9.1
-    pg_gis_version=2.2
-    linux_version=xenial
+    pg_service=postgresql-9.6
+    pg_version=9.6
+    pg_gis_version=2.4
+    #linux_version=xenial
+    linux_version=trusty
+
 
     pg_user=oztrack
     pg_password=changeme
     pg_database=oztrack
 
+    geoserver_version=2.14.0
+
+    oztrack_tomcat_java_opts=-Xmx1g -Xms1g -Xss512k -Djava.awt.headless=true -Dorg.oztrack.conf.customConfigFile=/data/oztrack/oztrack.custom.properties
 
 
- [geoserver:vars]
-     geoserver_hostname= vagrant2.ala.org.au
-     geoserver_url=http://vagrant2.ala.org.au/geoserver
-     geoserver_base_url=http://vagrant2.ala.org.au
-     geoserver_context_path=/geoserver
-     geoserver_app=geoserver
-
-     geoserver_username=admin
-     #geoserver_password=geoserver #default
-     geoserver_password=password
 
 

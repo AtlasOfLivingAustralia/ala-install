@@ -1,3 +1,87 @@
+# Install python 3.6 on Trusty
+# Trusty only has 2.7
+# psycopg2 of pg dependent on python >3.6
+#- name: Add for python3.6 for Trusty repository
+#  become: yes
+#  apt_repository: repo="ppa:jonathonf/python-3.6"
+#  codename: "{{ linux_version }}"
+#  tags: python
+#
+#- name: update apt
+#  become: yes
+#  command: apt-get update
+#  tags: python
+
+#- name: python
+#  become: yes
+#  apt: pkg={{ item }} state=latest
+#  with_items:
+#    - python3.6
+#  tags: python
+#
+#- name: set python3.6 as default
+#  become: yes
+#  command: "ln -sfn /usr/bin/python3.6 /usr/bin/python"
+#  tags: python
+#
+#- name:  pip
+#  become: yes
+#  apt: pkg=python3-pip
+#
+#- name: set python3.6 as default
+#  become: yes
+#  command: "ln -sfn /usr/bin/pip3 /usr/bin/pip"
+#  tags: python
+
+
+- name: 3rd libs
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - python-dev # required by psycopg2
+    - netcdf-bin
+    - unzip
+  tags:
+    - R packages
+  register: r_installed
+
+- name: cp apt-get oztrack list
+  become: true
+  template:  src="oztrack.list" dest="/etc/apt/sources.list.d/oztrack.list"
+  tags: R
+
+
+#- name: Making sure R is installed (debian/ubuntu apt)
+#  become: yes
+#  command: add-apt-repository "deb https://cran.csiro.au/bin/linux/ubuntu $(lsb_release -s -c)/"
+#  tags: r
+
+
+ #this key will install 3.2
+- name: Get key from ubuntu
+  command: apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+  tags: R
+
+
+#- name: Get key from ubuntu
+#  command: apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+#  tags: R
+
+
+#- name: Update apt
+#  command: apt-get upgrade
+#  tags: R
+
+- name: update apt
+  become: yes
+  command: apt-get update
+  tags: R
+
+- name: update apt key
+  become: yes
+  command: apt-key update
+  tags: R
+
+
 - name: 3rd libs
   apt: pkg={{ item }} state=latest
   with_items:
@@ -5,17 +89,35 @@
     - libproj-dev
     - libxml2-dev
     - libnetcdf-dev
-    - netcdf-bin
+    - libpq-dev #see if it help install psycopg2
 
-  tags:
-    - R packages
-  register: r_installed
-
-- name: Making sure R is installed (debian/ubuntu apt)
+- name: Install R
+  become: yes
   apt: pkg={{ item }} state=installed
   with_items:
     - r-base-core
     - r-base-dev
+  #   - r-base
+  tags: R
+
+- name: Adding devtool for installing a given version of packages packages
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{item}}' %in% installed.packages()[,'Package'])) install.packages('{{item}}', repos=c('https://cran.csiro.au/'))"
+  with_items:
+    - devtools
+
+
+#using devtolls to install specified version of packages
+#Rscript --slave --no-save --no-restore-history -e "devtools::install_version('rgdal', version='1.0-4')"
+
+#- name: Install specified version of rgdal
+#  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "devtools::install_version('rgdal', version='1.3-6' repos=c('https://cran.csiro.au/'))"
+#  with_items:
+#    - devtools
+
+
+#missing packages
+#alphahull
+#Grid2Polygons 0.2.1
 
 - name: Adding R packages
   command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{item}}' %in% installed.packages()[,'Package'])) install.packages('{{item}}', repos=c('https://cran.csiro.au/'))"
@@ -27,7 +129,7 @@
     - adehabitatMA
     - maptools
     - shapefiles
-    - rgdal
+    - rgdal  #depedent on R 3.3
     - alphahull
     - raster
     - plyr
@@ -39,6 +141,7 @@
     - plotKML
     - nc
     - ncdf
+  tags: r_packages
 
 - name: Download kftrack & ukfsst
   get_url:
@@ -59,9 +162,11 @@
   apt_key: url=http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc state=present
   tags: postgresql
 
+#Already added into oztrack.list
+
 - name: Add postgres repository
   sudo: yes
-  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main' state=present
+  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ linux_version }}-pgdg main' state=present
   tags: postgresql
 
 #- apt_repository:
@@ -85,14 +190,16 @@
   tags: postgresql
 
 
-#- name: Install PostgreSQL adapter for the Python programming language
+# - name: Install PostgreSQL adapter for the Python programming language
+# psycopg2 rely on python3.6
+#  or install python-dev package
 - pip:
     name: psycopg2
     state: forcereinstall
   tags: postgresql
 
 - name: Set Postgre auth
-  lineinfile: dest="/etc/postgresql/9.1/main/pg_hba.conf" backrefs="yes" regexp="local   all             all                                     peer" line="local   all             all                                     md5"
+  lineinfile: dest="/etc/postgresql/{{ pg_version }}/main/pg_hba.conf" backrefs="yes" regexp="local   all             all                                     peer" line="local   all             all                                     md5"
   tags: setup_pg
 
 #- name: Restart postgresql server
@@ -115,19 +222,25 @@
 #  template:  src="init_db.sql" dest="/tmp/zoatrack_init_db.sql"
 #  tags: init_db
 
-- name: import postgis functions
+- name: create postgis extensions
   become: yes
   become_user: postgres
   command: "psql {{ item }}"
   with_items:
-    - -d {{ pg_database }} -f /usr/share/postgresql/{{ pg_version }}/contrib/postgis-{{ pg_gis_version }}/postgis.sql
-    - -d {{ pg_database }} -f /usr/share/postgresql/{{ pg_version }}/contrib/postgis-{{ pg_gis_version }}/spatial_ref_sys.sql
-  register: psql_log
-  tags: init_db,init_gis
+    - -d {{ pg_database }} -c 'create extension postgis'
+    - -d {{ pg_database }} -c 'create extension postgis_topology'
+    - -d {{ pg_database }} -c 'create extension "uuid-ossp"'
+  tags: init_db , init_gis
 
+- name: alter owner postgis extensions
+  become: yes
+  become_user: postgres
+  command: "psql {{ item }}"
+  with_items:
+    - -d {{ pg_database }} -c 'alter table spatial_ref_sys owner to {{ pg_user }};'
+    - -d {{ pg_database }} -c 'alter view geography_columns owner to {{ pg_user }};'
+  tags: init_db , init_gis
 
-- debug: msg="{{ psql_log }}"
-  tags: init_gis
 
 #- name: Init zoatrack db
 #  become: yes
@@ -141,19 +254,203 @@
 #sudo -u postgres psql -d oztrack -c "alter view geography_columns owner to oztrack;"
 #sudo -u postgres psql -d oztrack -c 'create extension "uuid-ossp";'
 
-- name: alter oztrack db
+#- name: alter oztrack db
+#  become: yes
+#  become_user: postgres
+#  command: "psql {{ item }}"
+#  with_items:
+#    - -d {{ pg_database }} -c "alter table geometry_columns owner to {{ pg_database }} ;"
+#    - -d {{ pg_database }} -f "alter table spatial_ref_sys owner to {{ pg_database }} ;"
+#    - -d {{ pg_database }} -f "alter view geography_columns owner to {{ pg_database }} ;"
+#    - -d {{ pg_database }} -f "create extension "uuid-ossp";"
+#
+#  register: psql_log
+#  tags: init_db, alter_db
+
+##############################################
+
+#- name: install openjdk 8 java
+#  apt: pkg=openjdk-8-jdk state=latest update_cache=yes
+#  tags:
+#    - java
+#
+#- name: install ca-certificates
+#  apt: pkg=ca-certificates state=latest update_cache=yes
+#  tags:
+#    - java
+
+##############################################
+- name: install Tomcat 7
+  apt: pkg=tomcat7 state=latest
+  tags:
+    - tomcat7
+
+
+
+- name: cp server.xml
   become: yes
-  become_user: postgres
-  command: "psql {{ item }}"
+  template:  src="server.xml" dest="/etc/tomcat7/server.xml"
+  notify:
+    - reload tomcat
+  tags: tomcat7
+
+##############################################
+
+- name: Download geoserver
+  become: yes
+  get_url:
+    url: http://downloads.sourceforge.net/geoserver/geoserver-{{ geoserver_version }}-war.zip
+    dest: /tmp
+  tags: geoserver
+
+#- name: Extract geoserver to webapps
+#  become: yes
+#  become_user: tomcat7
+#  unarchive:
+#    src: /tmp/geoserver-2.3.1-war.zip
+#    dest: /var/lib/tomcat7/webapps/
+#    remote_src: yes
+#  tags: geoserver1
+
+- name: Extract geoserver
+  become: yes
+  unarchive:
+    src: /tmp/geoserver-{{ geoserver_version }}-war.zip
+    dest: /tmp
+    remote_src: yes
+  tags: geoserver
+
+- name: copy geoserver to webapps
+  become: yes
+  copy:
+    src: /tmp/geoserver.war
+    dest: /var/lib/tomcat7/webapps
+    remote_src: yes
+    owner: tomcat7
+    group: tomcat7
+  tags: geoserver
+
+
+
+#########################################
+- name: install apache
+  apt: pkg={{ item }} state=latest
   with_items:
-    - -d {{ pg_database }} -c "alter table geometry_columns owner to {{ pg_database }} ;"
-    - -d {{ pg_database }} -f "alter table spatial_ref_sys owner to {{ pg_database }} ;"
-    - -d {{ pg_database }} -f "alter view geography_columns owner to {{ pg_database }} ;"
-    - -d {{ pg_database }} -f "create extension "uuid-ossp";"
+    - apache2
+    - libapache2-mod-shib2
 
-  register: psql_log
-  tags: init_db, alter_db
+  tags: apache
 
--
+#openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout mysitename.key -out mysitename.crt
+- name: Creates SSL cert directory
+  file: path=/etc/apache2/ssl/ state=directory
+  tags: apache
+
+
+- name: create self-cert
+  become: yes
+  command: "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/oztrack.key -out /etc/apache2/ssl/oztrack.crt -subj '/C=AU/ST=ACT/L=Canberra/O=CSIRO/OU=ALA/CN=ala.org.au'"
+  tags: apache
+
+- name: Enable mods
+  command: a2enmod {{ item }}
+  with_items:
+    - proxy_http
+    - ssl
+    - shib2
+    - rewrite
+  tags: apache
+
+
+#######################################
+
+
+- name: Download shibboleth certificate
+  become: yes
+  get_url:
+    url: https://ds.aaf.edu.au/distribution/metadata/aaf-metadata-cert.pem
+    dest: /etc/shibboleth
+  tags: apache,shibboleth
+#
+#- name: keygen shibboleth
+#  become: yes
+#  command: '/etc/shibboleth/keygen.sh -f -o /etc/shibboleth -h {{ hostname }} -e https://{{ hostname }}/shibboleth'
+#  tags: shibboleth
+
+- name: update shibbloeth config
+  become: yes
+  template:  src="{{ item }}" dest="/etc/shibboleth/"
+  with_items:
+    - shibboleth2.xml
+    - attribute-map.xml
+  tags: apache,shibboleth
+
+###############################################
+- name: update oztrack site
+  become: yes
+  template:  src="oztrack.conf" dest="/etc/apache2/sites-available/oztrack.conf"
+  notify:
+    - reload apache
+  tags: apache
+
+- name: Enable oztrack
+  command: a2ensite oztrack
+  notify:
+    - reload apache
+    - reload tomcat
+    - reload shibd
+  tags: apache
+
+###############################################
+#https://nexus.ala.org.au/service/local/repositories/snapshots/content/org/oztrack/oztrack/4.9-SNAPSHOT/oztrack-4.9-20160913.074922-4.war
+- name: Clear ROOT on Tomcat
+  become: yes
+  command:
+  with_items:
+    - "service tomcat7 stop"
+    - "rm /var/lib/tomcat7/webapps/ROOT.war"
+    - "rm -r /var/lib/tomcat7/webapps/ROOT"
+  tags: oztrack
+
+
+- name: Download Oztrack
+  become: yes
+  become_user: tomcat7
+  get_url:
+    url: 'https://nexus.ala.org.au/service/local/repositories/snapshots/content/org/oztrack/oztrack/4.9-SNAPSHOT/oztrack-4.9-20160913.074922-4.war'
+    dest: /var/lib/tomcat7/webapps/ROOT.war
+  tags: oztrack
+
+- name: create home folder for Oztrack
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: tomcat7
+    group: tomcat7
+    mode: 0775
+  with_items:
+    - "{{ oztrack_home }}"
+  tags: oztrack
+
+- name: cp oztrack config
+  become: yes
+  template:  src="{{ oztrack_custom_property_file }}" dest="{{ oztrack_home }}{{ oztrack_custom_property_file }}"
+  notify:
+    - reload apache
+  tags: oztrack
+
+- name: Override default tomcat memory configuration
+  lineinfile:
+    dest={{ tomcat_conf }}
+    regexp="^JAVA_OPTS"
+    line='JAVA_OPTS="{{ oztrack_tomcat_java_opts }}"'
+  notify:
+    - reload tomcat
+  tags: oztrack
+
+
+
+
+
 
 
