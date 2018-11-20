@@ -45,7 +45,7 @@
     - cassandra 
 
 - name: install packages 2 (Debian)
-  apt: name=python-software-properties  state=present
+  apt: name="{{ python_software_properties }}"  state=present
   when: ansible_os_family == "Debian"
   tags:
     - packages 

@@ -11,7 +11,7 @@
 # Note: Ansible 1.6.x yum does not work with "with_items"
 # This is more verbose, but version safe
 - name: install datastax (Redhat)
-  yum: name={{datastax}} state=present
+  yum: name="{{datastax}}" state=latest
   tags:
     - packages 
     - cassandra 
@@ -20,7 +20,7 @@
   when: ansible_os_family == "RedHat" 
 
 - name: install cassandra (Redhat)
-  yum: name={{cassandra}} state=present
+  yum: name="{{cassandra}}" state=present
   tags:
     - packages 
     - cassandra 
@@ -30,22 +30,22 @@
 
 ########## DEBIAN ########## 
 
-- name: install packages (Debian)
-  apt: name=wget  state=present
+- name: install wget (Debian)
+  apt: name=wget state=latest
   when: ansible_os_family == "Debian" 
   tags:
     - packages 
     - cassandra 
 
-- name: install packages (Debian)
-  apt: name=software-properties-common  state=present
+- name: install software-properties-common (Debian)
+  apt: name=software-properties-common state=latest
   when: ansible_os_family == "Debian" 
   tags:
     - packages 
     - cassandra 
 
-- name: install packages 2 (Debian)
-  apt: name=python-software-properties  state=present
+- name: install python software properties (Debian)
+  apt: name="{{ python_software_properties }}" state=latest
   when: ansible_os_family == "Debian"
   tags:
     - packages 
@@ -66,7 +66,7 @@
     - cassandra
 
 - name: install Cassandra (Debian)
-  apt: name=cassandra state=present update_cache=yes force=yes
+  apt: name=cassandra state=latest update_cache=yes force=yes
   tags:
     - packages 
     - cassandra 
@@ -75,7 +75,7 @@
   when: ansible_os_family == "Debian" 
 
 - name: install Cassandra tools (Debian)
-  apt: name=cassandra-tools state=present update_cache=yes force=yes
+  apt: name=cassandra-tools state=latest update_cache=yes force=yes
   tags:
     - packages 
     - cassandra 
@@ -84,12 +84,12 @@
   when: ansible_os_family == "Debian" 
 
 - name: create data directory for cassandra on mounted storage
-  file: path={{ data_dir }}/cassandra3 state=directory owner={{cassandra_user}} group={{cassandra_user}}
+  file: path="{{ data_dir }}/cassandra3" state=directory owner="{{cassandra_user}}" group="{{cassandra_user}}"
   tags:   
     - cassandra
 
 - name: create the cassandra yaml from template
-  template: src={{item.src}} dest={{item.dest}} owner={{cassandra_user}} group={{cassandra_user}} force=yes
+  template: src="{{item.src}}" dest="{{item.dest}}" owner="{{cassandra_user}}" group="{{cassandra_user}}" force=yes
   with_items:
     - { src: cassandra-env.sh, dest: /etc/cassandra/cassandra-env.sh }
     - { src: cassandra.yaml, dest: /etc/cassandra/cassandra.yaml}

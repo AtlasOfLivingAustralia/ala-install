@@ -1,15 +1,15 @@
 - name: install software-properties-common (Debian)
-  apt: pkg=software-properties-common  state=present update_cache=yes
+  apt: pkg=software-properties-common  state=latest update_cache=yes
   when: ansible_os_family == "Debian"
   tags: postgresql
 
 - name: install python-pycurl (Debian)
-  apt: pkg=python-pycurl state=present
+  apt: pkg=python-pycurl state=latest
   when: ansible_os_family == "Debian"
   tags: postgresql
 
 - name: install python-software-properties (Debian)
-  apt: pkg=python-software-properties  state=present
+  apt: pkg="{{ python_software_properties }}" state=latest
   when: ansible_os_family == "Debian"
   tags: postgresql
 
