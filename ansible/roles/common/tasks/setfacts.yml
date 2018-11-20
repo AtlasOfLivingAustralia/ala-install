@@ -7,23 +7,74 @@
   tags:
     - version_check
 
-- name: set debian variables
+- name: set ubuntu-14.04 variables
   set_fact:
-    libtcnative: libtcnative-1
-    tomcat: tomcat7
-    tomcat_user: tomcat7
-    tomcat_conf: /etc/default/tomcat7
-    tomcat_conf_dir: /etc/tomcat7
-    tomcat_log_dir: /var/log/tomcat7
-    apache: apache2
-    nginx: nginx
-    postfix: postfix
-    mysql_service: mysql
-    cassandra_yaml: /etc/cassandra/cassandra.yaml
-    cassandra_user: cassandra
-    tomcat_dir: /var/lib/tomcat7
-    tomcat_webapps: /var/lib/tomcat7/webapps/
-  when: ansible_os_family == "Debian"
+    libtcnative: "libtcnative-1"
+    tomcat_package: "tomcat7"
+    tomcat_user: "tomcat7"
+    tomcat: "tomcat7"
+    tomcat_conf: "/etc/default/tomcat7"
+    tomcat_conf_dir: "/etc/tomcat7"
+    tomcat_log_dir: "/var/log/tomcat7"
+    apache: "apache2"
+    nginx: "nginx"
+    postfix: "postfix"
+    mysql_service: "mysql"
+    cassandra_yaml: "/etc/cassandra/cassandra.yaml"
+    cassandra_user: "cassandra"
+    tomcat_dir: "/var/lib/tomcat7"
+    tomcat_webapps: "/var/lib/tomat7/webapps/"
+# openjdk-8 is not available on Ubuntu-14.04, so force the use of oracle java-8 on these
+# Very similar EOL date for Oracle Java-8 and Ubuntu-14.04, about April 2019
+    use_oraclejava8: true
+    use_openjdk8: false
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "14.04"
+  tags:
+    - setfacts
+
+- name: set ubuntu-16.04 variables
+  set_fact:
+    libtcnative: "libtcnative-1"
+    tomcat_package: "tomcat7"
+    tomcat_user: "tomcat7"
+    tomcat: "tomcat7"
+    tomcat_conf: "/etc/default/tomcat7"
+    tomcat_conf_dir: "/etc/tomcat7"
+    tomcat_log_dir: "/var/log/tomcat7"
+    apache: "apache2"
+    nginx: "nginx"
+    postfix: "postfix"
+    mysql_service: "mysql"
+    cassandra_yaml: "/etc/cassandra/cassandra.yaml"
+    cassandra_user: "cassandra"
+    tomcat_dir: "/var/lib/tomcat7"
+    tomcat_webapps: "/var/lib/tomcat7/webapps/"
+    use_oraclejava8: false
+    use_openjdk8: true
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04"
+  tags:
+    - setfacts
+
+- name: set ubuntu-18.04 variables
+  set_fact:
+    libtcnative: "libtcnative-1"
+    tomcat_package: "tomcat8"
+    tomcat_user: "tomcat8"
+    tomcat: "tomcat8"
+    tomcat_conf: "/etc/default/tomcat8"
+    tomcat_conf_dir: "/etc/tomcat8"
+    tomcat_log_dir: "/var/log/tomcat8"
+    apache: "apache2"
+    nginx: "nginx"
+    postfix: "postfix"
+    mysql_service: "mysql"
+    cassandra_yaml: "/etc/cassandra/cassandra.yaml"
+    cassandra_user: "cassandra"
+    tomcat_dir: "/var/lib/tomcat8"
+    tomcat_webapps: "/var/lib/tomcat8/webapps/"
+    use_oraclejava8: false
+    use_openjdk8: true
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "18.04"
   tags:
     - setfacts
 
@@ -41,6 +92,8 @@
     cassandra_user: cassandra
     tomcat_dir: /var/lib/tomcat6
     tomcat_webapps: /var/lib/tomcat6/webapps/
+    use_oraclejava8: true
+    use_openjdk8: false
   when: ansible_os_family == "RedHat"
   tags:
     - setfacts
@@ -63,7 +116,7 @@
 - name: set java defaults for openjdk8
   set_fact:
     java_home: /usr/lib/jvm/java-8-openjdk-amd64
-  when: use_openjdk7 is not defined and use_oraclejava8 is not defined
+  when: use_openjdk8 is defined and use_openjdk8
   tags:
     - setfacts
 
