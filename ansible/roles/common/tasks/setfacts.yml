@@ -22,6 +22,7 @@
     mysql_service: "mysql"
     cassandra_yaml: "/etc/cassandra/cassandra.yaml"
     cassandra_user: "cassandra"
+    python_software_properties: "python-software-properties"
     tomcat_dir: "/var/lib/tomcat7"
     tomcat_webapps: "/var/lib/tomat7/webapps/"
 # openjdk-8 is not available on Ubuntu-14.04, so force the use of oracle java-8 on these
@@ -47,6 +48,7 @@
     mysql_service: "mysql"
     cassandra_yaml: "/etc/cassandra/cassandra.yaml"
     cassandra_user: "cassandra"
+    python_software_properties: "python-software-properties"
     tomcat_dir: "/var/lib/tomcat7"
     tomcat_webapps: "/var/lib/tomcat7/webapps/"
     use_oraclejava8: false
@@ -70,6 +72,7 @@
     mysql_service: "mysql"
     cassandra_yaml: "/etc/cassandra/cassandra.yaml"
     cassandra_user: "cassandra"
+    python_software_properties: "python3-software-properties"
     tomcat_dir: "/var/lib/tomcat8"
     tomcat_webapps: "/var/lib/tomcat8/webapps/"
     use_oraclejava8: false
