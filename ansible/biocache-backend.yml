@@ -2,7 +2,7 @@
   roles:
     - common
     - java
-    - cassandra
+    - cassandra3
     - nameindex
     - biocache-db
     - biocache-properties
