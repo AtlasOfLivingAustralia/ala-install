@@ -7,7 +7,7 @@
   roles:
     - common
     - java
-    - zoatrack
-    # - tomcat
+    - tomcat
     #- geoserver
     # - apache
+    - zoatrack

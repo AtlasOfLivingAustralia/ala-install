@@ -7,8 +7,8 @@
     oztrack_home=/data/oztrack/
     oztrack_custom_property_file=oztrack.custom.properties
 
-    java_home=/usr/lib/jvm/java-8-oracle
-    tomcat_conf=/etc/init.d/tomcat7
+    #java_home=/usr/lib/jvm/java-8-oracle
+    #tomcat_conf=/etc/init.d/tomcat7
 
 [zoatrack]
     vagrant2
@@ -18,8 +18,8 @@
     pg_service=postgresql-9.6
     pg_version=9.6
     pg_gis_version=2.4
-    #linux_version=xenial
-    linux_version=trusty
+    linux_version=xenial
+    #linux_version=trusty
 
 
     pg_user=oztrack

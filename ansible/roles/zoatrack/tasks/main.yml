@@ -15,18 +15,9 @@
   template:  src="oztrack.list" dest="/etc/apt/sources.list.d/oztrack.list"
   tags: R
 
-
-#- name: Making sure R is installed (debian/ubuntu apt)
-#  become: yes
-#  command: add-apt-repository "deb https://cran.csiro.au/bin/linux/ubuntu $(lsb_release -s -c)/"
-#  tags: r
-
-
- #this key will install 3.2
 - name: Get key from ubuntu
   command: apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
   tags: R
-
 
 - name: update apt
   become: yes
@@ -38,7 +29,6 @@
   command: apt-key update
   tags: R
 
-
 - name: 3rd libs
   apt: pkg={{ item }} state=latest
   with_items:
@@ -49,7 +39,7 @@
     - libpq-dev #see if it help install psycopg2
 
 
-#Install the latest one: 3.4.4
+#Install the latest R: 3.4.4
 - name: Install R
   become: yes
   apt: pkg={{ item }} state=installed
@@ -105,7 +95,7 @@
 #wget https://cran.r-project.org/src/contrib/Archive/Grid2Polygons/Grid2Polygons_0.2.1.tar.gz
 #R CMD INSTALL Grid2Polygons_0.2.1.tar.gz
 
-- name: Download kftrack & ukfsst
+- name: Download kftrack & ukfsst & Grid2Polygons
   get_url:
     url: '{{ item }}'
     dest: /tmp
@@ -115,7 +105,7 @@
     - https://github.com/positioning/kalmanfilter/raw/master/downloads/R3x/64bit/linux/ukfsst_0.3-x64.tar.gz
   tags: r_mannual
 
-- name: Install kftrack & ukfsst
+- name: Install kftrack & ukfsst & Grid2Polygons
   sudo: yes
   command: "R CMD INSTALL {{ item }}"
   with_items:
@@ -135,9 +125,6 @@
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ linux_version }}-pgdg main' state=present
   tags: postgresql
 
-#- apt_repository:
-#    repo: ppa:ubuntugis/ubuntugis-unstable
-#    state: present
 
 - name: Update and upgrade apt packages
   become: true
@@ -157,7 +144,7 @@
 
 
 # - name: Install PostgreSQL adapter for the Python programming language
-# psycopg2 rely on python3.6
+#  psycopg2 rely on python3.6
 #  or install python-dev package
 - pip:
     name: psycopg2
@@ -168,9 +155,6 @@
   lineinfile: dest="/etc/postgresql/{{ pg_version }}/main/pg_hba.conf" backrefs="yes" regexp="local   all             all                                     peer" line="local   all             all                                     md5"
   tags: setup_pg
 
-#- name: Restart postgresql server
-#  service: name="postgresql" state="started" enabled="yes"
-#  tags: setup_pg
 
 - name: Create zoatrack PG password
   postgresql_user: name="{{ pg_user }}" password="{{ pg_password }}" role_attr_flags="CREATEDB,SUPERUSER"
@@ -183,10 +167,6 @@
   become: yes
   become_user: postgres
   tags: init_db
-
-#- name: Generate init sql script from template
-#  template:  src="init_db.sql" dest="/tmp/zoatrack_init_db.sql"
-#  tags: init_db
 
 - name: create postgis extensions
   become: yes
@@ -209,67 +189,18 @@
   tags: init_db , init_gis
 
 
-#- name: Init zoatrack db
-#  become: yes
-#  become_user: postgres
-#  shell: "psql -f /tmp/zoatrack_init_db.sql"
-#  tags: init_db,init_gis
+#########################################
 
 
-#sudo -u postgres psql -d oztrack -c "alter table geometry_columns owner to oztrack;"
-#sudo -u postgres psql -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
-#sudo -u postgres psql -d oztrack -c "alter view geography_columns owner to oztrack;"
-#sudo -u postgres psql -d oztrack -c 'create extension "uuid-ossp";'
-
-#- name: alter oztrack db
-#  become: yes
-#  become_user: postgres
-#  command: "psql {{ item }}"
-#  with_items:
-#    - -d {{ pg_database }} -c "alter table geometry_columns owner to {{ pg_database }} ;"
-#    - -d {{ pg_database }} -f "alter table spatial_ref_sys owner to {{ pg_database }} ;"
-#    - -d {{ pg_database }} -f "alter view geography_columns owner to {{ pg_database }} ;"
-#    - -d {{ pg_database }} -f "create extension "uuid-ossp";"
-#
-#  register: psql_log
-#  tags: init_db, alter_db
-
-##############################################
-
-#- name: install openjdk 8 java
-#  apt: pkg=openjdk-8-jdk state=latest update_cache=yes
+#- name: Set JAVA_HOME for tomcat7
+#  lineinfile: "
+#    dest='{{ tomcat_conf }}'
+#    regexp=^JAVA_HOME
+#    line='JAVA_HOME={{ java_home }}'"
+#  notify:
+#    - reload tomcat
 #  tags:
-#    - java
-
-#- name: Remove Oracle Java 8 (using OpenJDK8 instead)
-#  become: yes
-#  apt: pkg=oracle-java8-installer state=absent purge=yes
-#  when: ansible_os_family == "Debian" and use_openjdk8 is defined and use_openjdk8
-#  tags:
-#    - java
-
-#
-#- name: install ca-certificates
-#  apt: pkg=ca-certificates state=latest update_cache=yes
-#  tags:
-#    - java
-
-##############################################
-- name: install Tomcat 7
-  apt: pkg=tomcat7 state=latest
-  tags:
-    - tomcat7
-
-
-- name: Set JAVA_HOME for tomcat7
-  lineinfile: "
-    dest='{{ tomcat_conf }}'
-    regexp=^JAVA_HOME
-    line='JAVA_HOME={{ java_home }}'"
-  notify:
-    - reload tomcat
-  tags:
-    - tomcat7
+#    - tomcat7
 
 
 - name: cp server.xml
@@ -287,15 +218,6 @@
     url: http://downloads.sourceforge.net/geoserver/geoserver-{{ geoserver_version }}-war.zip
     dest: /tmp
   tags: geoserver
-
-#- name: Extract geoserver to webapps
-#  become: yes
-#  become_user: tomcat7
-#  unarchive:
-#    src: /tmp/geoserver-2.3.1-war.zip
-#    dest: /var/lib/tomcat7/webapps/
-#    remote_src: yes
-#  tags: geoserver1
 
 - name: Extract geoserver
   become: yes
@@ -356,11 +278,11 @@
     url: https://ds.aaf.edu.au/distribution/metadata/aaf-metadata-cert.pem
     dest: /etc/shibboleth
   tags: apache,shibboleth
-#
-#- name: keygen shibboleth
-#  become: yes
-#  command: '/etc/shibboleth/keygen.sh -f -o /etc/shibboleth -h {{ hostname }} -e https://{{ hostname }}/shibboleth'
-#  tags: shibboleth
+
+- name: keygen shibboleth
+  become: yes
+  command: 'shib-keygen -f -o /etc/shibboleth -h {{ hostname }} -e https://{{ hostname }}/shibboleth'
+  tags: shibboleth
 
 - name: update shibbloeth config
   become: yes
