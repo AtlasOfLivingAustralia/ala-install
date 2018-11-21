@@ -36,7 +36,7 @@
     - libproj-dev
     - libxml2-dev
     - libnetcdf-dev
-    - libpq-dev #see if it help install psycopg2
+    - libpq-dev #it helps install psycopg2
 
 
 #Install the latest R: 3.4.4
@@ -191,18 +191,6 @@
 
 #########################################
 
-
-#- name: Set JAVA_HOME for tomcat7
-#  lineinfile: "
-#    dest='{{ tomcat_conf }}'
-#    regexp=^JAVA_HOME
-#    line='JAVA_HOME={{ java_home }}'"
-#  notify:
-#    - reload tomcat
-#  tags:
-#    - tomcat7
-
-
 - name: cp server.xml
   become: yes
   template:  src="server.xml" dest="/etc/tomcat7/server.xml"
@@ -296,16 +284,12 @@
 - name: update oztrack site
   become: yes
   template:  src="oztrack.conf" dest="/etc/apache2/sites-available/oztrack.conf"
-  notify:
-    - reload apache
   tags: apache
 
 - name: Enable oztrack
   command: a2ensite oztrack
   notify:
     - reload apache
-    - reload tomcat
-    - reload shibd
   tags: apache
 
 ###############################################
@@ -343,8 +327,6 @@
 - name: cp oztrack config
   become: yes
   template:  src="{{ oztrack_custom_property_file }}" dest="{{ oztrack_home }}{{ oztrack_custom_property_file }}"
-  notify:
-    - reload apache
   tags: oztrack
 
 - name: Override default tomcat memory configuration
