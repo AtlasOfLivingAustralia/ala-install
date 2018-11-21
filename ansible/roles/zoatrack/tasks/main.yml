@@ -48,17 +48,17 @@
     - libnetcdf-dev
     - libpq-dev #see if it help install psycopg2
 
+
+#Install the latest one: 3.4.4
 - name: Install R
   become: yes
   apt: pkg={{ item }} state=installed
   with_items:
-    - r-base-core=3.0.2-1ubuntu1
-    - r-base-dev=3.0.2-1ubuntu1
-  #   - r-base
+     - r-base
   tags: R
 
 
-- name: Adding devtool for installing a given version of packages packages
+- name: Adding devtool for installing a given version of packages
   command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{item}}' %in% installed.packages()[,'Package'])) install.packages('{{item}}', repos=c('http://cran.r-project.org/'))"
   with_items:
     - devtools
@@ -73,12 +73,9 @@
   tags: R_version
 
 
-
 #missing packages
-#alphahull
-#Grid2Polygons 0.2.1
-
-- name: Adding R packages
+#alphahull, date, ncdf4
+- name: Adding R packages. WARNING inlmisc needs a SLOW compilation.
   command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{item}}' %in% installed.packages()[,'Package'])) install.packages('{{item}}', repos=c('https://cran.csiro.au/'))"
   with_items:
     - Rserve
@@ -98,23 +95,34 @@
     - spacetime
     - plotKML
     - nc
-    - ncdf
-  tags: R_version
+    - ncdf4
+    - date
+    - inlmisc  #Grid2Polygon needs it
+  tags: r_packs
+
+
+#Grid2Polygons 0.2.1  not available for R 3.4.4  #try inlmisc # not working
+#wget https://cran.r-project.org/src/contrib/Archive/Grid2Polygons/Grid2Polygons_0.2.1.tar.gz
+#R CMD INSTALL Grid2Polygons_0.2.1.tar.gz
 
 - name: Download kftrack & ukfsst
   get_url:
     url: '{{ item }}'
     dest: /tmp
   with_items:
+    - https://cran.r-project.org/src/contrib/Archive/Grid2Polygons/Grid2Polygons_0.2.1.tar.gz
     - https://github.com/positioning/kalmanfilter/raw/master/downloads/R3x/64bit/linux/kftrack_0.70-x64.tar.gz
     - https://github.com/positioning/kalmanfilter/raw/master/downloads/R3x/64bit/linux/ukfsst_0.3-x64.tar.gz
+  tags: r_mannual
 
 - name: Install kftrack & ukfsst
   sudo: yes
-  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "install.packages('{{ item }}')"
+  command: "R CMD INSTALL {{ item }}"
   with_items:
+    - /tmp/Grid2Polygons_0.2.1.tar.gz
     - /tmp/kftrack_0.70-x64.tar.gz
     - /tmp/ukfsst_0.3-x64.tar.gz
+  tags: r_mannual
 
 - name: Add postgres repository key
   apt_key: url=http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc state=present
@@ -251,6 +259,7 @@
   apt: pkg=tomcat7 state=latest
   tags:
     - tomcat7
+
 
 - name: Set JAVA_HOME for tomcat7
   lineinfile: "
