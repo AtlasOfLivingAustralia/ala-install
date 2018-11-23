@@ -37,9 +37,19 @@
     - vocabs
     - properties
 
-- name: copy biocache store jar
-  get_url: url={{biocache_store_url}} dest="/usr/lib/biocache/biocache.zip" force=yes timeout=240
+- name: remove previous biocache store jar download
+  file: path="/usr/lib/biocache/biocache.zip" state=absent force=yes
   when: biocache_local_build is not defined
+  become: yes
+  tags:
+    - biocache-cli  
+    - download-zip
+    - biocache-cli-update
+
+- name: download biocache store jar
+  get_url: url="{{ biocache_store_url }}" dest="/usr/lib/biocache/biocache.zip" force=yes timeout=240
+  when: biocache_local_build is not defined
+  become: yes
   tags:
     - biocache-cli  
     - download-zip
@@ -48,6 +58,7 @@
 - name: copy local biocache store jar
   copy: src={{biocache_local_build}} dest="/usr/lib/biocache/biocache.zip" force=yes
   when: biocache_local_build is defined
+  become: yes
   tags:
     - biocache-cli  
     - download-zip
@@ -59,7 +70,14 @@
   tags:
     - biocache-cli  
 
-- name: unjar biocache
+- name: remove previous extracted biocache distribution
+  file: path=/usr/lib/biocache/biocache-store-{{ version }} state=absent force=yes
+  become: yes
+  tags:
+    - biocache-cli
+    - biocache-cli-update
+
+- name: extract biocache distribution file
   unarchive:
     src: /usr/lib/biocache/biocache.zip
     dest: /usr/lib/biocache/
