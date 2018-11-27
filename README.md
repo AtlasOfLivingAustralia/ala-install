@@ -1,3 +1,5 @@
+# This branch is for the ag-bie installation. See https://github.com/ess-acppo/ag-bie
+
 # ALA Installation Scripts
 This project contains [Ansible](http://www.ansible.com/) playbooks for setting up ALA components on Ubuntu 16 machines.
 This project includes a playbook for setting up the [ALA demo ](http://ala-demo.gbif.org).
