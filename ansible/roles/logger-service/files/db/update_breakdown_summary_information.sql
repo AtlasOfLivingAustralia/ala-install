@@ -82,7 +82,7 @@ FOR EACH ROW
     INTO count_breakdown_reason_entity_rows;
 
     -- determine if there is already a relevant row in the reason/source/entity breakdown table
-    SELECT COUNT(*) FROM event_summary_breakdown_reason_source_entity esbrse
+    SELECT COUNT(*) FROM event_summary_breakdown_reason_entity_source esbrse
     WHERE esbrse.month = new_month AND esbrse.entity_uid = NEW.entity_uid
           AND esbrse.log_event_type_id = new_log_event_type_id AND esbrse.log_reason_type_id = new_log_reason_type_id
           AND esbrse.log_source_type_id = new_log_source_type_id
