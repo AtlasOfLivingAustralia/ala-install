@@ -356,6 +356,7 @@
    <field name="occurrenceCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="georeferencedCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="taxonomicStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="nomenclaturalStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="establishmentMeans" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="distribution" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="true" />
    <field name="status" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
@@ -369,9 +370,9 @@
    <field name="additionalIdentifiers" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
    <field name="datasetName" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="rightsHolder" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="namePublishedIn" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="namePublishedIn" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInYear" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
-   <field name="namePublishedInID" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="namePublishedInID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="taxonRemarks" type="lowercase" indexed="false" stored="true" required="false" multiValued="true"/>
    <field name="provenance" type="lowercase" indexed="false" stored="true" required="false" multiValued="true"/>
    <field name="locatedInHubCountry" type="boolean" indexed="true" stored="true" required="false" multiValued="false"/>
