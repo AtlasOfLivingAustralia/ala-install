@@ -7,7 +7,7 @@
   tags:
     - solrcloud_config
 
-- name: unjar biocache
+- name: Make zkcli.sh world-readable-writable-executable
   shell: "chmod 777 /opt/solr/server/scripts/cloud-scripts/zkcli.sh"
   tags:
     - solrcloud_config
