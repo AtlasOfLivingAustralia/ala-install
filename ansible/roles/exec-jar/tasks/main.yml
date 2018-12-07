@@ -10,11 +10,10 @@
 
 - name: Install dependencies
   apt:
-    name: "{{item}}"
+    name: 
+      - python-lxml
+      - openjdk-8-jre-headless
     state: present
-  with_items:
-  - python-lxml
-  - openjdk-8-jre-headless
   tags: 
   - service
 
@@ -77,6 +76,7 @@
     mode: u=rwx,g=rx,o=rx
     owner: "{{ service_owner | default(service_name) }}"
     group: "{{ service_group | default(service_name) }}"
+    verify_checksum: always
   # get_url:
   #   url: "{{jar_url}}"
   #   timeout: "30"
