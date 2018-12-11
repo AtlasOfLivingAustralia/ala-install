@@ -91,7 +91,6 @@
   tags:
     - nginx_vhost
     - volunteer-portal
-    - deploy
   when: webserver_nginx
 
 
