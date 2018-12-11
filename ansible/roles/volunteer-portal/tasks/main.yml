@@ -17,8 +17,7 @@
     jar_url: '{{ digivol_jar_url }}'
   tags:
     - deploy
-    - service
-    - doi-service
+    - volunteer-portal
 
 #
 # Properties and data file configuration
