@@ -8,7 +8,6 @@
 #
 # JAR file deployment
 #
-#- include: ../../exec_jar/tasks/main.yml jar_url='{{ doi_service_jar_url }}' service_name='doi-service'
 - name: add jar and service
   include_role:
     name: exec-jar
@@ -68,12 +67,13 @@
     - properties
     - volunteer-portal
 
-#- name: Restart digivol service
-#  service:
-#    name: digivol
-#    state: restarted
-#  tags:
-#    - volunteer-portal
+- name: Restart digivol service
+  service:
+    name: digivol
+    state: restarted
+  tags:
+    - deploy
+    - volunteer-portal
 
 - name: add nginx vhost
   include_role:
