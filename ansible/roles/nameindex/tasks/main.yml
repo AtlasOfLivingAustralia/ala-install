@@ -72,11 +72,11 @@
 
 ## Else if not ALA, perform the following steps (apparently the date and file permissions do not matter for non-ALA users...)
 
-- name: ensure lucene namematching directory exists (not ALA)
-  file: path={{ data_dir }}/lucene/namematching state=directory
-  when: nameindex_variant != "ala"
-  tags:
-    - "nameindex"  
+#- name: ensure lucene namematching directory exists (not ALA)
+#  file: path={{ data_dir }}/lucene/namematching state=directory
+#  when: nameindex_variant != "ala"
+#  tags:
+#    - "nameindex"  
 
 - name: Download lucene index (non-ALA) - please note, this step takes a long time. If it causes an issue, use '--skip-tags nameindex' to bypass it, to complete an installation
   get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene/namematching.tgz force={{ force_nameindex_download | default(false) }} timeout=10000
@@ -85,7 +85,7 @@
     - "nameindex"
 
 - name: unpackage the lucene index if it was newly copied (not ALA)
-  unarchive: src={{ data_dir }}/lucene/namematching.tgz dest={{ data_dir }}/lucene/namematching/ copy=no
+  unarchive: src={{ data_dir }}/lucene/namematching.tgz dest={{ data_dir }}/lucene/ copy=no group="{{ nameindex_user | default(tomcat_user) }}" owner="{{ nameindex_user | default(tomcat_user) }}"
   when: nameindex_variant != "ala"
   tags:
     - "nameindex"
