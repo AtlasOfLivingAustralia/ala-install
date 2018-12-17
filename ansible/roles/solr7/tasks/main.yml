@@ -5,7 +5,7 @@
     - properties
 
 - name: Download SOLR {{ solr_version }}
-  get_url: url="http://apache.mirror1.spango.com/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
+  get_url: url="http://apache.mirror1.spango.com/apache/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
   tags:
     - solr7
 
