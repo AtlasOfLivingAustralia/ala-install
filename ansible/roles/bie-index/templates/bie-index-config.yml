@@ -19,7 +19,7 @@ security:
     serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey='
 biocache:
   base: {{ biocache_base_url | default('https://biocache.ala.org.au') }}
-  service: {{ biocache_service_url | default('https://biocache.ala.org.au/ws') }}
+  service: {{ biocache_service_url | default('https://biocache-ws.ala.org.au/ws') }}
 collectory:
   base: {{ collectory_url | default('https://collections.ala.org.au') }}
   service: {{ collectory_service_url | default('https://collections.ala.org.au/ws') }}
