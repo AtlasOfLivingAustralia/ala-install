@@ -16,7 +16,7 @@
     - bie-index
 
 - name: copy all config.properties
-  template: src=bie-index-config.properties dest={{data_dir}}/bie-index/config/bie-index-config.properties force=yes
+  template: src=bie-index-config.yml dest={{data_dir}}/bie-index/config/bie-index-config.yml force=yes
   tags:
     - webapps
     - config

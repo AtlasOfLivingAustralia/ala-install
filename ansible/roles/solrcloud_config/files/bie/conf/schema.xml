@@ -330,10 +330,13 @@
 
    <!-- Taxa fields -->
    <field name="taxonConceptID" type="string" indexed="true" stored="true" omitNorms="true" />
+   <field name="scientificNameID" type="string" indexed="true" stored="true" omitNorms="true" />
+   <field name="nameID" type="string" indexed="true" stored="true" omitNorms="false" />
    <field name="taxonGuid" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="parentGuid" type="string" indexed="true" stored="true" omitNorms="true" />
    <field name="otherGuid" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
    <field name="synonym" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
+   <field name="nomenclaturalCode" type="string" indexed="true" stored="true" omitNorms="true" />
    <field name="scientificName" type="string" indexed="true" stored="true" omitNorms="false" />
    <field name="scientificNameAuthorship" type="string" indexed="true" stored="true" omitNorms="false" />
    <field name="nameComplete" type="string" indexed="true" stored="true" omitNorms="false" />
@@ -370,9 +373,11 @@
    <field name="additionalIdentifiers" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
    <field name="datasetName" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="rightsHolder" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="namePublishedIn" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="namePublishedIn" type="text" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInYear" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="nameAccordingTo" type="text" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="nameAccordingToID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="taxonRemarks" type="lowercase" indexed="false" stored="true" required="false" multiValued="true"/>
    <field name="provenance" type="lowercase" indexed="false" stored="true" required="false" multiValued="true"/>
    <field name="locatedInHubCountry" type="boolean" indexed="true" stored="true" required="false" multiValued="false"/>
@@ -382,6 +387,7 @@
    <field name="countryCode" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="sex" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="lifeStage" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="isPreferredName" type="boolean" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="isPlural" type="boolean" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="organismPart" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="labels" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
@@ -389,9 +395,11 @@
    <!-- higher taxonomy -->
    <field name="speciesGroup" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" />
    <field name="speciesSubgroup" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" />
-   <!-- Australian states, supports the region functionality -->
+
+   <!-- Display image -->
    <field name="imageAvailable" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="image" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
+
    <!-- Collection / Institution -->
    <field name="url" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="acronym" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
@@ -402,6 +410,13 @@
 
    <!-- LinkIdentifier fields -->
    <field name="linkIdentifier" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
+
+   <!-- Name variant fields -->
+   <field name="nameVariant" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
+   <field name="verbatimNomenclaturalCode" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="verbatimTaxonomicStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="verbatimNomenclaturalStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="score" type="int" indexed="false" stored="true" required="false" multiValued="false"/>
 
    <!-- catchall field, containing all other searchable text fields (implemented
         via copyField further on in this schema  -->
@@ -437,7 +452,7 @@
    <!-- Fields used to rank exact matches higher -->
    <field name="exact_text" type="lowercase" indexed="true" stored="false" omitNorms="true" multiValued="true"/>
    
-   <dynamicField name="rk_*"  type="string"  indexed="true"  stored="true"/>
+   <dynamicField name="rk_*"  type="lowercase"  indexed="true"  stored="true"/>
    <dynamicField name="rkid_*"  type="string"  indexed="true"  stored="true"/>
 
 
