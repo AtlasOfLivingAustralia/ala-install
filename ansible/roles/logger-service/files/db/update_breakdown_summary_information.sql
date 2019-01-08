@@ -82,7 +82,7 @@ FOR EACH ROW
     INTO count_breakdown_reason_entity_rows;
 
     -- determine if there is already a relevant row in the reason/source/entity breakdown table
-    SELECT COUNT(*) FROM event_summary_breakdown_reason_source_entity esbrse
+    SELECT COUNT(*) FROM event_summary_breakdown_reason_entity_source esbrse
     WHERE esbrse.month = new_month AND esbrse.entity_uid = NEW.entity_uid
           AND esbrse.log_event_type_id = new_log_event_type_id AND esbrse.log_reason_type_id = new_log_reason_type_id
           AND esbrse.log_source_type_id = new_log_source_type_id
@@ -193,13 +193,13 @@ FOR EACH ROW
 
     -- ############################################################################################################################################
 
-    -- Update event_summary_breakdown_reason_source_entity
+    -- Update event_summary_breakdown_reason_entity_source
     IF count_breakdown_reason_source_entity_rows = 0 THEN
-      INSERT INTO event_summary_breakdown_reason_source_entity (month, log_event_type_id, log_reason_type_id, log_source_type_id, entity_uid, number_of_events, record_count)
+      INSERT INTO event_summary_breakdown_reason_entity_source (month, log_event_type_id, log_reason_type_id, log_source_type_id, entity_uid, number_of_events, record_count)
       VALUES (new_month, new_log_event_type_id, new_log_reason_type_id, new_log_source_type_id, NEW.entity_uid, 1, NEW.record_count);
     ELSE
       -- can always update the number of events here, as there will always be a single to for each entity/log_event
-      UPDATE event_summary_breakdown_reason_source_entity esrbe SET number_of_events = number_of_events + 1, record_count = record_count + NEW.record_count
+      UPDATE event_summary_breakdown_reason_entity_source esrbe SET number_of_events = number_of_events + 1, record_count = record_count + NEW.record_count
       WHERE esrbe.month = new_month AND esrbe.entity_uid = NEW.entity_uid
             AND esrbe.log_event_type_id = new_log_event_type_id AND esrbe.log_reason_type_id = new_log_reason_type_id
             AND esrbe.log_source_type_id = new_log_source_type_id;
