@@ -27,6 +27,8 @@
     pg_database=oztrack
 
     geoserver_version=2.14.0
+    # Do not know to make it with Nexus
+    zoatrack_version=4.21-SNAPSHOT
 
     oztrack_tomcat_java_opts=-Xmx1g -Xms1g -Xss512k -Djava.awt.headless=true -Dorg.oztrack.conf.customConfigFile=/data/oztrack/oztrack.custom.properties
 
