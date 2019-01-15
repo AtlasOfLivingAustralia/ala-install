@@ -265,10 +265,6 @@
             },
             {  
                 "sort":"count",
-                "field":"duplicate_record"
-            },
-            {  
-                "sort":"count",
                 "field":"duplicate_status"
             }
         ]

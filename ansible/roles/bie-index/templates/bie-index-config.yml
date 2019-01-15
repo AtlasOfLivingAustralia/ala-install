@@ -1,0 +1,100 @@
+grails:
+  serverURL: {{ bie_index_base_url }}{{bie_index_context_path}}
+  cors:
+    enabled: true
+serverName: {{ bie_index_base_url }}
+# CAS Config
+security:
+  cas:
+    casServerName:   {{ auth_base_url }}
+    uriFilterPattern:   {{ bie_index_uri_filter_pattern | default('/admin.*,/alaAdmin.*') }}
+    uriExclusionFilterPattern:   {{ bie_index_uri_exclusion_filter_pattern | default('/admin/indexFields') }}
+    appServerName:   {{ bie_index_base_url }}
+    casServerUrlPrefix:   {{ auth_cas_url }}
+    loginUrl:   {{ auth_cas_url }}/login
+    logoutUrl:   {{ auth_cas_url }}/logout
+    contextPath:   {{ bie_index_context_path }}
+    bypass:   {{ bypass_cas | default(true) }}
+  apikey:
+    serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey='
+biocache:
+  base: {{ biocache_base_url | default('https://biocache.ala.org.au') }}
+  service: {{ biocache_service_url | default('https://biocache-ws.ala.org.au/ws') }}
+collectory:
+  base: {{ collectory_url | default('https://collections.ala.org.au') }}
+  service: {{ collectory_service_url | default('https://collections.ala.org.au/ws') }}
+  # A list of uids for the national species list datasets
+  nationalSpeciesDatsets:
+layers:
+  service: {{ layers_service_url | default('https://spatial.ala.org.au/ws') }}
+  gazetteerId: {{ gazetteer_layer_id | default('') }}
+images:
+  # URL of image configuration file
+  config: file://{{ data_dir }}/bie-index/config/image-lists.json
+  base: https://images.ala.org.au
+  service:
+    base: {{ image_base_url | default('https://images.ala.org.au') }}
+    thumbnail: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImageThumbnail?imageId={0}
+    large: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImage?imageId={0}
+    small: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImageThumbnailLarge?imageId=
+    metadata: {{ image_service_url | default('https://images.ala.org.au') }}/ws/image/{0}
+  index: {{ index_images | default('false') }}
+wordPress:
+  service: https://www.ala.org.au
+  sitemap: /sitemap.xml
+  page: /?page_id={0}
+  excludedCategories:
+  - button
+  contentOnlyParams: ?content-only=1&categories=1
+lists:
+  service: {{ specieslist_service_url | default('https://lists.ala.org.au/ws')}}
+  items: /speciesListItems/{0}?includeKVP=true
+attribution:
+  default: {{ default_name_source | default('National Species Lists') }}
+  common: {{ default_common_name_source | default('National Species Lists') }}
+commonNameDefaultLanguage: en-AU
+# Acceptable vernacular names to appear in autocomplete
+#autoComplete.languages = 'en,en-AU,en-CA,en-GB,en-US'
+autoComplete:
+  languages:
+# Location of conservation lists
+conservationListsUrl: file://{{ data_dir }}/bie-index/config/conservation-lists.json
+# Location of vernacular name lists (null for default)
+vernacularListsUrl: file://{{ data_dir }}/bie-index/config/vernacular-lists.json
+#nationalSpeciesDatasets: dr2699,dr2700,dr2702,dr2704,dr2703,dr3118
+nationalSpeciesDatasets: ""
+solr:
+  live:
+    connection: {{ index_live_url | default('http://localhost:8983/solr/bie') }}
+    type: HTTP
+    queueSize: 10
+    threadCount: 4
+  updatingLive:
+    connection: {{ index_live_url | default('http://localhost:8983/solr/bie') }}
+    type: UPDATE
+    queueSize: 10
+    threadCount: 4
+  offline:
+    connection: {{ index_offline_url | default('http://localhost:8983/solr/bie-offline') }}
+    type: UPDATE
+    queueSize: 10
+    threadCount: 4
+  defType: {{ solr_deftype | default('edismax') }}
+  qAlt: {{ solr_qlat | default('text:*') }}
+skin:
+  layout: {{ skin_layout | default('main') }}
+  fluidLayout: {{ skin_fluid_layout | default('') }}
+  orgNameLong: Atlas of Living Australia
+  favicon: {{ skin_favicon | default('https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png') }}
+headerAndFooter:
+  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}
+useLegacyAuto: false
+import:
+  sequence: {{ bie_index_import_sequence | default('collectory,taxonomy-all,vernacular,denormalise,layers,regions,localities,conservation-lists,wordpress,link-identifiers,images,occurrences') }}
+  taxonomy:
+    dir: {{ data_dir }}/bie/import
+ala:
+  baseURL: {{ ala_base_url | default('https://www.ala.org.au') }}
+bie:
+  baseURL: {{ bie_base_url | default('https://bie.ala.org.au') }}
+  searchPath: {{ bie_search_path | default('/search') }}

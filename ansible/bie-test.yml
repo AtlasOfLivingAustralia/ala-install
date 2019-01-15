@@ -1,14 +1,10 @@
-# Test BIE only.  set target (i.e. server to deploy to) e.g. ansible-playbook bie-test.yml --extra-vars 'target=bie-test' -i path/to/inventory --ask-become-pass
-- hosts: bie-test
+# Test BIE-hub only.  
+# set target (i.e. server to deploy to) e.g. ansible-playbook bie-test.yml --extra-vars 'target=bie-test' -i path/to/inventory --ask-become-pass
+- hosts: bie-hub
   roles:
     - common
     - java
     - webserver
     - tomcat
     - bie-hub
-    - bie-index
-    - solr
-    - biocache-properties
-    - namedata
-    - nameindex
   become: yes

@@ -2,6 +2,20 @@
 redirect: ''
 nginx_conf_dir: '/etc/nginx'
 ssl: true
+# By default activate HTTP/2, which also allows HTTP/1.1 connections
+# However, some users may find issues when HTTP/2 support is enabled at all if they can't work with ALPN
+nginx_http2_enabled: true
+# Allow optional activation of TLS-1.3 if users know their version of nginx supports it
+nginx_tls_v1_3_enabled: false
+# By default only support TLS-1.2 for security, but allow some users to activate others or deactivate it
+nginx_tls_v1_2_enabled: true
+# Allow optional activation of the insecure TLS-1.1 protocol
+nginx_tls_v1_1_enabled: false
+# Allow optional activation of the insecure TLS-1.0 protocol
+# IMPORTANT: Only activate TLS-1.0 if you know that a critical user doesn't support newer safe TLS versions
+nginx_tls_v1_0_enabled: false
+# Default to a modern set of TLS ciphers
+nginx_tls_ciphers: "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256"
 force_https: true
 nginx_root: "/srv/{{ hostname }}/www/"
 context_path: '/'
