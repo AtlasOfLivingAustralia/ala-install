@@ -11,12 +11,21 @@
     - layers-db
     - createdb
 
-- name: ensure user postgres access
-  action: postgresql_user db=layersdb user=postgres password="postgres" priv=ALL state=present
+- name: Create layers-db user/password
+  postgresql_user: name="{{ layers_db_username }}" password="{{ layers_db_password }}" role_attr_flags="CREATEDB,SUPERUSER"
+  become: yes
   become_user: postgres
+  #when: postgresql_installed.changed
   tags:
     - layers-db
     - createdb
+
+#- name: ensure user postgres access
+#  action: postgresql_user db=layersdb user=postgres password="postgres" priv=ALL state=present
+#  become_user: postgres
+#  tags:
+#    - layers-db
+#    - createdb
 
 - name: download layersdb schema
   command: "wget {{layersdb_schema_url}} --output-document=/tmp/layersdb.schema.sql"
@@ -34,7 +43,7 @@
     - createdb
 
 - name: placeholder data for geoserver
-  action: command psql {{ layers_db_name | default('layersdb') }} -c "insert into objects (id, pid, name, the_geom) select '1', '1', 'test', st_geomfromtext('POLYGON((112.0 -44.0,154.0 -44.0,154.0 -9.0,112.0 -9.0,112.0 -44.0))', 4326);insert into distributions (geom_idx,the_geom) select 1, st_geomfromtext('POLYGON((112.0 -44.0,154.0 -44.0,154.0 -9.0,112.0 -9.0,112.0 -44.0))', 4326);"
+  action: command psql {{ layers_db_name | default('layersdb') }} -c "insert into objects (id, pid, name, the_geom) select '1', nextval('objects_id_seq'), 'test', st_geomfromtext('POLYGON((112.0 -44.0,154.0 -44.0,154.0 -9.0,112.0 -9.0,112.0 -44.0))', 4326);insert into distributions (geom_idx,the_geom) select 1, st_geomfromtext('POLYGON((112.0 -44.0,154.0 -44.0,154.0 -9.0,112.0 -9.0,112.0 -44.0))', 4326);"
   become_user: postgres
   when: dbschema.changed
   ignore_errors: yes

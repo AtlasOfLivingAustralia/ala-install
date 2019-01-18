@@ -10,19 +10,19 @@ gzip -d /tmp/testdata.sql.gz
 sudo -u postgres psql layersdb -f /tmp/testdata.sql
 
 #create layers in geoserver
-curl -v -u admin:geoserver -XPUT -H "Content-type: text/plain" -d "file:///data/ala/data/layers/ready/shape/aus1.shp" http://localhost:8080/geoserver/rest/workspaces/ALA/datastores/aus1/external.shp
-curl -v -u admin:geoserver -XPUT -H "Content-type: text/plain" -d "file:///data/ala/data/layers/ready/shape/lga_aust.shp" http://localhost:8080/geoserver/rest/workspaces/ALA/datastores/lga_aust/external.shp
-curl -v -u admin:geoserver -XPUT -H "Content-type: text/plain" -d "file:///data/ala/data/layers/ready/geotiff/relief_ave.tif" http://localhost:8080/geoserver/rest/workspaces/ALA/coveragestores/relief_ave/external.geotiff
-curl -v -u admin:geoserver -XPUT -H "Content-type: text/plain" -d "file:///data/ala/data/layers/ready/geotiff/slope_2.tif" http://localhost:8080/geoserver/rest/workspaces/ALA/coveragestores/slope_2/external.geotiff
+curl -v -u admin:geoserver -XPUT -H "Content-type: text/plain" -d "file:///data/ala/data/layers/ready/shape/aus1.shp" {{geoserver_url}}/rest/workspaces/ALA/datastores/aus1/external.shp
+curl -v -u admin:geoserver -XPUT -H "Content-type: text/plain" -d "file:///data/ala/data/layers/ready/shape/lga_aust.shp" {{geoserver_url}}/rest/workspaces/ALA/datastores/lga_aust/external.shp
+curl -v -u admin:geoserver -XPUT -H "Content-type: text/plain" -d "file:///data/ala/data/layers/ready/geotiff/relief_ave.tif" {{geoserver_url}}/rest/workspaces/ALA/coveragestores/relief_ave/external.geotiff
+curl -v -u admin:geoserver -XPUT -H "Content-type: text/plain" -d "file:///data/ala/data/layers/ready/geotiff/slope_2.tif" {{geoserver_url}}/rest/workspaces/ALA/coveragestores/slope_2/external.geotiff
 
-curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml" -d "<style><name>slope_2_style</name><filename>slope_2.sld</filename></style>" http://localhost:8080/geoserver/rest/styles
-curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml" -d "<style><name>relief_ave_style</name><filename>relief_ave.sld</filename></style>" http://localhost:8080/geoserver/rest/styles
+curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml" -d "<style><name>slope_2_style</name><filename>slope_2.sld</filename></style>" {{geoserver_url}}/rest/styles
+curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml" -d "<style><name>relief_ave_style</name><filename>relief_ave.sld</filename></style>" {{geoserver_url}}/rest/styles
 
-curl -v -u admin:geoserver -XPUT -H "Content-type: application/vnd.ogc.sld+xml" -d @/data/ala/data/layers/ready/geotiff/slope_2.sld http://localhost:8080/geoserver/rest/styles/slope_2_style
-curl -v -u admin:geoserver -XPUT -H "Content-type: application/vnd.ogc.sld+xml" -d @/data/ala/data/layers/ready/geotiff/relief_ave.sld http://localhost:8080/geoserver/rest/styles/relief_ave_style
+curl -v -u admin:geoserver -XPUT -H "Content-type: application/vnd.ogc.sld+xml" -d @/data/ala/data/layers/ready/geotiff/slope_2.sld {{geoserver_url}}/rest/styles/slope_2_style
+curl -v -u admin:geoserver -XPUT -H "Content-type: application/vnd.ogc.sld+xml" -d @/data/ala/data/layers/ready/geotiff/relief_ave.sld {{geoserver_url}}/rest/styles/relief_ave_style
 
-curl -u admin:geoserver -XPUT -H 'Content-type: text/xml' -d '<layer><defaultStyle><name>slope_2_style</name><workspace>ALA</workspace></defaultStyle></layer>' http://localhost:8080/geoserver/rest/layers/ALA:slope_2
-curl -u admin:geoserver -XPUT -H 'Content-type: text/xml' -d '<layer><defaultStyle><name>relief_ave_style</name><workspace>ALA</workspace></defaultStyle></layer>' http://localhost:8080/geoserver/rest/layers/ALA:relief_ave
+curl -u admin:geoserver -XPUT -H 'Content-type: text/xml' -d '<layer><defaultStyle><name>slope_2_style</name><workspace>ALA</workspace></defaultStyle></layer>' {{geoserver_url}}/rest/layers/ALA:slope_2
+curl -u admin:geoserver -XPUT -H 'Content-type: text/xml' -d '<layer><defaultStyle><name>relief_ave_style</name><workspace>ALA</workspace></defaultStyle></layer>' {{geoserver_url}}/rest/layers/ALA:relief_ave
 
 #additional actions
 echo ""

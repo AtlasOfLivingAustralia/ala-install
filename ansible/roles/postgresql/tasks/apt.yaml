@@ -8,6 +8,14 @@
   when: ansible_os_family == "Debian"
   tags: postgresql
 
+- name: install python-pip
+  apt: pkg=python-pip state=present
+  tags: postgresql
+
+- name: pip psycopg2
+  command: pip install psycopg2
+  tags: postgresql
+
 - name: install python-software-properties (Debian)
   apt: pkg="{{ python_software_properties }}" state=latest
   when: ansible_os_family == "Debian"

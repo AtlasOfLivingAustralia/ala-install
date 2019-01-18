@@ -1,0 +1,12 @@
+#vagrant ssh-config | grep IdentityFile
+#  result should be your private key and not
+#   .vagrant/machines/default/virtualbox/private_key
+
+# ansible-playbook --private-key=~/.vagrant.d/insecure_private_key -u vagrant -i ~/src/ala-install/ansible/inventories/vagrant/spatial-hub-vagrant spatial-hub.yml
+- hosts: spatial-hub
+  roles:
+    - common
+    - java
+    - tomcat
+    - webserver
+    - spatial-hub

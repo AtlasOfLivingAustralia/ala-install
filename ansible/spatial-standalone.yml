@@ -1,3 +1,9 @@
+- hosts: all
+  gather_facts: False
+  tasks:
+  - name: install python 2
+    raw: sudo bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qy python-minimal)"
+
 - hosts: spatial
   roles:
     - common
@@ -5,7 +11,8 @@
     - tomcat
     - webserver
     - postgresql
-    - geoserver
+    - layers-db
     - geonetwork
+    - geoserver
     - spatial-service
     - spatial-hub
