@@ -69,6 +69,8 @@ geonetwork_app=geonetwork
 geonetwork_username=admin
 geonetwork_password=password
 geonetwork_database=geonetwork
+geonetwork_db_username=postgres
+geonetwork_db_password=password
 
 layers_db_host=localhost
 layers_db_port=5432
