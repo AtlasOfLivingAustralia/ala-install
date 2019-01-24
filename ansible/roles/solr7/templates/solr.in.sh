@@ -77,6 +77,8 @@ SOLR_OPTS="$SOLR_OPTS -Xss256k"
 #SOLR_OPTS="$SOLR_OPTS -Dsolr.autoSoftCommit.maxTime=3000"
 #SOLR_OPTS="$SOLR_OPTS -Dsolr.autoCommit.maxTime=60000"
 #SOLR_OPTS="$SOLR_OPTS -Dsolr.clustering.enabled=true"
+# Only listen on the accepted port and turn off config editing for security
+SOLR_OPTS="$SOLR_OPTS -Djetty.host=${SOLR_HOST} -Ddisable.configEdit=true"
 
 # Location where the bin/solr script will save PID files for running instances
 # If not set, the script will create PID files in $SOLR_TIP/bin
