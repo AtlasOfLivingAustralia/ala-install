@@ -1,3 +1,5 @@
+# Inventory to be used with spatial-standalone playbook
+
 [spatial]
 vagrant1
 
@@ -29,7 +31,7 @@ geoserver_context_path=/geoserver
 geoserver_app=geoserver
 
 geoserver_username=admin
-geoserver_password=password
+geoserver_password=geoserver
 
 layers_db_host=localhost
 layers_db_port=5432
@@ -67,6 +69,8 @@ geonetwork_app=geonetwork
 geonetwork_username=admin
 geonetwork_password=password
 geonetwork_database=geonetwork
+geonetwork_db_username=postgres
+geonetwork_db_password=password
 
 layers_db_host=localhost
 layers_db_port=5432
@@ -95,17 +99,15 @@ is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
+orgNameLong = Atlas of Living Australia
+
 spatial_service_hostname=vagrant1.ala.org.au
 spatial_service_url=http://vagrant1.ala.org.au/ws
-spatial_service_base_url=http://vagrant1.ala.org.au
+spatial_service_base_url=http://vagrant1.ala.org.au/ws
 spatial_service_context_path=/ws
 
 layers_service_url=http://vagrant1.ala.org.au/ws
 biocache_service_url=http://biocache-test.ala.org.au/ws
-
-geoserver_url=http://vagrant1.ala.org.au/geoserver
-geoserver_username=admin
-geoserver_password=password
 
 layers_db_host=localhost
 layers_db_port=5432
