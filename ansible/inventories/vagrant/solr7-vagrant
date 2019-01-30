@@ -10,10 +10,12 @@ local_repo_dir=~/.ala
 data_dir=/data
 
 solr_hostname=vagrant1.ala.org.au
-solr_host=vagrant1.ala.org.au:8983
+solr_host=vagrant1.ala.org.au
 solr_url=http://vagrant1.ala.org.au:8983/solr
 solr_base_url=http://vagrant1.ala.org.au:8983
 solr_context_path=/solr
+solr_zk_host=
+solr_bind_jetty_host=false
 
-auth_base_url=https://auth.ala.org.au
-auth_cas_url=https://auth.ala.org.au/cas
+# set to blank to avoid solr cloud mode
+solr_mode=
