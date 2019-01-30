@@ -1,10 +1,10 @@
-# Test SOLR 6 installation
-# Run with ansible-playbook -i /path/to/ansible/inventories/vagrant/solr6-vagrant /path/to/ala-install/ansible/solr6-standalone.yml --private-key ~/.vagrant.d/insecure_private_key -vvvv -u vagrant -s
+# Test SOLR 7 installation
+# Run with ansible-playbook -i /path/to/ansible/inventories/vagrant/solr7-vagrant /path/to/ala-install/ansible/solr7-standalone.yml --private-key ~/.vagrant.d/insecure_private_key -vvvv -u vagrant -s
 
-[solr6-server]
+[solr7-server]
 vagrant1
 
-[solr6-server:vars]
+[solr7-server:vars]
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
