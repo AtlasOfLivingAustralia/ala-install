@@ -1,4 +1,5 @@
-# The Atlas installation on CSIRO IM&T servers of Collectory
+# Test Cassandra 3 installation
+# Run with ansible-playbook -i /path/to/ala-install/ansible/inventories/vagrant/cassandra3-vagrant /path/to/ala-install/ansible/cassandra3-standalone.yml --private-key ~/.vagrant.d/insecure_private_key -vvvv -u vagrant -s
 
 [cassandra3]
 vagrant1
@@ -8,5 +9,5 @@ local_repo_dir=~/.ala
 is_vagrant=true
 data_dir=/data
 
-cassandra_listen_host = 10.1.1.3
-cassandra_seeds = 10.1.1.3
+cassandra_listen_host = vagrant1
+cassandra_seeds = 127.0.0.1
