@@ -49,3 +49,8 @@ nginx_cache_valid_time: "60m"
 nginx_cache_invalid_time: "0s"
 # Set this to true in your inventory if you know that you are only deploying a single nginx_vhost and you want to clear previous versions before deploying each time
 clear_vhost_fragments: false
+# Set this to true to enable support for 'upstream' load balancing features
+nginx_load_balancing: false
+# When load balancing is enabled, this is used to specify the maximum number of connections from nginx to the upstream load balanced server
+# This is used to avoid denial of service on the upstream server when it is under load
+nginx_max_conns: 50

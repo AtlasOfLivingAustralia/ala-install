@@ -117,6 +117,16 @@
   tags:
     - nginx_vhost
 
+- name: add upstream fragment
+  template:
+    src: "fragment_02_upstream.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_02_upstream_{{ hostname }}_127.0.0.1_{{ tomcat_server_port | default('8080', True) }}"
+  when: vhost_required and nginx_load_balancing | bool == true and item.is_proxy and item.proxy_pass is defined
+  with_items:
+    - "{{ nginx_paths}} "
+  tags:
+    - nginx_vhost
+
 - name: add blocking fragment
   template:
     src: "fragment_03_blocking.j2"
