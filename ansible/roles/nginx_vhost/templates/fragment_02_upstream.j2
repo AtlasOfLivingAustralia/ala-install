@@ -1,0 +1,9 @@
+{% if nginx_load_balancing | bool == true %}
+{% if item.is_proxy %}
+{% set upstream_proxy_pass_var = "127.0.0.1:" ~ tomcat_server_port | default('8080', True) %}
+# Load balancing configuration
+upstream {{ hostname }}_{{ upstream_proxy_pass_var | regex_replace(':', '_') }}_backend{{ '_ala_default' if ala_default_vhost is defined and ala_default_vhost else '' }} {
+    server {{ upstream_proxy_pass_var }} max_conns={{ nginx_max_conns }};
+}
+{% endif %}
+{% endif %}
