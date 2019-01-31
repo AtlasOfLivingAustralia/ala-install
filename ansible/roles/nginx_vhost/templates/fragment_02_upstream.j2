@@ -3,7 +3,15 @@
 {% set upstream_proxy_pass_var = "127.0.0.1:" ~ tomcat_server_port | default('8080', True) %}
 # Load balancing configuration
 upstream {{ hostname }}_{{ upstream_proxy_pass_var | regex_replace(':', '_') }}_backend{{ '_ala_default' if ala_default_vhost is defined and ala_default_vhost else '' }} {
-    server {{ upstream_proxy_pass_var }} max_conns={{ nginx_max_conns }};
+    server {{ upstream_proxy_pass_var }} max_conns={{ nginx_max_conns }} max_fails={{ nginx_max_fails }} {% if nginx_max_fails | int > 0 %}fail_timeout={{ nginx_fail_timeout }}{% endif %};
+
+{% if nginx_keepalive is defined and nginx_keepalive | int > 0 %}
+    keepalive {{ nginx_keepalive }};
+# The following are disabled until nginx-1.15.3+ is available on the stable channel
+#    keepalive_requests {{ nginx_keepalive_requests }};
+#    keepalive_timeout {{ nginx_keepalive_timeout }};
+{% endif %}
+
 }
 {% endif %}
 {% endif %}

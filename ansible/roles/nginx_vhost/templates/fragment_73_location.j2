@@ -45,6 +45,10 @@
 {% if nginx_load_balancing | bool == true and (item.unlimited_conns is not defined or item.unlimited_conns | bool != true) %}
         # This backend is defined in the upstream section of the same name
         proxy_pass http://{{ hostname }}_127.0.0.1_{{tomcat_server_port | default('8080', True)}}_backend{{ '_ala_default' if ala_default_vhost is defined and ala_default_vhost else '' }}{% if item.path|length == 0 %}/{% elif item.path|first == '/' %}{{ item.path }}{% else %}/{{ item.path }}{% endif %};
+  {% if nginx_keepalive is defined and nginx_keepalive | int > 0 %}
+        # Clear the "Connection" header because nginx_keepalive is > 0 and nginx_load_balancing is true
+        proxy_set_header Connection "";
+  {% endif %}
 {% else %}
         proxy_pass {{ item.proxy_pass }};
 {% endif %}
