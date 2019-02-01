@@ -49,3 +49,24 @@ nginx_cache_valid_time: "60m"
 nginx_cache_invalid_time: "0s"
 # Set this to true in your inventory if you know that you are only deploying a single nginx_vhost and you want to clear previous versions before deploying each time
 clear_vhost_fragments: false
+# Set this to true to enable support for 'upstream' load balancing features
+nginx_load_balancing: false
+# When load balancing is enabled, this is used to specify the maximum number of connections from nginx to the upstream load balanced server
+# This is used to avoid denial of service on the upstream server when it is under load
+nginx_max_conns: 50
+# When nginx_load_balancing is enabled, this can be used to specify the maximum number of keepalive connections nginx should upstream coonections
+# Defaults to the same as the max_conns default and should be customised whenever customising nginx_max_conns
+# Set this to 0 if you want upstream load balancing without any keepalive
+nginx_keepalive: 50
+# When nginx_load_balancing is enabled and nginx_keepalive is greater than 0, this can be used to specify the maximum number of requests made through a keepalive connection before closing it
+# Sets the maximum number of requests that can be served through one keepalive connection. After the maximum number of requests is made, the connection is closed
+nginx_keepalive_requests: 100
+# Sets a timeout (in seconds) during which an idle keepalive connection to an upstream server will stay open.
+nginx_keepalive_timeout: 60
+# sets the number of unsuccessful attempts to communicate with the server that should happen in the duration set by the fail_timeout parameter to consider the server unavailable for a duration also set by the fail_timeout parameter. 
+# By default it is set to 0 to disable the accounting of attempts.
+# Customise this if you intentionally want to use nginx_fail_timeout to specify a period of time where there are no requests made to the upstream because of failures
+nginx_max_fails: 0
+# Sets the time (in seconds) during which the specified number of unsuccessful attempts to communicate with the server should happen to consider the server unavailable;
+# Also sets the period of time the server will be considered unavailable.
+nginx_fail_timeout: 10

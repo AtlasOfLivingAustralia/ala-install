@@ -734,7 +734,7 @@
     <field name="quad"     type="quad"     indexed="true" stored="true"  multiValued="false" />
     <field name="geohash"  type="geohash"  indexed="true" stored="true"  multiValued="false" />
 
-    <!-- Some ALA dynamic fields -->
+    <!-- Fields definitions -->
     <field name="abcd_identification_qualifier" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="abcd_identification_qualifier_insertion_point" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="abcd_type_status" type="string" indexed="true" stored="true" omitNorms="true" />
@@ -861,6 +861,7 @@
     <field name="raw_ibra" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="raw_images" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="raw_northing" type="string" indexed="true" stored="true" omitNorms="true" />
+    <field name="raw_sampling_protocol" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="raw_sounds" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="raw_subspecies" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="related_resource_id" type="string" indexed="true" stored="true" omitNorms="true" />

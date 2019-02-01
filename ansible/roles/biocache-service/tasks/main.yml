@@ -115,12 +115,14 @@
         is_proxy: true
         use_cache: true
         force_cache: true
+        unlimited_conns: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/assertions/user/codes"
       - path: "{{biocache_service_context_path}}/assertions/codes"
         sort_label: "7_assertions_codes"
         is_proxy: true
         use_cache: true
         force_cache: true
+        unlimited_conns: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/assertions/codes"
       - path: "{{biocache_service_context_path}}/webportal/bbox"
         sort_label: "7_webportal_bbox"
@@ -163,14 +165,19 @@
         block_by_arguments: "{{ biocache_service_online_download_argument_blocking }}"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrences/index/download"
-      - path: "{{biocache_service_context_path}}"
-        sort_label: "8_ws"
+      - path: "{{biocache_service_context_path}}/occurrences/offline"
+        sort_label: "7_occurrences_offline_download"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}"
+        unlimited_conns: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrences/offline"
       - path: "/biocache-download"
         sort_label: "8_download"
         is_proxy: false
         alias: "{{ download_dir | default('/data/biocache-download') }}"
+      - path: "{{biocache_service_context_path}}"
+        sort_label: "8_ws"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}"
   tags:
     - nginx_vhost
     - deploy

@@ -55,6 +55,13 @@
   notify:
     - restart tomcat
 
+- name: enable the HTTP/1.1 connector
+  tomcat_connector: name="HTTP/1.1" port="8080" redirect_port="8443"
+  tags: 
+    - tomcat
+  notify:
+    - restart tomcat
+
 # replace the commented out java_opts that ships with the CentOS install which is:
 # JAVA_OPTS="-Xminf0.1 -Xmaxf0.3"        
 - name: configure tomcat memory (RedHat)

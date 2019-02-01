@@ -41,6 +41,16 @@
   tags:
     - nginx_vhost
 
+- name: add upstream fragment
+  template:
+    src: "fragment_02_upstream.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/02_upstream_ala_default_127.0.0.1_{{ tomcat_server_port | default('8080', True) }}"
+  when: ala_default_vhost and vhost_required and nginx_load_balancing | bool == true and item.is_proxy and item.proxy_pass is defined
+  with_items:
+    - "{{ nginx_paths}} "
+  tags:
+    - nginx_vhost
+
 - name: add start of default vhost for ala
   template:
     src: "ala_default_start.j2"

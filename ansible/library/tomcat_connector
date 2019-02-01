@@ -27,7 +27,7 @@ options:
     description:
       - The ip address to bind the server socket to
     required: false
-    default: 0.0.0.0
+    default: 127.0.0.1
   port:
     description:
       - the port to use for connector
@@ -159,7 +159,7 @@ def main():
         argument_spec=dict(
             name=dict(required=True, choices=["HTTP/1.1", "AJP/1.3"]),
             service=dict(default="Catalina"),
-            bind_addr=dict(default="0.0.0.0"),
+            bind_addr=dict(default="127.0.0.1"),
             port=dict(type="int"),
             connection_timeout=dict(default=20000, type="int"),
             uri_encoding=dict(default="UTF-8"),
