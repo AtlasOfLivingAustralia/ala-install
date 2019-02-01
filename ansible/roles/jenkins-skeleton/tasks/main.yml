@@ -1,0 +1,57 @@
+
+- name: create jenkins jobs on server
+  template:
+    src: "{{ item }}.xml"
+    dest: "{{ tmp_dir }}/{{ item }}.xml"
+    owner: jenkins
+    group: jenkins
+  with_items: "{{ jenkins_jobs }}"
+  tags:
+    - jenkins-skeleton
+
+- name: ensure jenkins is running
+  service:
+    name: jenkins
+    state: restarted
+
+- name: wait for jenkins server to get going
+  pause:
+    seconds: 30
+
+- name: get jenkins cli on server
+  get_url:
+    url: "http://localhost:9192/jnlpJars/jenkins-cli.jar"
+    dest: "{{ tmp_dir }}/jenkins-cli.jar"
+    timeout: 60
+  tags:
+  - jenkins-skeleton
+
+- name: create job script
+  template:
+    src: "add-job.sh"
+    dest: "{{ tmp_dir }}/add-job.sh"
+    owner: jenkins
+    group: jenkins
+  tags:
+  - jenkins-skeleton
+
+- name: make the job script runnable
+  file:
+    path: "{{ tmp_dir }}/add-job.sh"
+    mode: a+x
+  tags:
+  - jenkins-skeleton
+
+- name: add jenkins jobs to jenkins
+  shell: ./add-job.sh "{{ item }}"
+  args:
+    chdir: "{{ tmp_dir }}"
+  with_items: "{{ jenkins_jobs }}"
+  tags:
+  - jenkins-skeleton
+
+
+
+
+
+

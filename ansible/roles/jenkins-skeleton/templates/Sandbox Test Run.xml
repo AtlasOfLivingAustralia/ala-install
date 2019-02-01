@@ -1,0 +1,56 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+    <actions/>
+    <description>Test run of data resource load for sandbox test environment</description>
+    <keepDependencies>false</keepDependencies>
+    <properties>
+        <jenkins.model.BuildDiscarderProperty>
+            <strategy class="hudson.tasks.LogRotator">
+                <daysToKeep>-1</daysToKeep>
+                <numToKeep>10</numToKeep>
+                <artifactDaysToKeep>-1</artifactDaysToKeep>
+                <artifactNumToKeep>-1</artifactNumToKeep>
+            </strategy>
+        </jenkins.model.BuildDiscarderProperty>
+        <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+        <hudson.model.ParametersDefinitionProperty>
+            <parameterDefinitions>
+                <hudson.model.StringParameterDefinition>
+                    <name>uid</name>
+                    <description>Temporary data resource id</description>
+                    <defaultValue>drt0000</defaultValue>
+                    <trim>true</trim>
+                </hudson.model.StringParameterDefinition>
+                <hudson.model.StringParameterDefinition>
+                    <name>apikey</name>
+                    <description>API key to pass to the collectory</description>
+                    <defaultValue>{{ registry_api_key }}</defaultValue>
+                    <trim>false</trim>
+                </hudson.model.StringParameterDefinition>
+                <hudson.model.StringParameterDefinition>
+                    <name>collectory</name>
+                    <description>Collectory URL</description>
+                    <defaultValue>{{ collectory_url }}</defaultValue>
+                    <trim>false</trim>
+                </hudson.model.StringParameterDefinition>
+                <hudson.model.StringParameterDefinition>
+                    <name>dr</name>
+                    <description>Permanent data resource uid</description>
+                    <defaultValue>dr0000</defaultValue>
+                    <trim>false</trim>
+                </hudson.model.StringParameterDefinition>
+            </parameterDefinitions>
+        </hudson.model.ParametersDefinitionProperty>
+    </properties>
+    <builders>
+        <hudson.tasks.Shell>
+            <command>#!/bin/sh
+echo "Sandbox import called with the following properties uid=${uid} dr=${dr} apikey=${apikey} collectory=${collectory}"
+biocache load -t "$dr"
+            </command>
+        </hudson.tasks.Shell>
+    </builders>
+    <triggers/>
+    <authToken>{{ jenkins_token }}</authToken>
+    <disabled>false</disabled>
+</project>

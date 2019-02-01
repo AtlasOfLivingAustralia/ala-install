@@ -4,9 +4,12 @@
     - java
     - tomcat
     - postfix
-    - role: jenkins-simple
-      when: sandbox_test == true
     - cassandra3
+    - solr6
+    - role: jenkins-simple
+      when: sandbox_test
+    - role: jenkins-skeleton
+      when: sandbox_test
     - webserver
     - nameindex
     - biocache-db
@@ -14,5 +17,4 @@
     - biocache-service
     - { role: biocache-hub, biocache_hub: ala-hub, grouped_facets_json: grouped_facets_sandbox.json }
     - sandbox
-    - solr6
     - biocache-cli
