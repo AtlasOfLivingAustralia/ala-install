@@ -2,7 +2,9 @@
   roles:
     - java
     - common
-    - postgresql
+    - {role: db-backup, db: postgres}
+    - {role: postgresql, pg_version: "10"}
+    - {role: pg_instance, extensions: ["citext", "pgcrypto"]}
     - tomcat
     - webserver
     - image-service
