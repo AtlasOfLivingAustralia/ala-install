@@ -266,3 +266,9 @@ materialSample	MaterialSample
 Material Sample	MaterialSample
 MaterialSample	MaterialSample
 materialSample	MaterialSample
+eDNA	EnvironmentalDNA
+edna	EnvironmentalDNA
+environmental DNA	EnvironmentalDNA
+environmentalDNA	EnvironmentalDNA
+Environmental DNA	EnvironmentalDNA
+EnvironmentalDNA	EnvironmentalDNA
