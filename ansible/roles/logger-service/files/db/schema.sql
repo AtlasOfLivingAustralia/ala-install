@@ -234,3 +234,7 @@ CREATE TABLE `log_detail` (
   FOREIGN KEY (log_event_id) REFERENCES log_event(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
+
+
+CREATE INDEX esbee_entity_uid ON event_summary_breakdown_email_entity (entity_uid(6));
+CREATE INDEX esbre_entity_uid ON event_summary_breakdown_reason_entity (entity_uid(6));
