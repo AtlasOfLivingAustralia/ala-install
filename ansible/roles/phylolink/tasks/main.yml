@@ -8,20 +8,18 @@
   with_items:
     - python-augeas
     - python-psycopg2
-    - postgresql-9.3
-    - tomcat7
   tags:
     - phylolink
     - packages
 
-- name: create DB
+- name: create DB for phylolink
   postgresql_db: name=phylolink
   become_user: postgres
   tags:
     - phylolink
     - db
 
-- name: create DB user
+- name: create phylolink DB user
   command: "psql -d phylolink -c \"create user phylo with password '{{phylolink_db_password}}'\""
   become_user: postgres
   ignore_errors: yes
@@ -30,30 +28,51 @@
     - db
 
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{item}} state=directory
   with_items:
     - "{{data_dir}}/phylolink/config"
+    - "{{data_dir}}/phylolink/bootstrap"
+  tags:
+    - deploy
+    - phylolink
+    - properties
+
+- name: copy bootstrap files
+  copy: src={{ item }} dest={{data_dir}}/phylolink/bootstrap/
+  with_fileglob:
+    - "bootstrap/*"
   tags:
     - deploy
     - phylolink
     - properties
 
 - name: copy all config.properties
-  template: src=phylolink-config.properties dest={{data_dir}}/phylolink/config/phylolink-config.properties
-  notify:
-      - restart tomcat
+  template: src={{ item }} dest={{data_dir}}/phylolink/config/
+  with_items:
+    - "logback.groovy"
+    - "phylolink.groovy"
+    - "phylolink-config.properties"
   tags:
     - deploy
     - phylolink
     - properties
 
+- name: add phylolink jar and setup service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: 'phylolink'
+    jar_url: '{{ phylolink_jar_url }}'
+  tags:
+    - deploy
+    - service
+
 - name: set data ownership
-  file: path={{data_dir}}/phylolink owner="{{tomcat_user}}" group="{{tomcat_user}}" recurse=true
-  notify:
-    - restart tomcat
+  file: path={{data_dir}}/phylolink owner="phylolink" group="phylolink" recurse=true
   tags:
     - phylolink
     - properties
+
 
 - name: add nginx vhost
   include_role:
@@ -65,9 +84,3 @@
     - nginx_vhost
     - deploy
     - phylolink
-
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ phylolink_war_url }}' context_path='{{ phylolink_context_path }}' hostname='{{ phylolink_hostname }}'
-  tags:
-    - phylolink
-    - tomcat_vhost
-    - deploy

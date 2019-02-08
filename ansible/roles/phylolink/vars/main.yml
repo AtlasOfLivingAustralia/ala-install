@@ -1,7 +1,7 @@
-# assets
-version: "0.5.3"
+version: "0.6"
 artifactId: "phylolink"
+classifier: 'exec'
 groupId: "au.org.ala"
-phylolink_war_url: "{{maven_repo_ws_url}}"
+packaging: "jar"
+phylolink_jar_url: "{{maven_repo_ws_url}}"
 phylolink_db_username: 'phylo'
-tomcat_dir: /var/lib/tomcat7

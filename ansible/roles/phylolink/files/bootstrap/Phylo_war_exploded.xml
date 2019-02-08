@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="Phylo:war exploded">
+    <output-path>$PROJECT_DIR$/target/artifacts/Phylo_war_exploded</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="Phylo" />
+          <element id="module-output" name="Phylo-grailsPlugins" />
+          <element id="library" level="project" name="jade" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="Phylo/web/Web" />
+      <element id="javaee-facet-resources" facet="Phylo/web/GrailsWeb" />
+      <element id="javaee-facet-resources" facet="Phylo-grailsPlugins/web/GrailsWeb" />
+    </root>
+  </artifact>
+</component>

@@ -1,14 +1,22 @@
+- hosts: all
+  gather_facts: False
+  tasks:
+  - name: install python 2
+    raw: sudo bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qy python-minimal python-apt)"
+
 - hosts: phylolink
   roles:
     - phylolink-dependencies
     - common
     - java
-    - tomcat
-    - nameindex
+    - {role: db-backup, db: postgres}
+    - {role: postgresql, pg_version: "9.6"}
+    - {role: pg_instance, extensions: ["citext", "pgcrypto"]}
     - web2py
     - web2pyApps
     - webserver
     - phylolink
+    - {role: nameindex, nameindex_user: "phylolink" }
   become: yes
   become_user: root
   vars:
