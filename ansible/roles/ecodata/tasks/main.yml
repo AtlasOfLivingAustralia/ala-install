@@ -3,12 +3,14 @@
     - ecodata
     - deploy
 #
-# External configuration properties file
+# External configuration directories and files
 #
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/ecodata/config"
+    - "{{data_dir}}/ecodata/uploads"
+    - "{{data_dir}}/ecodata/models"
   tags:
     - properties
     - ecodata
@@ -18,6 +20,25 @@
   tags:
     - properties
     - ecodata
+
+#
+# Copy sensitive data xml file
+#
+- name: Copy config files to config directory
+  copy: src=sensitive-species-data.xml dest={{data_dir}}/ecodata/config/sensitive-species-data.xml
+  tags:
+    - ecodata
+    - properties
+
+#
+# Copy default/example models files
+#
+- name: Copy models files to config directory
+  copy: src=models/ dest={{data_dir}}/ecodata/models/
+  tags:
+    - ecodata
+    - properties
+
 
 - name: set data ownership
   file: path={{data_dir}}/ecodata owner={{tomcat_user}} group={{tomcat_user}} recurse=true
@@ -76,12 +97,3 @@
 #
 - name: install cron job for indexing elastic search
   cron: minute=21 hour=22 name="Elastic search indexing" job="wget -O - {{ ecodata_url }}{{ ecodata_context_path }}/admin/reIndexAll >/dev/null 2>&1" user=root state=present
-
-#
-# Copy sensitive data xml file
-#  
-- name: Copy config files to config directory
-  copy: src=sensitive-species-data.xml dest={{data_dir}}/ecodata/config/sensitive-species-data.xml
-  tags:
-    - ecodata
-    - properties  
