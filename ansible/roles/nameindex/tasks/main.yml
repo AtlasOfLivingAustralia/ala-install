@@ -2,7 +2,18 @@
   tags:
     - "nameindex"  
 
-## Setup the name index to use based on nameindex_variant
+- name: check for directory to link
+  stat:
+    path: "{{ data_dir }}/lucene/namematching"
+  register: existing_name_dir_status
+  tags:
+    - "nameindex"
+
+- name: Backup existing
+  command: mv {{ data_dir }}/lucene/namematching {{ data_dir }}/lucene/namematching-{{ ansible_date_time.epoch}}
+  when: existing_name_dir_status.stat.exists == True
+  tags:
+    - "nameindex"
 
 - name: set name index to use (COL)
   set_fact:
@@ -45,7 +56,7 @@
     - "nameindex"
 
 ## If ALA, perform the following steps to download the index, give it the correct file permissions and symlink it
-- name: DEBUG- Download lucene index (ALA)
+- name: DEBUG - Download lucene index (ALA)
   debug:
     msg: "lucene_namematching_url={{ lucene_namematching_url }}, force_nameindex_download:{{ force_nameindex_download | default(false) }}, nameindex_variant={{nameindex_variant}}"
     verbosity: 1
@@ -64,9 +75,16 @@
   tags:
     - "nameindex"
 
+- name: check for directory to link
+  stat:
+    path: "{{ data_dir }}/lucene/namematching-{{ name_index_date }}/"
+  register: tmp_name_dir_status
+  tags:
+    - "nameindex"
+
 - name: link the current lucene index as namematching (ALA)
   file: src={{ data_dir }}/lucene/namematching-{{ name_index_date }}/ dest={{ data_dir }}/lucene/namematching state=link force=yes
-  when: nameindex_variant == "ala"
+  when: nameindex_variant == "ala" and tmp_name_dir_status.stat.exists == True
   tags:
     - "nameindex"
 

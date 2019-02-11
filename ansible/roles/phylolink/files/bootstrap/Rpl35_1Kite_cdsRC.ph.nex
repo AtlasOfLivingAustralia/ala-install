@@ -1,0 +1,1187 @@
+#NEXUS
+[written Thu Apr 03 11:40:16 EST 2014 by Mesquite  version 2.75 (build 564) at squid-be/152.83.193.10]
+
+BEGIN TAXA;
+	TITLE Taxa;
+	DIMENSIONS NTAX=753;
+	TAXLABELS
+		Unnamed_Taxon Unnamed_Taxon2 Unnamed_Taxon3 Unnamed_Taxon4 Unnamed_Taxon5 Unnamed_Taxon6 Unnamed_Taxon7 Unnamed_Taxon8 Unnamed_Taxon9 Unnamed_Taxon10 Unnamed_Taxon11 Unnamed_Taxon12 Unnamed_Taxon13 Unnamed_Taxon14 Unnamed_Taxon15 lcl|ACYPI006417 lcl|Rhyacophila_fasciataC26578 ':' lcl|Essigella_californicaC7908 lcl|Sympherobius_elegansC31305 lcl|Euroleon_nostrasscaffold27 Unnamed_Taxon16 lcl|Drepanepteryx_phalaenoides Unnamed_Taxon17 Unnamed_Taxon18 lcl|Hypochrysa_elegansC528482 Unnamed_Taxon19 lcl|Mantispa_styriacaC272440 lcl|Mantispidae_VZ_sp.scaffold lcl|Dichochrysa_prasinascaffol Unnamed_Taxon20 Unnamed_Taxon21 Unnamed_Taxon22 Unnamed_Taxon23 Unnamed_Taxon24 Unnamed_Taxon25 Unnamed_Taxon26 lcl|Heteropsilopus_ingenuusC10 lcl|Notiohilara_paramonoviC269 lcl|Lipara_lucensC629416 Unnamed_Taxon27 lcl|Bombylius_majorC381839 Unnamed_Taxon28 lcl|Triarthria_setipennisscaff lcl|Calliphora_vomitoriaC44326 Unnamed_Taxon29 lcl|Apiocera_moerensC356610 lcl|Sicus_ferrugineusC386762 lcl|Bibio_marciC281181 Unnamed_Taxon30 lcl|Trichocera_fuscataC986823 Unnamed_Taxon31 lcl|Panorpa_vulgarisC308052 lcl|Pseudospinolia_neglectaC45 Unnamed_Taxon32 lcl|Meroplius_fasciculatusC269 Unnamed_Taxon33 Unnamed_Taxon34 Unnamed_Taxon35 lcl|Microdon_brachycerusC77874 lcl|Mesembrina_meridianaC44456 Unnamed_Taxon36 lcl|Tapeigaster_digitatascaffo lcl|Leptopilina_clavipesC27269 lcl|Episyrphus_balteatusC57234 Unnamed_Taxon37 Unnamed_Taxon38 Unnamed_Taxon39 lcl|Neohermes_sp.C370831 lcl|Rhamnusium_bicolorC463315 lcl|Chauliodes_sp.C561391 lcl|Osmylus_fulvicephalusC3157 Unnamed_Taxon40 Unnamed_Taxon41 Unnamed_Taxon42 Unnamed_Taxon43 lcl|Cybister_lateralimarginali lcl|Dichrostigma_flavipesC7374 lcl|Leuctra_sp.C375041 lcl|Serica_brunneaC422229 Unnamed_Taxon44 lcl|Cyphon_laevipennisscaffold lcl|Microcara_testaceaC438205 Unnamed_Taxon45 Unnamed_Taxon46 Unnamed_Taxon47 Unnamed_Taxon48 Unnamed_Taxon49 Unnamed_Taxon50 lcl|Corydalinae_VZ_sp.C198552 lcl|Corydalus_cornutusC158696 lcl|Ptosima_flavoguttataC56535 lcl|Donacia_marginatascaffold6 lcl|Byturus_ochraceusC504874 lcl|Noterus_clavicornisscaffol Unnamed_Taxon51 Unnamed_Taxon52 lcl|Phaeostigma_majorC453598 Unnamed_Taxon53 lcl|Raphidia_mediteraneaC51757 lcl|Xanthostigma_xanthostigmas Unnamed_Taxon54 lcl|Arrhenodes_sp.C357407 lcl|Chilocorus_renipustulatusC Unnamed_Taxon55 Unnamed_Taxon56 Unnamed_Taxon57 Unnamed_Taxon58 lcl|Ceratophyllus_gallinaeC286 lcl|Ctenocephalides_felisC3224 lcl|Boreus_hyemalisC820044 lcl|Conwentzia_psociformisscaf lcl|Inocellia_crassicornisC429 Unnamed_Taxon59 Unnamed_Taxon60 Unnamed_Taxon61 Unnamed_Taxon62 Unnamed_Taxon63 lcl|Epeorus_assimilisscaffold1 Unnamed_Taxon64 lcl|Ephemera_danicaC525843 lcl|Pentachrysis_inaequalisC31 lcl|Eurylophella_sp.scaffold10 Unnamed_Taxon65 Unnamed_Taxon66 lcl|Isonychia_bicolorC401559 lcl|Occasjapyx_japonicusC40700 lcl|Baetis_pumilusC402014 Unnamed_Taxon67 Unnamed_Taxon68 Unnamed_Taxon69 Unnamed_Taxon70 lcl|Zorotypus_caudelliC2397633 lcl|Spercheus_emarginatusC4979 lcl|Tanzaniophasma_sp.scaffold Unnamed_Taxon71 lcl|Dineutes_sp.scaffold9799 lcl|Gyrinus_marinusC432402 Unnamed_Taxon72 lcl|Byrrhus_pilulaC750473 lcl|Triodia_sylvinascaffold299 Unnamed_Taxon73 Unnamed_Taxon74 lcl|Frankliniella_cephalicaC39 lcl|Calosoma_sp.scaffold3228 lcl|Thrips_palmiscaffold5668 Unnamed_Taxon75 Unnamed_Taxon76 lcl|Hydrochus_megaphallusscaff lcl|Trialeurodes_vaporariorumC Unnamed_Taxon77 Unnamed_Taxon78 Unnamed_Taxon79 Unnamed_Taxon80 Unnamed_Taxon81 lcl|Graphocephala_fennahiC5050 lcl|Hydrochara_caraboidesC4096 lcl|Gyna_luridascaffold10111 Unnamed_Taxon82 Unnamed_Taxon83 lcl|Cryptocercus_wrightiscaffo lcl|Mastotermes_darwiniensisC1 Unnamed_Taxon84 Unnamed_Taxon85 lcl|Lamproblatta_albipalpusC13 lcl|Okanagana_villosaC1067165 Unnamed_Taxon86 lcl|Blaberus_atroposC1391960 lcl|Schulthesia_lampridiformis Unnamed_Taxon87 Unnamed_Taxon88 lcl|Hydroptilidae_sp.scaffold6 lcl|Hydraena_nigritascaffold97 lcl|Tricholepidion_gertschiC11 Unnamed_Taxon89 Unnamed_Taxon90 Unnamed_Taxon91 lcl|Planococcus_citriC491967 lcl|Timema_cristinaeC549571 lcl|Centrotus_cornutusC575532 Unnamed_Taxon92 lcl|Lagria_hirtaC373050 lcl|Cercopis_vulnerataC517711 Unnamed_Taxon93 Unnamed_Taxon94 lcl|Ectopsocus_briggsiscaffold lcl|Ips_typographusC217620 Unnamed_Taxon95 lcl|Cis_boletiscaffold10170 Unnamed_Taxon96 Unnamed_Taxon97 lcl|Apachyus_charteceusC532719 lcl|Gonolabis_marginalisC50304 Unnamed_Taxon98 lcl|Forficula_auriculariascaff lcl|Diplatyidae_gen.C399844 Unnamed_Taxon99 Unnamed_Taxon100 lcl|Valenzuela_badiostigmaC185 Unnamed_Taxon101 lcl|Lithobius_forficatusC10856 lcl|Phryganea_grandisC490268 Unnamed_Taxon102 lcl|Pteronarcys_sp.scaffold179 Unnamed_Taxon103 lcl|Bittacus_pilicornisC186071 lcl|Aleochara_curtulaC180750 Unnamed_Taxon104 Unnamed_Taxon105 Unnamed_Taxon106 Unnamed_Taxon107 Unnamed_Taxon108 Unnamed_Taxon109 Unnamed_Taxon110 Unnamed_Taxon111 lcl|Metatropis_rufescensC34611 lcl|Notostira_elongataC409882 Unnamed_Taxon112 lcl|Aquarius_paludumscaffold85 lcl|Hydrometra_aquaticascaffol Unnamed_Taxon113 Unnamed_Taxon114 Unnamed_Taxon115 lcl|Eriocrania_cf.C630266 lcl|Prorhinotermes_simplexC983 lcl|Corythucha_ciliatascaffold lcl|Cimex_lectulariusC475704 Unnamed_Taxon116 lcl|Ctenolepisma_longicaudatas lcl|Thermobia_domesticascaffol Unnamed_Taxon117 lcl|Menopon_gallinaescaffold41 lcl|Liposcelis_bostrychophilas Unnamed_Taxon118 lcl|Pyrrhocoris_apterusC784038 Unnamed_Taxon119 Unnamed_Taxon120 Unnamed_Taxon121 Unnamed_Taxon122 Unnamed_Taxon123 lcl|Geometra_papilionariaC3866 lcl|Lepismachilis_ysignataC116 lcl|Trigoniophthalmus_cf.C1222 Unnamed_Taxon124 lcl|Machilis_sacraC676878 lcl|Machilis_hrabeiC946531 lcl|Pedetontus_okajimaeC667437 Unnamed_Taxon125 lcl|Austroargiolestes_icterome lcl|Dilta_bitschiscaffold6461 Unnamed_Taxon126 Unnamed_Taxon127 Unnamed_Taxon128 Unnamed_Taxon129 lcl|Speleonectes_tulumensissca lcl|Lepisma_saccharinaC982599 Unnamed_Taxon130 Unnamed_Taxon131 Unnamed_Taxon132 Unnamed_Taxon133 Unnamed_Taxon134 Unnamed_Taxon135 Unnamed_Taxon136 lcl|Hagiotata_hofmanniC999423 lcl|Stagmatoptera_biocellataC1 lcl|Oxyopsis_gracilisC916563 lcl|Danuria_thunbergiC867539 Unnamed_Taxon137 lcl|Idolomantis_diabolicaC1551 Unnamed_Taxon138 lcl|Empusa_pennataC1245400 lcl|Phyllocrania_paradoxaC1524 Unnamed_Taxon139 Unnamed_Taxon140 Unnamed_Taxon141 Unnamed_Taxon142 lcl|Miomantis_binotataC580020 Unnamed_Taxon143 lcl|Parasphendale_sp.scaffold2 lcl|Campodea_augensC626609 Unnamed_Taxon144 lcl|Heterochaeta_occidentaliss lcl|Phyllothelys_werneriC19194 lcl|Pseudogalepsus_nigricoxaC7 lcl|Mantis_religiosascaffold11 Unnamed_Taxon145 Unnamed_Taxon146 lcl|Metallyticus_splendidusC12 Unnamed_Taxon147 Unnamed_Taxon148 lcl|Liturgusa_sp.scaffold7352 lcl|Brunneria_borealisC974181 lcl|Orthoderella_ornatascaffol lcl|Thesprotia_graminisC607543 lcl|Cheddikulama_stramineascaf Unnamed_Taxon149 Unnamed_Taxon150 Unnamed_Taxon151 lcl|Lepidocampa_weberiC1064876 lcl|Nicoletia_phytophilaC47414 lcl|Catajapyx_aquilonarisscaff lcl|Atelura_formicariaC1782349 Unnamed_Taxon152 Unnamed_Taxon153 Unnamed_Taxon154 Unnamed_Taxon155 Unnamed_Taxon156 Unnamed_Taxon157 Unnamed_Taxon158 lcl|Dicyrtomina_leptothrixC462 lcl|Tomocerus_cuspidatusscaffo lcl|Pogonognathellus_longicorn Unnamed_Taxon159 lcl|Tetrodontophora_bielanensi lcl|Protaphorura_fimataC538324 Unnamed_Taxon160 lcl|Folsomia_candidaC288790 lcl|Podura_aquaticascaffold367 lcl|Bourletiella_hortensisscaf Unnamed_Taxon161 Unnamed_Taxon162 Unnamed_Taxon163 lcl|Orchesella_cinctaC482300 lcl|Exaireta_spinigeraC386777 lcl|Sinella_curvisetascaffold2 lcl|Heteromurus_nitidusscaffol Unnamed_Taxon164 lcl|Machilontus_sp.C997277 lcl|Meinertellus_cundinamarcen Unnamed_Taxon165 Unnamed_Taxon166 Unnamed_Taxon167 Unnamed_Taxon168 Unnamed_Taxon169 Unnamed_Taxon170 Unnamed_Taxon171 Unnamed_Taxon172 Unnamed_Taxon173 Unnamed_Taxon174 lcl|Diaeretus_essigellaescaffo lcl|Aphidius_colemaniscaffold1 Unnamed_Taxon175 lcl|Orussus_abietinusscaffold1 lcl|Pediaspis_acerisC464901 Unnamed_Taxon176 Unnamed_Taxon177 lcl|Megalodontes_cephalotessca lcl|Trichogramma_evanescenssca Unnamed_Taxon178 lcl|Pergagrapta_politaC385187 Unnamed_Taxon179 Unnamed_Taxon180 Unnamed_Taxon181 Unnamed_Taxon182 lcl|Katamenes_arbustorumC37953 lcl|Odynerus_spinipesscaffold1 lcl|Polistes_dominulusC481248 Unnamed_Taxon183 lcl|Vespula_germanicaC432306 lcl|Vespa_crabroC547374 lcl|Celonites_abbreviatusscaff Unnamed_Taxon184 Unnamed_Taxon185 Unnamed_Taxon186 Unnamed_Taxon187 Unnamed_Taxon188 lcl|Eupelmus_urozonusscaffold2 lcl|Perilampus_aeneusC418825 Unnamed_Taxon189 lcl|Torymus_bedeguarisscaffold lcl|Leucospis_dorsigeraC763024 Unnamed_Taxon190 lcl|Diglyphus_isaeaC356599 lcl|Aphelinus_abdominalisscaff Unnamed_Taxon191 lcl|Glycaspis_brimblecombeiC13 lcl|Eurytoma_brunniventrisC335 Unnamed_Taxon192 lcl|Pachycrepoideus_vindemmiae lcl|Pseudogonalos_hahniC251065 Unnamed_Taxon193 Unnamed_Taxon194 lcl|Nematus_ribesiiC338851 lcl|Xyela_alpigenascaffold7998 lcl|Tenthredo_koehleriC322835 Unnamed_Taxon195 Unnamed_Taxon196 Unnamed_Taxon197 lcl|Methocha_articulataC383631 Unnamed_Taxon198 lcl|Tiphia_femorataC242261 lcl|Meria_tripunctatascaffold2 Unnamed_Taxon199 lcl|Dasymutilla_gloriosaC31934 lcl|Chyphotes_sp.scaffold1520 Unnamed_Taxon200 Unnamed_Taxon201 Unnamed_Taxon202 Unnamed_Taxon203 Unnamed_Taxon204 Unnamed_Taxon205 Unnamed_Taxon206 lcl|Monosapyga_clavicornisscaf lcl|Sapyga_quinquepunctatascaf lcl|Sapygina_decemguttataC3231 Unnamed_Taxon207 lcl|Gasteruption_tournieriscaf lcl|Perla_marginataC630093 lcl|Brachygaster_minutusC84494 Unnamed_Taxon208 lcl|Bembix_rostrataC498997 lcl|Sphecius_convallisC289972 Unnamed_Taxon209 Unnamed_Taxon210 Unnamed_Taxon211 Unnamed_Taxon212 Unnamed_Taxon213 Unnamed_Taxon214 lcl|Hedychridium_ardensscaffol lcl|Hedychrum_nobilescaffold68 lcl|Parnopes_grandiorscaffold2 Unnamed_Taxon215 Unnamed_Taxon216 lcl|Trichrysis_cyaneascaffold6 Unnamed_Taxon217 Unnamed_Taxon218 lcl|Chrysis_analisscaffold7700 lcl|Chrysura_austriacaC331954 Unnamed_Taxon219 Unnamed_Taxon220 lcl|Chrysis_viridulascaffold85 lcl|Chrysis_fasciataC245273 lcl|Chrysis_terminataC295186 lcl|Chrysis_mixtascaffold10811 lcl|Cephalonomia_tarsalisC2592 Unnamed_Taxon221 lcl|Cleptes_nitidulusC406598 lcl|Smicromyrme_rufipesC278927 Unnamed_Taxon222 Unnamed_Taxon223 lcl|Pseudomalus_pusillusscaffo lcl|Nysson_nigerC241135 Unnamed_Taxon224 Unnamed_Taxon225 lcl|Ceratina_chalybaeaC247017 lcl|Tetralonia_macroglossaC431 Unnamed_Taxon226 Unnamed_Taxon227 Unnamed_Taxon228 Unnamed_Taxon229 Unnamed_Taxon230 Unnamed_Taxon231 Unnamed_Taxon232 lcl|Xylocopa_violaceaC372371 lcl|Psithyrus_rupestrisC305060 lcl|Systropha_curvicornisC5219 Unnamed_Taxon233 Unnamed_Taxon234 Unnamed_Taxon235 Unnamed_Taxon236 lcl|Chelostoma_florisomneC3139 lcl|Osmia_cornutaC426167 lcl|Heriades_truncorumC353036 lcl|Dioxys_cinctascaffold14270 Unnamed_Taxon237 Unnamed_Taxon238 lcl|Coelioxys_conoideaC456762 lcl|Megachile_willughbiellaC38 lcl|Stelis_punctulatissimaC510 Unnamed_Taxon239 Unnamed_Taxon240 lcl|Colletes_cuniculariusC4559 Unnamed_Taxon241 Unnamed_Taxon242 Unnamed_Taxon243 lcl|Sphecodes_albilabrisscaffo lcl|Halictus_quadricinctusC397 lcl|Lasioglossum_xanthopusscaf lcl|Nomia_diversipesC362051 lcl|Hylaeus_variegatusscaffold Unnamed_Taxon244 lcl|Cerceris_arenariaC281692 Unnamed_Taxon245 lcl|Philanthus_triangulumC3063 lcl|Macropis_fulvipesscaffold4 Unnamed_Taxon246 Unnamed_Taxon247 Unnamed_Taxon248 lcl|Epeolus_variegatusC345195 lcl|Nomada_lathburianaC394349 lcl|Euglossa_dilemmascaffold50 lcl|Thyreus_orbatusscaffold824 Unnamed_Taxon249 Unnamed_Taxon250 lcl|Pemphredon_lugensC364726 lcl|Diodontus_minutusscaffold1 lcl|Psenulus_fuscipennisscaffo Unnamed_Taxon251 Unnamed_Taxon252 Unnamed_Taxon253 Unnamed_Taxon254 Unnamed_Taxon255 lcl|Auplopus_albifronsC258270 lcl|Heterodontonyx_sp.scaffold lcl|Episyron_rufipesC267464 Unnamed_Taxon256 lcl|Colpa_sexmaculataC361000 lcl|Scolia_hirtascaffold5248 Unnamed_Taxon257 lcl|Holopyga_generosaC266938 lcl|Pompilus_cinereusC313591 lcl|Stephanus_serratorC598667 Unnamed_Taxon258 lcl|Trypoxylon_figulusC210568 lcl|Oxybelus_bipunctatusC38128 Unnamed_Taxon259 Unnamed_Taxon260 Unnamed_Taxon261 Unnamed_Taxon262 lcl|Tachysphex_fulvitarsisscaf Unnamed_Taxon263 lcl|Dinetus_pictusC274867 lcl|Harpactus_elegansC365886 Unnamed_Taxon264 lcl|Gorytes_laticinctusC288643 lcl|Stizoides_tridentatusscaff Unnamed_Taxon265 lcl|Crabro_peltariusC219870 lcl|Crossocerus_quadrimaculatu Unnamed_Taxon266 Unnamed_Taxon267 Unnamed_Taxon268 lcl|Chalybion_californicumC318 lcl|Sceliphron_curvatumC288203 lcl|Isodontia_mexicanaC408720 Unnamed_Taxon269 lcl|Prionyx_kirbiiC362188 Unnamed_Taxon270 lcl|Sphex_funerariusscaffold95 lcl|Podalonia_hirsutaC343703 Unnamed_Taxon271 Unnamed_Taxon272 Unnamed_Taxon273 Unnamed_Taxon274 Unnamed_Taxon275 lcl|Blasticotoma_filicetiC1379 Unnamed_Taxon276 lcl|Thyatira_batisscaffold1879 lcl|Saturnia_pyriscaffold5851 Unnamed_Taxon277 Unnamed_Taxon278 Unnamed_Taxon279 lcl|Phragmatobia_fuliginosaC55 lcl|Polygonia_c lcl|Parides_arcasC338429 Unnamed_Taxon280 Unnamed_Taxon281 Unnamed_Taxon282 lcl|Bicyclus_anynanaC614782 lcl|Ptilinus_pectinicornisC562 lcl|Pararge_aegeriaC419889 lcl|Colias_croceusC509596 Unnamed_Taxon283 Unnamed_Taxon284 lcl|Sminthurus_viridisC371370 lcl|Yponomeuta_evonymellaC6349 Unnamed_Taxon285 Unnamed_Taxon286 lcl|Polyommatus_icarusC441869 lcl|Tineola_bisselliellaC31883 lcl|Nemophora_degeerellascaffo Unnamed_Taxon287 lcl|Cotesia_vestalisC244292 lcl|Zygaena_faustaC395685 Unnamed_Taxon288 Unnamed_Taxon289 Unnamed_Taxon290 lcl|Diplectrona_sp.C322894 lcl|Cheumatopsyche_sp.C367779 Unnamed_Taxon291 lcl|Psychomyia_flavidaC300039 Unnamed_Taxon292 Unnamed_Taxon293 Unnamed_Taxon294 Unnamed_Taxon295 Unnamed_Taxon296 lcl|Glyphotaelius_pellucidusC4 lcl|Platycentropus_radiatussca lcl|Micrasema_watagaC444666 Unnamed_Taxon297 lcl|Ptilostomis_sp.C464004 lcl|Cicindela_hybridaC391553 lcl|Apatania_incertaC513153 Unnamed_Taxon298 lcl|Lepidostoma_togatumC613133 lcl|Agapetus_hessiscaffold4911 Unnamed_Taxon299 lcl|Chimarra_sp.C405819 Unnamed_Taxon300 lcl|Nectopsyche_albidaC718077 lcl|Leptocerus_americanusC4412 Unnamed_Taxon301 lcl|Gynaikothrips_ficorumC8427 lcl|Aularches_miliarisscaffold Unnamed_Taxon302 Unnamed_Taxon303 Unnamed_Taxon304 Unnamed_Taxon305 Unnamed_Taxon306 Unnamed_Taxon307 Unnamed_Taxon308 lcl|Velia_capraiC417519 lcl|Ranatra_linearisC393088 lcl|Ceuthophilus_sp.C1403470 Unnamed_Taxon309 Unnamed_Taxon310 Unnamed_Taxon311 Unnamed_Taxon312 Unnamed_Taxon313 Unnamed_Taxon314 Unnamed_Taxon315 lcl|Argia_fumipennisscaffold74 Unnamed_Taxon316 lcl|Diphlebia_lestoidesC580164 lcl|Calopteryx_splendensC35301 lcl|Pyrrhosoma_nymphulaC421513 Unnamed_Taxon317 Unnamed_Taxon318 Unnamed_Taxon319 lcl|Coenagrion_puellaC399049 lcl|Enallagma_aspersumC487126 lcl|Erythromma_najasC729130 lcl|Ischnura_hastataC357417 lcl|Lestes_sponsascaffold214 Unnamed_Taxon320 Unnamed_Taxon321 Unnamed_Taxon322 lcl|Cordulia_aeneaC440580 Unnamed_Taxon323 lcl|Epitheca_bimaculataC462849 lcl|Epitheca_princepsC327792 lcl|Eusynthemis_guttatascaffol Unnamed_Taxon324 Unnamed_Taxon325 Unnamed_Taxon326 lcl|Dromogomphus_spinosusC4115 lcl|Gomphus_rogersiscaffold759 lcl|Ophiogomphus_ceciliaC39065 Unnamed_Taxon327 Unnamed_Taxon328 lcl|Epiophlebia_superstesscaff lcl|Cordulegaster_boltoniiC509 Unnamed_Taxon329 lcl|Boyeria_irenescaffold6627 lcl|Brachytron_pratenseC487863 Unnamed_Taxon330 Unnamed_Taxon331 Unnamed_Taxon332 Unnamed_Taxon333 Unnamed_Taxon334 Unnamed_Taxon335 lcl|Leucorrhinia_caudalisC7168 Unnamed_Taxon336 lcl|Macromia_illinoiensisscaff lcl|Sympetrum_vicinumscaffold5 lcl|Celithemis_elisaC393275 Unnamed_Taxon337 lcl|Tyriobapta_torridaC336709 lcl|Zygonyx_irisscaffold847 Unnamed_Taxon338 lcl|Libellula_quadrimaculataC3 lcl|Libellula_fulvaC426131 lcl|Crocothemis_erythreaC48711 lcl|Trithemis_kirbyiC275078 lcl|Myrmecophilus_sp.scaffold9 Unnamed_Taxon339 Unnamed_Taxon340 lcl|Xenophyes_metoponcusscaffo lcl|Xenophysella_greensladeaeC lcl|Tetrix_subulataC595561 Unnamed_Taxon341 Unnamed_Taxon342 lcl|Gryllotalpa_sp.scaffold123 lcl|Dryops_sp.C861740 Unnamed_Taxon343 lcl|Lepicerus_sp.scaffold23415 lcl|Meloe_violaceusC238181 Unnamed_Taxon344 Unnamed_Taxon345 lcl|Plea_minutissimaC708700 Unnamed_Taxon346 Unnamed_Taxon347 lcl|Ergaula_capucinaC1790455 lcl|Eucorydia_yasumatsuiscaffo Unnamed_Taxon348 lcl|Grylloblatta_bifratrilecta Unnamed_Taxon349 lcl|Galloisiana_nipponensisC54 lcl|Galloisiana_yuasaiscaffold Unnamed_Taxon350 Unnamed_Taxon351 Unnamed_Taxon352 lcl|Aretaon_asperrimusC770608 lcl|Trachyaretaon_brueckneriC6 lcl|Peruphasma_schulteiscaffol Unnamed_Taxon353 Unnamed_Taxon354 lcl|Prosarthria_teretrirostris lcl|Stenobothrus_lineatusscaff Unnamed_Taxon355 lcl|Stenopelmatus_sp.C1248842 lcl|Cyphoderris_sp.C2056140 Unnamed_Taxon356 Unnamed_Taxon357 Unnamed_Taxon358 Unnamed_Taxon359 lcl|Apteroperla_tikumanaC36375 lcl|Scopura_montanaC508526 lcl|Cosmioperla_kunascaffold40 Unnamed_Taxon360 Unnamed_Taxon361 Unnamed_Taxon362 lcl|Catara_rugosicollisC738986 Unnamed_Taxon363 lcl|Shelfordella_lateralisC180 lcl|Periplaneta_americanaC1119 lcl|Nauphoeta_cinereascaffold2 Unnamed_Taxon364 Unnamed_Taxon365 Unnamed_Taxon366 lcl|Paratemnopteryx_couloniana lcl|Symploce_sp.C1335960 lcl|Blattella_germanicaC112193 lcl|Conocephalus_dorsalisC6896 Unnamed_Taxon367 Unnamed_Taxon368 lcl|Trinotoperla_montanascaffo Unnamed_Taxon369 lcl|Aposthonia_japonicaC108447 lcl|Haploembia_palauiscaffold1 Unnamed_Taxon370 Unnamed_Taxon371 lcl|Ptychoptera_contaminataC29 lcl|Xya_sp.C1066640 Unnamed_Taxon372 Unnamed_Taxon373 Unnamed_Taxon374 lcl|Elaphrus_aureusscaffold353 lcl|Hallomenus_binotatusC27876 lcl|Diestrammena_asynamoraC101 Unnamed_Taxon375 lcl|Magicicada_septendecimC110 lcl|Magicicada_tredecimC105141 
+	;
+
+END;
+
+
+BEGIN TREES;
+	Title Imported_trees;
+	LINK Taxa = Taxa;
+	TRANSLATE
+		1 Unnamed_Taxon,
+		2 Unnamed_Taxon2,
+		3 Unnamed_Taxon3,
+		4 Unnamed_Taxon4,
+		5 Unnamed_Taxon5,
+		6 Unnamed_Taxon6,
+		7 Unnamed_Taxon7,
+		8 Unnamed_Taxon8,
+		9 Unnamed_Taxon9,
+		10 Unnamed_Taxon10,
+		11 Unnamed_Taxon11,
+		12 Unnamed_Taxon12,
+		13 Unnamed_Taxon13,
+		14 Unnamed_Taxon14,
+		15 Unnamed_Taxon15,
+		16 lcl|ACYPI006417,
+		17 lcl|Rhyacophila_fasciataC26578,
+		18 ':',
+		19 lcl|Essigella_californicaC7908,
+		20 lcl|Sympherobius_elegansC31305,
+		21 lcl|Euroleon_nostrasscaffold27,
+		22 Unnamed_Taxon16,
+		23 lcl|Drepanepteryx_phalaenoides,
+		24 Unnamed_Taxon17,
+		25 Unnamed_Taxon18,
+		26 lcl|Hypochrysa_elegansC528482,
+		27 Unnamed_Taxon19,
+		28 lcl|Mantispa_styriacaC272440,
+		29 lcl|Mantispidae_VZ_sp.scaffold,
+		30 lcl|Dichochrysa_prasinascaffol,
+		31 Unnamed_Taxon20,
+		32 Unnamed_Taxon21,
+		33 Unnamed_Taxon22,
+		34 Unnamed_Taxon23,
+		35 Unnamed_Taxon24,
+		36 Unnamed_Taxon25,
+		37 Unnamed_Taxon26,
+		38 lcl|Heteropsilopus_ingenuusC10,
+		39 lcl|Notiohilara_paramonoviC269,
+		40 lcl|Lipara_lucensC629416,
+		41 Unnamed_Taxon27,
+		42 lcl|Bombylius_majorC381839,
+		43 Unnamed_Taxon28,
+		44 lcl|Triarthria_setipennisscaff,
+		45 lcl|Calliphora_vomitoriaC44326,
+		46 Unnamed_Taxon29,
+		47 lcl|Apiocera_moerensC356610,
+		48 lcl|Sicus_ferrugineusC386762,
+		49 lcl|Bibio_marciC281181,
+		50 Unnamed_Taxon30,
+		51 lcl|Trichocera_fuscataC986823,
+		52 Unnamed_Taxon31,
+		53 lcl|Panorpa_vulgarisC308052,
+		54 lcl|Pseudospinolia_neglectaC45,
+		55 Unnamed_Taxon32,
+		56 lcl|Meroplius_fasciculatusC269,
+		57 Unnamed_Taxon33,
+		58 Unnamed_Taxon34,
+		59 Unnamed_Taxon35,
+		60 lcl|Microdon_brachycerusC77874,
+		61 lcl|Mesembrina_meridianaC44456,
+		62 Unnamed_Taxon36,
+		63 lcl|Tapeigaster_digitatascaffo,
+		64 lcl|Leptopilina_clavipesC27269,
+		65 lcl|Episyrphus_balteatusC57234,
+		66 Unnamed_Taxon37,
+		67 Unnamed_Taxon38,
+		68 Unnamed_Taxon39,
+		69 lcl|Neohermes_sp.C370831,
+		70 lcl|Rhamnusium_bicolorC463315,
+		71 lcl|Chauliodes_sp.C561391,
+		72 lcl|Osmylus_fulvicephalusC3157,
+		73 Unnamed_Taxon40,
+		74 Unnamed_Taxon41,
+		75 Unnamed_Taxon42,
+		76 Unnamed_Taxon43,
+		77 lcl|Cybister_lateralimarginali,
+		78 lcl|Dichrostigma_flavipesC7374,
+		79 lcl|Leuctra_sp.C375041,
+		80 lcl|Serica_brunneaC422229,
+		81 Unnamed_Taxon44,
+		82 lcl|Cyphon_laevipennisscaffold,
+		83 lcl|Microcara_testaceaC438205,
+		84 Unnamed_Taxon45,
+		85 Unnamed_Taxon46,
+		86 Unnamed_Taxon47,
+		87 Unnamed_Taxon48,
+		88 Unnamed_Taxon49,
+		89 Unnamed_Taxon50,
+		90 lcl|Corydalinae_VZ_sp.C198552,
+		91 lcl|Corydalus_cornutusC158696,
+		92 lcl|Ptosima_flavoguttataC56535,
+		93 lcl|Donacia_marginatascaffold6,
+		94 lcl|Byturus_ochraceusC504874,
+		95 lcl|Noterus_clavicornisscaffol,
+		96 Unnamed_Taxon51,
+		97 Unnamed_Taxon52,
+		98 lcl|Phaeostigma_majorC453598,
+		99 Unnamed_Taxon53,
+		100 lcl|Raphidia_mediteraneaC51757,
+		101 lcl|Xanthostigma_xanthostigmas,
+		102 Unnamed_Taxon54,
+		103 lcl|Arrhenodes_sp.C357407,
+		104 lcl|Chilocorus_renipustulatusC,
+		105 Unnamed_Taxon55,
+		106 Unnamed_Taxon56,
+		107 Unnamed_Taxon57,
+		108 Unnamed_Taxon58,
+		109 lcl|Ceratophyllus_gallinaeC286,
+		110 lcl|Ctenocephalides_felisC3224,
+		111 lcl|Boreus_hyemalisC820044,
+		112 lcl|Conwentzia_psociformisscaf,
+		113 lcl|Inocellia_crassicornisC429,
+		114 Unnamed_Taxon59,
+		115 Unnamed_Taxon60,
+		116 Unnamed_Taxon61,
+		117 Unnamed_Taxon62,
+		118 Unnamed_Taxon63,
+		119 lcl|Epeorus_assimilisscaffold1,
+		120 Unnamed_Taxon64,
+		121 lcl|Ephemera_danicaC525843,
+		122 lcl|Pentachrysis_inaequalisC31,
+		123 lcl|Eurylophella_sp.scaffold10,
+		124 Unnamed_Taxon65,
+		125 Unnamed_Taxon66,
+		126 lcl|Isonychia_bicolorC401559,
+		127 lcl|Occasjapyx_japonicusC40700,
+		128 lcl|Baetis_pumilusC402014,
+		129 Unnamed_Taxon67,
+		130 Unnamed_Taxon68,
+		131 Unnamed_Taxon69,
+		132 Unnamed_Taxon70,
+		133 lcl|Zorotypus_caudelliC2397633,
+		134 lcl|Spercheus_emarginatusC4979,
+		135 lcl|Tanzaniophasma_sp.scaffold,
+		136 Unnamed_Taxon71,
+		137 lcl|Dineutes_sp.scaffold9799,
+		138 lcl|Gyrinus_marinusC432402,
+		139 Unnamed_Taxon72,
+		140 lcl|Byrrhus_pilulaC750473,
+		141 lcl|Triodia_sylvinascaffold299,
+		142 Unnamed_Taxon73,
+		143 Unnamed_Taxon74,
+		144 lcl|Frankliniella_cephalicaC39,
+		145 lcl|Calosoma_sp.scaffold3228,
+		146 lcl|Thrips_palmiscaffold5668,
+		147 Unnamed_Taxon75,
+		148 Unnamed_Taxon76,
+		149 lcl|Hydrochus_megaphallusscaff,
+		150 lcl|Trialeurodes_vaporariorumC,
+		151 Unnamed_Taxon77,
+		152 Unnamed_Taxon78,
+		153 Unnamed_Taxon79,
+		154 Unnamed_Taxon80,
+		155 Unnamed_Taxon81,
+		156 lcl|Graphocephala_fennahiC5050,
+		157 lcl|Hydrochara_caraboidesC4096,
+		158 lcl|Gyna_luridascaffold10111,
+		159 Unnamed_Taxon82,
+		160 Unnamed_Taxon83,
+		161 lcl|Cryptocercus_wrightiscaffo,
+		162 lcl|Mastotermes_darwiniensisC1,
+		163 Unnamed_Taxon84,
+		164 Unnamed_Taxon85,
+		165 lcl|Lamproblatta_albipalpusC13,
+		166 lcl|Okanagana_villosaC1067165,
+		167 Unnamed_Taxon86,
+		168 lcl|Blaberus_atroposC1391960,
+		169 lcl|Schulthesia_lampridiformis,
+		170 Unnamed_Taxon87,
+		171 Unnamed_Taxon88,
+		172 lcl|Hydroptilidae_sp.scaffold6,
+		173 lcl|Hydraena_nigritascaffold97,
+		174 lcl|Tricholepidion_gertschiC11,
+		175 Unnamed_Taxon89,
+		176 Unnamed_Taxon90,
+		177 Unnamed_Taxon91,
+		178 lcl|Planococcus_citriC491967,
+		179 lcl|Timema_cristinaeC549571,
+		180 lcl|Centrotus_cornutusC575532,
+		181 Unnamed_Taxon92,
+		182 lcl|Lagria_hirtaC373050,
+		183 lcl|Cercopis_vulnerataC517711,
+		184 Unnamed_Taxon93,
+		185 Unnamed_Taxon94,
+		186 lcl|Ectopsocus_briggsiscaffold,
+		187 lcl|Ips_typographusC217620,
+		188 Unnamed_Taxon95,
+		189 lcl|Cis_boletiscaffold10170,
+		190 Unnamed_Taxon96,
+		191 Unnamed_Taxon97,
+		192 lcl|Apachyus_charteceusC532719,
+		193 lcl|Gonolabis_marginalisC50304,
+		194 Unnamed_Taxon98,
+		195 lcl|Forficula_auriculariascaff,
+		196 lcl|Diplatyidae_gen.C399844,
+		197 Unnamed_Taxon99,
+		198 Unnamed_Taxon100,
+		199 lcl|Valenzuela_badiostigmaC185,
+		200 Unnamed_Taxon101,
+		201 lcl|Lithobius_forficatusC10856,
+		202 lcl|Phryganea_grandisC490268,
+		203 Unnamed_Taxon102,
+		204 lcl|Pteronarcys_sp.scaffold179,
+		205 Unnamed_Taxon103,
+		206 lcl|Bittacus_pilicornisC186071,
+		207 lcl|Aleochara_curtulaC180750,
+		208 Unnamed_Taxon104,
+		209 Unnamed_Taxon105,
+		210 Unnamed_Taxon106,
+		211 Unnamed_Taxon107,
+		212 Unnamed_Taxon108,
+		213 Unnamed_Taxon109,
+		214 Unnamed_Taxon110,
+		215 Unnamed_Taxon111,
+		216 lcl|Metatropis_rufescensC34611,
+		217 lcl|Notostira_elongataC409882,
+		218 Unnamed_Taxon112,
+		219 lcl|Aquarius_paludumscaffold85,
+		220 lcl|Hydrometra_aquaticascaffol,
+		221 Unnamed_Taxon113,
+		222 Unnamed_Taxon114,
+		223 Unnamed_Taxon115,
+		224 lcl|Eriocrania_cf.C630266,
+		225 lcl|Prorhinotermes_simplexC983,
+		226 lcl|Corythucha_ciliatascaffold,
+		227 lcl|Cimex_lectulariusC475704,
+		228 Unnamed_Taxon116,
+		229 lcl|Ctenolepisma_longicaudatas,
+		230 lcl|Thermobia_domesticascaffol,
+		231 Unnamed_Taxon117,
+		232 lcl|Menopon_gallinaescaffold41,
+		233 lcl|Liposcelis_bostrychophilas,
+		234 Unnamed_Taxon118,
+		235 lcl|Pyrrhocoris_apterusC784038,
+		236 Unnamed_Taxon119,
+		237 Unnamed_Taxon120,
+		238 Unnamed_Taxon121,
+		239 Unnamed_Taxon122,
+		240 Unnamed_Taxon123,
+		241 lcl|Geometra_papilionariaC3866,
+		242 lcl|Lepismachilis_ysignataC116,
+		243 lcl|Trigoniophthalmus_cf.C1222,
+		244 Unnamed_Taxon124,
+		245 lcl|Machilis_sacraC676878,
+		246 lcl|Machilis_hrabeiC946531,
+		247 lcl|Pedetontus_okajimaeC667437,
+		248 Unnamed_Taxon125,
+		249 lcl|Austroargiolestes_icterome,
+		250 lcl|Dilta_bitschiscaffold6461,
+		251 Unnamed_Taxon126,
+		252 Unnamed_Taxon127,
+		253 Unnamed_Taxon128,
+		254 Unnamed_Taxon129,
+		255 lcl|Speleonectes_tulumensissca,
+		256 lcl|Lepisma_saccharinaC982599,
+		257 Unnamed_Taxon130,
+		258 Unnamed_Taxon131,
+		259 Unnamed_Taxon132,
+		260 Unnamed_Taxon133,
+		261 Unnamed_Taxon134,
+		262 Unnamed_Taxon135,
+		263 Unnamed_Taxon136,
+		264 lcl|Hagiotata_hofmanniC999423,
+		265 lcl|Stagmatoptera_biocellataC1,
+		266 lcl|Oxyopsis_gracilisC916563,
+		267 lcl|Danuria_thunbergiC867539,
+		268 Unnamed_Taxon137,
+		269 lcl|Idolomantis_diabolicaC1551,
+		270 Unnamed_Taxon138,
+		271 lcl|Empusa_pennataC1245400,
+		272 lcl|Phyllocrania_paradoxaC1524,
+		273 Unnamed_Taxon139,
+		274 Unnamed_Taxon140,
+		275 Unnamed_Taxon141,
+		276 Unnamed_Taxon142,
+		277 lcl|Miomantis_binotataC580020,
+		278 Unnamed_Taxon143,
+		279 lcl|Parasphendale_sp.scaffold2,
+		280 lcl|Campodea_augensC626609,
+		281 Unnamed_Taxon144,
+		282 lcl|Heterochaeta_occidentaliss,
+		283 lcl|Phyllothelys_werneriC19194,
+		284 lcl|Pseudogalepsus_nigricoxaC7,
+		285 lcl|Mantis_religiosascaffold11,
+		286 Unnamed_Taxon145,
+		287 Unnamed_Taxon146,
+		288 lcl|Metallyticus_splendidusC12,
+		289 Unnamed_Taxon147,
+		290 Unnamed_Taxon148,
+		291 lcl|Liturgusa_sp.scaffold7352,
+		292 lcl|Brunneria_borealisC974181,
+		293 lcl|Orthoderella_ornatascaffol,
+		294 lcl|Thesprotia_graminisC607543,
+		295 lcl|Cheddikulama_stramineascaf,
+		296 Unnamed_Taxon149,
+		297 Unnamed_Taxon150,
+		298 Unnamed_Taxon151,
+		299 lcl|Lepidocampa_weberiC1064876,
+		300 lcl|Nicoletia_phytophilaC47414,
+		301 lcl|Catajapyx_aquilonarisscaff,
+		302 lcl|Atelura_formicariaC1782349,
+		303 Unnamed_Taxon152,
+		304 Unnamed_Taxon153,
+		305 Unnamed_Taxon154,
+		306 Unnamed_Taxon155,
+		307 Unnamed_Taxon156,
+		308 Unnamed_Taxon157,
+		309 Unnamed_Taxon158,
+		310 lcl|Dicyrtomina_leptothrixC462,
+		311 lcl|Tomocerus_cuspidatusscaffo,
+		312 lcl|Pogonognathellus_longicorn,
+		313 Unnamed_Taxon159,
+		314 lcl|Tetrodontophora_bielanensi,
+		315 lcl|Protaphorura_fimataC538324,
+		316 Unnamed_Taxon160,
+		317 lcl|Folsomia_candidaC288790,
+		318 lcl|Podura_aquaticascaffold367,
+		319 lcl|Bourletiella_hortensisscaf,
+		320 Unnamed_Taxon161,
+		321 Unnamed_Taxon162,
+		322 Unnamed_Taxon163,
+		323 lcl|Orchesella_cinctaC482300,
+		324 lcl|Exaireta_spinigeraC386777,
+		325 lcl|Sinella_curvisetascaffold2,
+		326 lcl|Heteromurus_nitidusscaffol,
+		327 Unnamed_Taxon164,
+		328 lcl|Machilontus_sp.C997277,
+		329 lcl|Meinertellus_cundinamarcen,
+		330 Unnamed_Taxon165,
+		331 Unnamed_Taxon166,
+		332 Unnamed_Taxon167,
+		333 Unnamed_Taxon168,
+		334 Unnamed_Taxon169,
+		335 Unnamed_Taxon170,
+		336 Unnamed_Taxon171,
+		337 Unnamed_Taxon172,
+		338 Unnamed_Taxon173,
+		339 Unnamed_Taxon174,
+		340 lcl|Diaeretus_essigellaescaffo,
+		341 lcl|Aphidius_colemaniscaffold1,
+		342 Unnamed_Taxon175,
+		343 lcl|Orussus_abietinusscaffold1,
+		344 lcl|Pediaspis_acerisC464901,
+		345 Unnamed_Taxon176,
+		346 Unnamed_Taxon177,
+		347 lcl|Megalodontes_cephalotessca,
+		348 lcl|Trichogramma_evanescenssca,
+		349 Unnamed_Taxon178,
+		350 lcl|Pergagrapta_politaC385187,
+		351 Unnamed_Taxon179,
+		352 Unnamed_Taxon180,
+		353 Unnamed_Taxon181,
+		354 Unnamed_Taxon182,
+		355 lcl|Katamenes_arbustorumC37953,
+		356 lcl|Odynerus_spinipesscaffold1,
+		357 lcl|Polistes_dominulusC481248,
+		358 Unnamed_Taxon183,
+		359 lcl|Vespula_germanicaC432306,
+		360 lcl|Vespa_crabroC547374,
+		361 lcl|Celonites_abbreviatusscaff,
+		362 Unnamed_Taxon184,
+		363 Unnamed_Taxon185,
+		364 Unnamed_Taxon186,
+		365 Unnamed_Taxon187,
+		366 Unnamed_Taxon188,
+		367 lcl|Eupelmus_urozonusscaffold2,
+		368 lcl|Perilampus_aeneusC418825,
+		369 Unnamed_Taxon189,
+		370 lcl|Torymus_bedeguarisscaffold,
+		371 lcl|Leucospis_dorsigeraC763024,
+		372 Unnamed_Taxon190,
+		373 lcl|Diglyphus_isaeaC356599,
+		374 lcl|Aphelinus_abdominalisscaff,
+		375 Unnamed_Taxon191,
+		376 lcl|Glycaspis_brimblecombeiC13,
+		377 lcl|Eurytoma_brunniventrisC335,
+		378 Unnamed_Taxon192,
+		379 lcl|Pachycrepoideus_vindemmiae,
+		380 lcl|Pseudogonalos_hahniC251065,
+		381 Unnamed_Taxon193,
+		382 Unnamed_Taxon194,
+		383 lcl|Nematus_ribesiiC338851,
+		384 lcl|Xyela_alpigenascaffold7998,
+		385 lcl|Tenthredo_koehleriC322835,
+		386 Unnamed_Taxon195,
+		387 Unnamed_Taxon196,
+		388 Unnamed_Taxon197,
+		389 lcl|Methocha_articulataC383631,
+		390 Unnamed_Taxon198,
+		391 lcl|Tiphia_femorataC242261,
+		392 lcl|Meria_tripunctatascaffold2,
+		393 Unnamed_Taxon199,
+		394 lcl|Dasymutilla_gloriosaC31934,
+		395 lcl|Chyphotes_sp.scaffold1520,
+		396 Unnamed_Taxon200,
+		397 Unnamed_Taxon201,
+		398 Unnamed_Taxon202,
+		399 Unnamed_Taxon203,
+		400 Unnamed_Taxon204,
+		401 Unnamed_Taxon205,
+		402 Unnamed_Taxon206,
+		403 lcl|Monosapyga_clavicornisscaf,
+		404 lcl|Sapyga_quinquepunctatascaf,
+		405 lcl|Sapygina_decemguttataC3231,
+		406 Unnamed_Taxon207,
+		407 lcl|Gasteruption_tournieriscaf,
+		408 lcl|Perla_marginataC630093,
+		409 lcl|Brachygaster_minutusC84494,
+		410 Unnamed_Taxon208,
+		411 lcl|Bembix_rostrataC498997,
+		412 lcl|Sphecius_convallisC289972,
+		413 Unnamed_Taxon209,
+		414 Unnamed_Taxon210,
+		415 Unnamed_Taxon211,
+		416 Unnamed_Taxon212,
+		417 Unnamed_Taxon213,
+		418 Unnamed_Taxon214,
+		419 lcl|Hedychridium_ardensscaffol,
+		420 lcl|Hedychrum_nobilescaffold68,
+		421 lcl|Parnopes_grandiorscaffold2,
+		422 Unnamed_Taxon215,
+		423 Unnamed_Taxon216,
+		424 lcl|Trichrysis_cyaneascaffold6,
+		425 Unnamed_Taxon217,
+		426 Unnamed_Taxon218,
+		427 lcl|Chrysis_analisscaffold7700,
+		428 lcl|Chrysura_austriacaC331954,
+		429 Unnamed_Taxon219,
+		430 Unnamed_Taxon220,
+		431 lcl|Chrysis_viridulascaffold85,
+		432 lcl|Chrysis_fasciataC245273,
+		433 lcl|Chrysis_terminataC295186,
+		434 lcl|Chrysis_mixtascaffold10811,
+		435 lcl|Cephalonomia_tarsalisC2592,
+		436 Unnamed_Taxon221,
+		437 lcl|Cleptes_nitidulusC406598,
+		438 lcl|Smicromyrme_rufipesC278927,
+		439 Unnamed_Taxon222,
+		440 Unnamed_Taxon223,
+		441 lcl|Pseudomalus_pusillusscaffo,
+		442 lcl|Nysson_nigerC241135,
+		443 Unnamed_Taxon224,
+		444 Unnamed_Taxon225,
+		445 lcl|Ceratina_chalybaeaC247017,
+		446 lcl|Tetralonia_macroglossaC431,
+		447 Unnamed_Taxon226,
+		448 Unnamed_Taxon227,
+		449 Unnamed_Taxon228,
+		450 Unnamed_Taxon229,
+		451 Unnamed_Taxon230,
+		452 Unnamed_Taxon231,
+		453 Unnamed_Taxon232,
+		454 lcl|Xylocopa_violaceaC372371,
+		455 lcl|Psithyrus_rupestrisC305060,
+		456 lcl|Systropha_curvicornisC5219,
+		457 Unnamed_Taxon233,
+		458 Unnamed_Taxon234,
+		459 Unnamed_Taxon235,
+		460 Unnamed_Taxon236,
+		461 lcl|Chelostoma_florisomneC3139,
+		462 lcl|Osmia_cornutaC426167,
+		463 lcl|Heriades_truncorumC353036,
+		464 lcl|Dioxys_cinctascaffold14270,
+		465 Unnamed_Taxon237,
+		466 Unnamed_Taxon238,
+		467 lcl|Coelioxys_conoideaC456762,
+		468 lcl|Megachile_willughbiellaC38,
+		469 lcl|Stelis_punctulatissimaC510,
+		470 Unnamed_Taxon239,
+		471 Unnamed_Taxon240,
+		472 lcl|Colletes_cuniculariusC4559,
+		473 Unnamed_Taxon241,
+		474 Unnamed_Taxon242,
+		475 Unnamed_Taxon243,
+		476 lcl|Sphecodes_albilabrisscaffo,
+		477 lcl|Halictus_quadricinctusC397,
+		478 lcl|Lasioglossum_xanthopusscaf,
+		479 lcl|Nomia_diversipesC362051,
+		480 lcl|Hylaeus_variegatusscaffold,
+		481 Unnamed_Taxon244,
+		482 lcl|Cerceris_arenariaC281692,
+		483 Unnamed_Taxon245,
+		484 lcl|Philanthus_triangulumC3063,
+		485 lcl|Macropis_fulvipesscaffold4,
+		486 Unnamed_Taxon246,
+		487 Unnamed_Taxon247,
+		488 Unnamed_Taxon248,
+		489 lcl|Epeolus_variegatusC345195,
+		490 lcl|Nomada_lathburianaC394349,
+		491 lcl|Euglossa_dilemmascaffold50,
+		492 lcl|Thyreus_orbatusscaffold824,
+		493 Unnamed_Taxon249,
+		494 Unnamed_Taxon250,
+		495 lcl|Pemphredon_lugensC364726,
+		496 lcl|Diodontus_minutusscaffold1,
+		497 lcl|Psenulus_fuscipennisscaffo,
+		498 Unnamed_Taxon251,
+		499 Unnamed_Taxon252,
+		500 Unnamed_Taxon253,
+		501 Unnamed_Taxon254,
+		502 Unnamed_Taxon255,
+		503 lcl|Auplopus_albifronsC258270,
+		504 lcl|Heterodontonyx_sp.scaffold,
+		505 lcl|Episyron_rufipesC267464,
+		506 Unnamed_Taxon256,
+		507 lcl|Colpa_sexmaculataC361000,
+		508 lcl|Scolia_hirtascaffold5248,
+		509 Unnamed_Taxon257,
+		510 lcl|Holopyga_generosaC266938,
+		511 lcl|Pompilus_cinereusC313591,
+		512 lcl|Stephanus_serratorC598667,
+		513 Unnamed_Taxon258,
+		514 lcl|Trypoxylon_figulusC210568,
+		515 lcl|Oxybelus_bipunctatusC38128,
+		516 Unnamed_Taxon259,
+		517 Unnamed_Taxon260,
+		518 Unnamed_Taxon261,
+		519 Unnamed_Taxon262,
+		520 lcl|Tachysphex_fulvitarsisscaf,
+		521 Unnamed_Taxon263,
+		522 lcl|Dinetus_pictusC274867,
+		523 lcl|Harpactus_elegansC365886,
+		524 Unnamed_Taxon264,
+		525 lcl|Gorytes_laticinctusC288643,
+		526 lcl|Stizoides_tridentatusscaff,
+		527 Unnamed_Taxon265,
+		528 lcl|Crabro_peltariusC219870,
+		529 lcl|Crossocerus_quadrimaculatu,
+		530 Unnamed_Taxon266,
+		531 Unnamed_Taxon267,
+		532 Unnamed_Taxon268,
+		533 lcl|Chalybion_californicumC318,
+		534 lcl|Sceliphron_curvatumC288203,
+		535 lcl|Isodontia_mexicanaC408720,
+		536 Unnamed_Taxon269,
+		537 lcl|Prionyx_kirbiiC362188,
+		538 Unnamed_Taxon270,
+		539 lcl|Sphex_funerariusscaffold95,
+		540 lcl|Podalonia_hirsutaC343703,
+		541 Unnamed_Taxon271,
+		542 Unnamed_Taxon272,
+		543 Unnamed_Taxon273,
+		544 Unnamed_Taxon274,
+		545 Unnamed_Taxon275,
+		546 lcl|Blasticotoma_filicetiC1379,
+		547 Unnamed_Taxon276,
+		548 lcl|Thyatira_batisscaffold1879,
+		549 lcl|Saturnia_pyriscaffold5851,
+		550 Unnamed_Taxon277,
+		551 Unnamed_Taxon278,
+		552 Unnamed_Taxon279,
+		553 lcl|Phragmatobia_fuliginosaC55,
+		554 lcl|Polygonia_c,
+		555 lcl|Parides_arcasC338429,
+		556 Unnamed_Taxon280,
+		557 Unnamed_Taxon281,
+		558 Unnamed_Taxon282,
+		559 lcl|Bicyclus_anynanaC614782,
+		560 lcl|Ptilinus_pectinicornisC562,
+		561 lcl|Pararge_aegeriaC419889,
+		562 lcl|Colias_croceusC509596,
+		563 Unnamed_Taxon283,
+		564 Unnamed_Taxon284,
+		565 lcl|Sminthurus_viridisC371370,
+		566 lcl|Yponomeuta_evonymellaC6349,
+		567 Unnamed_Taxon285,
+		568 Unnamed_Taxon286,
+		569 lcl|Polyommatus_icarusC441869,
+		570 lcl|Tineola_bisselliellaC31883,
+		571 lcl|Nemophora_degeerellascaffo,
+		572 Unnamed_Taxon287,
+		573 lcl|Cotesia_vestalisC244292,
+		574 lcl|Zygaena_faustaC395685,
+		575 Unnamed_Taxon288,
+		576 Unnamed_Taxon289,
+		577 Unnamed_Taxon290,
+		578 lcl|Diplectrona_sp.C322894,
+		579 lcl|Cheumatopsyche_sp.C367779,
+		580 Unnamed_Taxon291,
+		581 lcl|Psychomyia_flavidaC300039,
+		582 Unnamed_Taxon292,
+		583 Unnamed_Taxon293,
+		584 Unnamed_Taxon294,
+		585 Unnamed_Taxon295,
+		586 Unnamed_Taxon296,
+		587 lcl|Glyphotaelius_pellucidusC4,
+		588 lcl|Platycentropus_radiatussca,
+		589 lcl|Micrasema_watagaC444666,
+		590 Unnamed_Taxon297,
+		591 lcl|Ptilostomis_sp.C464004,
+		592 lcl|Cicindela_hybridaC391553,
+		593 lcl|Apatania_incertaC513153,
+		594 Unnamed_Taxon298,
+		595 lcl|Lepidostoma_togatumC613133,
+		596 lcl|Agapetus_hessiscaffold4911,
+		597 Unnamed_Taxon299,
+		598 lcl|Chimarra_sp.C405819,
+		599 Unnamed_Taxon300,
+		600 lcl|Nectopsyche_albidaC718077,
+		601 lcl|Leptocerus_americanusC4412,
+		602 Unnamed_Taxon301,
+		603 lcl|Gynaikothrips_ficorumC8427,
+		604 lcl|Aularches_miliarisscaffold,
+		605 Unnamed_Taxon302,
+		606 Unnamed_Taxon303,
+		607 Unnamed_Taxon304,
+		608 Unnamed_Taxon305,
+		609 Unnamed_Taxon306,
+		610 Unnamed_Taxon307,
+		611 Unnamed_Taxon308,
+		612 lcl|Velia_capraiC417519,
+		613 lcl|Ranatra_linearisC393088,
+		614 lcl|Ceuthophilus_sp.C1403470,
+		615 Unnamed_Taxon309,
+		616 Unnamed_Taxon310,
+		617 Unnamed_Taxon311,
+		618 Unnamed_Taxon312,
+		619 Unnamed_Taxon313,
+		620 Unnamed_Taxon314,
+		621 Unnamed_Taxon315,
+		622 lcl|Argia_fumipennisscaffold74,
+		623 Unnamed_Taxon316,
+		624 lcl|Diphlebia_lestoidesC580164,
+		625 lcl|Calopteryx_splendensC35301,
+		626 lcl|Pyrrhosoma_nymphulaC421513,
+		627 Unnamed_Taxon317,
+		628 Unnamed_Taxon318,
+		629 Unnamed_Taxon319,
+		630 lcl|Coenagrion_puellaC399049,
+		631 lcl|Enallagma_aspersumC487126,
+		632 lcl|Erythromma_najasC729130,
+		633 lcl|Ischnura_hastataC357417,
+		634 lcl|Lestes_sponsascaffold214,
+		635 Unnamed_Taxon320,
+		636 Unnamed_Taxon321,
+		637 Unnamed_Taxon322,
+		638 lcl|Cordulia_aeneaC440580,
+		639 Unnamed_Taxon323,
+		640 lcl|Epitheca_bimaculataC462849,
+		641 lcl|Epitheca_princepsC327792,
+		642 lcl|Eusynthemis_guttatascaffol,
+		643 Unnamed_Taxon324,
+		644 Unnamed_Taxon325,
+		645 Unnamed_Taxon326,
+		646 lcl|Dromogomphus_spinosusC4115,
+		647 lcl|Gomphus_rogersiscaffold759,
+		648 lcl|Ophiogomphus_ceciliaC39065,
+		649 Unnamed_Taxon327,
+		650 Unnamed_Taxon328,
+		651 lcl|Epiophlebia_superstesscaff,
+		652 lcl|Cordulegaster_boltoniiC509,
+		653 Unnamed_Taxon329,
+		654 lcl|Boyeria_irenescaffold6627,
+		655 lcl|Brachytron_pratenseC487863,
+		656 Unnamed_Taxon330,
+		657 Unnamed_Taxon331,
+		658 Unnamed_Taxon332,
+		659 Unnamed_Taxon333,
+		660 Unnamed_Taxon334,
+		661 Unnamed_Taxon335,
+		662 lcl|Leucorrhinia_caudalisC7168,
+		663 Unnamed_Taxon336,
+		664 lcl|Macromia_illinoiensisscaff,
+		665 lcl|Sympetrum_vicinumscaffold5,
+		666 lcl|Celithemis_elisaC393275,
+		667 Unnamed_Taxon337,
+		668 lcl|Tyriobapta_torridaC336709,
+		669 lcl|Zygonyx_irisscaffold847,
+		670 Unnamed_Taxon338,
+		671 lcl|Libellula_quadrimaculataC3,
+		672 lcl|Libellula_fulvaC426131,
+		673 lcl|Crocothemis_erythreaC48711,
+		674 lcl|Trithemis_kirbyiC275078,
+		675 lcl|Myrmecophilus_sp.scaffold9,
+		676 Unnamed_Taxon339,
+		677 Unnamed_Taxon340,
+		678 lcl|Xenophyes_metoponcusscaffo,
+		679 lcl|Xenophysella_greensladeaeC,
+		680 lcl|Tetrix_subulataC595561,
+		681 Unnamed_Taxon341,
+		682 Unnamed_Taxon342,
+		683 lcl|Gryllotalpa_sp.scaffold123,
+		684 lcl|Dryops_sp.C861740,
+		685 Unnamed_Taxon343,
+		686 lcl|Lepicerus_sp.scaffold23415,
+		687 lcl|Meloe_violaceusC238181,
+		688 Unnamed_Taxon344,
+		689 Unnamed_Taxon345,
+		690 lcl|Plea_minutissimaC708700,
+		691 Unnamed_Taxon346,
+		692 Unnamed_Taxon347,
+		693 lcl|Ergaula_capucinaC1790455,
+		694 lcl|Eucorydia_yasumatsuiscaffo,
+		695 Unnamed_Taxon348,
+		696 lcl|Grylloblatta_bifratrilecta,
+		697 Unnamed_Taxon349,
+		698 lcl|Galloisiana_nipponensisC54,
+		699 lcl|Galloisiana_yuasaiscaffold,
+		700 Unnamed_Taxon350,
+		701 Unnamed_Taxon351,
+		702 Unnamed_Taxon352,
+		703 lcl|Aretaon_asperrimusC770608,
+		704 lcl|Trachyaretaon_brueckneriC6,
+		705 lcl|Peruphasma_schulteiscaffol,
+		706 Unnamed_Taxon353,
+		707 Unnamed_Taxon354,
+		708 lcl|Prosarthria_teretrirostris,
+		709 lcl|Stenobothrus_lineatusscaff,
+		710 Unnamed_Taxon355,
+		711 lcl|Stenopelmatus_sp.C1248842,
+		712 lcl|Cyphoderris_sp.C2056140,
+		713 Unnamed_Taxon356,
+		714 Unnamed_Taxon357,
+		715 Unnamed_Taxon358,
+		716 Unnamed_Taxon359,
+		717 lcl|Apteroperla_tikumanaC36375,
+		718 lcl|Scopura_montanaC508526,
+		719 lcl|Cosmioperla_kunascaffold40,
+		720 Unnamed_Taxon360,
+		721 Unnamed_Taxon361,
+		722 Unnamed_Taxon362,
+		723 lcl|Catara_rugosicollisC738986,
+		724 Unnamed_Taxon363,
+		725 lcl|Shelfordella_lateralisC180,
+		726 lcl|Periplaneta_americanaC1119,
+		727 lcl|Nauphoeta_cinereascaffold2,
+		728 Unnamed_Taxon364,
+		729 Unnamed_Taxon365,
+		730 Unnamed_Taxon366,
+		731 lcl|Paratemnopteryx_couloniana,
+		732 lcl|Symploce_sp.C1335960,
+		733 lcl|Blattella_germanicaC112193,
+		734 lcl|Conocephalus_dorsalisC6896,
+		735 Unnamed_Taxon367,
+		736 Unnamed_Taxon368,
+		737 lcl|Trinotoperla_montanascaffo,
+		738 Unnamed_Taxon369,
+		739 lcl|Aposthonia_japonicaC108447,
+		740 lcl|Haploembia_palauiscaffold1,
+		741 Unnamed_Taxon370,
+		742 Unnamed_Taxon371,
+		743 lcl|Ptychoptera_contaminataC29,
+		744 lcl|Xya_sp.C1066640,
+		745 Unnamed_Taxon372,
+		746 Unnamed_Taxon373,
+		747 Unnamed_Taxon374,
+		748 lcl|Elaphrus_aureusscaffold353,
+		749 lcl|Hallomenus_binotatusC27876,
+		750 lcl|Diestrammena_asynamoraC101,
+		751 Unnamed_Taxon375,
+		752 lcl|Magicicada_septendecimC110,
+		753 lcl|Magicicada_tredecimC105141;
+	TREE 'Imported tree 0+' = (2);
+	TREE 'Imported tree 1+' = (3);
+	TREE 'Imported tree 2+' = (4);
+	TREE 'Imported tree 3+' = (5);
+	TREE 'Imported tree 4+' = (6);
+	TREE 'Imported tree 5+' = (7);
+	TREE 'Imported tree 6+' = (8);
+	TREE 'Imported tree 7+' = (9);
+	TREE 'Imported tree 8+' = (10);
+	TREE 'Imported tree 9+' = (11);
+	TREE 'Imported tree 10+' = (12);
+	TREE 'Imported tree 11+' = (13);
+	TREE 'Imported tree 12+' = (14);
+	TREE 'Imported tree 13+' = (15);
+	TREE 'Imported tree 14+' = (16);
+	TREE 'Imported tree 24+' = (23);
+	TREE 'Imported tree 26+' = (25);
+	TREE 'Imported tree 27+' = (26);
+	TREE 'Imported tree 29+' = (28);
+	TREE 'Imported tree 38+' = (32);
+	TREE 'Imported tree 39+' = (33);
+	TREE 'Imported tree 40+' = (34);
+	TREE 'Imported tree 41+' = (35);
+	TREE 'Imported tree 42+' = (36);
+	TREE 'Imported tree 43+' = (37);
+	TREE 'Imported tree 44+' = (38);
+	TREE 'Imported tree 50+' = (42);
+	TREE 'Imported tree 52+' = (44);
+	TREE 'Imported tree 58+' = (47);
+	TREE 'Imported tree 65+' = (51);
+	TREE 'Imported tree 67+' = (53);
+	TREE 'Imported tree 73+' = (56);
+	TREE 'Imported tree 75+' = (58);
+	TREE 'Imported tree 76+' = (59);
+	TREE 'Imported tree 77+' = (60);
+	TREE 'Imported tree 81+' = (63);
+	TREE 'Imported tree 91+' = (67);
+	TREE 'Imported tree 92+' = (68);
+	TREE 'Imported tree 93+' = (69);
+	TREE 'Imported tree 102+' = (74);
+	TREE 'Imported tree 103+' = (75);
+	TREE 'Imported tree 104+' = (76);
+	TREE 'Imported tree 105+' = (77);
+	TREE 'Imported tree 113+' = (82);
+	TREE 'Imported tree 119+' = (85);
+	TREE 'Imported tree 120+' = (86);
+	TREE 'Imported tree 121+' = (87);
+	TREE 'Imported tree 122+' = (88);
+	TREE 'Imported tree 123+' = (89);
+	TREE 'Imported tree 124+' = (90);
+	TREE 'Imported tree 136+' = (97);
+	TREE 'Imported tree 137+' = (98);
+	TREE 'Imported tree 139+' = (100);
+	TREE 'Imported tree 144+' = (103);
+	TREE 'Imported tree 151+' = (106);
+	TREE 'Imported tree 152+' = (107);
+	TREE 'Imported tree 153+' = (108);
+	TREE 'Imported tree 154+' = (109);
+	TREE 'Imported tree 165+' = (115);
+	TREE 'Imported tree 166+' = (116);
+	TREE 'Imported tree 167+' = (117);
+	TREE 'Imported tree 168+' = (118);
+	TREE 'Imported tree 169+' = (119);
+	TREE 'Imported tree 171+' = (121);
+	TREE 'Imported tree 178+' = (125);
+	TREE 'Imported tree 179+' = (126);
+	TREE 'Imported tree 186+' = (130);
+	TREE 'Imported tree 187+' = (131);
+	TREE 'Imported tree 188+' = (132);
+	TREE 'Imported tree 189+' = (133);
+	TREE 'Imported tree 195+' = (137);
+	TREE 'Imported tree 200+' = (140);
+	TREE 'Imported tree 206+' = (143);
+	TREE 'Imported tree 207+' = (144);
+	TREE 'Imported tree 215+' = (148);
+	TREE 'Imported tree 216+' = (149);
+	TREE 'Imported tree 220+' = (152);
+	TREE 'Imported tree 221+' = (153);
+	TREE 'Imported tree 222+' = (154);
+	TREE 'Imported tree 223+' = (155);
+	TREE 'Imported tree 224+' = (156);
+	TREE 'Imported tree 230+' = (160);
+	TREE 'Imported tree 231+' = (161);
+	TREE 'Imported tree 235+' = (164);
+	TREE 'Imported tree 236+' = (165);
+	TREE 'Imported tree 240+' = (168);
+	TREE 'Imported tree 247+' = (171);
+	TREE 'Imported tree 248+' = (172);
+	TREE 'Imported tree 255+' = (176);
+	TREE 'Imported tree 256+' = (177);
+	TREE 'Imported tree 257+' = (178);
+	TREE 'Imported tree 263+' = (182);
+	TREE 'Imported tree 271+' = (185);
+	TREE 'Imported tree 272+' = (186);
+	TREE 'Imported tree 276+' = (189);
+	TREE 'Imported tree 278+' = (191);
+	TREE 'Imported tree 279+' = (192);
+	TREE 'Imported tree 283+' = (195);
+	TREE 'Imported tree 291+' = (198);
+	TREE 'Imported tree 292+' = (199);
+	TREE 'Imported tree 294+' = (201);
+	TREE 'Imported tree 299+' = (204);
+	TREE 'Imported tree 301+' = (206);
+	TREE 'Imported tree 308+' = (209);
+	TREE 'Imported tree 309+' = (210);
+	TREE 'Imported tree 310+' = (211);
+	TREE 'Imported tree 311+' = (212);
+	TREE 'Imported tree 312+' = (213);
+	TREE 'Imported tree 313+' = (214);
+	TREE 'Imported tree 314+' = (215);
+	TREE 'Imported tree 315+' = (216);
+	TREE 'Imported tree 319+' = (219);
+	TREE 'Imported tree 324+' = (222);
+	TREE 'Imported tree 325+' = (223);
+	TREE 'Imported tree 326+' = (224);
+	TREE 'Imported tree 335+' = (229);
+	TREE 'Imported tree 340+' = (232);
+	TREE 'Imported tree 345+' = (235);
+	TREE 'Imported tree 347+' = (237);
+	TREE 'Imported tree 348+' = (238);
+	TREE 'Imported tree 349+' = (239);
+	TREE 'Imported tree 350+' = (240);
+	TREE 'Imported tree 351+' = (241);
+	TREE 'Imported tree 357+' = (245);
+	TREE 'Imported tree 364+' = (249);
+	TREE 'Imported tree 371+' = (252);
+	TREE 'Imported tree 372+' = (253);
+	TREE 'Imported tree 373+' = (254);
+	TREE 'Imported tree 374+' = (255);
+	TREE 'Imported tree 378+' = (258);
+	TREE 'Imported tree 379+' = (259);
+	TREE 'Imported tree 380+' = (260);
+	TREE 'Imported tree 381+' = (261);
+	TREE 'Imported tree 382+' = (262);
+	TREE 'Imported tree 383+' = (263);
+	TREE 'Imported tree 384+' = (264);
+	TREE 'Imported tree 392+' = (269);
+	TREE 'Imported tree 394+' = (271);
+	TREE 'Imported tree 400+' = (274);
+	TREE 'Imported tree 401+' = (275);
+	TREE 'Imported tree 402+' = (276);
+	TREE 'Imported tree 403+' = (277);
+	TREE 'Imported tree 405+' = (279);
+	TREE 'Imported tree 410+' = (282);
+	TREE 'Imported tree 420+' = (287);
+	TREE 'Imported tree 421+' = (288);
+	TREE 'Imported tree 423+' = (290);
+	TREE 'Imported tree 424+' = (291);
+	TREE 'Imported tree 437+' = (297);
+	TREE 'Imported tree 438+' = (298);
+	TREE 'Imported tree 439+' = (299);
+	TREE 'Imported tree 448+' = (304);
+	TREE 'Imported tree 449+' = (305);
+	TREE 'Imported tree 450+' = (306);
+	TREE 'Imported tree 451+' = (307);
+	TREE 'Imported tree 452+' = (308);
+	TREE 'Imported tree 453+' = (309);
+	TREE 'Imported tree 454+' = (310);
+	TREE 'Imported tree 460+' = (314);
+	TREE 'Imported tree 465+' = (317);
+	TREE 'Imported tree 472+' = (321);
+	TREE 'Imported tree 473+' = (322);
+	TREE 'Imported tree 474+' = (323);
+	TREE 'Imported tree 483+' = (328);
+	TREE 'Imported tree 490+' = (331);
+	TREE 'Imported tree 491+' = (332);
+	TREE 'Imported tree 492+' = (333);
+	TREE 'Imported tree 493+' = (334);
+	TREE 'Imported tree 494+' = (335);
+	TREE 'Imported tree 495+' = (336);
+	TREE 'Imported tree 496+' = (337);
+	TREE 'Imported tree 497+' = (338);
+	TREE 'Imported tree 498+' = (339);
+	TREE 'Imported tree 499+' = (340);
+	TREE 'Imported tree 503+' = (343);
+	TREE 'Imported tree 508+' = (346);
+	TREE 'Imported tree 509+' = (347);
+	TREE 'Imported tree 513+' = (350);
+	TREE 'Imported tree 515+' = (352);
+	TREE 'Imported tree 516+' = (353);
+	TREE 'Imported tree 517+' = (354);
+	TREE 'Imported tree 518+' = (355);
+	TREE 'Imported tree 524+' = (359);
+	TREE 'Imported tree 534+' = (363);
+	TREE 'Imported tree 535+' = (364);
+	TREE 'Imported tree 536+' = (365);
+	TREE 'Imported tree 537+' = (366);
+	TREE 'Imported tree 538+' = (367);
+	TREE 'Imported tree 542+' = (370);
+	TREE 'Imported tree 547+' = (373);
+	TREE 'Imported tree 552+' = (376);
+	TREE 'Imported tree 557+' = (379);
+	TREE 'Imported tree 563+' = (382);
+	TREE 'Imported tree 564+' = (383);
+	TREE 'Imported tree 571+' = (387);
+	TREE 'Imported tree 572+' = (388);
+	TREE 'Imported tree 573+' = (389);
+	TREE 'Imported tree 575+' = (391);
+	TREE 'Imported tree 580+' = (394);
+	TREE 'Imported tree 585+' = (397);
+	TREE 'Imported tree 586+' = (398);
+	TREE 'Imported tree 587+' = (399);
+	TREE 'Imported tree 588+' = (400);
+	TREE 'Imported tree 589+' = (401);
+	TREE 'Imported tree 590+' = (402);
+	TREE 'Imported tree 591+' = (403);
+	TREE 'Imported tree 597+' = (407);
+	TREE 'Imported tree 604+' = (411);
+	TREE 'Imported tree 609+' = (414);
+	TREE 'Imported tree 610+' = (415);
+	TREE 'Imported tree 611+' = (416);
+	TREE 'Imported tree 612+' = (417);
+	TREE 'Imported tree 613+' = (418);
+	TREE 'Imported tree 614+' = (419);
+	TREE 'Imported tree 620+' = (423);
+	TREE 'Imported tree 621+' = (424);
+	TREE 'Imported tree 623+' = (426);
+	TREE 'Imported tree 624+' = (427);
+	TREE 'Imported tree 628+' = (430);
+	TREE 'Imported tree 629+' = (431);
+	TREE 'Imported tree 642+' = (437);
+	TREE 'Imported tree 647+' = (440);
+	TREE 'Imported tree 648+' = (441);
+	TREE 'Imported tree 652+' = (444);
+	TREE 'Imported tree 653+' = (445);
+	TREE 'Imported tree 657+' = (448);
+	TREE 'Imported tree 658+' = (449);
+	TREE 'Imported tree 659+' = (450);
+	TREE 'Imported tree 660+' = (451);
+	TREE 'Imported tree 661+' = (452);
+	TREE 'Imported tree 662+' = (453);
+	TREE 'Imported tree 663+' = (454);
+	TREE 'Imported tree 669+' = (458);
+	TREE 'Imported tree 670+' = (459);
+	TREE 'Imported tree 671+' = (460);
+	TREE 'Imported tree 672+' = (461);
+	TREE 'Imported tree 680+' = (466);
+	TREE 'Imported tree 681+' = (467);
+	TREE 'Imported tree 689+' = (471);
+	TREE 'Imported tree 690+' = (472);
+	TREE 'Imported tree 692+' = (474);
+	TREE 'Imported tree 693+' = (475);
+	TREE 'Imported tree 694+' = (476);
+	TREE 'Imported tree 706+' = (482);
+	TREE 'Imported tree 708+' = (484);
+	TREE 'Imported tree 714+' = (487);
+	TREE 'Imported tree 715+' = (488);
+	TREE 'Imported tree 716+' = (489);
+	TREE 'Imported tree 725+' = (494);
+	TREE 'Imported tree 726+' = (495);
+	TREE 'Imported tree 737+' = (499);
+	TREE 'Imported tree 738+' = (500);
+	TREE 'Imported tree 739+' = (501);
+	TREE 'Imported tree 740+' = (502);
+	TREE 'Imported tree 741+' = (503);
+	TREE 'Imported tree 747+' = (507);
+	TREE 'Imported tree 752+' = (510);
+	TREE 'Imported tree 762+' = (514);
+	TREE 'Imported tree 767+' = (517);
+	TREE 'Imported tree 768+' = (518);
+	TREE 'Imported tree 769+' = (519);
+	TREE 'Imported tree 770+' = (520);
+	TREE 'Imported tree 772+' = (522);
+	TREE 'Imported tree 777+' = (525);
+	TREE 'Imported tree 782+' = (528);
+	TREE 'Imported tree 787+' = (531);
+	TREE 'Imported tree 788+' = (532);
+	TREE 'Imported tree 789+' = (533);
+	TREE 'Imported tree 795+' = (537);
+	TREE 'Imported tree 797+' = (539);
+	TREE 'Imported tree 805+' = (542);
+	TREE 'Imported tree 806+' = (543);
+	TREE 'Imported tree 807+' = (544);
+	TREE 'Imported tree 808+' = (545);
+	TREE 'Imported tree 809+' = (546);
+	TREE 'Imported tree 811+' = (548);
+	TREE 'Imported tree 816+' = (551);
+	TREE 'Imported tree 817+' = (552);
+	TREE 'Imported tree 818+' = (553);
+	TREE 'Imported tree 824+' = (557);
+	TREE 'Imported tree 825+' = (558);
+	TREE 'Imported tree 826+' = (559);
+	TREE 'Imported tree 836+' = (564);
+	TREE 'Imported tree 837+' = (565);
+	TREE 'Imported tree 841+' = (568);
+	TREE 'Imported tree 842+' = (569);
+	TREE 'Imported tree 850+' = (573);
+	TREE 'Imported tree 855+' = (576);
+	TREE 'Imported tree 856+' = (577);
+	TREE 'Imported tree 857+' = (578);
+	TREE 'Imported tree 861+' = (581);
+	TREE 'Imported tree 863+' = (583);
+	TREE 'Imported tree 864+' = (584);
+	TREE 'Imported tree 865+' = (585);
+	TREE 'Imported tree 866+' = (586);
+	TREE 'Imported tree 867+' = (587);
+	TREE 'Imported tree 873+' = (591);
+	TREE 'Imported tree 880+' = (595);
+	TREE 'Imported tree 887+' = (598);
+	TREE 'Imported tree 889+' = (600);
+	TREE 'Imported tree 897+' = (603);
+	TREE 'Imported tree 903+' = (606);
+	TREE 'Imported tree 904+' = (607);
+	TREE 'Imported tree 905+' = (608);
+	TREE 'Imported tree 906+' = (609);
+	TREE 'Imported tree 907+' = (610);
+	TREE 'Imported tree 908+' = (611);
+	TREE 'Imported tree 909+' = (612);
+	TREE 'Imported tree 915+' = (616);
+	TREE 'Imported tree 916+' = (617);
+	TREE 'Imported tree 917+' = (618);
+	TREE 'Imported tree 918+' = (619);
+	TREE 'Imported tree 919+' = (620);
+	TREE 'Imported tree 920+' = (621);
+	TREE 'Imported tree 921+' = (622);
+	TREE 'Imported tree 923+' = (624);
+	TREE 'Imported tree 930+' = (628);
+	TREE 'Imported tree 931+' = (629);
+	TREE 'Imported tree 932+' = (630);
+	TREE 'Imported tree 943+' = (636);
+	TREE 'Imported tree 944+' = (637);
+	TREE 'Imported tree 945+' = (638);
+	TREE 'Imported tree 947+' = (640);
+	TREE 'Imported tree 954+' = (644);
+	TREE 'Imported tree 955+' = (645);
+	TREE 'Imported tree 956+' = (646);
+	TREE 'Imported tree 962+' = (650);
+	TREE 'Imported tree 963+' = (651);
+	TREE 'Imported tree 967+' = (654);
+	TREE 'Imported tree 975+' = (657);
+	TREE 'Imported tree 976+' = (658);
+	TREE 'Imported tree 977+' = (659);
+	TREE 'Imported tree 978+' = (660);
+	TREE 'Imported tree 979+' = (661);
+	TREE 'Imported tree 980+' = (662);
+	TREE 'Imported tree 982+' = (664);
+	TREE 'Imported tree 989+' = (668);
+	TREE 'Imported tree 994+' = (671);
+	TREE 'Imported tree 1007+' = (677);
+	TREE 'Imported tree 1008+' = (678);
+	TREE 'Imported tree 1015+' = (682);
+	TREE 'Imported tree 1016+' = (683);
+	TREE 'Imported tree 1020+' = (686);
+	TREE 'Imported tree 1026+' = (689);
+	TREE 'Imported tree 1027+' = (690);
+	TREE 'Imported tree 1029+' = (692);
+	TREE 'Imported tree 1030+' = (693);
+	TREE 'Imported tree 1034+' = (696);
+	TREE 'Imported tree 1036+' = (698);
+	TREE 'Imported tree 1043+' = (701);
+	TREE 'Imported tree 1044+' = (702);
+	TREE 'Imported tree 1045+' = (703);
+	TREE 'Imported tree 1051+' = (707);
+	TREE 'Imported tree 1052+' = (708);
+	TREE 'Imported tree 1056+' = (711);
+	TREE 'Imported tree 1064+' = (714);
+	TREE 'Imported tree 1065+' = (715);
+	TREE 'Imported tree 1066+' = (716);
+	TREE 'Imported tree 1067+' = (717);
+	TREE 'Imported tree 1073+' = (721);
+	TREE 'Imported tree 1074+' = (722);
+	TREE 'Imported tree 1075+' = (723);
+	TREE 'Imported tree 1077+' = (725);
+	TREE 'Imported tree 1084+' = (729);
+	TREE 'Imported tree 1085+' = (730);
+	TREE 'Imported tree 1086+' = (731);
+	TREE 'Imported tree 1096+' = (736);
+	TREE 'Imported tree 1097+' = (737);
+	TREE 'Imported tree 1099+' = (739);
+	TREE 'Imported tree 1104+' = (742);
+	TREE 'Imported tree 1105+' = (743);
+	TREE 'Imported tree 1109+' = (746);
+	TREE 'Imported tree 1110+' = (747);
+	TREE 'Imported tree 1111+' = (748);
+	TREE 'Imported tree 1117+' = (752);
+	TREE Imported_tree_1119 = 753:0.0;
+	TREE Imported_tree_1120 = 18;
+	TREE Imported_tree_1121 = 18;
+	TREE Imported_tree_1122 = 18;
+	TREE Imported_tree_1123 = 18;
+	TREE Imported_tree_1124 = 18;
+	TREE Imported_tree_1125 = 18;
+
+END;
+
+
+Begin MESQUITE;
+		MESQUITESCRIPTVERSION 2;
+		TITLE AUTO;
+		tell ProjectCoordinator;
+		timeSaved 1396485618720;
+		getEmployee #mesquite.minimal.ManageTaxa.ManageTaxa;
+		tell It;
+			setID 0 1154002556985784265;
+		endTell;
+		getWindow;
+		tell It;
+			suppress;
+			setResourcesState true false 100;
+			setPopoutState 400;
+			setExplanationSize 0;
+			setAnnotationSize 0;
+			setFontIncAnnot 0;
+			setFontIncExp 0;
+			setSize 700 464;
+			setLocation 8 8;
+			setFont SanSerif;
+			setFontSize 10;
+			getToolPalette;
+			tell It;
+			endTell;
+			desuppress;
+		endTell;
+		endTell;
+end;
+
+

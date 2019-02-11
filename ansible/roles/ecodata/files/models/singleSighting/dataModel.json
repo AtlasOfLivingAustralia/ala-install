@@ -1,0 +1,194 @@
+{
+    "dataModel": [
+        {
+            "dataType": "date",
+            "description": "The date on which the sighting was made.",
+            "name": "surveyDate",
+            "dwcAttribute": "eventDate",
+            "validate": "required"
+        },
+        {
+            "dataType": "time",
+            "description": "The time at which the sighting was made.",
+            "name": "surveyStartTime",
+            "dwcAttribute": "eventTime"
+        },
+        {
+            "dataType": "text",
+            "description": "General remarks about the survey event, including any characteristic site features, conditions, etc.",
+            "name": "notes",
+            "dwcAttribute": "eventRemarks"
+        },
+        {
+            "dataType": "text",
+            "description": "The name of the person who is attributed with making the sighting.",
+            "name": "recordedBy",
+            "dwcAttribute": "recordedBy"
+        },
+        {
+            "dataType": "geoMap",
+            "name": "location",
+            "columns": [
+                {
+                    "source": "locationLatitude",
+                    "dwcAttribute": "verbatimLatitude"
+                },
+                {
+                    "source": "locationLongitude",
+                    "dwcAttribute": "verbatimLongitude"
+                }
+            ],
+            "dwcAttribute": "verbatimCoordinates",
+            "validate": "required"
+        },
+        {
+            "dataType": "species",
+            "description": "The species name of the plant, animal or fungus observed.",
+            "name": "species1",
+            "dwcAttribute": "scientificName",
+            "validate": "required"
+        },
+        {
+            "dataType": "number",
+            "description": "The number of individuals or colonies (for certain insects).",
+            "name": "individualCount1",
+            "dwcAttribute": "individualCount",
+            "validate": "min[0]"
+        },
+        {
+            "dataType": "text",
+            "description": "How certain are you that you have correctly identified your sighting? Only choose 'certain' if you are 100% sure.",
+            "name": "identificationConfidence1",
+            "constraints": [
+                "Certain",
+                "Uncertain"
+            ]
+        },
+        {
+            "dataType": "text",
+            "description": "Observation notes about the record.",
+            "name": "comments1",
+            "dwcAttribute": "notes"
+        },
+        {
+            "dataType": "image",
+            "description": "Upload a photo taken of the species at the time of the record. This is essential for verification of the record.",
+            "name": "sightingPhoto1",
+            "validate": "required"
+        }
+    ],
+    "modelName": "ad-hoc_species_sightings",
+    "record": "true",
+    "viewModel": [
+        {
+            "items": [{
+                "source": "Record your individual sightings of species in the project region.",
+                "computed": null,
+                "type": "literal"
+            }],
+            "type": "row"
+        },
+        {
+            "items": [
+                {
+                    "items": [
+                        {
+                            "source": "<h4>Step 1: Upload one or more of the best images of your sighting.<\/h4><i>This is strongly recommended so that the record can be validated and used in scientific work.<\/i>",
+                            "computed": null,
+                            "type": "literal"
+                        },
+                        {
+                            "source": "sightingPhoto1",
+                            "computed": null,
+                            "preLabel": "Sighting photo",
+                            "type": "image"
+                        },
+                        {
+                            "source": "<h4>Step 2: Check & update or Record the details of your sighting.<\/h4>",
+                            "computed": null,
+                            "type": "literal"
+                        },
+                        {
+                            "source": "<h3>Sighting Event Information<\/h3>",
+                            "computed": null,
+                            "type": "literal"
+                        },
+                        {
+                            "source": "surveyDate",
+                            "computed": null,
+                            "preLabel": "Survey date",
+                            "type": "date"
+                        },
+                        {
+                            "source": "surveyStartTime",
+                            "computed": null,
+                            "preLabel": "Survey start time",
+                            "type": "time"
+                        },
+                        {
+                            "source": "notes",
+                            "computed": null,
+                            "preLabel": "Notes",
+                            "type": "textarea"
+                        },
+                        {
+                            "source": "recordedBy",
+                            "computed": null,
+                            "preLabel": "Recorded by",
+                            "type": "text"
+                        },
+                        {
+                            "source": "<h3>Single Species Sighting<\/h3>",
+                            "computed": null,
+                            "type": "literal"
+                        },
+                        {
+                            "source": "species1",
+                            "computed": null,
+                            "preLabel": "Species name",
+                            "type": "autocomplete"
+                        },
+                        {
+                            "source": "<i>Start typing a common or scientific name.<\/i>",
+                            "computed": null,
+                            "type": "literal"
+                        },
+                        {
+                            "source": "identificationConfidence1",
+                            "computed": null,
+                            "preLabel": "Are you confident of the species identification?",
+                            "type": "selectOne"
+                        },
+                        {
+                            "source": "individualCount1",
+                            "computed": null,
+                            "preLabel": "How many individuals did you see?",
+                            "type": "number"
+                        },
+                        {
+                            "source": "comments1",
+                            "computed": null,
+                            "preLabel": "Comments",
+                            "type": "textarea"
+                        }
+                    ],
+                    "computed": null,
+                    "type": "col"
+                },
+                {
+                    "items": [{
+                        "orientation": "vertical",
+                        "source": "location",
+                        "computed": null,
+                        "type": "geoMap",
+                        "readonly": true
+                    }],
+                    "computed": null,
+                    "type": "col"
+                }
+            ],
+            "class": "output-section",
+            "type": "row"
+        }
+    ]
+}

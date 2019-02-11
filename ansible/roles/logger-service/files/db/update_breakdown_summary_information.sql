@@ -1,10 +1,12 @@
--- This trigger is called after inserts to the log_detail table. It updates the information in the following summary tables:
+-- This trigger is called after inserts to the log_detail table.
+-- It updates (increments) the totals in the following summary tables:
 -- event_summary_totals
 -- event_summary_breakdown_reason
 -- event_summary_breakdown_reason_entity
 -- event_summary_breakdown_email
 -- event_summary_breakdown_email_entity
 -- event_summary_breakdown_reason_source_entity
+
 delimiter $$
 DROP TRIGGER if exists `logger`.`update_breakdown_summary_information`;
 CREATE
@@ -34,7 +36,8 @@ FOR EACH ROW
     SET uid_char = (SUBSTR(NEW.entity_uid, 0, 2));
 
     -- get corresponding information from log_event table
-    SELECT le.month, le.log_event_type_id, IFNULL(le.log_reason_type_id,-1), IFNULL(le.log_source_type_id,-1),le.user_email FROM log_event le
+    SELECT le.month, le.log_event_type_id, IFNULL(le.log_reason_type_id,-1), IFNULL(le.log_source_type_id,-1),le.user_email
+    FROM log_event le
     WHERE id = NEW.log_event_id
     INTO new_month, new_log_event_type_id, new_log_reason_type_id, new_log_source_type_id, new_user_email;
 

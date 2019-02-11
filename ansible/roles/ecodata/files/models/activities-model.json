@@ -1,0 +1,42 @@
+{
+    "activities": [
+        {
+            "outputs": ["Single Sighting"],
+            "outputConfig": [
+                {
+                    "outputName": "Single Sighting",
+                    "optional": false,
+                    "collapsedByDefault": false
+                }
+            ],
+            "name": "Single Sighting",
+            "type": "Activity",
+            "category": "Assessment & monitoring",
+            "minOptionalSectionsCompleted": 1
+        },
+        {
+            "outputs": ["Multiple species sightings"],
+            "outputConfig": [{
+                "outputName": "Multiple species sightings",
+                "optional": false,
+                "collapsedByDefault": false
+            }],
+            "name": "Multiple Sightings",
+            "type": "Activity",
+            "category": "Assessment & monitoring",
+            "minOptionalSectionsCompleted": 1
+        }
+    ],
+    "outputs": [
+        {
+            "template": "singleSighting",
+            "scores": [],
+            "name": "Single Sighting"
+        },
+        {
+            "template": "singleSiteMultiSpeciesSightings",
+            "scores": [],
+            "name": "Multiple species sightings"
+        }
+    ]
+}
