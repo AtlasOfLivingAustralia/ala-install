@@ -82,6 +82,13 @@
     - properties
     - solr7_create_cores
 
+- name: Set up SOLR Biocache schema
+  template: src={{ role_path}}//../solrcloud_config/templates/biocache_schema.xml dest={{ data_dir }}/solr/data/biocache/conf/schema.xml owner=solr group=solr
+  tags:
+    - solr7
+    - properties
+    - solr7_create_cores
+
 - name: set data ownership [all data is owned by the unix user solr]
   file: path="{{ data_dir }}/solr/" owner=solr  group=solr recurse=true
   tags:

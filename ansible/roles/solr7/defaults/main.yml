@@ -1,4 +1,5 @@
----
+# Allow dynamic solr fields in the biocache
+dynamic_solr_schema_biocache: false
 # By default bind the solr jetty server to a single interface/IP for security
 # Only set this to true if access to solr is required for other servers and you know the access is well firewalled
 solr_bind_jetty_host: true

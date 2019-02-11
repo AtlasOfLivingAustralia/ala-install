@@ -82,6 +82,24 @@
     - properties
     - solr5_create_cores
 
+- name: Set up SOLR Biocache schema
+  template: src={{ role_path}}//../solrcloud_config/templates/biocache_schema.xml dest={{ data_dir }}/solr/data/biocache/conf/schema.xml owner=solr group=solr
+  tags:
+    - solr5
+    - properties
+    - solr5_create_cores
+
+- name: Remove any old managed schemas
+  file: path={{ data_dir }}/solr/data/{{ item }}/conf/managed-schema state=absent
+  with_items:
+    - "biocache"
+    - "bie"
+    - "bie-offline"
+  tags:
+    - solr5
+    - properties
+    - solr5_create_cores
+
 - name: set data ownership [all data is owned by solr]
   file: path="{{ data_dir }}/solr/" owner=solr  group=solr recurse=true
   tags:

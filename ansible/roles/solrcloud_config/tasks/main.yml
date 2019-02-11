@@ -7,6 +7,23 @@
   tags:
     - solrcloud_config
 
+
+- name: Set up SOLR Biocache schema
+  template: src=biocache_schema.xml dest={{ data_dir }}/solr_config/biocache/conf/schema.xml owner=solr group=solr
+  tags:
+    - solrcloud_config
+
+
+- name: Remove any old managed schemas
+  file: path={{ data_dir }}/solr/data/{{ item }}/conf/managed-schema state=absent
+  with_items:
+  - "biocache"
+  - "bie"
+  - "bie-offline"
+  tags:
+  - solrcloud_config
+
+
 - name: Make zkcli.sh world-readable-writable-executable
   shell: "chmod 777 /opt/solr/server/scripts/cloud-scripts/zkcli.sh"
   tags:
