@@ -50,7 +50,7 @@
   template: src={{ item }} dest={{data_dir}}/phylolink/config/
   with_items:
     - "logback.groovy"
-    - "phylolink.groovy"
+    - "phylolink-config.groovy"
     - "phylolink-config.properties"
   tags:
     - deploy
