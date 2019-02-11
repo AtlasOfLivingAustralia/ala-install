@@ -6,6 +6,16 @@
     - packages
     - tomcat
 
+- name: Install universe repository for tomcat7 install
+  apt_repository:
+    repo: deb http://archive.ubuntu.com/ubuntu xenial universe
+    state: present
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "18.04" and tomcat == "tomcat7"
+  tags:
+  - packages
+  - tomcat
+
+
 - name: install libtcnative-1 (RedHat)
   yum: pkg={{libtcnative}} state=present
   when: ansible_os_family == "RedHat" and tomcat_apr == true
