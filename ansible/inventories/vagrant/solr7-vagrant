@@ -19,3 +19,5 @@ solr_bind_jetty_host=false
 
 # set to blank to avoid solr cloud mode
 solr_mode=
+
+use_docvalues=true

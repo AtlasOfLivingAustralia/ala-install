@@ -531,21 +531,14 @@
     <field name="rgt" type="tint" indexed="true" stored="true" multiValued="false" omitNorms="true" />
 
     <field name="kingdom" type="string" indexed="true" stored="true" multiValued="false" />
-
     <field name="phylum" type="string" indexed="true" stored="true" multiValued="false"  />
-
     <field name="class" type="string" indexed="true" stored="true" multiValued="false"/>
-
     <field name="order" type="string" indexed="true" stored="true" multiValued="false"/>
-
     <field name="family" type="string" indexed="true" stored="true" multiValued="false" />
-
     <field name="genus" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="genus_guid" type="string" indexed="true" stored="true" multiValued="false" />
-
     <field name="species_guid" type="string" indexed="true" stored="true" multiValued="false"  />
     <field name="species" type="string" indexed="true" stored="true" multiValued="false"  />
-
     <field name="subspecies_guid" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="subspecies_name" type="string" indexed="true" stored="true" multiValued="false" />
     <!-- Not actually being used in the search -->

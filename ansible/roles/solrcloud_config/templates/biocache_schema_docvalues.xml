@@ -1,0 +1,978 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<!--
+ This is the Solr schema file. This file should be named "schema.xml" and
+ should be in the conf directory under the solr home
+ (i.e. ./solr/conf/schema.xml by default)
+ or located where the classloader for the Solr webapp can find it.
+
+ This example schema is the recommended starting point for users.
+ It should be kept correct and concise, usable out-of-the-box.
+
+ For more information, on how to customize this file, please see
+ http://wiki.apache.org/solr/SchemaXml
+
+ PERFORMANCE NOTE: this schema includes many optional features and should not
+ be used for benchmarking.  To improve performance one could
+  - set stored="false" for all fields possible (esp large fields) when you
+    only need to search on the field but don't need to return the original
+    value.
+  - set indexed="false" if you don't need to search on the field, but only
+    return the field as a result of searching on other indexed fields.
+  - remove all unneeded copyField statements
+  - for best index size and searching performance, set "index" to false
+    for all general text fields, use copyField to copy them to the
+    catchall "text" field, and use that for searching.
+  - For maximum indexing performance, use the StreamingUpdateSolrServer
+    java client.
+  - Remember to run the JVM in server model, and use a higher logging level
+    that avoids logging every request
+-->
+
+<schema name="biocache" version="2.0">
+    <!-- attribute "name" is the name of this schema and is only used for display purposes.
+         Applications should change this to reflect the nature of the search collection.
+         version="1.2" is Solr's version number for the schema syntax and semantics.  It should
+         not normally be changed by applications.
+         1.0: multiValued attribute did not exist, all fields are multiValued by nature
+         1.1: multiValued attribute introduced, false by default
+         1.2: omitTermFreqAndPositions attribute introduced, true by default except for text fields.
+       -->
+
+<types>
+    <!-- field type definitions. The "name" attribute is
+       just a label to be used by field definitions.  The "class"
+       attribute and any other attributes determine the real
+       behavior of the fieldType.
+         Class names starting with "solr" refer to java classes in the
+       org.apache.solr.analysis package.
+    -->
+
+    <!-- The StrField type is not analyzed, but indexed/stored verbatim.
+       - StrField and TextField support an optional compressThreshold which
+       limits compression (if enabled in the derived fields) to values which
+       exceed a certain size (in characters).
+    -->
+    <fieldType name="string" class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
+
+    <!-- boolean type: "true" or "false" -->
+    <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" omitNorms="true"/>
+    <!--Binary data type. The data should be sent/retrieved in as Base64 encoded Strings -->
+    <fieldtype name="binary" class="solr.BinaryField"/>
+
+    <!-- The optional sortMissingLast and sortMissingFirst attributes are
+         currently supported on types that are sorted internally as strings.
+           This includes "string","boolean","sint","slong","sfloat","sdouble","pdate"
+       - If sortMissingLast="true", then a sort on this field will cause documents
+         without the field to come after documents with the field,
+         regardless of the requested sort order (asc or desc).
+       - If sortMissingFirst="true", then a sort on this field will cause documents
+         without the field to come before documents with the field,
+         regardless of the requested sort order.
+       - If sortMissingLast="false" and sortMissingFirst="false" (the default),
+         then default lucene sorting will be used which places docs without the
+         field first in an ascending sort and last in a descending sort.
+    -->
+
+    <!--
+      Default numeric field types. For faster range queries, consider the tint/tfloat/tlong/tdouble types.
+    -->
+    <fieldType name="int" class="solr.TrieIntField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
+    <fieldType name="float" class="solr.TrieFloatField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
+    <fieldType name="long" class="solr.TrieLongField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
+    <fieldType name="double" class="solr.TrieDoubleField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
+
+    <!--
+     Numeric field types that index each value at various levels of precision
+     to accelerate range queries when the number of values between the range
+     endpoints is large. See the javadoc for NumericRangeQuery for internal
+     implementation details.
+
+     Smaller precisionStep values (specified in bits) will lead to more tokens
+     indexed per value, slightly larger index size, and faster range queries.
+     A precisionStep of 0 disables indexing at different precision levels.
+    -->
+    <fieldType name="tint" class="solr.TrieIntField" precisionStep="8" omitNorms="true" positionIncrementGap="0"/>
+    <fieldType name="tfloat" class="solr.TrieFloatField" precisionStep="8" omitNorms="true" positionIncrementGap="0"/>
+    <fieldType name="tlong" class="solr.TrieLongField" precisionStep="8" omitNorms="true" positionIncrementGap="0"/>
+    <fieldType name="tdouble" class="solr.TrieDoubleField" precisionStep="8" omitNorms="true" positionIncrementGap="0"/>
+
+    <!-- The format for this date field is of the form 1995-12-31T23:59:59Z, and
+         is a more restricted form of the canonical representation of dateTime
+         http://www.w3.org/TR/xmlschema-2/#dateTime
+         The trailing "Z" designates UTC time and is mandatory.
+         Optional fractional seconds are allowed: 1995-12-31T23:59:59.999Z
+         All other components are mandatory.
+
+         Expressions can also be used to denote calculations that should be
+         performed relative to "NOW" to determine the value, ie...
+
+               NOW/HOUR
+                  ... Round to the start of the current hour
+               NOW-1DAY
+                  ... Exactly 1 day prior to now
+               NOW/DAY+6MONTHS+3DAYS
+                  ... 6 months and 3 days in the future from the start of
+                      the current day
+
+         Consult the DateField javadocs for more information.
+
+         Note: For faster range queries, consider the tdate type
+      -->
+    <fieldType name="date" class="solr.TrieDateField" omitNorms="true" precisionStep="0" positionIncrementGap="0"/>
+
+    <!-- A Trie based date field for faster date range queries and date faceting. -->
+    <fieldType name="tdate" class="solr.TrieDateField" omitNorms="true" precisionStep="6" positionIncrementGap="0"/>
+
+
+    <!--
+      Note:
+      These should only be used for compatibility with existing indexes (created with older Solr versions)
+      or if "sortMissingFirst" or "sortMissingLast" functionality is needed. Use Trie based fields instead.
+
+      Plain numeric field types that store and index the text
+      value verbatim (and hence don't support range queries, since the
+      lexicographic ordering isn't equal to the numeric ordering)
+    -->
+    <!--<fieldType name="pint" class="solr.IntField" omitNorms="true"/>-->
+    <!--<fieldType name="plong" class="solr.LongField" omitNorms="true"/>-->
+    <!--<fieldType name="pfloat" class="solr.FloatField" omitNorms="true"/>-->
+    <!--<fieldType name="pdouble" class="solr.DoubleField" omitNorms="true"/>-->
+    <!--<fieldType name="pdate" class="solr.DateField" sortMissingLast="true" omitNorms="true"/>-->
+
+
+    <!--
+      Note:
+      These should only be used for compatibility with existing indexes (created with older Solr versions)
+      or if "sortMissingFirst" or "sortMissingLast" functionality is needed. Use Trie based fields instead.
+
+      Numeric field types that manipulate the value into
+      a string value that isn't human-readable in its internal form,
+      but with a lexicographic ordering the same as the numeric ordering,
+      so that range queries work correctly.
+    -->
+    <!--<fieldType name="sint" class="solr.SortableIntField" sortMissingLast="true" omitNorms="true"/>-->
+    <!--<fieldType name="slong" class="solr.SortableLongField" sortMissingLast="true" omitNorms="true"/>-->
+    <!--<fieldType name="sfloat" class="solr.SortableFloatField" sortMissingLast="true" omitNorms="true"/>-->
+    <!--<fieldType name="sdouble" class="solr.SortableDoubleField" sortMissingLast="true" omitNorms="true"/>-->
+
+
+    <!-- The "RandomSortField" is not used to store or search any
+         data.  You can declare fields of this type it in your schema
+         to generate pseudo-random orderings of your docs for sorting
+         purposes.  The ordering is generated based on the field name
+         and the version of the index, As long as the index version
+         remains unchanged, and the same field name is reused,
+         the ordering of the docs will be consistent.
+         If you want different psuedo-random orderings of documents,
+         for the same version of the index, use a dynamicField and
+         change the name
+     -->
+    <fieldType name="random" class="solr.RandomSortField" indexed="true" />
+
+    <!-- solr.TextField allows the specification of custom text analyzers
+         specified as a tokenizer and a list of token filters. Different
+         analyzers may be specified for indexing and querying.
+
+         The optional positionIncrementGap puts space between multiple fields of
+         this type on the same document, with the purpose of preventing false phrase
+         matching across fields.
+
+         For more info on customizing your analyzer chain, please see
+         http://wiki.apache.org/solr/AnalyzersTokenizersTokenFilters
+     -->
+
+    <!-- One can also specify an existing Analyzer class that has a
+         default constructor via the class attribute on the analyzer element
+    <fieldType name="text_greek" class="solr.TextField">
+      <analyzer class="org.apache.lucene.analysis.el.GreekAnalyzer"/>
+    </fieldType>
+    -->
+
+    <!-- A text field that only splits on whitespace for exact matching of words -->
+    <fieldType name="text_ws" class="solr.TextField" positionIncrementGap="100">
+        <analyzer>
+            <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+        </analyzer>
+    </fieldType>
+
+    <!-- A text field that uses WordDelimiterFilter to enable splitting and matching of
+        words on case-change, alpha numeric boundaries, and non-alphanumeric chars,
+        so that a query of "wifi" or "wi fi" could match a document containing "Wi-Fi".
+        Synonyms and stopwords are customized by external files, and stemming is enabled.
+        -->
+    <fieldType name="text" class="solr.TextField" positionIncrementGap="100">
+        <analyzer type="index">
+            <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+            <!-- in this example, we will only use synonyms at query time -->
+            <!--<filter class="org.apache.lucene.analysis.synonym.SynonymGraphFilterFactory" synonyms="index_synonyms.txt" ignoreCase="true" expand="false"/>-->
+
+            <!-- Case insensitive stop word removal.
+              add enablePositionIncrements=true in both the index and query
+              analyzers to leave a 'gap' for more accurate phrase queries.
+            -->
+            <filter class="solr.StopFilterFactory"
+                    ignoreCase="true"
+                    words="stopwords.txt"
+            />
+            <filter class="org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="1"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <!-- <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/> -->
+            <filter class="solr.PorterStemFilterFactory"/>
+        </analyzer>
+        <analyzer type="query">
+            <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+            <filter class="org.apache.lucene.analysis.synonym.SynonymGraphFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+            <filter class="solr.StopFilterFactory"
+                    ignoreCase="true"
+                    words="stopwords.txt"
+            />
+            <filter class="org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="0" catenateNumbers="0" catenateAll="0" splitOnCaseChange="1"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
+            <filter class="solr.PorterStemFilterFactory"/>
+        </analyzer>
+    </fieldType>
+
+    <fieldType name="string_lowercase" class="solr.TextField" positionIncrementGap="100">
+        <analyzer type="index">
+            <tokenizer class="solr.KeywordTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+        </analyzer>
+        <analyzer type="query">
+            <tokenizer class="solr.KeywordTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+        </analyzer>
+    </fieldType>
+
+    <!-- A general unstemmed text field - good if one does not know the language of the field -->
+<!--         <fieldType name="textgen" class="solr.TextField" positionIncrementGap="100">
+        <analyzer type="index">
+            <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+            <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt"  />
+            <filter class="org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="0"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+        </analyzer>
+        <analyzer type="query">
+            <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+            <filter class="org.apache.lucene.analysis.synonym.SynonymGraphFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+            <filter class="solr.StopFilterFactory"
+                    ignoreCase="true"
+                    words="stopwords.txt"
+
+            />
+            <filter class="org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="0" catenateNumbers="0" catenateAll="0" splitOnCaseChange="0"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+        </analyzer>
+    </fieldType>
+-->
+    <!-- A general unstemmed text field that indexes tokens normally and also
+         reversed (via ReversedWildcardFilterFactory), to enable more efficient
+     leading wildcard queries. -->
+    <fieldType name="text_rev" class="solr.TextField" positionIncrementGap="100">
+        <analyzer type="index">
+            <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+            <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt"  />
+            <filter class="org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="0"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.ReversedWildcardFilterFactory" withOriginal="true"
+                    maxPosAsterisk="3" maxPosQuestion="2" maxFractionAsterisk="0.33"/>
+        </analyzer>
+        <analyzer type="query">
+            <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+            <filter class="org.apache.lucene.analysis.synonym.SynonymGraphFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+            <filter class="solr.StopFilterFactory"
+                    ignoreCase="true"
+                    words="stopwords.txt"
+
+            />
+            <filter class="org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="0" catenateNumbers="0" catenateAll="0" splitOnCaseChange="0"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+        </analyzer>
+    </fieldType>
+
+    <!-- charFilter + WhitespaceTokenizer  -->
+    <!--
+    <fieldType name="textCharNorm" class="solr.TextField" positionIncrementGap="100" >
+      <analyzer>
+        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+      </analyzer>
+    </fieldType>
+    -->
+
+    <!-- This is an example of using the KeywordTokenizer along
+         With various TokenFilterFactories to produce a sortable field
+         that does not include some properties of the source text
+      -->
+    <fieldType name="alphaOnlySort" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+        <analyzer>
+            <!-- KeywordTokenizer does no actual tokenizing, so the entire
+                 input string is preserved as a single token
+              -->
+            <tokenizer class="solr.KeywordTokenizerFactory"/>
+            <!-- The LowerCase TokenFilter does what you expect, which can be
+                 when you want your sorting to be case insensitive
+              -->
+            <filter class="solr.LowerCaseFilterFactory" />
+            <!-- The TrimFilter removes any leading or trailing whitespace -->
+            <filter class="solr.TrimFilterFactory" />
+            <!-- The PatternReplaceFilter gives you the flexibility to use
+                 Java Regular expression to replace any sequence of characters
+                 matching a pattern with an arbitrary replacement string,
+                 which may include back references to portions of the original
+                 string matched by the pattern.
+
+                 See the Java Regular Expression documentation for more
+                 information on pattern and replacement string syntax.
+
+                 http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/package-summary.html
+              -->
+            <filter class="solr.PatternReplaceFilterFactory"
+                    pattern="([^a-z])" replacement="" replace="all"
+            />
+        </analyzer>
+    </fieldType>
+
+    <fieldtype name="phonetic" stored="false" indexed="true" class="solr.TextField" >
+        <analyzer>
+            <tokenizer class="solr.StandardTokenizerFactory"/>
+            <filter class="solr.DoubleMetaphoneFilterFactory" inject="false"/>
+        </analyzer>
+    </fieldtype>
+
+    <!-- lowercases the entire field value, keeping it as a single token.  -->
+    <fieldType name="lowercase" class="solr.TextField" positionIncrementGap="100">
+        <analyzer>
+            <tokenizer class="solr.KeywordTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory" />
+        </analyzer>
+    </fieldType>
+
+
+    <!-- since fields of this type are by default not stored or indexed,
+         any data added to them will be ignored outright.  -->
+    <fieldtype name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
+
+    <!-- Spatial search field type - Requires SOLR 1.5 -->
+    <!--    <fieldType name="location" class="solr.PointType" dimension="2" subFieldType="double"/>-->
+
+    <fieldType name="text_path" class="solr.TextField" positionIncrementGap="100">
+        <analyzer>
+            <tokenizer class="solr.PathHierarchyTokenizerFactory"/>
+        </analyzer>
+    </fieldType>
+
+    <!-- This point type indexes the coordinates as separate fields (subFields)
+      If subFieldType is defined, it references a type, and a dynamic field
+      definition is created matching *___<typename>.  Alternately, if
+      subFieldSuffix is defined, that is used to create the subFields.
+      Example: if subFieldType="double", then the coordinates would be
+        indexed in fields myloc_0___double,myloc_1___double.
+      Example: if subFieldSuffix="_d" then the coordinates would be indexed
+        in fields myloc_0_d,myloc_1_d
+      The subFields are an implementation detail of the fieldType, and end
+      users normally should not need to know about them.
+     -->
+    <fieldType name="point" class="solr.PointType" dimension="2" subFieldSuffix="_d"/>
+
+    <!-- A specialized field for geospatial search. If indexed, this fieldType must not be multivalued. -->
+    <fieldType name="location" class="solr.LatLonPointSpatialField" />
+
+    <fieldType name="quad"      class="solr.SpatialTermQueryPrefixTreeFieldType" distanceUnits="degrees" />
+    <fieldType name="geohash"   class="solr.SpatialRecursivePrefixTreeFieldType" spatialContextFactory="org.locationtech.spatial4j.context.jts.JtsSpatialContextFactory" distanceUnits="degrees" />
+
+</types>
+
+<fields>
+    <!-- Valid attributes for fields:
+      name: mandatory - the name for the field
+      type: mandatory - the name of a previously defined type from the
+        <types> section
+      indexed: true if this field should be indexed (searchable or sortable)
+      stored: true if this field should be retrievable
+      compressed: [false] if this field should be stored using gzip compression
+        (this will only apply if the field type is compressable; among
+        the standard field types, only TextField and StrField are)
+      multiValued: true if this field may contain multiple values per document
+      omitNorms: (expert) set to true to omit the norms associated with
+        this field (this disables length normalization and index-time
+        boosting for the field, and saves some memory).  Only full-text
+        fields or fields that need an index-time boost need norms.
+      termVectors: [false] set to true to store the term vector for a
+        given field.
+        When using MoreLikeThis, fields used for similarity should be
+        stored for best performance.
+      termPositions: Store position information with the term vector.
+        This will increase storage costs.
+      termOffsets: Store offset information with the term vector. This
+        will increase storage costs.
+      default: a value that should be used if no value is specified
+        when adding a document.
+    -->
+<!-- start of BIE Biocache Fields -->
+<field name="_version_" type="long" indexed="true" stored="true"/>
+<field name="id" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="row_key" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="occurrence_id" type="string" stored="true" multiValued="false" docValues="true" />
+<field name="data_hub_uid" type="string" indexed="true" stored="true" multiValued="true" docValues="true"/>
+<field name="data_hub" type="string" indexed="true" stored="true" multiValued="true" docValues="true"/>
+
+<field name="data_provider_uid" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="data_provider" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="dataset_name" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+
+<field name="data_resource_uid" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="data_resource" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="provenance" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="institution_uid" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="institution_code" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="institution_name" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<!-- Not displayed in search results -->
+<!-- field name="institution_code_lsid" type="string" indexed="false" stored="true" multiValued="false" omitNorms="false" /-->
+<field name="collection_uid" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="collection_code" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="collection_name" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<!-- Not displayed in search results -->
+<!-- field name="catalogue_number_id" type="int" indexed="false" stored="true" multiValued="false" omitNorms="false" / -->
+<field name="catalogue_number" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="taxon_concept_lsid" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="occurrence_date" type="tdate" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<!--
+     The easiest way to facet on years ranges is to have an extra field that stores the year as a date type.  This
+     is so we don't have to perform our own calculations on an integer field
+     Thus the year will be stored/indexed as a date with month 01 and date 01
+-->
+<field name="occurrence_year" type="tdate" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="taxon_name" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<!-- Not is use in current biocache -->
+<!-- field name="taxon_name_text" type="text_ws" indexed="true" stored="true" multiValued="false" omitNorms="false" /-->
+
+<!-- Not displayed in search results -->
+<!-- field name="author" type="string" indexed="false" stored="true" multiValued="false" omitNorms="false" / -->
+<field name="common_name" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="names_and_lsid" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="common_name_and_lsid" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="rank" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="rank_id" type="tint" indexed="true" stored="true" multiValued="false" docValues="true" />
+<field name="raw_taxon_name" type="string" indexed="true" stored="true" multiValued="false" docValues="true" />
+<field name="raw_common_name" type="string" indexed="true" stored="true" multiValued="false" docValues="true" />
+<field name="raw_occurrence_status" type="string" indexed="true" stored="true" multiValued="false"  docValues="true" />
+<field name="reproductive_condition" type="string" indexed="true" stored="true" multiValued="false" docValues="true" />
+<field name="multimedia" type="string" indexed="true" stored="true" multiValued="true" docValues="true"/>
+<field name="image_url" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="all_image_url" type="string" indexed="true" stored="true" multiValued="true" docValues="true"/>
+<field name="species_group" type="string" indexed="true" stored="true" multiValued="true" docValues="true"/>
+<field name="species_subgroup" type="string" indexed="true" stored="true" multiValued="true" docValues="true"/>
+<field name="interaction" type="string" indexed="true" stored="true" multiValued="true" docValues="true"/>
+
+<!-- Not displayed in search resutls -->
+<!-- field name="raw_author" type="string" indexed="false" stored="true" multiValued="false" omitNorms="false" / -->
+<field name="country_code" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="country" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="lft" type="tint" indexed="true" stored="true" multiValued="false" omitNorms="true" docValues="true"/>
+<field name="rgt" type="tint" indexed="true" stored="true" multiValued="false" omitNorms="true" docValues="true"/>
+
+<field name="kingdom" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="phylum" type="string" indexed="true" stored="true" multiValued="false"  docValues="true"/>
+<field name="class" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="order" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="family" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="genus" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="genus_guid" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="species_guid" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="species" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="subspecies_guid" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="subspecies_name" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<!-- Not actually being used in the search -->
+<!-- field name="geo_regions" type="text_ws" indexed="true" stored="true" multiValued="true" omitNorms="false" / -->
+
+<field name="raw_geo_validation_status" type="string" indexed="true" stored="true" multiValued="false"  docValues="true"/>
+<field name="state" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="imcra" type="string" indexed="true" stored="true" multiValued="false" />
+<field name="ibra" type="string" indexed="true" stored="true" multiValued="false" />
+<field name="places" type="string" indexed="true" stored="true" multiValued="false" />
+<field name="latitude" type="double" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="sensitive_latitude" type="double" indexed="false" stored="true" multiValued="false" docValues="true"/>
+<field name="longitude" type="double" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="sensitive_longitude" type="double" indexed="false" stored="true" multiValued="false" docValues="true"/>
+<field name="coordinate_uncertainty" type="double" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="sensitive_coordinate_uncertainty" type="double" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="sensitive_locality" type="string" indexed="false" stored="true" multiValued="false" docValues="true" />
+<field name="sensitive_event_date" type="string" indexed="false" stored="true" multiValued="false" docValues="true"/>
+<field name="sensitive_event_date_end" type="string" indexed="false" stored="true" multiValued="false" docValues="true"/>
+<field name="sensitive_grid_reference" type="string" indexed="false" stored="true" multiValued="false" docValues="true"/>
+
+<field name="location_id" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="event_id" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="parent_event_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true"/>
+<!-- Not displayed in search results -->
+<!-- field name="lat_long_precision" type="string" indexed="false" stored="true" multiValued="false" omitNorms="false" /-->
+<!-- <field name="lat_long" type="location" indexed="true" stored="true"/> Requires SOLR 1.5 -->
+<field name="lat_long" type="string" indexed="true" stored="true"/>
+<!-- UK NBN fields start -->
+<field name="min_latitude" type="double" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="min_longitude" type="double" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="max_latitude" type="double" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="max_longitude" type="double" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="easting" type="int" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="northing" type="int" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="grid_ref_100000" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="grid_ref_10000" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="grid_ref_2000" type="string" indexed="true" stored="true" multiValued="false" docValues="true" />
+<field name="grid_ref_1000" type="string" indexed="true" stored="true" multiValued="false" docValues="true" />
+<field name="grid_ref_100" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="grid_ref" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<!-- UK NBN fields end -->
+
+<!-- These fields are index but I can't see where they are being used -->
+<!--field name="cell_id" type="int" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+<field name="centi_cell_id" type="int" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+<field name="tenmilli_cell_id" type="int" indexed="true" stored="true" multiValued="false" omitNorms="false" /-->
+
+<field name="year" type="int" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="month" type="string" indexed="true" stored="true" multiValued="false"  docValues="true"/>
+<!-- Not displayed in search results -->
+<!-- field name="basis_of_record_id" type="int" indexed="false" stored="true" multiValued="false" omitNorms="false" / -->
+<field name="basis_of_record" type="string" indexed="true" stored="true" multiValued="false"  docValues="true"/>
+<field name="raw_basis_of_record" type="string" indexed="true" stored="true" multiValued="false"  docValues="true"/>
+<!-- Not displayed in search results -->
+<!-- field name="raw_basis_of_record" type="string" indexed="false" stored="true" multiValued="false" omitNorms="false" / -->
+<field name="type_status" type="string" indexed="true" stored="true" multiValued="false"  docValues="true"/>
+<field name="raw_type_status" type="string" indexed="true" stored="true" multiValued="false"  docValues="true"/>
+
+<field name="collector" type="string" indexed="true" stored="true" multiValued="false"  docValues="true"/>
+<field name="collectors" type="string" indexed="true" stored="true" multiValued="true"  docValues="true"/>
+
+<field name="establishment_means" type="string" indexed="true" stored="true" multiValued="true" docValues="true"/>
+<field name="exchange_number" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="duplicate_inst" type="string" indexed="true" stored="true" multiValued="true" docValues="true"/>
+<field name="original_name_usage" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="record_number" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="loan_date" type="tdate" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="loan_returned_date" type="tdate" indexed="true" stored="true" multiValued="false" docValues="true"/>
+
+    <!--  stores phenology from AVH  -->
+<field name="life_stage" type="string" indexed="true" stored="true" multiValued="false" />
+<field name="identification_qualifier" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+<field name="identification_qualifier_s" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+<field name="identified_by" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+<field name="identified_date" type="tdate" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+
+<field name="name_parse_type" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+<field name="photographer" type="string" indexed="true" stored="false" multiValued="false" omitNorms="false" />
+
+<!-- TODO work out the extra search fields that are required for the issues -->
+<field name="taxonomic_kosher" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" docValues="true"/>
+<field name="geospatial_kosher" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" docValues="true"/>
+<field name="mappable" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" default="true" docValues="true"/>
+<field name="suitable_modelling" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" docValues="true"/>
+<field name="sensitive" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" docValues="true" />
+<field name="assertions" type="string" indexed="true" stored="true" multiValued="true"  docValues="true"/>
+<field name="assertions_passed" type="string" indexed="true" stored="true" multiValued="true"  docValues="true"/>
+<field name="assertions_unchecked" type="string" indexed="true" stored="true" multiValued="true"  docValues="true"/>
+<field name="assertions_missing" type="string" indexed="true" stored="true" multiValued="true" docValues="true" />
+<field name="user_assertions" type="string" indexed="true" stored="true" multiValued="false" docValues="true" />
+<field name="system_assertions" type="string" indexed="true" stored="true" multiValued="false" docValues="true" />
+<field name="name_match_metric" type="string" indexed="true" stored="true" multiValued="false"  docValues="true"/>
+<field name="taxonomic_issue" type="string" indexed="true" stored="true" multiValued="true" docValues="true"/>
+<field name="raw_identification_qualifier" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="species_habitats" type="string" indexed="true" stored="false" multiValued="true" docValues="true"/>
+<field name="raw_locality" type="string" indexed="false" stored="true" multiValued="false"  docValues="true"/>
+<field name="datum" type="string" indexed="true" stored="true" multiValued="false"  docValues="true" />
+<field name="raw_datum" type="string" indexed="true" stored="true" multiValued="false"  docValues="true" />
+<field name="raw_latitude" type="string" indexed="false" stored="true" multiValued="false"  docValues="true" />
+<field name="raw_longitude" type="string" indexed="false" stored="true" multiValued="false"  docValues="true" />
+<field name="raw_sex" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="date_precision" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+
+<field name="georeference_verification_status" type="string" indexed="true" stored="true" multiValued="false" docValues="true" />
+<field name="identification_verification_status" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+
+<!-- Not displayed in search results -->
+<!-- field name="created_date" type="tdate" indexed="false" stored="true" multiValued="false" omitNorms="false" />
+<field name="modified_date" type="tdate" indexed="false" stored="true" multiValued="false" omitNorms="false" / -->
+    <!-- This is for Citzen Science records only -->
+<field name="user_id" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" docValues="true"/>
+<field name="alau_user_id" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" docValues="true"/>
+<field name="assertion_user_id" type="string" indexed="true" stored="false" multiValued="true" omitNorms="false" docValues="true"/>
+<!-- Not displayed in search results -->
+<!--
+   <field name="generalised_metres" type="tint" indexed="false" stored="true" multiValued="false" omitNorms="false" />
+   <field name="geodetic_datum" type="string" indexed="false" stored="true" multiValued="false" omitNorms="false" />
+   -->
+<field name="individual_count" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" docValues="true"/>
+    <!-- used for remarks searching -->
+<field name="location_remarks" type="string" indexed="false" stored="true" multiValued="false" docValues="true"/>
+<field name="pest_flag" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="occurrence_status_s" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="occurrence_status" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="occurrence_remarks" type="string" indexed="false" stored="true" multiValued="false" docValues="true"/>
+<field name="citation" type="string" indexed="false" stored="true" multiValued="false" docValues="true" />
+<field name="license" type="string" indexed="true" stored="true" multiValued="false"  docValues="true"/>
+<!-- I don't think that we need this field - we can always add it later. -->
+<!--field name="confidence" type="tint" indexed="true" stored="true" multiValued="false" omitNorms="false" /-->
+<field name="systemAssertions" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" docValues="true"/>
+
+<field name="last_assertion_date" type="tdate" indexed="true" stored="false" multiValued="false" docValues="true"/>
+<field name="last_load_date" type="tdate" indexed="true" stored="false" multiValued="false" docValues="true"/>
+<field name="last_processed_date" type="tdate" indexed="true" stored="false" multiValued="false" docValues="true"/>
+<field name="modified_date" type="tdate" indexed="true" stored="false" multiValued="false" docValues="true"/>
+<field name="first_loaded_date" type="tdate" indexed="true" stored="false" multiValued="false" docValues="true"/>
+<field name="date_deleted" type="tdate" indexed="true" stored="false" multiValued="false" docValues="true"/>
+<field name="deleted" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" docValues="true"/>
+
+<!-- end of Biocache Lucene Fields -->
+
+<!-- catchall field, containing all other searchable text fields (implemented via copyField further on in this schema  -->
+<field name="text" type="text" indexed="true" stored="false" multiValued="true"/>
+<field name="rem_text" type="text" indexed="true" stored="false" multiValued="true"/>
+<field name="record_type" type="string" indexed="true" stored="true" multiValued="false"  docValues="true"/>
+<field name="lsid" type="string" indexed="true" stored="false" multiValued="false" docValues="true"/>
+<field name="biogeographic_region" type="string" indexed="true" stored="true" multiValued="true" docValues="true"/>
+<field name="raw_name" type="string" indexed="true" stored="false" multiValued="true" omitNorms="true" docValues="true"/>
+<field name="matched_name" type="string" indexed="true" stored="false" multiValued="true" omitNorms="true" docValues="true"/>
+<field name="collector_text" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" docValues="true"/>
+<field name="identified_by_text" type="string" indexed="true" stored="false" multiValued="true" omitNorms="true" docValues="true"/>
+
+<field name="species_list_uid" type="string" indexed="true" stored="true" multiValued="true" docValues="true"/>
+
+<!-- the number of layers this record is an outlier for -->
+<field name="outlier_layer_count" type="tint" indexed="true" stored="true" multiValued="false" omitNorms="true" docValues="true"/>
+<!-- the layers this record is an outlier for -->
+<field name="outlier_layer" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" docValues="true"/>
+
+<!-- Duplication fields -->
+<field name="duplicate_status" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" docValues="true"/>
+<field name="duplicate_record" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" docValues="true"/>
+<field name="duplicate_type" type="tint" indexed="true" stored="true" multiValued="true" omitNorms="true" docValues="true"/>
+
+<!-- Distance from expert distribution for associated species -->
+<field name="distance_outside_expert_range" type="double" indexed="true" stored="true" multiValued="false" docValues="true"/>
+
+<!-- used for harvesting images into the BIE -->
+<field name="occurrence_details" type="string" indexed="false" stored="true" multiValued="false" omitNorms="true" docValues="true"/>
+<field name="rights" type="string" indexed="false" stored="true" multiValued="false" omitNorms="true" docValues="true"/>
+<field name="photographer_s" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" docValues="true"/>
+
+<field name="state_conservation"  type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="country_conservation" type="string" indexed="true" stored="true" multiValued="false"  docValues="true"/>
+<field name="raw_state_conservation" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="raw_country_conservation" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+
+
+<field name="query_assertion_uuid" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" docValues="true"/>
+<field name="query_assertion_type_s" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" docValues="true"/>
+
+<!-- SOLR 4.0 Spatial Fields -->
+<field name="quad"     type="quad"     indexed="true" stored="true"  multiValued="false"/>
+<field name="geohash"  type="geohash"  indexed="true" stored="true"  multiValued="false"/>
+
+<!-- Fields definitions -->
+<field name="abcd_identification_qualifier" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="abcd_identification_qualifier_insertion_point" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="abcd_type_status" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="accepted_name_usage" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="associated_media" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="associated_references" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="associated_sequences" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="associated_taxa" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="aust_conservation" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="australian_herbarium_region" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="bbox" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="behavior" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="bibliographic_citation" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="biome" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="class_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="collection_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="continent" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="coordinate_precision" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="county" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="cultivar_name" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="cultivated" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="data_generalizations" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="dataset_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="day" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="decimal_latitudelatitude" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="default_values_used" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="depth_d" type="tdouble" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="disposition" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="duplicates_original_institution_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="duplicates_original_unit_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="dynamic_properties" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="elevation_d" type="tdouble" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="elevation_d_rng" type="tdouble" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="end_day_of_year" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="event_remarks" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="event_time" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="family_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="field_notes" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="field_number" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="footprint_srs" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="footprint_wkt" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="generalisation_to_apply_in_metres" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="generalised_locality" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="georeference_protocol" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="georeference_remarks" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="georeference_sources" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="georeferenced_by" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="georeferenced_date" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="geospatial_issue" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="geospatially_kosher" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="habitat" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="higher_classification" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="higher_geography" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="ibra_subregion" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="identification_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="identification_references" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="identification_remarks" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="identifier_by" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="identifier_role" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="images" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="individual_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="information_withheld" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="infraspecific_epithet" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="institution_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="island" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="island_group" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="kingdom_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="language" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="last_modified_time" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="last_user_assertion_date" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="loan_botanist" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="loan_destination" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="loan_identifier" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="loan_number" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="loan_return_date" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="location_according_to" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="location_determined" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="max_depth_d" type="tdouble" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="max_elevation_d" type="tdouble" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="measurement_accuracy" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="measurement_determined_by" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="measurement_determined_date" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="measurement_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="measurement_type" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="measurement_unit" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="measurement_value" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="min_depth_d" type="tdouble" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="min_elevation_d" type="tdouble" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="min_elevation_d_rng" type="tdouble" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="misc_properties" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="municipality" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="mytest" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="name_according_to" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="name_published_in" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="natural_occurrence" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="near_named_place_relation_to" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="nomenclatural_code" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="nomenclatural_status" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="occurrence_date_end_dt" type="tdate" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="occurrence_decade_i" type="tint" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="order_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="other_catalog_numbers" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="outlier_for_layers" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="owner_institution_code" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="parent_name_usage" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="photo_page_url" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="phylum_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="point-0.0001" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="point-0.001" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="point-0.01" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="point-0.02" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="point-0.1" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="point-1" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="portal_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="preferred_flag" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="preparations" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="previous_identifications" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="quality_assertion" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="query_assertions" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="raw_continent" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="raw_day" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="raw_easting" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="raw_habitat" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="raw_ibra" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="raw_images" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="raw_northing" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="raw_sampling_protocol" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="raw_sounds" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="raw_subspecies" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="related_resource_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="relationship_of_resource" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="rightsholder" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="sampling_effort" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="sampling_protocol" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="scientific_name_addendum" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="scientific_name_authorship" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="scientific_name_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="scientific_name_without_author" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="secondary_collectors" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="sounds" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="specific_epithet" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="start_day_of_year" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="subfamily" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="subgenus" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="subspecies" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="subspecies_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="superfamily" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="taxon_id" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="taxon_remarks" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="taxonomic_status" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="taxonomically_kosher" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="type" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="type_status_qualifier" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="typified_name" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="user_assertion_status" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="user_quality_assertion" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="user_verified" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="valid_distribution" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="verbatim_coordinate_system" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="verbatim_coordinates" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="verbatim_date_identified" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="verbatim_event_date" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="verbatim_latitude" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="verbatim_locality" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="verbatim_longitude" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="verbatim_srs" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="verbatim_taxon_rank" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="verification_date" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="verification_notes" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="verifier" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="videos" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="water_body" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+<field name="zone" type="string" indexed="true" stored="true" omitNorms="true" docValues="true" />
+
+
+<!-- catchall text field that indexes tokens both normally and in reverse for efficient
+     leading wildcard queries. -->
+<field name="text_rev" type="text_rev" indexed="true" stored="false" multiValued="true"/>
+{% if dynamic_solr_schema_biocache %}
+ <!-- Dynamic fields for terms not part of the main schema
+      Generally not used for the main biocache but needed for ad-hoc versions such as the sandbox -->
+ <!-- Dynamic field definitions.  If a field name is not found, dynamicFields
+      will be used if the name matches any of the patterns. -->
+<dynamicField name="*Count"  type="int"    indexed="true"  stored="true" docValues="true"/>
+<dynamicField name="*_i"  type="int"    indexed="true"  stored="true" docValues="true"/>
+<dynamicField name="*_m_s"  type="string" multiValued="true"  indexed="true"  stored="true" docValues="true"/>
+<dynamicField name="*_s"  type="string"  indexed="true"  stored="true" docValues="true"/>
+<dynamicField name="*_l"  type="long"   indexed="true"  stored="true" docValues="true"/>
+<dynamicField name="*_t"  type="text"    indexed="true"  stored="true" docValues="true"/>
+<dynamicField name="*_b"  type="boolean" indexed="true"  stored="true" docValues="true"/>
+<dynamicField name="*_f"  type="float"  indexed="true"  stored="true" docValues="true"/>
+<dynamicField name="*_d"  type="double" indexed="true"  stored="true" docValues="true"/>
+<dynamicField name="*_dt" type="date"    indexed="true"  stored="true" docValues="true"/>
+{% else %}
+  <!-- No dynamic fields, see dynamic_solr_schema_biocache to turn on -->
+{% endif %}
+
+</fields>
+
+    <!-- Field to use to determine and enforce document uniqueness.
+         Unless this field is marked with required="false", it will be a required field
+      -->
+    <uniqueKey>id</uniqueKey>
+
+
+    <!-- copyField commands copy one field to another at the time a document
+          is added to the index.  It's used either to index the same field differently,
+          or to add multiple fields to the same field for easier/faster searching.  -->
+
+    <!-- Fields needed to be added because of compatibility issue with 1.x version -->
+    <copyField source="occurrence_status" dest="occurrence_status_s"/>
+    <copyField source="identification_qualifier" dest="identification_qualifier_s"/>
+    <copyField source="elevation_d" dest="elevation_d_rng"/>
+    <copyField source="min_elevation_d" dest="min_elevation_d_rng"/>
+
+    <!-- SOLR 4.0 spatial support -->
+    <copyField source="lat_long" dest="quad"/>
+    <copyField source="lat_long" dest="geohash"/>
+    <!-- BIE additions -->
+    <copyField source="data_provider" dest="text"/>
+    <copyField source="data_resource" dest="text"/>
+    <copyField source="institution_code" dest="text"/>
+    <copyField source="institution_name" dest="text"/>
+    <copyField source="collection_code" dest="text"/>
+    <copyField source="collection_name" dest="text"/>
+    <copyField source="catalogue_number" dest="text"/>
+    <copyField source="location_id" dest="text"/>
+    <copyField source="event_id" dest="text"/>
+    <copyField source="taxon_name" dest="text"/>
+    <copyField source="taxon_name" dest="matched_name"/>
+    <copyField source="raw_taxon_name" dest="text" />
+    <copyField source="raw_taxon_name" dest="raw_name" />
+    <copyField source="raw_common_name" dest="text" />
+    <copyField source="raw_common_name" dest="raw_name" />
+    <copyField source="kingdom" dest="text"/>
+    <copyField source="phylum" dest="text" />
+    <copyField source="class" dest="text"/>
+    <copyField source="order" dest="text"/>
+    <copyField source="family" dest="text"/>
+    <copyField source="genus" dest="text"/>
+    <copyField source="species" dest="text" />
+    <copyField source="species_group" dest="text" />
+    <copyField source="species_subgroup" dest="text" />
+    <copyField source="original_name_usage" dest="text" />
+    <copyField source="collector" dest="collector_text"/>
+
+    <!--  This copy field is not in use anywhere -->
+    <copyField source="common_name" dest="text"/>
+    <copyField source="common_name" dest="matched_name"/>
+    <copyField source="type_status" dest="text"/>
+    <copyField source="raw_type_status" dest="text" />
+    <copyField source="collector" dest="text" />
+    <copyField source="user_id"  dest="text" />
+
+    <copyField source="state_conservation" dest="text" />
+    <copyField source="raw_state_conservation" dest="text" />
+    <copyField source="country_conservation" dest="text" />
+    <copyField source="raw_country_conservation" dest="text" />
+
+    <copyField source="imcra" dest="biogeographic_region" />
+    <copyField source="ibra" dest="biogeographic_region" />
+
+    <copyField source="country"  dest="text" />
+    <copyField source="state" dest="text"/>
+    <copyField source="imcra" dest="text"/>
+    <copyField source="ibra" dest="text"/>
+    <copyField source="places" dest="text"/>
+    <!-- Not being used in the search -->
+    <!-- copyField source="state" dest="geo_regions"/>
+    <copyField source="biogeographic_region" dest="geo_regions"/>
+    <copyField source="places" dest="geo_regions"/ -->
+
+    <copyField source="basis_of_record" dest="text"/>
+    <!--<copyField source="basis_of_record" dest="record_type"/>-->
+    <copyField source="raw_basis_of_record" dest="text" />
+    <copyField source="type_status" dest="text" />
+    <copyField source="raw_type_status"  dest="text"/>
+
+    <!-- add the remarks to the text search field -->
+    <copyField source="location_remarks" dest="rem_text" />
+    <copyField source="occurrence_remarks" dest="rem_text"/>
+    <copyField source="citation" dest="rem_text"/>
+
+    <!-- UK specific fields - to be moved -->
+    <copyField source="grid_ref" dest="text"/>
+    <copyField source="grid_ref_100" dest="text"/>
+    <copyField source="grid_ref_1000" dest="text"/>
+    <copyField source="grid_ref_2000" dest="text"/>
+    <copyField source="grid_ref_10000" dest="text"/>
+    <copyField source="grid_ref_100000" dest="text"/>
+</schema>

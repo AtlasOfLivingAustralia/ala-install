@@ -82,8 +82,24 @@
     - properties
     - solr7_create_cores
 
+- name: Set up SOLR Biocache schema (non doc values)
+  template: src={{ role_path }}/../solrcloud_config/templates/biocache_schema.xml dest={{ data_dir }}/solr/data/biocache/conf/schema.xml owner=solr group=solr
+  when: use_docvalues is not defined or use_docvalues|bool == false
+  tags:
+    - solr7
+    - properties
+    - solr7_create_cores
+
+- name: Set up SOLR Biocache schema (with doc values)
+  template: src={{ role_path }}/../solrcloud_config/templates/biocache_schema_docvalues.xml dest={{ data_dir }}/solr/data/biocache/conf/schema.xml owner=solr group=solr
+  when: use_docvalues is defined and use_docvalues|bool == true
+  tags:
+    - solr7
+    - properties
+    - solr7_create_cores
+
 - name: Set up SOLR Biocache schema
-  template: src={{ role_path}}//../solrcloud_config/templates/biocache_schema.xml dest={{ data_dir }}/solr/data/biocache/conf/schema.xml owner=solr group=solr
+  template: src={{ role_path}}//../solrcloud_config/templates/biocache_schema.xml dest={{ data_dir }}/solr/data/biocache/conf/biocache_schema_docvalues.xml owner=solr group=solr
   tags:
     - solr7
     - properties
