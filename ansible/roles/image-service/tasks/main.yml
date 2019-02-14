@@ -108,3 +108,9 @@
     - restart tomcat
   tags:
     - image-service
+
+- name: install openjfx (Debian)
+  apt: pkg=openjfx state=latest update_cache=yes
+  when: ansible_os_family == "Debian" and use_openjdk8
+  tags:
+    - packages
