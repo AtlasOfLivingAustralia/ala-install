@@ -7,6 +7,18 @@
   tags:
     - solrcloud_config
 
+- name: Set up SOLR Biocache schema (non doc values)
+  template: src=biocache_schema.xml dest={{ data_dir }}/solr_config/biocache/conf/schema.xml owner=solr group=solr
+  when: use_docvalues is not defined or use_docvalues == False
+  tags:
+    - solrcloud_config
+
+- name: Set up SOLR Biocache schema (with doc values)
+  template: src=biocache_schema_docvalues.xml dest={{ data_dir }}/solr_config/biocache/conf/schema.xml owner=solr group=solr
+  when: use_docvalues is defined and use_docvalues == True
+  tags:
+    - solrcloud_config
+
 - name: Make zkcli.sh world-readable-writable-executable
   shell: "chmod 777 /opt/solr/server/scripts/cloud-scripts/zkcli.sh"
   tags:

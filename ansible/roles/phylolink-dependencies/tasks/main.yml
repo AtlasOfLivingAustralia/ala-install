@@ -14,10 +14,6 @@
 - name: install python
   apt: pkg=python state=present
 
-# in ubuntu 14.04 this does not work
-#- name: install python-pip
-#  apt: pkg=python-pip state=present
-
 - name: download pip
   get_url: url=https://bootstrap.pypa.io/get-pip.py dest=~
 

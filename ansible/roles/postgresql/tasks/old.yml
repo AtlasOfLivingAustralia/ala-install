@@ -66,7 +66,9 @@
 
 - name: enable host md5 auth (RedHat)
   lineinfile: dest="/var/lib/pgsql/9.3/data/pg_hba.conf" backrefs="yes" regexp="host    all             all             127.0.0.1/32            ident" line="host    all             all             127.0.0.1/32            md5"
-  when: ansible_os_family == "RedHat"
+  when:
+    - ansible_os_family == "RedHat"
+    - not is_vagrant
   notify: restart postgresql
   tags: postgresql
 
@@ -76,15 +78,30 @@
   notify: restart postgresql
   tags: postgresql
 
+- name: enable connect from external if db is on Vagrant
+  lineinfile: dest="/etc/postgresql/9.6/main/pg_hba.conf" backrefs="yes" regexp="" line="host    all             all             127.0.0.1/32            ident" line="host    all             all             0.0.0.0/0                 trust"
+  when: is_vagrant
+  notify: restart postgresql
+  tags: postgresql
+
+- name: enable connect from external if db is on Vagrant
+  lineinfile: dest="/etc/postgresql/9.6/main/postgresql.conf" regexp="listen_addresses = 'localhost'" line="listen_addresses = '*'"
+  when: is_vagrant
+  notify: restart postgresql
+  tags: postgresql
+
+
+
 - name: Restart postgresql server
   service: name="{{ postgresql_service }}" state="started" enabled="yes"
   tags: postgresql
 
+# should be moved to other places
 - name: Create Postgresql password
-  postgresql_user: name="{{ postgresql_user }}" password="{{ postgresql_password }}" role_attr_flags="CREATEDB,SUPERUSER"
+  postgresql_user: name="{{ postgresql_username }}" password="{{ postgresql_password }}" role_attr_flags="CREATEDB,SUPERUSER"
   become: yes
   become_user: postgres
-  when: postgresql_installed.changed
+  #when: postgresql_installed.changed
   tags: postgresql
 
 - name: install libpq-dev (Debian)
@@ -118,16 +135,20 @@
   tags: postgresql
 
 - name: ensure postgis_template database exists
-  postgresql_db: db="postgis_template" state="present"
+  postgresql_db:
+    db: "postgis_template"
+    state: "present"
   become: yes
   become_user: postgres
   tags: postgresql
 
-- name: make postgis_template a template
+- name: make postgis_template a template fix 2
   action: command psql -d postgis_template -c "UPDATE pg_database SET datistemplate=true WHERE datname='postgis_template';"
   become: yes
   become_user: postgres
-  tags: postgresql
+  tags:
+    - postgresql
+    - dbtest
 
 - name: run the postgis SQL scripts
   action: command psql -d postgis_template -f {{ item }}
@@ -146,10 +167,3 @@
   when: postgresql_installed.changed
   tags: postgresql
 
-#- name: ensure user does not have unnecessary privilege
-#  postgresql_user: name="{{postgres_dbuser}}" role_attr_flags="NOSUPERUSER,NOCREATEDB"
-#  ignore_errors: yes
-
-# sudo -u postgres psql
-# ALTER USER postgres PASSWORD 'password';
-#  psql -U postgres -h localhost  //should work

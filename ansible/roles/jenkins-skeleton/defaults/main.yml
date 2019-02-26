@@ -1,0 +1,9 @@
+# Install directories
+jenkins_home: /var/lib/jenkins
+jenkins_admin_user: admin
+jenkins_admin_password: password
+jenkins_jobs:
+  - "Sandbox Import Index"
+  - "Sandbox Import No Index"
+  - "Sandbox Test Run"
+tmp_dir: /tmp

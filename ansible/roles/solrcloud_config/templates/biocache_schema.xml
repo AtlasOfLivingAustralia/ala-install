@@ -531,21 +531,14 @@
     <field name="rgt" type="tint" indexed="true" stored="true" multiValued="false" omitNorms="true" />
 
     <field name="kingdom" type="string" indexed="true" stored="true" multiValued="false" />
-
     <field name="phylum" type="string" indexed="true" stored="true" multiValued="false"  />
-
     <field name="class" type="string" indexed="true" stored="true" multiValued="false"/>
-
     <field name="order" type="string" indexed="true" stored="true" multiValued="false"/>
-
     <field name="family" type="string" indexed="true" stored="true" multiValued="false" />
-
     <field name="genus" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="genus_guid" type="string" indexed="true" stored="true" multiValued="false" />
-
     <field name="species_guid" type="string" indexed="true" stored="true" multiValued="false"  />
     <field name="species" type="string" indexed="true" stored="true" multiValued="false"  />
-
     <field name="subspecies_guid" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="subspecies_name" type="string" indexed="true" stored="true" multiValued="false" />
     <!-- Not actually being used in the search -->
@@ -734,7 +727,7 @@
     <field name="quad"     type="quad"     indexed="true" stored="true"  multiValued="false" />
     <field name="geohash"  type="geohash"  indexed="true" stored="true"  multiValued="false" />
 
-    <!-- Some ALA dynamic fields -->
+    <!-- Fields definitions -->
     <field name="abcd_identification_qualifier" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="abcd_identification_qualifier_insertion_point" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="abcd_type_status" type="string" indexed="true" stored="true" omitNorms="true" />
@@ -861,6 +854,7 @@
     <field name="raw_ibra" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="raw_images" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="raw_northing" type="string" indexed="true" stored="true" omitNorms="true" />
+    <field name="raw_sampling_protocol" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="raw_sounds" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="raw_subspecies" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="related_resource_id" type="string" indexed="true" stored="true" omitNorms="true" />
@@ -912,6 +906,24 @@
     <!-- catchall text field that indexes tokens both normally and in reverse for efficient
          leading wildcard queries. -->
     <field name="text_rev" type="text_rev" indexed="true" stored="false" multiValued="true"/>
+{% if dynamic_solr_schema_biocache %}
+     <!-- Dynamic fields for terms not part of the main schema
+          Generally not used for the main biocache but needed for ad-hoc versions such as the sandbox -->
+     <!-- Dynamic field definitions.  If a field name is not found, dynamicFields
+          will be used if the name matches any of the patterns. -->
+    <dynamicField name="*Count"  type="int"    indexed="true"  stored="true"/>
+    <dynamicField name="*_i"  type="int"    indexed="true"  stored="true"/>
+    <dynamicField name="*_m_s"  type="string" multiValued="true"  indexed="true"  stored="true"/>
+    <dynamicField name="*_s"  type="string"  indexed="true"  stored="true"/>
+    <dynamicField name="*_l"  type="long"   indexed="true"  stored="true"/>
+    <dynamicField name="*_t"  type="text"    indexed="true"  stored="true"/>
+    <dynamicField name="*_b"  type="boolean" indexed="true"  stored="true"/>
+    <dynamicField name="*_f"  type="float"  indexed="true"  stored="true"/>
+    <dynamicField name="*_d"  type="double" indexed="true"  stored="true"/>
+    <dynamicField name="*_dt" type="date"    indexed="true"  stored="true"/>
+{% else %}
+      <!-- No dynamic fields, see dynamic_solr_schema_biocache to turn on -->
+{% endif %}
 
   </fields>
 

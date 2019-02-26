@@ -1,4 +1,5 @@
--- This stored procedure is used to populate the "event_summary_breakdown_email" and "event_summary_breakdown_email_entity" tables
+-- This stored procedure is used to (re)populate the "event_summary_breakdown_email"
+-- and "event_summary_breakdown_email_entity" tables
 -- from all existing log information
 delimiter $$
 

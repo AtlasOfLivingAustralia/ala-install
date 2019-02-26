@@ -51,6 +51,7 @@
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/spatial-hub/config/"
+    - "{{data_dir}}/spatial-hub/i18n/"
     - "{{data_dir}}/ala/runtime/files/"
   tags:
     - spatial-hub

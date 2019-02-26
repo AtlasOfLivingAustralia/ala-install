@@ -10,24 +10,6 @@
   tags:
     - geonetwork
 
-- name: configure tomcat geonetwork data dir
-  lineinfile:
-    dest={{tomcat_conf}}
-    line='CATALINA_OPTS="${CATALINA_OPTS} -Dgeonetwork.dir={{data_dir}}/ala/data/geonetwork/"'
-  notify:
-    - restart tomcat
-  when: ansible_os_family == "Debian"
-  tags:
-    - tomcat
-    - geonetwork
-
-- name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
-  with_items:
-    - "{{data_dir}}/ala/data/geonetwork/"
-  tags:
-    - geonetwork
-
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ geonetwork_context_path }}' hostname='{{ geonetwork_hostname }}'
   tags:
     - deploy
@@ -46,6 +28,13 @@
     - deploy
     - geonetwork
   when: webserver_nginx
+
+- debug:
+    msg: "Deploy geonetwork version:  {{ geonetwork_war_url }}"
+  tags:
+    - geonetwork
+    - deploy
+
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ geonetwork_war_url }}' context_path='{{ geonetwork_context_path }}' hostname='{{ geonetwork_hostname }}'
   notify:
@@ -81,23 +70,58 @@
     - geonetwork
     - tomcat_vhost
 
-- name: replace config-db/postgres-postgis.xml file
-  template: src=postgres-postgis.xml dest="/var/lib/tomcat7/webapps-{{ geonetwork_hostname }}/geonetwork/WEB-INF/config-db/postgres-postgis.xml"
-  tags:
-    - geonetwork
-    - config
-
-- name: replace config-db/postgis-alternate-datasource.xml file
-  template: src=postgis-alternate-datasource.xml dest="/var/lib/tomcat7/webapps-{{ geonetwork_hostname }}/geonetwork/WEB-INF/config-db/postgis-alternate-datasource.xml"
-  tags:
-    - geonetwork
-    - config
-
 - name: replace config-db/jdbc.properties file
   template: src=jdbc.properties dest="/var/lib/tomcat7/webapps-{{ geonetwork_hostname }}/geonetwork/WEB-INF/config-db/jdbc.properties"
   tags:
     - geonetwork
     - config
+
+- name: Create geonetwork db username/password
+  postgresql_user: name="{{ geonetwork_db_username }}" password="{{ geonetwork_db_password }}" role_attr_flags="CREATEDB,SUPERUSER"
+  become: yes
+  become_user: postgres
+  #when: postgresql_installed.changed
+  tags: geonetwork
+
+- name: Create geonetwork database
+  postgresql_db: name="{{ geonetwork_database }}" owner="{{ geonetwork_db_username }}"
+  #postgresql_db: name="{{ geonetwork_database }}" owner={{ postgresql_username }}
+  become: yes
+  become_user: postgres
+  tags:
+     - geonetwork
+     - config
+
+- name: Adds postgis to the database "geonetwork"
+  postgresql_ext:
+    name: postgis
+    db: "{{ geonetwork_database }}"
+  become: yes
+  become_user: postgres
+  tags:
+     - geonetwork
+
+- name: Adds postgis_topology to the database "geonetwork"
+  postgresql_ext:
+    name: postgis_topology
+    db: "{{ geonetwork_database }}"
+  become: yes
+  become_user: postgres
+  tags:
+     - geonetwork
+
+#- debug:
+#    msg: "Print Postgres user/passsword:  {{ postgresql_username }} : {{ postgresql_password }}"
+#  tags:
+#    - geonetwork
+#    - config
+
+#- name: Create geonetwork postgres username/password
+#  postgresql_user: name="{{ postgresql_username }}" password="{{ postgresql_password }}" role_attr_flags="CREATEDB,SUPERUSER"
+#  become: yes
+#  become_user: postgres
+#  #when: postgresql_installed.changed
+#  tags: geonetwork
 
 - name: replace config-node/srv.xml file
   template: src=srv.xml dest="/var/lib/tomcat7/webapps-{{ geonetwork_hostname }}/geonetwork/WEB-INF/config-node/srv.xml"

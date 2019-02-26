@@ -1,2 +1,2 @@
-- name: restart tomcat
-  service: name={{tomcat}} state=restarted
+- name: restart phylolink
+  service: name=phylolink state=restarted

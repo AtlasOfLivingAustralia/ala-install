@@ -12,7 +12,8 @@
 
 - file: path="{{ data_dir }}" state=directory mode=0755 force=yes follow=yes
   when: is_vagrant is defined and is_vagrant
-  tags: common  
+  tags: common
+  become: true
 
 - file: src="{{data_dir}}" dest=/data state=link
   when: symlink_to_data_dir is defined and symlink_to_data_dir

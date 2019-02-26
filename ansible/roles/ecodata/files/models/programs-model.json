@@ -1,0 +1,26 @@
+{
+  "programs": [
+    {
+      "weekDaysToCompleteReport": 0,
+      "activities": [
+        "Single Sighting",
+        "Multiple Sightings",
+      ],
+      "name": "None",
+      "speciesFieldsSettings": null,
+      "subprograms": [],
+      "optionalProjectContent": []
+    },
+    {
+      "weekDaysToCompleteReport": 0,
+      "activities": [
+        "Single Sighting",
+        "Multiple Sightings",
+      ],
+      "name": "Citizen Science Projects",
+      "speciesFieldsSettings": null,
+      "subprograms": [],
+      "optionalProjectContent": []
+    }
+  ]
+}

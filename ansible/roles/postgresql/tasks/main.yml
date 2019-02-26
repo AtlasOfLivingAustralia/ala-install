@@ -15,10 +15,12 @@
   tags:
     - postgresql
     - packages
+    - info
 
 - include: ./debian.yml
   when: ansible_os_family == "Debian" and pg_version is defined
   tags:
     - postgresql
     - pagackes
+    - info
 

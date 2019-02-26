@@ -1,4 +1,5 @@
--- This stored procedure is used to populate the "event_summary_totals" table from all existing log information
+-- This stored procedure is used to (re)populate the "event_summary_totals" table
+-- from all existing log information
 
 delimiter $$
 
