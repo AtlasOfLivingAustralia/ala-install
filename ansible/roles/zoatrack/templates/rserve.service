@@ -1,0 +1,17 @@
+[Unit]
+Description=Rserve Service
+
+[Service]
+User=ubuntu
+#WorkingDirectory=/home/ubuntu/workspace
+#path to executable.
+#executable is a bash script which calls jar file
+ExecStart=/bin/bash /usr/lib/R/bin/rserve.sh
+SuccessExitStatus=0
+TimeoutStopSec=10
+UMask=0007
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
