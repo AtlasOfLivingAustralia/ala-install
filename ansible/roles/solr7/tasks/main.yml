@@ -125,7 +125,7 @@
     - solr7_create_cores
 
 - name: Create SOLR cores
-  get_url: url="{{ solr_base_url }}/solr/admin/cores?action=CREATE&name={{ item }}&instanceDir=/data/solr/data/{{ item }}&config=solrconfig.xml&dataDir=data" force=yes timeout=30 dest=/tmp/
+  get_url: url="{{ solr_base_url }}/solr/admin/cores?action=CREATE&name={{ item }}&instanceDir={{data_dir}}/solr/data/{{ item }}&config=solrconfig.xml&dataDir=data" force=yes timeout=30 dest=/tmp/
   with_items:
     - "biocache"
     - "bie"
