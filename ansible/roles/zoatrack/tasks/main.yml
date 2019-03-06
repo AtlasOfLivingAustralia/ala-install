@@ -114,6 +114,36 @@
     - /tmp/ukfsst_0.3-x64.tar.gz
   tags: r_mannual
 
+
+# Start Rserve as service
+- name: copy rserve.sh to /usr/lib/R/bin/
+  become: yes
+  template:  src="rserve.sh" dest="/usr/lib/R/bin/"
+  tags: rserve
+
+- name: Changing rserve.sh to "+x"
+  file: dest=/usr/lib/R/bin/rserve.sh mode=a+x
+  tags: rserve
+
+- name: copy rserve.service to /etc/systemd/system
+  become: yes
+  template:  src="rserve.service" dest="/etc/systemd/system"
+  tags: rserve
+
+- name: just force systemd to reread configs (2.4 and above)
+  systemd:
+    daemon_reload: yes
+
+
+- name: enable service rserve
+  systemd:
+   name: rserve
+   enabled: yes
+  tags: rserve
+
+
+
+
 - name: Add postgres repository key
   apt_key: url=http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc state=present
   tags: postgresql
@@ -313,7 +343,7 @@
   become: yes
   become_user: tomcat7
   get_url:
-    url: 'https://nexus.ala.org.au/service/local/repositories/snapshots/content/org/oztrack/oztrack/4.20-SNAPSHOT/oztrack-4.20-20190115.045317-1.war'
+    url: '{{ zoatrack_war_url }}'
     dest: /var/lib/tomcat7/webapps/ROOT.war
   tags: oztrack
 
@@ -331,16 +361,16 @@
 - name: cp oztrack config
   become: yes
   template:  src="{{ oztrack_custom_property_file }}" dest="{{ oztrack_home }}{{ oztrack_custom_property_file }}"
-  tags: oztrack
+  tags: oztrack_config
 
 - name: Override default tomcat memory configuration
   lineinfile:
     dest={{ tomcat_conf }}
     regexp="^JAVA_OPTS"
-    line='JAVA_OPTS="{{ oztrack_tomcat_java_opts }}"'
+    line='JAVA_OPTS="${JAVA_OPTS} {{ oztrack_tomcat_java_opts }}"'
   notify:
     - reload tomcat
-  tags: oztrack
+  tags: oztrack_config
 
 
 

@@ -68,6 +68,36 @@
         use_cache: true
         force_cache: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrence/legend"
+      - path: "{{biocache_service_context_path}}/occurrence/facets"
+        sort_label: "4_occurrence_facets"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrence/facets"
+      - path: "{{biocache_service_context_path}}/occurrence/groups"
+        sort_label: "4_occurrence_groups"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrence/groups"
+      - path: "{{biocache_service_context_path}}/explore"
+        sort_label: "4_explore"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/explore"
+      - path: "{{biocache_service_context_path}}/search/facets"
+        sort_label: "4_search_facets"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/search/facets"
+      - path: "{{biocache_service_context_path}}/search/grouped/facets"
+        sort_label: "4_search_grouped_facets"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/search/grouped/facets"
       - path: "{{biocache_service_context_path}}/occurrences/legend"
         sort_label: "4_occurrences_legend"
         is_proxy: true
@@ -92,6 +122,12 @@
         use_cache: true
         force_cache: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrences/taxaCount"
+      - path: "{{biocache_service_context_path}}/images/taxon"
+        sort_label: "4_images_taxon"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/images/taxon"
       - path: "{{biocache_service_context_path}}/density/legend"
         sort_label: "5_density_legend"
         is_proxy: true
@@ -170,6 +206,26 @@
         is_proxy: true
         unlimited_conns: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrences/offline"
+      - path: "{{biocache_service_context_path}}/webportal/params"
+        sort_label: "7_webportal_params"
+        is_proxy: true
+        unlimited_conns: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/webportal/params"
+      - path: "{{biocache_service_context_path}}/mapping/params"
+        sort_label: "7_mapping_params"
+        is_proxy: true
+        unlimited_conns: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/params"
+      - path: "{{biocache_service_context_path}}/qid"
+        sort_label: "7_qid"
+        is_proxy: true
+        unlimited_conns: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/qid"
+      - path: "{{biocache_service_context_path}}/mapping/qid"
+        sort_label: "7_mapping_qid"
+        is_proxy: true
+        unlimited_conns: true
+        proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/qid"
       - path: "/biocache-download"
         sort_label: "8_download"
         is_proxy: false

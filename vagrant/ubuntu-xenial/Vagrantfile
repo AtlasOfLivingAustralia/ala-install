@@ -22,7 +22,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.disksize.size = '20GB'
 
   # these machines require some installed apps
-  config.vm.provision :shell, inline: "sudo apt-get install python -y"
+  # Sleeping between commands because Ubuntu asynchronously updates some apt information in the background
+  config.vm.provision :shell, inline: "sleep 20 && sudo apt-get update && sleep 20 && sudo apt-get install python -y"
 
   # totally insecure, but this is local dev: make the vagrant default the root key
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"

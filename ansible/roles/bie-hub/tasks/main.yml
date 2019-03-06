@@ -33,6 +33,15 @@
     - bie    
   when: not webserver_nginx
 
+- name: set nginx proxy target if configured
+  set_fact:
+    bie_hub_proxy_target: "{{bie_hub_context_path}}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - bie
+  when: webserver_nginx and bie_hub_proxy_target is not defined
+
 # Trove path is needed until trove API cleanly supports https
 - name: add nginx vhost if configured
   include_role:
@@ -41,13 +50,51 @@
     hostname: "{{ bie_hub_hostname }}"
     context_path: "{{ bie_hub_context_path }}"
     nginx_paths:
-      - path: "{{ bie_hub_context_path | default('/', True) }}"
+      - path: "{{bie_hub_context_path}}/species"
+        sort_label: "2_species"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:8080{{ bie_hub_context_path | default('/', True) }}"
-      - path: "/trove"
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{bie_hub_proxy_target}}/species"
+      - path: "{{bie_hub_context_path}}/search"
+        sort_label: "3_search"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{bie_hub_proxy_target}}/search"
+      - path: "{{bie_hub_context_path}}/sound-search"
+        sort_label: "4_soundsearch"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{bie_hub_proxy_target}}/sound-search"
+      - path: "{{bie_hub_context_path}}/image-search"
+        sort_label: "4_imagesearch"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{bie_hub_proxy_target}}/image-search"
+      - path: "{{bie_hub_context_path}}/trove"
+        sort_label: "6_trove"
         is_proxy: false
         is_proxy_rewrite: true
-        proxy_pass: http://api.trove.nla.gov.au
+        proxy_pass: https://api.trove.nla.gov.au
+      - path: "{{bie_hub_context_path}}/externalSite"
+        sort_label: "7_externalsite"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{bie_hub_proxy_target}}/externalSite"
+      - path: "{{bie_hub_context_path}}/geo"
+        sort_label: "8_geo"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{bie_hub_proxy_target}}/geo"
+      - path: "{{ bie_hub_context_path }}"
+        sort_label: "9_default"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080{{bie_hub_proxy_target}}"
   tags:
     - nginx_vhost
     - deploy
