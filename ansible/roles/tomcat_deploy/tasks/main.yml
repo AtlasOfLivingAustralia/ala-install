@@ -28,7 +28,7 @@
     - restart tomcat
 
 - name: check war file existence
-  stat: path="{{ tomcat_deploy_dir }}/{{ war_filename }}"
+  stat: path="{{ tomcat_deploy_dir }}/{{ war_filename }}.war"
   register: war_exist
 
 - name: back up existing war file
@@ -44,7 +44,7 @@
   when: log_exist.stat.exists == True
   
 - name: remove existing webapp (to ensure a clean redeployment)
-  file: path="{{ tomcat_deploy_dir }}/{{ war_filename }}" state=absent
+  file: path="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" state=absent
 
 - name: download from maven repo
   get_url: url={{ war_url }} dest="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" force=true timeout=60

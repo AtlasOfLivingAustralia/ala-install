@@ -11,6 +11,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # these machines require some memory to operate the apps
   config.vm.provider "virtualbox" do |v|
     v.memory = 8192
-  end  
+  end
+
+  # these machines require some installed apps
+    config.vm.provision :shell, inline: "sudo apt-get install python -y"
   
 end

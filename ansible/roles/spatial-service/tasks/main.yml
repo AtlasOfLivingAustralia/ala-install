@@ -29,6 +29,9 @@
     hostname: "{{ spatial_service_hostname }}"
     context_path: "{{ spatial_service_context_path }}"
     nginx_paths:
+      - path: "{{ spatial_hub_context_path }}files"
+        is_proxy: false
+        alias: "{{ data_dir }}/ala/runtime/files/"
       - path: "/alaspatial"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:8080{{spatial_service_context_path}}"
@@ -67,14 +70,8 @@
   tags:
     - spatial-service
 
-- name: copy all config.properties
-  template: src=spatial-service-config.properties dest={{data_dir}}/spatial-service/config/spatial-service-config.properties
-  tags:
-    - spatial-service
-    - config
-
-- name: copy all spatial-service-data-config xml
-  template: src=spatial-service-data-config.xml dest={{data_dir}}/spatial-service/config/spatial-service-data-config.xml
+- name: copy all config.yml
+  template: src=spatial-service-config.yml dest={{data_dir}}/spatial-service/config/spatial-service-config.yml
   tags:
     - spatial-service
     - config

@@ -21,6 +21,18 @@
   when: ansible_os_family == "Debian" and pg_version is defined
   tags:
     - postgresql
-    - pagackes
+    - packages
     - info
+
+- include: ./postgis.yml
+  when: postgis_version
+  tags:
+    - postgresql
+    - postgis
+
+- include: ./gdal.yml
+  when: postgis_version
+  tags:
+    - postgresql
+    - postgis
 

@@ -14,14 +14,14 @@
   when: postgis_version != ""
   with_items:
     - "postgresql-{{pg_version}}-postgis-{{postgis_version}}"
-    - "gdal-bin"
-  tags: postgresql
+  tags:
+    - postgresql
+    - postgis
 
 - name: ensure postgis_template database exists
   postgresql_db:
     db: postgis_template
     state: present
-#  sudo_user: postgres
   become: yes
   become_user: postgres
   tags:

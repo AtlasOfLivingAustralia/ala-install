@@ -1,0 +1,15 @@
+- name: install GDAL from source
+  shell: "cd /usr/local; wget -O /tmp/gdal.tar.gz {{gdal_src_url}}; cd /tmp; tar -zxvf /tmp/gdal.tar.gz; rm gdal.tar.gz; cd gdal*; ./configure --with-python; make; make install"
+  become: yes
+  when: gdal_from_src is defined
+  tags:
+    - postgresql
+    - postgis
+
+- name: apt-get install gdal-bin
+  apt: pkg=gdal-bin state=latest
+  become: yes
+  when: gdal_from_src is not defined
+  tags:
+    - postgresql
+    - postgis

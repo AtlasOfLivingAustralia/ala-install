@@ -110,7 +110,7 @@
     - tomcat
 
 - name: ensure tomcat temp directory exists
-  file: path={{ tomcat_temp_directory | default('/data/tmp/tomcat7-tomcat7-tmp') }} state=directory owner={{ tomcat_user }} group={{ tomcat_user }}
+  file: path={{ tomcat_temp_directory | default("/data/tmp/tomcat-tmp") }} state=directory owner={{ tomcat_user }} group={{ tomcat_user }}
   notify:
     - restart tomcat
   when: ansible_os_family == "Debian"
@@ -121,7 +121,7 @@
   blockinfile:
     path={{tomcat_conf}}
     marker="# {mark} Configure Tomcat Temp Directory, which will be created and destroyed every time tomcat starts and stops (Ansible managed)"
-    block='JVM_TMP="{{ tomcat_temp_directory | default('/data/tmp/tomcat7-tomcat7-tmp')}}"'
+    block=JVM_TMP="{{ tomcat_temp_directory | default('/data/tmp/tomcat-tmp')}}"
     backup=yes
   notify:
     - restart tomcat

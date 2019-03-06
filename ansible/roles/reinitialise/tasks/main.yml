@@ -3,7 +3,7 @@
     - reinitialise
 
 - name: REMOVE tomcat
-  apt: name=tomcat7 purge=yes state=absent
+  apt: name={{tomcat}} purge=yes state=absent
   tags:
     - reinitialise
 

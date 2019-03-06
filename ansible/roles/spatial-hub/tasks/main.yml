@@ -29,9 +29,6 @@
     hostname: "{{ spatial_hub_hostname }}"
     context_path: "{{ spatial_hub_context_path }}"
     nginx_paths:
-      - path: "{{ spatial_hub_context_path }}files"
-        is_proxy: false
-        alias: "{{ data_dir }}/ala/runtime/files/"
       - path: "{{spatial_hub_context_path}}webportal"
         is_proxy: false
         rewrite: "{{ spatial_hub_context_path }}"
@@ -56,8 +53,8 @@
   tags:
     - spatial-hub
 
-- name: copy all config.properties
-  template: src=spatial-hub-config.properties dest={{data_dir}}/spatial-hub/config/spatial-hub-config.properties
+- name: copy all config.yml
+  template: src=spatial-hub-config.properties dest={{data_dir}}/spatial-hub/config/spatial-hub-config.yml
   tags:
     - spatial-hub 
     - config
