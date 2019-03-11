@@ -275,3 +275,5 @@ projections:
 
 grails.serverURL: {{spatial_hub_base_url}}
 grails.app.context: {{spatial_hub_context_path}}
+
+googleAnalyticsId: {{google_analytics_id | default('')}}

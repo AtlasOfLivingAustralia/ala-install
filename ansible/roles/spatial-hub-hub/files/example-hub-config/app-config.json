@@ -1,0 +1,124 @@
+{
+  "# overrideDefaultAreas": "",
+  "defaultareas": [
+    {
+      "name": "Tasmania",
+      "fqs": [
+        "longitude:[143 TO 150]",
+        "latitude:[-44 TO -39]"
+      ],
+      "areaSqKm": 324606.72,
+      "wkt": "POLYGON((143 -44,150 -44,150 -39,143 -39,143 -44))",
+      "bbox": [
+        143,
+        -44,
+        150,
+        -39
+      ]
+    }
+  ],
+
+  "# overrideInitialMapPositionAndBaseLayers": "",
+  "startup": {
+    "lat": -41.5,
+    "lng": 146.5,
+    "zoom": 6,
+    "baselayer": {
+      "default": "osm"
+    },
+    "baselayers": {
+      "osm": {
+        "name": "Open Street Map",
+        "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "type": "xyz",
+        "exportType": "minimal",
+        "link": "https://www.openstreetmap.org/about",
+        "projections": [
+          "3857"
+        ]
+      }
+    }
+  },
+
+  "# overrideDefaultsForNewLayers": "",
+  "speciesDotOpacity": 3,
+  "speciesDotOpacity": 100,
+
+  "# overrideSkin": "",
+  "skin": {
+    "header": false,
+    "footer": false,
+    "fluidLayout": true,
+    "layout": "generic",
+    "orgNameLong": "ALA"
+  },
+
+  "# setHubQC": "this is the fq added to all biocache-service queries",
+  "qc": "",
+
+  "# overrideDefaultProjection": "",
+  "projection": {
+    "default": "3857"
+  },
+
+  "# overrideProjectionsAvailable": "",
+  "projections": {
+    "3857": {
+      "label": "Pseudo-Mercator -- Spherical Mercator",
+      "definition": {
+        "code": "EPSG:3857"
+      }
+    }
+  },
+
+  "# disableGazetteerLookups set gazField=''":"",
+  "gazField": "",
+
+  "# disableFlickrImagesButton set flickr.url=''":"",
+  "flickr": {
+    "url": ""
+  },
+  "# disableBiocollectImagesButton": "set biocollect.url=''",
+  "biocollect": {
+    "url": ""
+  },
+
+  "# configureSpatialHubUI": "",
+  "spApp": {
+    "# show 'map options' and associated controls in the list of layers": "",
+    "mapOptions": false,
+
+    "# show map control for collapsing up and hiding the header": "",
+    "collapseUp": false,
+
+    "# show map control for collapsing left and hiding left panel": "",
+    "collapseLeft": false,
+
+    "# show map control that displays the cursor coordinates (on the lower left of the map, above the scale)": "",
+    "cursorCoordinates": false,
+
+    "# show map control that displays the quicklinks": "",
+    "quicklinks": false,
+
+    "# show 'map options' button 'Add WMS Layer'": "",
+    "optionsAddWms": false,
+
+    "# show 'map options' button 'Download Map'": "",
+    "optionsDownloadMap": false,
+
+    "# show 'map options' button 'Reset Map'": "",
+    "optionsResetMap": false,
+
+    "# show 'map options' section to change the base map": "",
+    "optionsSelectBaseMap": false,
+
+    "# load the layerDistances data to display the layer selection list's traffic light indicator": "",
+    "layerDistances": false,
+
+    "# show the 'add to map | area | google location search' option": "",
+    "googleLocation": false,
+
+    "# show the left panel by default": "",
+    "leftPanel": true
+  }
+}

@@ -1,0 +1,3 @@
+- hosts: spatial-hub-hub
+  roles:
+    - spatial-hub-hub

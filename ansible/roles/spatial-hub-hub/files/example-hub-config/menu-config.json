@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Add to map",
+    "width": 255,
+    "items": [
+      {
+        "name": "Species",
+        "open": "ToolAddSpeciesService"
+      },
+      {
+        "name": "Area",
+        "open": "addArea"
+      },
+      {
+        "name": "Layer",
+        "open": "ToolAddLayerService"
+      }
+    ]
+  },
+  {
+    "name": "Actions",
+    "width": 147,
+    "items": [
+      {
+        "name": "Area Report - interactive",
+        "open": "ToolAreaReportService"
+      },
+{
+        "separator": true
+      },
+      {
+        "name": "Save as Image",
+        "open": "exportMap"
+      }
+    ]
+  }
+]
