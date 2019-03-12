@@ -269,13 +269,13 @@
     - biocache-service  
 
 - name: copy all config.properties
-  template: src={{ item }} dest={{data_dir}}/biocache/config/{{ item | basename | regex_replace('\.j2','') }}
+  template: src={{ item }} dest={{data_dir}}/biocache/{{ item }}
   with_items:
-    - config/download-doi-email.html.j2
-    - config/applicationContext.xml.j2
-    - config/download-doi-readme.html.j2
-    - config/download-email.html.j2
-    - config/download-readme.html.j2
+    - config/download-doi-email.html
+    - config/applicationContext.xml
+    - config/download-doi-readme.html
+    - config/download-email.html
+    - config/download-readme.html
   tags:
     - biocache-service
 

@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <link href="{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}{{ css_styles | default('/css/ala-styles.css') }}" rel="stylesheet"
           media="screen,print"/>
-{% if custom_ala_css == 'true' %}
+{% if ala_download_css is defined and ala_download_css | bool == True %}
     <style>
-     /* Embbeded ala styles */
+        
+        /* Embbeded ala styles */
 /* ALA custom style rules
 ================================= */
 
@@ -979,16 +980,70 @@ body > footer > div > div.col-md-12.acknowledgement-callout.acknowledgement-call
     margin:-60px 0 0;
   }
 }
+
+        /* DOI - taken from GBIF */
+        .doi {
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 4px 6px;
+            white-space:nowrap;
+            white-space:nowrap;
+        }
+        .doi-sm {
+            font-size: 13px;
+            padding: 2px 0;
+        }
+        .doi span:first-of-type {
+            -webkit-transition: all .3s ease;
+            transition: all .3s ease;
+            background: #D5502A ;
+            /*#09c;*/
+            padding: 4px 6px;
+            /*border-radius: 5px 0 0 5px;*/
+            color: #fff;
+            border-right-width: 0;
+            border-color:#D5502A;
+            /*#09c;*/
+        }
+        .doi span:last-of-type {
+            color: #333;
+            background: #fff;
+            text-decoration: none;
+            padding: 4px 6px;
+            /*border-radius: 0 5px 5px 0;*/
+            border-left-width: 0;
+        }
+        .doi span {
+            border: 1px solid #adadad;
+        }
+        .doi:hover span:first-of-type {
+            background: #D5502A;
+            /*#004d66; */
+            border-color: #D5502A;
+            /*#004d66;*/
+        }
+        .doi:hover span:last-of-type {
+            background: #f9f9f9;
+        }
+
+
     </style>
 {% endif %}
+
 </head>
 <body>
-Your download is available on the URL:<br><br>
-<a href='[url]'>[url]</a><br><br>
-When using this dataset please use the following citation:<br><br>
+Your download can be accessed on the page:<br><br>
+<a href='[url]'>[url]</a> <br><br>
+The DOI for this download is
+<span class="doi doi-sm"><span>DOI</span><span>[doi]</span></span>
+<br><br>
+When using this dataset please use the following citation: <br><br>
 <cite>{{ orgNameLong | default('Atlas of Living Australia') }} occurrence download at <a href='[searchUrl]'>[searchUrl]</a> accessed on [date].</cite> <br><br>
 Also cite the contributing data providers which are listed in the included "citation.csv" file.<br><br>
 More information can be found at <a href="{{ citing_the_atlas | default('https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/') }}">citing the {{ orgNameShort | default('ALA') }}</a>.<br><br>
-[doiFailureMessage]
+
+All of your DOI assigned downloads are available <a href='{{ doi_service_url }}/myDownloads'>here</a>.
 </body>
 </html>
