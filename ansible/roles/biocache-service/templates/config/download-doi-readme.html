@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="https://www.ala.org.au/commonui-bs3/css/ala-styles.css" rel="stylesheet"
+    <link href="{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}{{ css_styles | default('/css/ala-styles.css') }}" rel="stylesheet"
           media="screen,print"/>
     <!--<title>Title</title>-->
+{% if ala_download_css is defined and ala_download_css | bool == True %}
     <style>
         /* The only override we need from ala-styles.css */
 
@@ -60,13 +61,14 @@
         }
 
     </style>
+{% endif %}
 </head>
 <body>
 When using this dataset please use the following citation:<br><br>
-<cite>Atlas of Living Australia occurrence download at <a href='[searchUrl]'>[searchUrl]</a> accessed on [date].</cite> <br><br>
+<cite>{{ orgNameLong | default('Atlas of Living Australia') }} occurrence download at <a href='[searchUrl]'>[searchUrl]</a> accessed on [date].</cite> <br><br>
 The DOI <span class="doi doi-sm"><span>DOI</span><span>[doi]</span></span> for this download is available at <a href='[url]'>[url]</a><br><br>
 Data contributed by the following providers:<br>
 [dataProviders]<br>
-More information can be found at <a href='https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/'>citing the ALA</a>.<br><br>
+More information can be found at <a href="{{ citing_the_atlas | default('https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/') }}">citing the {{ orgNameShort | default('ALA') }}</a>.<br><br>
 </body>
 </html>

@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
+    <link href="{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}{{ css_styles | default('/css/ala-styles.css') }}" rel="stylesheet"
+          media="screen,print"/>
+{% if ala_download_css is defined and ala_download_css | bool == True %}
     <style>
         
         /* Embbeded ala styles */
@@ -1028,6 +1030,7 @@ body > footer > div > div.col-md-12.acknowledgement-callout.acknowledgement-call
 
 
     </style>
+{% endif %}
 
 </head>
 <body>
@@ -1037,9 +1040,9 @@ The DOI for this download is
 <span class="doi doi-sm"><span>DOI</span><span>[doi]</span></span>
 <br><br>
 When using this dataset please use the following citation: <br><br>
-<cite>Atlas of Living Australia occurrence download at <a href='[searchUrl]'>[searchUrl]</a> accessed on [date].</cite> <br><br>
+<cite>{{ orgNameLong | default('Atlas of Living Australia') }} occurrence download at <a href='[searchUrl]'>[searchUrl]</a> accessed on [date].</cite> <br><br>
 Also cite the contributing data providers which are listed in the included "citation.csv" file.<br><br>
-More information can be found at <a href='https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/'>citing the ALA</a>. <br><br>
+More information can be found at <a href="{{ citing_the_atlas | default('https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/') }}">citing the {{ orgNameShort | default('ALA') }}</a>.<br><br>
 
 All of your DOI assigned downloads are available <a href='{{ doi_service_url }}/myDownloads'>here</a>.
 </body>
