@@ -268,14 +268,14 @@
   tags:
     - biocache-service  
 
-- name: copy all data assets
-  copy: src=data/config dest={{data_dir}}/biocache owner={{tomcat_user}}  group={{tomcat_user}}
-  tags:
-    - biocache-service
-    - properties
-
 - name: copy all config.properties
-  template: src=config/download-doi-email.html dest={{data_dir}}/biocache/config/
+  template: src={{ item }} dest={{data_dir}}/biocache/config/{{ item | basename | regex_replace('\.j2','') }}
+  with_items:
+    - config/download-doi-email.html.j2
+    - config/applicationContext.xml.j2
+    - config/download-doi-readme.html.j2
+    - config/download-email.html.j2
+    - config/download-readme.html.j2
   tags:
     - biocache-service
 
