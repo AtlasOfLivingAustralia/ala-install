@@ -67,7 +67,7 @@ options:
     description:
       - whether to include the access log valve in the virtual host
     required: false
-    default: true
+    default: false
   state:
     description:
       - The database state
@@ -148,7 +148,7 @@ def b2xs(string):
 
 
 def create_vhost(aug, host, aliases=[], app_base=None, deploy_on_startup=True, auto_deploy=True, unpack_wars=True,
-                 remote_ip_valve=False,remote_internal_proxies=None, access_log_valve=True, service="Catalina", engine="Catalina"):
+                 remote_ip_valve=False,remote_internal_proxies=None, access_log_valve=False, service="Catalina", engine="Catalina"):
     host_path = ("/files/server.xml/Server/Service[#attribute/name=\"%(service)s\"]/"
                  "Engine[#attribute/name=\"%(engine)s\"]/Host[#attribute/name=\"%(host)s\"]") % locals()
     existing = aug.match(host_path)
