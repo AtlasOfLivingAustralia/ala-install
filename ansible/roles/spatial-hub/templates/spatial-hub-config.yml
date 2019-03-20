@@ -14,7 +14,7 @@ security:
     gateway: {{ gateway_cas | default(false) }}
 
 
-autocompleteUrl: {{ bie_base_url | default('https://bie.ala.org.au) }}/ws/search/auto.jsonp
+autocompleteUrl: {{ bie_base_url | default('https://bie.ala.org.au') }}/ws/search/auto.jsonp
 
 auth:
     admin_role: {{ auth_admin_role | default('ROLE_ADMIN') }}

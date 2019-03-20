@@ -54,7 +54,7 @@
     - spatial-hub
 
 - name: copy all config.yml
-  template: src=spatial-hub-config.properties dest={{data_dir}}/spatial-hub/config/spatial-hub-config.yml
+  template: src=spatial-hub-config.yml dest={{data_dir}}/spatial-hub/config/spatial-hub-config.yml
   tags:
     - spatial-hub 
     - config
