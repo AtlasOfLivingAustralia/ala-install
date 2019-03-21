@@ -8,7 +8,6 @@ data_dir=/data
 
 demo_hostname = demo.vagrant1.ala.org.au
 
-
 # Home URL in breadcrumb
 skin_home_url = http://demo.vagrant1.ala.org.au
 
@@ -144,12 +143,11 @@ solr_base_url = http://demo.vagrant1.ala.org.au:8983
 solr_context_path = /solr
 solr_host = demo.vagrant1.ala.org.au
 solr_port = 8983
-
-solr_heap = 2g
-sandbox_hostname = demo.vagrant1.ala.org.au
-sandbox_url = http://demo.vagrant1.ala.org.au/sandbox
-sandbox_base_url = http://demo.vagrant1.ala.org.au
-sandbox_context_path = /sandbox
+solr_zk_host=
+solr_bind_jetty_host=false
+# set to blank to avoid solr cloud mode
+solr_mode=
+solr_heap = 1g
 
 ################# Logger Service ############
 
@@ -257,3 +255,10 @@ images_db_username = images
 ###### favicon #######
 
 skin_favicon = https://www.gbif.org/favicon-16x16.png
+
+postgresql_username=postgres
+postgresql_password=postgres
+postgis_version=9.6
+pg_service=postgresql-9.6
+pg_version=9.6
+postgis_version=2.4

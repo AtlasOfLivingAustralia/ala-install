@@ -169,6 +169,7 @@ dataSource:
     password: {{layers_db_password}}
 
 grails.serverURL: {{spatial_service_base_url}}
+serverName: {{spatial_service_base_url}}
 grails.app.context: {{spatial_service_context_path}}
 
 skin.orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}
