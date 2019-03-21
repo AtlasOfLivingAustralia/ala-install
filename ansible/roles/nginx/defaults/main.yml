@@ -13,6 +13,7 @@ nginx_ppa_version: stable
 nginx_package_name: "nginx"
 
 nginx_conf_template: "nginx.conf.j2"
+nginx_mime_template: "mime.types.j2"
 nginx_vhost_template: "vhost.j2"
 
 nginx_worker_processes: "{{ ansible_processor_vcpus | default(ansible_processor_count) }}"
@@ -84,7 +85,7 @@ nginx_upstreams: []
 #     "srv3.example.com"
 #   }
 
-nginx_log_format: '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for"'
+nginx_log_format: '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for" request_time=$request_time upstream_response_time=$upstream_response_time upstream_connect_time=$upstream_connect_time upstream_header_time=$upstream_header_time upstream_cache_status=$upstream_cache_status'
 
 # Add strings to this list containing the vhost fragment directory names to clear
 nginx_vhost_fragments_to_clear: []
