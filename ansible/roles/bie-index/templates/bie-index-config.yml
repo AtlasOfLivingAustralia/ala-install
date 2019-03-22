@@ -90,7 +90,7 @@ headerAndFooter:
   baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}
 useLegacyAuto: false
 import:
-  sequence: {{ bie_index_import_sequence | default('collectory,taxonomy-all,vernacular,denormalise,layers,regions,localities,conservation-lists,wordpress,link-identifiers,images,occurrences') }}
+  sequence: {{ bie_index_import_sequence | default('collectory,taxonomy-all,vernacular,denormalise,layers,regions,localities,conservation-lists,wordpress,weights,link-identifiers,images,occurrences,suggest-index') }}
   taxonomy:
     dir: {{ data_dir }}/bie/import
 ala:
