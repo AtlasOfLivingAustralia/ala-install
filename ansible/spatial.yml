@@ -11,5 +11,5 @@
     - {role: geoserver, skip_geoserver_script: false}
     - spatial-service
     - spatial-hub
-    - geonetwork
+#    - geonetwork
 

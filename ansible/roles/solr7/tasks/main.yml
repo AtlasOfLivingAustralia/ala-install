@@ -3,6 +3,7 @@
     - solr7
     - solr7_create_cores
     - properties
+    - solr7_check_running
 
 - name: Download SOLR {{ solr_version }}
   get_url: url="http://apache.mirror1.spango.com/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
@@ -112,25 +113,27 @@
     - properties
 
 - name: Start solr
-  shell: "service solr start"
+  service:
+    name: solr
+    state: restarted
   tags:
     - solr7
     - solr_restart
     - solr7_create_cores
 
-- name: Ensure SOLR is running
-  wait_for: port=8983 delay=60
-  tags:
-    - solr7
-    - solr7_create_cores
+#- name: Ensure SOLR is running
+#  wait_for: host="{{ solr_host }}" port="{{ solr_port }}" delay=1 timeout=300
+#  tags:
+#    - solr7
+#    - solr7_check_running
 
 - name: Create SOLR cores
-  get_url: url="{{ solr_base_url }}/solr/admin/cores?action=CREATE&name={{ item }}&instanceDir={{data_dir}}/solr/data/{{ item }}&config=solrconfig.xml&dataDir=data" force=yes timeout=30 dest=/tmp/
+  get_url: url="{{ solr_base_url }}/solr/admin/cores?action=CREATE&name={{ item }}&instanceDir={{data_dir}}/solr/data/{{ item }}&config=solrconfig.xml&dataDir=data" force=yes timeout=30 dest=/tmp/solr-output-{{ item }}
   with_items:
     - "biocache"
     - "bie"
     - "bie-offline"
-  ignore_errors: True
+#  ignore_errors: True
   tags:
     - solr7
     - solr7_create_cores

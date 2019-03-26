@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - spatial-hub
+    - spatial-hub-config
     - config    
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ spatial_hub_context_path }}' hostname='{{ spatial_hub_hostname }}'
@@ -52,17 +53,20 @@
     - "{{data_dir}}/ala/runtime/files/"
   tags:
     - spatial-hub
+    - spatial-hub-config
 
 - name: copy all config.yml
   template: src=spatial-hub-config.yml dest={{data_dir}}/spatial-hub/config/spatial-hub-config.yml
   tags:
     - spatial-hub 
     - config
+    - spatial-hub-config
 
 - name: copy all log4j.properties
   template: src=log4j.properties dest={{data_dir}}/spatial-hub/config/log4j.properties
   tags:
     - spatial-hub
+    - spatial-hub-config
 
 - name: set data ownership
   file: path={{data_dir}}/ala/data/ owner={{tomcat_user}} group={{tomcat_user}} recurse=true

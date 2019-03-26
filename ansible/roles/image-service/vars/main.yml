@@ -3,6 +3,8 @@ version: "{{ images_version | default('LATEST') }}"
 artifactId: "ala-images"
 groupId: "au.org.ala"
 images_url: "{{maven_repo_ws_url}}"
+classifier: ""
+packaging: "war"
 
 additional_proxy_pass:
   - { src: "/store", dest: "!" }
