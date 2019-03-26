@@ -42,6 +42,10 @@
         proxy_ignore_client_abort on;
     {% endif %}
   {% endif %}
+{% if nginx_load_balancing | bool == false and (item.is_websocket is defined and item.is_websocket | bool == true) %}
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+{% endif %}
 {% if nginx_load_balancing | bool == true and (item.unlimited_conns is not defined or item.unlimited_conns | bool != true) %}
         # This backend is defined in the upstream section of the same name
         proxy_pass http://{{ hostname }}_127.0.0.1_{{tomcat_server_port | default('8080', True)}}_backend{{ '_ala_default' if ala_default_vhost is defined and ala_default_vhost else '' }}{% if item.path|length == 0 %}/{% elif item.path|first == '/' %}{{ item.path }}{% else %}/{{ item.path }}{% endif %};
