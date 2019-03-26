@@ -2,22 +2,22 @@
 # au.org.ala.spatial.service config
 #
 data:
-  dir: '{{data_dir}}/spatial-data'
+  dir: '{{ data_dir }}/spatial-data'
 geoserver:
-  url: '{{geoserver_url}}'
+  url: '{{ geoserver_url }}'
   username: '{{ geoserver_username | default('admin') }}'
   password: '{{ geoserver_password | default('geoserver') }}'
   canDeploy: {{ can_deploy_to_geoserver | default('true') }}
 # To use a remote geoserver instance, set geoserver.remote.geoserver_data_dir to the geoserver_data_dir path on the
 # remote server. This will cause layer files to be copied to geoserver_data_dir/data/
 #  remote:
-  geoserver_data_dir: "{{ geoserver_data_dir | default('{{data_dir}}/geoserver_data_dir') }}"
+  geoserver_data_dir: "{{ geoserver_data_dir | default('/data/spatial-data/geoserver_data_dir') }}"
 
 shpResolutions: {{ shp_resolutions | default([0.5, 0.25, 0.1, 0.05]) }}
 grdResolutions: {{ grd_resolutions | default([0.5, 0.25, 0.1, 0.05, 0.01]) }}
 
-biocacheServiceUrl: "{{biocache_service_url | default('https://biocache.ala.org.au/ws')}}"
-biocacheUrl: "{{biocache_url | default('https://biocache.ala.org.au')}}"
+biocacheServiceUrl: "{{ biocache_service_url | default('https://biocache.ala.org.au/ws') }}"
+biocacheUrl: "{{ biocache_url | default('https://biocache.ala.org.au') }}"
 openstreetmap:
   url: "{{ openstreetmap_tile_url | default('https://tile.openstreetmap.org') }}"
 
@@ -33,8 +33,7 @@ batch_sampling_fields_limit: {{ batch_sampling_fields_limit | default(1000) }}
 #
 # au.org.ala.spatial.slave config
 #
-spatialService.url: "{{spatial_service_url}}"
-data.dir: "{{ data_dir }}/spatial-data"
+spatialService.url: "{{ spatial_service_url }}"
 shp2pgsql.path: "{{ shp2pgsql_path | default('/usr/bin/shp2pgsql') }}"
 gdal.dir: "{{ gdal_dir | default('/usr/bin/') }}"
 gdm.dir: "{{ gdm_dir | default('/data/spatial-data/modelling/gdm/DoGdm') }}"
@@ -168,8 +167,7 @@ dataSource:
     username: {{layers_db_username}}
     password: {{layers_db_password}}
 
-grails.serverURL: {{spatial_service_base_url}}
-serverName: {{spatial_service_base_url}}
+grails.serverURL: {{spatial_service_url}}
 grails.app.context: {{spatial_service_context_path}}
 
 skin.orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}

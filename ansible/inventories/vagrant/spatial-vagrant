@@ -107,7 +107,7 @@ spatial_service_base_url=http://spatial.vagrant1.ala.org.au
 spatial_service_context_path=/ws
 
 layers_service_url=http://spatial.vagrant1.ala.org.au/ws
-biocache_service_url=http://biocache-test.ala.org.au/ws
+biocache_service_url=http://biocache.ala.org.au/ws
 
 layers_db_host=localhost
 layers_db_port=5432
@@ -125,8 +125,8 @@ spatial_service_api_key=get-me-an-api-key
 spatial_service_slave_key=create-shared-key
 spatial_service_service_key=create-shared-key
 
-slave_enable=false
-service_enable=false
+slave_enable=true
+service_enable=true
 
 spatial_service_remote_url=https://nectar-spatial-staging.ala.org.au/spatial-service
 
@@ -170,3 +170,8 @@ robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
 robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
 
 ssl=false
+
+
+nginx_client_max_body_size=120m
+
+gdal_from_src=false
