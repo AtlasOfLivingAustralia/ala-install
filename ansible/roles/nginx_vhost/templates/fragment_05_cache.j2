@@ -1,3 +1,4 @@
+{% if nginx_cache | bool == true %}
 #{{ ansible_managed }}
 proxy_cache_path {{ nginx_cache_path }} levels=1:2
     keys_zone={{ nginx_cache_zone }}:{{ nginx_cache_zone_size }} max_size={{ nginx_cache_size }} inactive={{ nginx_cache_time }} use_temp_path=off;
@@ -6,3 +7,14 @@ proxy_cache_path {{ nginx_cache_path }} levels=1:2
 #proxy_cache_valid 200 {{ nginx_cache_valid_time }};
 # Cache all other HTTP codes for a separate time that should be much shorter or 0 to disable caching of other codes
 #proxy_cache_valid any {{ nginx_cache_invalid_time }};
+
+geo $purge_allowed {
+   default         0;  # deny from other
+   127.0.0.1        1;  # allow from localhost
+}
+
+map $request_method $purge_method {
+    PURGE $purge_allowed;
+    default 0;
+}
+{% endif %}

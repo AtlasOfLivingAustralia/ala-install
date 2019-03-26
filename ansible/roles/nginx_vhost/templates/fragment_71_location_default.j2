@@ -5,3 +5,6 @@
             return 444;
         }
 {% endif %}
+{% if nginx_cache | bool == true %}
+        proxy_cache_purge $purge_method;
+{% endif %}
