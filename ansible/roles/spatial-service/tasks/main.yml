@@ -1,6 +1,6 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
-    - spatial-portal
+    - spatial-service
     - config    
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ spatial_service_context_path }}' hostname='{{ spatial_service_hostname }}'

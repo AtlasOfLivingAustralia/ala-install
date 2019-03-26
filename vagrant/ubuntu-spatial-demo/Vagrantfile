@@ -10,7 +10,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/xenial64"
   config.ssh.insert_key = false
   config.vm.hostname = "vagrant1.ala.org.au"
-  config.vm.network :private_network, ip: "10.1.1.4"
+  config.vm.hostname = "spatial.vagrant1.ala.org.au"
+  config.vm.network :private_network, ip: "10.1.1.5"
 
   # these machines require some memory to operate the apps
   config.vm.provider "virtualbox" do |v|

@@ -61,6 +61,18 @@
   tags:
     - nginx
 
+- name: Copy nginx mime.types file.
+  template:
+    src: "{{ nginx_mime_template }}"
+    dest: "{{ nginx_mime_file_path }}"
+    owner: root
+    group: "{{ root_group }}"
+    mode: 0644
+  notify:
+    - reload nginx
+  tags:
+    - nginx
+
 - name: Ensure nginx is started and enabled to start at boot.
   service: name=nginx state=started enabled=yes
   tags:
