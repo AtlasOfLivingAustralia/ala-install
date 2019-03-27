@@ -2,6 +2,6 @@
   roles:
     - { role: common, regions: regions-mdba }
     - { role: java, regions: regions-mdba }
-    - { role: apache, regions: regions-mdba }
+    - { role: webserver, regions: regions-mdba }
     - { role: tomcat, regions: regions-mdba }
     - { role: regions, regions: regions-mdba, menu_config_json: menu-config-mdba.json  }
