@@ -5,19 +5,19 @@
   },
   {
     "label": "Surface water plan areas",
-    "fid": "cl10834"
+    "fid": "cl10905"
   },
   {
     "label": "Ground water plan areas",
-    "fid": "cl10835"
+    "fid": "cl10906"
   },
   {
     "label": "Surface water sustainable diversion limit areas",
-    "fid": "cl10832"
+    "fid": "cl10907"
   },
   {
     "label": "Ground water sustainable diversion limit areas",
-    "fid": "cl10833"
+    "fid": "cl10908"
   },
   {
     "label": "Directory of Important Wetlands",
@@ -82,11 +82,11 @@
   },
   {
     "label": "Traditional Owner surface water",
-    "fid": "cl10847"
+    "fid": "cl10910"
   },
   {
     "label": "Traditional Owner ground water",
-    "fid": "cl10848"
+    "fid": "cl10909"
   },
   {
     "label": "Indigenous protected areas",
