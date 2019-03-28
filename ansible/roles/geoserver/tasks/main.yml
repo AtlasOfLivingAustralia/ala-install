@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - geoserver
+    - geoserver_run_script
 
 - name: packages
   apt: pkg={{ item }} update_cache=yes state=latest
@@ -180,11 +181,15 @@
   tags:
     - geoserver
 
-- name: Runing geoserver.sh
+- name: Running geoserver.sh
   command: "{{data_dir}}/geoserver.sh"
+  args:
+    chdir: "{{data_dir}}"
   when: not skip_geoserver_script
   tags:
     - geoserver
+    - geoserver_run_script
+  become: true
 
 
 
