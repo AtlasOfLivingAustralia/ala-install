@@ -15,7 +15,11 @@
     - spatial-hub-config
 
 - name: copy all config.yml
-  template: src=spatial-hub-config.yml dest={{data_dir}}/spatial-hub/config/spatial-hub-config.yml owner={{tomcat_user}} group={{tomcat_user}}
+  template: src={{item}} dest={{data_dir}}/spatial-hub/config/{{item}} owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "spatial-hub-config.yml"
+    - "menu-config.json"
+    - "view-config.json"
   tags:
     - spatial-hub
     - config
@@ -67,8 +71,6 @@
     - deploy
     - tomcat_vhost
     - spatial-hub
-
-
 
 - name: set data ownership
   file: path={{data_dir}}/ala/data/ owner={{tomcat_user}} group={{tomcat_user}} recurse=true
