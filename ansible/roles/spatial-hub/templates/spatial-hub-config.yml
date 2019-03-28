@@ -115,6 +115,7 @@ admin_role: {{ auth_admin_role | default('ROLE_ADMIN') }}
 
 skin.orgNameLong: "{{ orgNameLong | default('Atlas of Living Australia') }}"
 skin.orgNameShort: "{{ orgNameShort | default('ALA') }}"
+skin.layout: "{{ spatial_hub_skin_layout | default('portal') }}"
 
 grails.controllers.upload.maxFileSize: {{ max_request_size | default(524288000) }}
 grails.controllers.upload.maxRequestSize: {{ max_request_size | default(524288000) }}

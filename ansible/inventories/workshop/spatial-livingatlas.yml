@@ -111,6 +111,7 @@ local_repo_dir=~/.ala
 data_dir=/data
 
 orgNameLong = Living Atlas Demo
+orgNameShort = LivingAtlas
 
 spatial_service_hostname=spatial.livingatlas.org
 spatial_service_url=http://spatial.livingatlas.org/ws
@@ -159,6 +160,11 @@ is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
+startup_lat = 0
+startup_lng = 0
+startup_zoom = 2
+
+spatial_hub_skin_layout=generic
 spatial_hub_hostname=spatial.livingatlas.org
 spatial_hub_url=http://spatial.livingatlas.org/
 spatial_hub_base_url=http://spatial.livingatlas.org
