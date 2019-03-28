@@ -199,5 +199,6 @@ bie_base_url=http://demo.livingatlas.org/ala-bie
 bie_service_base_url=http://demo.livingatlas.org/bie-index
 favicon_url=https://www.gbif.org/favicon-16x16.png
 collections_url=http://demo.livingatlas.org/collectory
+biocache_url=http://demo.livingatlas.org/ala-hub
 biocache_service_url=http://demo.livingatlas.org/biocache-service
 sampling_url=http://spatial.livingatlas.org/ws
