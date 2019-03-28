@@ -167,25 +167,12 @@ startup:
         outline:
             name: 'Outline'
             type: 'wms'
-            url: '{{geoserver_url}}/wms?'
+            url: "{{ world_outline_base_layer | default('https://spatial.ala.org.au/geoserver/wms?') }}"
             layerParams:
                 layers: 'ALA:world'
                 format: 'image/png'
                 continuousWorld: true
             exportType: 'outline'
-# Setting up a WMS cascade layer in geoserver will support other projections
-#        osm_projection:
-#            name: 'Open Street Map'
-#            type: 'wms'
-#            url: '{{geoserver_url}}/geoserver/wms?'
-#            layerParams:
-#                # cascade WMS layer in geoserver
-#                layers: 'ALA:osm'
-#                format: 'image/png'
-#                continuousWorld: true
-#            exportType: 'minimal'
-#            link: 'https://www.openstreetmap.org/about'
-#            invalidProjections: ['3857']
         osm:
             name: 'Open Street Map'
             url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
