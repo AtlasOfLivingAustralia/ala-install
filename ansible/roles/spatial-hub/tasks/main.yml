@@ -4,6 +4,16 @@
     - spatial-hub-config
     - config    
 
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/spatial-hub/config/"
+    - "{{data_dir}}/spatial-hub/i18n/"
+    - "{{data_dir}}/ala/runtime/files/"
+  tags:
+    - spatial-hub
+    - spatial-hub-config
+
 - name: copy all config.yml
   template: src=spatial-hub-config.yml dest={{data_dir}}/spatial-hub/config/spatial-hub-config.yml owner={{tomcat_user}} group={{tomcat_user}}
   tags:
@@ -16,8 +26,6 @@
   tags:
     - spatial-hub
     - spatial-hub-config
-
-
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ spatial_hub_context_path }}' hostname='{{ spatial_hub_hostname }}'
   tags:
@@ -60,15 +68,7 @@
     - tomcat_vhost
     - spatial-hub
 
-- name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
-  with_items:
-    - "{{data_dir}}/spatial-hub/config/"
-    - "{{data_dir}}/spatial-hub/i18n/"
-    - "{{data_dir}}/ala/runtime/files/"
-  tags:
-    - spatial-hub
-    - spatial-hub-config
+
 
 - name: set data ownership
   file: path={{data_dir}}/ala/data/ owner={{tomcat_user}} group={{tomcat_user}} recurse=true

@@ -247,33 +247,33 @@ fq:
 # projections.#.origin.zoom = default zoom
 projection:
     default: {{ projection_default | default('3857') }}
-projections:
-    3857:
-      label: 'Pseudo-Mercator -- Spherical Mercator'
-      definition:
-        code: 'EPSG:3857' # leaflet supported, uses startup lat,lon,zoom
-    4326:
-      label: 'World Geodetic System 1984'
-      definition:
-        code: 'EPSG:4326' # leaflet supported, uses startup lat,lon,zoom
-    3031:
-      label: 'Antarctic Polar Stereographic'
-      definition:
-        code: 'EPSG:3031'
-        proj4js: '+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-        params: { resolutions: [ 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5 ] }
-      origin:
-        latitude: -80
-        longitude: 0
-        zoom: 1
-    3575:
-      label: 'North Pole LAEA Europe'
-      definition:
-        code: 'EPSG:3575'
-        proj4js: '+proj=laea +lat_0=90 +lon_0=10 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-        params:  { resolutions: [ 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5 ]}
-      origin:
-        latitude: 60
-        longitude: 0
-        zoom: 1
-
+#projections:
+#    3857:
+#      label: 'Pseudo-Mercator -- Spherical Mercator'
+#      definition:
+#        code: 'EPSG:3857' # leaflet supported, uses startup lat,lon,zoom
+#    4326:
+#      label: 'World Geodetic System 1984'
+#      definition:
+#        code: 'EPSG:4326' # leaflet supported, uses startup lat,lon,zoom
+#    3031:
+#      label: 'Antarctic Polar Stereographic'
+#      definition:
+#        code: 'EPSG:3031'
+#        proj4js: '+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+#        params: { resolutions: [ 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5 ] }
+#      origin:
+#        latitude: -80
+#        longitude: 0
+#        zoom: 1
+#    3575:
+#      label: 'North Pole LAEA Europe'
+#      definition:
+#        code: 'EPSG:3575'
+#        proj4js: '+proj=laea +lat_0=90 +lon_0=10 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+#        params:  { resolutions: [ 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5 ]}
+#      origin:
+#        latitude: 60
+#        longitude: 0
+#        zoom: 1
+#
