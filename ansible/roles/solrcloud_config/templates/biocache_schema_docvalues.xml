@@ -429,6 +429,7 @@
 <!-- start of BIE Biocache Fields -->
 <field name="_version_" type="long" indexed="true" stored="true"/>
 <field name="id" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
+<field name="_id" type="string" indexed="true" stored="true" multiValued="false"/>
 <field name="row_key" type="string" indexed="true" stored="true" multiValued="false" docValues="true"/>
 <field name="occurrence_id" type="string" stored="true" multiValued="false" docValues="true" />
 <field name="data_hub_uid" type="string" indexed="true" stored="true" multiValued="true" docValues="true"/>

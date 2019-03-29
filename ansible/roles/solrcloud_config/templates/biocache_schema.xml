@@ -469,6 +469,7 @@
     -->
     <!-- start of BIE Biocache Fields -->
     <field name="_version_" type="tlong" indexed="true" stored="true"/>
+    <field name="_id" type="string" indexed="true" stored="true" multiValued="false"/>
     <field name="id" type="string" indexed="true" stored="true" multiValued="false"/>
     <field name="row_key" type="string" indexed="true" stored="true" multiValued="false"/>
     <field name="occurrence_id" type="string" stored="true" multiValued="false"  />
