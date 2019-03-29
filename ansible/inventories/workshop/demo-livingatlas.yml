@@ -63,6 +63,14 @@ autocomplete_species_images_enabled = false
 autocomplete_species_counts_enabled = false
 autocomplete_commonnames_extra_enabled = false
 
+layers_service_url=http://spatial.livingatlas.org/ws
+# The URL of the spatial-service /fields service
+spatial_layers_url=http://spatial.livingatlas.org/ws/fields
+# To use layers service for sampling
+layers_service_sampling=true
+# leave blank for all fields
+sample_fields=
+
 ####################### Hub #######################
 
 biocache_hub_hostname = demo.livingatlas.org
@@ -71,7 +79,9 @@ biocache_hub_base_url = http://demo.livingatlas.org
 biocache_hub_context_path = /ala-hub
 userdetails_url=https://auth.ala.org.au/userdetails/userDetails
 
-org_url = http://www.csiro.au
+spatial_base_url = http://spatial.livingatlas.org
+
+org_url = http://livingatlases.gbif.org
 
 orgNameLong=Paris CESP Workshop
 orgNameShort=CESP
@@ -83,6 +93,9 @@ explore_your_area_location=Edinburgh
 map_default_latitude = 54.00366
 map_default_longitude = -2.547855
 map_default_zoom = 5
+
+grouped_facets_json=grouped_facets_default.json
+biocache_grouped_facets_url=file:///data/ala-hub/config/grouped_facets_default.json
 
 ####################### Collectory #######################
 
@@ -165,6 +178,7 @@ solr_bind_jetty_host=false
 # set to blank to avoid solr cloud mode
 solr_mode=
 solr_heap = 4g
+dynamic_solr_schema_biocache_el_cl = true
 
 ################# Logger Service ############
 
@@ -255,7 +269,7 @@ bie_hub_hostname = demo.livingatlas.org
 species_list_url = http://demo.livingatlas.org/specieslists
 sightings_url =
 alerts_url =
-spatial_url =
+spatial_url = http://spatial.livingatlas.org
 
 bie_base_url = http://demo.livingatlas.org/ala-bie
 ala_base_url = http://demo.livingatlas.org

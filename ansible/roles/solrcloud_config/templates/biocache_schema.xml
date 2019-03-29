@@ -925,6 +925,12 @@
       <!-- No dynamic fields, see dynamic_solr_schema_biocache to turn on -->
 {% endif %}
 
+{% if dynamic_solr_schema_biocache_el_cl %}
+    <dynamicField name="cl*"  type="string"    indexed="true"  stored="true"/>
+    <dynamicField name="el*"  type="double"    indexed="true"  stored="true"/>
+{% else %}
+{% endif %}
+
   </fields>
 
   <!-- Field to use to determine and enforce document uniqueness.
