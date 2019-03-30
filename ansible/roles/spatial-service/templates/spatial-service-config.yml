@@ -178,4 +178,4 @@ grails.controllers.upload.maxRequestSize: {{ max_request_size | default(52428800
 
 # Needed for map exports
 google:
-  apikey: '{{ google_api_key | default('') }}
+  apikey: "{{ google_api_key | default('') }}"
