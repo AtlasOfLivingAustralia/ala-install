@@ -211,6 +211,7 @@ caches_layers_enabled=false
 
 webserver_nginx=true
 ssl=false
+nginx_vhost_fragments_to_clear=["demo.livingatlas.org"]
 
 nameindex_variant=ala
 nameindex_datestamp=20171012
