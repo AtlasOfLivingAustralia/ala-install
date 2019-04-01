@@ -294,3 +294,6 @@ postgis_version=9.6
 pg_service=postgresql-9.6
 pg_version=9.6
 postgis_version=2.4
+# Needed for installing on Ubuntu-18.04
+# https://github.com/AtlasOfLivingAustralia/biocache-service/issues/363
+tomcat=tomcat7
