@@ -26,5 +26,5 @@ auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
 regions=regions
-
+ssl=false
 webserver_nginx=true
