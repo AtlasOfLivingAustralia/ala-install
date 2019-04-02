@@ -9,7 +9,9 @@
 #
 # ansible-playbook --private-key ~/.ssh/<YOUR-PEM-FILE> -vvvv -u ubuntu -s -i ansible/inventories/workshop/demo-livingatlas.yml ansible/ala-demo.yml
 #
+# To run on vagrant, run with
 #
+# ansible-playbook --private-key ~/.vagrant.d/insecure_private_key -vvvv -u vagrant -s -i ansible/inventories/demo-vagrant ansible/ala-demo.yml
 
 [ala-demo]
 demo.livingatlas.org
