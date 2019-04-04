@@ -469,6 +469,7 @@
     -->
     <!-- start of BIE Biocache Fields -->
     <field name="_version_" type="tlong" indexed="true" stored="true"/>
+    <field name="_id" type="string" indexed="true" stored="true" multiValued="false"/>
     <field name="id" type="string" indexed="true" stored="true" multiValued="false"/>
     <field name="row_key" type="string" indexed="true" stored="true" multiValued="false"/>
     <field name="occurrence_id" type="string" stored="true" multiValued="false"  />
@@ -923,6 +924,12 @@
     <dynamicField name="*_dt" type="date"    indexed="true"  stored="true"/>
 {% else %}
       <!-- No dynamic fields, see dynamic_solr_schema_biocache to turn on -->
+{% endif %}
+
+{% if dynamic_solr_schema_biocache_el_cl %}
+    <dynamicField name="cl*"  type="string"    indexed="true"  stored="true"/>
+    <dynamicField name="el*"  type="double"    indexed="true"  stored="true"/>
+{% else %}
 {% endif %}
 
   </fields>

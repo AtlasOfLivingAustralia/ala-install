@@ -62,12 +62,62 @@
     - deploy
   when: not webserver_nginx
 
+- name: set nginx proxy target if configured
+  set_fact:
+    specieslist_proxy_target: "{{specieslist_context_path}}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - bie_index
+  when: webserver_nginx and specieslist_proxy_target is not defined
+
 - name: add nginx vhost if configured
   include_role:
     name: nginx_vhost
   vars:
     hostname: "{{ specieslist_hostname }}"
     context_path: "{{ specieslist_context_path }}"
+    nginx_paths:
+      - path: "{{specieslist_context_path}}/iconic-species"
+        sort_label: "1_iconic_species"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{specieslist_proxy_target}}/iconic-species"
+      - path: "{{specieslist_context_path}}/public"
+        sort_label: "1_public"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{specieslist_proxy_target}}/public"
+      - path: "{{specieslist_context_path}}/ws/speciesListItems"
+        sort_label: "2_species_list_items"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{specieslist_proxy_target}}/ws/speciesListItems"
+      - path: "{{specieslist_context_path}}/ws/speciesList"
+        sort_label: "3_species_list"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{specieslist_proxy_target}}/ws/speciesList"
+      - path: "{{specieslist_context_path}}/ws/species"
+        sort_label: "4_species"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{specieslist_proxy_target}}/ws/species"
+      - path: "{{specieslist_context_path}}/ws/listCommonKeys"
+        sort_label: "5_list_common_keys"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{specieslist_proxy_target}}/ws/listCommonKeys"
+      - path: "{{specieslist_context_path}}"
+        sort_label: "8_basepath"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080{{specieslist_proxy_target}}"
   tags:
     - specieslist
     - nginx_vhost

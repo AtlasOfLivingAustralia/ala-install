@@ -1,7 +1,35 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - spatial-hub
+    - spatial-hub-config
     - config    
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/spatial-hub/config/"
+    - "{{data_dir}}/spatial-hub/i18n/"
+    - "{{data_dir}}/ala/runtime/files/"
+  tags:
+    - spatial-hub
+    - spatial-hub-config
+
+- name: copy all config.yml
+  template: src={{item}} dest={{data_dir}}/spatial-hub/config/{{item}} owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "spatial-hub-config.yml"
+    - "menu-config.json"
+    - "view-config.json"
+  tags:
+    - spatial-hub
+    - config
+    - spatial-hub-config
+
+- name: copy all log4j.properties
+  template: src=log4j.properties dest={{data_dir}}/spatial-hub/config/log4j.properties owner={{tomcat_user}} group={{tomcat_user}}
+  tags:
+    - spatial-hub
+    - spatial-hub-config
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ spatial_hub_context_path }}' hostname='{{ spatial_hub_hostname }}'
   tags:
@@ -29,7 +57,7 @@
     hostname: "{{ spatial_hub_hostname }}"
     context_path: "{{ spatial_hub_context_path }}"
     nginx_paths:
-      - path: "{{spatial_hub_context_path}}webportal"
+      - path: "{{ spatial_hub_context_path }}webportal"
         is_proxy: false
         rewrite: "{{ spatial_hub_context_path }}"
   tags:
@@ -42,26 +70,6 @@
   tags:
     - deploy
     - tomcat_vhost
-    - spatial-hub
-
-- name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
-  with_items:
-    - "{{data_dir}}/spatial-hub/config/"
-    - "{{data_dir}}/spatial-hub/i18n/"
-    - "{{data_dir}}/ala/runtime/files/"
-  tags:
-    - spatial-hub
-
-- name: copy all config.yml
-  template: src=spatial-hub-config.properties dest={{data_dir}}/spatial-hub/config/spatial-hub-config.yml
-  tags:
-    - spatial-hub 
-    - config
-
-- name: copy all log4j.properties
-  template: src=log4j.properties dest={{data_dir}}/spatial-hub/config/log4j.properties
-  tags:
     - spatial-hub
 
 - name: set data ownership

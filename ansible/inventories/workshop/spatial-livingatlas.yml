@@ -1,32 +1,45 @@
-# Inventory to be used with spatial-standalone playbook
+#
+# Spatial inventory for setting up the spatial ALA stack (spatial portal, spatial services, geoserver, geonetwork).
+#
+# Note: Before this is ran, 'spatial.livingatlas.org' should resolve in DNS either by using a
+# Domain Name System (DNS) web service (e.g. Route53) or by adding an entry into /etc/hosts of the
+# target VM.
+#
+# To use this, run the following command.
+#
+# ansible-playbook --private-key ~/.ssh/<YOUR-PEM-FILE> -vvvv -u ubuntu -s -i ansible/inventories/workshop/spatial-livingatlas.yml ansible/spatial.yml
+#
+# To run on vagrant, run with
+#
+# ansible-playbook --private-key ~/.vagrant.d/insecure_private_key -vvvv -u vagrant -s -i ansible/inventories/spatial-vagrant ansible/spatial.yml
 
 [spatial]
-spatial.vagrant1.ala.org.au
+spatial.livingatlas.org
 
 [geoserver]
-spatial.vagrant1.ala.org.au
+spatial.livingatlas.org
 
 [geonetwork]
-spatial.vagrant1.ala.org.au
+spatial.livingatlas.org
 
 [spatial-hub]
-spatial.vagrant1.ala.org.au
+spatial.livingatlas.org
 
 [spatial-service]
-spatial.vagrant1.ala.org.au
+spatial.livingatlas.org
 
 ###
 # Geoserver
 ###
 
 [geoserver:vars]
-is_vagrant=true
+is_vagrant=false
 local_repo_dir=~/.ala
 data_dir=/data
 
-geoserver_hostname=spatial.vagrant1.ala.org.au
-geoserver_url=http://spatial.vagrant1.ala.org.au/geoserver
-geoserver_base_url=http://spatial.vagrant1.ala.org.au
+geoserver_hostname=spatial.livingatlas.org
+geoserver_url=http://spatial.livingatlas.org/geoserver
+geoserver_base_url=http://spatial.livingatlas.org
 geoserver_context_path=/geoserver
 geoserver_app=geoserver
 
@@ -60,9 +73,9 @@ is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
-geonetwork_hostname=spatial.vagrant1.ala.org.au
-geonetwork_url=http://spatial.vagrant1.ala.org.au/geonetwork
-geonetwork_base_url=http://spatial.vagrant1.ala.org.au
+geonetwork_hostname=spatial.livingatlas.org
+geonetwork_url=http://spatial.livingatlas.org/geonetwork
+geonetwork_base_url=http://spatial.livingatlas.org
 geonetwork_context_path=/geonetwork
 geonetwork_app=geonetwork
 
@@ -99,15 +112,16 @@ is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
-orgNameLong = Atlas of Living Australia
+orgNameLong = Living Atlas Demo
+orgNameShort = LivingAtlas
 
-spatial_service_hostname=spatial.vagrant1.ala.org.au
-spatial_service_url=http://spatial.vagrant1.ala.org.au/ws
-spatial_service_base_url=http://spatial.vagrant1.ala.org.au
+spatial_service_hostname=spatial.livingatlas.org
+spatial_service_url=http://spatial.livingatlas.org/ws
+spatial_service_base_url=http://spatial.livingatlas.org
 spatial_service_context_path=/ws
 
-layers_service_url=http://spatial.vagrant1.ala.org.au/ws
-biocache_service_url=http://biocache.ala.org.au/ws
+layers_service_url=http://spatial.livingatlas.org/ws
+biocache_service_url=http://demo.livingatlas.org/biocache-service
 
 layers_db_host=localhost
 layers_db_port=5432
@@ -148,13 +162,18 @@ is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
-spatial_hub_hostname=spatial.vagrant1.ala.org.au
-spatial_hub_url=http://spatial.vagrant1.ala.org.au/
-spatial_hub_base_url=http://spatial.vagrant1.ala.org.au
+startup_lat = 0
+startup_lng = 0
+startup_zoom = 2
+
+spatial_hub_skin_layout=generic
+spatial_hub_hostname=spatial.livingatlas.org
+spatial_hub_url=http://spatial.livingatlas.org/
+spatial_hub_base_url=http://spatial.livingatlas.org
 spatial_hub_context_path=/
 
-layers_service_url=http://spatial.vagrant1.ala.org.au/ws
-geoserver_url=http://spatial.vagrant1.ala.org.au/geoserver
+layers_service_url=http://spatial.livingatlas.org/ws
+geoserver_url=http://spatial.livingatlas.org/geoserver
 
 sandbox_url=http://sandbox.ala.org.au/ala-hub
 sandbox_ui_url=http://sandbox.ala.org.au/datacheck
@@ -163,7 +182,7 @@ sandbox_biocache_service_url=http://sandbox.ala.org.au/biocache-service
 google_api_key=get-a-google-api-key
 spatial_hub_api_key=get-an-ala-api-key
 
-tomcat_java_opts = -Xmx1g -Xms1g -Xss256k -Djava.awt.headless=true
+tomcat_java_opts = -Xmx4g -Xms4g -Xss256k -Djava.awt.headless=true
 
 webserver_nginx=true
 robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
@@ -171,7 +190,17 @@ robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
 
 ssl=false
 
-
 nginx_client_max_body_size=120m
 
-gdal_from_src=false
+
+##
+# Other components
+##
+
+bie_base_url=http://demo.livingatlas.org/ala-bie
+bie_service_base_url=http://demo.livingatlas.org/bie-index
+favicon_url=https://www.gbif.org/favicon-16x16.png
+collections_url=http://demo.livingatlas.org/collectory
+biocache_url=http://demo.livingatlas.org/ala-hub
+biocache_service_url=http://demo.livingatlas.org/biocache-service
+sampling_url=http://spatial.livingatlas.org/ws

@@ -15,8 +15,18 @@
     - properties
     - bie-index
 
-- name: copy all config.properties
+- name: copy all YML config (new version)
   template: src=bie-index-config.yml dest={{data_dir}}/bie-index/config/bie-index-config.yml force=yes
+  when: bie_use_yml is defined
+  tags:
+    - webapps
+    - config
+    - properties
+    - bie-index
+
+- name: copy all Properties config (old version)
+  template: src=bie-index-config.properties dest={{data_dir}}/bie-index/config/bie-index-config.properties force=yes
+  when: bie_use_yml is not defined
   tags:
     - webapps
     - config
