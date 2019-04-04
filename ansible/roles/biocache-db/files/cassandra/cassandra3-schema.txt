@@ -143,7 +143,7 @@ CREATE TABLE occ.occ (
     "abcdTypeStatus" text,
     "acceptedNameUsage" text,
     "acceptedNameUsageID" text,
-    "accessrights" text,
+    "accessRights" text,
     "alaUserId" text,
     "associatedMedia" text,
     "associatedOccurrences" text,

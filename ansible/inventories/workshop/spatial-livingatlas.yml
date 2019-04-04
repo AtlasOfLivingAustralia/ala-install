@@ -1,0 +1,206 @@
+#
+# Spatial inventory for setting up the spatial ALA stack (spatial portal, spatial services, geoserver, geonetwork).
+#
+# Note: Before this is ran, 'spatial.livingatlas.org' should resolve in DNS either by using a
+# Domain Name System (DNS) web service (e.g. Route53) or by adding an entry into /etc/hosts of the
+# target VM.
+#
+# To use this, run the following command.
+#
+# ansible-playbook --private-key ~/.ssh/<YOUR-PEM-FILE> -vvvv -u ubuntu -s -i ansible/inventories/workshop/spatial-livingatlas.yml ansible/spatial.yml
+#
+# To run on vagrant, run with
+#
+# ansible-playbook --private-key ~/.vagrant.d/insecure_private_key -vvvv -u vagrant -s -i ansible/inventories/spatial-vagrant ansible/spatial.yml
+
+[spatial]
+spatial.livingatlas.org
+
+[geoserver]
+spatial.livingatlas.org
+
+[geonetwork]
+spatial.livingatlas.org
+
+[spatial-hub]
+spatial.livingatlas.org
+
+[spatial-service]
+spatial.livingatlas.org
+
+###
+# Geoserver
+###
+
+[geoserver:vars]
+is_vagrant=false
+local_repo_dir=~/.ala
+data_dir=/data
+
+geoserver_hostname=spatial.livingatlas.org
+geoserver_url=http://spatial.livingatlas.org/geoserver
+geoserver_base_url=http://spatial.livingatlas.org
+geoserver_context_path=/geoserver
+geoserver_app=geoserver
+
+geoserver_username=admin
+geoserver_password=geoserver
+
+layers_db_host=localhost
+layers_db_port=5432
+layers_db_name=layersdb
+layers_db_username=postgres
+layers_db_password=password
+
+postgresql_host=localhost
+postgresql_port=5432
+postgresql_database=layersdb
+postgresql_username=postgres
+postgresql_password=password
+
+webserver_nginx=true
+robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
+robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
+
+ssl=false
+
+###
+# Geonetwork
+###
+
+[geonetwork:vars]
+is_vagrant=true
+local_repo_dir=~/.ala
+data_dir=/data
+
+geonetwork_hostname=spatial.livingatlas.org
+geonetwork_url=http://spatial.livingatlas.org/geonetwork
+geonetwork_base_url=http://spatial.livingatlas.org
+geonetwork_context_path=/geonetwork
+geonetwork_app=geonetwork
+
+geonetwork_username=admin
+geonetwork_password=password
+geonetwork_database=geonetwork
+geonetwork_db_username=postgres
+geonetwork_db_password=password
+
+layers_db_host=localhost
+layers_db_port=5432
+layers_db_name=layersdb
+layers_db_username=postgres
+layers_db_password=password
+
+postgresql_host=localhost
+postgresql_port=5432
+postgresql_database=layersdb
+postgresql_username=postgres
+postgresql_password=password
+
+webserver_nginx=true
+robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
+robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
+
+ssl=false
+
+###
+# Spatial service
+###
+
+[spatial-service:vars]
+is_vagrant=true
+local_repo_dir=~/.ala
+data_dir=/data
+
+orgNameLong = Living Atlas Demo
+orgNameShort = LivingAtlas
+
+spatial_service_hostname=spatial.livingatlas.org
+spatial_service_url=http://spatial.livingatlas.org/ws
+spatial_service_base_url=http://spatial.livingatlas.org
+spatial_service_context_path=/ws
+
+layers_service_url=http://spatial.livingatlas.org/ws
+biocache_service_url=http://demo.livingatlas.org/biocache-service
+
+layers_db_host=localhost
+layers_db_port=5432
+layers_db_name=layersdb
+layers_db_username=postgres
+layers_db_password=password
+
+postgresql_host=localhost
+postgresql_port=5432
+postgresql_database=layersdb
+postgresql_username=postgres
+postgresql_password=password
+
+spatial_service_api_key=get-me-an-api-key
+spatial_service_slave_key=create-shared-key
+spatial_service_service_key=create-shared-key
+
+slave_enable=true
+service_enable=true
+
+spatial_service_remote_url=https://nectar-spatial-staging.ala.org.au/spatial-service
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas
+
+webserver_nginx=true
+robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
+robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
+
+ssl=false
+
+###
+# Spatial hub
+###
+
+[spatial-hub:vars]
+is_vagrant=true
+local_repo_dir=~/.ala
+data_dir=/data
+
+startup_lat = 0
+startup_lng = 0
+startup_zoom = 2
+
+spatial_hub_skin_layout=generic
+spatial_hub_hostname=spatial.livingatlas.org
+spatial_hub_url=http://spatial.livingatlas.org/
+spatial_hub_base_url=http://spatial.livingatlas.org
+spatial_hub_context_path=/
+
+layers_service_url=http://spatial.livingatlas.org/ws
+geoserver_url=http://spatial.livingatlas.org/geoserver
+
+sandbox_url=http://sandbox.ala.org.au/ala-hub
+sandbox_ui_url=http://sandbox.ala.org.au/datacheck
+sandbox_biocache_service_url=http://sandbox.ala.org.au/biocache-service
+
+google_api_key=get-a-google-api-key
+spatial_hub_api_key=get-an-ala-api-key
+
+tomcat_java_opts = -Xmx4g -Xms4g -Xss256k -Djava.awt.headless=true
+
+webserver_nginx=true
+robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
+robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
+
+ssl=false
+
+nginx_client_max_body_size=120m
+
+
+##
+# Other components
+##
+
+bie_base_url=http://demo.livingatlas.org/ala-bie
+bie_service_base_url=http://demo.livingatlas.org/bie-index
+favicon_url=https://www.gbif.org/favicon-16x16.png
+collections_url=http://demo.livingatlas.org/collectory
+biocache_url=http://demo.livingatlas.org/ala-hub
+biocache_service_url=http://demo.livingatlas.org/biocache-service
+sampling_url=http://spatial.livingatlas.org/ws

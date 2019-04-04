@@ -175,3 +175,7 @@ skin.orgNameShort: {{ orgNameShort | default('ALA') }}
 
 grails.controllers.upload.maxFileSize: {{ max_request_size | default(524288000) }}
 grails.controllers.upload.maxRequestSize: {{ max_request_size | default(524288000) }}
+
+# Needed for map exports
+google:
+  apikey: "{{ google_api_key | default('') }}"

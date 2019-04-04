@@ -1,4 +1,4 @@
-version: "{{ bie_index_version | default('LATEST') }}"
+version: "{{ bie_index_version | default('1.4.2.2') }}"
 artifactId: "bie-index"
 groupId: "{{ bie_index_group_id | default('au.org.ala') }}"
 classifier: ''
