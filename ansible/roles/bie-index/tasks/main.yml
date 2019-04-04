@@ -68,6 +68,16 @@
     hostname: "{{ bie_index_hostname }}"
     context_path: "{{ bie_index_context_path }}"
     nginx_paths:
+      - path: "{{bie_index_context_path}}/admin"
+        sort_label: "1_admin"
+        is_proxy: true
+        is_websocket: true
+        proxy_pass: "http://127.0.0.1:8080{{bie_index_proxy_target}}/admin"
+      - path: "{{bie_index_context_path}}/stomp"
+        sort_label: "1_stomp"
+        is_proxy: true
+        is_websocket: true
+        proxy_pass: "http://127.0.0.1:8080{{bie_index_proxy_target}}/stomp"
       - path: "{{bie_index_context_path}}/search"
         sort_label: "1_search"
         is_proxy: true
