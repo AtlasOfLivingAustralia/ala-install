@@ -143,6 +143,17 @@
   tags:
     - nginx_vhost
 
+# If any of the nginx_paths has is_websocket, we need to add this template
+- name: add connection upgrade fragment
+  template:
+    src: "fragment_06_connection.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_06_connection"
+  when: vhost_required and nginx_load_balancing | bool == false and item.is_websocket is defined and item.is_websocket | bool == true
+  with_items:
+    - "{{ nginx_paths}} "
+  tags:
+    - nginx_vhost
+
 # copy 10, 20, 90 as http (e.g. dest file might be /etc/nginx/vhost_fragments/bie-test.ala.org.au/http_10_start)
 - name: add start http fragment
   template:

@@ -1,0 +1,7 @@
+{% if nginx_load_balancing | bool == false and (item.is_websocket is defined and item.is_websocket | bool == true) %}
+# Websocket support needs HTTP Upgrade header mapped appropriately
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+{% endif %}
