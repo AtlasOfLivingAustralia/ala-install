@@ -1,6 +1,7 @@
 #{{ ansible_managed }}
 proxy_cache_path {{ nginx_cache_path }} levels=1:2
     keys_zone={{ nginx_cache_zone }}:{{ nginx_cache_zone_size }} max_size={{ nginx_cache_size }} inactive={{ nginx_cache_time }} use_temp_path=off;
+proxy_cache_key $scheme$proxy_host$request_uri$http_accept$http_referer;
 
 # Cache HTTP 200 for as long as we have the cache setup for
 #proxy_cache_valid 200 {{ nginx_cache_valid_time }};
