@@ -79,8 +79,13 @@ solr:
     type: UPDATE
     queueSize: 10
     threadCount: 4
-  defType: {{ solr_deftype | default('edismax') }}
-  qAlt: {{ solr_qlat | default('text:*') }}
+  search:
+    qf:
+      - exact_text
+      - text
+    boost: {{ solr_bie_boost_term | default('searchWeight') }}
+    defType: {{ solr_deftype | default('edismax') }}
+    qAlt: {{ solr_qlat | default('text:*') }}
 skin:
   layout: {{ skin_layout | default('main') }}
   fluidLayout: {{ skin_fluid_layout | default('') }}
