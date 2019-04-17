@@ -43,6 +43,7 @@ http {
     server_tokens {{ nginx_server_tokens }};
 {% if nginx_proxy_cache_path %}
     proxy_cache_path {{ nginx_proxy_cache_path }};
+    proxy_cache_key $scheme$proxy_host$request_uri$http_accept$http_referer;
 {% endif %}
 {% endblock %}
 

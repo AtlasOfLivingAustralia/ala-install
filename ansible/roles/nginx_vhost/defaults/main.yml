@@ -47,6 +47,9 @@ nginx_cache_size: "2g"
 nginx_cache_time: "60m"
 nginx_cache_valid_time: "60m"
 nginx_cache_invalid_time: "0s"
+# Set this to true to have the nginx cache cleared when deployment completes
+nginx_clear_cache_on_deploy: False
+
 # Set this to true in your inventory if you know that you are only deploying a single nginx_vhost and you want to clear previous versions before deploying each time
 clear_vhost_fragments: false
 # Set this to true to enable support for 'upstream' load balancing features

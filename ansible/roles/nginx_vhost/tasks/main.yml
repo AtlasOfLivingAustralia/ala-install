@@ -117,6 +117,16 @@
   tags:
     - nginx_vhost
 
+- name: ensure nginx cache dir will be cleared by handler
+  debug:
+    msg: "Ensuring nginx cache dir will be cleared by handler"
+  when: vhost_required and nginx_cache
+  changed_when: nginx_clear_cache_on_deploy|bool == True
+  notify:
+    - clear nginx cache
+  tags:
+    - nginx_vhost
+
 - name: add upstream fragment
   template:
     src: "fragment_02_upstream.j2"
