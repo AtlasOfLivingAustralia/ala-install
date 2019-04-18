@@ -327,8 +327,10 @@
    <field name="name" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="description" type="text" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="content" type="text" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+   <field name="denormalised" type="boolean" indexed="true" stored="true" required="false" multiValued="false"/>
 
    <!-- Weighting fields -->
+   <field name="favourite" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="searchWeight" type="double" multiValued="false" omitNorms="true" />
    <field name="suggestWeight" type="double" multiValued="false" omitNorms="true" />
 

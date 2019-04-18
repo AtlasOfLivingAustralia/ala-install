@@ -121,3 +121,8 @@
   when: ansible_os_family == "Debian"
   tags:
     - tomcat
+
+- name: prepare user prefs directory
+  file: path=/usr/share/{{ tomcat }}/.java state=directory owner={{ tomcat_user }} group={{ tomcat_user }}
+  tags:
+    - tomcat
