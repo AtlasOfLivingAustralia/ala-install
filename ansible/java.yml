@@ -1,0 +1,4 @@
+- hosts: java
+  roles:
+    - common
+    - java
