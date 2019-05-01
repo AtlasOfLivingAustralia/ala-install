@@ -1,0 +1,31 @@
+- include: ../../common/tasks/setfacts.yml 
+  tags:
+    - java
+
+- name: install openjdk 8 java (Debian)
+  apt: pkg=openjdk-8-jdk state=latest update_cache=yes
+  when: ansible_os_family == "Debian"
+  tags:
+    - java
+
+- name: install ca-certificates (Debian)
+  apt: pkg=ca-certificates state=latest update_cache=yes
+  when: ansible_os_family == "Debian"
+  tags:
+    - java
+
+# Optionally remove Oracle Java 8 if they explicitly chose OpenJDK8
+# In future, will remove Oracle Java 8 by default here
+- name: Remove Oracle Java 8 (using OpenJDK8 instead)
+  become: yes
+  apt: pkg=oracle-java8-installer state=absent purge=yes
+  when: ansible_os_family == "Debian" and use_openjdk8 is defined and use_openjdk8
+  tags:
+    - java
+
+- name: Remove Oracle Java 8 as default JDK
+  become: yes
+  apt: pkg=oracle-java8-set-default state=absent purge=yes
+  when: ansible_os_family == "Debian" and use_openjdk8 is defined and use_openjdk8
+  tags:
+    - java
