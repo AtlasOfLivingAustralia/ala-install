@@ -1,6 +1,6 @@
-# TODO multiple java versions
-# Java home on different systems?
-# Could delegate via dependency?
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - service
 
 - name: Update apt
   apt:
@@ -12,14 +12,8 @@
   apt:
     name: 
       - python-lxml
-      - openjdk-8-jre-headless
     state: present
   tags: 
-  - service
-
-- set_fact:
-    java_home: /usr/lib/jvm/java-8-openjdk-amd64/
-  tags:
   - service
 
 - name: "Create system user for {{service_name}}"

@@ -1,5 +1,0 @@
-- name: install openjdk 7 java (Debian)
-  apt: pkg=openjdk-7-jdk state=present update_cache=yes
-  when: ansible_os_family == "Debian"
-  tags:
-    - java

@@ -21,11 +21,32 @@
   tags:
     - solr6
 
-- name: Run install script
-  shell: "./install_solr_service.sh /tmp/solr-{{ solr_version }}.tgz -d /data/solr -f"
-  become: yes
-  tags:  
-    - solr6
+- name: Create log directory
+  file: path={{item}} state=directory owner=solr group=solr mode=0755
+  with_items:
+    - "/opt/solr/server/logs"
+    - "/opt/solr/server/logs/archived"
+  tags:
+    - solr_config
+    - solrcloud
+
+# Note, the install script tries to start the solr service and fails due to the logs directory not existing
+# Need to ignore the errors from here and move on to configuration
+# Will fail when trying to start the solr service after configuration if there is still an issue at that point
+- name: Run install script (allowing errors due to the log directory issue)
+  shell: "./install_solr_service.sh /tmp/solr-{{ solr_version }}.tgz -i /opt -d /data/solr -u solr -s solr -f"
+  ignore_errors: yes
+  tags:
+    - solrcloud
+
+- name: Create log directory
+  file: path={{item}} state=directory owner=solr group=solr mode=0755
+  with_items:
+    - "/opt/solr/server/logs"
+    - "/opt/solr/server/logs/archived"
+  tags:
+    - solr_config
+    - solrcloud
 
 - name: add common tomcat jars (for SOLR logging and JTS)
   copy: src=libs/{{item}} dest=/opt/solr/server/lib/ext
