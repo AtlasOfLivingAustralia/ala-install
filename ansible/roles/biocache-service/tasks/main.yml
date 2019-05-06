@@ -226,7 +226,7 @@
         is_proxy: true
         unlimited_conns: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/qid"
-      - path: "/biocache-download"
+      - path: "{{biocache_service_context_path}}/biocache-download"
         sort_label: "8_download"
         is_proxy: false
         alias: "{{ download_dir | default('/data/biocache-download') }}"
