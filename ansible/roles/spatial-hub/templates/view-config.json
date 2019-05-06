@@ -1,0 +1,297 @@
+{
+  "AooEoo": {
+    "view": [
+      {
+        "name": "Apply to an area",
+        "inputs": [
+          "area"
+        ]
+      },
+      {
+        "name": "Select species",
+        "inputs": [
+          "species"
+        ]
+      },
+      {
+        "name": "AOO grid resolution",
+        "inputs": [
+          "resolution"
+        ]
+      },
+      {
+        "name": "Alpha value",
+        "inputs": [
+          "coverage"
+        ]
+      }
+    ],
+    "input": {
+      "resolution": {
+        "description": "Grid resolution (decimal degrees)"
+      }
+    }
+  },
+  "ScatterplotCreate": {
+    "download": false,
+    "view": [
+      {
+        "name": "Apply to an area",
+        "inputs": [
+          "area"
+        ]
+      },
+      {
+        "name": "Select species",
+        "inputs": [
+          "species1"
+        ]
+      },
+      {
+        "name": "Select background species",
+        "inputs": [
+          "species2"
+        ]
+      },
+      {
+        "name": "Select environmental layer",
+        "inputs": [
+          "grid",
+          "layer"
+        ]
+      }
+    ],
+    "input": {
+      "species1": {
+        "description": "Foreground species description"
+      }
+    }
+  },
+  "ScatterplotList": {
+    "description": "Scatterplot list.",
+    "view": [
+      {
+        "name": "Area to restrict the scatterplot list.",
+        "inputs": [
+          "area"
+        ]
+      },
+      {
+        "name": "Foreground species.",
+        "inputs": [
+          "species1"
+        ]
+      },
+      {
+        "name": "Layers to use in the scatterplot. Between 2 and 10 layers.",
+        "inputs": [
+          "layer"
+        ]
+      },
+      {
+        "name": "Select background species",
+        "inputs": [
+          "species2"
+        ]
+      }
+    ],
+    "input": {
+      "species1": {
+        "description": "Foreground species description"
+      }
+    }
+  },
+  "PointsToGrid": {
+    "description": "Create grids from points.",
+    "view": [
+      {
+        "name": "Area to restrict the points.",
+        "inputs": [
+          "area"
+        ]
+      },
+      {
+        "name": "Occurrences to use in points to grid.",
+        "inputs": [
+          "species"
+        ]
+      },
+      {
+        "name": "Other settings",
+        "inputs": [
+          "gridCellSize",
+          "sitesBySpecies",
+          "occurrenceDensity",
+          "speciesRichness",
+          "movingAverage"
+        ]
+      }
+    ]
+  },
+  "PhylogeneticDiversity": {
+    "download": false,
+    "view": [
+      {
+        "name": "Apply to an area",
+        "inputs": [
+          "area"
+        ]
+      },
+      {
+        "name": "Select Phylogenetic trees",
+        "inputs": [
+          "phylo"
+        ]
+      }
+    ],
+    "input": {
+      "species": {
+        "constraints": {
+          "speciesOption": "allSpecies"
+        }
+      }
+    }
+  },
+  "Classification": {
+    "download": true,
+    "view": [
+      {
+        "name": "Apply to an area",
+        "inputs": [
+          "area"
+        ]
+      },
+      {
+        "name": "Select layers",
+        "inputs": [
+          "layer"
+        ]
+      },
+      {
+        "name": "Number of groups",
+        "inputs": [
+          "groups"
+        ]
+      }
+    ],
+    "input": {
+      "shp": {
+        "constraints": {
+          "default": true
+        }
+      }
+    }
+  },
+  "MapImage": {
+    "view": [
+      {
+        "name": "Producing map",
+        "inputs": []
+      }
+    ]
+  },
+  "Maxent": {
+    "view": [
+      {
+        "name": "Area to restrict prediction",
+        "inputs": [
+          "area"
+        ]
+      },
+      {
+        "name": "Occurrences to use in the prediction.",
+        "inputs": [
+          "species"
+        ]
+      },
+      {
+        "name": "Layers to use in the prediction. 1 to 10.",
+        "inputs": [
+          "layer"
+        ]
+      },
+      {
+        "name": "MaxEnt options",
+        "inputs": [
+          "testPercentage",
+          "resolution"
+        ]
+      }
+    ],
+    "input": {
+      "testPercentage": {
+        "description": "Percentage of records used for testing model?",
+        "type": "percent",
+        "constraints": {
+          "min": 0,
+          "max": 1,
+          "default": 0.2
+        }
+      },
+      "resolution": {
+        "constraints": {
+          "labels": [
+            "0.01 °",
+            "0.1 °",
+            "0.5 °",
+            "1.0 °"
+          ]
+        }
+      },
+      "jackknife": {
+        "constraints": {
+          "default": true
+        }
+      },
+      "responseCurves": {
+        "constraints": {
+          "default": true
+        }
+      }
+    }
+  },
+  "MergeAreas": {
+    "input": {
+      "name": {
+        "constraints": {
+          "default": "my merged area"
+        }
+      }
+    }
+  },
+  "Envelope": {
+    "input": {
+      "resolution": {
+        "constraints": {
+          "default": 0.01
+        }
+      }
+    }
+  },
+  "TaxonFrequency": {
+    "view": [
+      {
+        "inputs": [
+          "area"
+        ]
+      },
+      {
+        "inputs": [
+          "minYear"
+        ]
+      },
+      {
+        "inputs": [
+          "species1"
+        ]
+      },
+      {
+        "inputs": [
+          "species2"
+        ]
+      }
+    ]
+  }
+}
+
+

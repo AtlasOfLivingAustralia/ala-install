@@ -1,0 +1,32 @@
+VAGRANTFILE_API_VERSION = "2"
+
+# The vagrant-disksize plugin is required for this vagrant file
+unless Vagrant.has_plugin?("vagrant-disksize")
+  raise 'vagrant-disksize plugin is not installed! Run \'vagrant plugin install vagrant-disksize\''
+end
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.box = "ubuntu/xenial64"
+  config.ssh.insert_key = false
+  config.vm.hostname = "vagrant1.ala.org.au"
+  config.vm.hostname = "spatial.vagrant1.ala.org.au"
+  config.vm.network :private_network, ip: "10.1.1.5"
+
+  # these machines require some memory to operate the apps
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 8192
+  end  
+
+  # these machines require some disk size to operate the apps
+  config.disksize.size = '20GB'
+
+  # these machines require some installed apps
+  # Sleeping between commands because Ubuntu asynchronously updates some apt information in the background
+  config.vm.provision :shell, inline: "sleep 20 && sudo apt-get update && sleep 20 && sudo apt-get install python -y"
+
+  # totally insecure, but this is local dev: make the vagrant default the root key
+  config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+  config.vm.provision "shell", inline: "sudo cp -r /home/vagrant/.ssh /root/"
+
+end

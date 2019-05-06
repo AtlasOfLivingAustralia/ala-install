@@ -117,6 +117,16 @@
   tags:
     - nginx_vhost
 
+- name: ensure nginx cache dir will be cleared by handler
+  debug:
+    msg: "Ensuring nginx cache dir will be cleared by handler"
+  when: vhost_required and nginx_cache
+  changed_when: nginx_clear_cache_on_deploy|bool == True
+  notify:
+    - clear nginx cache
+  tags:
+    - nginx_vhost
+
 - name: add upstream fragment
   template:
     src: "fragment_02_upstream.j2"
@@ -140,6 +150,17 @@
     src: "fragment_05_cache.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_05_cache"
   when: vhost_required and nginx_cache
+  tags:
+    - nginx_vhost
+
+# If any of the nginx_paths has is_websocket, we need to add this template
+- name: add connection upgrade fragment
+  template:
+    src: "fragment_06_connection.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_06_connection"
+  when: vhost_required and nginx_load_balancing | bool == false and item.is_websocket is defined and item.is_websocket | bool == true
+  with_items:
+    - "{{ nginx_paths}} "
   tags:
     - nginx_vhost
 

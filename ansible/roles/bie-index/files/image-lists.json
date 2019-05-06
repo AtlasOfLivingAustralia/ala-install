@@ -3,8 +3,15 @@
     "record_type:Image^10",
     "record_type:HumanObservaton^20",
     "record_type:Observation^20",
-    "-record_type:PreservedSpecimen^20",
     "data_resource_uid:dr660^500"
+  ],
+  "preferred": [
+    "-record_type:PreservedSpecimen"
+  ],
+  "required": [
+    "geospatial_kosher:true",
+    "-user_assertions:50001",
+    "-user_assertions:50005"
   ],
   "ranks": [
     {
@@ -41,6 +48,10 @@
   "lists": [
     {
       "uid": "dr4778",
+      "imageId": "imageId"
+    },
+    {
+      "uid": "dr5363",
       "imageId": "imageId"
     }
   ],

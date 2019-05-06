@@ -74,10 +74,11 @@ root(WARN, [TOMCAT_LOG])
         (INFO): [
                 'de.codecentric.boot.admin',
                 'grails.plugin.externalconfig.ExternalConfig',
-                'grails.app',
-                'au.org.ala'
+                'grails.app'
         ],
         (DEBUG): [
+                'au.org.ala',
+                'apikey'
         ],
         (TRACE): [
         ]

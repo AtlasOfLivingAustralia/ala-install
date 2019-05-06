@@ -226,19 +226,34 @@
         is_proxy: true
         unlimited_conns: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/qid"
-      - path: "/biocache-download"
+      - path: "{{biocache_service_context_path}}/biocache-download"
         sort_label: "8_download"
         is_proxy: false
         alias: "{{ download_dir | default('/data/biocache-download') }}"
       - path: "{{biocache_service_context_path}}"
-        sort_label: "8_ws"
+        sort_label: "9_ws"
         is_proxy: true
+        use_cache: false
+        force_cache: false
+        unlimited_conns: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}"
   tags:
     - nginx_vhost
     - deploy
     - biocache-service
   when: webserver_nginx
+
+#- name: add nginx vhost if configured
+#  include_role:
+#    name: nginx_vhost
+#  vars:
+#    hostname: "{{ biocache_service_hostname }}"
+#    context_path: "{{ biocache_service_context_path }}"
+#  tags:
+#    - biocache-service
+#    - nginx_vhost
+#    - deploy
+#  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ biocache_service_war_path }}' context_path='{{ biocache_service_context_path }}' hostname='{{ biocache_service_hostname }}'
   when: biocache_service_local_build is not defined
@@ -268,14 +283,14 @@
   tags:
     - biocache-service  
 
-- name: copy all data assets
-  copy: src=data/config dest={{data_dir}}/biocache owner={{tomcat_user}}  group={{tomcat_user}}
-  tags:
-    - biocache-service
-    - properties
-
 - name: copy all config.properties
-  template: src=config/download-doi-email.html dest={{data_dir}}/biocache/config/
+  template: src={{ item }} dest={{data_dir}}/biocache/{{ item }}
+  with_items:
+    - config/download-doi-email.html
+    - config/applicationContext.xml
+    - config/download-doi-readme.html
+    - config/download-email.html
+    - config/download-readme.html
   tags:
     - biocache-service
 

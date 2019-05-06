@@ -15,8 +15,18 @@
     - properties
     - bie-index
 
-- name: copy all config.properties
+- name: copy all YML config (new version)
   template: src=bie-index-config.yml dest={{data_dir}}/bie-index/config/bie-index-config.yml force=yes
+  when: bie_use_yml is defined
+  tags:
+    - webapps
+    - config
+    - properties
+    - bie-index
+
+- name: copy all Properties config (old version)
+  template: src=bie-index-config.properties dest={{data_dir}}/bie-index/config/bie-index-config.properties force=yes
+  when: bie_use_yml is not defined
   tags:
     - webapps
     - config
@@ -58,6 +68,16 @@
     hostname: "{{ bie_index_hostname }}"
     context_path: "{{ bie_index_context_path }}"
     nginx_paths:
+      - path: "{{bie_index_context_path}}/admin"
+        sort_label: "1_admin"
+        is_proxy: true
+        is_websocket: true
+        proxy_pass: "http://127.0.0.1:8080{{bie_index_proxy_target}}/admin"
+      - path: "{{bie_index_context_path}}/stomp"
+        sort_label: "1_stomp"
+        is_proxy: true
+        is_websocket: true
+        proxy_pass: "http://127.0.0.1:8080{{bie_index_proxy_target}}/stomp"
       - path: "{{bie_index_context_path}}/search"
         sort_label: "1_search"
         is_proxy: true

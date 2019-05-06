@@ -1,0 +1,59 @@
+- include: ../../common/tasks/setfacts.yml 
+  tags:
+    - java
+
+- name: Add PPA key for Azul Apt repository
+  apt_key:
+    keyserver: "hkp://pool.sks-keyservers.net:80"
+    id: "B1998361219BD9C9"
+  when:
+    - use_zulu8 is defined and use_zulu8 | bool == True
+    - ansible_os_family == "Debian"
+  tags:
+    - java
+
+- name: Add Azul Apt repository for their OpenJDK-8 package, named Zulu-8
+  apt_repository:
+    repo: "deb http://repos.azulsystems.com/ubuntu stable main"
+    filename: "azul-openjdk-ppa"
+    state: present
+  when:
+    - use_zulu8 is defined and use_zulu8 | bool == True
+    - ansible_os_family == "Debian"
+  tags:
+    - java
+
+- name: install zulu-8 (Debian)
+  apt: pkg=zulu-8 state=latest
+  become: yes
+  when:
+    - use_zulu8 is defined and use_zulu8 | bool == True
+    - ansible_os_family == "Debian"
+  tags:
+    - java
+
+- name: install ca-certificates (Debian)
+  apt: pkg=ca-certificates state=latest update_cache=yes
+  when:
+    - use_zulu8 is defined and use_zulu8 | bool == True
+    - ansible_os_family == "Debian"
+  tags:
+    - java
+
+- name: Remove Oracle Java 8 (using Zulu8 instead)
+  become: yes
+  apt: pkg=oracle-java8-installer state=absent purge=yes
+  when:
+    - use_zulu8 is defined and use_zulu8 | bool == True
+    - ansible_os_family == "Debian"
+  tags:
+    - java
+
+- name: Remove Oracle Java 8 as default JDK
+  become: yes
+  apt: pkg=oracle-java8-set-default state=absent purge=yes
+  when:
+    - use_zulu8 is defined and use_zulu8 | bool == True
+    - ansible_os_family == "Debian"
+  tags:
+    - java

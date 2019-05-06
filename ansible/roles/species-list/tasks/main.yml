@@ -62,12 +62,26 @@
     - deploy
   when: not webserver_nginx
 
+- name: set nginx proxy target if configured
+  set_fact:
+    specieslist_proxy_target: "{{specieslist_context_path}}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - bie_index
+  when: webserver_nginx and specieslist_proxy_target is not defined
+
 - name: add nginx vhost if configured
   include_role:
     name: nginx_vhost
   vars:
     hostname: "{{ specieslist_hostname }}"
     context_path: "{{ specieslist_context_path }}"
+    nginx_paths:
+      - path: "{{specieslist_context_path}}"
+        sort_label: "8_basepath"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080{{specieslist_proxy_target}}"
   tags:
     - specieslist
     - nginx_vhost

@@ -1,0 +1,301 @@
+#
+# Demo inventory for setting up the demo ALA stack (collectory, biocache, images, specieslists, bie).
+#
+# Note: Before this is ran, 'demo.livingatlas.org' should resolve in DNS either by using a
+# Domain Name System (DNS) web service (e.g. Route53) or by adding an entry into /etc/hosts of the
+# target VM.
+#
+# To use this, run the following command.
+#
+# ansible-playbook --private-key ~/.ssh/<YOUR-PEM-FILE> -vvvv -u ubuntu -s -i ansible/inventories/workshop/demo-livingatlas.yml ansible/ala-demo.yml
+#
+# To run on vagrant, run with
+#
+# ansible-playbook --private-key ~/.vagrant.d/insecure_private_key -vvvv -u vagrant -s -i ansible/inventories/demo-vagrant ansible/ala-demo.yml
+
+[ala-demo]
+demo.livingatlas.org
+
+[ala-demo:vars]
+is_vagrant=false
+local_repo_dir = ~/.ala
+data_dir=/data
+
+demo_hostname = demo.livingatlas.org
+
+# Home URL in breadcrumb
+skin_home_url = http://demo.livingatlas.org
+
+############# GBIF Name matching index
+
+custom_namematching_url = https://s3.amazonaws.com/ala-nameindexes/latest/namematching-gbif-lucene5.tgz
+nameindex_to_use = custom
+
+############# Tomcat
+
+tomcat_java_opts = -Xmx2g -Xms2g -Xss256k -Djava.awt.headless=true
+
+####################### Biocache ##############################################
+
+biocache_db_host = localhost
+biocache_db_type = cassandra3
+biocache_db_port = 9042
+cassandra_listen_host = localhost
+biocache_service_hostname = demo.livingatlas.org
+biocache_service_url = http://demo.livingatlas.org/biocache-service
+biocache_service_base_url = http://demo.livingatlas.org
+biocache_service_context_path = /biocache-service
+logging_enabled = true
+default_country =
+layers_service_url =
+layers_service_sampling = false
+enable_lists = true
+lists_service_url = http://demo.livingatlas.org/specieslists
+registry_api_key = dummy-registry-api-key
+commonname_lang = en
+media_store_local = false
+media_store_url=http://demo.livingatlas.org/images
+download_dir=/data/biocache-download/biocache-download/
+download_url=http://demo.livingatlas.org/biocache-download
+download_auth_sensitive=true
+download_email_subject=DEMO - [hubName] Occurrence Download Complete - [filename]
+download_solr_only = true
+
+autocomplete_species_images_enabled = false
+autocomplete_species_counts_enabled = false
+autocomplete_commonnames_extra_enabled = false
+
+layers_service_url=http://spatial.livingatlas.org/ws
+# The URL of the spatial-service /fields service
+spatial_layers_url=http://spatial.livingatlas.org/ws/fields
+# To use layers service for sampling
+layers_service_sampling=true
+# leave blank for all fields
+sample_fields=
+
+####################### Hub #######################
+
+biocache_hub_hostname = demo.livingatlas.org
+biocache_hub_url = http://demo.livingatlas.org/ala-hub
+biocache_hub_base_url = http://demo.livingatlas.org
+biocache_hub_context_path = /ala-hub
+userdetails_url=https://auth.ala.org.au/userdetails/userDetails
+
+spatial_base_url = http://spatial.livingatlas.org
+
+org_url = http://livingatlases.gbif.org
+
+orgNameLong=Paris CESP Workshop
+orgNameShort=CESP
+
+explore_your_area_lat = 54.00366
+explore_your_area_lng = -2.547855
+explore_your_area_location=Edinburgh
+
+map_default_latitude = 54.00366
+map_default_longitude = -2.547855
+map_default_zoom = 5
+
+grouped_facets_json=grouped_facets_default.json
+biocache_grouped_facets_url=file:///data/ala-hub/config/grouped_facets_default.json
+
+####################### Collectory #######################
+
+collectory_app = ala-collectory
+collectory_hostname = demo.livingatlas.org
+collectory_url = http://demo.livingatlas.org/collectory
+collectory_base_url = http://demo.livingatlas.org
+collectory_context_path = /collectory
+collectory_db_host_address = localhost
+collectory_db_host = localhost
+collectory_db_user = collectory
+collectory_db_password = password
+bypass_cas = true
+
+# API key that support registry updates
+api_key = dummy-registry-api-key
+
+# Google maps
+google_apikey = AIzaSyAJDtEeoy7Sc9pij2TAoVnmTwA34Q-2VHk
+
+orgNameLong = Living Atlas Demo
+orgNameShort = Living Atlas Demo
+
+# CAS
+uri_filter_pattern = /dummy
+
+# Security bypass
+security_bypass = true
+
+# External API access
+api_key = to_be_added
+
+# Skinning
+skin = ala
+
+# Map config
+collections_map_lat = 54.00366
+collections_map_lon = -2.547855
+collections_map_zoom = 5
+
+# Project name
+orgNameShort = Living Atlas demo
+orgNameLong = Living Atlas demo
+region = United Kingdom
+
+# EML config
+eml_delivery_point = Smith Street
+eml_city = Edinburgh
+eml_admin_area = Scotland
+eml_postal_code = S21 2SS
+eml_country = United Kingdom
+
+# Disable UI components
+disable_map = true
+disable_alerts = true
+disable_logger = false
+
+# Whether to check API keys for incoming write requests
+api_key_check_enabled = false
+
+# GBIF base URL for webservices
+gbifApiUrl=http://api.gbif.org/v1
+
+# Logger URL
+logger_webservice_url = http://demo.livingatlas.org/logger-service/service
+
+# Species list tool
+species_list_tool_url = http://demo.livingatlas.org/specieslists
+
+####################### SOLR #######################
+
+solr_hostname = demo.livingatlas.org
+solr_url = http://demo.livingatlas.org:8983/solr/biocache
+solr_base_url = http://demo.livingatlas.org:8983
+solr_context_path = /solr
+solr_host = demo.livingatlas.org
+solr_port = 8983
+solr_zk_host=
+solr_bind_jetty_host=false
+# set to blank to avoid solr cloud mode
+solr_mode=
+solr_heap = 4g
+dynamic_solr_schema_biocache_el_cl = true
+
+################# Logger Service ############
+
+logger_hostname = demo.livingatlas.org
+logger_url = http://demo.livingatlas.org/logger-service
+logger_base_url = http://demo.livingatlas.org
+logger_context_path = /logger-service
+logger_db_name = logger
+logger_db_username = logger_user
+logger_db_password = logger_user
+logger_db_hostname = localhost
+
+############### Auth Server #########
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas
+
+####### When near the GBIF building (e.g. in Europe) the GBIF nexus will likely be fastest #########
+
+use_gbif_nexus = false
+
+####### Disable SDS checks for the demo
+
+sds_enabled = false
+# Disabled caches - the collections cache is problematic when collectory + biocache on same server
+caches_auth_enabled=false
+caches_log_enabled=false
+caches_collections_enabled=false
+caches_layers_enabled=false
+
+webserver_nginx=true
+ssl=false
+nginx_vhost_fragments_to_clear=["demo.livingatlas.org"]
+
+nameindex_variant=ala
+nameindex_datestamp=20171012
+#aws_nameindex_source_url=http://s3.amazonaws.com/ala-nameindexes/20150701
+
+############### Biocache CLI options ###############
+
+biocache_opts = -Xmx1g -Xms1g
+
+############## Base header / footer ###############
+
+header_and_footer_baseurl = http://demo.livingatlas.org
+
+######### Species list ##############
+
+specieslist_hostname = demo.livingatlas.org
+specieslist_url = http://demo.livingatlas.org/specieslists
+specieslist_base_url = http://demo.livingatlas.org
+specieslist_context_path = /specieslists
+specieslist_db_hostname = localhost
+specieslist_db_name = specieslists
+specieslist_db_username = specieslists
+specieslist_db_password = password
+collectory_enable_sync = false
+registry_api_key=
+iconic_species_uid=drt1502348249607
+biocache_base_url = http://demo.livingatlas.org/ala-hub
+bie_service_base_url=http://demo.livingatlas.org/bie-index
+bie_base_url=http://demo.livingatlas.org/ala-bie
+field_guide_base_url=
+
+############# BIE index ################
+
+bie_index_base_url = http://demo.livingatlas.org
+bie_index_context_path = /bie-index
+bie_index_hostname = demo.livingatlas.org
+
+index_live_url = http://localhost:8983/solr/bie
+index_offline_url = http://localhost:8983/solr/bie-offline
+
+biocache_solr_url = http://localhost:8983/solr/biocache
+collectory_url = http://demo.livingatlas.org/collectory
+
+disable_cas = true
+bypass_cas = true
+
+index_images = true
+
+############# BIE Hub ################
+
+bie_skin_layout = generic
+bie_hub = ala-bie
+bie_hub_base_url = http://demo.livingatlas.org
+bie_hub_context_path = /ala-bie
+bie_hub_hostname = demo.livingatlas.org
+species_list_url = http://demo.livingatlas.org/specieslists
+sightings_url =
+alerts_url =
+spatial_url = http://spatial.livingatlas.org
+
+bie_base_url = http://demo.livingatlas.org/ala-bie
+ala_base_url = http://demo.livingatlas.org
+
+####### Images #######
+
+images_url = http://demo.livingatlas.org
+images_base_url = http://demo.livingatlas.org
+images_context_path = /images
+images_hostname = demo.livingatlas.org
+images_db_password = images
+images_db_username = images
+
+###### favicon #######
+
+skin_favicon = https://www.gbif.org/favicon-16x16.png
+
+postgresql_username=postgres
+postgresql_password=postgres
+postgis_version=9.6
+pg_service=postgresql-9.6
+pg_version=9.6
+postgis_version=2.4
+# Needed for installing on Ubuntu-18.04
+# https://github.com/AtlasOfLivingAustralia/biocache-service/issues/363
+tomcat=tomcat7

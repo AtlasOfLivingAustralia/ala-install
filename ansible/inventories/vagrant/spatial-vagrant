@@ -1,19 +1,19 @@
 # Inventory to be used with spatial-standalone playbook
 
 [spatial]
-vagrant1
+spatial.vagrant1.ala.org.au
 
 [geoserver]
-vagrant1
+spatial.vagrant1.ala.org.au
 
 [geonetwork]
-vagrant1
+spatial.vagrant1.ala.org.au
 
 [spatial-hub]
-vagrant1
+spatial.vagrant1.ala.org.au
 
 [spatial-service]
-vagrant1
+spatial.vagrant1.ala.org.au
 
 ###
 # Geoserver
@@ -24,9 +24,9 @@ is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
-geoserver_hostname=vagrant1.ala.org.au
-geoserver_url=http://vagrant1.ala.org.au/geoserver
-geoserver_base_url=http://vagrant1.ala.org.au
+geoserver_hostname=spatial.vagrant1.ala.org.au
+geoserver_url=http://spatial.vagrant1.ala.org.au/geoserver
+geoserver_base_url=http://spatial.vagrant1.ala.org.au
 geoserver_context_path=/geoserver
 geoserver_app=geoserver
 
@@ -60,9 +60,9 @@ is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
-geonetwork_hostname=vagrant1.ala.org.au
-geonetwork_url=http://vagrant1.ala.org.au/geonetwork
-geonetwork_base_url=http://vagrant1.ala.org.au
+geonetwork_hostname=spatial.vagrant1.ala.org.au
+geonetwork_url=http://spatial.vagrant1.ala.org.au/geonetwork
+geonetwork_base_url=http://spatial.vagrant1.ala.org.au
 geonetwork_context_path=/geonetwork
 geonetwork_app=geonetwork
 
@@ -101,13 +101,13 @@ data_dir=/data
 
 orgNameLong = Atlas of Living Australia
 
-spatial_service_hostname=vagrant1.ala.org.au
-spatial_service_url=http://vagrant1.ala.org.au/ws
-spatial_service_base_url=http://vagrant1.ala.org.au/ws
+spatial_service_hostname=spatial.vagrant1.ala.org.au
+spatial_service_url=http://spatial.vagrant1.ala.org.au/ws
+spatial_service_base_url=http://spatial.vagrant1.ala.org.au
 spatial_service_context_path=/ws
 
-layers_service_url=http://vagrant1.ala.org.au/ws
-biocache_service_url=http://biocache-test.ala.org.au/ws
+layers_service_url=http://spatial.vagrant1.ala.org.au/ws
+biocache_service_url=http://biocache.ala.org.au/ws
 
 layers_db_host=localhost
 layers_db_port=5432
@@ -124,6 +124,9 @@ postgresql_password=password
 spatial_service_api_key=get-me-an-api-key
 spatial_service_slave_key=create-shared-key
 spatial_service_service_key=create-shared-key
+
+slave_enable=true
+service_enable=true
 
 spatial_service_remote_url=https://nectar-spatial-staging.ala.org.au/spatial-service
 
@@ -145,13 +148,13 @@ is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
-spatial_hub_hostname=vagrant1.ala.org.au
-spatial_hub_url=http://vagrant1.ala.org.au/
-spatial_hub_base_url=http://vagrant1.ala.org.au
+spatial_hub_hostname=spatial.vagrant1.ala.org.au
+spatial_hub_url=http://spatial.vagrant1.ala.org.au/
+spatial_hub_base_url=http://spatial.vagrant1.ala.org.au
 spatial_hub_context_path=/
 
-layers_service_url=http://vagrant1.ala.org.au/ws
-geoserver_url=http://vagrant1.ala.org.au/geoserver
+layers_service_url=http://spatial.vagrant1.ala.org.au/ws
+geoserver_url=http://spatial.vagrant1.ala.org.au/geoserver
 
 sandbox_url=http://sandbox.ala.org.au/ala-hub
 sandbox_ui_url=http://sandbox.ala.org.au/datacheck
@@ -167,3 +170,8 @@ robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
 robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
 
 ssl=false
+
+
+nginx_client_max_body_size=120m
+
+gdal_from_src=false

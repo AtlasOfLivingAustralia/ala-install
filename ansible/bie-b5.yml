@@ -1,17 +1,24 @@
-# full BIE.  set target (i.e. server to deploy to) e.g. ansible-playbook bie-b5.yml --extra-vars 'target=bie-test' -i path/to/inventory --ask-become-pass
-- hosts: '{{ target }}'
+# full BIE.  set target (i.e. server to deploy to) e.g. ansible-playbook bie-b5.yml -i path/to/inventory --ask-become-pass
+# Create a collection of species informaton systems on the AWS BIE instance
+- hosts: bie
   roles:
     - common
     - java
     - webserver
     - tomcat
-    - mysql-5.7
-    - solr
+    - bie-hub
+- hosts: bie-ws
+  roles:
+    - common
+    - java
+    - webserver
+    - tomcat
     - biocache-properties
-    - ala-bie
     - bie-index
     - namedata
     - nameindex
-    - species-list
-    - sds
-  become: yes
+- hosts: bie-solr
+  roles:
+    - common
+    - java
+    - solr6

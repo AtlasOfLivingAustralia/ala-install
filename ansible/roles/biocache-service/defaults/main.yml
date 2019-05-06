@@ -5,3 +5,6 @@ biocache_service_online_download_argument_blocking: []
 # biocache_service_online_download_argument_blocking=[{ "field": "sourceTypeId", "value": "0", "comparison": "=" }]
 # Default value for doi to use in email templates
 doi_service_url: "https://doi.ala.org.au"
+
+# Set this to False to avoid having the ALA specific CSS included for the download email templates
+ala_download_css: True

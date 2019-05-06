@@ -1,0 +1,25 @@
+- name: Stop nginx before clearing cache
+  service: name=nginx state=stopped
+  when: nginx_clear_cache_on_deploy|bool == True
+
+- name: Clear nginx cache
+  file: 
+    path: "{{ nginx_cache_path }}"
+    state: absent
+  when: nginx_clear_cache_on_deploy|bool == True
+
+- name: ensure nginx cache dir is present if configured
+  file:
+    path: "{{ nginx_cache_path }}"
+    state: directory
+    mode: 0755
+    owner: www-data
+    group: www-data
+  when: nginx_clear_cache_on_deploy|bool == True
+
+- name: Notify restarting nginx after clearing cache
+  debug:
+    msg: "Notifying nginx to restart after clearing its cache"
+  when: nginx_clear_cache_on_deploy|bool == True
+  changed_when: nginx_clear_cache_on_deploy|bool == True
+  notify: restart nginx

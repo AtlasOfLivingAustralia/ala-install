@@ -1,0 +1,23 @@
+# Inventory to be used with spatial-hub-hub playbook
+#
+# The spatial-hub-hub playbook is intended to run on a server with spatial-hub installed and running at {{spatial_hub_url}}
+#
+# The spatial-hub-hub playbook will make a hub available at {{spatial_hub_url}}/hub/{{hub}}
+
+[spatial-hub-hub]
+ala.vagrant.dev
+
+#nectar-spatial-test.ala.org.au
+
+[spatial-hub-hub:vars]
+
+# hub_path will contain the files
+#   * app-config.json
+#   * menu-config.json
+#   * view-config.json
+#   * {{hub}}.css
+hub_path={{inventory_dir}}/../../roles/spatial-hub-hub/files/example-hub-config
+hub=example
+
+data_dir=/data
+
