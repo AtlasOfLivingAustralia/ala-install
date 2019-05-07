@@ -107,7 +107,7 @@ spatial_service_base_url=http://spatial.vagrant1.ala.org.au
 spatial_service_context_path=/ws
 
 layers_service_url=http://spatial.vagrant1.ala.org.au/ws
-biocache_service_url=http://biocache.ala.org.au/ws
+biocache_service_url=https://biocache-ws.ala.org.au/ws
 
 layers_db_host=localhost
 layers_db_port=5432
@@ -156,9 +156,9 @@ spatial_hub_context_path=/
 layers_service_url=http://spatial.vagrant1.ala.org.au/ws
 geoserver_url=http://spatial.vagrant1.ala.org.au/geoserver
 
-sandbox_url=http://sandbox.ala.org.au/ala-hub
-sandbox_ui_url=http://sandbox.ala.org.au/datacheck
-sandbox_biocache_service_url=http://sandbox.ala.org.au/biocache-service
+sandbox_url=https://sandbox.ala.org.au/ala-hub
+sandbox_ui_url=https://sandbox.ala.org.au/datacheck
+sandbox_biocache_service_url=https://sandbox.ala.org.au/biocache-service
 
 google_api_key=get-a-google-api-key
 spatial_hub_api_key=get-an-ala-api-key
