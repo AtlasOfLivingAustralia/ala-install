@@ -28,7 +28,8 @@ net:
 processManagement:
   timeZoneInfo: /usr/share/zoneinfo
 
-    authorization: enabled
+security:
+  authorization: enabled
 
 #operationProfiling:
 
