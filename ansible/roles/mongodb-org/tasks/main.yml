@@ -1,12 +1,12 @@
 - name: Add mongodb.org apt key
   apt_key:
     keyserver: keyserver.ubuntu.com
-    id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5 # mongo
+    id: 9DA31620334BD75D9DCB49F368818C72E52529D4 # mongo
   tags: mongodb-org
 
 - name: Add mongodb.org repo
   apt_repository:
-    repo: deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/3.6 multiverse
+    repo: deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/4.0 multiverse
     state: present
   tags: mongodb-org
 
@@ -28,6 +28,12 @@
 - name: Uninstall pip python-pymongo package
   pip:
     name: pymongo
+  tags: mongodb-org
+
+- name: Enable service mongod
+  service:
+    name: mongod
+    enabled: yes
   tags: mongodb-org
 
 # https://github.com/ansible/ansible/issues/33832
