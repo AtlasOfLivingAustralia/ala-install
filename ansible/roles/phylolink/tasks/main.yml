@@ -7,6 +7,7 @@
   apt: pkg={{ item }} state=present update_cache=yes
   with_items:
     - python-augeas
+    - libpq-dev
     - python-psycopg2
   tags:
     - phylolink

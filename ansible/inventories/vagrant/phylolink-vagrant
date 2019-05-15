@@ -35,7 +35,7 @@ field_guide_base_url=https://fieldguide.ala.org.au
 list_tool_base_url=https://lists.ala.org.au
 spatial_service_base_url=https://spatial.ala.org.au
 regions_base_url=https://regions.ala.org.au
-sandbox_base_url=http://sandbox1.ala.org.au
+sandbox_base_url=http://sandbox.ala.org.au
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
@@ -45,3 +45,5 @@ auth_cas_url=https://auth.ala.org.au/cas
 #
 ssl=false
 copy_https_certs_from_local=false
+
+webservice_api_key=xxxxxxxxxxxxxxxxxxxxxxxxx
