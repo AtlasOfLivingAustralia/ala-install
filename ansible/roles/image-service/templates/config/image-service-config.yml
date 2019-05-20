@@ -1,38 +1,24 @@
 grails:
-  serverURL: "{{image_service_base_url}}{{image_service_context_path}}"
+  serverURL: "{{images_base_url}}{{images_context_path}}"
 
 security:
   cas:
-    appServerName: "{{image_service_base_url}}{{image_service_context_path}}"
-    bypass: {{ bypass_cas | default(false) }}
-    disableCAS: {{ bypass_cas | default(false) }}
-  apikey:
-    ip:
-      whitelist: {{image_service_whitelist | default('')}}
-    check:
-      serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
-info:
-  app:
-    name: 'image-service'
-    version: '{{ image_service_version }}'
-    grailsVersion: '3.2.11'
+    appServerName: "{{images_base_url}}{{images_context_path}}"
+    bypass: {{ bypass_cas | default(true) }}
+    disableCAS: {{ bypass_cas | default(true) }}
 
 dataSource:
-  url: "jdbc:postgresql://localhost/{{ image_service_db_name }}?autoReconnect=true&connectTimeout=0&useUnicode=true&characterEncoding=UTF-8"
-  username: {{ image_service_db_username }}
-  password: {{ image_service_db_password }}
-  dbCreate: none
+  url: "jdbc:postgresql://localhost/images"
+  username: {{ images_db_username }}
+  password: {{ images_db_password }}
+  dbCreate: update
 
 imageservice:
   imagestore:
-    root: "/data/image-service/store"
+    root: /data/images/store
   apache:
-    root: "{{ image_service_base_url }}/store/"
-    multiple_roots: {% if multiple_root is defined %} "{{ multiple_roots }}" {% else %} "{{ image_service_base_url }}/store/" {% endif %}
+    root: "{{ images_base_url }}/store/"
 
-    exportDir: "{{ image_service_export_dir | default('/data/image-service/exports')}}"
-
-# skin
 skin:
   layout: {{ skin_layout | default('main') }}
   favicon: "{{ skin_favicon | default('https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png') }}"
@@ -43,31 +29,11 @@ collectory:
 biocache:
   baseURL: "{{ biocache_url | default('https://biocache.ala.org.au')}}"
 
-# header block
+#header block
 headerAndFooter:
-  version: "{{ header_and_footer_version | default('1')}}"
   baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3')}}"
 ala:
   baseURL: "{{ ala_base_url | default('https://www.ala.org.au')}}"
 bie:
   baseURL: "{{ bie_base_url | default('https://bie.ala.org.au')}}"
-  searchPath: "{{ bie_search_path | default('/search') }}"
-
-# swagger configuration
-swagger:
-  info:
-    description: "{{ swagger_info_description | default('API Documentation for Image Services') }}"
-    version: "{{ swagger_info_version | default('1.0.0') }}"
-    title:  "{{ swagger_info_title | default('Image Service API') }}"
-    termsOfServices: "{{ swagger_info_terms_of_services | default('https://www.ala.org.au/who-we-are/terms-of-use/') }}"
-    contact:
-      name:  "{{ swagger_contact_name | default('ALA Support') }}"
-      url: "{{ swagger_contact_url | default('https://www.ala.org.au') }}"
-      email: "{{ swagger_contact_email | default('support@ala.org.au') }}"
-    license:
-      name: "MPL 1.1"
-      url: "https://www.mozilla.org/en-US/MPL/"
-  schemes:
-    - "{{ swagger_schemes | default('HTTPS') }}"
-  consumes:
-    - "application/json"
+  searchPath: {{ bie_search_path | default('/search') }}

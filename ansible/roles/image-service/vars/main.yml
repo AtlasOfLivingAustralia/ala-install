@@ -1,9 +1,11 @@
-version: "{{ image_service_version | default('1.0.4') }}"
+images_app: ala-images
+version: "{{ images_version | default('1.0-SNAPSHOT') }}"
 artifactId: "image-service"
-image_service_url: "{{maven_repo_ws_url}}"
+images_url: "{{maven_repo_ws_url}}"
 classifier: 'exec'
 groupId: "au.org.ala"
 packaging: "jar"
 image_service_jar_url: "{{maven_repo_ws_url}}"
+
 additional_proxy_pass:
   - { src: "/store", dest: "!" }
