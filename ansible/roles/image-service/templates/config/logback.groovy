@@ -5,8 +5,8 @@ import org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverte
 
 conversionRule 'clr', ColorConverter
 conversionRule 'wex', WhitespaceThrowableProxyConverter
-def loggingDir = '//data/images/logs/'
-def appName = 'images'
+def loggingDir = '//var/log/atlas/image-service/'
+def appName = 'image-service'
 final APPLICATION_LOG = 'APPLICATION_LOG'
 appender(APPLICATION_LOG, RollingFileAppender) {
     file = "${loggingDir}/${appName}.log"

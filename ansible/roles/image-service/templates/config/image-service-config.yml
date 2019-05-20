@@ -1,0 +1,39 @@
+grails:
+  serverURL: "{{images_base_url}}{{images_context_path}}"
+
+security:
+  cas:
+    appServerName: "{{images_base_url}}{{images_context_path}}"
+    bypass: {{ bypass_cas | default(true) }}
+    disableCAS: {{ bypass_cas | default(true) }}
+
+dataSource:
+  url: "jdbc:postgresql://localhost/images"
+  username: {{ images_db_username }}
+  password: {{ images_db_password }}
+  dbCreate: update
+
+imageservice:
+  imagestore:
+    root: /data/images/store
+  apache:
+    root: "{{ images_base_url }}/store/"
+
+skin:
+  layout: {{ skin_layout | default('main') }}
+  favicon: "{{ skin_favicon | default('https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png') }}"
+  orgNameLong: {{ orgNameLong | default('Atlas') }}
+
+collectory:
+  baseURL: "{{ collectory_url | default('https://collections.ala.org.au')}}"
+biocache:
+  baseURL: "{{ biocache_url | default('https://biocache.ala.org.au')}}"
+
+#header block
+headerAndFooter:
+  baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3')}}"
+ala:
+  baseURL: "{{ ala_base_url | default('https://www.ala.org.au')}}"
+bie:
+  baseURL: "{{ bie_base_url | default('https://bie.ala.org.au')}}"
+  searchPath: {{ bie_search_path | default('/search') }}

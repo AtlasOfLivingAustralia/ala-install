@@ -1,7 +1,5 @@
 ---
 
-- include_vars: "{{ansible_distribution}}.yml"
-
 - name: elasticsearch-install | Add repository keys
   apt_key: keyserver="{{item.server}}" id="{{item.key}}" state=present
   with_items: "{{ elasticsearch_apt_repo_keys }}"
