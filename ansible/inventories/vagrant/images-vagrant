@@ -4,17 +4,28 @@ vagrant1
 [image-service:vars]
 is_vagrant=true
 local_repo_dir = ~/.ala
-data_dir=/srv/data
+data_dir=/data
 
 images_url = http://images.vagrant1.ala.org.au
 images_base_url = http://images.vagrant1.ala.org.au
-images_context_path = 
+images_context_path =
+images_hostname_context_path =
 images_hostname = images.vagrant1.ala.org.au
 
+images_db_name = images
 images_db_password = images
 images_db_username = images
+
+db_name = images
+db_password = images
+db_user = images
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 
 collectory_url=https://collections.ala.org.au
+
+webserver_nginx=true
+ssl=false
+ssl=false
+copy_https_certs_from_local=false

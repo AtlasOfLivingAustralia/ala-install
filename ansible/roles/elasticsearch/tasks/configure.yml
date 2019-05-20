@@ -8,6 +8,9 @@
 - name: elasticsearch-configure | Chown Elasticsearch home
   file: path={{elasticsearch_home}} state=directory owner={{elasticsearch_user}} group={{elasticsearch_group}} recurse=yes
 
+- name: elasticsearch-create-conf-dir
+  file: path={{elasticsearch_confdir}} state=directory owner={{elasticsearch_user}} group={{elasticsearch_group}} recurse=yes
+
 - name: elasticsearch-configure | Configure Elasticsearch pt. 1
   template: src=elasticsearch.yml.j2 dest={{elasticsearch_confdir}}/elasticsearch.yml owner={{elasticsearch_user}} group={{elasticsearch_group}} mode=0644
   notify: elasticsearch restart
@@ -27,7 +30,9 @@
 - lineinfile: dest=/etc/pam.d/su regexp='^session    required   pam_limits.so' insertafter=EOF line='session    required   pam_limits.so'
 - lineinfile: dest=/etc/pam.d/common-session regexp='^session    required   pam_limits.so' insertafter=EOF line='session    required   pam_limits.so'
   when: ansible_os_family == 'Debian'
+
 - lineinfile: dest=/etc/pam.d/common-session-noninteractive regexp='^session    required   pam_limits.so' insertafter=EOF line='session    required   pam_limits.so'
   when: ansible_os_family == 'Debian'
+
 - lineinfile: dest=/etc/pam.d/sudo regexp='^session    required   pam_limits.so' insertafter=EOF line='session    required   pam_limits.so'
-- lineinfile: dest=/etc/init.d/elasticsearch regexp='^(DAEMON_OPTS=".*-Des.max-open-files=true")$' insertafter='^(DAEMON_OPTS=".*CONF_DIR")$' line='DAEMON_OPTS="$DAEMON_OPTS -Des.max-open-files=true"'
+- lineinfile: dest=/etc/init.d/elasticsearch regexp='^(DAEMON_OPTS=".*-Des.max-open-files=true")$' insertbefore='^(DAEMON_OPTS=".*CONF_DIR")$' line='DAEMON_OPTS="$DAEMON_OPTS -Des.max-open-files=true"'
