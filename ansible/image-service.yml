@@ -2,9 +2,9 @@
   roles:
     - java
     - common
-    - {role: db-backup, db: postgres}
+    - {role: db-backup, db: postgres, db_name: "images", db_user: "{{ images_db_username }}", db_password: "{{ images_db_password }}" }
     - {role: postgresql, pg_version: "10"}
-    - {role: pg_instance, extensions: ["citext", "pgcrypto"]}
+    - {role: pg_instance, extensions: ["citext", "pgcrypto"], db_name: "images", db_user: "{{ images_db_username }}", db_password: "{{ images_db_password }}" }
     - tomcat
     - webserver
     - image-service
