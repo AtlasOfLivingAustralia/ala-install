@@ -2,6 +2,9 @@
 
 - name: disable swap
   shell: "swapoff --all"
+  # This fails in LXC containers, see:
+  # https://bugs.launchpad.net/ubuntu/+source/lxc/+bug/930652
+  ignore_errors: true
   tags:
     - biocache_db
 
