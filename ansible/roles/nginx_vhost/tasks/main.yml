@@ -6,6 +6,13 @@
 #- name: is a virtual host required?
 #  debug: msg="Virtual Host required for hostname {{hostname}}? {{vhost_required}}"
 
+# Actively fail to ensure that future users are aware they need to specify appname as a parameter to calling into nginx_vhost
+- name: is appname specified?
+  debug: msg="Appname required for hostname {{hostname}}?"
+  failed_when: appname is not defined or appname | length == 0
+  tags:
+    - nginx_vhost
+
 - name: check whether HTTPS is required
   set_fact: ssl={{ ssl | default(false) }}
   tags:
