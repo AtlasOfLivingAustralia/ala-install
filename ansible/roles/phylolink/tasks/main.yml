@@ -79,6 +79,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "phylolink"
     hostname: "{{ phylolink_hostname }}"
     context_path: "{{ phylolink_context_path }}"
   tags:

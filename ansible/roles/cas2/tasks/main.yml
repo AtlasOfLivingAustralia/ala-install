@@ -107,6 +107,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "cas2"
     hostname: "{{ cas_hostname }}"
     context_path: "{{ cas_context_path }}"
   tags:

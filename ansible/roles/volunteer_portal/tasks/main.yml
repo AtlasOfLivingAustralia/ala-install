@@ -91,6 +91,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "volunteer_portal"
     hostname: "{{ volunteer_portal_hostname }}"
     context_path: "{{ volunteer_portal_context_path }}"
   tags:

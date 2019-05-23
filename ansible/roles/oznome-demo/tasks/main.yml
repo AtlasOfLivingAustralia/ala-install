@@ -16,6 +16,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "oznome-demo"
     hostname: "{{ oznome_demo_hostname }}"
     context_path: "{{ oznome_demo_context_path }}"
   tags:

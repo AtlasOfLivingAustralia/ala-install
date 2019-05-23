@@ -85,6 +85,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "profile-hub"
     hostname: "{{ profile_hub_hostname }}"
     context_path: "{{ profile_hub_context_path }}"
   tags:

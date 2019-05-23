@@ -20,6 +20,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "spatial-analysis"
     hostname: "{{ spatial_analysis_hostname }}"
     context_path: "{{ spatial_analysis_context_path }}"
   tags:

@@ -29,6 +29,7 @@
   include_role:
     name: nginx_vhost
   vars:
+   appname: "biocache-service"
    hostname: "{{ biocache_service_hostname }}"
    context_path: "{{ biocache_service_context_path }}"
    nginx_paths:

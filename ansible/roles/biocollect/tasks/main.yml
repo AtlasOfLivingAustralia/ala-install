@@ -21,6 +21,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "biocollect"
     hostname: "{{ biocollect_hostname }}"
     context_path: "{{ biocollect_context_path }}"
   tags:

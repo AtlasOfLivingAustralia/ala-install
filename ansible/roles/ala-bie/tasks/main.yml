@@ -21,6 +21,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "ala-bie"
     hostname: "{{ ala_bie_hostname }}"
     context_path: "{{ ala_bie_context_path }}"
   tags:

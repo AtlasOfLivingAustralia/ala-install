@@ -47,6 +47,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "specimenbrowser"
     hostname: "{{ specimenbrowser_hostname }}"
     context_path: "{{ specimenbrowser_context_path }}"
   tags:

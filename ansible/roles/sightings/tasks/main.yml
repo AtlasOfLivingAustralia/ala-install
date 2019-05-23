@@ -41,6 +41,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "sightings"
     hostname: "{{ sightings_hostname }}"
     context_path: "{{ sightings_context_path }}"
   tags:

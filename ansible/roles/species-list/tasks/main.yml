@@ -75,6 +75,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "species-list"
     hostname: "{{ specieslist_hostname }}"
     context_path: "{{ specieslist_context_path }}"
     nginx_paths:

@@ -52,6 +52,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "webapi_instance"
     hostname: "{{ webapi_hostname }}"
     context_path: "{{ webapi_context_path }}"
   tags:
