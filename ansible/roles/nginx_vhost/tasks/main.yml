@@ -1,17 +1,11 @@
+# FIXME: Why is this exemption to the typical system present
 - name: determine if a virtual host is required (vhost not required for localhost, 127.0.0.1 or any hostname with a colon in it)
   set_fact: vhost_required={{ hostname.find(':') == -1 and hostname.find('localhost') == -1 and hostname.find('127.0.0.1') == -1 }}
   tags:
     - nginx_vhost
 
-#- name: is a virtual host required?
-#  debug: msg="Virtual Host required for hostname {{hostname}}? {{vhost_required}}"
-
-# Actively fail to ensure that future users are aware they need to specify appname as a parameter to calling into nginx_vhost
-- name: is appname specified?
-  debug: msg="Appname required for hostname {{hostname}}?"
-  failed_when: appname is not defined or appname | length == 0
-  tags:
-    - nginx_vhost
+- name: is a virtual host required?
+  debug: msg="Virtual Host required for hostname {{hostname}}? {{vhost_required}}"
 
 - name: check whether HTTPS is required
   set_fact: ssl={{ ssl | default(false) }}
@@ -23,11 +17,29 @@
   tags:
     - nginx_vhost
 
-#- name: is HTTPS required?
-#  debug: msg="HTTPS required for hostname {{hostname}}? {{ssl}}"
+- name: is HTTPS required?
+  debug: msg="HTTPS required for hostname {{hostname}}? {{ssl}}"
 
-#- name: will HTTP rewrite to HTTPS?
-#  debug: msg="Rewrite HTTPS for hostname {{hostname}}? {{ssl and force_https}}"
+- name: will HTTP rewrite to HTTPS?
+  debug: msg="Rewrite HTTPS for hostname {{hostname}}? {{ssl and force_https}}"
+
+# Actively fail to ensure that future users are aware they need to specify appname as a parameter to calling into nginx_vhost
+- name: is appname specified?
+  debug: msg="Appname required for hostname {{hostname}}?"
+  failed_when: appname is not defined or appname | length == 0
+  tags:
+    - nginx_vhost
+
+- name: is nginx_root specified?
+  debug: msg="nginx_root required for hostname {{hostname}}?"
+  failed_when: nginx_root is not defined or nginx_root | length == 0
+  tags:
+    - nginx_vhost
+
+- name: set vhost_fragments_dir variable
+  set_fact: vhost_fragments_dir="{{nginx_conf_dir}}/vhost_fragments_v2/{{hostname}}/{{appname}}/"
+  tags:
+    - nginx_vhost
 
 - name: make sure required parameters are defined
   fail: msg="One or more mandatory parameters are not defined - ssl_certificate_server_dir, ssl_cert_file, ssl_key_file. If you don't want https, set ssl=false in inventory."
@@ -101,14 +113,28 @@
   tags:
     - nginx_vhost
 
-# check dir exists for servername fragments
-- name: ensure vhost fragments dir is present
+- name: Remove previous vhost_fragments directory for this hostname
   file: 
-    path: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}"
+    path: "{{item}}"
+    state: absent
+  with_fileglob: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}"
+  tags:
+    - nginx_vhost
+
+# check dir exists for servername fragments
+- name: ensure vhost_fragments_dir is present
+  file: 
+    path: "{{ vhost_fragments_dir }}"
     state: directory
     mode: 0755 
     owner: root
     group: root
+  when: vhost_required
+  tags:
+    - nginx_vhost
+
+- name: create root directory
+  file: path="{{ nginx_root }}" state=directory mode=0755 force=yes follow=yes
   when: vhost_required
   tags:
     - nginx_vhost
@@ -137,7 +163,7 @@
 - name: add upstream fragment
   template:
     src: "fragment_02_upstream.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_02_upstream_{{ hostname }}_127.0.0.1_{{ tomcat_server_port | default('8080', True) }}"
+    dest: "{{nginx_conf_dir}}/vhost_fragments_v2/{{hostname}}/{{appname}}/http_02_upstream_{{ hostname }}_127.0.0.1_{{ tomcat_server_port | default('8080', True) }}"
   when: vhost_required and nginx_load_balancing | bool == true and item.is_proxy and item.proxy_pass is defined
   with_items:
     - "{{ nginx_paths}} "
@@ -147,7 +173,7 @@
 - name: add blocking fragment
   template:
     src: "fragment_03_blocking.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_03_blocking"
+    dest: "{{nginx_conf_dir}}/vhost_fragments_v2/{{hostname}}/http_03_blocking"
   when: vhost_required
   tags:
     - nginx_vhost
@@ -155,7 +181,7 @@
 - name: add cache fragment if configured
   template:
     src: "fragment_05_cache.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_05_cache"
+    dest: "{{nginx_conf_dir}}/vhost_fragments_v2/{{hostname}}/http_05_cache"
   when: vhost_required and nginx_cache
   tags:
     - nginx_vhost
@@ -164,18 +190,18 @@
 - name: add connection upgrade fragment
   template:
     src: "fragment_06_connection.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_06_connection"
+    dest: "{{nginx_conf_dir}}/vhost_fragments_v2/{{hostname}}/http_06_connection"
   when: vhost_required and nginx_load_balancing | bool == false and item.is_websocket is defined and item.is_websocket | bool == true
   with_items:
     - "{{ nginx_paths}} "
   tags:
     - nginx_vhost
 
-# copy 10, 20, 90 as http (e.g. dest file might be /etc/nginx/vhost_fragments/bie-test.ala.org.au/http_10_start)
+# copy 10, 20, 90 as http (e.g. dest file might be /etc/nginx/vhost_fragments_v2/bie-test.ala.org.au/http_10_start)
 - name: add start http fragment
   template:
     src: "fragment_10_start_http.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_10_start"
+    dest: "{{nginx_conf_dir}}/vhost_fragments_v2/{{hostname}}/http_10_start"
   when: vhost_required
   tags:
     - nginx_vhost
@@ -183,7 +209,7 @@
 - name: add basic http fragments
   template:
     src: "fragment_{{ item }}.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_{{ item }}"
+    dest: "{{nginx_conf_dir}}/vhost_fragments_v2/{{hostname}}/http_{{ item }}"
   with_items:
     - "20_servername"
     - "90_end"
@@ -197,12 +223,6 @@
     path: "{{item}}"
     state: absent
   with_fileglob: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_"
-  when: (not ssl) and vhost_required
-  tags:
-    - nginx_vhost
-
-- name: create root directory
-  file: path="{{ nginx_root }}" state=directory mode=0755 force=yes follow=yes
   when: (not ssl) and vhost_required
   tags:
     - nginx_vhost
@@ -234,7 +254,7 @@
 - name: if not using force_https, add location http fragments
   template:
     src: "fragment_70_location_start.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_70_start"
+    dest: "{{ vhost_fragments_dir }}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_70_start"
   with_items:
     - "{{ nginx_paths}} "
   when: (not ssl or (ssl and not force_https)) and vhost_required
@@ -246,7 +266,7 @@
 - name: if not using force_https, add location http fragments
   template:
     src: "fragment_73_location.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_73_content"
+    dest: "{{ vhost_fragments_dir }}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_73_content"
   with_items:
     - "{{ nginx_paths}} "
   when: (not ssl or (ssl and not force_https)) and vhost_required
@@ -258,7 +278,7 @@
 - name: if not using force_https, add location http fragments
   template:
     src: "fragment_75_location_end.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_75_end"
+    dest: "{{ vhost_fragments_dir }}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_75_end"
   with_items:
     - "{{ nginx_paths}} "
   when: (not ssl or (ssl and not force_https)) and vhost_required
@@ -314,7 +334,7 @@
 - name: add location https fragments
   template:
     src: "fragment_70_location_start.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_70_start"
+    dest: "{{ vhost_fragments_dir }}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_70_start"
   with_items:
     - "{{ nginx_paths }}"
   when: ssl and vhost_required
@@ -327,7 +347,7 @@
 - name: add location https fragments
   template:
     src: "fragment_73_location.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_73_content"
+    dest: "{{ vhost_fragments_dir }}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_73_content"
   with_items:
     - "{{ nginx_paths }}"
   when: ssl and vhost_required
@@ -340,7 +360,7 @@
 - name: add location https fragments
   template:
     src: "fragment_75_location_end.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_75_end"
+    dest: "{{ vhost_fragments_dir }}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_75_end"
   with_items:
     - "{{ nginx_paths }}"
   when: ssl and vhost_required
@@ -357,7 +377,7 @@
    - reload nginx
   tags:
     - nginx_vhost
-
+	
 # symlink servername.conf to sites-enabled
 - name: symlink vhost to sites-enabled
   file:
@@ -372,6 +392,7 @@
 
 - name: check whether we need a default vhost for Amazon load balancer health checks
   set_fact: aws_elb_healthcheck_default={{ aws_elb_healthcheck_default | default(false) }}
+  when: vhost_required
   tags:
     - nginx_vhost
 
@@ -387,6 +408,12 @@
 - name: unset nginx_paths
   set_fact:
     nginx_paths: ''
+  tags:
+    - nginx_vhost
+
+- name: unset vhost_fragments_dir
+  set_fact:
+    vhost_fragments_dir: ''
   tags:
     - nginx_vhost
 
