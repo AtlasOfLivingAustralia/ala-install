@@ -26,7 +26,7 @@
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Port $server_port;
         proxy_read_timeout 10m;
-  {% if nginx_cache and item.use_cache is defined and item.use_cache %}
+  {% if nginx_cache | bool == True and item.use_cache is defined and item.use_cache %}
         proxy_cache {{ nginx_cache_zone }};
     {% if nginx_cache_lock is defined and nginx_cache_lock %}
         # Avoid concurrent requests for the same item by adding a lock to cache requests for the same key
