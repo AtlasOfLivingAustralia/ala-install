@@ -22,6 +22,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "{{ biocache_hub }}"
     hostname: "{{ biocache_hub_hostname }}"
     context_path: "{{ biocache_hub_context_path }}"
     tomcat_server_port: "{{ biocache_server_port }}"

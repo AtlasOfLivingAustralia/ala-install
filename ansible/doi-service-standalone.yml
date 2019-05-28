@@ -5,6 +5,5 @@
     - {role: db-backup, db: postgres}
     - {role: postgresql, pg_version: "9.6"}
     - {role: pg_instance, extensions: ["citext", "pgcrypto"]}
-    - nginx
-    - {role: nginx_vhost, hostname: "{{ doi_service_hostname }}", context_path: "{{ doi_service_context_path }}"}
+    - webserver
     - doi-service

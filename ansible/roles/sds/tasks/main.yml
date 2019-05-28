@@ -13,6 +13,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "sds"
     hostname: "{{ sds_hostname }}"
     context_path: "{{ sds_context_path }}"
   tags:

@@ -66,6 +66,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "bie-index"
     hostname: "{{ bie_index_hostname }}"
     context_path: "{{ bie_index_context_path }}"
     nginx_paths:

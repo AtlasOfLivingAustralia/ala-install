@@ -82,6 +82,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "doi-service"
     hostname: "{{ doi_service_hostname }}"
     context_path: "{{ doi_service_context_path }}"
     nginx_paths:

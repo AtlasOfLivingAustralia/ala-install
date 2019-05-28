@@ -19,10 +19,10 @@ specieslist_db_hostname=localhost
 collectory_enable_sync=false
 collectory_base_url=https://collections.ala.org.au
 biocache_base_url=https://biocache.ala.org.au
-biocache_service_base_url=https://biocache.ala.org.au/ws
+biocache_service_base_url=https://biocache-ws.ala.org.au/ws
 ala_base_url=https://www.ala.org.au
 bie_base_url=https://bie.ala.org.au
-bie_service_base_url=https://bie.ala.org.au/ws
+bie_service_base_url=https://bie-ws.ala.org.au/ws
 field_guide_base_url=https://fieldguide.ala.org.au
 
 registry_api_key=

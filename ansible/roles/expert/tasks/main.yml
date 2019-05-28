@@ -42,6 +42,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "expert"
     hostname: "{{ expert_hostname }}"
     context_path: "{{ expert_context_path }}"
   tags:

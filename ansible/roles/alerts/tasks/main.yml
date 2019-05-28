@@ -47,6 +47,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "alerts"
     hostname: "{{ alerts_hostname }}"
     context_path: "{{ alerts_context_path }}"
   tags:

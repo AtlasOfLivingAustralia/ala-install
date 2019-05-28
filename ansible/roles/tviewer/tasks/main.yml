@@ -41,6 +41,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "tviewer"
     hostname: "{{ tviewer_hostname }}"
     context_path: "{{ tviewer_context_path }}"
   tags:

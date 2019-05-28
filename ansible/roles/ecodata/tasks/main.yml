@@ -63,6 +63,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "ecodata"
     hostname: "{{ ecodata_hostname }}"
     context_path: "{{ ecodata_context_path }}"
   tags:

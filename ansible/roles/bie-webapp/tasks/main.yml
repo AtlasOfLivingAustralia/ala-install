@@ -41,6 +41,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "bie-webapp"
     hostname: "{{ bie_webapp_hostname }}"
     context_path: "{{ bie_webapp_context_path }}"
   tags:

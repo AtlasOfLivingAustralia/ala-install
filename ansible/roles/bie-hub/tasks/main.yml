@@ -47,6 +47,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "bie-hub"
     hostname: "{{ bie_hub_hostname }}"
     context_path: "{{ bie_hub_context_path }}"
     nginx_paths:

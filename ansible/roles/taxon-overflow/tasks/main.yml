@@ -52,6 +52,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "taxon-overflow"
     hostname: "{{ taxonoverflow_hostname }}"
     context_path: "{{ taxonoverflow_context_path }}"
   tags:

@@ -15,6 +15,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "layers-service"
     hostname: "{{ layers_service_hostname }}"
     context_path: "{{ layers_service_context_path }}"
   tags:

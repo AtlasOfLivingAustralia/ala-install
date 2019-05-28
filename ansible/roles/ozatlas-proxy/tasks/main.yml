@@ -47,6 +47,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "ozatlas-proxy"
     hostname: "{{ ozatlas_proxy_hostname }}"
     context_path: "{{ ozatlas_proxy_context_path }}"
   tags:

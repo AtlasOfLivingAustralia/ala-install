@@ -16,7 +16,7 @@ geoserver:
 shpResolutions: {{ shp_resolutions | default([0.5, 0.25, 0.1, 0.05]) }}
 grdResolutions: {{ grd_resolutions | default([0.5, 0.25, 0.1, 0.05, 0.01]) }}
 
-biocacheServiceUrl: "{{ biocache_service_url | default('https://biocache.ala.org.au/ws') }}"
+biocacheServiceUrl: "{{ biocache_service_url | default('https://biocache-ws.ala.org.au/ws') }}"
 biocacheUrl: "{{ biocache_url | default('https://biocache.ala.org.au') }}"
 openstreetmap:
   url: "{{ openstreetmap_tile_url | default('https://tile.openstreetmap.org') }}"
@@ -85,8 +85,8 @@ records.url: {{ records_url | default('https://archives.ala.org.au/archives/expo
 api_key: {{ spatial_service_api_key  | default('') }}
 lists.url: {{ lists_url | default('https://lists.ala.org.au') }}
 collections.url: {{ collections_url | default('https://collections.ala.org.au') }}
-sandboxHubUrl: {{ sandbox_url | default('http://sandbox.ala.org.au/ala-hub') }}
-sandboxBiocacheServiceUrl: {{sandbox_biocache_service_url | default('http://sandbox.ala.org.au/biocache-service') }}
+sandboxHubUrl: {{ sandbox_url | default('https://sandbox.ala.org.au/ala-hub') }}
+sandboxBiocacheServiceUrl: {{sandbox_biocache_service_url | default('https://sandbox.ala.org.au/biocache-service') }}
 phyloServiceUrl: {{ phylolink_url | default('https://phylolink.ala.org.au') }}
 
 spatialHubUrl: {{ spatial_hub_url }}

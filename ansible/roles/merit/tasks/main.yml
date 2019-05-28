@@ -21,6 +21,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "merit"
     hostname: "{{ merit_hostname }}"
     context_path: "{{ merit_context_path }}"
   tags:

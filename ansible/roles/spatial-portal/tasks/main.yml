@@ -14,6 +14,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "spatial-portal"
     hostname: "{{ spatial_portal_hostname }}"
     context_path: "{{ spatial_portal_context_path }}"
   tags:
