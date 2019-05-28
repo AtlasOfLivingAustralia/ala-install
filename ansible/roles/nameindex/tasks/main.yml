@@ -1,6 +1,8 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
-    - "nameindex"  
+    - "nameindex"
+    - "nameindex-stage"
+    - "nameindex-swap"
 
 - name: check for directory to link
   stat:
@@ -8,45 +10,53 @@
   register: existing_name_dir_status
   tags:
     - "nameindex"
+    - "nameindex-stage"
+    - "nameindex-swap"
 
 - name: Backup existing
   command: mv {{ data_dir }}/lucene/namematching {{ data_dir }}/lucene/namematching-{{ ansible_date_time.epoch}}
   when: existing_name_dir_status.stat.exists == True
   tags:
     - "nameindex"
+    - "nameindex-swap"
 
 - name: set name index to use (COL)
   set_fact:
     lucene_namematching_url: "{{ col_namematching_url }}"
   when: nameindex_variant == "col"
   tags:
-    - "nameindex"  
+    - "nameindex"
+    - "nameindex-stage"
 
 - name: set name index to use (Merged)
   set_fact:
     lucene_namematching_url: "{{ merged_namematching_url }}"
   when: nameindex_variant == "merged"
   tags:
-    - "nameindex"  
+    - "nameindex"
+    - "nameindex-stage"
 
 - name: set name index to use (ALA)
   set_fact:
     lucene_namematching_url: "{{ ala_namematching_url }}"
   when: nameindex_variant == "ala"
   tags:
-    - "nameindex"  
+    - "nameindex"
+    - "nameindex-stage"
 
 - name: set name index to use (Custom)
   set_fact:
     lucene_namematching_url: "{{ custom_namematching_url }}"
   when: nameindex_variant == "custom"
   tags:
-    - "nameindex"  
+    - "nameindex"
+    - "nameindex-stage"
 
 - name: name index URL is
   debug: msg="Downloading {{ nameindex_variant }} index from {{ lucene_namematching_url }}"
   tags:
     - "nameindex"
+    - "nameindex-stage"
 
 ## Ensure that data_dir/lucene exists as a directory
 
@@ -54,6 +64,7 @@
   file: path={{ data_dir }}/lucene state=directory mode=0755
   tags:
     - "nameindex"
+    - "nameindex-stage"
 
 ## If ALA, perform the following steps to download the index, give it the correct file permissions and symlink it
 - name: DEBUG - Download lucene index (ALA)
@@ -62,18 +73,23 @@
     verbosity: 1
   tags:
     - "nameindex"
+    - "nameindex-stage"
 
 - name: Download lucene index (ALA) - please note, this step takes a long time. If it causes an issue, use '--skip-tags nameindex' to bypass it
   get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene force={{ force_nameindex_download | default(false) }} timeout=10000
   when: nameindex_variant == "ala"
   tags:
     - "nameindex"
+    - "nameindex-stage"
 
 - name: unpackage the lucene index if it was newly copied (ALA)
   unarchive: src={{ data_dir }}/lucene/namematching-{{ name_index_date }}.tgz dest={{ data_dir }}/lucene/ copy=no group={{ nameindex_user | default(tomcat_user) }} owner="{{ nameindex_user | default(tomcat_user) }}"
+  notify:
+    - restart tomcat
   when: nameindex_variant == "ala"
   tags:
     - "nameindex"
+    - "nameindex-stage"
 
 - name: check for directory to link
   stat:
@@ -81,12 +97,16 @@
   register: tmp_name_dir_status
   tags:
     - "nameindex"
+    - "nameindex-swap"
 
 - name: link the current lucene index as namematching (ALA)
   file: src={{ data_dir }}/lucene/namematching-{{ name_index_date }}/ dest={{ data_dir }}/lucene/namematching state=link force=yes
+  notify:
+    - restart tomcat
   when: nameindex_variant == "ala" and tmp_name_dir_status.stat.exists == True
   tags:
     - "nameindex"
+    - "nameindex-swap"
 
 ## Else if not ALA, perform the following steps (apparently the date and file permissions do not matter for non-ALA users...)
 
@@ -94,24 +114,28 @@
   file: path={{ data_dir }}/lucene/namematching state=directory
   when: nameindex_variant != "ala"
   tags:
-    - "nameindex"  
+    - "nameindex"
+    - "nameindex-swap"
 
 - name: Download lucene index (non-ALA) - please note, this step takes a long time. If it causes an issue, use '--skip-tags nameindex' to bypass it, to complete an installation
   get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene/namematching.tgz force={{ force_nameindex_download | default(false) }} timeout=10000
   when: nameindex_variant != "ala"
   tags:
     - "nameindex"
+    - "nameindex-stage"
 
 - name: unpackage the lucene index if it was newly copied (not ALA)
   unarchive: src={{ data_dir }}/lucene/namematching.tgz dest={{ data_dir }}/lucene/ copy=no
   when: nameindex_variant != "ala"
   tags:
     - "nameindex"
+    - "nameindex-swap"
 
 - name: check whether lucene 4 to 5 conversion is required
   set_fact: lucene4to5convert={{ lucene4to5convert | default(false) }}
   tags:
     - "nameindex"
+    - "nameindex-swap"
 
 - name: convert lucene index from 4 to 5, if configured
   include_role:
@@ -119,3 +143,4 @@
   when: lucene4to5convert
   tags:
     - "nameindex"
+    - "nameindex-swap"
