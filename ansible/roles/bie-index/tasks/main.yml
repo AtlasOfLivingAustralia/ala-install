@@ -39,6 +39,7 @@
     - conservation-lists.json
     - image-lists.json
     - vernacular-lists.json
+    - favourites.json
   tags:
     - config
     - properties

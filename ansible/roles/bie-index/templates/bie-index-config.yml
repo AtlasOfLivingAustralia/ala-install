@@ -36,7 +36,7 @@ images:
     base: {{ image_base_url | default('https://images.ala.org.au') }}
     thumbnail: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImageThumbnail?imageId={0}
     large: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImage?imageId={0}
-    small: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImageThumbnailLarge?imageId=
+    small: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImageThumbnailLarge?imageId={0}
     metadata: {{ image_service_url | default('https://images.ala.org.au') }}/ws/image/{0}
   index: {{ index_images | default('false') }}
 wordPress:
@@ -79,8 +79,13 @@ solr:
     type: UPDATE
     queueSize: 10
     threadCount: 4
-  defType: {{ solr_deftype | default('edismax') }}
-  qAlt: {{ solr_qlat | default('text:*') }}
+  search:
+    qf:
+      - exact_text
+      - text
+    boost: {{ solr_bie_boost_term | default('searchWeight') }}
+    defType: {{ solr_deftype | default('edismax') }}
+    qAlt: {{ solr_qlat | default('text:*') }}
 skin:
   layout: {{ skin_layout | default('main') }}
   fluidLayout: {{ skin_fluid_layout | default('') }}
@@ -90,7 +95,8 @@ headerAndFooter:
   baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}
 useLegacyAuto: false
 import:
-  sequence: {{ bie_index_import_sequence | default('collectory,taxonomy-all,vernacular,denormalise,layers,regions,localities,conservation-lists,wordpress,weights,link-identifiers,images,occurrences,suggest-index') }}
+  sequence: {{ bie_index_import_sequence | default('collectory,taxonomy-all,vernacular,denormalise,layers,regions,localities,conservation-lists,wordpress,favourites,weights,link-identifiers,images,occurrences,suggest-index') }}
+  favouritesConfigUrl: file://{{ data_dir }}/bie-index/config/favourites.json
   taxonomy:
     dir: {{ data_dir }}/bie/import
 ala:

@@ -2,3 +2,11 @@
   roles:
     - common
     - nameindex
+- hosts: nameindex
+  tasks:
+    - name: Restart tomcat
+      service: name={{tomcat}} state=restarted
+      tags:
+        - nameindex
+#        - nameindex-stage
+        - nameindex-swap

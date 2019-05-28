@@ -1,0 +1,13 @@
+{
+  "defaultTerm": "favourite",
+  "lists": [
+    {
+      "uid": "dr4778",
+      "defaultTerm": "interest"
+    },
+    {
+      "uid": "dr781",
+      "defaultTerm": "iconic"
+    }
+  ]
+}
