@@ -73,6 +73,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "collectory"
     hostname: "{{ collectory_hostname }}"
     context_path: "{{ collectory_context_path }}"
   tags:

@@ -8,6 +8,5 @@
     - {role: db-backup, db: postgres}
     - {role: postgresql, pg_version: "10"}
     - {role: pg_instance, extensions: ["citext", "pgcrypto"]}
-    - nginx
-    - {role: nginx_vhost, hostname: "{{ digivol_hostname }}", context_path: "{{ digivol_context_path }}"}
+    - webserver
     - volunteer-portal

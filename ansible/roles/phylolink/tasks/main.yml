@@ -7,6 +7,7 @@
   apt: pkg={{ item }} state=present update_cache=yes
   with_items:
     - python-augeas
+    - libpq-dev
     - python-psycopg2
   tags:
     - phylolink
@@ -78,6 +79,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "phylolink"
     hostname: "{{ phylolink_hostname }}"
     context_path: "{{ phylolink_context_path }}"
   tags:

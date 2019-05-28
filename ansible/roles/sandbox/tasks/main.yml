@@ -19,6 +19,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "sandbox"
     hostname: "{{ sandbox_hostname }}"
     context_path: "{{ sandbox_context_path }}"
   tags:

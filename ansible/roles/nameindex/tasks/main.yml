@@ -58,16 +58,14 @@
     - "nameindex"
     - "nameindex-stage"
 
-## Ensure that data_dir/lucene exists as a directory
-
+## Ensure that data_dir/lucene exists as a directory (ALA and not-ALA)
 - name: ensure lucene base directory exists
   file: path={{ data_dir }}/lucene state=directory mode=0755
   tags:
     - "nameindex"
     - "nameindex-stage"
 
-## If ALA, perform the following steps to download the index, give it the correct file permissions and symlink it
-- name: DEBUG - Download lucene index (ALA)
+- name: DEBUG - Download lucene index
   debug:
     msg: "lucene_namematching_url={{ lucene_namematching_url }}, force_nameindex_download:{{ force_nameindex_download | default(false) }}, nameindex_variant={{nameindex_variant}}"
     verbosity: 1
@@ -75,6 +73,7 @@
     - "nameindex"
     - "nameindex-stage"
 
+## If ALA, perform the following steps to download the index, give it the correct file permissions and symlink it
 - name: Download lucene index (ALA) - please note, this step takes a long time. If it causes an issue, use '--skip-tags nameindex' to bypass it
   get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene force={{ force_nameindex_download | default(false) }} timeout=10000
   when: nameindex_variant == "ala"
@@ -91,9 +90,10 @@
     - "nameindex"
     - "nameindex-stage"
 
-- name: check for directory to link
+- name: check for directory to link (ALA)
   stat:
     path: "{{ data_dir }}/lucene/namematching-{{ name_index_date }}/"
+  when: nameindex_variant == "ala"
   register: tmp_name_dir_status
   tags:
     - "nameindex"
@@ -109,7 +109,6 @@
     - "nameindex-swap"
 
 ## Else if not ALA, perform the following steps (apparently the date and file permissions do not matter for non-ALA users...)
-
 - name: ensure lucene namematching directory exists (not ALA)
   file: path={{ data_dir }}/lucene/namematching state=directory
   when: nameindex_variant != "ala"
@@ -125,12 +124,13 @@
     - "nameindex-stage"
 
 - name: unpackage the lucene index if it was newly copied (not ALA)
-  unarchive: src={{ data_dir }}/lucene/namematching.tgz dest={{ data_dir }}/lucene/ copy=no
+  unarchive: src={{ data_dir }}/lucene/namematching.tgz dest={{ data_dir }}/lucene/ copy=no group={{ nameindex_user | default(tomcat_user) }} owner="{{ nameindex_user | default(tomcat_user) }}"
   when: nameindex_variant != "ala"
   tags:
     - "nameindex"
     - "nameindex-swap"
 
+## Lucene 4 to 5 conversion
 - name: check whether lucene 4 to 5 conversion is required
   set_fact: lucene4to5convert={{ lucene4to5convert | default(false) }}
   tags:

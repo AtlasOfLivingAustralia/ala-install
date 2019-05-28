@@ -26,6 +26,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "spatial-service"
     hostname: "{{ spatial_service_hostname }}"
     context_path: "{{ spatial_service_context_path }}"
     nginx_paths:

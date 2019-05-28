@@ -292,7 +292,6 @@ skin_favicon = https://www.gbif.org/favicon-16x16.png
 
 postgresql_username=postgres
 postgresql_password=postgres
-postgis_version=9.6
 pg_service=postgresql-9.6
 pg_version=9.6
 postgis_version=2.4

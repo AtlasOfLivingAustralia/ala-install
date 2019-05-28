@@ -42,6 +42,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "calendars"
     hostname: "{{ calendars_hostname }}"
     context_path: "{{ calendars_context_path }}"
   tags:

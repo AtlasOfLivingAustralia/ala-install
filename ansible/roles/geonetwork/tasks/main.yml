@@ -21,6 +21,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "geonetwork"
     hostname: "{{ geonetwork_hostname }}"
     context_path: "{{ geonetwork_context_path }}"
   tags:

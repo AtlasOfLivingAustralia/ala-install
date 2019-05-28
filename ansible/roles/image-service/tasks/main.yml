@@ -29,6 +29,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "image-service"
     hostname: "{{ images_hostname }}"
     context_path: "{{ images_context_path }}"
     nginx_paths:

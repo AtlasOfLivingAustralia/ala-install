@@ -29,6 +29,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "pigeonhole"
     hostname: "{{ pigeonhole_hostname }}"
     context_path: "{{ pigeonhole_context_path }}"
   tags:

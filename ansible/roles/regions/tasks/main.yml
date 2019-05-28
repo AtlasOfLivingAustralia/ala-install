@@ -17,6 +17,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "regions"
     hostname: "{{ regions_hostname }}"
     context_path: "{{ regions_context_path }}"
   tags:

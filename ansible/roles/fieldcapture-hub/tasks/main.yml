@@ -16,6 +16,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "fieldcapture-hub"
     hostname: "{{ fieldcapture_hub_hostname }}"
     context_path: "{{ fieldcapture_hub_context_path }}"
   tags:

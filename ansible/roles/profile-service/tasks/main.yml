@@ -62,6 +62,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "profile-service"
     hostname: "{{ profile_service_hostname }}"
     context_path: "{{ profile_service_context_path }}"
   tags:

@@ -175,9 +175,9 @@ spatial_hub_context_path=/
 layers_service_url=http://spatial.livingatlas.org/ws
 geoserver_url=http://spatial.livingatlas.org/geoserver
 
-sandbox_url=http://sandbox.ala.org.au/ala-hub
-sandbox_ui_url=http://sandbox.ala.org.au/datacheck
-sandbox_biocache_service_url=http://sandbox.ala.org.au/biocache-service
+sandbox_url=https://sandbox.ala.org.au/ala-hub
+sandbox_ui_url=https://sandbox.ala.org.au/datacheck
+sandbox_biocache_service_url=https://sandbox.ala.org.au/biocache-service
 
 google_api_key=get-a-google-api-key
 spatial_hub_api_key=get-an-ala-api-key

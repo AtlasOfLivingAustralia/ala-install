@@ -20,7 +20,7 @@ security:
     disableCAS: {{ bypass_cas | default(true) }}
     gateway: {{ gateway_cas | default(false) }}
 
-autocompleteUrl: "{{ bie_base_url | default('https://bie.ala.org.au') }}/ws/search/auto.jsonp"
+autocompleteUrl: "{{ bie_service_base_url | default('https://bie-ws.ala.org.au/ws') }}/search/auto.jsonp"
 
 auth:
     admin_role: {{ auth_admin_role | default('ROLE_ADMIN') }}
@@ -36,7 +36,7 @@ bie.baseURL: "{{ bie_base_url | default('https://bie.ala.org.au') }}"
 bie.searchPath: '/search'
 
 bieService:
-    baseURL: "{{ bie_service_base_url | default('https://bie.ala.org.au/ws') }}"
+    baseURL: "{{ bie_service_base_url | default('https://bie-ws.ala.org.au/ws') }}"
 
 userdetails:
     baseUrl: "{{ user_details_base_url | default('https://auth.ala.org.au/userdetails') }}"
@@ -62,11 +62,11 @@ collections:
     url: "{{ collections_url | default('https://collections.ala.org.au') }}"
 
 sandbox:
-    url: "{{ sandbox_url | default('http://sandbox.ala.org.au/ala-hub') }}"
-    uiUrl: "{{ sandbox_ui_url | default('http://sandbox.ala.org.au') }}"
+    url: "{{ sandbox_url | default('https://sandbox.ala.org.au/ala-hub') }}"
+    uiUrl: "{{ sandbox_ui_url | default('https://sandbox.ala.org.au') }}"
 
 sandboxService:
-    url: "{{ sandbox_biocache_service_url | default('http://sandbox.ala.org.au/biocache-service') }}"
+    url: "{{ sandbox_biocache_service_url | default('https://sandbox.ala.org.au/biocache-service') }}"
 
 gazField: {{ gaz_field | default('cl915') }}
 
@@ -76,7 +76,7 @@ biocache:
     url: "{{biocache_url | default('https://biocache.ala.org.au')}}"
 
 biocacheService:
-    url: "{{ biocache_service_url | default('https://biocache.ala.org.au/ws')}}"
+    url: "{{ biocache_service_url | default('https://biocache-ws.ala.org.au/ws')}}"
     #Facets to ignore in the biocache grouped/facets service
     default_facets_ignored: "{{ default_facets_ignored | default('data_resource_uid,data_provider_uid,species,collection_uid,institution_code_name,institution_uid,uncertainty') }}"
     custom_facets:

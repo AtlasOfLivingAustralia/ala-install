@@ -6,7 +6,7 @@ is_vagrant=true
 local_repo_dir = ~/.ala
 data_dir=/data
 
-#biocache_service_url = https://biocache.ala.org.au/ws
+#biocache_service_url = https://biocache-ws.ala.org.au/ws
 #biocache_service_base_url = https://biocache.ala.org.au
 
 biocache_service_url = http://biocache.vagrant1.ala.org.au/ws

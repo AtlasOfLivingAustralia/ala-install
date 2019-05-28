@@ -41,6 +41,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "geoserver"
     hostname: "{{ geoserver_hostname }}"
     context_path: "{{ geoserver_context_path }}"
   tags:

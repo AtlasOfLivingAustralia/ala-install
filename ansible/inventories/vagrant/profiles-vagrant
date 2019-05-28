@@ -120,7 +120,7 @@ biocache_hub_context_path = /ala-hub
 
 
 biocache_sds_url = https://sds.ala.org.au
-bie_service_url = https://bie.ala.org.au/ws
+bie_service_url = https://bie-ws.ala.org.au/ws
 bie_url = https://bie.ala.org.au
 layers_service_url = https://spatial.ala.org.au/ws
 lists_service_url = https://lists.ala.org.au

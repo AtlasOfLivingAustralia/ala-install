@@ -79,6 +79,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "volunteer-portal"
     hostname: "{{ digivol_hostname }}"
     context_path: "{{ digivol_context_path }}"
     nginx_root: "{{}}"

@@ -10,7 +10,7 @@
     - common
     - java
     - {role: db-backup, db: postgres}
-    - {role: postgresql, pg_version: "9.6"}
+    - {role: postgresql, pg_version: "9.6", postgis_version: "2.4"}
     - {role: pg_instance, extensions: ["citext", "pgcrypto"]}
     - web2py
     - web2pyApps

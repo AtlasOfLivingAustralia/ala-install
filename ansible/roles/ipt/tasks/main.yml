@@ -9,6 +9,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "ipt"
     hostname: "{{ ipt_hostname }}"
     context_path: "{{ ipt_context_path }}"
   tags:

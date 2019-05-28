@@ -25,10 +25,20 @@
     - biocache-service
   when: webserver_nginx and biocache_service_proxy_target is not defined
 
+- name: set download context path target if configured
+  set_fact: 
+    biocache_service_download_target: "{{ biocache_service_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - biocache-service
+  when: webserver_nginx and biocache_service_download_target is not defined
+
 - name: add nginx vhost if configured
   include_role:
     name: nginx_vhost
   vars:
+   appname: "biocache-service"
    hostname: "{{ biocache_service_hostname }}"
    context_path: "{{ biocache_service_context_path }}"
    nginx_paths:
@@ -226,7 +236,7 @@
         is_proxy: true
         unlimited_conns: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/qid"
-      - path: "/biocache-download"
+      - path: "{{biocache_service_download_target}}/biocache-download"
         sort_label: "8_download"
         is_proxy: false
         alias: "{{ download_dir | default('/data/biocache-download') }}"

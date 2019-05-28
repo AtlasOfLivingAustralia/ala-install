@@ -1,10 +1,7 @@
 - include: ../../common/tasks/setfacts.yml 
 
-- include: openjdk-java.yml
-  when: use_openjdk7 is defined and use_openjdk7
-
-- include: oracle-java8.yml
-  when: use_oraclejava8 is defined and use_oraclejava8
-
 - include: openjdk-java-8.yml
-  when: use_openjdk8 is defined and use_openjdk8
+  when: use_openjdk8 is defined and use_openjdk8 | bool == True
+
+- include: zulu-8.yml
+  when: use_zulu8 is defined and use_zulu8 | bool == True

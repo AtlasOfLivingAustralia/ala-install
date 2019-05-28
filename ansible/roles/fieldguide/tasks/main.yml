@@ -20,6 +20,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "fieldguide"
     hostname: "{{ fieldguide_hostname }}"
     context_path: "{{ fieldguide_context_path }}"
   tags:
