@@ -8,7 +8,7 @@ security:
     disableCAS: {{ bypass_cas | default(true) }}
 
 dataSource:
-  url: "jdbc:postgresql://localhost/images"
+  url: "jdbc:postgresql://localhost/images?autoReconnect=true&connectTimeout=0&useUnicode=true&characterEncoding=UTF-8"
   username: {{ images_db_username }}
   password: {{ images_db_password }}
   dbCreate: update
