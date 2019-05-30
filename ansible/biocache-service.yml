@@ -3,7 +3,7 @@
     - common
     - java
     - tomcat
-    - cassandra
+    - cassandra3
     - webserver
     - nameindex
     - solr

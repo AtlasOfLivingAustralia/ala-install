@@ -1,7 +1,0 @@
-- hosts: regions-ger
-  roles:
-    - { role: common, regions: regions }
-    - { role: java, regions: regions-ger }
-    - { role: apache, regions: regions-ger }
-    - { role: tomcat, regions: regions-ger }
-    - { role: regions, regions: regions-ger }
