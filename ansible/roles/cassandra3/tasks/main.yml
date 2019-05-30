@@ -30,6 +30,13 @@
 
 ########## DEBIAN ########## 
 
+- name: install curl (Debian)
+  apt: name=curl state=latest
+  when: ansible_os_family == "Debian" 
+  tags:
+    - packages 
+    - cassandra 
+
 - name: install wget (Debian)
   apt: name=wget state=latest
   when: ansible_os_family == "Debian" 
