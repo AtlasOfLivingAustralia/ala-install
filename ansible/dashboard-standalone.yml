@@ -1,9 +1,0 @@
-# Sample command: ansible-playbook -i ansible/inventories/dashboard-prod ansible/dashboard-standalone.yml --extra-vars "version=2.0" --private-key ~/.ssh/whatever.pem -u ubuntu -s
-
-- hosts: dashboard
-  roles:
-    - common
-    - java
-    - tomcat
-    - webserver
-    - dashboard
