@@ -1,3 +1,0 @@
-- hosts: appd
-  roles:
-    - reinitialise
