@@ -57,10 +57,10 @@ bcrypt:
 
 
 ala:
-  baseURL: {{ ala_baseurl | default('https://www.ala.org.au') }}
+  baseURL: {{ ala_base_url | default('https://www.ala.org.au') }}
 
 supportEmail: {{ support_email | default('support@ala.org.au') }}
-homeUrl: {{ ala_baseurl | default('https://www.ala.org.au') }}
+homeUrl: {{ ala_base_url | default('https://www.ala.org.au') }}
 mainTitle: {{ orgNameLong | default('Atlas of Living Australia') }}
 emailSenderTitle: {{ orgNameLong | default('Atlas of Living Australia') }}
 emailSender: {{ support_email | default('support@ala.org.au') }}
