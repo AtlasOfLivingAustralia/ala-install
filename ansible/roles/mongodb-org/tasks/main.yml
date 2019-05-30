@@ -1,0 +1,71 @@
+- name: Add mongodb.org apt key
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 9DA31620334BD75D9DCB49F368818C72E52529D4 # mongo
+  tags: mongodb-org
+
+- name: Add mongodb.org repo
+  apt_repository:
+    repo: deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/4.0 multiverse
+    state: present
+  tags: mongodb-org
+
+- name: Install mongodb.org packages and related
+  apt:
+    name: "{{ item }}"
+  with_items:
+  - mongodb-org-shell
+  - mongodb-org-server
+  - python-pip
+  tags: mongodb-org
+
+- name: Uninstall official python-pymongo package
+  apt:
+    name: python-pymongo
+    state: absent
+  tags: mongodb-org
+
+- name: Uninstall pip python-pymongo package
+  pip:
+    name: pymongo
+  tags: mongodb-org
+
+- name: Enable service mongod
+  service:
+    name: mongod
+    enabled: yes
+  tags: mongodb-org
+
+# https://github.com/ansible/ansible/issues/33832
+- name: Check if some admin user is already configured
+  shell: /usr/bin/mongo --eval 'db.getUsers()' admin
+  ignore_errors: true
+  register: get_mongo_admin_users
+  changed_when: false
+  tags: mongodb-org
+
+- name: Debug admin query
+  debug:
+    msg: "Mongo admin query output: {{ get_mongo_admin_users.rc }}. If equals 0: not admin users configured"
+  tags: mongodb-org
+
+# https://docs.ansible.com/ansible/latest/modules/mongodb_user_module.html
+- name: Create admin user if necessary
+  mongodb_user:
+    database: "{{ mongodb_root_database | default('admin') }}"
+    name: "{{ mongodb_root_username }}"
+    password: "{{ mongodb_root_password }}"
+    state: present
+    login_port: "{{ mongodb_port }}"
+    roles: "userAdminAnyDatabase"
+  when: get_mongo_admin_users.rc == 0
+  tags: mongodb-org
+
+- name: Set configuration with authentication when admin user is created
+  template:
+    src: templates/mongod.yml
+    dest: /etc/mongod.conf
+  notify:
+    - restart mongod
+  when: get_mongo_admin_users.rc == 0
+  tags: mongodb-org
