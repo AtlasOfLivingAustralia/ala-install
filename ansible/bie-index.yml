@@ -1,8 +1,0 @@
-- hosts: bie-index
-  roles:
-    - common
-    - java
-    - webserver
-    - tomcat
-    - solr4
-    - bie-index
