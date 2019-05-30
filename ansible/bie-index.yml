@@ -1,0 +1,11 @@
+# Installs bie-index
+- hosts: bie-index
+  roles:
+    - common
+    - java
+    - webserver
+    - tomcat
+    - biocache-properties
+    - bie-index
+    - namedata
+    - nameindex
