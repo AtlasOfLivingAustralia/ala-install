@@ -45,7 +45,7 @@
 
 - name: copy logback config
   template:
-    src: log4j2.xml
+    src: log4j2-management.xml
     dest: "{{data_dir}}/cas-management/config/log4j2.xml"
     owner: cas
     group: cas
