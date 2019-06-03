@@ -15,7 +15,7 @@
 [ala-demo]
 living-atlas.org
 
-[ala-demo:vars]
+[all:vars]
 # Mounted storage is usually /mnt on EC2. Create a symlink to /mnt -> /data
 data_dir=/data
 
@@ -252,9 +252,13 @@ bie_hub_base_url = http://living-atlas.org
 bie_hub_context_path = /ala-bie
 bie_hub_hostname = living-atlas.org
 species_list_url = http://living-atlas.org/specieslists
+# Used in CAS:
+lists_base_url = http://living-atlas.org/specieslists
 sightings_url =
 alerts_url =
+alerts_base_url=
 spatial_url =
+spatial_base_url =
 
 bie_base_url = http://living-atlas.org/ala-bie
 ala_base_url = http://living-atlas.org

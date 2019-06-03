@@ -19,13 +19,23 @@
   - python-pip
   tags: mongodb-org
 
+# https://github.com/ansible/ansible/issues/36585
+- name: force systemd to reread configs
+  systemd:
+    daemon_reload: yes
+
+- name: Restart mongod
+  service: name=mongod state=restarted
+  when: ansible_os_family == "Debian"
+  tags: mongodb-org
+
 - name: Uninstall official python-pymongo package
   apt:
     name: python-pymongo
     state: absent
   tags: mongodb-org
 
-- name: Uninstall pip python-pymongo package
+- name: Install pip python-pymongo package
   pip:
     name: pymongo
   tags: mongodb-org
