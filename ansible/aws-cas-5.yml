@@ -7,28 +7,19 @@
   tasks:
   - include_role:
       name: common
-#   - apt_key:
-#       keyserver: keyserver.ubuntu.com
-#       id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5 #mongo
-#   - apt_repository:
-#       repo: deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/3.6 multiverse
-#       state: present
   - apt:
       name: "{{ item }}"
     with_items:
     - mysql-client
     - python-mysqldb
-    # - mongodb-org-shell
-#     - python-pip
-#   - apt:
-#       name: python-pymongo
-#       state: absent
-#   - pip:
-#       name: pymongo
+  - include_role:
+      name: java
   - include_role:
       name: postfix
   - include_role:
       name: webserver
+  - include_role:
+      name: mysql-5.7
   - copy:
       src: "{{ cas_db_dump }}"
       dest: /tmp/cas.sql
@@ -85,30 +76,54 @@
       user: "{{ item.user }}"
       password: "{{ item.password }}"
       priv: "{{ item.priv }}"
-      host: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+      host: "{{ item.login_host }}"
     with_items:
     - { user: "{{ cas_flyway_username }}", password: "{{ cas_flyway_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:ALL", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
     - { user: "{{ cas_db_username }}", password: "{{ cas_db_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:INSERT,SELECT,UPDATE,DELETE,EXECUTE,TRIGGER/mysql.proc:SELECT", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
     - { user: "{{ apikey_db_username }}", password: "{{ apikey_db_password }}", priv: "{{ apikey_db_name | default('apikey') }}.*:ALL", login_host: "{{ apikey_db_hostname }}", login_port: "{{ apikey_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
-    # Won't work with MongoDB Atlas instance
-#   - mongodb_user:
-#       user: "{{ item.user }}"
-#       password: "{{ item.password }}"
-#       database: "{{ item.database }}"
-#       roles: "{{ item.roles }}"
-#       replica_set: "{{ item.replica_set }}"
-#       ssl: "{{ item.ssl }}"
-#       state: present
-#       login_host: "{{ item.login_host }}"
-#       login_port: "{{ item.login_port }}"
-#       login_database: "{{ item.login_database }}"
-#       login_user: "{{ item.login_user }}"
-#       login_password: "{{ item.login_password }}"
-#     with_items:
-#     - { login_host: "{{ cas_tickets_host }}", login_port: "{{ cas_tickets_port | default('27017') }}", login_user: "{{ mongodb_root_username }}", login_password: "{{ mongodb_root_password }}", login_database: "{{ mongodb_root_database | default('admin') }}", user: "{{ cas_tickets_username }}", password: "{{ cas_tickets_password }}", database: "{{ cas_tickets_db | default('cas-ticket-registry') }}", replica_set: "{{ cas_tickets_replica_set | default('') }}", ssl: "{{ cas_tickets_ssl_enabled | default('false') }}", roles: 'readWrite' }
-#     - { login_host: "{{ cas_services_host }}", login_port: "{{ cas_services_port | default('27017') }}", login_user: "{{ mongodb_root_username }}", login_password: "{{ mongodb_root_password }}", login_database: "{{ mongodb_root_database | default('admin') }}", user: "{{ cas_services_username }}", password: "{{ cas_services_password }}", database: "{{ cas_services_db | default('cas-service-registry' ) }}", replica_set: "{{ cas_services_replica_set | default('') }}", ssl: "{{ cas_services_ssl_enabled | default('false') }}", roles: 'readWrite' }
-#     run_once: true
-    # TODO Add mongo http api call instead?
+  - include_role:
+      name: mongodb-org
+    tags: mongodb-org
+  - mongodb_user:
+      user: "{{ item.user }}"
+      password: "{{ item.password }}"
+      database: "{{ item.database }}"
+      roles: "{{ item.roles }}"
+      replica_set: "{{ item.replica_set }}"
+      ssl: "{{ item.ssl }}"
+      state: present
+      login_host: "{{ item.login_host }}"
+      login_port: "{{ item.login_port }}"
+      login_database: "{{ item.login_database }}"
+      login_user: "{{ item.login_user }}"
+      login_password: "{{ item.login_password }}"
+    with_items:
+    - {
+    login_host: "{{ cas_tickets_host }}",
+    login_port: "{{ cas_tickets_port | default('27017') }}",
+    login_user: "{{ mongodb_root_username }}",
+    login_password: "{{ mongodb_root_password }}",
+    login_database: "{{ mongodb_root_database | default('admin') }}",
+    user: "{{ cas_tickets_username }}",
+    password: "{{ cas_tickets_password }}",
+    database: "{{ cas_tickets_db | default('cas-ticket-registry') }}",
+    replica_set: "{{ cas_tickets_replica_set | default('') }}",
+    ssl: "{{ cas_tickets_ssl_enabled | default('false') }}",
+    roles: 'readWrite' }
+    - {
+    login_host: "{{ cas_services_host }}",
+    login_port: "{{ cas_services_port | default('27017') }}",
+    login_user: "{{ mongodb_root_username }}",
+    login_password: "{{ mongodb_root_password }}",
+    login_database: "{{ mongodb_root_database | default('admin') }}",
+    user: "{{ cas_services_username }}",
+    password: "{{ cas_services_password }}",
+    database: "{{ cas_services_db | default('cas-service-registry' ) }}",
+    replica_set: "{{ cas_services_replica_set | default('') }}",
+    ssl: "{{ cas_services_ssl_enabled | default('false') }}",
+    roles: 'readWrite' }
+    tags: mongodb-org
+    run_once: true
   - include_role:
       name: cas5
     vars:
