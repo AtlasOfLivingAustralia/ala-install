@@ -56,8 +56,9 @@
     owner: root
     group: "{{ root_group }}"
     mode: 0644
+    validate: "nginx -t -c %s"
   notify:
-    - reload nginx
+    - restart nginx
   tags:
     - nginx
 
@@ -69,7 +70,7 @@
     group: "{{ root_group }}"
     mode: 0644
   notify:
-    - reload nginx
+    - restart nginx
   tags:
     - nginx
 
