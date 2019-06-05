@@ -57,6 +57,7 @@
     group: "{{ root_group }}"
     mode: 0644
     validate: "nginx -t -c %s"
+    backup: yes
   notify:
     - restart nginx
   tags:
