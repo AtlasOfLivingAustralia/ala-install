@@ -12,8 +12,11 @@ nginx_ppa_version: stable
 # The name of the nginx package to install.
 nginx_package_name: "nginx"
 
+# Whether to include modules e.g. PAM auth, geoip, stream etc
+# Note this overrides nginx_extra_conf_options initial value.
+nginx_use_modules: false
+
 nginx_conf_template: "nginx.conf.j2"
-nginx_mime_template: "mime.types.j2"
 nginx_vhost_template: "vhost.j2"
 
 nginx_worker_processes: "{{ ansible_processor_vcpus | default(ansible_processor_count) }}"

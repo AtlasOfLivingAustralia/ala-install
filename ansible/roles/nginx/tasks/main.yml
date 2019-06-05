@@ -43,6 +43,15 @@
   tags:
     - nginx
 
+- name: enable nginx modules if configured
+  set_fact:
+    nginx_extra_conf_options: "include {{ nginx_modules_path }}/*.conf;"
+  when:
+    - ansible_os_family == 'Debian'
+    - nginx_use_modules is defined and nginx_use_modules | bool == True
+  tags:
+    - nginx
+
 # Vhost configuration.
 - include: vhosts.yml
   tags:
