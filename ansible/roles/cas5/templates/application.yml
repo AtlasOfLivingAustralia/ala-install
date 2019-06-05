@@ -47,18 +47,44 @@ cas:
             key: {{ pac4j_cookie_signing_key }}
           encryption:
             key: {{ pac4j_cookie_encryption_key }}
+{% if pac4j_facebook_consumer_key is defined %}
       facebook:
         # fields:
         id: {{ pac4j_facebook_consumer_key }}
         secret: {{ pac4j_facebook_consumer_secret }}
         scope: public_profile,email
+{% endif %}
+{% if pac4j_twitter_consumer_key is defined %}
       twitter:
         id: {{ pac4j_twitter_consumer_key }}
         secret: {{ pac4j_twitter_consumer_secret }}
+{% endif %}
+{% if pac4j_google_consumer_key is defined %}
       google:
         scope: EMAIL_AND_PROFILE
         id: {{ pac4j_google_consumer_key }}
         secret: {{ pac4j_google_consumer_secret }}
+{% endif %}
+{% if pac4j_github_consumer_key is defined %}
+      github:
+        id: {{ pac4j_github_consumer_key }}
+        secret: {{ pac4j_github_consumer_secret }}
+{% endif %}
+{% if pac4j_linkedin_consumer_key is defined %}
+      linkedin:
+        id: {{ pac4j_linkedin_consumer_key }}
+        secret: {{ pac4j_linkedin_consumer_secret }}
+{% endif %}
+{% if pac4j_windows_consumer_key is defined %}
+      windows:
+        id: {{ pac4j_windows_consumer_key }}
+        secret: {{ pac4j_windows_consumer_secret }}
+{% endif %}
+{% if pac4j_yahoo_consumer_key is defined %}
+      yahoo:
+        id: {{ pac4j_yahoo_consumer_key }}
+        secret: {{ pac4j_yahoo_consumer_secret }}
+{% endif %}
     oidc:
       issuer: ${cas.server.name}/cas/oidc
       jwksFile: file:/data/cas/keystore.jwks
