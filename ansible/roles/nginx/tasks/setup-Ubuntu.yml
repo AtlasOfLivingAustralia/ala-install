@@ -1,14 +1,39 @@
 ---
-- name: Add PPA for Nginx.
+- name: Add PPA key for Nginx repository
+  apt_key:
+    keyserver: "hkp://keyserver.ubuntu.com:80"
+    id: "ABF5BD827BD9BF62"
+  when: 
+    - nginx_ppa_use is defined and nginx_ppa_use | bool == True
+
+- name: Add PPA for Nginx on Trusty
   apt_repository:
-    repo: 'ppa:nginx/{{ nginx_ppa_version }}'
+    repo: "deb http://nginx.org/packages/ubuntu/ trusty nginx"
     state: present
+    filename: nginx-official
     update_cache: yes
-  register: nginx_ppa_added
-  when: nginx_ppa_use
+  register: nginx_ppa_added_stable
+  when:
+    - nginx_ppa_use is defined and nginx_ppa_use | bool == True
+    - ansible_os_family == "Debian" and ansible_distribution_version == "14.04"
+
+- name: Add PPA for Nginx on current versions
+  apt_repository:
+    repo: "deb http://nginx.org/packages/mainline/ubuntu/ {{ ansible_distribution_release }} nginx"
+    state: present
+    filename: nginx-official
+    update_cache: yes
+  register: nginx_ppa_added_mainline
+  when:
+    - nginx_ppa_use is defined and nginx_ppa_use | bool == True
+    - ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04"
 
 - name: Ensure nginx will reinstall if the PPA was just added.
   apt:
     name: nginx
     state: absent
-  when: nginx_ppa_added.changed
+  notify:
+    - restart nginx
+  when: 
+    - nginx_ppa_use is defined and nginx_ppa_use | bool == True
+    - nginx_ppa_added_stable.changed or nginx_ppa_added_mainline.changed
