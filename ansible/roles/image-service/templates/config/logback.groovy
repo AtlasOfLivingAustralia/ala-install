@@ -29,7 +29,7 @@ appender(APPLICATION_LOG, RollingFileAppender) {
     }
 }
 
-root(DEBUG, [APPLICATION_LOG])
+root(ERROR, [APPLICATION_LOG])
 final error = [
 ]
 final warn = [
