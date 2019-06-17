@@ -1,9 +1,8 @@
-# Installs ala-bie
-# TODO: Abstract the link to `ala-bie` out to a variable
+# Installs bie-hub
 - hosts: bie-hub
   roles:
     - common
     - java
     - webserver
     - tomcat
-    - ala-bie
+    - bie-hub
