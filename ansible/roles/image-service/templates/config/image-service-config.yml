@@ -15,7 +15,7 @@ dataSource:
 
 imageservice:
   imagestore:
-    root: /data/images/store
+    root: /data/image-service/store
   apache:
     root: "{{ images_base_url }}/store/"
 
