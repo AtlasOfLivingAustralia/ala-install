@@ -49,18 +49,6 @@
     - nginx
 
 # Nginx setup.
-- name: Copy nginx configuration in place.
-  template:
-    src: "{{ nginx_conf_template }}"
-    dest: "{{ nginx_conf_file_path }}"
-    owner: root
-    group: "{{ root_group }}"
-    mode: 0644
-  notify:
-    - reload nginx
-  tags:
-    - nginx
-
 - name: Copy nginx mime.types file.
   template:
     src: "{{ nginx_mime_template }}"
@@ -68,6 +56,21 @@
     owner: root
     group: "{{ root_group }}"
     mode: 0644
+    backup: yes
+  notify:
+    - reload nginx
+  tags:
+    - nginx
+
+- name: Copy nginx configuration in place.
+  template:
+    src: "{{ nginx_conf_template }}"
+    dest: "{{ nginx_conf_file_path }}"
+    owner: root
+    group: "{{ root_group }}"
+    mode: 0644
+    validate: "nginx -t -c %s"
+    backup: yes
   notify:
     - reload nginx
   tags:
