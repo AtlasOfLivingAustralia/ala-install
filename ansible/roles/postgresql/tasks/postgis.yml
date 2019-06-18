@@ -2,6 +2,7 @@
   become: yes
   apt:
     pkg: acl
+  when: postgis_version is defined and postgis_version | length > 0
   tags:
     - postgresql
     - postgis
@@ -11,7 +12,7 @@
     pkg: "{{ item }}"
     state: present
     update_cache: yes
-  when: postgis_version != ""
+  when: postgis_version is defined and postgis_version | length > 0
   with_items:
     - "postgresql-{{pg_version}}-postgis-{{postgis_version}}"
   tags:
@@ -22,6 +23,7 @@
   postgresql_db:
     db: postgis_template
     state: present
+  when: postgis_version is defined and postgis_version | length > 0
   become: yes
   become_user: postgres
   tags:
@@ -30,14 +32,18 @@
 
 - name: make postgis_template a template
   action: command psql -d postgis_template -c "UPDATE pg_database SET datistemplate=true WHERE datname='postgis_template';"
-  sudo_user: postgres
+  when: postgis_version is defined and postgis_version | length > 0
+  become: yes
+  become_user: postgres
   tags:
     - postgresql
     - postgis
 
 - name: run the postgis SQL scripts
   action: command psql -d postgis_template -f {{ item }}
-  sudo_user: postgres
+  when: postgis_version is defined and postgis_version | length > 0
+  become: yes
+  become_user: postgres
   with_items:
     - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version}}/postgis.sql"
     - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version}}/spatial_ref_sys.sql"
