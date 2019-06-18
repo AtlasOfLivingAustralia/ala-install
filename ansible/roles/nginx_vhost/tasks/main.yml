@@ -51,7 +51,7 @@
     - "{{ssl_certificate_local_dir | default('') }}/{{ssl_cert_file | default('') }}"
     - "{{ssl_certificate_local_dir | default('') }}/{{ssl_key_file | default('') }}"
     - "{{ssl_certificate_local_dir | default('') }}/{{ssl_chain_file | default('') }}"
-  when: ssl and copy_https_certs_from_local and vhost_required
+  when: ssl | bool == True and copy_https_certs_from_local and vhost_required
   tags:
     - nginx_vhost
 
@@ -90,7 +90,7 @@
     mode: 0755 
     owner: root
     group: root
-  when: vhost_required
+  when: vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -102,7 +102,7 @@
     mode: 0755 
     owner: root
     group: root
-  when: vhost_required
+  when: vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -113,17 +113,19 @@
     mode: 0755 
     owner: www-data
     group: www-data
-  when: vhost_required and nginx_cache
+  when: vhost_required | bool == True and nginx_cache | bool == True
   tags:
     - nginx_vhost
 
 - name: ensure nginx cache dir will be cleared by handler
   debug:
     msg: "Ensuring nginx cache dir will be cleared by handler"
-  when: vhost_required and nginx_cache
+  when: vhost_required | bool == True and nginx_cache | bool == True
   changed_when: nginx_clear_cache_on_deploy|bool == True
   notify:
-    - clear nginx cache
+# FIXME: Ansible-2.8 is having issues with this call, replacing with restart nginx at this point
+#    - clear nginx cache
+    - restart nginx
   tags:
     - nginx_vhost
 
@@ -131,7 +133,7 @@
   template:
     src: "fragment_02_upstream.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_02_upstream_{{ hostname }}_127.0.0.1_{{ tomcat_server_port | default('8080', True) }}"
-  when: vhost_required and nginx_load_balancing | bool == true and item.is_proxy and item.proxy_pass is defined
+  when: vhost_required | bool == True and nginx_load_balancing | bool == true and item.is_proxy and item.proxy_pass is defined
   with_items:
     - "{{ nginx_paths}} "
   tags:
@@ -141,7 +143,7 @@
   template:
     src: "fragment_03_blocking.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_03_blocking"
-  when: vhost_required
+  when: vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -149,7 +151,7 @@
   template:
     src: "fragment_05_cache.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_05_cache"
-  when: vhost_required and nginx_cache
+  when: vhost_required | bool == True and nginx_cache | bool == True
   tags:
     - nginx_vhost
 
@@ -158,7 +160,7 @@
   template:
     src: "fragment_06_connection.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_06_connection"
-  when: vhost_required and nginx_load_balancing | bool == false and item.is_websocket is defined and item.is_websocket | bool == true
+  when: vhost_required | bool == True and nginx_load_balancing | bool == false and item.is_websocket is defined and item.is_websocket | bool == true
   with_items:
     - "{{ nginx_paths}} "
   tags:
@@ -169,7 +171,7 @@
   template:
     src: "fragment_10_start_http.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_10_start"
-  when: vhost_required
+  when: vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -180,7 +182,7 @@
   with_items:
     - "20_servername"
     - "90_end"
-  when: vhost_required
+  when: vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -190,13 +192,13 @@
     path: "{{item}}"
     state: absent
   with_fileglob: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_"
-  when: (not ssl) and vhost_required
+  when: ssl | bool == False and vhost_required | bool == True
   tags:
     - nginx_vhost
 
 - name: create root directory
   file: path="{{ nginx_root }}" state=directory mode=0755 force=yes follow=yes
-  when: (not ssl) and vhost_required
+  when: vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -207,7 +209,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_{{ item }}"
   with_items:
     - "50_root"
-  when: (not ssl or (ssl and not force_https)) and vhost_required
+  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -218,7 +220,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_{{ item }}"
   with_items:
     - "60_robots"
-  when: (not ssl or (ssl and not force_https)) and vhost_required
+  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -230,7 +232,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_70_start"
   with_items:
     - "{{ nginx_paths}} "
-  when: (not ssl or (ssl and not force_https)) and vhost_required
+  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -242,7 +244,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_73_content"
   with_items:
     - "{{ nginx_paths}} "
-  when: (not ssl or (ssl and not force_https)) and vhost_required
+  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -254,7 +256,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_75_end"
   with_items:
     - "{{ nginx_paths}} "
-  when: (not ssl or (ssl and not force_https)) and vhost_required
+  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -263,7 +265,7 @@
   file: 
     path: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_30_force_https"
     state: absent
-  when: (not ssl or (ssl and not force_https)) and vhost_required
+  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -274,7 +276,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_{{ item }}"
   with_items:
     - "30_force_https"
-  when: ssl and force_https and vhost_required
+  when: ssl | bool == True and force_https | bool == True and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -283,7 +285,7 @@
   template:
     src: "fragment_10_start_https.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_10_start"
-  when: ssl and vhost_required
+  when: ssl | bool == True and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -297,7 +299,7 @@
     - "50_root"
     - "60_robots"
     - "90_end"
-  when: ssl and vhost_required
+  when: ssl | bool == True and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -310,7 +312,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_70_start"
   with_items:
     - "{{ nginx_paths }}"
-  when: ssl and vhost_required
+  when: ssl | bool == True and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -323,7 +325,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_73_content"
   with_items:
     - "{{ nginx_paths }}"
-  when: ssl and vhost_required
+  when: ssl | bool == True and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -336,7 +338,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_75_end"
   with_items:
     - "{{ nginx_paths }}"
-  when: ssl and vhost_required
+  when: ssl | bool == True and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -345,7 +347,7 @@
   assemble:
     src: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}"
     dest: "{{nginx_conf_dir}}/sites-available/{{hostname}}.conf"
-  when: vhost_required
+  when: vhost_required | bool == True
   notify:
    - reload nginx
   tags:
@@ -357,7 +359,7 @@
     state: link
     src: "{{nginx_conf_dir}}/sites-available/{{hostname}}.conf"
     dest: "{{nginx_conf_dir}}/sites-enabled/{{hostname}}.conf"
-  when: vhost_required
+  when: vhost_required | bool == True
   notify:
    - reload nginx
   tags:
@@ -371,7 +373,7 @@
 - name: "Default host"
   include: "defaulthost.yml"
   when:
-    - ( aws_elb_healthcheck_default or nginx_default_vhost_required ) and vhost_required
+    - ( aws_elb_healthcheck_default | bool == True or nginx_default_vhost_required | bool == True ) and vhost_required | bool == True
   notify:
    - reload nginx
   tags:
