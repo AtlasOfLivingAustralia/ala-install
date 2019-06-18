@@ -32,7 +32,7 @@
     - deploy
     - apache_vhost
     - image-service
-  when: not webserver_nginx
+  when: webserver_nginx | bool == False
 
 - name: add nginx vhost if configured
   include_role:
@@ -40,12 +40,12 @@
   vars:
     appname: "image-service"
     hostname: "{{ images_hostname }}"
-    context_path: "{{ images_context_path }}"
+    context_path: "{{ images_hostname_context_path }}"
     nginx_paths:
-      - path: "{{ images_context_path }}"
+      - path: "{{ images_hostname_context_path }}"
         sort_label: "1_ws"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:8080{{ images_context_path }}"
+        proxy_pass: "http://127.0.0.1:8080{{ images_hostname_context_path }}"
       - path: "/store"
         sort_label: "2_store"
         is_proxy: false
@@ -54,7 +54,7 @@
     - nginx_vhost
     - deploy
     - image-service
-  when: webserver_nginx
+  when: webserver_nginx | bool == True
 
 - name: ensure www directory exists
   file: path={{item}} state=directory
@@ -85,7 +85,7 @@
 - name: Create symlink to data/image-service/store from /srv/[hostname]/www/store
   command: "ln -s {{ data_dir }}/image-service/store /srv/{{ images_hostname }}/www/store"
   ignore_errors: yes
-  when: not webserver_nginx
+  when: webserver_nginx | bool == False
   tags: 
     - image-service
 
@@ -129,17 +129,6 @@
   tags:
     - image-service
     - properties
-    - image-service
-
-- name: add nginx vhost
-  include_role:
-    name: nginx_vhost
-  vars:
-    hostname: "{{ images_hostname }}"
-    context_path: "{{ images_hostname_context_path }}"
-  tags:
-    - nginx_vhost
-    - deploy
     - image-service
 
 - name: install openjfx (Debian)
