@@ -27,6 +27,7 @@ WORK_DIR={{elasticsearch_workdir}}
 
 # ElasticSearch configuration directory
 CONF_DIR={{elasticsearch_confdir}}
+ES_PATH_CONF={{elasticsearch_confdir}}
 
 # Additional Java OPTS
 ES_JAVA_OPTS="{% if elasticsearch_heap_size is defined%}-Xms{{elasticsearch_heap_size}} -Xmx{{elasticsearch_heap_size}} {% endif %}{% if elasticsearch_java_opts is defined %}{{elasticsearch_java_opts}}{%endif%}"
