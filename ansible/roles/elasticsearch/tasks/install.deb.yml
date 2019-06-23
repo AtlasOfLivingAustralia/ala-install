@@ -12,29 +12,43 @@
   stat: path={{elasticsearch_home}}/lib/elasticsearch-{{elasticsearch_version}}.jar
   register: version_exists
 
+- set_fact:
+    modern_elasticsearch_version: "{{ elasticsearch_version is version('7.0', '>=') }}"
+
+- name: debug elasticsearch variables
+  debug: msg="elasticsearch_version={{ elasticsearch_version }} modern_elasticsearch_version={{ modern_elasticsearch_version }} version_exists={{ version_exists }}"
+
 - name: elasticsearch-install | Download deb (legacy)
   get_url: url={{elasticsearch_download_url}}/elasticsearch-{{elasticsearch_version}}.deb dest=/tmp/elasticsearch-{{elasticsearch_version}}.deb mode=0440
-  when: not version_exists.stat.exists and not elasticsearch_version == "7.1.1"
+  when: 
+    - not version_exists.stat.exists
+    - not modern_elasticsearch_version | bool == True
 
 - name: elasticsearch-install | Install Elasticsearch (legacy)
   apt: deb=/tmp/elasticsearch-{{elasticsearch_version}}.deb dpkg_options=force-confnew
-  when: not version_exists.stat.exists and not elasticsearch_version == "7.1.1"
+  when: 
+    - not version_exists.stat.exists
+    - not modern_elasticsearch_version | bool == True
 
 - name: add apt key for elastic (modern)
   apt_key: url="https://artifacts.elastic.co/GPG-KEY-elasticsearch" state=present
   notify: elasticsearch restart
-  when: not version_exists.stat.exists and elasticsearch_version == "7.1.1"
+  when: 
+    - modern_elasticsearch_version | bool == True
 
 - name: add elastic 7 apt source list (modern)
   copy: content="deb https://artifacts.elastic.co/packages/7.x/apt stable main" dest="/etc/apt/sources.list.d/elastic-7.x.list"
   notify: elasticsearch restart
-  when: not version_exists.stat.exists and elasticsearch_version == "7.1.1"
+  when: 
+    - modern_elasticsearch_version | bool == True
 
 - name: elasticsearch-install | Install Elasticsearch (modern)
   apt: name="elasticsearch" state=latest
-  when: not version_exists.stat.exists and elasticsearch_version == "7.1.1"
+  when: 
+    - modern_elasticsearch_version | bool == True
 
 - name: elasticsearch-install | Setup passlib
   apt: pkg=python-passlib
-  when: elasticsearch_proxy_auth
+  when:
+    - elasticsearch_proxy_auth
 
