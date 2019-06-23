@@ -23,7 +23,7 @@ The roles are recomended to install:
 Here is the list of all variables and their default values:
 ```yaml
 elasticsearch_enabled: yes                      # The role is enabled
-elasticsearch_version: 1.1.1                    # Elasticsearch version
+elasticsearch_version: 7.1.1                    # Elasticsearch version
 elasticsearch_download_url: https://download.elasticsearch.org/elasticsearch/elasticsearch
 elasticsearch_apt_repos:
 - 'ppa:webupd8team/java'
