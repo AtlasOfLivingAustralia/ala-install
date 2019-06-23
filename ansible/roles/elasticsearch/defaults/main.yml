@@ -1,7 +1,7 @@
 ---
 
 elasticsearch_enabled: yes                      # The role is enabled
-elasticsearch_version: 5.6.6                    # Elasticsearch version
+elasticsearch_version: 7.1.1                    # Elasticsearch version
 
 elasticsearch_download_url: https://artifacts.elastic.co/downloads/elasticsearch
 elasticsearch_apt_repos:
