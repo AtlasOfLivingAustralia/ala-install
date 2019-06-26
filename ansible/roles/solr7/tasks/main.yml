@@ -6,7 +6,7 @@
     - solr7_check_running
 
 - name: Download SOLR {{ solr_version }}
-  get_url: url="http://mirrors.ibiblio.org/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
+  get_url: url="http://mirrors.ibiblio.org/apache/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
   tags:
     - solr7
 
