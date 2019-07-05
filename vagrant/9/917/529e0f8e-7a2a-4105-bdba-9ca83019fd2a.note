@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>nanoscroller.js</title>
+  <text xml:space="preserve"><note-content version="0.1">nanoscroller.js
+
+This libarary is too difficult. it is very rigid on how declarations are made. and has a few dependencies. overthrow.js.. And needs a *.map file which loads automatically. I decided to not use it as it was taking too much time and was very rigid.</note-content></text>
+  <last-change-date>2015-02-18T15:50:34.8436020+11:00</last-change-date>
+  <last-metadata-change-date>2015-02-18T15:50:34.8436020+11:00</last-metadata-change-date>
+  <create-date>2015-02-18T15:48:14.7302340+11:00</create-date>
+  <cursor-position>254</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>48</x>
+  <y>23</y>
+  <tags>
+    <tag>system:notebook:js libraries</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

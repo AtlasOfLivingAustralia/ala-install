@@ -89,11 +89,11 @@
     - deploy
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ specieslist_war_url }}' context_path='{{ specieslist_context_path }}' hostname='{{ specieslist_hostname }}'
-  tags:
-    - specieslist
-    - tomcat_vhost
-    - deploy
+#- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ specieslist_war_url }}' context_path='{{ specieslist_context_path }}' hostname='{{ specieslist_hostname }}'
+#  tags:
+#    - specieslist
+#    - tomcat_vhost
+#    - deploy
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ specieslist_war_url }}' context_path='{{ specieslist_context_path }}' hostname='{{ specieslist_hostname }}'
   when: specieslist_local_build is not defined

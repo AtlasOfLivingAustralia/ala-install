@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>grails config</title>
+  <text xml:space="preserve"><note-content version="0.1">grails config
+
+<size:large>grailsApplication.config</size:large>
+
+getProperty method supports Convertion to type, and default value.
+
+<highlight>grailsApplication.config.getProperty('max', Integer, 5)</highlight>
+
+grailsApplication can be injected into service classes. It is available as variable in controller.
+
+<size:large>GORM config</size:large>
+
+can set application level failOnError in config for all domain classes or a list of domain classes.
+Similarly, autoFlush can be set on an applicaiton level.
+
+{"protocol":"DwC","csv_text_enclosure":"\"","termsForUniqueKey":["occurrenceID"],"csv_eol":"","csv_delimiter":",","automation":false,"incremental":false,"strip":false,"csv_escape_char":"\\","url":""}</note-content></text>
+  <last-change-date>2016-07-26T23:21:37.1645650+10:00</last-change-date>
+  <last-metadata-change-date>2016-07-26T23:21:37.1645650+10:00</last-metadata-change-date>
+  <create-date>2016-04-10T17:25:19.1029800+10:00</create-date>
+  <cursor-position>629</cursor-position>
+  <width>644</width>
+  <height>483</height>
+  <x>3182</x>
+  <y>147</y>
+  <tags>
+    <tag>system:notebook:grails</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

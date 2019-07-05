@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>Tunnel http traffic</title>
+  <text xml:space="preserve"><note-content version="0.1">Tunnel http traffic
+
+
+
+<highlight>sudo <link:internal>su</link:internal></highlight><highlight>
+<link:internal>ssh</link:internal></highlight><highlight> r@server -L 80:localhost:80</highlight>
+
+Note: need to be root to tunnel privilege ports.
+
+example: i have a nectar virtual machine running <link:internal>neo4j</link:internal> on port 7474. i cannot access the port using browser. Hence i tunnel all traffic from browser to vm and <link:internal>ssh</link:internal> will convert it into localhost traffic
+
+<highlight><link:internal>ssh</link:internal></highlight><highlight> ubuntu@phylo 7474:localhost:7474</highlight>
+
+and view it using the following address
+
+<highlight><link:url>http://localhost:7474/webadmin</link:url></highlight>
+
+
+</note-content></text>
+  <last-change-date>2016-08-16T12:56:35.0172220+10:00</last-change-date>
+  <last-metadata-change-date>2016-08-16T12:56:35.0172220+10:00</last-metadata-change-date>
+  <create-date>2013-05-22T21:33:24.8430420+10:00</create-date>
+  <cursor-position>429</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>65</x>
+  <y>137</y>
+  <open-on-startup>False</open-on-startup>
+</note>

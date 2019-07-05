@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>Phylojive meeting 15/4/2014</title>
+  <text xml:space="preserve"><note-content version="0.1"><link:internal>Phylojive meeting</link:internal> 15/4/2014
+
+<link:internal>PhyloJive</link:internal> current developement
+
+<list><list-item dir="ltr">searching treebase ui
+</list-item><list-item dir="ltr">newick or nexml tree <link:internal>input</link:internal>
+<list><list-item dir="ltr">converts newick to nexml</list-item></list></list-item></list>
+
+
+treebase evaluation
+<list><list-item dir="ltr">can we upload treesbase programatically? NO. Querying can be done. 
+</list-item><list-item dir="ltr">probably not want to do it
+<list><list-item dir="ltr">dependency on mesquite
+</list-item><list-item dir="ltr">mesquite has to run on a virual server with windows installed on it.
+</list-item></list></list-item><list-item dir="ltr">I tried to reuse some of the code. but it had too many dependencies. And I am new to Java. Hence stopped.</list-item></list>
+
+local instance of opentreeoflife
+<list><list-item dir="ltr">got <link:internal>phylografter</link:internal> running
+</list-item><list-item dir="ltr">need more privileges
+<list><list-item dir="ltr">emailed to <link:internal>find</link:internal> out
+</list-item></list></list-item><list-item dir="ltr">many modules. no document that tells which goes where</list-item></list>
+
+future development
+<list><list-item dir="ltr">improve ui
+</list-item><list-item dir="ltr">extract characters from nexml - low priority
+</list-item><list-item dir="ltr">putting it online
+<list><list-item dir="ltr">should we wait after conference or before?</list-item></list></list-item></list>
+</note-content></text>
+  <last-change-date>2014-12-19T10:34:12.2225420+11:00</last-change-date>
+  <last-metadata-change-date>2014-12-19T10:34:12.2225420+11:00</last-metadata-change-date>
+  <create-date>2014-04-15T09:49:07.4281570+10:00</create-date>
+  <cursor-position>523</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>0</x>
+  <y>146</y>
+  <open-on-startup>False</open-on-startup>
+</note>

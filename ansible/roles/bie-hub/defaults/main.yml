@@ -29,6 +29,7 @@ default_map_zoom: 4
 eol_lang: en
 genbank_url: https://www.ncbi.nlm.nih.gov
 header_and_footer_baseurl: https://www.ala.org.au/commonui-bs3
+header_and_footer_version: "1"
 image_service_url: https://images.ala.org.au
 layers_url: https://spatial.ala.org.au/ws
 map_simpleMapButton: false

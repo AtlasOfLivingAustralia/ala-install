@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>Layers API</title>
+  <text xml:space="preserve"><note-content version="0.1">Layers API
+
+WMS address:
+
+<link:url>http://biocache.ala.org.au/ws/webportal/wms/reflect</link:url>
+
+leaflet wms layer:
+<highlight>    var layer = L.tileLayer.wms('<link:url>http://biocache.ala.org.au/ws/webportal/wms/reflect</link:url></highlight><highlight>', {
+        layers: 'ALA:occurrences',
+        format: 'image/png',
+        transparent: true,
+        attribution: "Occurrence portal",
+        bgcolor:"0x000000",
+        cql_filter: "",
+        opacity: 0.8,
+        STYLE: "opacity:0.8" // for grid data
+    });
+    map.addLayer(layer);</highlight>
+
+</note-content></text>
+  <last-change-date>2015-01-08T14:58:42.6571020+11:00</last-change-date>
+  <last-metadata-change-date>2015-01-08T14:58:42.6571020+11:00</last-metadata-change-date>
+  <create-date>2015-01-08T12:13:56.9288980+11:00</create-date>
+  <cursor-position>372</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>53</x>
+  <y>23</y>
+  <tags>
+    <tag>system:notebook:Atlas of living australia</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

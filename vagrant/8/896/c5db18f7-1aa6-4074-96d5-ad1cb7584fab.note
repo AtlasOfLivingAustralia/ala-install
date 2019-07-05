@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>input output</title>
+  <text xml:space="preserve"><note-content version="0.1"><link:internal>input</link:internal> output
+
+<size:large>reading from a file</size:large>
+
+1. create file handler
+2. read or write to file
+
+<highlight>fh = open( filename , mode );</highlight>
+mode - r, w , r+, a
+i.e. read, write , read and write, append,
+
+<highlight>fh.readline() - reads each line
+fh.read() - reads the whole file</highlight>
+
+<size:large>reading a csv file</size:large>
+
+<highlight>import csv;
+fh = open(filename, mode);
+cfh = csv.reader(fh, quotechar='"', delimiter="\t") #tab limitted file
+for row in cfh:
+	print(row);</highlight>
+
+</note-content></text>
+  <last-change-date>2014-12-19T10:34:12.2867990+11:00</last-change-date>
+  <last-metadata-change-date>2014-12-19T10:34:12.2867990+11:00</last-metadata-change-date>
+  <create-date>2013-09-10T11:31:18.1345070+10:00</create-date>
+  <cursor-position>176</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>0</x>
+  <y>0</y>
+  <tags>
+    <tag>system:notebook:python</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

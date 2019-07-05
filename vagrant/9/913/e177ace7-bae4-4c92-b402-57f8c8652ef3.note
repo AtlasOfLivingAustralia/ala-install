@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>jquery ui autocomplete</title>
+  <text xml:space="preserve"><note-content version="0.1">jquery ui autocomplete
+
+<size:large>reduce the height of the dropdown window</size:large>
+
+<highlight>&lt;style&gt;
+		.ui-<link:internal>autocomplete</link:internal></highlight><highlight> {
+                    max-height: 200px;
+                    overflow-y: auto;   /* prevent horizontal scrollbar */
+                    overflow-x: hidden; /* add padding to account for vertical scrollbar */
+                    z-index:1000 !important;
+                }
+&lt;/style&gt;</highlight>
+
+show label value instead of value field.
+
+<link:internal>autocomplete</link:internal> plugin shows value field in <link:internal>input</link:internal> box instead of label value. Sometimes this behaviour is not required. modify the focus and select events to change this behaviour
+
+                <highlight>select: function (event, ui) {
+                    event.preventDefault();
+                    $(element).<link:internal>find</link:internal></highlight><highlight>('<link:internal>input</link:internal></highlight><highlight>').val(ui.item.label);
+                },
+		'focus': function (event, ui) {
+                var self = this;
+                ui &amp;&amp; $(self).val(ui.item.label);
+            }</highlight></note-content></text>
+  <last-change-date>2015-02-13T18:36:03.6052070+11:00</last-change-date>
+  <last-metadata-change-date>2015-02-13T18:36:03.6052070+11:00</last-metadata-change-date>
+  <create-date>2015-02-13T18:23:47.8233490+11:00</create-date>
+  <cursor-position>899</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>47</x>
+  <y>23</y>
+  <tags>
+    <tag>system:notebook:js libraries</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>Redirect Standard output &amp; standard error</title>
+  <text xml:space="preserve"><note-content version="0.1">Redirect Standard output &amp; standard error
+
+man git 2&gt;&amp;1
+
+2 - standard error
+1 - standard output
+0 - standard <link:internal>input</link:internal>
+
+
+</note-content></text>
+  <last-change-date>2014-12-19T10:34:12.3006850+11:00</last-change-date>
+  <last-metadata-change-date>2014-12-19T10:34:12.3006850+11:00</last-metadata-change-date>
+  <create-date>2012-04-23T14:36:00.8534820+10:00</create-date>
+  <cursor-position>8</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>58</x>
+  <y>22</y>
+  <tags>
+    <tag>system:notebook:linux commands</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

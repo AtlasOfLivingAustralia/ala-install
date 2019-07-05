@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>Building a project</title>
+  <text xml:space="preserve"><note-content version="0.1">Building a project
+
+<size:large>create resource file</size:large>
+
+<highlight>sencha create jsb -a index.html -p app.jsb3 -v</highlight>
+
+<size:large>build project file</size:large>
+
+<highlight>sencha build -p app.jsb3 -d . -v</highlight>
+
+build is legacy. it is deprecated. provided for backward compatability.
+
+<size:large>compile all-classes.js in index.html</size:large>
+
+<highlight>sencha compile -classpath=extjs4.2.1/src,app,extjs4.2.1/examples/ux,lib page -yui -in index-debug.html -out build/index-debug.html</highlight>
+
+<size:large>Running <link:internal>ant script</link:internal></size:large><size:large> using sencha</size:large> <size:large>cmd</size:large>
+
+<highlight>sencha <link:internal>ant</link:internal></highlight>
+
+defaults file - build.xml
+
+
+<size:large>Basic app <link:internal>ant</link:internal></size:large><size:large> build code</size:large>
+
+<highlight>        &lt;x-sencha-command dir="${basedir}"&gt;
+        	&lt;!-- -debug --&gt;
+            compile
+                --classpath=app,${extjs.dir}/src,${extjs.dir}/examples/ux/grid,app.js
+            exclude
+            	--namespace=Ext
+        	and
+        	include
+        		--namespace=Ext.ux
+            and
+            concatenate
+            	-out=build/all-classes.js
+        	and
+            page
+            	--scripts=lib/ext-all.js
+                --<link:internal>input</link:internal></highlight><highlight>-file=index-debug.html
+                --output=${build.dir}/index-debug.html
+                --name=index
+        &lt;/x-sencha-command&gt;</highlight>
+
+</note-content></text>
+  <last-change-date>2014-12-19T10:34:12.2383720+11:00</last-change-date>
+  <last-metadata-change-date>2014-12-19T10:34:12.2383720+11:00</last-metadata-change-date>
+  <create-date>2013-01-30T13:18:18.6564630+11:00</create-date>
+  <cursor-position>578</cursor-position>
+  <width>945</width>
+  <height>578</height>
+  <x>495</x>
+  <y>79</y>
+  <tags>
+    <tag>system:notebook:extjs 4</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

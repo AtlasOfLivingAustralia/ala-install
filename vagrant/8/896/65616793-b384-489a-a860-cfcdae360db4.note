@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>Trinity Crash</title>
+  <text xml:space="preserve"><note-content version="0.1">Trinity Crash
+
+<bold>Result</bold>: fisher crashed
+<bold>Context</bold>: while <link:internal>running trinity</link:internal> on fisher, the assembly of file containing high percentage of buchnera crashed the entire system.
+<bold>why:</bold>?
+<bold>walk-around:</bold>
+1. match all rows with @ and filter the first column to a file
+
+<link:internal>grep</link:internal> -v '^@' D09TMACXX_s7_1_GSL48index_2_SL7522.fastq.qc.t10_vs_buchnera.sam | cut -f 1 &gt; D09TMACXX_s7_1_GSL48index_2_SL7522.fastq.qc.t10_vs_buchnera.sam.id
+
+2. trim the fasta file with the above identifiers
+
+trim_fasta_all.pl -id D09TMACXX_s7_1_GSL48index_2_SL7522.fastq.qc.t10_vs_buchnera.sam.id -i D09TMACXX_s7_1_GSL48index_2_SL7522.fastq.qc.t10 -single  -sanq
+
+attributes
+-single Entire output sequence/quality is in a single line
+-sanq <link:internal>Input</link:internal> is FASTQ (Sanger)
+
+TIP: can use ? to process all the files with the same sub-<link:internal>script</link:internal>
+example: D09TMACXX_s7_?_GSL48index_2_SL7522.fastq.qc.t10
+
+
+3. Re-run trinity</note-content></text>
+  <last-change-date>2014-12-19T10:34:12.2994020+11:00</last-change-date>
+  <last-metadata-change-date>2014-12-19T10:34:12.2994020+11:00</last-metadata-change-date>
+  <create-date>2012-04-26T12:12:17.8645190+10:00</create-date>
+  <cursor-position>0</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>1</x>
+  <y>91</y>
+  <tags>
+    <tag>system:notebook:ces, csiro</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

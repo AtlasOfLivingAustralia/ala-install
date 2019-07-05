@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>changes biocollect</title>
+  <text xml:space="preserve"><note-content version="0.1">changes biocollect
+
+<list><list-item dir="ltr">migrateTags.js
+</list-item><list-item dir="ltr">initialiseOriginCountryUNRegions.js
+</list-item><list-item dir="ltr">correctCasingOfScienceType.js
+</list-item><list-item dir="ltr">deleteSciStarter.js
+</list-item><list-item dir="ltr">updateSciStarterLogoType.js
+</list-item><list-item dir="ltr"></list-item></list>
+
+195 length
+15cm breadth
+151 width
+
+pillow
+47 width
+64 length
+
+67 length
+39 width
+
+78 length
+49 width
+
+45557750</note-content></text>
+  <last-change-date>2016-08-22T17:04:47.9753180+10:00</last-change-date>
+  <last-metadata-change-date>2016-08-22T17:04:47.9753180+10:00</last-metadata-change-date>
+  <create-date>2016-08-17T23:08:15.0753120+10:00</create-date>
+  <cursor-position>128</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>2603</x>
+  <y>147</y>
+  <tags>
+    <tag>system:notebook:Atlas of living australia</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

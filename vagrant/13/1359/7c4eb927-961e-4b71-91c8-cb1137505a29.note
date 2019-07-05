@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>remote debugging - Tomcat and Intellij</title>
+  <text xml:space="preserve"><note-content version="0.1">remote debugging - Tomcat and Intellij
+
+Step 1
+add the following CATALINA_OPTS statement to catalina.sh file
+
+Step 2
+</note-content></text>
+  <last-change-date>2016-08-17T18:05:05.3347330+10:00</last-change-date>
+  <last-metadata-change-date>2016-08-17T18:05:05.3347330+10:00</last-metadata-change-date>
+  <create-date>2016-08-17T17:31:05.8999710+10:00</create-date>
+  <cursor-position>117</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>3362</x>
+  <y>23</y>
+  <tags>
+    <tag>system:notebook:java</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

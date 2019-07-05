@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>crossref api</title>
+  <text xml:space="preserve"><note-content version="0.1">crossref api
+
+
+<link:url>http://search.crossref.org/dois?q=phylojive&amp;header=true</link:url>
+
+<link:internal>params</link:internal>:
+q - search terms. seperated by +
+header - return more metadata not just search hit array
+
+return: 
+<highlight>{
+startIndex: 0,
+items: [
+{
+title: "<link:internal>PhyloJIVE</link:internal></highlight><highlight>: Integrating biodiversity data with the Tree of Life",
+normalizedScore: 100,
+coins: "ctx_ver=Z39.88-2....",
+score: 2.8997068,
+year: "2014",
+fullCitation: "G. Jolley-Rogers, T. Varghese, P. Harvey, N. dos Remedios, J. T. Miller, 2014, '<link:internal>PhyloJIVE</link:internal></highlight><highlight>: Integrating biodiversity data with the Tree of Life', &lt;i&gt;Bioinformatics&lt;/i&gt;, vol. 30, no. 9, pp. 1308-1309",
+doi: "<link:url>http://dx.doi.org/10.1093/bioinformatics/btu024</link:url></highlight><highlight>"
+}
+],
+totalResults: 1,
+query: {
+searchTerms: "<link:internal>phylojive</link:internal></highlight><highlight>",
+startPage: 1
+},
+itemsPerPage: 20
+}</highlight>
+
+
+
+source: <link:url>http://search.crossref.org/help/api</link:url>
+</note-content></text>
+  <last-change-date>2015-02-18T17:46:43.0569010+11:00</last-change-date>
+  <last-metadata-change-date>2015-02-18T17:46:43.0569010+11:00</last-metadata-change-date>
+  <create-date>2014-10-16T14:55:58.0889900+11:00</create-date>
+  <cursor-position>727</cursor-position>
+  <width>910</width>
+  <height>360</height>
+  <x>51</x>
+  <y>22</y>
+  <tags>
+    <tag>system:notebook:Atlas of living australia</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

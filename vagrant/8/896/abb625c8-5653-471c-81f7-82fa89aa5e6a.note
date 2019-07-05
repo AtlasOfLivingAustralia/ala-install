@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>Tips JavaScript</title>
+  <text xml:space="preserve"><note-content version="0.1">Tips JavaScript
+
+<size:large>Current Function Handler</size:large>
+
+<highlight>arguments.callee</highlight>
+
+Polling code
+
+<highlight>    setTimeout( function () {
+      var callee = arguments.callee;
+        Ext.Ajax.request({
+          url: sbd.urls['tempDir']+value,
+          method: 'GET',
+          success: function ( data ) {
+            var newick ;
+            newick = data.responseText;
+            infovis.unmask();
+            
+            model.set({newick:newick});
+          },
+          failure:function ( ) {
+            setTimeout( callee , sbd.configs.delay );
+          }
+      });
+    }, sbd.configs.delay);
+
+</highlight><size:large>Code Performance</size:large>
+
+<bold>Profiling</bold><highlight>
+</highlight>firefox &amp; firebug:
+
+<highlight>console.<link:broken>profile</link:broken></highlight><highlight>('profilerName')
+console.profileEnd()
+
+</highlight><size:large>url decode</size:large>
+
+<highlight>decodeURI( '%20...' );</highlight>
+
+<size:large>url encode</size:large>
+
+<highlight>encodeURI( '<link:url>http://blahblach.com'</link:url></highlight><highlight> )
+</highlight>
+<size:large>Array</size:large>
+
+<bold>shift</bold>
+<highlight>var A = [1,2,3,4]
+A.shift(); // [2,3,4]
+</highlight>
+<size:large><link:internal>String</link:internal></size:large>
+
+<bold>split</bold>
+
+<highlight>var a = 'temi';
+a.split('t'); // ['' , 'emi']</highlight>
+
+<bold>Regular Expression</bold>
+
+<highlight>var body = 'abcdefghij'
+body.match(new RegExp(  '.{1,5}' , 'g' )) //['abcde','fghij']</highlight>
+
+<bold>convert to lowercase</bold>
+
+<highlight>"Temi".toLowerCase()
+//temi</highlight>
+
+<bold>enable/disable a <link:internal>input</link:internal></bold><bold> box</bold>
+
+<highlight>$('#id').attr('disabled', true)</highlight>
+
+</note-content></text>
+  <last-change-date>2014-12-19T10:34:12.2049830+11:00</last-change-date>
+  <last-metadata-change-date>2014-12-19T10:34:12.2049830+11:00</last-metadata-change-date>
+  <create-date>2012-10-08T23:33:34.7211180+11:00</create-date>
+  <cursor-position>895</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>341</x>
+  <y>27</y>
+  <tags>
+    <tag>system:notebook:js</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>Open tree of life tutorial</title>
+  <text xml:space="preserve"><note-content version="0.1">Open tree of life tutorial
+
+<link:internal>requirements</link:internal>:
+
+<list><list-item dir="ltr">get <link:internal>input</link:internal> files from blackrim.org
+<list><list-item dir="ltr"><link:url>http://blackrim.org/datafiles/phylo_seminar_files2014.tar.gz</link:url>
+</list-item></list></list-item><list-item dir="ltr">get taxonomy from opentreeoflife.org website
+<list><list-item dir="ltr"><link:url>http://files.opentreeoflife.org/ott/</link:url>
+</list-item></list></list-item><list-item dir="ltr">git clone softwares- <link:internal>treemachine</link:internal>, gcmdr, avatol_nexsons
+<list><list-item dir="ltr">git clone <link:url>https://github.com/OpenTreeOfLife/treemachine.git</link:url>
+</list-item><list-item dir="ltr">git clone <link:url>https://github.com/OpenTreeOfLife/gcmdr.git</link:url>
+</list-item><list-item dir="ltr">git clone <link:url>https://blackrim@bitbucket.org/blackrim/avatol_nexsons.git</link:url>
+</list-item></list></list-item><list-item dir="ltr">install maven2, <link:internal>neo4j</link:internal>, oracle java 7</list-item></list>
+
+
+<bold>step 1: build <link:internal>treemachine</link:internal></bold>
+<highlight>cd <link:internal>treemachine</link:internal></highlight><highlight>
+./mvn_cmdline.sh</highlight>
+<bold>note:</bold>sometimes maven might complain about tools.jar. this is because it cannot locate it in the described location. a solution is to install the package that contains the file. try installing java devel pacakges. I cannot remember the exact package i installed.
+
+<bold>step 2: run <link:internal>neo4j</link:internal></bold>
+<highlight>sudo service <link:internal>neo4j</link:internal></highlight><highlight>-service start</highlight>
+NOTE: make sure oracle java is installed. the version required by <link:internal>neo4j</link:internal> is java 7
+
+<bold>step 3: create database</bold>
+<highlight>java -jar target/<link:internal>treemachine</link:internal></highlight><highlight>-0.0.1-SNAPSHOT-jar-with-dependencies.jar justtrees atol/RAxML_bootstrap.WITH_MT_BS100.rr T life atol.db
+</highlight><bold>Note:</bold> make sure atol.db directory is empty
+
+<bold>step 4: create graph file</bold>
+<highlight>java -jar target/<link:internal>treemachine</link:internal></highlight><highlight>-0.0.1-SNAPSHOT-jar-with-dependencies.jar graphml life atol.graphml F atol.db</highlight>
+
+Gephi
+
+</note-content></text>
+  <last-change-date>2014-12-19T10:34:12.2471130+11:00</last-change-date>
+  <last-metadata-change-date>2014-12-19T10:34:12.2471130+11:00</last-metadata-change-date>
+  <create-date>2014-05-09T11:07:59.1867390+10:00</create-date>
+  <cursor-position>1119</cursor-position>
+  <width>409</width>
+  <height>364</height>
+  <x>389</x>
+  <y>22</y>
+  <tags>
+    <tag>system:notebook:opentreeoflife</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

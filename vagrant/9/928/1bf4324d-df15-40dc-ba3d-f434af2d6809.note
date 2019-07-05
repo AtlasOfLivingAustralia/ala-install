@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>list tool</title>
+  <text xml:space="preserve"><note-content version="0.1">list tool
+
+<link:url>http://lists.ala.org.au/speciesList/upload</link:url>
+
+{"headers":"UNKNOWN1,UNKNOWN2,UNKNOWN3,UNKNOWN4,UNKNOWN5,scientific name,UNKNOWN7,UNKNOWN8,UNKNOWN9,UNKNOWN10,UNKNOWN11,UNKNOWN12,UNKNOWN13,UNKNOWN14","speciesListName":"paul data","description":"","listUrl":"","listWkt":"","listType":"TEST"}
+
+</note-content></text>
+  <last-change-date>2015-02-22T16:57:59.9486630+11:00</last-change-date>
+  <last-metadata-change-date>2015-02-22T16:57:59.9486630+11:00</last-metadata-change-date>
+  <create-date>2015-02-22T16:57:23.0521170+11:00</create-date>
+  <cursor-position>11</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>40</x>
+  <y>23</y>
+  <tags>
+    <tag>system:notebook:Atlas of living australia</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

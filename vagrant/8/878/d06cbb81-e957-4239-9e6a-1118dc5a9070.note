@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>Exceptions</title>
+  <text xml:space="preserve"><note-content version="0.1">Exceptions
+
+keyword: checked, unchecked, exceptions
+
+
+Unchecked Exception: errors occurring because of programming errors
+like null pointer exception, illegal arguments, etc.
+
+Checked Exception: exceptions caused by instances outside the control of the program like network error, database offline etc.
+
+
+
+
+</note-content></text>
+  <last-change-date>2014-11-20T14:07:40.6763640+11:00</last-change-date>
+  <last-metadata-change-date>2014-11-20T14:07:40.6763640+11:00</last-metadata-change-date>
+  <create-date>2014-11-20T14:02:53.8050430+11:00</create-date>
+  <cursor-position>261</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>44</x>
+  <y>22</y>
+  <tags>
+    <tag>system:notebook:java</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

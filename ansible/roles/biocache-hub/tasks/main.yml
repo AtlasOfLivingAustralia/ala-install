@@ -213,4 +213,5 @@
     state: restarted
   tags:
     - biocache_hub
+    - properties
   when: exec_jar

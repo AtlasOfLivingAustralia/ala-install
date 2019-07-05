@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>grails.converter.JSON</title>
+  <text xml:space="preserve"><note-content version="0.1">grails.converter.JSON
+
+<size:large>parse method</size:large>
+
+This method is a bad choice for performance reasons. Converting large text of size 2 MB can take a long time. It has taken aroud 35 seconds for conversion. An alternative is to use jackson parser.
+
+<highlight><link:internal>String</link:internal></highlight><highlight> text = webService.get(sciStarterProjectUrl, false);
+ObjectMapper mapper = new ObjectMapper()
+Map projectDetails = mapper.readValue(text, Map.class)</highlight>
+
+<bold>dependencies</bold>
+<highlight> compile 'org.codehaus.jackson:jackson-core-asl:1.9.13'
+ compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
+</highlight>
+reference: <link:url>http://sysgears.com/articles/speedup-json-parsing-grails/</link:url></note-content></text>
+  <last-change-date>2016-08-07T23:55:04.9106880+10:00</last-change-date>
+  <last-metadata-change-date>2016-08-07T23:55:04.9106880+10:00</last-metadata-change-date>
+  <create-date>2016-08-07T23:43:16.8497230+10:00</create-date>
+  <cursor-position>518</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>50</x>
+  <y>23</y>
+  <tags>
+    <tag>system:notebook:grails</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

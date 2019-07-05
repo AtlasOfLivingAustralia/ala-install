@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>autocomplete: convert from ~ to like</title>
+  <text xml:space="preserve"><note-content version="0.1">autocomplete: convert from ~ to like
+
+
+URLs checked.
+
+genes4all/curate/specific_db_phylosearch/<link:internal>autocomplete</link:internal>
+done.tested
+
+genes4all/curate/specific_cv/<link:internal>autocomplete</link:internal>
+done.tested
+
+genes4all/curate/specific_db/<link:internal>autocomplete</link:internal>
+changed but could not test. the tab panel in curate module is not populating it with data.
+
+genes4all/curate/specific_cv_phylosearch/<link:internal>autocomplete</link:internal>/
+done. tested
+
+genes4all/curate/library_dbname/<link:internal>autocomplete</link:internal>
+it already has like operator. and there is also insufficient data to test this. 
+
+genes4all/curate/library_cvterm/<link:internal>autocomplete</link:internal>
+done. tested.
+
+genes4all/curate/feature_dbname/<link:internal>autocomplete</link:internal>
+already uses like operator.
+
+genes4all/curate/free_term/<link:internal>autocomplete</link:internal>
+done.tested
+
+genes4all/curate/genus/<link:internal>autocomplete</link:internal>
+uses like
+
+genes4all/curate/species/<link:internal>autocomplete</link:internal>
+uses like
+
+
+</note-content></text>
+  <last-change-date>2015-02-13T18:23:09.3379730+11:00</last-change-date>
+  <last-metadata-change-date>2015-02-13T18:23:09.3379730+11:00</last-metadata-change-date>
+  <create-date>2012-06-20T15:41:29.8908360+10:00</create-date>
+  <cursor-position>107</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>47</x>
+  <y>23</y>
+  <open-on-startup>False</open-on-startup>
+</note>

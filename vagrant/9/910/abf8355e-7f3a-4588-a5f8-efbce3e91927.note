@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>groovy code snips</title>
+  <text xml:space="preserve"><note-content version="0.1">groovy code snips
+
+convert json to csv
+
+<highlight>import au.com.bytecode.opencsv.CSVWriter
+    /**
+     * assuming json param will be an array of objects. and all object will have the same number of properties
+     * @param json[[a:'1',b:'2'],[a:'3',b:'4']]
+     */
+    def convertJSONtoCSV( json ){
+        if( json.size() == 0 ){
+            return
+        }
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream()
+        CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter( bytes ))
+        def header = []
+        // simple header
+        json[1]?.each {k,v-&gt;
+            header.push( k )
+        }
+        csvWriter.writeNext( header as <link:internal>String</link:internal></highlight><highlight>[] )
+        json.eachWithIndex{ prop, index-&gt;
+            def row = []
+            for( def i =0;i&lt;header.size();i++){
+                row.push( prop[header[i]])
+            }
+            csvWriter.writeNext( row as <link:internal>String</link:internal></highlight><highlight>[])
+        }
+        csvWriter.flush()
+        def csv = bytes.toString("UTF-8")
+        csvWriter.close()
+        return csv
+    }</highlight>
+
+<size:large>merge two collection</size:large>
+
+<highlight>def a = [], b=[]
+a.plus(b)</highlight>
+
+</note-content></text>
+  <last-change-date>2015-01-28T11:23:58.5490140+11:00</last-change-date>
+  <last-metadata-change-date>2015-01-28T11:23:58.5490140+11:00</last-metadata-change-date>
+  <create-date>2014-08-07T13:52:09.5580950+10:00</create-date>
+  <cursor-position>1061</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>796</x>
+  <y>32</y>
+  <tags>
+    <tag>system:notebook:Groovy</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

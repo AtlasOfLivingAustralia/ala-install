@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>phylojive meeting 10/06/2014</title>
+  <text xml:space="preserve"><note-content version="0.1">phylojive meeting 10/06/2014
+
+<list><list-item dir="ltr"><link:internal>curator</link:internal>
+<list><list-item dir="ltr"><link:internal>demo</link:internal>
+<list><list-item dir="ltr">existing <link:internal>study</link:internal>
+</list-item><list-item dir="ltr">view tree
+</list-item><list-item dir="ltr">adding new <link:internal>study</link:internal>
+</list-item><list-item dir="ltr">otu <link:internal>mapping</link:internal>
+</list-item></list></list-item><list-item dir="ltr">add trees from treebase</list-item></list></list-item></list>
+
+<list><list-item dir="ltr"><link:internal>keybase</link:internal>
+<list><list-item dir="ltr">related - <link:url>http://130.56.248.219/webservices/getRelatives?taxa=%5B%22Diuris%20sulphurea%22%5D&amp;min=8</link:url></list-item></list></list-item></list>
+</note-content></text>
+  <last-change-date>2014-11-24T14:05:49.0546690+11:00</last-change-date>
+  <last-metadata-change-date>2014-11-24T14:05:49.0546690+11:00</last-metadata-change-date>
+  <create-date>2014-06-10T14:13:49.9609910+10:00</create-date>
+  <cursor-position>158</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>957</x>
+  <y>22</y>
+  <open-on-startup>False</open-on-startup>
+</note>

@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>callout bootstrap</title>
+  <text xml:space="preserve"><note-content version="0.1">callout bootstrap
+
+some reason callout is not included in bootstrap. here is how to get it.
+
+<highlight>&lt;div class="bs-callout bs-callout-info"&gt;
+&lt;h4&gt;hello&lt;/h4&gt;
+&lt;p&gt;blah blah&lt;/p&gt;
+&lt;/div&gt;</highlight>
+
+<link:internal>css</link:internal> for callout
+
+<highlight>/*
+bootstrap callout
+*/
+.bs-callout {
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
+}
+.bs-callout h4 {
+    margin-<link:internal>top</link:internal></highlight><highlight>: 0;
+    margin-bottom: 5px;
+}
+.bs-callout p:last-child {
+    margin-bottom: 0;
+}
+.bs-callout code {
+    border-radius: 3px;
+}
+.bs-callout+.bs-callout {
+    margin-<link:internal>top</link:internal></highlight><highlight>: -5px;
+}
+.bs-callout-default {
+    border-left-color: #777;
+}
+.bs-callout-default h4 {
+    color: #777;
+}
+.bs-callout-primary {
+    border-left-color: #428bca;
+}
+.bs-callout-primary h4 {
+    color: #428bca;
+}
+.bs-callout-success {
+    border-left-color: #5cb85c;
+}
+.bs-callout-success h4 {
+    color: #5cb85c;
+}
+.bs-callout-danger {
+    border-left-color: #d9534f;
+}
+.bs-callout-danger h4 {
+    color: #d9534f;
+}
+.bs-callout-warning {
+    border-left-color: #f0ad4e;
+}
+.bs-callout-warning h4 {
+    color: #f0ad4e;
+}
+.bs-callout-info {
+    border-left-color: #5bc0de;
+}
+.bs-callout-info h4 {
+    color: #5bc0de;
+}</highlight></note-content></text>
+  <last-change-date>2014-12-18T15:07:08.1564080+11:00</last-change-date>
+  <last-metadata-change-date>2014-12-18T15:07:08.1564080+11:00</last-metadata-change-date>
+  <create-date>2014-12-18T15:04:26.7963260+11:00</create-date>
+  <cursor-position>385</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>53</x>
+  <y>23</y>
+  <tags>
+    <tag>system:notebook:css</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

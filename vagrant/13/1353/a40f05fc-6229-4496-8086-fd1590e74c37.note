@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>Accessing message function in service</title>
+  <text xml:space="preserve"><note-content version="0.1">Accessing message function in service
+
+
+
+<highlight>class ProjectService{
+	MessageSource messageSource
+	SessionLocaleResolver localeResolver
+	public main(){
+		messageSource.getMessage( "project.origin", null, "test", Locale.defaultLocale)
+	}
+}</highlight></note-content></text>
+  <last-change-date>2016-08-16T00:35:45.5698170+10:00</last-change-date>
+  <last-metadata-change-date>2016-08-16T00:35:45.5698170+10:00</last-metadata-change-date>
+  <create-date>2016-08-09T16:13:01.9952320+10:00</create-date>
+  <cursor-position>220</cursor-position>
+  <width>1158</width>
+  <height>360</height>
+  <x>522</x>
+  <y>23</y>
+  <tags>
+    <tag>system:notebook:grails</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

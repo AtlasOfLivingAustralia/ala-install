@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>list all ports running on my machine</title>
+  <text xml:space="preserve"><note-content version="0.1">list all ports running on my machine
+
+<link:internal>netstat</link:internal> -lntu
+
+l - list only services that are listening on a port
+n - port number
+t - tcp
+u - udp
+p - program - need to be super user
+
+</note-content></text>
+  <last-change-date>2016-08-18T23:52:31.6733810+10:00</last-change-date>
+  <last-metadata-change-date>2016-08-18T23:52:31.6733810+10:00</last-metadata-change-date>
+  <create-date>2016-08-18T23:50:58.2866820+10:00</create-date>
+  <cursor-position>172</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>49</x>
+  <y>23</y>
+  <tags>
+    <tag>system:notebook:linux commands</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

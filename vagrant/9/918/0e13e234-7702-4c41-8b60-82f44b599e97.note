@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>php snippets</title>
+  <text xml:space="preserve"><note-content version="0.1">php snippets
+
+<size:large>timestamp</size:large>
+
+<highlight>time()</highlight>
+
+<size:large>unique id</size:large>
+
+<highlight>$uid = uniqid(rand(), true);</highlight>
+
+<link:internal>params</link:internal>:
+rand() - prefix - puts a random number as prefix
+true - entropy - increases probability of uniqueness
+
+<size:large>save content to a file</size:large>
+
+<highlight> file_put_contents($filename, $content)</highlight>
+</note-content></text>
+  <last-change-date>2015-02-18T17:46:43.0901120+11:00</last-change-date>
+  <last-metadata-change-date>2015-02-18T17:46:43.0901120+11:00</last-metadata-change-date>
+  <create-date>2012-12-26T23:05:50.7946660+11:00</create-date>
+  <cursor-position>31</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>1</x>
+  <y>91</y>
+  <tags>
+    <tag>system:notebook:php</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>

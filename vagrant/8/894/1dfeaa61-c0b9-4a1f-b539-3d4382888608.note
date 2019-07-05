@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>jquery</title>
+  <text xml:space="preserve"><note-content version="0.1">jquery
+
+<size:large>how to get the height/width of an element including margin, padding etc?</size:large>
+
+<highlight>$(#content).outerHeight(true)</highlight>
+
+
+<size:large>get value from an input tag</size:large>
+
+<highlight>$('#input').val()</highlight>
+
+</note-content></text>
+  <last-change-date>2014-12-18T10:01:37.2823360+11:00</last-change-date>
+  <last-metadata-change-date>2014-12-18T10:01:37.2823360+11:00</last-metadata-change-date>
+  <create-date>2014-07-28T12:54:28.9391640+10:00</create-date>
+  <cursor-position>162</cursor-position>
+  <width>450</width>
+  <height>360</height>
+  <x>767</x>
+  <y>217</y>
+  <tags>
+    <tag>system:notebook:js libraries</tag>
+  </tags>
+  <open-on-startup>False</open-on-startup>
+</note>
