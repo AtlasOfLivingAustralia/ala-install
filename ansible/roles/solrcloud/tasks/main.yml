@@ -23,8 +23,10 @@
     - solrcloud
     - solr_restart    
 
-- name: Download maintained and current SOLR {{ solr_version }}
-  get_url: url="http://mirrors.ibiblio.org/apache/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
+- name: Download SOLR {{ solr_version }}
+  get_url: url="{{ solr_repository }}{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
+#  get_url: url="http://mirrors.ibiblio.org/apache/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
+#  get_url: url="https://archive.apache.org/dist/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
   tags:
     - solrcloud
 
