@@ -1,7 +1,7 @@
 [
   {
     "label": "States and territories",
-    "fid": "cl22",
+    "fid": "cl10925",
     "exclude": ["Unknown1", "Macquarie Island", "Ashmore and Cartier Islands", "Coral Sea Islands"],
     "subregions": [
       {
@@ -46,7 +46,7 @@
   },
   {
     "label": "Local government",
-    "fid": "cl959"
+    "fid": "cl10923"
   },
   {
     "label": "Bush Heritage Reserves",
@@ -66,7 +66,7 @@
   },
   {
     "label": "Management regions",
-    "fid": "cl2120"
+    "fid": "cl10930"
   },
   {
     "label": "Indigenous protected areas",
