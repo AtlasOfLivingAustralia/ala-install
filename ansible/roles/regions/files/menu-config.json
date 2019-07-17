@@ -1,7 +1,7 @@
 [
   {
     "label": "States and territories",
-    "fid": "cl22",
+    "fid": "cl10925",
     "exclude": ["Unknown1", "Macquarie Island", "Ashmore and Cartier Islands", "Coral Sea Islands"],
     "subregions": [
       {
@@ -33,7 +33,7 @@
           },
           {
             "label": "Natural Resource Management (NRM)",
-            "fid": "cl916",
+            "fid": "cl10930",
             "regions": [
               {
                 "label": "ACT"
@@ -46,7 +46,11 @@
   },
   {
     "label": "Local government",
-    "fid": "cl959"
+    "fid": "cl10923"
+  },
+  {
+    "label": "Bush Heritage Reserves",
+    "fid": "cl2109"
   },
   {
     "label": "Biogeographic regions",
@@ -57,8 +61,12 @@
     "fid": "cl21"
   },
   {
+    "label": "Marine parks",
+    "fid": "cl10912"
+  },
+  {
     "label": "Management regions",
-    "fid": "cl916"
+    "fid": "cl10930"
   },
   {
     "label": "Indigenous protected areas",
@@ -71,10 +79,6 @@
   {
     "label": "Major drainage divisions",
     "fid": "cl1059"
-  },
-  {
-   "label": "Bush Heritage Reserves",
-   "fid": "cl2109"
   },
   {
     "label": "Other regions",
@@ -148,10 +152,6 @@
       {
         "label": "Directory of Important Wetlands",
         "fid": "cl901"
-      },
-      {
-        "label": "Areas for Further Assessment within the East Marine Region",
-        "fid": "cl900"
       },
       {
         "label": "Australian Coral Ecoregions",

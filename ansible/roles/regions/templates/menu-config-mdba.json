@@ -29,7 +29,7 @@
   },
   {
     "label": "States and territories",
-    "fid": "cl22",
+    "fid": "cl10925",
     "exclude": ["Unknown1", "Macquarie Island", "Ashmore and Cartier Islands", "Coral Sea Islands"],
     "subregions": [
       {
@@ -61,7 +61,7 @@
           },
           {
             "label": "Natural Resource Management (NRM)",
-            "fid": "cl916",
+            "fid": "cl10930",
             "regions": [
               {
                 "label": "ACT"
@@ -74,11 +74,11 @@
   },
   {
     "label": "Local government",
-    "fid": "cl959"
+    "fid": "cl10923"
   },
   {
     "label": "Management regions",
-    "fid": "cl916"
+    "fid": "cl10930"
   },
   {
     "label": "Traditional Owner surface water",

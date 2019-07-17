@@ -31,7 +31,7 @@ layers:
 images:
   # URL of image configuration file
   config: file://{{ data_dir }}/bie-index/config/image-lists.json
-  base: https://images.ala.org.au
+  base: {{ image_base_url | default('https://images.ala.org.au') }}
   service:
     base: {{ image_base_url | default('https://images.ala.org.au') }}
     thumbnail: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImageThumbnail?imageId={0}
@@ -40,7 +40,7 @@ images:
     metadata: {{ image_service_url | default('https://images.ala.org.au') }}/ws/image/{0}
   index: {{ index_images | default('false') }}
 wordPress:
-  service: https://www.ala.org.au
+  service: {{ ala_base_url | default('https://www.ala.org.au') }}
   sitemap: /sitemap.xml
   page: /?page_id={0}
   excludedCategories:
