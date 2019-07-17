@@ -52,11 +52,10 @@ lists:
 attribution:
   default: {{ default_name_source | default('National Species Lists') }}
   common: {{ default_common_name_source | default('National Species Lists') }}
-commonNameDefaultLanguage: en-AU
-# Acceptable vernacular names to appear in autocomplete
-#autoComplete.languages = 'en,en-AU,en-CA,en-GB,en-US'
-autoComplete:
+commonName:
+  # Acceptable vernacular names to appear in autocomplete and primary name eg en,en-AU,en-CA,en-GB,en-US (leave empty for any language)
   languages:
+  defaultLanguage: en
 # Location of conservation lists
 conservationListsUrl: file://{{ data_dir }}/bie-index/config/conservation-lists.json
 # Location of vernacular name lists (null for default)
@@ -83,6 +82,7 @@ solr:
     qf:
       - exact_text
       - text
+      - content^0.2
     boost: {{ solr_bie_boost_term | default('searchWeight') }}
     defType: {{ solr_deftype | default('edismax') }}
     qAlt: {{ solr_qlat | default('text:*') }}
@@ -95,7 +95,7 @@ headerAndFooter:
   baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}
 useLegacyAuto: false
 import:
-  sequence: {{ bie_index_import_sequence | default('collectory,taxonomy-all,vernacular,denormalise,layers,regions,localities,conservation-lists,wordpress,favourites,weights,link-identifiers,images,occurrences,suggest-index') }}
+  sequence: {{ bie_index_import_sequence | default('collectory,taxonomy-all,vernacular,denormalise,layers,regions,localities,conservation-lists,wordpress,knowledgebase,favourites,weights,link-identifiers,images,occurrences,suggest-index') }}
   favouritesConfigUrl: file://{{ data_dir }}/bie-index/config/favourites.json
   taxonomy:
     dir: {{ data_dir }}/bie/import
