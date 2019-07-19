@@ -34,6 +34,7 @@ biocache:
 
 # header block
 headerAndFooter:
+  version: "{{ header_and_footer_version | default('1')}}"
   baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3')}}"
 ala:
   baseURL: "{{ ala_base_url | default('https://www.ala.org.au')}}"
