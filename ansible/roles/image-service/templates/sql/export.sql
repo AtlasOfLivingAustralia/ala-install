@@ -46,8 +46,8 @@ BEGIN
             mime_type AS format,
             original_filename AS originalFilename,
             extension as extension,
-            date_uploaded AS "dateUploaded",
-            date_taken AS created,
+            TO_CHAR(date_uploaded :: DATE, 'yyyy-mm-dd') AS "dateUploaded",
+            TO_CHAR(date_taken :: DATE, 'yyyy-mm-dd') AS created,
             file_size as "fileSize",
             height as height,
             width as width,
@@ -62,10 +62,11 @@ BEGIN
             thumb_height AS "thumbHeight",
             thumb_width AS "thumbWidth",
             harvestable,
-            l.acronym  as "recognisedLicense",
-            split_part(original_filename, '||', 2) AS "occurrenceID"
+            l.acronym  as "recognisedLicence",
+            split_part(original_filename, '||', 2) AS "occurrenceID",
+            TO_CHAR(date_uploaded :: DATE, 'yyyy-mm') AS "dateUploadedYearMonth"
         from image i
-        left outer join license l ON l.id = i.recognised_license_id
+                 left outer join license l ON l.id = i.recognised_license_id
         where date_deleted is NULL
         )
         TO '{{images_export_dir}}/images-index.csv' WITH CSV DELIMITER '$' HEADER;
