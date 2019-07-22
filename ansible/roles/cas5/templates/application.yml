@@ -11,7 +11,7 @@ jndi:
   hikari:
     jdbccas:
       driverClass: com.mysql.jdbc.Driver
-      url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull
+      url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&logger=com.mysql.jdbc.log.Slf4JLogger&gatherPerfMetrics=true&logSlowQueries=true
       user: {{ cas_db_username | default('cas') }}
       password: {{ cas_db_password | default('password') }}
       dataSourceProperties:
@@ -36,6 +36,12 @@ cas:
   adminPagesSecurity:
     ip: {{ cas_admin_pages_ip | default('.*') }}
     actuatorEndpointsEnabled: true
+  http-web-request:
+    cors:
+      enabled: {{ cas_cors_enabled | default('true')}}
+{% for allowed_origin in cas_cors_allowed_origins | default(['*']) %}
+      - {{allowed_origin}}
+{% endfor %}
   jdbc:
     showSql: false
   authn:
@@ -95,32 +101,34 @@ cas:
       validationQuery: /* ping */ SELECT 1
       dataSourceName: java:comp/env/jdbccas
   serviceRegistry:
-    initFromJson: true
+    initFromJson: {{ serviceRegistryInitFromJson | default('true') }}
     mongo:
-      sslEnabled: {{ cas_services_ssl_enabled | default('false') }}
+      sslEnabled: {{ cas_services_ssl_enabled | default('false') }}{{ cas_context_path | default('cas') }}
       clientUri: {{ cas_services_uri | default('') }}
       host: {{ cas_services_host | default('localhost') }}
       port: {{ cas_services_port | default('27017') }}
       replicaSet: {{ cas_services_replica_set | default('') }}
-      collection: {{ cas_services_collection | default('services') }}
-      databaseName: {{ cas_services_db | default('cas-service-registry') }}
-      authenticationDatabaseName: {{ cas_services_auth_db | default('') }}
+      collection: {{ cas_services_collection | default('services') {{ cas_context_path | default('cas') }}
+      databaseName: {{ cas_services_db | default('cas-service-regis{{ cas_context_path | default('cas') }}
+      authenticationDatabaseName: {{ cas_services_auth_db | default{{ cas_context_path | default('cas') }}
       userId: {{ cas_services_username | default('cas') }}
       password: {{ cas_services_password | default('password') }}
       timeout: {{ cas_services_timeout | default('PT5S') }}
   ticket:
     registry:
       mongo:
-        sslEnabled: {{ cas_tickets_ssl_enabled | default('false') }}
+        sslEnabled: {{ cas_tickets_ssl_enabled | default('false') }{{ cas_context_path | default('cas') }}
         clientUri: {{ cas_tickets_uri | default('') }}
         host: {{ cas_tickets_host | default('localhost') }}
         port: {{ cas_tickets_port | default('27017') }}
         replicaSet: {{ cas_tickets_replica_set | default('') }}
-        databaseName: {{ cas_tickets_db | default('cas-ticket-registry') }}
+        databaseName: {{ cas_tickets_db | default('cas-ticket-regis{{ cas_context_path | default('cas') }}
         authenticationDatabaseName: {{ cas_tickets_auth_db | default('') }}
         userId: {{ cas_tickets_username | default('cas') }}
         password: {{ cas_tickets_password | default('password') }}
         timeout: {{ cas_tickets_timeout | default('PT15S') }}
+    st:
+      timeToKillInSeconds: {{ cas_service_ticket_timeout | default('10') }}
   tgc:
     crypto:
       enabled: false
@@ -149,6 +157,7 @@ ala:
       enableUpdateLegacyPasswords: {{ cas_update_legacy_passwords | default('true') }}
   skin:
     baseUrl: {{ ala_base_url | default('https://www.ala.org.au')}}
+    uiVersion: {{ ala_cas_ui_version | default('2') }}
     headerFooterUrl: {{ header_and_footer_baseurl | default('${ala.skin.baseUrl}/commonui-bs3')}}/
     favIconBaseUrl: {{ skin_favicon_baseurl | default('${ala.skin.baseUrl}/wp-content/themes/ala-wordpress-theme/img/favicon/') }}
     bieBaseUrl: {{ bie_base_url | default('https://bie.ala.org.au')}}
@@ -188,8 +197,8 @@ spring:
       password: {{ bootadmin_password }}
       client:
         enabled: true
-        service-base-url: ${cas.server.name}
-        managementUrl: ${cas.server.prefix}/status
+        service-base-url: {{ bootadmin_client_base_url | default('${cas.server.name}/') }}
+#        management-url: ${spring.boot.admin.client.service-base-url}{{ cas_context_path | default('cas') }}/status
         name: ALA CAS
         metadata:
           user:
@@ -205,8 +214,8 @@ spring:
     host: {{ spring_session_redis_host }}
     password: {{ spring_session_redis_password }}
     port: {{ spring_session_redis_port | default('6379') }}
-    {% if spring_session_redis_clustered is sameas true %}
+{% if spring_session_redis_clustered %}
     cluster:
       nodes: {{ spring_session_redis_host }}:{{ spring_session_redis_port | default('6379') }}
-    {% endif %}
+{% endif %}
 {% endif %}

@@ -1,0 +1,17 @@
+- hosts: cas-servers
+  tasks:
+  - apt_repository:
+      repo: ppa:chris-lea/redis-server
+  - apt:
+      name: "{{ packages }}"
+    vars:
+      packages:
+      - redis-server
+  - name: Install mysql
+    include_role:
+      name: mysql-5.7
+  - name: Install mongo
+    include_role:
+      name: mongodb-org
+- name: include default cas 5 steps
+  import_playbook: aws-cas-5.yml

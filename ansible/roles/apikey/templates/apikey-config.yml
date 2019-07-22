@@ -6,6 +6,7 @@ security:
     loginUrl: ${security.cas.casServerUrlPrefix}/login
     logoutUrl: ${security.cas.casServerUrlPrefix}/logout
     appServerName: {{ apikey_server_name }}
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
   user:
     name: {{ apikey_endpoint_user | default('admin') }}
     password: {{ apikey_endpoint_password | default('secret') }}
@@ -62,7 +63,9 @@ userDetails:
   url: {{ userdetails_base_url }}/{{ userdetails_context_path | default('userdetails') }}/
 
 # Header and footer
-headerAndFooter.baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3')}}
+headerAndFooter:
+  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3')}}
+  version: {{ header_and_footer_version | default('1')}}
 ala.baseURL: {{ ala_base_url | default('https://www.ala.org.au')}}
 bie.baseURL: {{ bie_base_url | default('https://bie.ala.org.au')}}
 bie.searchPath: {{ bie_search_path | default('/search') }}
@@ -75,6 +78,7 @@ skin.orgNameShort: {{ orgNameShort | default('ALA') }}
 skin.favicon: {{ skin_favicon | default('https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png') }}
 
 spring:
+{% if bootadmin_enabled %}
   boot:
     admin:
       url: {{ bootadmin_url | default('https://bootadmin.ala.org.au') }}
@@ -82,13 +86,14 @@ spring:
       password: {{ bootadmin_password }}
       client:
         enabled: true
-        service-base-url: ${grails.serverURL}
-        managementUrl: ${grails.serverURL}/status
+        service-base-url: {{ bootadmin_client_base_url | default('${grails.serverURL}/') }}
+#        management-url: ${spring.boot.admin.client.service-base-url}{{ apikey_context_path | default('apikey') }}/status
         name: {{ apikey_bootadmin_client_name | default('API Key') }}
         metadata:
           user:
             name: ${security.user.name}
             password: ${security.user.password}
+{% endif %}
   session:
     store-type: {{ spring_session_store_type | default('none') }}
     {% if spring_session_store_type == 'redis' %}disable-redis-config-action: {{ is_secured_redis | default('false') | bool }}
@@ -98,8 +103,8 @@ spring:
     host: {{ spring_session_redis_host }}
     password: {{ spring_session_redis_password }}
     port: {{ spring_session_redis_port | default('6379') }}
-    {% if spring_session_redis_clustered is sameas true %}
+{% if spring_session_redis_clustered %}
     cluster:
       nodes: {{ spring_session_redis_host }}:{{ spring_session_redis_port | default('6379') }}
-    {% endif %}
+{% endif %}
 {% endif %}
