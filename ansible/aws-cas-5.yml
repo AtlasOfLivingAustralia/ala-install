@@ -70,6 +70,23 @@
     with_items:
     - { name: "{{ cas_db_name | default('emmet') }}", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
     - { name: "{{ apikey_db_name | default('apikey') }}", login_host: "{{ apikey_db_hostname }}", login_port: "{{ apikey_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
+  # Need the external ipv4 address for mysql user when using external databse, otherwise localhost
+  - set_fact:
+      cas_mysql_src_host: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+    when:
+      cas_db_hostname != 'localhost'
+  - set_fact:
+      cas_mysql_src_host: localhost
+    when:
+      cas_db_hostname == 'localhost'
+  - set_fact:
+      apikey_mysql_src_host: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+    when:
+      apikey_db_hostname != 'localhost'
+  - set_fact:
+      apikey_mysql_src_host: localhost
+    when:
+      apikey_db_hostname == 'localhost'
   - mysql_user:
       login_host: "{{ item.login_host }}"
       login_port: "{{ item.login_port }}"
@@ -78,11 +95,11 @@
       user: "{{ item.user }}"
       password: "{{ item.password }}"
       priv: "{{ item.priv }}"
-      host: "{{ item.login_host }}"
+      host: "{{ item.host }}"
     with_items:
-    - { user: "{{ cas_flyway_username }}", password: "{{ cas_flyway_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:ALL", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
-    - { user: "{{ cas_db_username }}", password: "{{ cas_db_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:INSERT,SELECT,UPDATE,DELETE,EXECUTE,TRIGGER/mysql.proc:SELECT", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
-    - { user: "{{ apikey_db_username }}", password: "{{ apikey_db_password }}", priv: "{{ apikey_db_name | default('apikey') }}.*:ALL", login_host: "{{ apikey_db_hostname }}", login_port: "{{ apikey_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
+    - { user: "{{ cas_flyway_username }}", password: "{{ cas_flyway_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:ALL", host: "{{ cas_mysql_src_host }}", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
+    - { user: "{{ cas_db_username }}", password: "{{ cas_db_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:INSERT,SELECT,UPDATE,DELETE,EXECUTE,TRIGGER/mysql.proc:SELECT", host: "{{ cas_mysql_src_host }}", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
+    - { user: "{{ apikey_db_username }}", password: "{{ apikey_db_password }}", priv: "{{ apikey_db_name | default('apikey') }}.*:ALL", host: "{{ apikey_mysql_src_host }}", login_host: "{{ apikey_db_hostname }}", login_port: "{{ apikey_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
   - mongodb_user:
       user: "{{ item.user }}"
       password: "{{ item.password }}"
