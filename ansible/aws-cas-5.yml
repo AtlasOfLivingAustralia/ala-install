@@ -1,3 +1,7 @@
+#
+#  DO NOT ADD mysql OR mongo server ROLES TO THIS PLAYBOOK
+#  THIS PLAYBOOK MUST REMAIN COMPATIBLE WITH EXTERNAL DB SERVERS
+#
 - hosts: cas-servers
   vars:
     webserver_nginx: true
@@ -8,18 +12,16 @@
   - include_role:
       name: common
   - apt:
-      name: "{{ item }}"
-    with_items:
-    - mysql-client
-    - python-mysqldb
-  - include_role:
-      name: java
+      name: "{{ packages }}"
+    vars:
+      packages:
+      - mysql-client
+      - python-mysqldb
+      - python-pymongo
   - include_role:
       name: postfix
   - include_role:
       name: webserver
-  - include_role:
-      name: mysql-5.7
   - copy:
       src: "{{ cas_db_dump }}"
       dest: /tmp/cas.sql
@@ -81,9 +83,6 @@
     - { user: "{{ cas_flyway_username }}", password: "{{ cas_flyway_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:ALL", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
     - { user: "{{ cas_db_username }}", password: "{{ cas_db_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:INSERT,SELECT,UPDATE,DELETE,EXECUTE,TRIGGER/mysql.proc:SELECT", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
     - { user: "{{ apikey_db_username }}", password: "{{ apikey_db_password }}", priv: "{{ apikey_db_name | default('apikey') }}.*:ALL", login_host: "{{ apikey_db_hostname }}", login_port: "{{ apikey_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
-  - include_role:
-      name: mongodb-org
-    tags: mongodb-org
   - mongodb_user:
       user: "{{ item.user }}"
       password: "{{ item.password }}"
@@ -124,26 +123,32 @@
     roles: 'readWrite' }
     tags: mongodb-org
     run_once: true
+    when: cas_add_mongo_users is defined
   - include_role:
       name: cas5
     vars:
       min_memory: "{{ cas_min_memory | default('512m') }}"
       max_memory: "{{ cas_max_memory | default('2g') }}"
+      service_registry_init_from_json: '{{ inventory_hostname == ansible_play_batch[0] }}'
+      bootadmin_client_base_url: 'https://{{ inventory_hostname}}/'
   - include_role:
       name: cas-management
     vars:
       min_memory: "{{ cas_management_min_memory | default('256m') }}"
       max_memory: "{{ cas_management_max_memory | default('1g') }}"
+      bootadmin_client_base_url: 'https://{{ inventory_hostname}}/'
   - include_role:
       name: userdetails
     vars:
       min_memory: "{{ userdetails_min_memory | default('256m') }}"
       max_memory: "{{ userdetails_max_memory | default('1g') }}"
+      bootadmin_client_base_url: 'https://{{ inventory_hostname}}/'
   - include_role:
       name: apikey
     vars:
       min_memory: "{{ apikey_min_memory | default('256m') }}"
       max_memory: "{{ apikey_max_memory | default('1g') }}"
+      bootadmin_client_base_url: 'https://{{ inventory_hostname}}/'
   - include_role:
       name: nginx_vhost
     vars:
@@ -159,5 +164,3 @@
     - { context: "{{ cas_management_context_path | default('cas-management') }}", port: "{{ cas_management_port | default('8070') }}" }
     - { context: "{{ userdetails_context_path | default('userdetails') }}", port: "{{ userdetails_port | default('9001') }}" }
     - { context: "{{ apikey_context_path | default('apikey') }}", port: "{{ apikey_port | default('9002') }}" }
-    notify:
-    - reload nginx
