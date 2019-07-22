@@ -103,26 +103,26 @@ cas:
   serviceRegistry:
     initFromJson: {{ serviceRegistryInitFromJson | default('true') }}
     mongo:
-      sslEnabled: {{ cas_services_ssl_enabled | default('false') }}{{ cas_context_path | default('cas') }}
+      sslEnabled: {{ cas_services_ssl_enabled | default('false') }}
       clientUri: {{ cas_services_uri | default('') }}
       host: {{ cas_services_host | default('localhost') }}
       port: {{ cas_services_port | default('27017') }}
       replicaSet: {{ cas_services_replica_set | default('') }}
-      collection: {{ cas_services_collection | default('services') {{ cas_context_path | default('cas') }}
-      databaseName: {{ cas_services_db | default('cas-service-regis{{ cas_context_path | default('cas') }}
-      authenticationDatabaseName: {{ cas_services_auth_db | default{{ cas_context_path | default('cas') }}
+      collection: {{ cas_services_collection | default('services') }}
+      databaseName: {{ cas_services_db | default('cas-service-registry') }}
+      authenticationDatabaseName: {{ cas_services_auth_db | default('') }}
       userId: {{ cas_services_username | default('cas') }}
       password: {{ cas_services_password | default('password') }}
       timeout: {{ cas_services_timeout | default('PT5S') }}
   ticket:
     registry:
       mongo:
-        sslEnabled: {{ cas_tickets_ssl_enabled | default('false') }{{ cas_context_path | default('cas') }}
+        sslEnabled: {{ cas_tickets_ssl_enabled | default('false') }}
         clientUri: {{ cas_tickets_uri | default('') }}
         host: {{ cas_tickets_host | default('localhost') }}
         port: {{ cas_tickets_port | default('27017') }}
         replicaSet: {{ cas_tickets_replica_set | default('') }}
-        databaseName: {{ cas_tickets_db | default('cas-ticket-regis{{ cas_context_path | default('cas') }}
+        databaseName: {{ cas_tickets_db | default('cas-ticket-registry') }}
         authenticationDatabaseName: {{ cas_tickets_auth_db | default('') }}
         userId: {{ cas_tickets_username | default('cas') }}
         password: {{ cas_tickets_password | default('password') }}
