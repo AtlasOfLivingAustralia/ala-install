@@ -197,9 +197,9 @@ spring:
       password: {{ bootadmin_password }}
       client:
         enabled: true
-        service-base-url: {{ bootadmin_client_base_url | default('${cas.server.name}/') }}
-#        management-url: ${spring.boot.admin.client.service-base-url}{{ cas_context_path | default('cas') }}/status
-        name: ALA CAS
+        service-url: "{{ bootadmin_client_base_url | default('${cas.server.name}/') }}{{ cas_context_path | default('cas') }}"
+        management-url: "{{ bootadmin_client_base_url | default('${cas.server.name}/') }}{{ cas_context_path | default('cas') }}/status"
+        name: {{ cas_bootadmin_client_name | default('ALA CAS') }}
         metadata:
           user:
             name: ${security.user.name}

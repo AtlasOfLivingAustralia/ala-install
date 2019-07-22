@@ -86,8 +86,8 @@ spring:
       password: {{ bootadmin_password }}
       client:
         enabled: true
-        service-base-url: {{ bootadmin_client_base_url | default('${grails.serverURL}/') }}
-#        management-url: ${spring.boot.admin.client.service-base-url}{{ apikey_context_path | default('apikey') }}/status
+        service-url: {{ bootadmin_client_base_url | default('${serverURL}/') }}{{ apikey_context_path | default('apikey') }}
+        management-url: {{ bootadmin_client_base_url | default('${serverURL}/') }}{{ apikey_context_path | default('apikey') }}/status
         name: {{ apikey_bootadmin_client_name | default('API Key') }}
         metadata:
           user:
