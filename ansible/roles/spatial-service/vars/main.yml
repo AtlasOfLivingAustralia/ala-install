@@ -1,5 +1,5 @@
 # assets
-version: "{{ spatial_service_version | default('0.3-SNAPSHOT') }}"
+version: "{{ spatial_service_version | default('0.3') }}"
 artifactId: "{{ spatial_service_artifact_id | default('spatial-service') }}"
 classifier: "{{ spatial_service_classifier | default('') }}"
 packaging: "war"
