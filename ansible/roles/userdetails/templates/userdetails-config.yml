@@ -107,7 +107,7 @@ webservice.apiKey: {{ api_key }}
 admin.export.csv.primary.fields: {{ admin_export_csv_primary_fields | default('id,userName,firstName,lastName,email,activated,locked,created')}}
 
 spring:
-{% if bootadmin_enabled %}
+{% if bootadmin_enabled | bool %}
   boot:
     admin:
       url: {{ bootadmin_url | default('https://bootadmin.ala.org.au') }}
@@ -132,7 +132,7 @@ spring:
     host: {{ spring_session_redis_host }}
     password: {{ spring_session_redis_password }}
     port: {{ spring_session_redis_port | default('6379') }}
-{% if spring_session_redis_clustered %}
+{% if spring_session_redis_clustered | bool %}
     cluster:
       nodes: {{ spring_session_redis_host }}:{{ spring_session_redis_port | default('6379') }}
 {% endif %}

@@ -78,7 +78,7 @@ skin.orgNameShort: {{ orgNameShort | default('ALA') }}
 skin.favicon: {{ skin_favicon | default('https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png') }}
 
 spring:
-{% if bootadmin_enabled %}
+{% if bootadmin_enabled | bool %}
   boot:
     admin:
       url: {{ bootadmin_url | default('https://bootadmin.ala.org.au') }}
@@ -103,7 +103,7 @@ spring:
     host: {{ spring_session_redis_host }}
     password: {{ spring_session_redis_password }}
     port: {{ spring_session_redis_port | default('6379') }}
-{% if spring_session_redis_clustered %}
+{% if spring_session_redis_clustered | bool %}
     cluster:
       nodes: {{ spring_session_redis_host }}:{{ spring_session_redis_port | default('6379') }}
 {% endif %}

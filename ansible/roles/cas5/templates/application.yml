@@ -39,6 +39,7 @@ cas:
   http-web-request:
     cors:
       enabled: {{ cas_cors_enabled | default('true')}}
+      allow-origins:
 {% for allowed_origin in cas_cors_allowed_origins | default(['*']) %}
       - {{allowed_origin}}
 {% endfor %}
@@ -189,7 +190,7 @@ management:
     roles: ACTUATOR
 
 spring:
-{% if bootadmin_enabled %}
+{% if bootadmin_enabled | bool %}
   boot:
     admin:
       url: {{ bootadmin_url | default('https://bootadmin.ala.org.au') }}
@@ -214,7 +215,7 @@ spring:
     host: {{ spring_session_redis_host }}
     password: {{ spring_session_redis_password }}
     port: {{ spring_session_redis_port | default('6379') }}
-{% if spring_session_redis_clustered %}
+{% if spring_session_redis_clustered | bool %}
     cluster:
       nodes: {{ spring_session_redis_host }}:{{ spring_session_redis_port | default('6379') }}
 {% endif %}
