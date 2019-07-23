@@ -114,6 +114,7 @@
   uri:
     url: "{{ geoserver_url }}"
     status_code: 200
+    validate_certs: false
   register: result
   until: result.status is defined and result.status == 200
   retries: 200
