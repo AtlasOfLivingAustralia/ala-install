@@ -39,7 +39,7 @@ profile_service_url: https://profiles-ws.ala.org.au/
 regions_url: https://regions.ala.org.au
 scholar_url: https://scholar.google.com
 sightings_url: default('https://sightings.ala.org.au/
-skin_favicon: https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png
+skin_favicon: https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png
 skin_fluid_layout:
 skin_home_url: http://www.ala.org.au
 spatial_url: https://spatial.ala.org.au
