@@ -40,7 +40,7 @@ cas:
     cors:
       enabled: {{ cas_cors_enabled | default('true')}}
       allow-origins:
-{% for allowed_origin in cas_cors_allowed_origins | default(['*']) %}
+{% for allowed_origin in cas_cors_allowed_origins | default(["'*'"]) %}
       - {{allowed_origin}}
 {% endfor %}
   jdbc:
