@@ -49,6 +49,14 @@
     "fid": "cl10923"
   },
   {
+    "label": "Commonwealth Electoral Boundaries",
+    "fid": "cl10921"
+  },
+  {
+    "label": "State Electoral Boundaries",
+    "fid": "cl10922"
+  },
+  {
     "label": "Bush Heritage Reserves",
     "fid": "cl2109"
   },
@@ -159,7 +167,7 @@
       },
       {
         "label": "Collaborative Australian Protected Areas Database",
-        "fid": "cl2079"
+        "fid": "cl10944"
       },
       {
         "label": "Exclusive Economic Zone",

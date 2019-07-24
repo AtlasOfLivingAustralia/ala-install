@@ -77,6 +77,14 @@
     "fid": "cl10923"
   },
   {
+    "label": "Commonwealth government",
+    "fid": "cl10921"
+  },
+  {
+    "label": "State government",
+    "fid": "cl10922"
+  },
+  {
     "label": "Management regions",
     "fid": "cl10930"
   },
@@ -102,6 +110,6 @@
   },
   {
     "label": "Collaborative Australian Protected Areas Database",
-    "fid": "cl2079"
+    "fid": "cl10944"
   }
 ]
