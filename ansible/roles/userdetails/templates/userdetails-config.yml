@@ -50,8 +50,8 @@ oauth:
       callback: ${grails.serverURL}/profile/flickrCallback
     inaturalist:
       enabled: {{ oauth_providers_inaturalist_enabled | default('false') }}
-      key: {{ oauth_providers_inaturalist_key | default('') }}
-      secret: {{ oauth_providers_inaturalist_secret | default('') }}
+      key: {{ oauth_providers_inaturalist_key | default('DISABLED') }}
+      secret: {{ oauth_providers_inaturalist_secret | default('DISABLED') }}
       callback: ${grails.serverURL}/profile/inaturalistCallback
 password:
   encoder: {{ user_store_db_encoder | default('bcrypt') }} # or legacy
