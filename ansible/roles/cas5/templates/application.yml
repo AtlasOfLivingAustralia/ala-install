@@ -117,6 +117,9 @@ cas:
       timeout: {{ cas_services_timeout | default('PT5S') }}
   ticket:
     registry:
+      cleaner:
+        schedule:
+          enabled: {{ cas_ticket_registry_cleaner_enabled | default('true') }}
       mongo:
         sslEnabled: {{ cas_tickets_ssl_enabled | default('false') }}
         clientUri: {{ cas_tickets_uri | default('') }}
