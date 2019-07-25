@@ -43,16 +43,20 @@ dataSource:
 
 oauth:
   providers:
+{% if oauth_providers_flickr_enabled | default('true') | bool %}
     flickr:
-      enabled: {{ oauth_providers_flickr_enabled | default('true') }}
+      enabled: true
       key: {{ oauth_providers_flickr_key }}
       secret: {{ oauth_providers_flickr_secret }}
       callback: ${grails.serverURL}/profile/flickrCallback
+{% endif %}
+{% if oauth_providers_inaturalist_enabled | default('false') | bool %}
     inaturalist:
-      enabled: {{ oauth_providers_inaturalist_enabled | default('false') }}
+      enabled: true
       key: {{ oauth_providers_inaturalist_key | default('DISABLED') }}
       secret: {{ oauth_providers_inaturalist_secret | default('DISABLED') }}
       callback: ${grails.serverURL}/profile/inaturalistCallback
+{% endif %}
 password:
   encoder: {{ user_store_db_encoder | default('bcrypt') }} # or legacy
 bcrypt:
