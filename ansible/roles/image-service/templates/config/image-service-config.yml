@@ -1,25 +1,36 @@
 grails:
-  serverURL: "{{images_base_url}}{{images_context_path}}"
+  serverURL: "{{image_service_base_url}}{{image_service_context_path}}"
 
 security:
   cas:
-    appServerName: "{{images_base_url}}{{images_context_path}}"
+    appServerName: "{{image_service_base_url}}{{image_service_context_path}}"
     bypass: {{ bypass_cas | default(false) }}
     disableCAS: {{ bypass_cas | default(false) }}
+  apikey:
+    ip:
+      whitelist: {{image_service_whitelist | default('')}}
+    check:
+      serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey='
+info:
+  app:
+    name: 'image-service'
+    version: '{{ image_service_version }}'
+    grailsVersion: '3.2.11'
 
 dataSource:
-  url: "jdbc:postgresql://localhost/images?autoReconnect=true&connectTimeout=0&useUnicode=true&characterEncoding=UTF-8"
-  username: {{ images_db_username }}
-  password: {{ images_db_password }}
+  url: "jdbc:postgresql://localhost/{{ image_service_db_name }}?autoReconnect=true&connectTimeout=0&useUnicode=true&characterEncoding=UTF-8"
+  username: {{ image_service_db_username }}
+  password: {{ image_service_db_password }}
   dbCreate: none
 
 imageservice:
   imagestore:
     root: "/data/image-service/store"
   apache:
-    root: "{{ images_base_url }}/store/"
-    multiple_roots: {% if multiple_roots %} "{{ multiple_roots }}" {% else %} "{{ images_base_url }}/store/" {% endif %}
-  exportDir: "{{ images_export_dir | default('/data/image-service/exports')}}"
+    root: "{{ image_service_base_url }}/store/"
+    multiple_roots: {% if multiple_root is defined %} "{{ multiple_roots }}" {% else %} "{{ image_service_base_url }}/store/" {% endif %}
+
+    exportDir: "{{ image_service_export_dir | default('/data/image-service/exports')}}"
 
 # skin
 skin:
