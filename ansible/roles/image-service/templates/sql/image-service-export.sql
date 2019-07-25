@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION export_images() RETURNS void AS $$
             select
             data_resource_uid AS "dataResourceUid",
             split_part(original_filename, '||', 2) AS "occurrenceID",
-            CONCAT( '{{images_base_url}}{{images_context_path}}/image/proxyImageThumbnailLarge?imageId=', image_identifier) AS identifier,
+            CONCAT( '{{image_service_base_url}}{{image_service_context_path}}/image/proxyImageThumbnailLarge?imageId=', image_identifier) AS identifier,
             regexp_replace(regexp_replace(creator, E'[\\n\\r]+', ' ', 'g' ) AS creator,
             date_taken AS created,
             regexp_replace(title, E'[\\n\\r]+', ' ', 'g' ) AS title,
@@ -14,7 +14,7 @@ CREATE OR REPLACE FUNCTION export_images() RETURNS void AS $$
             regexp_replace(license, E'[\\n\\r]+', ' ', 'g' ) AS license,
             regexp_replace(rights, E'[\\n\\r]+', ' ', 'g' ) AS rights,
             regexp_replace(rights_holder, E'[\\n\\r]+', ' ', 'g' ) AS "rightsHolder",
-            CONCAT('{{images_base_url}}{{images_context_path}}/image/details/', image_identifier) AS "references",
+            CONCAT('{{image_service_base_url}}{{image_service_context_path}}/image/', image_identifier) AS "references",
             regexp_replace(title, E'[\\n\\r]+', ' ', 'g' ) as title,
             regexp_replace(description, E'[\\n\\r]+', ' ', 'g' ) as description,
             extension as extension,
@@ -30,7 +30,7 @@ CREATE OR REPLACE FUNCTION export_images() RETURNS void AS $$
             left outer join license l ON l.id = i.recognised_license_id
             order by data_resource_uid
         )
-        TO '{{images_export_dir}}/images.csv' DELIMITER ',' CSV HEADER;
+        TO '{{image_service_export_dir | default('/data/image-service/exports')}}/images.csv' DELIMITER ',' CSV HEADER;
     END;
 $$ LANGUAGE plpgsql;
 
@@ -69,6 +69,6 @@ BEGIN
                  left outer join license l ON l.id = i.recognised_license_id
         where date_deleted is NULL
         )
-        TO '{{images_export_dir}}/images-index.csv' WITH CSV DELIMITER '$' HEADER;
+        TO '{{image_service_export_dir | default('/data/image-service/exports') }}/images-index.csv' WITH CSV DELIMITER '$' HEADER;
 END;
 $$ LANGUAGE plpgsql;

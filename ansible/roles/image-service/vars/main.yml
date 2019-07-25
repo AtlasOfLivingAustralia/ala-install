@@ -1,5 +1,5 @@
 images_app: ala-images
-version: "{{ images_version | default('1.0.2') }}"
+version: "{{ image_service_version | default('1.0.4') }}"
 artifactId: "image-service"
 images_url: "{{maven_repo_ws_url}}"
 classifier: 'exec'
