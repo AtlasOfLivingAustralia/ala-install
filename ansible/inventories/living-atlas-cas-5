@@ -155,10 +155,10 @@ cas_db_hostname=localhost
 cas_flyway_username=flyway
 cas_flyway_password=password
 
-user_details_version=2.2.0
-apikey_version=1.3
-cas_version=5.3.3-1-SNAPSHOT
-cas_management_version=5.3.1-1-SNAPSHOT
+user_details_version=2.2.2
+apikey_version=1.5
+cas_version=5.3.12-1
+cas_management_version=5.3.6-1
 
 ssl=false
 
