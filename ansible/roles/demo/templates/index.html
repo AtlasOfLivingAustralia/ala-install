@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="css/bootstrap.css">
 	<link rel="stylesheet" href="css/bootstrap-theme.css">
 	<script src="js/bootstrap.js"></script>
     <style>
         .code { font-family: "Courier New"; }
     </style>
-</head>	
+</head>
 <body>
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
@@ -16,7 +16,7 @@
         <h1>{{ orgNameLong }}</h1>
         <p>This is a landing page with links through to the components now installed on this server.
         <br/>
-           This demo was installed using 
+           This demo was installed using
            <a href="http://www.ansible.com">ansible</a> scripts that are available
            <a href="https://github.com/AtlasOfLivingAustralia/ala-install">here</a>.
         </p>
@@ -28,17 +28,17 @@
       <div class="row">
         <div id="occurrence-store" class="col-md-4">
           <h2>Occurrence store</h2>
-          <p> 
-          	The occurrence store should now be setup. This application consists of 
+          <p>
+          	The occurrence store should now be setup. This application consists of
           	3 web applications now running in Tomcat:
           	<ul>
-              <li><a href="{{biocache_hub_context_path}}">Occurrence search</a> - Reskinnable front end UI</li>              
-              <li><a href="{{biocache_hub_context_path}}/explore/your-area?default=true">Explore your area</a>  - Reskinnable front end UI</li>
-          	  <li><a href="{{biocache_service_context_path}}">Web services</a> - the JSON/WMS webservices</li>
-          	  <li><a href="http://{{ demo_hostname }}:8983{{solr_context_path}}">Apache SOLR</a>
+              <li><a href="{{biocache_hub_url}}">Occurrence search</a> - Reskinnable front end UI</li>
+              <li><a href="{{biocache_hub_url}}/explore/your-area?default=true">Explore your area</a>  - Reskinnable front end UI</li>
+          	  <li><a href="{{biocache_service_url}}">Web services</a> - the JSON/WMS webservices</li>
+                  <li><a href="http://{{ solr_base_url }}">Apache SOLR</a>
                   - the index used for searching
                   <smaller>(note port 8983 needs to be open for this link to work) </smaller></li>
-          	</ul>	
+          	</ul>
 			There is also a command line tool now installed that can be started with the command "biocache".
 			This tool can be used for loading data and running processes across the data.
           </p>
@@ -60,10 +60,10 @@
               This is an application for editing metadata
           	for collections, institutions and data resources.
       		<ul>
-				<li><a href="{{collectory_context_path}}">Collections browser</a></li>
-                <li><a href="{{collectory_context_path}}/datasets">Datasets browser</a></li>
-				<li><a href="{{collectory_context_path}}/ws">Web services</a></li>
-				<li><a href="{{collectory_context_path}}/admin">Admin interface</a></li>
+				<li><a href="{{collectory_url}}">Collections browser</a></li>
+                <li><a href="{{collectory_url}}/datasets">Datasets browser</a></li>
+				<li><a href="{{collectory_url}}/ws">Web services</a></li>
+				<li><a href="{{collectory_url}}/admin">Admin interface</a></li>
 			</ul>
            </p>
           <h4>Further information</h4>
@@ -101,7 +101,7 @@
               <p>
                   The Species lists component consists of 1 web applications now running in Tomcat on this server:
                   <ul>
-                      <li><a href="{{specieslist_context_path}}">Species lists</a> - Reskinnable front end UI</li>
+                      <li><a href="{{specieslist_url}}">Species lists</a> - Reskinnable front end UI</li>
                   </ul>
               </p>
           </div>
@@ -110,8 +110,8 @@
               <p>
                   The Species pages (BIE) consists of 2 web applications now running in Tomcat on this server:
                   <ul>
-                      <li><a href="{{bie_hub_context_path}}">BIE UI</a> - Reskinnable front end UI</li>
-                      <li><a href="{{bie_index_context_path}}">BIE web services</a>  - taxonomy search services</li>
+                      <li><a href="{{bie_base_url}}">BIE UI</a> - Reskinnable front end UI</li>
+                      <li><a href="{{bie_service_base_url}}">BIE web services</a>  - taxonomy search services</li>
                   </ul>
               </p>
           </div>
@@ -133,8 +133,8 @@
         &copy; <a href="https://www.ala.org.au">Atlas of Living Australia 2018</a>
 
         - Machine setup up on {{ansible_date_time.date}}. Running
-           {{ansible_distribution}} 
-           {{ansible_distribution_version}} 
+           {{ansible_distribution}}
+           {{ansible_distribution_version}}
       </p>
       </footer>
     </div> <!-- /container -->
