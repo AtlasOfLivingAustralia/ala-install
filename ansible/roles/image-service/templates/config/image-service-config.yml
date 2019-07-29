@@ -10,7 +10,7 @@ security:
     ip:
       whitelist: {{image_service_whitelist | default('')}}
     check:
-      serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey='
+      serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
 info:
   app:
     name: 'image-service'
