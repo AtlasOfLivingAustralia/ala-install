@@ -1,5 +1,11 @@
 - hosts: cas-servers
   tasks:
+  - name: Include common
+    include_role:
+      name: common
+  - name: Install java
+    include_role:
+      name: java
   - apt_repository:
       repo: ppa:chris-lea/redis-server
       update_cache: yes
