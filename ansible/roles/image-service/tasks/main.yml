@@ -2,6 +2,7 @@
   tags:
     - image-service
     - properties
+    - data_import
 
 - name: create images database
   postgresql_db: name={{ image_service_db_name }}
@@ -110,6 +111,16 @@
     - image-service
     - properties
 
+- name: Copy licence data
+  copy: src={{ item }} dest=/tmp/{{ item }}
+  with_items:
+    - "licences.csv"
+    - "licence_mappings.csv"
+  tags:
+    - deploy
+    - image-service
+    - properties
+    - data_import
 
 - name: copy all SQL export script
   template: src={{ item }} dest={{data_dir}}/image-service/setup/
@@ -140,28 +151,28 @@
     - service
     - image-service
 
-- name: set data ownership 1
-  file: path={{data_dir}}/image-service owner="image-service" group="image-service" recurse=true
+- name: set data ownership for {{data_dir}}/image-service
+  file: path={{data_dir}}/image-service owner="image-service" group="image-service"
   tags:
     - image-service
     - properties
     - image-service
 
-- name: set data ownership postgres
+- name: set data ownership postgres for {{data_dir}}/image-service/exports
   file: path={{data_dir}}/image-service/exports owner="postgres" group="postgres" recurse=true
   tags:
     - image-service
     - properties
     - image-service
 
-- name: set data ownership 2
+- name: set data ownership for /opt/atlas/image-service
   file: path=/opt/atlas/image-service owner="image-service" group="image-service" recurse=true
   tags:
     - image-service
     - properties
     - image-service
 
-- name: set data ownership 3
+- name: set data ownership for /var/log/atlas/image-service
   file: path=/var/log/atlas/image-service owner="image-service" group="image-service" recurse=true
   tags:
     - image-service

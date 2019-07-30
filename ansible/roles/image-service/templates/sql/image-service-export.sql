@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION export_images() RETURNS void AS $$
             data_resource_uid AS "dataResourceUid",
             split_part(original_filename, '||', 2) AS "occurrenceID",
             CONCAT( '{{image_service_base_url}}{{image_service_context_path}}/image/proxyImageThumbnailLarge?imageId=', image_identifier) AS identifier,
-            regexp_replace(regexp_replace(creator, E'[\\n\\r]+', ' ', 'g' ) AS creator,
+            regexp_replace(creator, E'[\\n\\r]+', ' ', 'g' ) AS creator,
             date_taken AS created,
             regexp_replace(title, E'[\\n\\r]+', ' ', 'g' ) AS title,
             mime_type AS format,
