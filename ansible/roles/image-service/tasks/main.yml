@@ -2,17 +2,26 @@
   tags:
     - image-service
     - properties
+    - data_import
 
 - name: create images database
-  postgresql_db: name={{ images_db_name }}
+  postgresql_db: name={{ image_service_db_name }}
   become_user: postgres
   become: yes
   tags:
     - db
     - image-service
 
-- name: create {{ images_db_username }} DB user
-  command: "psql -d {{ images_db_username }} -c \"create user images with password '{{images_db_password}}'\""
+- name: create {{ image_service_db_username }} DB user
+  command: "psql -d {{ image_service_db_name }} -c \"create user {{ image_service_db_username }} with password '{{image_service_db_password}}'\""
+  become_user: postgres
+  ignore_errors: yes
+  tags:
+    - image-service
+    - db
+
+- name: create {{ image_service_db_username }} DB user
+  command: "psql -d {{ image_service_db_username }} -c \"ALTER ROLE {{ image_service_db_username }} WITH SUPERUSER\""
   become_user: postgres
   ignore_errors: yes
   tags:
@@ -20,14 +29,14 @@
     - db
 
 - name: create database user images 
-  postgresql_user: db=images name={{ images_db_username }} password={{ images_db_password }} priv=ALL state=present
+  postgresql_user: db={{ image_service_db_name }} name={{ image_service_db_username }} password={{ image_service_db_password }} priv=ALL state=present
   become_user: postgres
   become: yes
   tags:
     - db
     - image-service
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ images_context_path }}' hostname='{{ images_hostname }}'
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ image_service_context_path }}' hostname='{{ image_service_hostname }}'
   tags:
     - deploy
     - apache_vhost
@@ -38,18 +47,17 @@
   include_role:
     name: nginx_vhost
   vars:
-    appname: "image-service"
-    hostname: "{{ images_hostname }}"
-    context_path: "{{ images_context_path }}"
+    hostname: "{{ image_service_hostname }}"
+    context_path: "{{ image_service_context_path }}"
     nginx_paths:
-      - path: "{{ images_context_path }}"
+      - path: "{{ image_service_context_path }}"
         sort_label: "1_ws"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:8080{{ images_context_path }}"
+        proxy_pass: "http://127.0.0.1:8080{{ image_service_context_path }}"
       - path: "/store"
         sort_label: "2_store"
         is_proxy: false
-        alias: "{{ data_dir }}/images/store"
+        alias: "{{ data_dir }}/image-service/store"
   notify:
     - restart nginx
   tags:
@@ -61,7 +69,7 @@
 - name: ensure www directory exists
   file: path={{item}} state=directory
   with_items:
-    - "/srv/{{ images_hostname }}/www"
+    - "/srv/{{ image_service_hostname }}/www"
   tags:
     - image-service
 
@@ -75,9 +83,11 @@
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory
   with_items:
+    - "{{data_dir}}/image-service/setup"
     - "{{data_dir}}/image-service/config"
     - "{{data_dir}}/image-service/store"
     - "{{data_dir}}/image-service/incoming"
+    - "{{data_dir}}/image-service/exports"
     - "{{data_dir}}/image-service/bin/imgcnv"
     - "/var/log/atlas/image-service"
   tags:
@@ -85,7 +95,7 @@
 
 # Only create the symlink for apache hosts, as nginx has an inbuilt rule for this
 - name: Create symlink to data/image-service/store from /srv/[hostname]/www/store
-  command: "ln -s {{ data_dir }}/image-service/store /srv/{{ images_hostname }}/www/store"
+  command: "ln -s {{ data_dir }}/image-service/store /srv/{{ image_service_hostname }}/www/store"
   ignore_errors: yes
   when: not webserver_nginx
   tags: 
@@ -101,6 +111,35 @@
     - image-service
     - properties
 
+- name: Copy licence data
+  copy: src={{ item }} dest=/tmp/{{ item }}
+  with_items:
+    - "licences.csv"
+    - "licence_mapping.csv"
+  tags:
+    - deploy
+    - image-service
+    - properties
+    - data_import
+
+- name: copy all SQL export script
+  template: src={{ item }} dest={{data_dir}}/image-service/setup/
+  with_items:
+    - "sql/image-service-export.sql"
+  tags:
+    - deploy
+    - image-service
+    - properties
+
+- name: create stored procedures for export functions
+  command: "psql -d {{ image_service_db_username }} -f {{data_dir}}/image-service/setup/image-service-export.sql"
+  become_user: postgres
+  ignore_errors: no
+  tags:
+    - image-service
+    - properties
+    - db
+
 - name: add image-service jar and setup service
   include_role:
     name: exec-jar
@@ -112,21 +151,28 @@
     - service
     - image-service
 
-- name: set data ownership 1
-  file: path={{data_dir}}/image-service owner="image-service" group="image-service" recurse=true
+- name: set data ownership for {{data_dir}}/image-service
+  file: path={{data_dir}}/image-service owner="image-service" group="image-service"
   tags:
     - image-service
     - properties
     - image-service
 
-- name: set data ownership 2
+- name: set data ownership postgres for {{data_dir}}/image-service/exports
+  file: path={{data_dir}}/image-service/exports owner="postgres" group="postgres" recurse=true
+  tags:
+    - image-service
+    - properties
+    - image-service
+
+- name: set data ownership for /opt/atlas/image-service
   file: path=/opt/atlas/image-service owner="image-service" group="image-service" recurse=true
   tags:
     - image-service
     - properties
     - image-service
 
-- name: set data ownership 3
+- name: set data ownership for /var/log/atlas/image-service
   file: path=/var/log/atlas/image-service owner="image-service" group="image-service" recurse=true
   tags:
     - image-service
@@ -137,8 +183,8 @@
   include_role:
     name: nginx_vhost
   vars:
-    hostname: "{{ images_hostname }}"
-    context_path: "{{ images_hostname_context_path }}"
+    hostname: "{{ image_service_hostname }}"
+    context_path: "{{ image_service_hostname_context_path }}"
   tags:
     - nginx_vhost
     - deploy
