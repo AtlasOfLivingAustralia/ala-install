@@ -1,0 +1,3 @@
+{% if nginx_rate_limit_enabled | bool == True %}
+limit_req_zone {{ nginx_rate_limit_ip_variable }} zone={{ nginx_rate_limit_name }}:{{ nginx_rate_limit_size }} rate={{ nginx_rate_limit }};
+{% endif %}
