@@ -8,9 +8,6 @@ googleAnalyticsId: "{{google_analytics_id | default('')}}"
 security:
   cas:
     casServerName: "{{ auth_base_url }}"
-    uriFilterPattern: "{{ uri_filter_pattern | default('/portal.*,,/,/alaAdmin,/alaAdmin.*') }}"
-    uriExclusionFilterPattern: "{{ uri_exclusion_filter_pattern | default('/portal/messages.*,/portal/sessionCache.*,/static.*,/assets.*') }}"
-    authenticateOnlyIfLoggedInFilterPattern: "{{ authenticate_only_if_logged_in_filter_pattern | default('') }}"
     appServerName: "{{ spatial_hub_base_url }}"
     casServerUrlPrefix: "{{ auth_cas_url }}"
     loginUrl: "{{ auth_cas_url }}/login"
