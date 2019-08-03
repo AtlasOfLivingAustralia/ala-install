@@ -1,22 +1,26 @@
-- name: Add mongodb.org apt key
+- name: Add mongodb.org apt key for version 4.0
   apt_key:
     keyserver: keyserver.ubuntu.com
-    id: 9DA31620334BD75D9DCB49F368818C72E52529D4 # mongo
+    id: 9DA31620334BD75D9DCB49F368818C72E52529D4
+  when: mongodb_version == 4.0
+  tags: mongodb-org
+
+- name: Add mongodb.org apt key for version 3.4
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 0c49f3730359a14518585931bc711f9ba15703c6
+  when: mongodb_version == 3.4
   tags: mongodb-org
 
 - name: Add mongodb.org repo
   apt_repository:
-    repo: deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/4.0 multiverse
+    repo: deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/{{ mongodb_version }} multiverse
     state: present
   tags: mongodb-org
 
 - name: Install mongodb.org packages and related
   apt:
-    name: "{{ item }}"
-  with_items:
-  - mongodb-org-shell
-  - mongodb-org-server
-  - python-pip
+    name: ['mongodb-org-shell', 'mongodb-org-server', 'python-pip']
   tags: mongodb-org
 
 # https://github.com/ansible/ansible/issues/36585
