@@ -2,7 +2,7 @@
   roles:
     - common
     - java
-    - mongodb
+    - mongodb-org
     - tomcat
     - webserver
     - ecodata

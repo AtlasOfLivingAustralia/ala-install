@@ -98,3 +98,17 @@
 #
 - name: install cron job for indexing elastic search
   cron: minute=21 hour=22 name="Elastic search indexing" job="wget -O - {{ ecodata_url }}{{ ecodata_context_path }}/admin/reIndexAll >/dev/null 2>&1" user=root state=present
+
+
+# Mongo users and database
+- name: Create the ecodata database and user
+  mongodb_user:
+    login_user: "{{ mongodb_root_username }}"
+    login_password: "{{ mongodb_root_password }}"
+    login_port: "{{ mongodb_port }}"
+    database: "{{ ecodata_database }}"
+    name: "{{ ecodata_username }}"
+    password: "{{ ecodata_password }}"
+    roles:
+      - { db: "{{ ecodata_database }}", role: "dbAdmin" }
+

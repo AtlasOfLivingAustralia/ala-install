@@ -5,8 +5,10 @@ vagrant1
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
-
+webserver_nginx=true
+ssl=false
 deployment_env=vagrant
+
 
 ecodata_hostname=ecodata.vagrant1.ala.org.au
 ecodata_url=http://ecodata.vagrant1.ala.org.au
@@ -30,3 +32,7 @@ app.api.whiteList=
 ecodata_support_email=biocollect-support@ala.org.au
 
 scistarter_api_key=
+
+mongodb_root_password=password
+mongodb_version=3.4
+ecodata_password=password
