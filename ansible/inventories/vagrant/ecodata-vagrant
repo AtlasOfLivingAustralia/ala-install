@@ -27,6 +27,7 @@ spatial_base_url=https://spatial.ala.org.au
 
 models_path=/data/ecodata/models/
 security_serviceUrl=https://auth.ala.org.au/apikey/ws/check?apikey=
+user_details_url=https://auth.ala.org.au/userdetails/userDetails/
 app.api.whiteList=
 
 ecodata_support_email=biocollect-support@ala.org.au
