@@ -19,6 +19,12 @@
       "emptyValueMsg": "Year not specified",
       "hideEmptyValues": true
     },
+    "data_provider_uid": {
+      "title": "By data partner",
+      "chartType": "horizontal-bar",
+      "emptyValueMsg": "Partner not specified",
+      "hideEmptyValues": true
+    },
     "collection_uid": {
       "title": "By collection",
       "chartType": "horizontal-bar"
@@ -26,12 +32,6 @@
     "data_resource_uid": {
       "title": "By dataset",
       "chartType": "horizontal-bar"
-    },
-    "data_provider_uid": {
-      "title": "By data partner",
-      "chartType": "horizontal-bar",
-      "emptyValueMsg": "Partner not specified",
-      "hideEmptyValues": true
     }
   }
 }
