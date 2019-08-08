@@ -8,6 +8,9 @@
             return 444;
         }
 {% endif %}
+{% if nginx_rate_limit_enabled is defined and nginx_rate_limit_enabled | bool == True %}
+        limit_req zone={{ nginx_rate_limit_name }} burst={{ nginx_rate_limit_burst }};
+{% endif %}
 {% if item.block_by_arguments is defined and item.block_by_arguments|length > 0 %}
         # These query argument and value combinations were specified in the ansible configuration to be blocked for this location
 {% for next_block_by_argument in item.block_by_arguments %}

@@ -22,9 +22,9 @@ context_path: '/'
 # By default, no robots should be accessing any servers, customise this in your inventory to allow access to specific paths
 robots_disallow_paths: ["/"]
 # Semrush completely ignore robots.txt, so banning them by default from all of our servers
-robots_disallow_useragents: ["Semrush"]
+robots_disallow_useragents: ["Semrush", "SEMrush", "semrush"]
 # Add IPs to this list in your inventory to disallow specific IP addresses in nginx
-robots_disallow_ips: []
+robots_disallow_ips: ["46.229.161.131"]
 # Add IPs to this list that are known to send correct x-forwarded-for headers, and can hence be safely relied on
 # https://nginx.org/en/docs/http/ngx_http_realip_module.html
 nginx_set_real_ips: []
@@ -73,3 +73,16 @@ nginx_max_fails: 0
 # Sets the time (in seconds) during which the specified number of unsuccessful attempts to communicate with the server should happen to consider the server unavailable;
 # Also sets the period of time the server will be considered unavailable.
 nginx_fail_timeout: 10
+
+# Set this to true to enable rate limiting for nginx
+# https://www.nginx.com/blog/rate-limiting-nginx/
+nginx_rate_limit_enabled: False
+nginx_rate_limit_ip_variable: "$binary_remote_addr"
+# Customise this name if necessary to support rate limits specific to applications
+nginx_rate_limit_name: "nginxratelimitzone"
+# 10m is quoted in documentation to support about 160,000 requests
+nginx_rate_limit_size: "10m"
+# Default to supporting 300 requests per minute if rate limiting is enabled
+nginx_rate_limit: "300r/m"
+# Default to a burst of 80, tune this in conjunction with nginx_rate_limit
+nginx_rate_limit_burst: "80"

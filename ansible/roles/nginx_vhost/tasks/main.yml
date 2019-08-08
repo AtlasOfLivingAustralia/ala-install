@@ -147,6 +147,14 @@
   tags:
     - nginx_vhost
 
+- name: add nginx rate limiter if configured
+  template:
+    src: "fragment_04_ratelimit.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_04_ratelimit"
+  when: vhost_required | bool == True and nginx_rate_limit_enabled | bool == True
+  tags:
+    - nginx_vhost
+
 - name: add cache fragment if configured
   template:
     src: "fragment_05_cache.j2"

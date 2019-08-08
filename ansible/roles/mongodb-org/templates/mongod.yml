@@ -23,10 +23,11 @@ net:
   port: {{ mongodb_port }}
   bindIp: {{ mongodb_bind_ip }}
 
-
+{% if mongodb_version >= 4 %}
 # how the process runs
 processManagement:
   timeZoneInfo: /usr/share/zoneinfo
+{% endif %}
 
 security:
   authorization: enabled
