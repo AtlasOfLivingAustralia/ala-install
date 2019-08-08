@@ -1,4 +1,6 @@
 - hosts: cas-servers
+  vars:
+    cas_add_mongo_users: true
   tasks:
   - name: Include common
     include_role:
