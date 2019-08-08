@@ -120,7 +120,6 @@ apikey_hostname=auth.living-atlas.org
 apikey_context_path=apikey
 apikey_base_url=http://auth.living-atlas.org
 apikey_url=http://auth.living-atlas.org/apikey
-apikey_db_dump={{inventory_dir}}/../roles/apikey/files/apikey_schema.sql
 
 apikey_db_name=apikey
 apikey_db_username=apikey
