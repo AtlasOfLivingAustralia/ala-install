@@ -21,5 +21,7 @@
   - name: Install mongo
     include_role:
       name: mongodb-org
+    vars:
+      mongodb_version: 4.0
 - name: include default cas 5 steps
   import_playbook: aws-cas-5.yml
