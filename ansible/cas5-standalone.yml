@@ -1,4 +1,6 @@
 - hosts: cas-servers
+  vars:
+    cas_add_mongo_users: true
   tasks:
   - name: Include common
     include_role:
@@ -21,5 +23,7 @@
   - name: Install mongo
     include_role:
       name: mongodb-org
+    vars:
+      mongodb_version: 4.0
 - name: include default cas 5 steps
   import_playbook: aws-cas-5.yml
