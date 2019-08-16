@@ -4,3 +4,4 @@
 cassandra_max_heap_size: "2G"
 cassandra_heap_newsize: "400M"
 cassandra_rpc_address: 0.0.0.0
+cassandra_cluster_name: "ALA"
