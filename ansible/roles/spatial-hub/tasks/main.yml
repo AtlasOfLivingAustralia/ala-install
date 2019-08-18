@@ -1,8 +1,4 @@
 - include: ../../common/tasks/setfacts.yml
-  tags:
-    - spatial-hub
-    - spatial-hub-config
-    - config    
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
@@ -21,8 +17,8 @@
     - "menu-config.json"
     - "view-config.json"
   tags:
-    - spatial-hub
     - config
+    - spatial-hub
     - spatial-hub-config
 
 - name: copy all log4j.properties
@@ -72,6 +68,7 @@
     - deploy
     - tomcat_vhost
     - spatial-hub
+    - spatial-hub-deploy
 
 - name: set data ownership
   file: path={{data_dir}}/ala/data/ owner={{tomcat_user}} group={{tomcat_user}} recurse=true
@@ -79,3 +76,4 @@
     - restart tomcat
   tags:
     - spatial-hub
+    - spatial-hub-config
