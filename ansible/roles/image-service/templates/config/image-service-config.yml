@@ -57,7 +57,7 @@ bie:
 swagger:
   info:
     description: "{{ swagger_info_description | default('API Documentation for Image Services') }}"
-    version: "{{ swagger_info_version | default('1.0.0') }}"
+    version: "{{ swagger_info_version | default('2.0') }}"
     title:  "{{ swagger_info_title | default('Image Service API') }}"
     termsOfServices: "{{ swagger_info_terms_of_services | default('https://www.ala.org.au/who-we-are/terms-of-use/') }}"
     contact:
