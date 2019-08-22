@@ -2,7 +2,7 @@
   roles:
     - common
     - java
-    - mongodb-org
-    - tomcat
+    - { role: mongodb-org, dbPath: "{{ ecodata_dbPath }}"}
+    - { role: tomcat, when: not exec_jar }
     - webserver
     - ecodata

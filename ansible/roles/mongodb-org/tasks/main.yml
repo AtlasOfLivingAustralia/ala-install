@@ -1,13 +1,13 @@
 - name: Add mongodb.org apt key for version 4.0
   apt_key:
-    keyserver: keyserver.ubuntu.com
+    keyserver: hkp://keyserver.ubuntu.com:80
     id: 9DA31620334BD75D9DCB49F368818C72E52529D4
   when: mongodb_version == 4.0
   tags: mongodb-org
 
 - name: Add mongodb.org apt key for version 3.4
   apt_key:
-    keyserver: keyserver.ubuntu.com
+    keyserver: hkp://keyserver.ubuntu.com:80
     id: 0c49f3730359a14518585931bc711f9ba15703c6
   when: mongodb_version == 3.4
   tags: mongodb-org
@@ -50,6 +50,15 @@
     enabled: yes
   tags: mongodb-org
 
+- name: Set configuration pointing to passed in dbPath
+  template:
+    src: templates/mongod.yml
+    dest: /etc/mongod.conf
+  notify:
+    - restart mongod
+#  when: get_mongo_admin_users.rc == 0
+  tags: mongodb-org
+
 # https://github.com/ansible/ansible/issues/33832
 - name: Check if some admin user is already configured
   shell: /usr/bin/mongo --eval 'db.getUsers()' admin
@@ -60,7 +69,7 @@
 
 - name: Debug admin query
   debug:
-    msg: "Mongo admin query output: {{ get_mongo_admin_users.rc }}. If equals 0: not admin users configured"
+    msg: "Mongo admin query output: {{ get_mongo_admin_users.rc }}, stdout if any: {{ get_mongo_admin_users.stdout }}. If equals 0 and no error in command: not admin users configured"
   tags: mongodb-org
 
 # https://docs.ansible.com/ansible/latest/modules/mongodb_user_module.html
@@ -75,11 +84,14 @@
   when: get_mongo_admin_users.rc == 0
   tags: mongodb-org
 
-- name: Set configuration with authentication when admin user is created
-  template:
-    src: templates/mongod.yml
-    dest: /etc/mongod.conf
+- name: Enable security
+  blockinfile:
+    path: /etc/mongod.conf
+    backup: yes
+    marker: '# {mark} Enable mongodb security authorization'
+    block: |
+      security:
+        authorization: enabled
   notify:
     - restart mongod
-  when: get_mongo_admin_users.rc == 0
   tags: mongodb-org

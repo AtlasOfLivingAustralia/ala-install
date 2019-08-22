@@ -5,7 +5,7 @@
 
 # Where and how to store data.
 storage:
-  dbPath: /var/lib/mongodb
+  dbPath: {{ dbPath }} #/var/lib/mongodb
   journal:
     enabled: true
 #  engine:
@@ -29,8 +29,7 @@ processManagement:
   timeZoneInfo: /usr/share/zoneinfo
 {% endif %}
 
-security:
-  authorization: enabled
+
 
 #operationProfiling:
 

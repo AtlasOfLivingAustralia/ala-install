@@ -2,15 +2,33 @@
   tags:
     - ecodata
     - deploy
+
+- name: set ecodata_user as default value
+  set_fact:
+    ecodata_user: "{{ (exec_jar) | ternary ('ecodata', 'tomcat')}}"
+  tags:
+    - ecodata
+    - deploy
+
 #
 # External configuration directories and files
 #
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{item}} state=directory owner='mongodb' group='mongodb'
+  with_items:
+    - "{{data_dir}}/mongodb"
+  tags:
+    - properties
+    - ecodata
+
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{ecodata_user}} group={{ecodata_user}}
   with_items:
     - "{{data_dir}}/ecodata/config"
     - "{{data_dir}}/ecodata/uploads"
     - "{{data_dir}}/ecodata/models"
+    - "{{data_dir}}/ecodata/elasticsearch"
   tags:
     - properties
     - ecodata
@@ -20,6 +38,36 @@
   tags:
     - properties
     - ecodata
+
+- name: copy logback config
+  template:
+    src: logback.groovy
+    dest: "{{data_dir}}/ecodata/config/logback.groovy"
+    owner: ecodata
+    group: ecodata
+  notify:
+    - restart ecodata
+  tags:
+    - properties
+    - ecodata
+
+- name: ensure ecodata log directory exists
+  file: path={{item}} state=directory owner={{ecodata_user}} group={{ecodata_user}}
+  with_items:
+    - "/var/log/atlas/ecodata"
+  tags:
+    - properties
+    - ecodata
+  when: exec_jar
+
+- name: set ecodata log ownership
+  file: path=/var/log/atlas/ecodata owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true
+  notify:
+    - restart ecodata
+  tags:
+    - properties
+    - ecodata
+  when: exec_jar
 
 #
 # Copy sensitive data xml file
@@ -41,9 +89,9 @@
 
 
 - name: set data ownership
-  file: path={{data_dir}}/ecodata owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  file: path={{data_dir}}/ecodata owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true
   notify:
-    - restart tomcat
+    - restart ecodata
   tags:
     - properties
     - ecodata
@@ -72,6 +120,18 @@
     - ecodata
   when: webserver_nginx
 
+- name: add jar and service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: "ecodata"
+    jar_url: '{{ ecodata_artifact_url }}'
+  tags:
+    - deploy
+    - service
+    - ecodata
+  when: exec_jar
+
 - name: Serve ecodata uploads from nginx
   blockinfile:
     path: /etc/nginx/sites-enabled/{{ ecodata_hostname }}.conf
@@ -93,6 +153,7 @@
     - deploy
     - tomcat_vhost
     - ecodata
+  when: not exec_jar
 
 #
 # Override the default memory settings for Tomcat to increase heap space and change the garbage collector
@@ -108,6 +169,7 @@
     - ecodata
     - deploy
     - tomcat
+  when: not exec_jar
 
 #
 # Cron Job configuration
@@ -127,4 +189,7 @@
     password: "{{ ecodata_password }}"
     roles:
       - { db: "{{ ecodata_database }}", role: "dbAdmin" }
+      - { db: "{{ ecodata_database }}", role: "readWrite" }
+
+
 

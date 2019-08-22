@@ -1,0 +1,1 @@
+dbPath: "{{dbPath | default('/var/lib/mongodb')}}"
