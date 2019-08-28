@@ -20,7 +20,7 @@
 
 - name: Install mongodb.org packages and related
   apt:
-    name: ['mongodb-org-shell', 'mongodb-org-server', 'python-pip']
+    name: ['mongodb-org-shell', 'mongodb-org-server', 'mongodb-org-tools', 'python-pip']
   tags: mongodb-org
 
 # https://github.com/ansible/ansible/issues/36585
@@ -29,7 +29,7 @@
     daemon_reload: yes
 
 - name: Restart mongod
-  service: name=mongod state=restarted
+  service: name=mongod state=restarted daemon-reload=true
   when: ansible_os_family == "Debian"
   tags: mongodb-org
 
