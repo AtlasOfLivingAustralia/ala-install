@@ -34,6 +34,10 @@ ecodata_support_email=biocollect-support@ala.org.au
 
 scistarter_api_key=
 
+ecodata_version=2.0-SNAPSHOT
+
+ecodata_dbPath=/data/mongodb
+
 mongodb_root_password=password
-mongodb_version=3.4
+mongodb_version=4.0
 ecodata_password=password

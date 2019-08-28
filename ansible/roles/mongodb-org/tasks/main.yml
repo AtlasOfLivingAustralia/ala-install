@@ -28,6 +28,19 @@
   systemd:
     daemon_reload: yes
 
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner='mongodb' group='mongodb'
+  with_items:
+    - "{{ dbPath }}"
+  tags:
+    - mongodb-org
+
+- name: Set configuration pointing to passed in dbPath
+  template:
+    src: templates/mongod.yml
+    dest: /etc/mongod.conf
+  tags: mongodb-org
+
 - name: Restart mongod
   service: name=mongod state=restarted daemon-reload=true
   when: ansible_os_family == "Debian"
@@ -50,14 +63,7 @@
     enabled: yes
   tags: mongodb-org
 
-- name: Set configuration pointing to passed in dbPath
-  template:
-    src: templates/mongod.yml
-    dest: /etc/mongod.conf
-  notify:
-    - restart mongod
-#  when: get_mongo_admin_users.rc == 0
-  tags: mongodb-org
+
 
 # https://github.com/ansible/ansible/issues/33832
 - name: Check if some admin user is already configured
