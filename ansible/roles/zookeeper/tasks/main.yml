@@ -24,3 +24,20 @@
     mode: 0644
   notify: restart zookeeper
 
+- name: Create data dir
+  file:
+    path: "{{ zookeeper_data_dir }}"
+    owner: "root"
+    group: "root"
+    state: directory
+  notify: restart zookeeper
+
+- name: Create a symbolic link
+  file:
+    dest: "{{ zookeeper_data_dir }}/myid"
+    src: "/etc/zookeeper/conf/myid"
+    owner: "root"
+    group: "root"
+    state: link
+  notify: restart zookeeper
+

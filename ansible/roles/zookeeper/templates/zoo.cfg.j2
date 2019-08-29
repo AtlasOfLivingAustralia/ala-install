@@ -25,7 +25,7 @@ clientPort={{ zookeeper_client_port }}
 # The second one is used for leader election
 {% if zookeeper_servers is defined and zookeeper_servers|length > 0 %}
 {% for next_server in zookeeper_servers %}
-server.{{ next_server.id }}={{ server.server_name }}:{{ server.follower_port | default("2888") }}:{{ server.election_port | default("3888") }}
+server.{{ next_server.id }}={{ next_server.server_name }}:{{ next_server.follower_port | default("2888") }}:{{ next_server.election_port | default("3888") }}
 {% endfor %}
 {% else %}
 # ERROR: zookeeper_servers was not defined as a non-empty array in ansible
