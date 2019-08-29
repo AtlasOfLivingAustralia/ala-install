@@ -1,0 +1,38 @@
+---
+# This is the time between ticks for Zookeeper in milliseconds
+zookeeper_tick_time: "2000"
+
+# This is the number of ticks that the initial synchronisation phase can take
+zookeeper_init_limit: "10"
+
+# This is the number of ticks that can pass between sending a request a getting an acknowledgement
+zookeeper_sync_limit: "5"
+
+# This is the data directory for zookeeper
+zookeeper_data_dir: "/data/zookeeper"
+
+# This is an optional setting for putting the log directory in a different location for performance reasons
+# Must be configured to be used
+#zookeeper_data_log_dir: "/data/zookeeper"
+
+# This is the port that clients will used to connect
+zookeeper_client_port: "2181"
+
+# This is the array containing the zookeeper server list along with ids
+# Must be configured
+# If follower_port is not configured, it is assumed to be the default, 2888
+# If election_port is not configured, it is assumed to be the default, 3888
+#zookeeper_servers: [{ "id": "1", "server_name": "zoo1.example.org", "follower_port": "2888", "election_port": "3888" }, { "id": "2", "server": "zoo2.example.org", "follower_port": "2888", "election_port": "3888" }, { "id": "3", "server": "zoo3.example.org", "follower_port": "2888", "election_port": "3888" }]
+
+# This is an optional setting to change the default allocated space (in kilobytes) in transaction files
+# Must be configured to be used
+#zookeeper_pre_alloc_size: "65536"
+
+# This is a limit on the number of transactions to log to a transaction file before a snapshot is started
+# Must be configured to be used
+#zookeeper_snap_count: "1000"
+
+# This is an optional setting to not accept clients on the leader node, to have it focus instead on coordination
+# Must be configured to be used
+# Set to "no" to change the default
+#zookeeper_leader_serves: "yes"
