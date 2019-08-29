@@ -25,7 +25,8 @@ CREATE OR REPLACE FUNCTION export_images() RETURNS void AS $$
             width as width,
             height as height,
             zoom_levels as "zoomLevels",
-            image_identifier as "imageIdentifier"
+            image_identifier as "imageIdentifier",
+            occurrence_id as "occurrenceID"
             from image i
             left outer join license l ON l.id = i.recognised_license_id
             order by data_resource_uid
@@ -63,10 +64,10 @@ BEGIN
             thumb_width AS "thumbWidth",
             harvestable,
             l.acronym  as "recognisedLicence",
-            split_part(original_filename, '||', 2) AS "occurrenceID",
+            occurrence_id AS "occurrenceID",
             TO_CHAR(date_uploaded :: DATE, 'yyyy-mm') AS "dateUploadedYearMonth"
         from image i
-                 left outer join license l ON l.id = i.recognised_license_id
+            left outer join license l ON l.id = i.recognised_license_id
         where date_deleted is NULL
         )
         TO '{{image_service_export_dir | default('/data/image-service/exports') }}/images-index.csv' WITH CSV DELIMITER '$' HEADER;
