@@ -41,3 +41,10 @@
     state: link
   notify: restart zookeeper
 
+# We can't easily setup remote JMX if this option is present, so remove it by default
+- name: "Remove JMXLOCALONLY=true"
+  lineinfile:
+    dest="/etc/zookeeper/conf/environment"
+    regexp="^JMXLOCALONLY=true"
+    state=absent
+  notify: restart zookeeper
