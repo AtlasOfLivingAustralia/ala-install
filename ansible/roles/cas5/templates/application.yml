@@ -161,6 +161,7 @@ ala:
       enableUpdateLegacyPasswords: {{ cas_update_legacy_passwords | default('true') }}
   skin:
     baseUrl: {{ ala_base_url | default('https://www.ala.org.au')}}
+    termsUrl: {{ terms_url | default('${ala.skin.baseUrl}/who-we-are/terms-of-use/') }}
     uiVersion: {{ ala_cas_ui_version | default('2') }}
     headerFooterUrl: {{ header_and_footer_baseurl | default('${ala.skin.baseUrl}/commonui-bs3')}}/
     favIconBaseUrl: {{ skin_favicon_baseurl | default('${ala.skin.baseUrl}/wp-content/themes/ala-wordpress-theme/img/favicon/') }}
