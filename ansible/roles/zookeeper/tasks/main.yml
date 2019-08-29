@@ -27,7 +27,7 @@
 - name: Create data dir
   file:
     path: "{{ zookeeper_data_dir }}"
-    owner: "root"
+    owner: "zookeeper"
     group: "root"
     state: directory
   notify: restart zookeeper
