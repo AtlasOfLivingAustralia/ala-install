@@ -5,3 +5,46 @@
     - zookeeperd
   tags:
     - zookeeper
+
+- name: configure zookeeper zoo.cfg
+  template:
+    src: "zoo.cfg.j2"
+    dest: "/etc/zookeeper/conf/zoo.cfg"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  notify: restart zookeeper
+
+- name: configure zookeeper myid
+  template:
+    src: "myid.j2"
+    dest: "/etc/zookeeper/conf/myid"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  notify: restart zookeeper
+
+- name: Create data dir
+  file:
+    path: "{{ zookeeper_data_dir }}"
+    owner: "zookeeper"
+    group: "root"
+    state: directory
+  notify: restart zookeeper
+
+- name: Create a symbolic link
+  file:
+    dest: "{{ zookeeper_data_dir }}/myid"
+    src: "/etc/zookeeper/conf/myid"
+    owner: "root"
+    group: "root"
+    state: link
+  notify: restart zookeeper
+
+# We can't easily setup remote JMX if this option is present, so remove it by default
+- name: "Remove JMXLOCALONLY=true"
+  lineinfile:
+    dest="/etc/zookeeper/conf/environment"
+    regexp="^JMXLOCALONLY=true"
+    state=absent
+  notify: restart zookeeper

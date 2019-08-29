@@ -1,0 +1,70 @@
+# http://hadoop.apache.org/zookeeper/docs/current/zookeeperAdmin.html
+
+# The number of milliseconds of each tick
+tickTime={{ zookeeper_tick_time }}
+# The number of ticks that the initial
+# synchronization phase can take
+initLimit={{ zookeeper_init_limit }}
+# The number of ticks that can pass between
+# sending a request and getting an acknowledgement
+syncLimit={{ zookeeper_sync_limit }}
+# the directory where the snapshot is stored.
+dataDir={{ zookeeper_data_dir }}
+# Place the dataLogDir to a separate physical disc for better performance
+{% if zookeeper_data_log_dir is defined and zookeeper_data_log_dir|length > 0 %}
+dataLogDir={{ zookeeper_data_log_dir }}
+{% else %}
+# dataLogDir can be customised in ansible using zookeeper_data_log_dir
+{% endif %}
+
+# the port at which the clients will connect
+clientPort={{ zookeeper_client_port }}
+
+# specify all zookeeper servers
+# The first port is used by followers to connect to the leader
+# The second one is used for leader election
+{% if zookeeper_servers is defined and zookeeper_servers|length > 0 %}
+{% for next_server in zookeeper_servers %}
+server.{{ next_server.id }}={{ next_server.server_name }}:{{ next_server.follower_port | default("2888") }}:{{ next_server.election_port | default("3888") }}
+{% endfor %}
+{% else %}
+# ERROR: zookeeper_servers was not defined as a non-empty array in ansible
+{% endif %}
+
+# To avoid seeks ZooKeeper allocates space in the transaction log file in
+# blocks of preAllocSize kilobytes. The default block size is 64M. One reason
+# for changing the size of the blocks is to reduce the block size if snapshots
+# are taken more often. (Also, see snapCount).
+{% if zookeeper_pre_alloc_size is defined and zookeeper_pre_alloc_size |length > 0 %}
+preAllocSize={{ zookeeper_pre_alloc_size }}
+{% else %}
+#preAllocSize can be customised in ansible using zookeeper_pre_alloc_size
+{% endif %}
+
+# Clients can submit requests faster than ZooKeeper can process them,
+# especially if there are a lot of clients. To prevent ZooKeeper from running
+# out of memory due to queued requests, ZooKeeper will throttle clients so that
+# there is no more than globalOutstandingLimit outstanding requests in the
+# system. The default limit is 1,000.ZooKeeper logs transactions to a
+# transaction log. After snapCount transactions are written to a log file a
+# snapshot is started and a new transaction log file is started. The default
+# snapCount is 10,000.
+{% if zookeeper_snap_count is defined and zookeeper_snap_count |length > 0 %}
+snapCount={{ zookeeper_snap_count }}
+{% else %}
+#snapCount can be customised in ansible using zookeeper_snap_count
+{% endif %}
+
+# If this option is defined, requests will be will logged to a trace file named
+# traceFile.year.month.day.
+#traceFile=
+
+# Leader accepts client connections. Default value is "yes". The leader machine
+# coordinates updates. For higher update throughput at thes slight expense of
+# read throughput the leader can be configured to not accept clients and focus
+# on coordination.
+{% if zookeeper_leader_serves is defined and zookeeper_leader_serves |length > 0 %}
+#leaderServes={{ zookeeper_leader_serves }}
+{% else %}
+#leaderServes can be customised in ansible using zookeeper_leader_serves
+{% endif %}
