@@ -16,7 +16,7 @@ security:
     contextPath:   {{ bie_index_context_path }}
     bypass:   {{ bypass_cas | default(true) }}
   apikey:
-    serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey='
+    serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
 biocache:
   base: {{ biocache_base_url | default('https://biocache.ala.org.au') }}
   service: {{ biocache_service_url | default('https://biocache-ws.ala.org.au/ws') }}
@@ -47,15 +47,15 @@ wordPress:
   - button
   contentOnlyParams: ?content-only=1&categories=1
 lists:
-  service: {{ specieslist_service_url | default('https://lists.ala.org.au/ws')}}
+  service: {{ specieslist_service_url | default('https://lists.ala.org.au/ws') }}
   items: /speciesListItems/{0}?includeKVP=true
 attribution:
   default: {{ default_name_source | default('National Species Lists') }}
   common: {{ default_common_name_source | default('National Species Lists') }}
 commonName:
   # Acceptable vernacular names to appear in autocomplete and primary name eg en,en-AU,en-CA,en-GB,en-US (leave empty for any language)
-  languages:
-  defaultLanguage: en
+  languages: {{ vernacular_languages | default('') }}
+  defaultLanguage: {{ vernacular_language | default('en') }}
 # Location of conservation lists
 conservationListsUrl: file://{{ data_dir }}/bie-index/config/conservation-lists.json
 # Location of vernacular name lists (null for default)
@@ -90,7 +90,7 @@ skin:
   layout: {{ skin_layout | default('main') }}
   fluidLayout: {{ skin_fluid_layout | default('') }}
   orgNameLong: Atlas of Living Australia
-  favicon: {{ skin_favicon | default('https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png') }}
+  favicon: {{ skin_favicon | default('https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png') }}
 headerAndFooter:
   baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}
 useLegacyAuto: false

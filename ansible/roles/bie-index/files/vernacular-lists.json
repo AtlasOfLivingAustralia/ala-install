@@ -4,8 +4,26 @@
   "defaultStatusField": "status",
   "defaultLanguageField": "language",
   "defaultsourceField": "source",
+  "defaultTemporalField": "temporal",
+  "defaultLocationIdField": "locationID",
+  "defaultLocalityField": "locality",
+  "defaultCountryCodeField": "countryCode",
+  "defaultSexField": "sex",
+  "defaultLifeStageField": "lifeStage",
+  "defaultIsPluralField": "isPlural",
+  "defaultIsPreferredField": "isPreferred",
+  "defaultOrganismPartField": "organismPart",
+  "defaultLabelsField": "labels",
+  "defaultTaxonRemarksField": "taxonRemarks",
+  "defaultProvenanceField": "provenance",
   "defaultStatus": "common",
   "defaultLanguage": "en",
   "lists": [
+    {
+      "uid": "dr13266",
+      "vernacularNameField": "vernacular name",
+      "taxonRemarksField": "Notes",
+      "defaultStatus": "traditionalKnowledge"
+    }
   ]
 }
