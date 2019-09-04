@@ -28,10 +28,14 @@ appender(APPLICATION_LOG, RollingFileAppender) {
     }
 }
 
-root(DEBUG, [APPLICATION_LOG])
+root(ERROR, [APPLICATION_LOG])
 final error = [
 ]
 final warn = [
+        'au.org.ala',
+        'au.org.ala.ws',
+        'au.org.ala.images',
+        'au.org.ala.web.config',
         'au.org.ala.cas',
         'org.springframework',
         'grails.app',
@@ -42,11 +46,10 @@ final warn = [
         'asset.pipeline'
 ]
 final info = [
-//        'au.org.ala'
 ]
 
 final debug = [
-        'au.org.ala'
+
 ]
 
 final trace = [
