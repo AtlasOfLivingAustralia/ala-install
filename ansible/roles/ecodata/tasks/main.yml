@@ -136,7 +136,7 @@
   blockinfile:
     path: /etc/nginx/sites-enabled/{{ ecodata_hostname }}.conf
     backup: yes
-    marker: '# Serve uploaded files using nginx'
+    marker: '# {mark} Serve uploaded files using nginx'
     insertbefore: '^.*location'
     block:
       location ^~ /uploads {
@@ -190,6 +190,8 @@
     roles:
       - { db: "{{ ecodata_database }}", role: "dbAdmin" }
       - { db: "{{ ecodata_database }}", role: "readWrite" }
+  tags:
+    - mongodb-org
 
 
 
