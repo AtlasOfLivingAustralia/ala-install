@@ -2,6 +2,12 @@
     location / {
 {% elif item.path|first == '/' %}
     location {{ item.path }} {
+{% elif item.path|first == '~' %}
+    location {{ item.path }} {
+{% elif item.path|first == '=' %}
+    location {{ item.path }} {
+{% elif item.path|first == '^' %}
+    location {{ item.path }} {
 {% else %}
     location /{{ item.path }} {
 {% endif %}

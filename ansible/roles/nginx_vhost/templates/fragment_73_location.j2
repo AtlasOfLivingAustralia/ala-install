@@ -64,8 +64,25 @@
         proxy_pass {{ item.proxy_pass }};
 {% elif item.alias is defined %}
         alias {{ item.alias }};
+    {% if item.add_header is defined and item.add_header %}
+    add_header {{ item.add_header }};
+    {% endif %}
+    {% if item.try_files is defined and item.try_files %}
+try_files {{ item.try_files }};
+    {% endif %}
 {% elif item.rewrite is defined %}
         return 301 {{ item.rewrite }};
+{% elif item.fastcgi is defined and item.fastcgi %}
+        try_files      $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass   unix:/var/run/php/php{{ ala_wordpress_php_version }}-fpm.sock;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+{% elif item.deny is defined and item.deny %}
+        deny all;
+{% elif item.expires is defined and item.expires %}
+        expires {{ item.expires }};
 {% else %}
         try_files {{ item.try_files }};
 {% endif %}
