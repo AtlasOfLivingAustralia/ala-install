@@ -5,7 +5,7 @@ grails.assets.minifyJs: false
 
 googleAnalyticsId: "{{google_analytics_id | default('')}}"
 google:
-  apikey: "{{ google_api_key | default('') }}"
+  apikey: "{{ (google_apikey | default(google_api_key)) | default('get-a-google-api-key') }}"
 
 i18n:
   region: "{{ spatial_hub_locale | default('default') }}"
