@@ -4,6 +4,11 @@ grails.assets.bundle: false
 grails.assets.minifyJs: false
 
 googleAnalyticsId: "{{google_analytics_id | default('')}}"
+google:
+  apikey: "{{ google_api_key | default('') }}"
+
+i18n:
+  region: "{{ spatial_hub_locale | default('default') }}"
 
 security:
   cas:
