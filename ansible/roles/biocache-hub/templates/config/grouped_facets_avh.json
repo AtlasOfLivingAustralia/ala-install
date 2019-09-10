@@ -126,6 +126,10 @@
             },
             {
                 "sort":"count",
+                "field":"reproductive_condition"
+            },
+            {
+                "sort":"count",
                 "field":"establishment_means"
             },
             {
