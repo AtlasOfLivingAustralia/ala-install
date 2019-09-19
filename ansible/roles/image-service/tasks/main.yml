@@ -58,8 +58,6 @@
         sort_label: "2_store"
         is_proxy: false
         alias: "{{ data_dir }}/image-service/store"
-  notify:
-    - restart nginx
   tags:
     - nginx_vhost
     - deploy
