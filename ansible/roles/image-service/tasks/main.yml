@@ -111,17 +111,6 @@
     - image-service
     - properties
 
-- name: Copy licence data
-  copy: src={{ item }} dest=/tmp/{{ item }}
-  with_items:
-    - "licences.csv"
-    - "licence_mapping.csv"
-  tags:
-    - deploy
-    - image-service
-    - properties
-    - data_import
-
 - name: copy all SQL export script
   template: src={{ item }} dest={{data_dir}}/image-service/setup/
   with_items:
@@ -196,3 +185,5 @@
   tags:
     - packages
     - image-service
+
+- debug: msg="For new installs, to finish installation use the admin screen to load the licence information in files/licence_mappings.csv and files/licences.csv."
