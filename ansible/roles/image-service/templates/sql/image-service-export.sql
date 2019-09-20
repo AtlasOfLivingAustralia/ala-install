@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION export_images() RETURNS void AS $$
         (
             select
             data_resource_uid AS "dataResourceUid",
-            split_part(original_filename, '||', 2) AS "occurrenceID",
+            occurrence_id as "occurrenceID",
             CONCAT( '{{image_service_base_url}}{{image_service_context_path}}/image/proxyImageThumbnailLarge?imageId=', image_identifier) AS identifier,
             regexp_replace(creator, E'[\\n\\r]+', ' ', 'g' ) AS creator,
             date_taken AS created,
@@ -25,8 +25,7 @@ CREATE OR REPLACE FUNCTION export_images() RETURNS void AS $$
             width as width,
             height as height,
             zoom_levels as "zoomLevels",
-            image_identifier as "imageIdentifier",
-            occurrence_id as "occurrenceID"
+            image_identifier as "imageIdentifier"
             from image i
             left outer join license l ON l.id = i.recognised_license_id
             order by data_resource_uid
