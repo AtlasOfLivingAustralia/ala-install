@@ -24,9 +24,9 @@ check host solrhttpclusterstatus with address 127.0.0.1
    stop program  = "/usr/sbin/service solr stop"
    if failed
        port 8983
-       protocol http
-       and request /solr/admin/collections?action=clusterstatus&wt=json&indent=true
-       for 2 cycles
+       protocol http'
+       and request {{ solr_http_cluster_status_url | default('/solr/admin/collections?action=clusterstatus&wt=json&indent=true') }}
+       for {{ solr_http_cluster_status_cycles | default(2) }} cycles
    then restart
    else if succeeded then
        exec '/usr/local/bin/rebalanceleaders.sh'
@@ -38,8 +38,8 @@ check host solrhttpquery with address 127.0.0.1
    if failed
        port 8983
        protocol http
-       and request /solr/biocache/select?q=kangaroo&facet=off&rows=0
-       for 3 cycles
+       and request {{ solr_http_query_url | default('/solr/biocache/select?q=kangaroo&facet=off&rows=0') }}
+       for {{ solr_http_query_cycles | default(3) }} cycles
    then restart
    else if succeeded then
        exec '/usr/local/bin/rebalanceleaders.sh'

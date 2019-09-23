@@ -24,7 +24,7 @@
     - solr_monit
 
 - name: copy monit solr config
-  copy: src=solr dest=/etc/monit/conf-available/ mode=700
+  template: src=solr dest=/etc/monit/conf-available/ mode=700
   notify:
     - restart monit
   tags:
