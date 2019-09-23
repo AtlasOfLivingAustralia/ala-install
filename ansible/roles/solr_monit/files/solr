@@ -30,3 +30,16 @@ check host solrhttpclusterstatus with address 127.0.0.1
    then restart
    else if succeeded then
        exec '/usr/local/bin/rebalanceleaders.sh'
+
+check host solrhttpquery with address 127.0.0.1
+   start program = "/usr/sbin/service solr start"
+   restart program = "/usr/sbin/service solr restart"
+   stop program  = "/usr/sbin/service solr stop"
+   if failed
+       port 8983
+       protocol http
+       and request /solr/biocache/select?q=kangaroo&facet=off&rows=0
+       for 3 cycles
+   then restart
+   else if succeeded then
+       exec '/usr/local/bin/rebalanceleaders.sh'
