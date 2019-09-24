@@ -1,71 +1,50 @@
-#Manully install R 3.02
+# Zoatrack main app
 
-- name: 3rd libs
-  apt: pkg={{ item }} state=latest
-  with_items:
-    - python-dev # required by psycopg2
-    - netcdf-bin
-    - unzip
+- name: install python-dev, netcdf-bin, unzip
+  apt: 
+    pkg: ['python-dev', 'netcdf-bin', 'unzip']
+    state: latest
   tags:
-    - R packages
+    - rserve
   register: r_installed
 
-- name: cp apt-get oztrack list
-  become: true
-  template:  src="oztrack.list" dest="/etc/apt/sources.list.d/oztrack.list"
-  tags: R
+- name: add repo source for R
+  template:  src="zoatrack.list" dest="/etc/apt/sources.list.d/zoatrack.list"
+  tags: rserve
 
-- name: Get key from ubuntu
-  command: apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
-  tags: R
+- name: get key from ubuntu
+  apt_key: 
+    keyserver: "keyserver.ubuntu.com"
+    id: "E298A3A825C0D65DFD57CBB651716619E084DAB9"
+    state: present
+  tags: rserve
 
-- name: update apt
-  become: yes
-  command: apt-get update
-  tags: R
+- name: 3rd party libs
+  apt:
+    pkg: ['libssl-dev', 'libgdal-dev', 'libproj-dev', 'libxml2-dev', 'libnetcdf-dev', 'libpq-dev']
+    state: latest
+    update_cache: yes
+  tags: rserve
 
-- name: update apt key
-  become: yes
-  command: apt-key update
-  tags: R
+- name: install R
+  apt:
+    pkg: "r-base"
+    state: present
+  tags: rserve
 
-- name: 3rd libs
-  apt: pkg={{ item }} state=latest
-  with_items:
-    - libgdal-dev
-    - libproj-dev
-    - libxml2-dev
-    - libnetcdf-dev
-    - libpq-dev #it helps install psycopg2
-
-
-#Install the latest R: 3.4.4
-- name: Install R
-  become: yes
-  apt: pkg={{ item }} state=installed
-  with_items:
-     - r-base
-  tags: R
+- name: add devtool for installing a given version of packages
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('devtools' %in% installed.packages()[,'Package'])) install.packages('devtools', repos=c('http://cran.r-project.org/'))"
+  tags: rserve
 
 
-- name: Adding devtool for installing a given version of packages
-  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{item}}' %in% installed.packages()[,'Package'])) install.packages('{{item}}', repos=c('http://cran.r-project.org/'))"
-  with_items:
-    - devtools
-  tags: R_version
-
-#using devtolls to install specified version of packages
-#Rscript --slave --no-save --no-restore-history -e "devtools::install_version('rgdal', version='1.0-4')"
-
-- name: Install specified version of rgdal
-  become: yes
-  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "devtools::install_version('rgdal', version='0.9-2',repos=c('https://cran.csiro.au/'))"
-  tags: R_version
+- name: install specified version of rgdal
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "devtools::install_version('rgdal', version='1.4-4',repos=c('https://cran.csiro.au/'))"
+  tags: rserve
 
 
 #missing packages
 #alphahull, date, ncdf4
-- name: Adding R packages. WARNING inlmisc needs a SLOW compilation.
+- name: add R packages. WARNING inlmisc needs a SLOW compilation.
   command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{item}}' %in% installed.packages()[,'Package'])) install.packages('{{item}}', repos=c('https://cran.csiro.au/'))"
   with_items:
     - Rserve
@@ -88,14 +67,14 @@
     - ncdf4
     - date
     - inlmisc  #Grid2Polygon needs it
-  tags: r_packs
+  tags: rserve
 
 
 #Grid2Polygons 0.2.1  not available for R 3.4.4  #try inlmisc # not working
 #wget https://cran.r-project.org/src/contrib/Archive/Grid2Polygons/Grid2Polygons_0.2.1.tar.gz
 #R CMD INSTALL Grid2Polygons_0.2.1.tar.gz
 
-- name: Download kftrack & ukfsst & Grid2Polygons
+- name: download kftrack & ukfsst & Grid2Polygons
   get_url:
     url: '{{ item }}'
     dest: /tmp
@@ -103,30 +82,27 @@
     - https://cran.r-project.org/src/contrib/Archive/Grid2Polygons/Grid2Polygons_0.2.1.tar.gz
     - https://github.com/positioning/kalmanfilter/raw/master/downloads/R3x/64bit/linux/kftrack_0.70-x64.tar.gz
     - https://github.com/positioning/kalmanfilter/raw/master/downloads/R3x/64bit/linux/ukfsst_0.3-x64.tar.gz
-  tags: r_mannual
+  tags: rserve
 
-- name: Install kftrack & ukfsst & Grid2Polygons
-  sudo: yes
+- name: install kftrack & ukfsst & Grid2Polygons
   command: "R CMD INSTALL {{ item }}"
   with_items:
     - /tmp/Grid2Polygons_0.2.1.tar.gz
     - /tmp/kftrack_0.70-x64.tar.gz
     - /tmp/ukfsst_0.3-x64.tar.gz
-  tags: r_mannual
+  tags: rserve
 
 
 # Start Rserve as service
 - name: copy rserve.sh to /usr/lib/R/bin/
-  become: yes
   template:  src="rserve.sh" dest="/usr/lib/R/bin/"
   tags: rserve
 
-- name: Changing rserve.sh to "+x"
+- name: change rserve.sh to "+x"
   file: dest=/usr/lib/R/bin/rserve.sh mode=a+x
   tags: rserve
 
 - name: copy rserve.service to /etc/systemd/system
-  become: yes
   template:  src="rserve.service" dest="/etc/systemd/system"
   tags: rserve
 
@@ -134,49 +110,67 @@
   systemd:
     daemon_reload: yes
 
-
 - name: enable service rserve
   systemd:
    name: rserve
    enabled: yes
   tags: rserve
 
-
-
-
-- name: Add postgres repository key
+- name: add postgres repository key
   apt_key: url=http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc state=present
   tags: postgresql
 
 #Already added into oztrack.list
 
-- name: Add postgres repository
-  sudo: yes
+- name: add postgres repository
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ linux_version }}-pgdg main' state=present
   tags: postgresql
 
-
-- name: Update and upgrade apt packages
-  become: true
+- name: update and upgrade apt packages
   apt:
     upgrade: yes
     update_cache: yes
+  tags: postgresql
 
-- name: Install PostgreSQL
-  apt: pkg={{ item }} state=present
-  with_items:
-    - postgresql-{{ pg_version }}
-    - postgresql-client-{{ pg_version }}
-    - postgresql-{{ pg_version }}-postgis-{{ pg_gis_version }}
-    - postgresql-contrib-{{ pg_version }}
+- name: install PostgreSQL
+  apt: 
+    pkg: ['postgresql-{{ pg_version }}', 'postgresql-client-{{ pg_version }}', 'postgresql-{{ pg_version}}-postgis-{{ pg_gis_version }}', 'postgresql-contrib-{{ pg_version }}']
+    state: present
   register: postgresql_installed
   tags: postgresql
 
+- name: Get installed pip version
+  command: "{{ pip_executable }} --version"
+  register: pip_version_output
+  ignore_errors: yes
+  changed_when: false
+  tags: postgresql
 
-# - name: Install PostgreSQL adapter for the Python programming language
+- name: Download get-pip.py
+  vars:
+      pip_version_url: "{{ (pip_get_pip_version == 'latest') | ternary('', pip_get_pip_version) }}"
+      required_vars:
+          - pip_get_pip_version
+  get_url:
+      url: 'https://bootstrap.pypa.io/{{ pip_version_url }}/get-pip.py'
+      dest: /tmp/get-pip.py
+  when: (pip_version_output is failed) or not pip_version_output.stdout is search(pip_version)
+  tags: postgresql
+
+# Install pip if it's not already installed, or if
+# the desired versions of pip aren't installed
+# The regular expression extracts '9.0' out of '9.0.*'
+- name: Install pip
+  command: "{{ ansible_python_interpreter if ansible_python_interpreter is defined else 'python' }} get-pip.py pip=={{ pip_version }}"
+  when: "(pip_version_output is failed) or not pip_version_output.stdout is search('pip ' + pip_version)"
+  args:
+    chdir: /tmp
+  tags: postgresql
+
 #  psycopg2 rely on python3.6
 #  or install python-dev package
-- pip:
+- name: use pip to install psycopg2 postgresql adapter for python 
+  pip:
     name: psycopg2
     state: forcereinstall
   tags: postgresql
@@ -185,64 +179,58 @@
 # 1: /etc/postgresql/9.4/main/postgresql.conf  change  listen_addresses = '*'
 # 2: /etc/postgresql/9.4/main/pg_hba.conf    host all all 0.0.0.0/0 md5
 
-- name: Set Postgre auth
-  lineinfile: dest="/etc/postgresql/{{ pg_version }}/main/pg_hba.conf" backrefs="yes" regexp="local   all             all                                     peer" line="local   all             all                                     md5"
-  tags: setup_pg
+- name: set postgres auth
+  lineinfile: dest="/etc/postgresql/{{ zoatrack_pg_version }}/main/pg_hba.conf" backrefs="yes" regexp="local   all             all                                     peer" line="local   all             all                                     md5"
+  tags: postgresql
 
-
-- name: Create zoatrack PG password
-  postgresql_user: name="{{ pg_user }}" password="{{ pg_password }}" role_attr_flags="CREATEDB,SUPERUSER"
-  become: yes
+- name: create zoatrack PG user
+  postgresql_user: name="{{ zoatrack_pg_user }}" password="{{ zoatrack_pg_password }}" role_attr_flags="CREATEDB,SUPERUSER"
   become_user: postgres
-  tags: init_db
+  tags: postgresql
 
-- name: Create zoatrack PG db
-  postgresql_db: name="{{ pg_database }}" owner="{{ pg_user }}"
-  become: yes
+- name: create zoatrack PG db
+  postgresql_db: name="{{ zoatrack_pg_database }}" owner="{{ zoatrack_pg_user }}"
   become_user: postgres
-  tags: init_db
+  tags: postgresql
 
 - name: create postgis extensions
-  become: yes
   become_user: postgres
   command: "psql {{ item }}"
   with_items:
-    - -d {{ pg_database }} -c 'create extension postgis'
-    - -d {{ pg_database }} -c 'create extension postgis_topology'
-    - -d {{ pg_database }} -c 'create extension "uuid-ossp"'
+    - "-d {{ zoatrack_pg_database }} -c 'create extension postgis'"
+    - "-d {{ zoatrack_pg_database }} -c 'create extension postgis_topology'"
+    - "-d {{ zoatrack_pg_database }} -c 'create extension \"uuid-ossp\"'"
   ignore_errors: yes
-  tags: init_db , init_gis
+  tags: postgresql
 
 - name: alter owner postgis extensions
-  become: yes
   become_user: postgres
   command: "psql {{ item }}"
   with_items:
-    - -d {{ pg_database }} -c 'alter table spatial_ref_sys owner to {{ pg_user }};'
-    - -d {{ pg_database }} -c 'alter view geography_columns owner to {{ pg_user }};'
-  tags: init_db , init_gis
+    - "-d {{ zoatrack_pg_database }} -c 'alter table spatial_ref_sys owner to {{ zoatrack_pg_user }};'"
+    - "-d {{ zoatrack_pg_database }} -c 'alter view geography_columns owner to {{ zoatrack_pg_user }};'"
+  tags: postgresql
 
 
 #########################################
 
-- name: cp server.xml
-  become: yes
-  template:  src="server.xml" dest="/etc/tomcat7/server.xml"
+- name: copy tomcat server.xml
+  template:
+    src: "server.{{ tomcat }}.xml"
+    dest: "/etc/{{ tomcat }}/server.xml"
   notify:
     - reload tomcat
-  tags: tomcat7
+  tags: tomcat
 
 ##############################################
 
-- name: Download geoserver
-  become: yes
+- name: download geoserver
   get_url:
     url: http://downloads.sourceforge.net/geoserver/geoserver-{{ geoserver_version }}-war.zip
     dest: /tmp
   tags: geoserver
 
-- name: Extract geoserver
-  become: yes
+- name: extract geoserver
   unarchive:
     src: /tmp/geoserver-{{ geoserver_version }}-war.zip
     dest: /tmp
@@ -250,129 +238,174 @@
   tags: geoserver
 
 - name: copy geoserver to webapps
-  become: yes
   copy:
-    src: /tmp/geoserver.war
-    dest: /var/lib/tomcat7/webapps
+    src: "/tmp/geoserver.war"
+    dest: "/var/lib/{{ tomcat }}/webapps"
     remote_src: yes
-    owner: tomcat7
-    group: tomcat7
+    owner: "{{ tomcat }}"
+    group: "{{ tomcat }}"
   tags: geoserver
 
+- name: add geoserver dir to default tomcat config
+  lineinfile:
+    dest: "{{ tomcat_conf }}"
+    regexp: "^GEOSERVER_DATA_DIR"
+    line: 'export GEOSERVER_DATA_DIR="{{ geoserver_data_dir }}"'
+  notify:
+    - reload tomcat
+  tags: geoserver
+
+- name: add nginx vhost
+  include_role:
+    name: nginx_vhost
+  vars:
+    hostname: "{{ zoatrack_hostname }}"
+    context_path: "/"
+    nginx_root: "/var/www/html"
+    nginx_paths:
+      - path: '~ /\.'
+        is_proxy: false
+        deny: true
+      - path: "/"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080"
+      - path: "{{ geoserver_context_path }}"
+        is_proxy: true
+        proxy_pass: "{{ geoserver_url }}"
+  tags:
+    - nginx_vhost
+  when: webserver_nginx
 
 
 #########################################
-- name: install apache
-  apt: pkg={{ item }} state=latest
-  with_items:
-    - apache2
-    - libapache2-mod-shib2
+# - name: install apache
+#   apt: pkg={{ item }} state=latest
+#   with_items:
+#     - apache2
+#     - libapache2-mod-shib2
 
-  tags: apache
+#   tags: apache
 
-#openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout mysitename.key -out mysitename.crt
-- name: Creates SSL cert directory
-  file: path=/etc/apache2/ssl/ state=directory
-  tags: apache
+# #openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout mysitename.key -out mysitename.crt
+# - name: Creates SSL cert directory
+#   file: path=/etc/apache2/ssl/ state=directory
+#   tags: apache
 
 
-- name: create self-cert
-  become: yes
-  command: "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/oztrack.key -out /etc/apache2/ssl/oztrack.crt -subj '/C=AU/ST=ACT/L=Canberra/O=CSIRO/OU=ALA/CN=ala.org.au'"
-  tags: apache
+# - name: create self-cert
+#   become: yes
+#   command: "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/oztrack.key -out /etc/apache2/ssl/oztrack.crt -subj '/C=AU/ST=ACT/L=Canberra/O=CSIRO/OU=ALA/CN=ala.org.au'"
+#   tags: apache
 
-- name: Enable mods
-  command: a2enmod {{ item }}
-  with_items:
-    - proxy_http
-    - ssl
-    - shib2
-    - rewrite
-  tags: apache
+# - name: Enable mods
+#   command: a2enmod {{ item }}
+#   with_items:
+#     - proxy_http
+#     - ssl
+#     - shib2
+#     - rewrite
+#   tags: apache
 
 
 #######################################
 
 
-- name: Download shibboleth certificate
-  become: yes
-  get_url:
-    url: https://ds.aaf.edu.au/distribution/metadata/aaf-metadata-cert.pem
-    dest: /etc/shibboleth
-  tags: apache,shibboleth
+# - name: Download shibboleth certificate
+#   become: yes
+#   get_url:
+#     url: https://ds.aaf.edu.au/distribution/metadata/aaf-metadata-cert.pem
+#     dest: /etc/shibboleth
+#   tags: apache,shibboleth
 
-- name: keygen shibboleth
-  become: yes
-  command: 'shib-keygen -f -o /etc/shibboleth -h {{ hostname }} -e https://{{ hostname }}/shibboleth'
-  tags: shibboleth
+# - name: keygen shibboleth
+#   become: yes
+#   command: 'shib-keygen -f -o /etc/shibboleth -h {{ zoatrack_hostname }} -e https://{{ zoatrack_hostname }}/shibboleth'
+#   tags: shibboleth
 
-- name: update shibbloeth config
-  become: yes
-  template:  src="{{ item }}" dest="/etc/shibboleth/"
-  with_items:
-    - shibboleth2.xml
-    - attribute-map.xml
-  tags: apache,shibboleth
+# - name: update shibboleth config
+#   become: yes
+#   template:  src="{{ item }}" dest="/etc/shibboleth/"
+#   with_items:
+#     - shibboleth2.xml
+#     - attribute-map.xml
+#   tags: apache,shibboleth
 
 ###############################################
-- name: update oztrack site
-  become: yes
-  template:  src="oztrack.conf" dest="/etc/apache2/sites-available/oztrack.conf"
-  tags: apache
+# - name: update oztrack site
+#   become: yes
+#   template:  src="oztrack.conf" dest="/etc/apache2/sites-available/oztrack.conf"
+#   tags: apache
 
-- name: Enable oztrack
-  command: a2ensite oztrack
-  notify:
-    - reload apache
-  tags: apache
+# - name: Enable oztrack
+#   command: a2ensite oztrack
+#   notify:
+#     - reload apache
+#   tags: apache
 
 ###############################################
 #https://nexus.ala.org.au/service/local/repositories/snapshots/content/org/oztrack/oztrack/4.9-SNAPSHOT/oztrack-4.9-20160913.074922-4.war
 - name: Clear ROOT on Tomcat
-  become: yes
   command: "{{ item }}"
   with_items:
-    - "service tomcat7 stop"
-    - "rm /var/lib/tomcat7/webapps/ROOT.war"
-    - "rm -r /var/lib/tomcat7/webapps/ROOT"
+    - "service {{ tomcat }} stop"
+    - "rm /var/lib/{{ tomcat }}/webapps/ROOT.war"
+    - "rm -r /var/lib/{{ tomcat }}/webapps/ROOT"
   ignore_errors: true
-  tags: oztrack
+  tags: zoatrack
 
 
-- name: Download Oztrack
-  become: yes
-  become_user: tomcat7
+- name: download zoatrack war
+  #become_user: "{{ tomcat }}"
   get_url:
-    url: '{{ zoatrack_war_url }}'
-    dest: /var/lib/tomcat7/webapps/ROOT.war
-  tags: oztrack
+    url: "{{ zoatrack_war_url }}"
+    dest: "/var/lib/{{ tomcat }}/webapps/ROOT.war"
+  tags: zoatrack
 
-- name: create home folder for Oztrack
+- name: set ownership of webapps
+  file:
+    path: "/var/lib/{{ tomcat }}/webapps"
+    owner: "{{ tomcat }}"
+    group: "{{ tomcat }}"
+    recurse: yes
+  tags: zoatrack
+
+- name: create home dir
   file:
     path: "{{ item }}"
     state: directory
-    owner: tomcat7
-    group: tomcat7
-    mode: 0775
+    mode: 0755
   with_items:
-    - "{{ oztrack_home }}"
-  tags: oztrack
+    - "{{ zoatrack_home_dir }}"
+  tags: zoatrack
 
-- name: cp oztrack config
-  become: yes
-  template:  src="{{ oztrack_custom_property_file }}" dest="{{ oztrack_home }}{{ oztrack_custom_property_file }}"
-  tags: oztrack_config
+- name: create data dir
+  file:
+    path: "{{ zoatrack_data_dir }}"
+    state: directory
+    owner: "{{ tomcat }}"
+    group: "{{ tomcat }}"
+    mode: 0755
+  tags: zoatrack
 
-- name: Override default tomcat memory configuration
+- name: copy zoatrack config
+  template:  src="custom.properties" dest="{{ zoatrack_data_dir }}/{{ zoatrack_custom_property_file }}"
+  tags: zoatrack_config
+
+- name: add properties to default tomcat config
   lineinfile:
-    dest={{ tomcat_conf }}
-    regexp="^JAVA_OPTS"
-    line='JAVA_OPTS="${JAVA_OPTS} {{ oztrack_tomcat_java_opts }}"'
+    dest: "{{ tomcat_conf }}"
+    regexp: "^JAVA_OPTS"
+    line: 'JAVA_OPTS="${JAVA_OPTS} {{ zoatrack_tomcat_java_opts }}"'
   notify:
     - reload tomcat
-  tags: oztrack_config
+  tags: zoatrack_config
 
-
+- name: create backup dir
+  file:
+    path: "{{ zoatrack_backup_dir }}"
+    state: directory
+    mode: 0755
+  tags: zoatrack
 
 
 

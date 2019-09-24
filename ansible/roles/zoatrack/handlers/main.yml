@@ -3,9 +3,14 @@
      name: apache2
      state: restarted
 
+- name: reload nginx
+  service:
+     name: nginx
+     state: restarted
+
 - name: reload tomcat
   service:
-     name: tomcat7
+     name: "{{ tomcat }}"
      state: restarted
 
 - name: reload shibd

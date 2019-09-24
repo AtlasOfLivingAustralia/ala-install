@@ -20,7 +20,7 @@
     -->
 
     <!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. -->
-    <ApplicationDefaults entityID="https://{{ hostname }}/shibboleth"
+    <ApplicationDefaults entityID="https://{{ zoatrack_hostname }}/shibboleth"
                          REMOTE_USER="eppn persistent-id targeted-id">
 
         <!--

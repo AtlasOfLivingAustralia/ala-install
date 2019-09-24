@@ -1,0 +1,5 @@
+# R 3.4 for Ubuntu 14.04 or 16.04
+# deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/
+
+# R 3.6 for Ubuntu 16.04 or 18.04
+deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/
