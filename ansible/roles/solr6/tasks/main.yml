@@ -4,6 +4,14 @@
     - solr6_create_cores
     - properties
 
+- name: "Create system user for solr"
+  user:
+    name: solr
+    state: present
+    system: yes
+  tags:
+  - solr6
+
 - name: Download unmaintained, end-of-life SOLR {{ solr_version }}
   get_url: url="https://archive.apache.org/dist/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
   tags:
@@ -14,39 +22,22 @@
   tags:  
     - solr6
 
-- name: ensure target directories exist [data subdirectories etc.
-  file: path={{item}} state=directory
-  with_items:
-    - "{{data_dir}}/solr/"
+- name: Run install script (allowing errors due to the log directory issue)
+  shell: "./install_solr_service.sh /tmp/solr-{{ solr_version }}.tgz -i /opt -d /data/solr -u solr -s solr -f -n"
   tags:
     - solr6
 
-- name: Create log directory
+- name: Create solr directories
   file: path={{item}} state=directory owner=solr group=solr mode=0755
   with_items:
     - "/opt/solr/server/logs"
     - "/opt/solr/server/logs/archived"
+    - "/opt/solr/server/lib"
+    - "/opt/solr/bin"
+    - "{{data_dir}}/solr/"
   tags:
     - solr_config
-    - solrcloud
-
-# Note, the install script tries to start the solr service and fails due to the logs directory not existing
-# Need to ignore the errors from here and move on to configuration
-# Will fail when trying to start the solr service after configuration if there is still an issue at that point
-- name: Run install script (allowing errors due to the log directory issue)
-  shell: "./install_solr_service.sh /tmp/solr-{{ solr_version }}.tgz -i /opt -d /data/solr -u solr -s solr -f"
-  ignore_errors: yes
-  tags:
-    - solrcloud
-
-- name: Create log directory
-  file: path={{item}} state=directory owner=solr group=solr mode=0755
-  with_items:
-    - "/opt/solr/server/logs"
-    - "/opt/solr/server/logs/archived"
-  tags:
-    - solr_config
-    - solrcloud
+    - solr6
 
 - name: add common tomcat jars (for SOLR logging and JTS)
   copy: src=libs/{{item}} dest=/opt/solr/server/lib/ext
@@ -61,13 +52,16 @@
     - solr6
 
 - name: Stop solr
-  shell: "service solr stop"
+  service:
+    name: solr
+    state: stopped
+    enabled: yes
   tags:
     - solr6
     - solr_restart
 
 - name: copy SOLR config
-  template: src=solr.in.sh dest=/opt/solr/bin force=yes
+  template: src=solr.in.sh dest=/opt/solr/bin/ force=yes
   tags:
     - solr6
     - properties
@@ -143,7 +137,10 @@
     - properties
 
 - name: Start solr
-  shell: "service solr start"
+  service:
+    name: solr
+    state: restarted
+    enabled: yes
   tags:
     - solr6
     - solr_restart

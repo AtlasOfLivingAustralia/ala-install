@@ -25,13 +25,13 @@
     - info
 
 - include: ./postgis.yml
-  when: postgis_version
+  when: postgis_version is defined
   tags:
     - postgresql
     - postgis
 
 - include: ./gdal.yml
-  when: postgis_version
+  when: postgis_version is defined
   tags:
     - postgresql
     - postgis
