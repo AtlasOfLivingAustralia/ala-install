@@ -56,6 +56,9 @@ oauth:
       key: {{ oauth_providers_inaturalist_key | default('DISABLED') }}
       secret: {{ oauth_providers_inaturalist_secret | default('DISABLED') }}
       callback: ${grails.serverURL}/profile/inaturalistCallback
+inaturalist:
+  name: {{ inaturalist_name | default('iNaturalist Australia') }}
+  baseUrl: {{ inaturalist_base_url | default('https://inaturalist.ala.org.au/') }}
 {% endif %}
 password:
   encoder: {{ user_store_db_encoder | default('bcrypt') }} # or legacy
