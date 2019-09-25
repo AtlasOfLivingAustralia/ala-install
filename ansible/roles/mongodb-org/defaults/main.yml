@@ -2,3 +2,4 @@
 # common variables across all roles
 mongodb_bind_ip: 127.0.0.1
 mongodb_port: 27017
+dbPath: /var/lib/mongodb
