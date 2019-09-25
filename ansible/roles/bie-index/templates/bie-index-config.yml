@@ -89,7 +89,7 @@ solr:
 skin:
   layout: {{ skin_layout | default('main') }}
   fluidLayout: {{ skin_fluid_layout | default('') }}
-  orgNameLong: Atlas of Living Australia
+  orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}
   favicon: {{ skin_favicon | default('https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png') }}
 headerAndFooter:
   baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}
