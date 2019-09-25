@@ -1,10 +1,11 @@
 - include: ../../common/tasks/setfacts.yml
 
 - name: install mysql (RedHat)
-  yum: name={{item}} state=present
-  with_items:
+  yum:
+    name: 
     - mysql-server
     - MySQL-python
+    state: present
   tags:
     - packages 
   register: mysql_installed
@@ -13,10 +14,11 @@
   when: ansible_os_family == "RedHat"
 
 - name: install mysql (Debian)
-  apt: pkg={{item}} state=present
-  with_items:
+  apt:
+    pkg:
     - mysql-server-5.7
     - python-mysqldb
+    state: present
   tags:
     - packages 
   register: mysql_installed
