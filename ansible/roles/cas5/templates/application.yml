@@ -104,7 +104,7 @@ cas:
         id: {{ pac4j_yahoo_consumer_key }}
         secret: {{ pac4j_yahoo_consumer_secret }}
 {% endif %}
-{% if pac4j_aaf_consumer_key is defined }}
+{% if pac4j_aaf_consumer_key is defined %}
       oidc:
       - client-name: aaf
         discovery-uri: {{ pac4j_aaf_discovery_uri | default('https://central.test.aaf.edu.au/.well-known/openid-configuration') }}
