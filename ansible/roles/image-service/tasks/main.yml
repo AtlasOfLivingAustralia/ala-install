@@ -166,17 +166,6 @@
     - properties
     - image-service
 
-- name: add nginx vhost
-  include_role:
-    name: nginx_vhost
-  vars:
-    hostname: "{{ image_service_hostname }}"
-    context_path: "{{ image_service_hostname_context_path }}"
-  tags:
-    - nginx_vhost
-    - deploy
-    - image-service
-
 - name: install openjfx (Debian)
   apt: pkg=openjfx state=latest update_cache=yes
   when: ansible_os_family == "Debian" and use_openjdk8
