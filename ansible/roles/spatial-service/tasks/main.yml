@@ -36,9 +36,6 @@
       - path: "/layers-service"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:8080{{spatial_service_context_path}}"
-      - path: "/actions"
-        is_proxy: true
-        proxy_pass: "http://127.0.0.1:8080{{spatial_service_context_path}}/actions"
       - path: "/layers"
         is_proxy: false
         rewrite: "{{spatial_service_context_path}}/layers/index"
