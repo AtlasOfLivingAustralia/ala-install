@@ -1,7 +1,5 @@
 ---
 
-- include_vars: "{{ansible_distribution}}.yml"
-
 - name: elasticsearch-install | Add repository keys
   apt_key: keyserver="{{item.server}}" id="{{item.key}}" state=present
   with_items: "{{ elasticsearch_apt_repo_keys }}"
@@ -14,13 +12,40 @@
   stat: path={{elasticsearch_home}}/lib/elasticsearch-{{elasticsearch_version}}.jar
   register: version_exists
 
-- name: elasticsearch-install | Download deb
-  get_url: url={{elasticsearch_download_url}}/elasticsearch-{{elasticsearch_version}}.deb dest=/tmp/elasticsearch-{{elasticsearch_version}}.deb mode=0440
-  when: not version_exists.stat.exists
+- set_fact:
+    modern_elasticsearch_version: "{{ elasticsearch_version is version('7.0', '>=') }}"
 
-- name: elasticsearch-install | Install Elasticsearch
+- name: debug elasticsearch variables
+  debug: msg="elasticsearch_version={{ elasticsearch_version }} modern_elasticsearch_version={{ modern_elasticsearch_version }} version_exists={{ version_exists }}"
+
+- name: elasticsearch-install | Download deb (legacy)
+  get_url: url={{elasticsearch_download_url}}/elasticsearch-{{elasticsearch_version}}.deb dest=/tmp/elasticsearch-{{elasticsearch_version}}.deb mode=0440
+  when: 
+    - not version_exists.stat.exists
+    - not modern_elasticsearch_version
+
+- name: elasticsearch-install | Install Elasticsearch (legacy)
   apt: deb=/tmp/elasticsearch-{{elasticsearch_version}}.deb dpkg_options=force-confnew
-  when: not version_exists.stat.exists
+  when: 
+    - not version_exists.stat.exists
+    - not modern_elasticsearch_version
+
+- name: add apt key for elastic (modern)
+  apt_key: url="https://artifacts.elastic.co/GPG-KEY-elasticsearch" state=present
+  notify: elasticsearch restart
+  when: 
+    - modern_elasticsearch_version
+
+- name: add elastic 7 apt source list (modern)
+  copy: content="deb https://artifacts.elastic.co/packages/7.x/apt stable main" dest="/etc/apt/sources.list.d/elastic-7.x.list"
+  notify: elasticsearch restart
+  when: 
+    - modern_elasticsearch_version
+
+- name: elasticsearch-install | Install Elasticsearch (modern)
+  apt: name="elasticsearch" state=latest
+  when: 
+    - modern_elasticsearch_version
 
 - name: elasticsearch-install | Setup passlib
   apt: pkg=python-passlib

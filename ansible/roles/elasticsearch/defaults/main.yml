@@ -1,8 +1,9 @@
 ---
 
 elasticsearch_enabled: yes                      # The role is enabled
-elasticsearch_version: 1.7.2                    # Elasticsearch version
-elasticsearch_download_url: https://download.elastic.co/elasticsearch/elasticsearch
+elasticsearch_version: 7.3.1                    # Elasticsearch version
+
+elasticsearch_download_url: https://artifacts.elastic.co/downloads/elasticsearch
 elasticsearch_apt_repos:
 - 'ppa:webupd8team/java'
 elasticsearch_apt_repo_keys: []                 # Install APT keys
@@ -34,11 +35,8 @@ elasticsearch_http_port: 9200                   # Listen the port fot HTTP traff
 elasticsearch_http_cors_enabled: yes            # Enable CORS
 elasticsearch_http_cors_allow_origin: "*"       # Set allowed origins
 elasticsearch_http_cors_allow_methods: OPTIONS, HEAD, GET, POST, PUT, DELETE
-elasticsearch_max_open_files: 65535
-elasticsearch_gateway_type: local
-elasticsearch_script_disable_dynamic: yes
-elasticsearch_network_bind_host: "{{elasticsearch_network_host}}"
-elasticsearch_network_publish_host: "{{elasticsearch_network_host}}"
+elasticsearch_max_open_files: 65536
+elasticsearch_bootstrap_memory_lock: true
 
 # Setup a proxy
 elasticsearch_proxy: no                           # Enable nginx as elasticsearch proxy

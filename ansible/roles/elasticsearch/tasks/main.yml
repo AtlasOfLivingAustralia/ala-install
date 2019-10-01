@@ -1,5 +1,5 @@
 ---
 
 - include: elasticsearch.yml
-  when: elasticsearch_enabled
+  when: elasticsearch_enabled | bool == True
   tags: [elasticsearch]

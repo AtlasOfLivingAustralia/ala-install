@@ -1,24 +1,42 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - image-service
+    - properties
+    - data_import
 
 - name: create images database
-  postgresql_db: name=images
+  postgresql_db: name={{ image_service_db_name }}
   become_user: postgres
   become: yes
   tags:
     - db
     - image-service
+
+- name: create {{ image_service_db_username }} DB user
+  command: "psql -d {{ image_service_db_name }} -c \"create user {{ image_service_db_username }} with password '{{image_service_db_password}}'\""
+  become_user: postgres
+  ignore_errors: yes
+  tags:
+    - image-service
+    - db
+
+- name: create {{ image_service_db_username }} DB user
+  command: "psql -d {{ image_service_db_username }} -c \"ALTER ROLE {{ image_service_db_username }} WITH SUPERUSER\""
+  become_user: postgres
+  ignore_errors: yes
+  tags:
+    - image-service
+    - db
 
 - name: create database user images 
-  postgresql_user: db=images name={{ images_db_username }} password={{ images_db_password }} priv=ALL state=present
+  postgresql_user: db={{ image_service_db_name }} name={{ image_service_db_username }} password={{ image_service_db_password }} priv=ALL state=present
   become_user: postgres
   become: yes
   tags:
     - db
     - image-service
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ images_context_path }}' hostname='{{ images_hostname }}'
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ image_service_context_path }}' hostname='{{ image_service_hostname }}'
   tags:
     - deploy
     - apache_vhost
@@ -29,83 +47,136 @@
   include_role:
     name: nginx_vhost
   vars:
-    appname: "image-service"
-    hostname: "{{ images_hostname }}"
-    context_path: "{{ images_context_path }}"
+    hostname: "{{ image_service_hostname }}"
+    context_path: "{{ image_service_context_path }}"
     nginx_paths:
-      - path: "{{ images_context_path }}"
+      - path: "{{ image_service_context_path }}"
         sort_label: "1_ws"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:8080{{ images_context_path }}"
+        proxy_pass: "http://127.0.0.1:{{ image_service_port | default('8080') }}{{ image_service_context_path }}"
       - path: "/store"
         sort_label: "2_store"
         is_proxy: false
-        alias: "{{ data_dir }}/images/store"
+        alias: "{{ data_dir }}/image-service/store"
   tags:
     - nginx_vhost
     - deploy
     - image-service
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ images_url }}' context_path='{{ images_context_path }}' hostname='{{ images_hostname }}'
-  tags:
-    - deploy
-    - tomcat_vhost
-    - image-service    
-
 - name: ensure www directory exists
-  file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}}
+  file: path={{item}} state=directory
   with_items:
-    - "/srv/{{ images_hostname }}/www"
+    - "/srv/{{ image_service_hostname }}/www"
   tags:
     - image-service
 
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{item}} state=directory
   with_items:
-    - "{{data_dir}}/images/config"
+    - "{{data_dir}}/image-service/config"
   tags:
     - image-service
 
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}}  group={{tomcat_user}} 
+  file: path={{item}} state=directory
   with_items:
-    - "{{data_dir}}/images/config"  
-    - "{{data_dir}}/images/elasticsearch"  
-    - "{{data_dir}}/images/store"
-    - "{{data_dir}}/images/incoming"
-    - "{{data_dir}}/images/bin/imgcnv"
+    - "{{data_dir}}/image-service/setup"
+    - "{{data_dir}}/image-service/config"
+    - "{{data_dir}}/image-service/store"
+    - "{{data_dir}}/image-service/incoming"
+    - "{{data_dir}}/image-service/exports"
+    - "{{data_dir}}/image-service/bin/imgcnv"
+    - "/var/log/atlas/image-service"
   tags:
     - image-service
 
 # Only create the symlink for apache hosts, as nginx has an inbuilt rule for this
-- name: Create symlink to data/images/store from /srv/[hostname]/www/store
-  command: "ln -s {{ data_dir }}/images/store /srv/{{ images_hostname }}/www/store" 
+- name: Create symlink to data/image-service/store from /srv/[hostname]/www/store
+  command: "ln -s {{ data_dir }}/image-service/store /srv/{{ image_service_hostname }}/www/store"
   ignore_errors: yes
   when: not webserver_nginx
   tags: 
     - image-service
 
 - name: copy all config.properties
-  template: src=config/config.properties dest={{data_dir}}/images/config/images-config.properties
+  template: src={{ item }} dest={{data_dir}}/image-service/config/
+  with_items:
+    - "config/image-service-config.yml"
+    - "config/logback.groovy"
   tags:
+    - deploy
+    - image-service
+    - properties
+
+- name: copy all SQL export script
+  template: src={{ item }} dest={{data_dir}}/image-service/setup/
+  with_items:
+    - "sql/image-service-export.sql"
+  tags:
+    - deploy
+    - image-service
+    - properties
+
+- name: create stored procedures for export functions
+  command: "psql -d {{ image_service_db_username }} -f {{data_dir}}/image-service/setup/image-service-export.sql"
+  become_user: postgres
+  ignore_errors: no
+  tags:
+    - image-service
+    - properties
+    - db
+
+- name: add image-service jar and setup service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: 'image-service'
+    jar_url: '{{ image_service_jar_url }}'
+  tags:
+    - deploy
+    - service
+    - image-service
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner=image-service group=image-service
+  with_items:
+    - "{{data_dir}}/image-service/setup"
+    - "{{data_dir}}/image-service/config"
+    - "{{data_dir}}/image-service/store"
+    - "{{data_dir}}/image-service/incoming"
+    - "{{data_dir}}/image-service/exports"
+    - "{{data_dir}}/image-service/bin/imgcnv"
+    - "/var/log/atlas/image-service"
+  tags:
+    - image-service
+
+- name: set data ownership for {{data_dir}}/image-service
+  file: path={{data_dir}}/image-service owner="image-service" group="image-service"
+  tags:
+    - image-service
     - properties
     - image-service
 
-- name: set data ownership
-  file: path={{data_dir}}/{{images_app}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true state=directory
-  notify: 
-    - restart tomcat
+- name: set data ownership postgres for {{data_dir}}/image-service/exports
+  file: path={{data_dir}}/image-service/exports owner="postgres" group="postgres" recurse=true
   tags:
     - image-service
+    - properties
+    - image-service
 
-- name: set data ownership
-# FIXME: This fails when data_dir is /data, per our standard layout, because a symlink from /data/images/store/store to /data/images/store confuses the ansible file role
-#  file: path={{data_dir}}/images owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  shell: "chown -R {{ tomcat_user }}:{{ tomcat_user }} {{ data_dir }}/images"
-  notify:
-    - restart tomcat
+- name: set data ownership for /opt/atlas/image-service
+  file: path=/opt/atlas/image-service owner="image-service" group="image-service" recurse=true
   tags:
+    - image-service
+    - properties
+    - image-service
+
+- name: set data ownership for /var/log/atlas/image-service
+  file: path=/var/log/atlas/image-service owner="image-service" group="image-service" recurse=true
+  tags:
+    - image-service
+    - properties
     - image-service
 
 - name: install openjfx (Debian)
@@ -113,3 +184,6 @@
   when: ansible_os_family == "Debian" and use_openjdk8
   tags:
     - packages
+    - image-service
+
+- debug: msg="For new installs, to finish installation use the admin screen to load the licence information in files/licence_mappings.csv and files/licences.csv."
