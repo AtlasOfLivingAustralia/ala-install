@@ -138,6 +138,19 @@
     - service
     - image-service
 
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner=image-service group=image-service
+  with_items:
+    - "{{data_dir}}/image-service/setup"
+    - "{{data_dir}}/image-service/config"
+    - "{{data_dir}}/image-service/store"
+    - "{{data_dir}}/image-service/incoming"
+    - "{{data_dir}}/image-service/exports"
+    - "{{data_dir}}/image-service/bin/imgcnv"
+    - "/var/log/atlas/image-service"
+  tags:
+    - image-service
+
 - name: set data ownership for {{data_dir}}/image-service
   file: path={{data_dir}}/image-service owner="image-service" group="image-service"
   tags:

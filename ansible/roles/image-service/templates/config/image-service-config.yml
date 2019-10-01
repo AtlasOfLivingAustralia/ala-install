@@ -24,7 +24,7 @@ dataSource:
   driverClassName: org.postgresql.Driver
   username: {{ image_service_db_username }}
   password: {{ image_service_db_password }}
-  dbCreate: none
+  dbCreate: {{ image_service_db_create | default('update') }}
 
 imageservice:
   imagestore:

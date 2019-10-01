@@ -1,10 +1,11 @@
+# ansible-playbook --private-key ~/.vagrant.d/insecure_private_key -vvvv -u vagrant --become -i /Users/mar759/dev/ala-install/ansible/inventories/vagrant/image-service-vagrant /Users/mar759/dev/ala-install/ansible/image-service.yml
+
 [image-service]
 vagrant1
   
 [image-service:vars]
 is_vagrant=true
-local_repo_dir = ~/.ala
-data_dir=/data
+data_dir = /data
 
 image_service_url = http://images.vagrant1.ala.org.au
 image_service_base_url = http://images.vagrant1.ala.org.au
@@ -21,15 +22,16 @@ db_name = images
 db_password = images
 db_user = images
 
-auth_base_url=https://auth.ala.org.au
-auth_cas_url=https://auth.ala.org.au/cas
+auth_base_url = https://auth.ala.org.au
+auth_cas_url = https://auth.ala.org.au/cas
 
-collectory_url=https://collections.ala.org.au
+collectory_url = https://collections.ala.org.au
 
-webserver_nginx=true
-ssl=false
-ssl=false
-copy_https_certs_from_local=false
+webserver_nginx = true
+ssl = false
+copy_https_certs_from_local = false
 
-nginx_vhost_fragments_to_clear=["images.vagrant1.ala.org.au"]
-webserver_extra_servernames=["images.vagrant1.ala.org.au"]
+nginx_vhost_fragments_to_clear = ["images.vagrant1.ala.org.au"]
+webserver_extra_servernames = ["images.vagrant1.ala.org.au"]
+
+elasticsearch_version = 7.3.1
