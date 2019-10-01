@@ -33,5 +33,3 @@ copy_https_certs_from_local = false
 
 nginx_vhost_fragments_to_clear = ["images.vagrant1.ala.org.au"]
 webserver_extra_servernames = ["images.vagrant1.ala.org.au"]
-
-elasticsearch_version = 7.3.1
