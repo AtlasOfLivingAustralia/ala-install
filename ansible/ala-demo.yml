@@ -27,5 +27,5 @@
     - { role: biocache-hub,     biocache_hub: ala-hub, biocache_hub_version: "3.1.0" }
     - { role: bie-index,        bie_index_version: "1.4.2.2" }
     - { role: bie-hub,          bie_hub: ala-bie, bie_hub_version: "1.4.13" }
-    - { role: image-service,    image_service_version: "1.0.9" }
+    - { role: image-service,    image_service_version: "1.0.9", image_service_port: 9101 }
     - demo

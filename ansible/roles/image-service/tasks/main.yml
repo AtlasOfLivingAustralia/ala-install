@@ -53,7 +53,7 @@
       - path: "{{ image_service_context_path }}"
         sort_label: "1_ws"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ image_service_port | default('8080') }}{{ image_service_context_path }}"
+        proxy_pass: "http://127.0.0.1:{{ image_service_port }}{{ image_service_context_path }}"
       - path: "/store"
         sort_label: "2_store"
         is_proxy: false
