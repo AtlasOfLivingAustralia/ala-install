@@ -22,13 +22,13 @@
   get_url: url={{elasticsearch_download_url}}/elasticsearch-{{elasticsearch_version}}.deb dest=/tmp/elasticsearch-{{elasticsearch_version}}.deb mode=0440
   when: 
     - not version_exists.stat.exists
-    - not modern_elasticsearch_version
+    - not modern_elasticsearch_version | bool == True
 
 - name: elasticsearch-install | Install Elasticsearch (legacy)
   apt: deb=/tmp/elasticsearch-{{elasticsearch_version}}.deb dpkg_options=force-confnew
   when: 
     - not version_exists.stat.exists
-    - not modern_elasticsearch_version
+    - not modern_elasticsearch_version | bool == True
 
 - name: add apt key for elastic (modern)
   apt_key: url="https://artifacts.elastic.co/GPG-KEY-elasticsearch" state=present
