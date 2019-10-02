@@ -1,6 +1,9 @@
 grails:
   serverURL: "{{image_service_base_url}}{{image_service_context_path}}"
 
+server:
+  port: {{image_service_port}}
+
 security:
   cas:
     appServerName: "{{image_service_base_url}}{{image_service_context_path}}"
