@@ -2,7 +2,7 @@
   roles:
     - common
     - java
-    - tomcat
+    - { role: tomcat, tomcat: tomcat7 }
     - webserver
     - nameindex
     - biocache-properties
