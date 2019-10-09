@@ -1,4 +1,4 @@
-version: "1.0"
+version: "{{ webapi_version | default('2.0-SNAPSHOT') }}"
 artifactId: "webapi"
 classifier: ''
 packaging: "war"
