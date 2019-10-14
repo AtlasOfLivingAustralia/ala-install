@@ -58,6 +58,10 @@ cas:
       password: {{ cas_audit_password | default('password') }}
       timeout: {{ cas_audit_timeout | default('PT5S') }}
   authn:
+    throttle:
+      failure:
+        range-seconds: {{ cas_throttle_range | default('30') }}
+        threshold: {{ cas_throttle_threshold | default('3') }}
     pac4j:
       typedIdUsed: true
       cookie:
