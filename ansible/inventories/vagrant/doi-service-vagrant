@@ -6,6 +6,8 @@ is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
+doi_service_version=1.1-SNAPSHOT
+
 deployment_env=vagrant
 
 doi_service_hostname=doi.vagrant1.ala.org.au
@@ -36,3 +38,4 @@ doi_aws_s3_bucket=change me
 # SSL Configuration files
 #
 ssl=false
+webserver_nginx=true
