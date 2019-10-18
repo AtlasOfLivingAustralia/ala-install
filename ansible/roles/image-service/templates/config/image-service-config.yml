@@ -9,11 +9,21 @@ security:
     appServerName: "{{image_service_base_url}}{{image_service_context_path}}"
     bypass: {{ bypass_cas | default(false) }}
     disableCAS: {{ bypass_cas | default(false) }}
+    casServerName: {{ auth_base_url }}
+    casServerUrlPrefix: {{ auth_cas_url }}
+    casServerLoginUrl: {{ auth_cas_url }}/login
+    casServerLogoutUrl: {{ auth_cas_url }}/logout
+    loginUrl: {{ auth_cas_url }}/login
+    logoutUrl: {{ auth_cas_url }}/logout
   apikey:
     ip:
       whitelist: {{ image_service_whitelist | default('') }}
     check:
       serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
+
+userDetails:
+  url: {{ auth_base_url }}/userdetails/
+
 info:
   app:
     name: 'image-service'
