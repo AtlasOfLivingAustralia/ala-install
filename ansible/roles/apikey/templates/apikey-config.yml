@@ -52,7 +52,7 @@ emailSenderTitle: {{ orgNameLong | default('Atlas of Living Australia') }}
 emailSender: {{ support_email | default('support@ala.org.au') }}
 
 sightings.url: {{ sightings_base_url }}/mine
-spatial.url: {{ spatial_base_url }}/actions/dashboard
+spatial.url: {{ spatial_base_url }}?tool=log
 volunteer.url: {{ volunteer_base_url }}/user/myStats
 lists.url: {{ lists_base_url }}/speciesList/list
 biocache.search.url: {{ biocache_base_url }}/occurrences/search

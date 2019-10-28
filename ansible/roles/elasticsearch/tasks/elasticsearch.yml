@@ -15,7 +15,7 @@
   tags: [elasticsearch, elasticsearch-plugins]
 
 - include: proxy.yml
-  when: elasticsearch_proxy
+  when: elasticsearch_proxy | bool == True
   tags: [elasticsearch, elasticsearch-proxy]
 
 - service: name=elasticsearch state=started enabled=yes

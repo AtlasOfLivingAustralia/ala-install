@@ -5,7 +5,7 @@ import org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverte
 
 conversionRule 'clr', ColorConverter
 conversionRule 'wex', WhitespaceThrowableProxyConverter
-def loggingDir = '//data/phylolink/logs/'
+def loggingDir = '//var/log/atlas/phylolink/'
 def appName = 'phylolink'
 final APPLICATION_LOG = 'APPLICATION_LOG'
 appender(APPLICATION_LOG, RollingFileAppender) {

@@ -8,14 +8,7 @@
   with_items:
     - curl
     - unzip
-  tags:
-    - geoserver
-
-- name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
-  with_items:
-    - "{{data_dir}}/ala/data/geoserver_data_dir"
-    - "{{data_dir}}/ala/data/geoserver_data_dir/gwc"
+    - python-lxml
   tags:
     - geoserver
 
@@ -110,7 +103,54 @@
   when: not webserver_nginx
   become: true
 
-- name: "wait for geoserver to come up"
+- name: "wait for geoserver to come up (is {{ geoserver_hostname }} in /etc/hosts?)"
+  uri:
+    url: "{{ geoserver_url }}"
+    status_code: 200
+    validate_certs: false
+  register: result
+  until: result.status is defined and result.status == 200
+  retries: 200
+  delay: 10
+  tags:
+    - geoserver
+
+- name: "install geoserver extensions"
+  unarchive:
+    src: "{{ item }}"
+    dest: "{{ tomcat_deploy_dir }}/{{ war_filename }}/WEB-INF/lib/"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+    remote_src: yes
+  with_items: "{{ geoserver_extension_urls }}"
+
+- name: "update defaultVectorCacheFormats in gwc-gs.xml for vectortiles extension"
+  xml:
+    path: "{{data_dir}}/geoserver_data_dir/gwc-gs.xml"
+    xpath: "/GeoServerGWCConfig/defaultVectorCacheFormats"
+    add_children:
+    - string: "application/vnd.mapbox-vector-tile"
+    - string: "application/json;type=geojson"
+    - string: "application/json;type=topojson"
+
+- name: "update defaultOtherCacheFormats in gwc-gs.xml for vectortiles extension"
+  xml:
+    path: "{{data_dir}}/geoserver_data_dir/gwc-gs.xml"
+    xpath: "/GeoServerGWCConfig/defaultOtherCacheFormats"
+    add_children:
+    - string: "application/vnd.mapbox-vector-tile"
+    - string: "application/json;type=geojson"
+    - string: "application/json;type=topojson"
+
+- name: restart tomcat for installed extensions
+  service:
+    name: "{{tomcat}}"
+    state: restarted
+  tags:
+    - geoserver
+  become: true
+
+- name: "wait for geoserver to come up (is {{ geoserver_hostname }} in /etc/hosts?)"
   uri:
     url: "{{ geoserver_url }}"
     status_code: 200
@@ -151,7 +191,6 @@
   tags:
      - password
      - geoserver
-
 
 - name: copy geoserver script
   template: src=geoserver.sh dest={{data_dir}}/geoserver.sh

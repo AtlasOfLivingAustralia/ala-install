@@ -18,7 +18,7 @@
 
 - name: install libtcnative-1 (RedHat)
   yum: pkg={{libtcnative}} state=present
-  when: ansible_os_family == "RedHat" and tomcat_apr == true
+  when: ansible_os_family == "RedHat" and tomcat_apr | bool == True
   tags:
     - packages
     - tomcat
@@ -34,7 +34,7 @@
 
 - name: install libtcnative-1 (Debian)
   apt: pkg={{libtcnative}} state=latest update_cache=yes
-  when: ansible_os_family == "Debian" and tomcat_apr == true
+  when: ansible_os_family == "Debian" and tomcat_apr | bool == True
   tags:
     - packages
     - tomcat
@@ -50,7 +50,7 @@
 - name: enable the HTTP 1.1 connector
   tomcat_connector: name="HTTP/1.1" bind_addr="{{ tomcat_bind_addr }}" port="{{ tomcat_http_port }}"
   when:
-    tomcat_http == true
+    tomcat_http | bool == True
   tags:
   - tomcat
   notify:
@@ -59,7 +59,7 @@
 - name: enable the AJP 1.3 connector
   tomcat_connector: name="AJP/1.3" bind_addr="{{ tomcat_bind_addr }}" port="{{ tomcat_ajp_port }}"
   when:
-    tomcat_ajp == true
+    tomcat_ajp | bool == True
   tags: 
     - tomcat
   notify:

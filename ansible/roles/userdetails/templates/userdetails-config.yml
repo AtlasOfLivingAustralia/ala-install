@@ -56,6 +56,9 @@ oauth:
       key: {{ oauth_providers_inaturalist_key | default('DISABLED') }}
       secret: {{ oauth_providers_inaturalist_secret | default('DISABLED') }}
       callback: ${grails.serverURL}/profile/inaturalistCallback
+inaturalist:
+  name: {{ inaturalist_name | default('iNaturalist Australia') }}
+  baseUrl: {{ inaturalist_base_url | default('https://inaturalist.ala.org.au/') }}
 {% endif %}
 password:
   encoder: {{ user_store_db_encoder | default('bcrypt') }} # or legacy
@@ -77,7 +80,7 @@ emailSenderTitle: {{ orgNameLong | default('Atlas of Living Australia') }}
 emailSender: {{ support_email | default('support@ala.org.au') }}
 
 sightings.url: {{ sightings_base_url }}/mine
-spatial.url: {{ spatial_base_url }}/actions/dashboard
+spatial.url: {{ spatial_base_url }}?tool=log
 volunteer.url: {{ volunteer_base_url }}/user/myStats
 lists.url: {{ lists_base_url }}/speciesList/list
 biocache.search.baseUrl: {{ biocache_base_url }}/occurrences/search

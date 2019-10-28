@@ -1,0 +1,44 @@
+---
+# zoatrack_hostname: www.zoatrack.domain
+# zoatrack_home_dir: /data/zoatrack
+# zoatrack_backup_dir: /data/backup
+# zoatrack_data_dir: /data/zoatrack/zoatrack
+zoatrack_custom_property_file: custom.properties
+# zoatrack_pg_user: oztrack
+# zoatrack_pg_password: changeme
+# zoatrack_pg_database: oztrack
+# zoatrack_tomcat_java_opts: '-Xmx1g -Xms1g -Xss512k -Djava.awt.headless=true -Dorg.oztrack.conf.customConfigFile=/data/zoatrack/zoatrack/custom.properties'
+# geoserver_version: 2.14.1
+# geoserver_hostname: localhost
+# geoserver_url: http://localhost:8443/geoserver
+geoserver_context_path: /geoserver
+# geoserver_data_dir: /data/zoatrack/geoserver
+# geoserver_username: admin
+# geoserver_password: somethingstrong
+# zoatrack_rserve_hosts: 123.123.123.123,101.101.101.101
+# zoatrack_num_r_connections: 4
+zoatrack_smtp_hostname: localhost
+zoatrack_smtp_port: 25
+# zoatrack_mail_sender_name: ZoaTrack
+# zoatrack_mail_sender_email: admin@zoatrack.domain
+zoatrack_aaf_enabled: false
+zoatrack_oai_pmh_enabled: false
+# zoatrack_recaptcha_public_key: key-goes-here
+# zoatrack_recaptcha_private_key: key-goes-here
+# zoatrack_doi_minting_url: URL-without-scheme
+# zoatrack_doi_minting_app_id: appid-goes-here
+# zoatrack_doi_minting_app_key: key-goes-here
+# zoatrack_doi_minting_client_id: id-goes-here
+# zoatrack_doi_landing_base_url: http://zoatrack.domain/publication
+# zoatrack_google_apikey: key-for-youtube
+# zoatrack_google_maps_apikey: key-for-google-maps
+# zoatrack_ala_apikey: key-for-ala-api
+# zoatrack_bccvl_client_id: id-goes-here
+# zoatrack_bccvl_auth_url: url-without-scheme
+# zoatrack_bccvl_api_url: url-without-scheme
+# zoatrack_whaleshark_race_id: id-goes-here
+pip_version: "9.0.*"
+pip_get_pip_version: "latest"
+pip_executable: "pip3"
+
+

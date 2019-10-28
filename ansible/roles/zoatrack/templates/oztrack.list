@@ -1,6 +1,0 @@
-#deb https://cran.csiro.au/bin/linux/ubuntu {{ linux_version }} /
-#deb http://cran.rstudio.com/bin/linux/ubuntu $(lsb_release -s -c) main
-#deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/
-
-deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu trusty/
-#deb http://apt.postgresql.org/pub/repos/apt/ {{ linux_version }}-pgdg main

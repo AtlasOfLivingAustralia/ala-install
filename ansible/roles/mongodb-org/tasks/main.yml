@@ -66,7 +66,7 @@
 
 
 # https://github.com/ansible/ansible/issues/33832
-- name: Check if some admin user is already configured
+- name: Check if some admin user is already configured (if admin already exists this fails and can be ignored)
   shell: /usr/bin/mongo --eval 'db.getUsers()' admin
   ignore_errors: true
   register: get_mongo_admin_users
