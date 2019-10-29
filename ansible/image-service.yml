@@ -2,7 +2,7 @@
   roles:
     - java
     - common
-    - { role: ansible-elasticsearch, es_version: 7.4.0, es_templates:false,  es_instance_name: 'images', es_data_dirs: ['/var/lib/elasticsearch'], tags: ['elasticsearch']}
+    - { role: ansible-elasticsearch, es_version: 7.4.0, es_templates: false,  es_instance_name: 'images', es_data_dirs: ['/var/lib/elasticsearch'], tags: ['elasticsearch']}
     - { role: db-backup, db: postgres, db_name: "images", db_user: "{{ image_service_db_username }}", db_password: "{{ image_service_db_password }}" }
     - { role: postgresql, pg_version: "10", postgis_version: "2.4" }
     - { role: pg_instance, extensions: ["citext", "pgcrypto"], db_name: "{{ image_service_db_name }}", db_user: "{{ image_service_db_username }}", db_password: "{{ image_service_db_password }}" }
