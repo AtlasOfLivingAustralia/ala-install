@@ -297,6 +297,7 @@
   template: src={{ item }} dest={{data_dir}}/biocache/{{ item }}
   with_items:
     - config/download-doi-email.html
+    - config/download-csdm-email.html
     - config/applicationContext.xml
     - config/download-doi-readme.html
     - config/download-email.html
