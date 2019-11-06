@@ -4,6 +4,14 @@
     - properties
     - data_import
 
+- name: "Ensure system user for image-service"
+  user:
+    name: image-service
+    state: present
+    system: yes
+  tags:
+    - image-service
+
 - name: create images database
   postgresql_db: name={{ image_service_db_name }}
   become_user: postgres
