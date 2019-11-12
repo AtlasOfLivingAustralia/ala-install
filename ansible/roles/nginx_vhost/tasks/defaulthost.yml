@@ -1,6 +1,6 @@
 - name: check whether we need a default vhost for ala
   set_fact: ala_default_vhost=True
-  when: aws_elb_healthcheck_default or nginx_default_vhost_required
+  when: aws_elb_healthcheck_default | bool == True or nginx_default_vhost_required | bool == True
   tags:
     - nginx_vhost
 
