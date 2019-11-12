@@ -1,0 +1,2 @@
+- name: restart biocollect
+  service: name=biocollect state=restarted

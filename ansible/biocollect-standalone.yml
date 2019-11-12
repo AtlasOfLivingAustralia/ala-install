@@ -2,6 +2,6 @@
   roles:
     - common
     - java
+    - { role: tomcat, when: not exec_jar }
     - webserver
-    - tomcat
     - biocollect

@@ -9,15 +9,6 @@ tomcat_java_opts_override: "-Xmx4g -Xms2g -Xss256k -XX:+UseG1GC"
 mongodb_root_username: "admin"
 ecodata_database: "ecodata"
 ecodata_username: "ecodata"
-
-
-
-#version: "{{ biocache_hub_version | default('LATEST') }}"
-#artifactId: "{{ biocache_hub | default('generic-hub') }}"
-#groupId: "{{ biocache_hub_group_id | default('au.org.ala') }}"
-#classifier: "{{ biocache_hub_classifier | default('') }}"
-#packaging: "{{ biocache_hub_packaging | default('war') }}"
 ecodata_artifact_url: "{{ ecodata_maven_repo_ws_url | default(maven_repo_ws_url) }}"
 ecodata_server_port: "{{ ecodata_tomcat_server_port | default('8080') }}"
-
 #ecodata_dbPath: "{{ ecodata_dbPath | default('/var/lib/mongodb') }} "
