@@ -7,6 +7,8 @@ googleAnalyticsId: "{{google_analytics_id | default('')}}"
 google:
   apikey: "{{ (google_apikey | default(google_api_key)) | default('get-a-google-api-key') }}"
 
+api_key: {{ spatial_service_api_key  | default('') }}
+
 i18n:
   region: "{{ spatial_hub_locale | default('default') }}"
 
@@ -192,11 +194,11 @@ startup:
             projections: ['3857']
 
 defaultareas:
-    - name: 'Australia'
-      fqs: ['longitude:[112 TO 154]', 'latitude:[-44 TO -9]']
-      wkt: 'POLYGON((112.0 -44.0,154.0 -44.0,154.0 -9.0,112.0 -9.0,112.0 -44.0))'
-      areaSqKm: 16322156.76
-      bbox: [112, -44, 154, -9]
+    - name: '{{ default_area_name }}'
+      fqs: ['longitude:[{{ default_area_bbox[0] }} TO {{ default_area_bbox[2] }}]', 'latitude:[{{ default_area_bbox[1] }} TO {{ default_area_bbox[3] }}]']
+      wkt: 'POLYGON(({{ default_area_bbox[0] }} {{ default_area_bbox[1] }}, {{ default_area_bbox[2] }} {{ default_area_bbox[1] }}, {{ default_area_bbox[2] }} {{ default_area_bbox[3] }}, {{ default_area_bbox[0] }} {{ default_area_bbox[3] }}, {{ default_area_bbox[0] }} {{ default_area_bbox[1] }}))'
+      areaSqKm: {{ default_area_sqkm }}
+      bbox: {{ default_area_bbox }}
     - name: 'World'
       fqs: []
       wkt: 'POLYGON((-180 -90.0,180.0 -90.0,180.0 90.0,-180 90.0,-180 -90.0))'
