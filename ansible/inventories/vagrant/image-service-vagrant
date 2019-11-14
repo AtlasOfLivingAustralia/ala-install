@@ -12,7 +12,7 @@ image_service_base_url = http://images.vagrant1.ala.org.au
 image_service_context_path =
 image_service_hostname_context_path =
 image_service_hostname = images.vagrant1.ala.org.au
-image_service_version = 1.0.9
+image_service_version = 1.0.11
 
 image_service_db_name = images
 image_service_db_password = images

@@ -28,6 +28,30 @@
   notify:
     - restart postgresql
 
+- name: Initialize database directory
+  copy:
+    remote_src: yes
+    src: "/var/lib/postgresql/{{pg_version}}/main/"
+    dest: "{{ postgresql_data_directory }}"
+    mode: 0700
+    owner: 'postgres'
+    group: 'postgres'
+    force: no
+  tags:
+    - postgresql
+  notify:
+    - restart postgresql
+
+- name: Set database directory
+  ini_file:
+    dest: "/etc/postgresql/{{pg_version}}/main/postgresql.conf"
+    section:
+    option: "data_directory"
+    value: "'{{ postgresql_data_directory }}'"
+  tags: postgresql
+  notify:
+    - restart postgresql
+
 # Note: postgis is required to get the "shp2pgsql" binary, which is missing from postgres-9.6-postgis-2.4
 # Not pulling in recommended packages as that would pull in postgres-10
 - name: Install separate postgis package to get shp2pgsql binary
@@ -47,7 +71,7 @@
 - name: start postgresql and configure to startup automatically
   service:
     name: "{{ postgresql_service }}"
-    state: started
+    state: restarted
     enabled: yes
   register: started
   tags: postgresql

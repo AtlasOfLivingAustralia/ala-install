@@ -1,2 +1,2 @@
 - name: restart image-service
-  service: name=image-service state=restarted
+  service: name=image-service state=restarted enabled=yes

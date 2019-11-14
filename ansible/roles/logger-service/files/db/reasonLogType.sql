@@ -11,4 +11,5 @@ INSERT INTO log_reason_type (id, rkey, name, default_order, is_deprecated) VALUE
 (9, "logger.download.reason.other.scientific.research", "other scientific research", 9900, 1),
 (10, "logger.download.reason.testing", "testing", 9000, 0),
 (11, "logger.download.reason.citizen.science", "citizen science", 200, 0),
-(12, "logger.download.reason.restoration.remediation", "restoration/remediation", 900, 0);
+(12, "logger.download.reason.restoration.remediation", "restoration/remediation", 900, 0),
+(13, "logger.download.reason.species.modelling", "species modelling", 1300, 0);

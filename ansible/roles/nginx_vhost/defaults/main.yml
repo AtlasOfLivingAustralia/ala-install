@@ -37,6 +37,7 @@ nginx_default_vhost_required: false
 ala_default_allowed_useragents: ["ELB-HealthChecker"]
 tomcat_server_port: '8080'
 frame_options_header: true
+frame_options_header_value: "DENY"
 content_type_options_header: true
 xss_protection_header: false
 nginx_cache: false

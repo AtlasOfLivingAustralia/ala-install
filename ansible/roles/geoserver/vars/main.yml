@@ -6,3 +6,10 @@
 
 # DM: This was the only online repository I could find for this unzip web archive
 geoserver_war_url: "https://repo.boundlessgeo.com/main/org/geoserver/web/gs-web-app/2.14.1/gs-web-app-2.14.1.war"
+
+# URLs to extensions as .zip
+# Must be compatible with the geoserver version
+# geoserver/tasks/main.yml changes gwc defaults for vectortiles extension
+geoserver_extension_urls:
+  - "https://download.sourceforge.net/project/geoserver/GeoServer/2.14.1/extensions/geoserver-2.14.1-pyramid-plugin.zip"
+  - "https://download.sourceforge.net/project/geoserver/GeoServer/2.14.1/extensions/geoserver-2.14.1-vectortiles-plugin.zip"

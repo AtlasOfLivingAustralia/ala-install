@@ -41,10 +41,11 @@
   command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "devtools::install_version('rgdal', version='1.4-4',repos=c('https://cran.csiro.au/'))"
   tags: rserve
 
-- name: add R package Rserve. WARNING inlmisc needs a SLOW compilation.
+- name: add R package Rserve.
   command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{item}}' %in% installed.packages()[,'Package'])) install.packages('{{item}}', repos=c('http://rforge.net'))"
   with_items:
     - Rserve
+  tags: rserve
 
 #missing packages
 #alphahull, date, ncdf4

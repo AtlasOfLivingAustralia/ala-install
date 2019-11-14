@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body{font:normal 15px Roboto,Helvetica,"Helvetica Neue",Arial,sans-serif;}
+        a {color:#C44D34;}
+        a:hover, a:focus {color: #883524;}
+    </style>
+</head>
+<body>
+<div>
+    <p>
+        Import data for modelling using this link: <a href="{{ bccvl_import_link | default('https://app.bccvl.org.au?importID=[bccvlImportID]') }}">import</a>
+    </p>
+    <p>
+        The <a href="https://en.wikipedia.org/wiki/Digital_object_identifier">DOI</a> for this download is <a href='[officialDoiUrl]'>[officialDoiUrl]</a>
+    </p>
+    <p>
+        Your download can be accessed on the page: <a href='[url]'>[url]</a>
+    </p>
+    <p>
+        All of your downloads are available <a href='{{ doi_service_url }}/myDownloads'>here</a>.
+    </p>
+</div>
+</body>
+</html>
