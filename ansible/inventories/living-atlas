@@ -16,6 +16,7 @@
 living-atlas.org
 
 [all:vars]
+is_vagrant=false
 # Mounted storage is usually /mnt on EC2. Create a symlink to /mnt -> /data
 data_dir=/data
 
@@ -39,15 +40,19 @@ biocache_service_base_url = http://living-atlas.org
 biocache_service_context_path = /biocache-service
 logging_enabled = true
 default_country =
-layers_service_url =
-layers_service_sampling = false
+layers_service_url=http://spatial.living-atlas.org/ws
+spatial_layers_url=http://spatial.living-atlas.org/ws/fields
+layers_service_sampling = true
 enable_lists = true
+include_species_lists = true
 lists_service_url = http://living-atlas.org/specieslists
 registry_api_key = dummy-registry-api-key
 commonname_lang = en
 media_store_local = false
 media_store_url=http://living-atlas.org/images
+download_url=http://living-atlas.org/biocache-download
 download_dir=/data/biocache-download
+geoserver_url=http://spatial.living-atlas.org/geoserver
 
 ####################### Hub ###################################################
 
@@ -55,9 +60,9 @@ biocache_hub_hostname = living-atlas.org
 biocache_hub_url = http://living-atlas.org/ala-hub
 biocache_hub_base_url = http://living-atlas.org
 biocache_hub_context_path = /ala-hub
-userdetails_url = https://auth.ala.org.au/userdetails/userDetails
+userdetails_url = http://auth.living-atlas.org/userdetails/userDetails
 
-google_apikey = AIzaSyAJDtEeoy7Sc9pij2TAoVnmTwA34Q-2VHk
+google_apikey = put-some-google-api-here
 
 # this is disabled to avoid startup problems
 caches_collections_enabled = false
@@ -66,7 +71,7 @@ org_url = http://living-atlas.org
 
 skin_orgNameLong = Living Atlas Demo
 orgNameLong = Living Atlas Demo
-orgNameShort = Living Atlas Demo
+orgNameShort = LA Demo
 
 explore_your_area_lat = 40.4168
 explore_your_area_lng = -3.7038
@@ -106,6 +111,7 @@ collectory_db_host = localhost
 collectory_db_user = collectory
 collectory_db_password = password
 bypass_cas = true
+collectory_app=ala-collectory
 
 # API key that support registry updates
 api_key = dummy-registry-api-key
@@ -113,11 +119,10 @@ api_key = dummy-registry-api-key
 # Google maps
 google_apikey = AIzaSyAJDtEeoy7Sc9pij2TAoVnmTwA34Q-2VHk
 
-orgNameLong = Living Atlas demo
-orgNameShort = Living Atlas demo
+orgNameLong = Living Atlas Demo
+orgNameShort = LA Demo
 
 # CAS
-uri_filter_pattern = /dummy
 
 # Security bypass
 security_bypass = true
@@ -134,8 +139,8 @@ collections_map_lon = -3.7038
 collections_map_zoom = 5
 
 # Project name
-orgNameShort = Living Atlas demo
-orgNameLong = Living Atlas demo
+orgNameShort = LA Demo
+orgNameLong = Living Atlas Demo
 region = Spain
 
 # EML config
@@ -191,8 +196,8 @@ logger_db_hostname = localhost
 
 ############### Auth Server #########
 
-auth_base_url = https://auth.ala.org.au
-auth_cas_url = https://auth.ala.org.au/cas
+auth_base_url = http://auth.living-atlas.org
+auth_cas_url = http://auth.living-atlas.org/cas
 
 ####### When near the GBIF building (e.g. in Europe) the GBIF nexus will likely be fastest #########
 
@@ -201,6 +206,19 @@ use_gbif_nexus = false
 ####### Disable SDS checks for the demo #######
 
 sds_enabled = false
+
+# Disabled caches - the collections cache is problematic when collectory + biocache on same server
+
+caches_auth_enabled=false
+caches_log_enabled=false
+# If collections cache is disabled biocache-service will show collections_uid, institutions_uid instead of their respective names in facets and legends
+caches_collections_enabled=false
+caches_layers_enabled=false
+
+webserver_nginx=true
+ssl=false
+
+nginx_vhost_fragments_to_clear = ["living-atlas.org","auth.living-atlas.org","spatial.living-atlas.org"]
 
 ############### Biocache CLI options ###############
 
@@ -251,23 +269,56 @@ bie_hub = ala-bie
 bie_hub_base_url = http://living-atlas.org
 bie_hub_context_path = /ala-bie
 bie_hub_hostname = living-atlas.org
+bie_service_enabled = true
+speciesList_api_key = put-here-a-valid-api-key
 species_list_url = http://living-atlas.org/specieslists
 # Used in CAS:
 lists_base_url = http://living-atlas.org/specieslists
 sightings_url =
 alerts_url =
 alerts_base_url=
-spatial_url =
-spatial_base_url =
+spatial_url=http://spatial.living-atlas.org
+spatial_base_url=http://spatial.living-atlas.org
 
 bie_base_url = http://living-atlas.org/ala-bie
 ala_base_url = http://living-atlas.org
 
 ####### Images #######
 
-images_url = http://living-atlas.org
-images_base_url = http://living-atlas.org
-images_context_path = /images
-images_hostname = living-atlas.org
-images_db_password = images
-images_db_username = images
+image_service_url = http://living-atlas.org/images
+image_service_base_url = http://living-atlas.org
+image_service_context_path = /images
+image_service_hostname = living-atlas.org
+image_service_db_name=images
+image_service_db_password=images
+image_service_db_username=images
+image_service_port=9101
+
+####### Regions #######
+
+regions_hostname = living-atlas.org
+regions_base_url = http://living-atlas.org
+regions_context_path = /regions
+
+regions_map_bounds = []
+regions_map_height =
+spatial_base_url=http://spatial.living-atlas.org
+spatial_base_url_ws=http://spatial.living-atlas.org/ws
+alerts_base_url=
+geoserver_base_url=http://spatial.living-atlas.org/geoserver
+biocache_records_url=http://living-atlas.org/ala-hub
+biocache_service_url = http://living-atlas.org/biocache-service
+spatial_ws_hostname=spatial.living-atlas.org
+
+postgresql_username=postgres
+postgresql_password=postgres
+postgis_version=9.6
+pg_service=postgresql-9.6
+pg_version=9.6
+postgis_version=2.4
+# Needed for installing on Ubuntu-18.04
+# https://github.com/AtlasOfLivingAustralia/biocache-service/issues/363
+tomcat=tomcat7
+
+# workaround for: https://github.com/AtlasOfLivingAustralia/ala-install/issues/291
+namedata_datestamp=20171012
