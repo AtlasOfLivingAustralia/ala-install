@@ -14,7 +14,7 @@ ecodata_hostname=ecodata.vagrant1.ala.org.au
 ecodata_url=http://ecodata.vagrant1.ala.org.au
 ecodata_base_url=http://ecodata.vagrant1.ala.org.au
 ecodata_context_path=
-app_uploads_url=http://ecodata.vagrant1.ala.org.au/document/download?filename=
+app_uploads_url=http://ecodata.vagrant1.ala.org.au/uploads/
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas

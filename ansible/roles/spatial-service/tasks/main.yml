@@ -63,6 +63,7 @@
     - "{{data_dir}}/spatial-data"
     - "{{data_dir}}/spatial-data/uploads"
     - "{{data_dir}}/spatial-data/public"
+    - "{{data_dir}}/spatial-data/private"
   tags:
     - spatial-service
     - spatial-service-config

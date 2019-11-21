@@ -123,6 +123,8 @@
     group: "{{ tomcat_user }}"
     remote_src: yes
   with_items: "{{ geoserver_extension_urls }}"
+  tags:
+    - geoserver
 
 - name: "update defaultVectorCacheFormats in gwc-gs.xml for vectortiles extension"
   xml:
@@ -132,6 +134,8 @@
     - string: "application/vnd.mapbox-vector-tile"
     - string: "application/json;type=geojson"
     - string: "application/json;type=topojson"
+  tags:
+    - geoserver
 
 - name: "update defaultOtherCacheFormats in gwc-gs.xml for vectortiles extension"
   xml:
@@ -141,6 +145,8 @@
     - string: "application/vnd.mapbox-vector-tile"
     - string: "application/json;type=geojson"
     - string: "application/json;type=topojson"
+  tags:
+    - geoserver
 
 - name: restart tomcat for installed extensions
   service:

@@ -22,8 +22,8 @@
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 
 {% if frame_options_header is defined and frame_options_header | bool == true %}
-    # Deny framing (Reenable using frame_options_header)
-    add_header X-Frame-Options DENY always;
+    # Framing security setting (Reenable using frame_options_header)
+    add_header X-Frame-Options {{ frame_options_header_value }} always;
 {% endif %}
 
 {% if content_type_options_header is defined and content_type_options_header | bool == true %}

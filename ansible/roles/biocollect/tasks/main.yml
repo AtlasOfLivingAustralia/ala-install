@@ -1,11 +1,89 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - deploy
-    - apache_vhost
-    - tomcat_vhost
     - biocollect
 
+- name: set biocollect_user as default value
+  set_fact:
+    biocollect_user: "{{ (exec_jar) | ternary ('biocollect', 'tomcat')}}"
+  tags:
+    - biocollect
+    - deploy
+
+
+- name: add jar and service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: "biocollect"
+    jar_url: '{{ biocollect_artifact_url }}'
+  tags:
+    - deploy
+    - service
+    - biocollect
+  when: exec_jar
+
 #
+# External configuration properties file
+#
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{biocollect_user}} group={{biocollect_user}}
+  with_items:
+    - "{{data_dir}}/biocollect/config"
+  tags:
+    - properties
+    - biocollect
+
+- name: copy all config.properties
+  template: src=biocollect-config.properties dest={{data_dir}}/biocollect/config/biocollect-config.properties
+  tags:
+    - properties
+    - biocollect
+
+- name: copy logback config
+  template:
+    src: logback.groovy
+    dest: "{{data_dir}}/biocollect/config/logback.groovy"
+    owner: biocollect
+    group: biocollect
+  notify:
+    - restart biocollect
+  tags:
+    - properties
+    - biocollect
+
+- name: ensure biocollect log directory exists
+  file: path={{item}} state=directory owner={{biocollect_user}} group={{biocollect_user}}
+  with_items:
+    - "/var/log/atlas/biocollect"
+  tags:
+    - properties
+    - biocollect
+  when: exec_jar
+
+- name: set biocollect log ownership
+  file: path=/var/log/atlas/biocollect owner='{{biocollect_user}}' group='{{biocollect_user}}' recurse=true
+  notify:
+    - restart biocollect
+  tags:
+    - properties
+    - biocollect
+  when: exec_jar
+
+- name: Copy config files to config directory
+  copy: src=regions.json dest={{data_dir}}/biocollect/config/regions.json
+  tags:
+    - biocollect
+    - properties
+
+- name: set data ownership
+  file: path={{data_dir}}/biocollect owner={{biocollect_user}} group={{biocollect_user}} recurse=true
+  notify:
+    - restart biocollect
+  tags:
+    - properties
+    - biocollect
+
 # WAR file deployment and virtual host configuration
 #
 - include: ../../apache_vhost/tasks/main.yml
@@ -33,36 +111,6 @@
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ biocollect_war_url }}' context_path='{{biocollect_context_path}}' hostname='{{ biocollect_hostname }}'
   tags:
     - deploy
-    - tomcat_vhost
     - biocollect
+  when: not exec_jar
 
-#
-# External configuration properties file
-#
-- name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
-  with_items:
-    - "{{data_dir}}/biocollect/config"
-  tags:
-    - properties
-    - biocollect
-
-- name: copy all config.properties
-  template: src=biocollect-config.properties dest={{data_dir}}/biocollect/config/biocollect-config.properties
-  tags:
-    - properties
-    - biocollect
-
-- name: set data ownership
-  file: path={{data_dir}}/biocollect owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify:
-    - restart tomcat
-  tags:
-    - properties
-    - biocollect
-
-- name: Copy config files to config directory
-  copy: src=regions.json dest={{data_dir}}/biocollect/config/regions.json
-  tags:
-    - biocollect
-    - properties
