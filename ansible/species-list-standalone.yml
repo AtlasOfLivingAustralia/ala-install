@@ -6,4 +6,5 @@
     - webserver
     - mysql-5.7
     - nameindex
+    - i18n
     - species-list
