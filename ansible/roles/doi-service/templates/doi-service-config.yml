@@ -51,6 +51,7 @@ doi:
     - "template"
     - "biocache"
     - "phylolink"
+    - "csdm"
 
 grails:
   serverURL: https://{{ doi_service_hostname }}{{ doi_service_context_path }}
