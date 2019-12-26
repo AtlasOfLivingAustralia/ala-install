@@ -36,7 +36,7 @@ server:
 # Data source configuration
 dataSource:
   dbCreate: "none"
-  url: jdbc:mysql://{{ apikey_db_hostname | default('localhost') }}:{{ apikey_db_port | default('3306') }}/{{ apikey_db_name | default('apikey') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull
+  url: jdbc:mysql://{{ apikey_db_hostname | default('localhost') }}:{{ apikey_db_port | default('3306') }}/{{ apikey_db_name | default('apikey') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8
   username: {{ apikey_db_username }}
   password: {{ apikey_db_password }}
 flyway:
