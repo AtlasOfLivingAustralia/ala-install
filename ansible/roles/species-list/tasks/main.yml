@@ -5,7 +5,7 @@
     - dbfix
 
 - name: create DB
-  mysql_db: name={{specieslist_db_name}} state=present
+  mysql_db: name={{specieslist_db_name}} state=present encoding=utf8
   tags:
     - specieslist
     - db

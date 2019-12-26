@@ -4,7 +4,7 @@
     - properties
 
 - name: create logger DB
-  mysql_db: name={{logger_db_name}} state=present
+  mysql_db: name={{logger_db_name}} state=present encoding=utf8
   register: dbschema
   tags:
     - logger-service
