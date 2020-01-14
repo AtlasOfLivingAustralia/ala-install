@@ -68,7 +68,10 @@ bcrypt:
 #  algorithm: {{ user_store_db_encoding_algorithm }}
 #  salt: {{ user_store_db_encoding_salt }}
 
-
+recaptcha:
+  baseUrl: {{ recaptcha_base_url | default('https://www.google.com/recaptcha/api/') }}
+  siteKey: {{ userdetails_recaptcha_site_key | default('') }}
+  secretKey: {{ userdetails_recaptcha_secret_key | default('') }}
 
 ala:
   baseURL: {{ ala_base_url | default('https://www.ala.org.au') }}

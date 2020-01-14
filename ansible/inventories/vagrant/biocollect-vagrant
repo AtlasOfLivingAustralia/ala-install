@@ -6,6 +6,8 @@ is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
+webserver_nginx=true
+
 biocollect_hostname=biocollect-vagrant.ala.org.au
 biocollect_context_path=
 biocollect_base_url=http://biocollect-vagrant.ala.org.au
@@ -40,5 +42,8 @@ api_key=INSERT_API_KEY_HERE
 
 mdba_base_url=https://mdba-test.ala.org.au
 
-#ssl=false
+ssl=false
 #force_https=true
+
+
+biocollect_version=5.0-SNAPSHOT

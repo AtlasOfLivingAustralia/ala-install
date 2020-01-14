@@ -245,12 +245,13 @@ ala_base_url = http://demo.vagrant1.ala.org.au
 
 ####### Images #######
 
-images_url = http://demo.vagrant1.ala.org.au
-images_base_url = http://demo.vagrant1.ala.org.au
-images_context_path = /images
-images_hostname = demo.vagrant1.ala.org.au
-images_db_password = images
-images_db_username = images
+image_service_url = http://demo.vagrant1.ala.org.au
+image_service_base_url = http://demo.vagrant1.ala.org.au
+image_service_context_path = /images
+image_service_hostname = demo.vagrant1.ala.org.au
+image_service_db_name = images
+image_service_db_password = images
+image_service_db_username = images
 
 ###### favicon #######
 

@@ -101,7 +101,7 @@
     - { user: "{{ cas_db_username }}", password: "{{ cas_db_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:INSERT,SELECT,UPDATE,DELETE,EXECUTE,TRIGGER/mysql.proc:SELECT", host: "{{ cas_mysql_src_host }}", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
     - { user: "{{ apikey_db_username }}", password: "{{ apikey_db_password }}", priv: "{{ apikey_db_name | default('apikey') }}.*:ALL", host: "{{ apikey_mysql_src_host }}", login_host: "{{ apikey_db_hostname }}", login_port: "{{ apikey_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
   - debug:
-      msg: "Should be the mongo users created? {{ cas_add_mongo_users }}"
+      msg: "Should be the mongo users created? {{ cas_add_mongo_users | default(False) }}"
   - mongodb_user:
       user: "{{ item.user }}"
       password: "{{ item.password }}"
@@ -117,32 +117,47 @@
       login_password: "{{ item.login_password }}"
     with_items:
     - {
-    login_host: "{{ cas_tickets_host }}",
-    login_port: "{{ cas_tickets_port | default('27017') }}",
-    login_user: "{{ mongodb_root_username }}",
-    login_password: "{{ mongodb_root_password }}",
-    login_database: "{{ mongodb_root_database | default('admin') }}",
-    user: "{{ cas_tickets_username }}",
-    password: "{{ cas_tickets_password }}",
-    database: "{{ cas_tickets_db | default('cas-ticket-registry') }}",
-    replica_set: "{{ cas_tickets_replica_set | default('') }}",
-    ssl: "{{ cas_tickets_ssl_enabled | default('false') }}",
-    roles: 'readWrite' }
+      login_host: "{{ cas_tickets_host }}",
+      login_port: "{{ cas_tickets_port | default('27017') }}",
+      login_user: "{{ mongodb_root_username }}",
+      login_password: "{{ mongodb_root_password }}",
+      login_database: "{{ mongodb_root_database | default('admin') }}",
+      user: "{{ cas_tickets_username }}",
+      password: "{{ cas_tickets_password }}",
+      database: "{{ cas_tickets_db | default('cas-ticket-registry') }}",
+      replica_set: "{{ cas_tickets_replica_set | default('') }}",
+      ssl: "{{ cas_tickets_ssl_enabled | default('false') }}",
+      roles: 'readWrite' 
+    }
     - {
-    login_host: "{{ cas_services_host }}",
-    login_port: "{{ cas_services_port | default('27017') }}",
-    login_user: "{{ mongodb_root_username }}",
-    login_password: "{{ mongodb_root_password }}",
-    login_database: "{{ mongodb_root_database | default('admin') }}",
-    user: "{{ cas_services_username }}",
-    password: "{{ cas_services_password }}",
-    database: "{{ cas_services_db | default('cas-service-registry' ) }}",
-    replica_set: "{{ cas_services_replica_set | default('') }}",
-    ssl: "{{ cas_services_ssl_enabled | default('false') }}",
-    roles: 'readWrite' }
+      login_host: "{{ cas_services_host }}",
+      login_port: "{{ cas_services_port | default('27017') }}",
+      login_user: "{{ mongodb_root_username }}",
+      login_password: "{{ mongodb_root_password }}",
+      login_database: "{{ mongodb_root_database | default('admin') }}",
+      user: "{{ cas_services_username }}",
+      password: "{{ cas_services_password }}",
+      database: "{{ cas_services_db | default('cas-service-registry' ) }}",
+      replica_set: "{{ cas_services_replica_set | default('') }}",
+      ssl: "{{ cas_services_ssl_enabled | default('false') }}",
+      roles: 'readWrite' 
+    }
+    - {
+      login_host: "{{ cas_audit_host }}",
+      login_port: "{{ cas_audit_port | default('27017') }}",
+      login_user: "{{ mongodb_root_username }}",
+      login_password: "{{ mongodb_root_password }}",
+      login_database: "{{ mongodb_root_database | default('admin') }}",
+      user: "{{ cas_audit_username }}",
+      password: "{{ cas_audit_password }}",
+      database: "{{ cas_audit_db | default('cas-audit-repository') }}",
+      replica_set: "{{ cas_audit_replica_set | default('') }}",
+      ssl: "{{ cas_audit_ssl_enabled | default('false') }}",
+      roles: 'readWrite' 
+    }
     tags: mongodb-org
     run_once: true
-    when: cas_add_mongo_users is defined
+    when: cas_add_mongo_users is defined and cas_add_mongo_users
   - include_role:
       name: cas5
     vars:

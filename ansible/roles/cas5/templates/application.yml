@@ -45,7 +45,23 @@ cas:
 {% endfor %}
   jdbc:
     showSql: false
+  audit:
+    mongo:
+      sslEnabled: {{ cas_audit_ssl_enabled | default('false') }}
+      clientUri: {{ cas_audit_uri | default('') }}
+      host: {{ cas_audit_host | default('localhost') }}
+      port: {{ cas_audit_port | default('27017') }}
+      replicaSet: {{ cas_audit_replica_set | default('') }}
+      databaseName: {{ cas_audit_db | default('cas-audit-repository') }}
+      authenticationDatabaseName: {{ cas_audit_auth_db | default('') }}
+      userId: {{ cas_audit_username | default('cas') }}
+      password: {{ cas_audit_password | default('password') }}
+      timeout: {{ cas_audit_timeout | default('PT5S') }}
   authn:
+    throttle:
+      failure:
+        range-seconds: {{ cas_throttle_range | default('30') }}
+        threshold: {{ cas_throttle_threshold | default('3') }}
     pac4j:
       typedIdUsed: true
       cookie:
@@ -91,6 +107,14 @@ cas:
       yahoo:
         id: {{ pac4j_yahoo_consumer_key }}
         secret: {{ pac4j_yahoo_consumer_secret }}
+{% endif %}
+{% if pac4j_aaf_consumer_key is defined %}
+      oidc:
+      - client-name: aaf
+        discovery-uri: {{ pac4j_aaf_discovery_uri | default('https://central.test.aaf.edu.au/.well-known/openid-configuration') }}
+        id: {{ pac4j_aaf_consumer_key }}
+        secret: {{ pac4j_aaf_consumer_secret }}
+        scope: openid profile email
 {% endif %}
     oidc:
       issuer: ${cas.server.name}/cas/oidc
@@ -161,7 +185,7 @@ ala:
       enableUpdateLegacyPasswords: {{ cas_update_legacy_passwords | default('true') }}
   skin:
     baseUrl: {{ ala_base_url | default('https://www.ala.org.au')}}
-    termsUrl: {{ terms_url | default('${ala.skin.baseUrl}/who-we-are/terms-of-use/') }}
+    termsUrl: {{ terms_url | default('${ala.skin.baseUrl}/terms-of-use/') }}
     uiVersion: {{ ala_cas_ui_version | default('2') }}
     headerFooterUrl: {{ header_and_footer_baseurl | default('${ala.skin.baseUrl}/commonui-bs3')}}/
     favIconBaseUrl: {{ skin_favicon_baseurl | default('${ala.skin.baseUrl}/wp-content/themes/ala-wordpress-theme/img/favicon/') }}

@@ -10,6 +10,8 @@ security:
     casServerLoginUrl: {{ auth_cas_url }}/login
     casServerLogoutUrl: {{ auth_cas_url }}/logout
     appServerName: https://{{ doi_service_hostname }}
+    loginUrl: {{ auth_cas_url }}/login
+    logoutUrl: {{ auth_cas_url }}/logout
   apikey:
     check:
       serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
@@ -45,6 +47,11 @@ ala:
 doi:
   storage:
     provider: {{ doi_storage_provider | default('LOCAL') }}
+  displayTemplates:
+    - "template"
+    - "biocache"
+    - "phylolink"
+    - "csdm"
 
 grails:
   serverURL: https://{{ doi_service_hostname }}{{ doi_service_context_path }}
@@ -69,3 +76,6 @@ dataSource:
 
 collections:
   baseUrl: {{ collections_url | default('https://collections.ala.org.au') }}
+
+userDetails:
+  url: {{ auth_base_url }}/userdetails/

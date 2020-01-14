@@ -54,6 +54,24 @@
   tags:
     - demo
 
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "demo"
+    hostname: "{{ demo_hostname }}"
+    context_path: "/"
+    nginx_paths:
+      - path: "/"
+        sort_label: "1"
+        is_proxy: false
+        alias: "/srv/{{ demo_hostname }}/www/"
+  tags:
+    - nginx_vhost
+    - deploy
+    - demo
+  when: webserver_nginx
+
 - name: Finish message
   debug: msg="That's ready! You can now access your ALA demo instance at http://{{ demo_hostname }}"
   tags: 

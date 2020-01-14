@@ -21,6 +21,17 @@
     - properties
     - ecodata
 
+- name: add jar and service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: "ecodata"
+    jar_url: '{{ ecodata_artifact_url }}'
+  tags:
+    - deploy
+    - service
+    - ecodata
+  when: exec_jar
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{ecodata_user}} group={{ecodata_user}}
@@ -107,6 +118,15 @@
     - ecodata
   when: not webserver_nginx
 
+- name: set nginx proxy target if configured
+  set_fact:
+    ecodata_proxy_target: "{{ecodata_context_path}}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - ecodata
+  when: webserver_nginx and ecodata_proxy_target is not defined
+
 - name: add nginx vhost if configured
   include_role:
     name: nginx_vhost
@@ -114,39 +134,39 @@
     appname: "ecodata"
     hostname: "{{ ecodata_hostname }}"
     context_path: "{{ ecodata_context_path }}"
+    tomcat_server_port: "{{ ecodata_server_port }}"
+    nginx_paths:
+      - path: "{{ecodata_proxy_target}}/uploads"
+        sort_label: "1_upload"
+        is_proxy: false
+        alias: "{{ upload_dir | default('/data/ecodata/uploads') }}"
+      - path: "{{ecodata_context_path}}"
+        sort_label: "2_ws"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:{{ ecodata_server_port }}{{ecodata_proxy_target}}"
   tags:
     - nginx_vhost
     - deploy
     - ecodata
   when: webserver_nginx
 
-- name: add jar and service
-  include_role:
-    name: exec-jar
-  vars:
-    service_name: "ecodata"
-    jar_url: '{{ ecodata_artifact_url }}'
-  tags:
-    - deploy
-    - service
-    - ecodata
-  when: exec_jar
 
-- name: Serve ecodata uploads from nginx
-  blockinfile:
-    path: /etc/nginx/sites-enabled/{{ ecodata_hostname }}.conf
-    backup: yes
-    marker: '# {mark} Serve uploaded files using nginx'
-    insertbefore: '^.*location'
-    block:
-      location ^~ /uploads {
-        alias /data/ecodata/uploads;
-      }
-  tags:
-    - nginx_vhost
-    - deploy
-    - ecodata
-  when: webserver_nginx
+
+#- name: Serve ecodata uploads from nginx
+#  blockinfile:
+#    path: /etc/nginx/sites-enabled/{{ ecodata_hostname }}.conf
+#    backup: yes
+#    marker: '# {mark} Serve uploaded files using nginx'
+#    insertbefore: '^.*location'
+#    block:
+#      location ^~ /uploads {
+#        alias /data/ecodata/uploads;
+#      }
+#  tags:
+#    - nginx_vhost
+#    - deploy
+#    - ecodata
+#  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ ecodata_war_url }}' context_path='{{ecodata_context_path}}' hostname='{{ ecodata_hostname }}'
   tags:

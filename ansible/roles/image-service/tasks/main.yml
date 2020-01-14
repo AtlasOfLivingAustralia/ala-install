@@ -4,6 +4,14 @@
     - properties
     - data_import
 
+- name: "Ensure system user for image-service"
+  user:
+    name: image-service
+    state: present
+    system: yes
+  tags:
+    - image-service
+
 - name: create images database
   postgresql_db: name={{ image_service_db_name }}
   become_user: postgres
@@ -68,18 +76,13 @@
   file: path={{item}} state=directory
   with_items:
     - "/srv/{{ image_service_hostname }}/www"
+  notify:
+     - restart image-service
   tags:
     - image-service
 
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory
-  with_items:
-    - "{{data_dir}}/image-service/config"
-  tags:
-    - image-service
-
-- name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory
+  file: path={{item}} state=directory owner=image-service group=image-service
   with_items:
     - "{{data_dir}}/image-service/setup"
     - "{{data_dir}}/image-service/config"
@@ -88,6 +91,8 @@
     - "{{data_dir}}/image-service/exports"
     - "{{data_dir}}/image-service/bin/imgcnv"
     - "/var/log/atlas/image-service"
+  notify:
+     - restart image-service
   tags:
     - image-service
 
@@ -104,6 +109,8 @@
   with_items:
     - "config/image-service-config.yml"
     - "config/logback.groovy"
+  notify:
+     - restart image-service
   tags:
     - deploy
     - image-service
@@ -113,6 +120,8 @@
   template: src={{ item }} dest={{data_dir}}/image-service/setup/
   with_items:
     - "sql/image-service-export.sql"
+  notify:
+     - restart image-service
   tags:
     - deploy
     - image-service
@@ -122,6 +131,8 @@
   command: "psql -d {{ image_service_db_username }} -f {{data_dir}}/image-service/setup/image-service-export.sql"
   become_user: postgres
   ignore_errors: no
+  notify:
+     - restart image-service
   tags:
     - image-service
     - properties
@@ -148,11 +159,15 @@
     - "{{data_dir}}/image-service/exports"
     - "{{data_dir}}/image-service/bin/imgcnv"
     - "/var/log/atlas/image-service"
+  notify:
+     - restart image-service
   tags:
     - image-service
 
 - name: set data ownership for {{data_dir}}/image-service
   file: path={{data_dir}}/image-service owner="image-service" group="image-service"
+  notify:
+     - restart image-service
   tags:
     - image-service
     - properties
@@ -160,6 +175,8 @@
 
 - name: set data ownership postgres for {{data_dir}}/image-service/exports
   file: path={{data_dir}}/image-service/exports owner="postgres" group="postgres" recurse=true
+  notify:
+     - restart image-service
   tags:
     - image-service
     - properties
@@ -167,6 +184,8 @@
 
 - name: set data ownership for /opt/atlas/image-service
   file: path=/opt/atlas/image-service owner="image-service" group="image-service" recurse=true
+  notify:
+     - restart image-service
   tags:
     - image-service
     - properties
@@ -174,6 +193,8 @@
 
 - name: set data ownership for /var/log/atlas/image-service
   file: path=/var/log/atlas/image-service owner="image-service" group="image-service" recurse=true
+  notify:
+     - restart image-service
   tags:
     - image-service
     - properties
@@ -182,6 +203,8 @@
 - name: install openjfx (Debian)
   apt: pkg=openjfx state=latest update_cache=yes
   when: ansible_os_family == "Debian" and use_openjdk8
+  notify:
+     - restart image-service
   tags:
     - packages
     - image-service
