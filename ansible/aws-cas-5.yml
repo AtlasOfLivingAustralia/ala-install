@@ -143,13 +143,13 @@
       roles: 'readWrite' 
     }
     - {
-      login_host: "{{ cas_audit_host }}",
+      login_host: "{{ cas_audit_host | default('localhost') }}",
       login_port: "{{ cas_audit_port | default('27017') }}",
       login_user: "{{ mongodb_root_username }}",
       login_password: "{{ mongodb_root_password }}",
       login_database: "{{ mongodb_root_database | default('admin') }}",
-      user: "{{ cas_audit_username }}",
-      password: "{{ cas_audit_password }}",
+      user: "{{ cas_audit_username | default('cas') }}",
+      password: "{{ cas_audit_password | default('password') }}",
       database: "{{ cas_audit_db | default('cas-audit-repository') }}",
       replica_set: "{{ cas_audit_replica_set | default('') }}",
       ssl: "{{ cas_audit_ssl_enabled | default('false') }}",
