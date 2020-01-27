@@ -51,8 +51,10 @@ nginx_cache_invalid_time: "0s"
 # Set this to true to have the nginx cache cleared when deployment completes
 nginx_clear_cache_on_deploy: False
 
-# Set this to true in your inventory if you know that you are only deploying a single nginx_vhost and you want to clear previous versions before deploying each time
+# Set this to true in your inventory if you know that you are only deploying a single nginx_vhost and you want to clear previous versions before deploying each time (not developed yet)
 clear_vhost_fragments: false
+# Set this to true in your inventory if you know that you are deploying for instance biocache and biocache/ws in the same server
+ws_same_host: false
 # Set this to true to enable support for 'upstream' load balancing features
 nginx_load_balancing: false
 # When load balancing is enabled, this is used to specify the maximum number of connections from nginx to the upstream load balanced server

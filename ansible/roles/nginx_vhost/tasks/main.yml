@@ -62,6 +62,20 @@
   tags:
     - nginx_vhost
 
+- name: set vfragments_suffix when context_path is defined and we set ws_same_host
+  set_fact:
+    vfragments_suffix: "-{{ context_path | regex_replace ('/','') }}"
+  when: ws_same_host | bool == True and context_path is defined
+  tags:
+    - nginx_vhost
+
+- name: set empty vfragments_suffix when no context_path
+  set_fact:
+    vfragments_suffix: ""
+  when: context_path is not defined or (context_path | trim == '')
+  tags:
+    - nginx_vhost
+
 - name: set webserver_extra_servernames empty by default
   set_fact: 
     webserver_extra_servernames: []
@@ -353,23 +367,23 @@
   tags:
     - nginx_vhost
 
-# assemble servername fragments dir, put in sites-available as servername.conf
+# assemble servername fragments dir, put in sites-available as servername.conf or servername-path.conf
 - name: assemble fragments into nginx vhost config
   assemble:
     src: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}"
-    dest: "{{nginx_conf_dir}}/sites-available/{{hostname}}.conf"
+    dest: "{{nginx_conf_dir}}/sites-available/{{hostname}}{{vfragments_suffix}}.conf"
   when: vhost_required | bool == True
   notify:
    - reload nginx
   tags:
     - nginx_vhost
 
-# symlink servername.conf to sites-enabled
+# symlink servername.conf  or servername-path.conf to sites-enabled
 - name: symlink vhost to sites-enabled
   file:
     state: link
-    src: "{{nginx_conf_dir}}/sites-available/{{hostname}}.conf"
-    dest: "{{nginx_conf_dir}}/sites-enabled/{{hostname}}.conf"
+    src: "{{nginx_conf_dir}}/sites-available/{{hostname}}{{vfragments_suffix}}.conf"
+    dest: "{{nginx_conf_dir}}/sites-enabled/{{hostname}}{{vfragments_suffix}}.conf"
   when: vhost_required | bool == True
   notify:
    - reload nginx
