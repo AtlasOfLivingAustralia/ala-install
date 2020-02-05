@@ -558,6 +558,8 @@ CREATE TABLE occ.occ (
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
 
+CREATE INDEX ON occ.occ ("dataResourceUid");
+
 CREATE TABLE occ.queryassert (
     rowkey text PRIMARY KEY
 ) WITH bloom_filter_fp_chance = 0.01
@@ -644,6 +646,8 @@ CREATE TABLE occ.occ_uuid (
     AND min_index_interval = 128
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
+
+CREATE INDEX ON occ.occ_uuid (value);
 
 CREATE TABLE occ.qid (
     rowkey text PRIMARY KEY,
