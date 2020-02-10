@@ -1,0 +1,30 @@
+- name: Install ala-i18n apt repository
+  apt_repository:
+    # We use this repo temporally
+    repo: deb [arch=amd64] https://demo.gbif.es/repo bionic main
+    state: present
+  tags:
+    - packages
+    - i18n
+  when: ansible_os_family == "Debian"
+
+- name: Add demo.gbif.es apt key
+  apt_key:
+    # We use this key from the above repo temporally
+    keyserver: hkp://keyserver.ubuntu.com:80
+    id: BD4E3B58E30599A9FD97331D9D93BC32983433D5
+  tags:
+    - packages
+    - i18n
+  when: ansible_os_family == "Debian"
+
+- name: Install ala-i18n package
+  apt:
+    pkg:
+    - ala-i18n
+    state: present
+    update_cache: yes
+  tags:
+    - packages
+    - i18n
+  when: ansible_os_family == "Debian"
