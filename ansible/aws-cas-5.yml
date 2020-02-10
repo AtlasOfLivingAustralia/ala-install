@@ -66,6 +66,7 @@
       login_port: "{{ item.login_port }}"
       login_user: "{{ item.login_user }}"
       login_password: "{{ item.login_password }}"
+      encoding: "{{ cas_db_encoding | default('utf8') }}"
     run_once: true
     with_items:
     - { name: "{{ cas_db_name | default('emmet') }}", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
