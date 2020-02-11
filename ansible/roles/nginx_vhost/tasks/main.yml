@@ -62,17 +62,17 @@
   tags:
     - nginx_vhost
 
-- name: set vfragments_suffix when context_path is defined and we set ws_same_host
+- name: set vfragments_suffix when vhost_with_appname_conf is true
   set_fact:
-    vfragments_suffix: "-{{ context_path | regex_replace ('/','') }}"
-  when: ws_same_host | bool == True and context_path is defined
+    vfragments_suffix: "-{{appname}}"
+  when: vhost_with_appname_conf | bool == True
   tags:
     - nginx_vhost
 
-- name: set empty vfragments_suffix when no context_path
+- name: set empty vfragments_suffix when vhost_with_appname_conf is false
   set_fact:
     vfragments_suffix: ""
-  when: context_path is not defined or (context_path | trim == '')
+  when: vhost_with_appname_conf | bool == False
   tags:
     - nginx_vhost
 
