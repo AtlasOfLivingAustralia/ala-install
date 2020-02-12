@@ -410,3 +410,9 @@
   tags:
     - nginx_vhost
 
+- name: unset vfragments_suffix
+  set_fact:
+    vfragments_suffix: ''
+  tags:
+    - nginx_vhost
+
