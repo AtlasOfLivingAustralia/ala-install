@@ -140,48 +140,17 @@
   when: exec_jar
 
 - name: Setup GeoLite2 City database (only used by ALA version of the hub)
-  block:
-  - set_fact:
-      geolite_db_archive: "{{data_dir}}/{{biocache_hub}}/download/GeoLite2-City.tar.gz"
-      geolite_db_extracted: "{{data_dir}}/{{biocache_hub}}/geolite_db"
-      geolite_db_file: "GeoLite2-City.mmdb"
-      geolite_db_file_link: "{{data_dir}}/{{biocache_hub}}/config/GeoLite2-City.mmdb"
-    tags:
-      - setfacts
-
-  - name: Download GeoLite2 City database (only used by ALA version of the hub)
-    get_url: url={{geolite2_city_db_download_url | default('https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz')}} dest={{geolite_db_archive}} force={{ force_geolite2_city_db_download | default(false) }}
-    register: was_file_downloaded
-
-  - name: Cleaning GeoLite2 City database extracted directory if new archive was just downloaded
-    block:
-    - name: Cleaning GeoLite2 City database extracted directory if new archive was just downloaded
-      file: path="{{geolite_db_extracted}}/" state=absent
-    - file: path="{{geolite_db_extracted}}/" state=directory
-    when: was_file_downloaded.changed
-
-  - name: Unpackage GeoLite2 City database
-    unarchive: src={{geolite_db_archive}} dest={{geolite_db_extracted}} copy=no group={{ nameindex_user | default(tomcat_user) }} owner="{{ nameindex_user | default(tomcat_user) }}"
-    when: not exec_jar
-
-  - name: Unpackage GeoLite2 City database
-    unarchive: src={{geolite_db_archive}} dest={{geolite_db_extracted}} copy=no group={{ nameindex_user | default(biocache_hub) }} owner="{{ nameindex_user | default(biocache_hub) }}"
-    when: exec_jar
-
-  - name: Find extracted GeoLite2 City database file
-    find: paths={{geolite_db_extracted}} patterns={{geolite_db_file}} recurse=yes file_type=file
-    register: find_result
-
-  - name: Link GeoLite2 City database file
-    file: src="{{item.path}}" dest={{geolite_db_file_link}} state=link force=yes
-    with_items: "{{find_result.files}}"
-  when: biocache_hub == 'ala-hub'
+  include_role:
+    name: geoip
+  vars:
+    appname: "{{ biocache_hub }}"
+    maxmind_geoip_database_directory: "{{ data_dir }}/{{ biocache_hub }}/config"
+    maxmind_geoip_conf: "{{ data_dir }}/{{ biocache_hub }}/config/GeoIP.conf"
   tags:
-    - webapps
-    - properties
-    - hub_config
+    - geoip
+    - deploy
     - biocache_hub
-    - geolite_db
+  when: biocache_hub == 'ala-hub'
 
 - name: set data ownership
   file: path={{data_dir}}/{{biocache_hub}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
@@ -191,7 +160,6 @@
     - webapps
     - properties
     - biocache_hub
-    - geolite_db
   when: not exec_jar
 
 - name: set data ownership
@@ -211,6 +179,7 @@
   service:
     name: "{{ biocache_hub }}"
     state: restarted
+    enabled: yes
   tags:
     - biocache_hub
     - properties

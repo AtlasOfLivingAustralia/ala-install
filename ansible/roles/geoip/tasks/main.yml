@@ -1,0 +1,43 @@
+# https://github.com/maxmind/geoipupdate#installing-on-ubuntu-via-ppa
+- name: "Install maxmind geoip apt repository"
+  apt_repository:
+    repo: 'ppa:maxmind/ppa'
+    state: present
+  tags:
+    - geoip
+
+- name: "Install geoipupdate"
+  apt:
+    name: "geoipupdate"
+    state: latest
+  register: geoipupdate_install
+  tags:
+    - geoip
+
+- name: "Configure geoipupdate"
+  template:
+    src: geoipupdate.conf.j2
+    dest: "{{ maxmind_geoip_conf }}"
+    owner: root
+    group: root
+    mode: 0740
+  register: geoipupdate_conf
+  tags:
+    - geoip
+
+- name: "Enable cron job for downloading the latest geoip database for {{ appname }}"
+  cron:
+    name: "download latest geoip database for {{ appname }}"
+    hour: "08"
+    minute: "30"
+    job: "/usr/bin/geoipupdate --config-file {{ maxmind_geoip_conf }} --database-directory {{ maxmind_geoip_database_directory }}"
+    state: present
+  tags:
+    - geoip
+
+- name: "If the configuration changed, manually run geoipupdate once to pick up the new config"
+  command: "/usr/bin/geoipupdate --config-file {{ maxmind_geoip_conf }} --database-directory {{ maxmind_geoip_database_directory }}"
+  when:
+    - geoipupdate_conf.changed or geoipupdate_install.changed
+  tags:
+    - geoip
