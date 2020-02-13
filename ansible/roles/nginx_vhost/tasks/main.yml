@@ -146,6 +146,14 @@
   tags:
     - nginx_vhost
 
+- name: copy cors configuration if required
+  template:
+    src: "ala_cors.j2"
+    dest: "{{nginx_conf_dir}}/conf.d/ala_cors"
+  when: nginx_cors_origin_regexp is defined
+  tags:
+    - nginx_vhost
+
 - name: add upstream fragment
   template:
     src: "fragment_02_upstream.j2"
@@ -273,6 +281,16 @@
   tags:
     - nginx_vhost
 
+- name: add cors fragment if required
+  template:
+    src: "fragment_74_location_cors.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_74_cors"
+  with_items:
+    - "{{ nginx_paths}} "
+  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True and nginx_cors_origin_regexp is defined
+  tags:
+    - nginx_vhost
+
 # if not ssl or (ssl and not force_https): copy (75 per path) http
 # basename filter returns last part of path e.g. for /ws returns ws, for / returns empty
 - name: if not using force_https, add location http fragments
@@ -351,6 +369,16 @@
   with_items:
     - "{{ nginx_paths }}"
   when: ssl | bool == True and vhost_required | bool == True
+  tags:
+    - nginx_vhost
+
+- name: add cors fragment if required
+  template:
+    src: "fragment_74_location_cors.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_74_cors"
+  with_items:
+    - "{{ nginx_paths}} "
+  when: ssl | bool == True and vhost_required | bool == True and nginx_cors_origin_regexp is defined
   tags:
     - nginx_vhost
 

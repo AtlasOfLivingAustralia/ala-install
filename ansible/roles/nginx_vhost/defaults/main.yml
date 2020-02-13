@@ -92,3 +92,7 @@ nginx_rate_limit_burst: "80"
 
 # Set to true to disable disk buffering e.g. for downloading large files (sets proxy_max_temp_file_size to 0)
 nginx_disable_download_disk_buffering: False
+# Set this to configure cors to some regexp
+# Test your regexp of type PCRE with a tool like https://www.regextester.com/
+# Sample:  ^https?:\/\/(localhost|l-a\.site|.*\.l-a\.site)
+# nginx_cors_origin_regexp: '^https?:\/\/(localhost|l-a\.site|.*\.l-a\.site)'

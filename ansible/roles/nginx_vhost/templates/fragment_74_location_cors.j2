@@ -1,0 +1,3 @@
+{% if nginx_cors_origin_regexp is defined and nginx_cors_origin_regexp|length > 0 %}
+        include /etc/nginx/conf.d/ala_cors;
+{% endif %}
