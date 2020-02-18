@@ -37,7 +37,7 @@ redirectAfterFirstLogin: ${grails.serverURL}/myprofile
 # Data source configuration
 dataSource:
   dbCreate: "none"
-  url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull
+  url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8
   username: {{ userdetails_db_username | default(cas_db_username) | default('cas') }}
   password: {{ userdetails_db_password | default(cas_db_password) | default('password') }}
 
@@ -68,7 +68,10 @@ bcrypt:
 #  algorithm: {{ user_store_db_encoding_algorithm }}
 #  salt: {{ user_store_db_encoding_salt }}
 
-
+recaptcha:
+  baseUrl: {{ recaptcha_base_url | default('https://www.google.com/recaptcha/api/') }}
+  siteKey: {{ userdetails_recaptcha_site_key | default('') }}
+  secretKey: {{ userdetails_recaptcha_secret_key | default('') }}
 
 ala:
   baseURL: {{ ala_base_url | default('https://www.ala.org.au') }}
