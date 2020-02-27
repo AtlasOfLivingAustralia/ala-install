@@ -51,6 +51,7 @@
   include_role:
     name: nginx_vhost
   vars:
+    appname: "spatial-hub"
     hostname: "{{ spatial_hub_hostname }}"
     context_path: "{{ spatial_hub_context_path }}"
     nginx_paths:
