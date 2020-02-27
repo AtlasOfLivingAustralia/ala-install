@@ -66,7 +66,7 @@
     - cassandra
 
 - name: add repository key (Debian)
-  shell: 'curl https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add -'
+  shell: 'curl https://downloads.apache.org/cassandra/KEYS | sudo apt-key add -'
   when: ansible_os_family == "Debian"
   tags:
     - packages
