@@ -19,6 +19,15 @@
     - properties
     - bie
 
+- name: copy eolContentToUpdate.properties
+  template:
+    src: eolContentToUpdate.properties
+    dest: "{{ data_dir }}/{{ bie_hub | default('generic-bie') }}/config/eolContentToUpdate.properties"
+  tags:
+    - webapps
+    - properties
+    - bie
+
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/{{ bie_hub | default('generic-bie') }}/ owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   tags:
