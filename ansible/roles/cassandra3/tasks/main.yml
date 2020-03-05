@@ -58,15 +58,33 @@
     - packages 
     - cassandra 
 
-- name: add apt repository (Debian)
-  shell: 'echo "deb http://www.apache.org/dist/cassandra/debian 311x main" | sudo tee /etc/apt/sources.list.d/cassandra.sources.list'
+- name: add repository key (Debian)
+  apt_key:
+    keyserver: "hkp://keyserver.ubuntu.com:80"
+    id: "A278B781FE4B2BDA"
   when: ansible_os_family == "Debian"
   tags:
     - packages
     - cassandra
 
-- name: add repository key (Debian)
-  shell: 'curl https://downloads.apache.org/cassandra/KEYS | sudo apt-key add -'
+# Need to clear the previous repository if it exists
+- name: remove previous apt repository (Debian)
+  apt_repository:
+    repo: "deb http://www.apache.org/dist/cassandra/debian 311x main"
+    state: absent
+    filename: "cassandra.sources"
+    update_cache: no
+  when: ansible_os_family == "Debian"
+  tags:
+    - packages
+    - cassandra
+
+- name: add apt repository (Debian)
+  apt_repository:
+    repo: "deb https://downloads.apache.org/cassandra/debian 311x main"
+    state: present
+    filename: "cassandra.sources"
+    update_cache: yes
   when: ansible_os_family == "Debian"
   tags:
     - packages
