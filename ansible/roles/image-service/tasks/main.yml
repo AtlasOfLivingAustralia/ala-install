@@ -64,10 +64,10 @@
         sort_label: "1_ws"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:{{ image_service_port }}{{ image_service_context_path }}"
-      - path: "/store"
-        sort_label: "2_store"
-        is_proxy: false
-        alias: "{{ data_dir }}/image-service/store"
+      # - path: "/store"
+      #   sort_label: "2_store"
+      #   is_proxy: false
+      #   alias: "{{ data_dir }}/image-service/store"
   tags:
     - nginx_vhost
     - deploy
@@ -100,12 +100,12 @@
     - properties
 
 # Only create the symlink for apache hosts, as nginx has an inbuilt rule for this
-- name: Create symlink to data/image-service/store from /srv/[hostname]/www/store
-  command: "ln -s {{ data_dir }}/image-service/store /srv/{{ image_service_hostname }}/www/store"
-  ignore_errors: yes
-  when: not webserver_nginx
-  tags: 
-    - image-service
+# - name: Create symlink to data/image-service/store from /srv/[hostname]/www/store
+#   command: "ln -s {{ data_dir }}/image-service/store /srv/{{ image_service_hostname }}/www/store"
+#   ignore_errors: yes
+#   when: not webserver_nginx
+#   tags: 
+#     - image-service
 
 - name: copy all config.properties
   template: src={{ item }} dest={{data_dir}}/image-service/config/
@@ -119,27 +119,27 @@
     - image-service
     - properties
 
-- name: copy all SQL export script
-  template: src={{ item }} dest={{data_dir}}/image-service/setup/
-  with_items:
-    - "sql/image-service-export.sql"
-  notify:
-     - restart image-service
-  tags:
-    - deploy
-    - image-service
-    - properties
+# - name: copy all SQL export script
+#   template: src={{ item }} dest={{data_dir}}/image-service/setup/
+#   with_items:
+#     - "sql/image-service-export.sql"
+#   notify:
+#      - restart image-service
+#   tags:
+#     - deploy
+#     - image-service
+#     - properties
 
-- name: create stored procedures for export functions
-  command: "psql -d {{ image_service_db_username }} -f {{data_dir}}/image-service/setup/image-service-export.sql"
-  become_user: postgres
-  ignore_errors: no
-  notify:
-     - restart image-service
-  tags:
-    - image-service
-    - properties
-    - db
+# - name: create stored procedures for export functions
+#   command: "psql -d {{ image_service_db_username }} -f {{data_dir}}/image-service/setup/image-service-export.sql"
+#   become_user: postgres
+#   ignore_errors: no
+#   notify:
+#      - restart image-service
+#   tags:
+#     - image-service
+#     - properties
+#     - db
 
 - name: add image-service jar and setup service
   include_role:

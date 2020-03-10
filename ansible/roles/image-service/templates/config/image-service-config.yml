@@ -3,10 +3,11 @@ grails:
 
 server:
   port: {{image_service_port}}
+  contextPath: {{ image_service_context_path }}
 
 security:
   cas:
-    appServerName: "{{image_service_base_url}}{{image_service_context_path}}"
+    appServerName: "{{image_service_base_url}}"
     bypass: {{ bypass_cas | default(false) }}
     disableCAS: {{ bypass_cas | default(false) }}
     casServerName: {{ auth_base_url }}
@@ -28,7 +29,10 @@ info:
   app:
     name: 'image-service'
     version: '{{ image_service_version }}'
-    grailsVersion: '3.2.11'
+    grailsVersion: '3.3.11'
+
+flyway:
+  baselineOnMigrate: {{ image_service_baseline_on_migrate | default('true') }}
 
 hibernate:
   dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -37,14 +41,15 @@ dataSource:
   driverClassName: org.postgresql.Driver
   username: {{ image_service_db_username }}
   password: {{ image_service_db_password }}
-  dbCreate: {{ image_service_db_create | default('update') }}
+  dbCreate: validate
 
 imageservice:
   imagestore:
     root: "/data/image-service/store"
+    staging: "/data/image-service/store/staging"
   apache:
-    root: "{{ image_service_base_url }}/store/"
-    multiple_roots: {% if multiple_root is defined %} "{{ multiple_roots }}" {% else %} "{{ image_service_base_url }}/store/" {% endif %}
+    root: "{{image_service_base_url}}{{image_service_context_path}}/store/"
+    multiple_roots: {% if multiple_root is defined %} "{{ multiple_roots }}" {% else %} "{{image_service_base_url}}{{image_service_context_path}}/store/" {% endif %}
 
     exportDir: "{{ image_service_export_dir | default('/data/image-service/exports')}}"
 
