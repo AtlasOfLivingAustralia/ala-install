@@ -30,11 +30,11 @@ if ($request_method = OPTIONS) {
 
 if ($cors = COPTIONS) {
   add_header 'Access-Control-Allow-Origin' '*';
-  add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+  add_header 'Access-Control-Allow-Methods' '{{ nginx_cors_methods }}';
   #
   # Custom headers and headers various browsers *should* be OK with but aren't
   #
-  add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+  add_header 'Access-Control-Allow-Headers' '{{ nginx_cors_headers }}';
   #
   # Tell client that this pre-flight info is valid for 20 days
   #
@@ -45,13 +45,13 @@ if ($cors = COPTIONS) {
 }
 if ($cors = CPOST) {
   add_header 'Access-Control-Allow-Origin' '*';
-  add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-  add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+  add_header 'Access-Control-Allow-Methods' '{{ nginx_cors_methods }}';
+  add_header 'Access-Control-Allow-Headers' '{{ nginx_cors_headers }}';
   add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
 }
 if ($cors = CGET) {
   add_header 'Access-Control-Allow-Origin' '*' always;
-  add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-  add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+  add_header 'Access-Control-Allow-Methods' '{{ nginx_cors_methods }}';
+  add_header 'Access-Control-Allow-Headers' '{{ nginx_cors_headers }}';
   add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
 }

@@ -96,3 +96,5 @@ nginx_disable_download_disk_buffering: False
 # Test your regexp of type PCRE with a tool like https://www.regextester.com/
 # Sample:  ^https?:\/\/(localhost|l-a\.site|.*\.l-a\.site)
 # nginx_cors_origin_regexp: '^https?:\/\/(localhost|l-a\.site|.*\.l-a\.site)'
+nginx_cors_headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
+nginx_cors_methods: "GET, POST, OPTIONS"
