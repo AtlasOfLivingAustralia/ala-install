@@ -295,6 +295,10 @@
             {  
                 "sort":"count",
                 "field":"data_resource_uid"
+            },
+            {  
+                "sort":"count",
+                "field":"dataset_name"
             }
         ]
     }
