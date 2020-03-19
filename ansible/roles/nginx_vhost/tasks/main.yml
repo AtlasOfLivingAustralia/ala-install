@@ -149,7 +149,7 @@
 - name: copy cors configuration if required
   template:
     src: "ala_cors.j2"
-    dest: "{{nginx_conf_dir}}/conf.d/ala_cors_{{appname}"
+    dest: "{{nginx_conf_dir}}/conf.d/ala_cors_{{appname}}"
   when: nginx_cors_origin_regexp is defined
   tags:
     - nginx_vhost
