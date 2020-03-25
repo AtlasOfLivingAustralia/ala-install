@@ -24,7 +24,7 @@ check host solrhttpclusterstatus with address 127.0.0.1
    stop program  = "/usr/sbin/service solr stop"
    if failed
        port 8983
-       protocol http'
+       protocol http
        and request {{ solr_http_cluster_status_url | default('/solr/admin/collections?action=clusterstatus&wt=json&indent=true') }}
        for {{ solr_http_cluster_status_cycles | default(2) }} cycles
    then restart
