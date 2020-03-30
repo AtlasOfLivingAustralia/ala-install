@@ -25,6 +25,7 @@ serverURL: https://{{ doi_service_hostname }}
 serverName: https://{{ doi_service_hostname }}
 
 server:
+  port: {{ doi_service_port | default('8080') }}
   contextPath: {{ doi_service_context_path }}
 
 support:
@@ -70,12 +71,12 @@ file:
 googleAnalyticsId: UA-4355440-1
 
 dataSource:
-  url: jdbc:postgresql://{{db_hostname}}/{{db_name}}
-  username: {{db_user}}
-  password: {{db_password}}
+  url: jdbc:postgresql://{{ doi_db_hostname }}/{{ doi_db_name }}
+  username: {{ doi_db_user }}
+  password: {{ doi_db_password }}
 
 collections:
-  baseUrl: {{ collections_url | default('https://collections.ala.org.au') }}
+  baseUrl: {{ (collectory_url | default(collections_url)) | default('https://collections.ala.org.au') }}
 
 userDetails:
   url: {{ auth_base_url }}/userdetails/
