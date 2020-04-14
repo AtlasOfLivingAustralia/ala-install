@@ -14,7 +14,7 @@
     - biocache-properties
 
 - name: copy biocache config properties template 
-  template: src={{item}} dest={{data_dir}}/biocache/config/{{item}} mode=0644
+  template: src={{item}} dest={{data_dir}}/biocache/config/{{item}} mode=0644 output_encoding=iso-8859-1
   with_items:
     - biocache-config.properties
   tags:

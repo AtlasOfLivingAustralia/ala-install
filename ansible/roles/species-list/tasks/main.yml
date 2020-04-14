@@ -42,7 +42,7 @@
     - properties
 
 - name: copy all config.properties
-  template: src=specieslist-webapp-config.properties dest={{data_dir}}/specieslist-webapp/config/specieslist-webapp-config.properties
+  template: src=specieslist-webapp-config.properties dest={{data_dir}}/specieslist-webapp/config/specieslist-webapp-config.properties output_encoding=iso-8859-1
   tags:
     - specieslist
     - properties
