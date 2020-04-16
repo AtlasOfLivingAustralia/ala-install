@@ -38,12 +38,14 @@
     <fieldType name="auto_text" class="solr.TextField">
         <analyzer type="index">
             <tokenizer class="solr.KeywordTokenizerFactory"/>
-      <filter class="solr.LowerCaseFilterFactory" />
-      <filter class="solr.NGramFilterFactory" minGramSize="3" maxGramSize="30" />
+            <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false" />
+            <filter class="solr.LowerCaseFilterFactory" />
+            <filter class="solr.NGramFilterFactory" minGramSize="3" maxGramSize="30" />
         </analyzer>
-    <analyzer type="query">
+        <analyzer type="query">
             <tokenizer class="solr.KeywordTokenizerFactory"/>
-      <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false" />
+            <filter class="solr.LowerCaseFilterFactory"/>
         </analyzer>
     </fieldType>
   <!-- Allows the hits at the start of the words to score higher that middle when used in
@@ -52,26 +54,28 @@
   <fieldType name="auto_text_edge" class="solr.TextField">
         <analyzer type="index">
             <tokenizer class="solr.KeywordTokenizerFactory"/>
-      <filter class="solr.LowerCaseFilterFactory" />
-      <filter class="solr.EdgeNGramFilterFactory" minGramSize="3" maxGramSize="30" />
+            <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false" />
+            <filter class="solr.LowerCaseFilterFactory" />
+            <filter class="solr.EdgeNGramFilterFactory" minGramSize="3" maxGramSize="30" />
         </analyzer>
-    <analyzer type="query">
+        <analyzer type="query">
             <tokenizer class="solr.KeywordTokenizerFactory"/>
-      <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false" />
+            <filter class="solr.LowerCaseFilterFactory"/>
         </analyzer>
     </fieldType>
 
     <fieldType name="concat_name" class="solr.TextField">
         <analyzer type="index">
             <tokenizer class="solr.KeywordTokenizerFactory"/>
-      <filter class="solr.LowerCaseFilterFactory" />      
-      <filter class="solr.TrimFilterFactory" /> 
-      <filter class="solr.PatternReplaceFilterFactory" pattern="([^a-zA-Z])" replacement="" replace="all" />
-      <filter class="solr.NGramFilterFactory" minGramSize="3" maxGramSize="30" /> 
+            <filter class="solr.LowerCaseFilterFactory" />      
+            <filter class="solr.TrimFilterFactory" /> 
+            <filter class="solr.PatternReplaceFilterFactory" pattern="([^a-zA-Z])" replacement="" replace="all" />
+            <filter class="solr.NGramFilterFactory" minGramSize="3" maxGramSize="30" /> 
         </analyzer>
     <analyzer type="query">
             <tokenizer class="solr.KeywordTokenizerFactory"/>
-      <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
         </analyzer>
     </fieldType>
 
@@ -79,16 +83,12 @@
       <analyzer type="index">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
         <filter class="solr.TrimFilterFactory" />
-    <filter class="solr.StopFilterFactory"
-                ignoreCase="true"
-                words="bie_stopwords.txt"/> 
+        <filter class="solr.StopFilterFactory" ignoreCase="true" words="bie_stopwords.txt"/> 
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
       <analyzer type="query">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-    <filter class="solr.StopFilterFactory"
-                ignoreCase="true"
-                words="bie_stopwords.txt"/> 
+        <filter class="solr.StopFilterFactory" ignoreCase="true" words="bie_stopwords.txt"/> 
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
     </fieldType>
@@ -96,28 +96,28 @@
     <fieldType name="name_complete" class="solr.TextField">
         <analyzer type="index">
             <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-      <filter class="solr.LowerCaseFilterFactory" />      
-      <filter class="solr.TrimFilterFactory" />     
-      <filter class="solr.PatternReplaceFilterFactory" pattern="([().])" replacement="" replace="all" />
+            <filter class="solr.LowerCaseFilterFactory" />      
+            <filter class="solr.TrimFilterFactory" />     
+            <filter class="solr.PatternReplaceFilterFactory" pattern="([().])" replacement="" replace="all" />
         </analyzer>
-    <analyzer type="query">
+        <analyzer type="query">
             <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-      <filter class="solr.LowerCaseFilterFactory" />      
-      <filter class="solr.TrimFilterFactory" />     
-      <filter class="solr.PatternReplaceFilterFactory" pattern="([().])" replacement="" replace="all" />
+            <filter class="solr.LowerCaseFilterFactory" />      
+            <filter class="solr.TrimFilterFactory" />     
+            <filter class="solr.PatternReplaceFilterFactory" pattern="([().])" replacement="" replace="all" />
         </analyzer>
     </fieldType>
 
     <fieldType name="auto_name_exact" class="solr.TextField">
         <analyzer type="index">
             <tokenizer class="solr.KeywordTokenizerFactory"/>
-      <filter class="solr.LowerCaseFilterFactory" />      
-      <filter class="solr.TrimFilterFactory" />     
+            <filter class="solr.LowerCaseFilterFactory" />      
+            <filter class="solr.TrimFilterFactory" />     
         </analyzer>
-    <analyzer type="query">
+        <analyzer type="query">
             <tokenizer class="solr.KeywordTokenizerFactory"/>
-      <filter class="solr.LowerCaseFilterFactory" />      
-      <filter class="solr.TrimFilterFactory" />     
+            <filter class="solr.LowerCaseFilterFactory" />      
+            <filter class="solr.TrimFilterFactory" />     
         </analyzer>
     </fieldType>
 
@@ -327,6 +327,12 @@
    <field name="name" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="description" type="text" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="content" type="text" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+   <field name="denormalised" type="boolean" indexed="true" stored="true" required="false" multiValued="false"/>
+
+   <!-- Weighting fields -->
+   <field name="favourite" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+   <field name="searchWeight" type="double" multiValued="false" omitNorms="true" />
+   <field name="suggestWeight" type="double" multiValued="false" omitNorms="true" />
 
    <!-- Taxa fields -->
    <field name="taxonConceptID" type="string" indexed="true" stored="true" omitNorms="true" />
@@ -336,12 +342,12 @@
    <field name="parentGuid" type="string" indexed="true" stored="true" omitNorms="true" />
    <field name="otherGuid" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
    <field name="synonym" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
-   <field name="nomenclaturalCode" type="string" indexed="true" stored="true" omitNorms="true" />
-   <field name="scientificName" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="scientificNameAuthorship" type="string" indexed="true" stored="true" omitNorms="false" />
+   <field name="nomenclaturalCode" type="lowercase" indexed="true" stored="true" omitNorms="true" />
+   <field name="scientificName" type="lowercase" indexed="true" stored="true" omitNorms="false" />
+   <field name="scientificNameAuthorship" type="lowercase" indexed="true" stored="true" omitNorms="false" />
    <field name="nameComplete" type="string" indexed="true" stored="true" omitNorms="false" />
    <field name="nameFormatted" type="string" indexed="true" stored="true" omitNorms="false" />
-   <field name="acceptedConceptName" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
+   <field name="acceptedConceptName" type="lowercase" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="acceptedConceptID" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="conservationStatus" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
    <field name="pestStatus" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" />
@@ -358,6 +364,7 @@
    <field name="uid" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="true" />
    <field name="occurrenceCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="georeferencedCount" type="int" indexed="true" stored="true" multiValued="false" omitNorms="true" />
+   <field name="nameType" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="taxonomicStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="nomenclaturalStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="establishmentMeans" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
@@ -373,11 +380,11 @@
    <field name="additionalIdentifiers" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
    <field name="datasetName" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
    <field name="rightsHolder" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-   <field name="namePublishedIn" type="text" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="namePublishedIn" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="namePublishedInYear" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
-   <field name="namePublishedInID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
-   <field name="nameAccordingTo" type="text" indexed="false" stored="true" required="false" multiValued="false"/>
-   <field name="nameAccordingToID" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="namePublishedInID" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="nameAccordingTo" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="nameAccordingToID" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="taxonRemarks" type="lowercase" indexed="false" stored="true" required="false" multiValued="true"/>
    <field name="provenance" type="lowercase" indexed="false" stored="true" required="false" multiValued="true"/>
    <field name="locatedInHubCountry" type="boolean" indexed="true" stored="true" required="false" multiValued="false"/>
@@ -387,19 +394,17 @@
    <field name="countryCode" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="sex" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="lifeStage" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
-   <field name="isPreferredName" type="boolean" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="isPlural" type="boolean" indexed="false" stored="true" required="false" multiValued="false"/>
+   <field name="isPreferredName" type="boolean" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="organismPart" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
    <field name="labels" type="lowercase" indexed="false" stored="true" required="false" multiValued="false"/>
 
    <!-- higher taxonomy -->
    <field name="speciesGroup" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" />
    <field name="speciesSubgroup" type="string" indexed="true" stored="true" multiValued="true" omitNorms="true" />
-
-   <!-- Display image -->
+   <!-- Australian states, supports the region functionality -->
    <field name="imageAvailable" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
    <field name="image" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
-
    <!-- Collection / Institution -->
    <field name="url" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="acronym" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
@@ -409,50 +414,32 @@
    <field name="categories" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
 
    <!-- LinkIdentifier fields -->
+   <field name="linkText" type="lowercase" omitNorms="true" multiValued="false" indexed="true" stored="true"/>
    <field name="linkIdentifier" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
 
    <!-- Name variant fields -->
-   <field name="nameVariant" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
-   <field name="verbatimNomenclaturalCode" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="verbatimTaxonomicStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
-   <field name="verbatimNomenclaturalStatus" type="string" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="nameVariant" type="lowercase" indexed="true" stored="true" multiValued="true" omitNorms="false" />
+   <field name="verbatimNomenclaturalCode" type="lowercase" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="verbatimTaxonomicStatus" type="lowercase" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
+   <field name="verbatimNomenclaturalStatus" type="lowercase" indexed="true" stored="true" required="false" omitNorms="true" multiValued="false" />
    <field name="score" type="int" indexed="false" stored="true" required="false" multiValued="false"/>
 
    <!-- catchall field, containing all other searchable text fields (implemented
         via copyField further on in this schema  -->
    <field name="text" type="text" indexed="true" stored="false" multiValued="true"/>
-   <field name="auto_text" type="auto_text" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
-   <field name="auto_text_edge" type="auto_text_edge" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
+   <field name="auto_text" type="auto_text" indexed="true" stored="true" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
    <field name="concat_name" type="concat_name" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
    <field name="doc_name" type="text" indexed="true" stored="true" multiValued="true" omitNorms="false" omitTermFreqAndPositions="false"/>
 
   
-
-  <field name="scientificName_suggest" type="text_suggest" indexed="true" stored="true" multiValued="true"/>  
-  <field name="commonNameSingle_suggest" type="text_suggest" indexed="true" stored="true" multiValued="true"/>  
-  <field name="commonName_suggest" type="text_suggest" indexed="true" stored="true" multiValued="true"/>  
-
-  <field name="scientificName_suggest_edge" type="text_suggest_edge" indexed="true" stored="true" multiValued="true"/>  
-  <field name="commonNameSingle_suggest_edge" type="text_suggest_edge" indexed="true" stored="true" multiValued="true"/>  
-  <field name="commonName_suggest_edge" type="text_suggest_edge" indexed="true" stored="true" multiValued="true"/>  
-    
-  <field name="scientificName_suggest_ngram" type="text_suggest_ngram" indexed="true" stored="true" multiValued="true"/>  
-  <field name="commonNameSingle_suggest_ngram" type="text_suggest_ngram" indexed="true" stored="true" multiValued="true"/>  
-  <field name="commonName_suggest_ngram" type="text_suggest_ngram" indexed="true" stored="true" multiValued="true"/>  
-
-  <field name="scientificName_s" type="string" indexed="true" stored="true" multiValued="false"/>  
-
-
-
    <!--  NC:2013-02-08 remove the omitTermFreqAndPositions because this setting will cause an exception when searching for a phrase -->
    <field name="stopped_common_name" type="stopped_common_name" indexed="true" stored="false" multiValued="true" omitNorms="true" />
    <field name="name_complete" type="name_complete" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
-   <field name="auto_name_exact" type="name_complete" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
    
    <!-- Fields used to rank exact matches higher -->
    <field name="exact_text" type="lowercase" indexed="true" stored="false" omitNorms="true" multiValued="true"/>
    
-   <dynamicField name="rk_*"  type="lowercase"  indexed="true"  stored="true"/>
+   <dynamicField name="rk_*"  type="string"  indexed="true"  stored="true"/>
    <dynamicField name="rkid_*"  type="string"  indexed="true"  stored="true"/>
 
 
@@ -534,9 +521,6 @@
    <copyField source="scientificName" dest="auto_text"/>
    <copyField source="commonName" dest="auto_text"/>
 
-   <copyField source="scientificName" dest="auto_text_edge"/>
-   <copyField source="commonName" dest="auto_text_edge"/>
-
    <copyField source="name" dest="exact_text"/>
    <copyField source="acronym" dest="exact_text"/>
    <copyField source="scientificName" dest="exact_text"/>
@@ -547,23 +531,4 @@
    <copyField source="commonName" dest="concat_name"/>
    
    <copyField source="commonName" dest="stopped_common_name"/>
-   
-   <copyField source="commonName" dest="auto_name_exact"/>
-
-   <!-- suggest -->
-   <!-- suggest fields -->
-   <copyField source="scientificName" dest="scientificName_suggest" />
-   <copyField source="scientificName" dest="scientificName_suggest_edge" />
-   <copyField source="scientificName" dest="scientificName_suggest_ngram" />
-   <copyField source="scientificName" dest="scientificName_s" />
-
-   <copyField source="commonNameSingle" dest="commonNameSingle_suggest" />
-   <copyField source="commonNameSingle" dest="commonNameSingle_suggest_edge" />
-   <copyField source="commonNameSingle" dest="commonNameSingle_suggest_ngram" />
-
-   <copyField source="commonName" dest="commonName_suggest" />
-   <copyField source="commonName" dest="commonName_suggest_edge" />
-   <copyField source="commonName" dest="commonName_suggest_ngram" />
-   <!-- <copyField source="commonName" dest="commonName_s" /> -->
-
 </schema>
