@@ -124,10 +124,6 @@
                 "sort":"count",
                 "field":"date_precision"
             },
-            {  
-                "sort":"index",
-                "field":"occurrence_year"
-            },
             {
                 "sort":"index",
                 "field":"occurrence_decade_i"
