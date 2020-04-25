@@ -4,6 +4,17 @@
 
 ########## REDHAT ########## 
 
+- name: check if datastax package is installed
+  package:
+    name: "{{datastax}}"
+    state: present
+  check_mode: true
+  register: cassandra_first_install
+  when: ansible_os_family == "RedHat"
+  tags:
+    - packages
+    - cassandra
+
 - name: setup yum repo
   copy: src=yum/datastax.repo dest=/etc/yum.repos.d/datastax.repo
   when: ansible_os_family == "RedHat"   
@@ -29,6 +40,17 @@
   when: ansible_os_family == "RedHat" 
 
 ########## DEBIAN ########## 
+
+- name: check if cassandra package is installed
+  package:
+    name: cassandra
+    state: present
+  check_mode: true
+  register: cassandra_first_install
+  when: ansible_os_family == "Debian"
+  tags:
+    - packages
+    - cassandra
 
 - name: install curl (Debian)
   apt: name=curl state=latest
@@ -133,9 +155,16 @@
     - cassandra 
     - cassandra_yaml    
 
+- name: "Debug if this is the first cassandra installation in this host"
+  debug:
+    msg: "It's the first time we install cassandra in this host? {{cassandra_first_install.changed}}"
+  tags:
+    - packages
+    - cassandra
+
 - name: clean up directories that have been created by initial installation of cassandra 3
   shell: 'rm -Rf /data/cassandra3/data && rm -Rf /data/cassandra3/commitlog && rm -Rf /var/log/cassandra/* && rm -Rf /var/lib/cassandra/hints'
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and cassandra_first_install.changed | bool == True
   notify: 
     - restart cassandra  
   tags:
