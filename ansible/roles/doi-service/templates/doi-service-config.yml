@@ -45,6 +45,13 @@ ala:
   base:
     url: https://www.ala.org.au
 
+skin:
+  layout: {{ skin_layout | default('main') }}
+  fluidLayout: {{ skin_fluid_layout | default('') }}
+  orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}
+  orgNameShort: {{ orgNameShort | default('ALA') }}
+  favicon: {{ skin_favicon | default('https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png') }}
+
 doi:
   storage:
     provider: {{ doi_storage_provider | default('LOCAL') }}
