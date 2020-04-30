@@ -29,6 +29,9 @@
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Port $server_port;
         proxy_read_timeout 10m;
+    {% if nginx_disable_download_disk_buffering | bool == True %}
+        proxy_max_temp_file_size 0;
+    {% endif %}
   {% if nginx_cache | bool == True and item.use_cache is defined and item.use_cache %}
         proxy_cache {{ nginx_cache_zone }};
     {% if nginx_cache_lock is defined and nginx_cache_lock %}
