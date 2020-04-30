@@ -47,19 +47,82 @@
     - packages
     - tomcat
 
-- name: enable the HTTP 1.1 connector
+- name: Create systemd service override directory for tomcat9
+  file:
+    path: /etc/systemd/system/tomcat9.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when:
+    - tomcat == "tomcat9"
+  register: tomcat_systemd_override_directory_created
+  tags:
+    - tomcat
+  notify:
+    - restart tomcat
+
+- name: Override systemd for tomcat9
+  template:
+    src: systemd-service-override.conf.j2
+    dest: /etc/systemd/system/tomcat9.service.d/override.conf
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    - tomcat == "tomcat9"
+  register: tomcat_systemd_override_installed
+  tags:
+    - tomcat
+  notify:
+    - restart tomcat
+
+- name: force systemd to reread configs
+  systemd:
+    daemon_reload: yes
+  when:
+    - tomcat == "tomcat9"
+    - tomcat_systemd_override_installed.changed | bool == True or tomcat_systemd_override_directory_created.changed | bool == True
+  tags:
+    - tomcat
+  notify:
+    - restart tomcat
+
+- name: enable the HTTP 1.1 connector (Tomcat-7/8)
   tomcat_connector: name="HTTP/1.1" bind_addr="{{ tomcat_bind_addr }}" port="{{ tomcat_http_port }}"
   when:
-    tomcat_http | bool == True
+    - tomcat_http | bool == True
+    - tomcat == "tomcat7" or tomcat == "tomcat8"
   tags:
   - tomcat
   notify:
   - restart tomcat
 
-- name: enable the AJP 1.3 connector
+- name: enable the HTTP 1.1 connector (Tomcat-9)
+  tomcat9_connector: name="HTTP/1.1" bind_addr="{{ tomcat_bind_addr }}" port="{{ tomcat_http_port }}"
+  when:
+    - tomcat_http | bool == True
+    - tomcat == "tomcat9"
+  tags:
+  - tomcat
+  notify:
+  - restart tomcat
+
+- name: enable the AJP 1.3 connector (Tomcat-7/8)
   tomcat_connector: name="AJP/1.3" bind_addr="{{ tomcat_bind_addr }}" port="{{ tomcat_ajp_port }}"
   when:
-    tomcat_ajp | bool == True
+    - tomcat_ajp | bool == True
+    - tomcat == "tomcat7" or tomcat == "tomcat8"
+  tags: 
+    - tomcat
+  notify:
+    - restart tomcat
+
+- name: enable the AJP 1.3 connector (Tomcat-9)
+  tomcat9_connector: name="AJP/1.3" bind_addr="{{ tomcat_bind_addr }}" port="{{ tomcat_ajp_port }}"
+  when:
+    - tomcat_ajp | bool == True
+    - tomcat == "tomcat9"
   tags: 
     - tomcat
   notify:

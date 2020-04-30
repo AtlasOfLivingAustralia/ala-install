@@ -89,6 +89,38 @@
   tags:
     - setfacts
 
+- name: set ubuntu-20.04 variables - tomcat version
+  set_fact:
+    tomcat: "{{ tomcat | default('tomcat9') }}"
+    tomcat_user: "{{ tomcat_user | default('tomcat') }}"
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "20.04"
+  tags:
+  - setfacts
+
+- name: set ubuntu-20.04 variables
+  set_fact:
+    libtcnative: "libtcnative-1"
+    tomcat_package: "{{ tomcat }}"
+    tomcat_user: "{{ tomcat_user }}"
+    tomcat_conf: "/etc/default/{{ tomcat }}"
+    tomcat_conf_dir: "/etc/{{ tomcat }}"
+    tomcat_log_dir: "/var/log/{{ tomcat }}"
+    apache: "apache2"
+    nginx: "nginx"
+    postfix: "postfix"
+    mysql_service: "mysql"
+    cassandra_yaml: "/etc/cassandra/cassandra.yaml"
+    cassandra_user: "cassandra"
+    python_software_properties: "python3-software-properties"
+    tomcat_dir: "/var/lib/{{ tomcat }}"
+    tomcat_webapps: "/var/lib/{{ tomcat }}/webapps/"
+# openjdk-8 will be removed at some point from Ubuntu-18.04, so we will need to switch to Zulu-8 or similar at that point
+    use_openjdk8: true
+    use_zulu8: False
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "20.04"
+  tags:
+    - setfacts
+
 - name: set java defaults for openjdk8
   set_fact:
     java_home: /usr/lib/jvm/java-8-openjdk-amd64
