@@ -1,6 +1,6 @@
 check process solr with pidfile /data/solr/solr-8983.pid
    start program = "/usr/sbin/service solr start"
-   restart program = "/usr/sbin/service solr restart"
+   restart program = "/usr/local/bin/restart_solr.sh"
    stop program  = "/usr/sbin/service solr stop"
    if not exist 
    then restart
@@ -9,37 +9,38 @@ check process solr with pidfile /data/solr/solr-8983.pid
 
 check host solrportactive with address 127.0.0.1
    start program = "/usr/sbin/service solr start"
-   restart program = "/usr/sbin/service solr restart"
+   restart program = "/usr/local/bin/restart_solr.sh"
    stop program  = "/usr/sbin/service solr stop"
    if failed 
        host 127.0.0.1 
        port 8983 
+       for {{ solr_port_cycles }} cycles
    then restart
    else if succeeded then
        exec '/usr/local/bin/rebalanceleaders.sh'
 
 check host solrhttpclusterstatus with address 127.0.0.1
    start program = "/usr/sbin/service solr start"
-   restart program = "/usr/sbin/service solr restart"
+   restart program = "/usr/local/bin/restart_solr.sh"
    stop program  = "/usr/sbin/service solr stop"
    if failed
        port 8983
        protocol http
-       and request {{ solr_http_cluster_status_url | default('/solr/admin/collections?action=clusterstatus&wt=json&indent=true') }}
-       for {{ solr_http_cluster_status_cycles | default(2) }} cycles
+       and request {{ solr_http_cluster_status_url }}
+       for {{ solr_http_cluster_status_cycles }} cycles
    then restart
    else if succeeded then
        exec '/usr/local/bin/rebalanceleaders.sh'
 
 check host solrhttpquery with address 127.0.0.1
    start program = "/usr/sbin/service solr start"
-   restart program = "/usr/sbin/service solr restart"
+   restart program = "/usr/local/bin/restart_solr.sh"
    stop program  = "/usr/sbin/service solr stop"
    if failed
        port 8983
        protocol http
-       and request {{ solr_http_query_url | default('/solr/biocache/select?q=kangaroo&facet=off&rows=0') }}
-       for {{ solr_http_query_cycles | default(3) }} cycles
+       and request {{ solr_http_query_url }}
+       for {{ solr_http_query_cycles }} cycles
    then restart
    else if succeeded then
        exec '/usr/local/bin/rebalanceleaders.sh'

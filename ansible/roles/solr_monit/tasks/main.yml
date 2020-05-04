@@ -37,6 +37,13 @@
   tags:
     - solr_monit
 
+- name: copy monit solr restart script
+  copy: src=restart_solr.sh dest=/usr/local/bin/ mode=755
+  notify:
+    - restart monit
+  tags:
+    - solr_monit
+
 - name: enable monit solr config
   file:
     src: "/etc/monit/conf-available/solr"
