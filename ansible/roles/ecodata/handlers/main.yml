@@ -1,2 +1,2 @@
 - name: restart ecodata
-  service: name=ecodata state=restarted
+  service: name=ecodata state=restarted enabled="yes"

@@ -1,2 +1,2 @@
 - name: restart biocollect
-  service: name=biocollect state=restarted
+  service: name=biocollect state=restarted enabled="yes"

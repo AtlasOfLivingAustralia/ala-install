@@ -42,7 +42,7 @@
   tags: mongodb-org
 
 - name: Restart mongod
-  service: name=mongod state=restarted daemon-reload=true
+  service: name=mongod state=restarted daemon-reload=true enabled="yes"
   when: ansible_os_family == "Debian"
   tags: mongodb-org
 

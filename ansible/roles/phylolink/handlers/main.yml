@@ -1,2 +1,2 @@
 - name: restart phylolink
-  service: name=phylolink state=restarted
+  service: name=phylolink state=restarted enabled="yes"

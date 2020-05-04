@@ -17,7 +17,7 @@
     - biocache_db
 
 - name: restart cassandra
-  service: name=cassandra state=restarted
+  service: name=cassandra state=restarted enabled="yes"
   tags:
     - biocache_db
 

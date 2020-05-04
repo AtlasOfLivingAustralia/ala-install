@@ -71,6 +71,7 @@
   service:
     name: digivol
     state: restarted
+    enabled: "yes"
   tags:
     - deploy
     - volunteer-portal

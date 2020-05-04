@@ -1,11 +1,11 @@
 - name: restart tomcat
-  service: name={{tomcat}} state=restarted
+  service: name={{tomcat}} state=restarted enabled="yes"
 
 - name: restart httpd
-  service: name={{apache}} state=restarted
+  service: name={{apache}} state=restarted enabled="yes"
 
 - name: restart apache
-  service: name={{apache}} state=restarted
+  service: name={{apache}} state=restarted enabled="yes"
 
 - name: restart {{ biocache_hub }}
-  service: name={{biocache_hub}} state=restarted
+  service: name={{biocache_hub}} state=restarted enabled="yes"

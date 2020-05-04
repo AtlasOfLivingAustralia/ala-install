@@ -1,2 +1,2 @@
 - name: restart cas
-  service: name=cas state=restarted
+  service: name=cas state=restarted enabled="yes"

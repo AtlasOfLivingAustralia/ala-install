@@ -1,2 +1,2 @@
 - name: restart userdetails
-  service: name=userdetails state=restarted
+  service: name=userdetails state=restarted enabled="yes"

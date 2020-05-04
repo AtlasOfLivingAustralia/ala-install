@@ -116,6 +116,7 @@
   service:
     name: solr
     state: restarted
+    enabled: "yes"
   tags:
     - solr7
     - solr_restart

@@ -19,4 +19,4 @@
   when: ansible_os_family == "Debian" 
 
 - name: Start Apache2
-  service: name={{apache}} state=restarted
+  service: name={{apache}} state=restarted enabled="yes"

@@ -7,7 +7,7 @@
   changed_when: False
 
 - name: restart nginx
-  service: name=nginx state=restarted
+  service: name=nginx state=restarted enabled="yes"
 
 - name: reload nginx
-  service: name=nginx state=reloaded
+  service: name=nginx state=reloaded enabled="yes"
