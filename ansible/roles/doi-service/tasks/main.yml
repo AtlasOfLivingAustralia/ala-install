@@ -75,6 +75,7 @@
   service:
     name: doi-service
     state: restarted
+    enabled: yes
   tags:
     - doi-service
 

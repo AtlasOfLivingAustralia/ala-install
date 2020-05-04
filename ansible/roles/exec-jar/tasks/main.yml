@@ -11,7 +11,7 @@
 - name: Install dependencies
   apt:
     name: 
-      - python-lxml
+      - python3-lxml
     state: present
   tags: 
   - service

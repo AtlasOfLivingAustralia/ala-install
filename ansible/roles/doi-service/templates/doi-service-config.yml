@@ -25,7 +25,7 @@ serverURL: https://{{ doi_service_hostname }}
 serverName: https://{{ doi_service_hostname }}
 
 server:
-  port: {{ doi_service_port | default('8080') }}
+  port: {{ doi_service_port }}
   contextPath: {{ doi_service_context_path }}
 
 support:
@@ -54,7 +54,7 @@ skin:
 
 headerAndFooter:
   baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}
-  version: 2
+  version: {{ header_and_footer_version | default('2') }}
 
 doi:
   storage:
