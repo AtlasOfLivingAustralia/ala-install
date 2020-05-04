@@ -88,7 +88,7 @@
     nginx_paths:
       - path: "{{ doi_service_context_path }}"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:8080/{{ doi_service_context_path }}"
+        proxy_pass: "http://127.0.0.1:{{ doi_service_port }}/{{ doi_service_context_path }}"
   # notify:
   #   - reload nginx
   tags:

@@ -25,6 +25,7 @@ serverURL: https://{{ doi_service_hostname }}
 serverName: https://{{ doi_service_hostname }}
 
 server:
+  port: {{ doi_service_port | default('8080') }}
   contextPath: {{ doi_service_context_path }}
 
 support:
@@ -43,6 +44,17 @@ ands:
 ala:
   base:
     url: https://www.ala.org.au
+
+skin:
+  layout: {{ skin_layout | default('main') }}
+  fluidLayout: {{ skin_fluid_layout | default('') }}
+  orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}
+  orgNameShort: {{ orgNameShort | default('ALA') }}
+  favicon: {{ skin_favicon | default('https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png') }}
+
+headerAndFooter:
+  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}
+  version: 2
 
 doi:
   storage:
@@ -70,12 +82,12 @@ file:
 googleAnalyticsId: UA-4355440-1
 
 dataSource:
-  url: jdbc:postgresql://{{db_hostname}}/{{db_name}}
-  username: {{db_user}}
-  password: {{db_password}}
+  url: jdbc:postgresql://{{ doi_db_hostname }}/{{ doi_db_name }}
+  username: {{ doi_db_user }}
+  password: {{ doi_db_password }}
 
 collections:
-  baseUrl: {{ collections_url | default('https://collections.ala.org.au') }}
+  baseUrl: {{ (collectory_url | default(collections_url)) | default('https://collections.ala.org.au') }}
 
 userDetails:
   url: {{ auth_base_url }}/userdetails/
