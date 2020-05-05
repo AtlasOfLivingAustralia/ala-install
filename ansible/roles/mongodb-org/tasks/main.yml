@@ -20,7 +20,7 @@
 
 - name: Install mongodb.org packages and related
   apt:
-    name: ['mongodb-org-shell', 'mongodb-org-server', 'mongodb-org-tools', 'python-pip']
+    name: ['mongodb-org-shell', 'mongodb-org-server', 'mongodb-org-tools', 'python3-pip']
   tags: mongodb-org
 
 # https://github.com/ansible/ansible/issues/36585

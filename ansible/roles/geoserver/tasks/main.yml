@@ -8,7 +8,7 @@
   with_items:
     - curl
     - unzip
-    - python-lxml
+    - python3-lxml
   tags:
     - geoserver
 

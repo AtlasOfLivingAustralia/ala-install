@@ -17,7 +17,7 @@
   apt:
     pkg:
     - mysql-server-5.7
-    - python-mysqldb
+    - python3-mysqldb
     state: present
   tags:
     - packages 
