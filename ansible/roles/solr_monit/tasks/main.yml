@@ -10,6 +10,8 @@
 
 - name: install monit
   apt: pkg=monit state=present update_cache=yes
+  notify:
+    - restart monit
   tags:
     - solr_monit
 
@@ -51,10 +53,5 @@
     state: link
   notify:
     - restart monit
-  tags:
-    - solr_monit
-
-- name: reload config
-  shell: "monit reload"
   tags:
     - solr_monit
