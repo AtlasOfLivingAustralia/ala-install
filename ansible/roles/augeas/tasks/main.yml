@@ -17,7 +17,7 @@
     - packages
     - augeas
 
-- name: install augeas (Ubuntu 14.04/16.04/18.04)
+- name: install augeas (Ubuntu 14.04)
   apt: pkg={{item}} state=latest
   with_items:
     - libaugeas0
@@ -26,7 +26,40 @@
     - python-augeas
     - python-libxml2
     - libpython2.7
-  when: ansible_os_family == "Debian" and (ansible_distribution_version == "14.04" or ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04")
+  when: ansible_os_family == "Debian" and (ansible_distribution_version == "14.04")
+  tags:
+    - packages
+    - augeas
+
+- name: install augeas (Ubuntu 16.04)
+  apt: pkg={{item}} state=latest
+  with_items:
+    - libaugeas0
+    - augeas-lenses
+    - augeas-tools
+    - python-augeas
+    - python-libxml2
+    - libpython2.7
+    - python3-augeas
+    - libpython3.5
+  when: ansible_os_family == "Debian" and (ansible_distribution_version == "16.04")
+  tags:
+    - packages
+    - augeas
+
+- name: install augeas (Ubuntu 18.04)
+  apt: pkg={{item}} state=latest
+  with_items:
+    - libaugeas0
+    - augeas-lenses
+    - augeas-tools
+    - python-augeas
+    - python-libxml2
+    - libpython2.7
+    - python3-augeas
+    - python3-libxml2
+    - libpython3.8
+  when: ansible_os_family == "Debian" and (ansible_distribution_version == "18.04")
   tags:
     - packages
     - augeas
