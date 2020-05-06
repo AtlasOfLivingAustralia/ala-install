@@ -5,6 +5,10 @@
 #
 # 12.12.12.12	living-atlas	living-atlas.org
 #
+# You should also login to the server before running this script and add the following to its `/etc/hosts` file:
+#
+# 127.0.0.1	living-atlas	living-atlas.org
+#
 # You'll need to replace "12.12.12.12" with the IP address of your newly created
 # Ubuntu 20 instance. For this demo to run well, we recommend a machine of 16GB RAM, 4 CPUs.
 #
