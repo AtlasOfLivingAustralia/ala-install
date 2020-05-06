@@ -1,8 +1,0 @@
-- hosts: calendars
-  roles:
-    - java
-    - common
-    - mongodb
-    - tomcat
-    - webserver
-    - calendars
