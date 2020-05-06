@@ -46,6 +46,7 @@
     name: cassandra
     state: present
   check_mode: true
+  ignore_errors: yes
   register: cassandra_first_install
   when: ansible_os_family == "Debian"
   tags:
