@@ -1,0 +1,33 @@
+# ALA Demo designed to run on Ubuntu-2020
+# Caution: Experimental
+- hosts: all
+  gather_facts: False
+  tasks:
+  - name: install python 3
+    raw: sudo bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qy python3-minimal)"
+
+- hosts: all
+  roles:
+    - common
+    - java
+    - tomcat
+    - cassandra3
+    - mysql-5.7
+    - postgresql
+    - webserver
+    - nameindex
+    - solr7
+    - logger-client
+    - biocache-properties
+    - { role: biocache-db,      use_cassandra3 : true }
+    - { role: collectory,       collectory_app: ala-collectory, collectory_version: "1.6.2" }
+    - { role: biocache-cli,     biocache_cli_version: "2.4.5" }
+    - { role: nameindexer,      ala_name_matching_version: "3.4" }
+    - { role: logger-service,   logger_version: "2.3.5" }
+    - { role: species-list,     specieslist_version: "3.4" }
+    - { role: biocache-service, biocache_service_version: "2.4-SNAPSHOT" }
+    - { role: biocache-hub,     biocache_hub: ala-hub, biocache_hub_version: "3.2.2" }
+    - { role: bie-index,        bie_index_version: "1.4.8" }
+    - { role: bie-hub,          bie_hub: ala-bie, bie_hub_version: "1.4.19" }
+    - { role: image-service,    image_service_version: "1.0.9", image_service_port: 9101 }
+    - demo
