@@ -5,3 +5,7 @@ gdal_src_url: http://download.osgeo.org/gdal/2.4.0/gdal-2.4.0.tar.gz
 postgresql_data_directory: "{{ data_dir }}/postgresql-{{pg_version}}-data"
 
 psycopg2_package: "python3-psycopg2"
+
+pycurl_package: "python-pycurl"
+
+pip_package: "python-pip"

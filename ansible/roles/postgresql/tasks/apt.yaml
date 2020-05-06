@@ -4,20 +4,20 @@
   tags: postgresql
 
 - name: install python-pycurl (Debian)
-  apt: pkg=python-pycurl state=latest
+  apt: pkg="{{ pycurl_package }}" state=latest
   when: ansible_os_family == "Debian"
   tags: postgresql
 
 - name: install python-pip
-  apt: pkg=python-pip state=present
+  apt: pkg="{{ pip_package }}" state=present
   tags: postgresql
 
-- name: install python-pip
+- name: install libpq-dev
   apt: pkg=libpq-dev state=present
   tags: postgresql
 
 - name: install psycopg2
-  apt: pkg="{{psycopg2_package}}" state=present
+  apt: pkg="{{ psycopg2_package }}" state=present
   when: psycopg2_package is defined
   tags: postgresql
 

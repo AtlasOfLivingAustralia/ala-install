@@ -315,7 +315,7 @@ postgresql_password=postgres
 postgis_version=9.6
 pg_service=postgresql-9.6
 pg_version=9.6
-postgis_version=2.4
+postgis_version=2.5
 tomcat=tomcat9
 
 # workaround for: https://github.com/AtlasOfLivingAustralia/ala-install/issues/291
