@@ -38,7 +38,8 @@
     - /tmp/refresh_summary_breakdown_source.sql
     - /tmp/refresh_summary_totals.sql
     - /tmp/update_breakdown_summary_information.sql
-    - /tmp/definer_user.sql
+# The following is broken on MySQL-8.0, reenable if it becomes an issue in future
+#    - /tmp/definer_user.sql
   when: dbschema.changed
   tags:
     - logger-service

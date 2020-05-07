@@ -66,6 +66,8 @@ biocache_hub_base_url = http://living-atlas.org
 biocache_hub_context_path = /ala-hub
 userdetails_url = http://auth.living-atlas.org/userdetails/userDetails
 
+geoip_enabled = False
+
 google_apikey = put-some-google-api-here
 
 # this is disabled to avoid startup problems

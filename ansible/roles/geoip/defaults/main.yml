@@ -1,3 +1,6 @@
+# This must be explicitly enabled as most users do not require this functionality
+geoip_enabled: False
+
 # Maxmind is the company providing the geoip database that logstash uses to geolocate IP addresses and identify ASNs
 
 # Create a MaxMind account and get a license key using the instructions at:
