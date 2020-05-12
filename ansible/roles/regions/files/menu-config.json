@@ -176,6 +176,10 @@
       {
         "label": "Atlas of Life in the Coastal Wilderness",
         "fid": "cl990"
+      },
+      {
+        "label": "National Indicative Aggregated Fire Extent Dataset 2019-2020",
+        "fid": "cl10955"
       }
     ]
   }
