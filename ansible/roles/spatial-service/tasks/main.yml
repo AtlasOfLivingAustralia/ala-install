@@ -41,8 +41,8 @@
         is_proxy: false
         rewrite: "{{spatial_service_context_path}}/layers/index"
       - path: "/layers/more"
-        is_proxy: false
-        rewrite: "{{spatial_service_context_path}}/view/more"
+        is_proxy: true
+        proxy_pass: "{{spatial_service_context_path}}/layers/view/more"
   tags:
     - nginx_vhost
     - deploy
