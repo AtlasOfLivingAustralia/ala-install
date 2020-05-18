@@ -13,7 +13,7 @@
     - properties
 
 - name: copy all config.properties
-  template: src=dashboard-config.properties dest={{data_dir}}/dashboard/config/dashboard-config.properties
+  template: src=dashboard-config.properties dest={{data_dir}}/dashboard/config/dashboard-config.properties output_encoding=iso-8859-1
   tags:
     - dashboard
     - properties

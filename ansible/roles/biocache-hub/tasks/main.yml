@@ -15,7 +15,7 @@
     - webapps
     - apache_vhost
     - deploy
-    - biocache_hub    
+    - biocache_hub
   when: not webserver_nginx
 
 - name: add nginx vhost if configured
@@ -99,7 +99,7 @@
     - facets_config
 
 - name: copy all config.properties
-  template: src=config/config.properties dest={{data_dir}}/{{biocache_hub}}/config/{{biocache_hub_config}} force=yes
+  template: src=config/config.properties dest={{data_dir}}/{{biocache_hub}}/config/{{biocache_hub_config}} force=yes output_encoding=iso-8859-1
   tags:
     - webapps
     - properties

@@ -54,7 +54,7 @@
     - properties
 
 - name: copy all config.properties
-  template: src=logger-config.properties dest={{data_dir}}/logger/config/logger-config.properties
+  template: src=logger-config.properties dest={{data_dir}}/logger/config/logger-config.properties output_encoding=iso-8859-1
   tags:
     - logger-service
     - properties
