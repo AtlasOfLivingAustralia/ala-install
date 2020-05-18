@@ -3,7 +3,7 @@
     - alerts
 
 - name: create alerts DB
-  mysql_db: name={{ alerts_db_name }} state=present
+  mysql_db: name={{ alerts_db_name }} state=present encoding={{ alerts_db_encoding | default('utf8') }}
   tags:
     - db
     - alerts
@@ -23,14 +23,14 @@
     - alerts
 
 - name: copy all config.properties
-  template: src=alerts-config.properties dest={{data_dir}}/alerts/config/alerts-config.properties
+  template: src=alerts-config.properties dest={{data_dir}}/alerts/config/alerts-config.properties output_encoding=iso-8859-1
   tags:
     - properties
     - alerts
 
 - name: set data ownership
   file: path={{data_dir}}/alerts owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify: 
+  notify:
     - restart tomcat
   tags:
     - properties
