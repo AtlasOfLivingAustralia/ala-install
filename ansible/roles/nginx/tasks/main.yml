@@ -1,7 +1,10 @@
 ---
-# Variable setup.
-- name: Include OS-specific variables.
-  include_vars: "{{ ansible_os_family }}.yml"
+- name: Include OS specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ansible_distribution | lower }}-{{ansible_lsb.release}}.yml"
+    - "{{ansible_distribution | lower }}.yml"
+    - "{{ansible_os_family | lower}}.yml"
   tags:
     - nginx
 
@@ -14,32 +17,32 @@
 
 # Setup/install tasks.
 - include: setup-RedHat.yml
-  when: ansible_os_family == 'RedHat'
+  when: ansible_os_family | lower == 'redhat'
   tags:
     - nginx
 
 - include: setup-Ubuntu.yml
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_distribution | lower == 'ubuntu'
   tags:
     - nginx
 
 - include: setup-Debian.yml
-  when: ansible_os_family == 'Debian'
+  when: ansible_os_family | lower == 'debian'
   tags:
     - nginx
 
 - include: setup-FreeBSD.yml
-  when: ansible_os_family == 'FreeBSD'
+  when: ansible_os_family | lower == 'freebsd'
   tags:
     - nginx
 
 - include: setup-OpenBSD.yml
-  when: ansible_os_family == 'OpenBSD'
+  when: ansible_os_family | lower == 'openbsd'
   tags:
     - nginx
 
 - include: setup-Archlinux.yml
-  when: ansible_os_family == 'Archlinux'
+  when: ansible_os_family | lower == 'archlinux'
   tags:
     - nginx
 
