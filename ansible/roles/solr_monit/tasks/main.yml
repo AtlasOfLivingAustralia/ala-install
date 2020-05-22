@@ -32,6 +32,13 @@
   tags:
     - solr_monit
 
+- name: copy monit solr biocache collection script
+  copy: src=biocache_collection.sh dest=/usr/local/bin/ mode=755
+  notify:
+    - restart monit
+  tags:
+    - solr_monit
+    -
 - name: copy monit solr rebalance leaders script
   copy: src=rebalanceleaders.sh dest=/usr/local/bin/ mode=755
   notify:
