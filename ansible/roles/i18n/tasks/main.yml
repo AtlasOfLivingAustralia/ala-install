@@ -12,6 +12,7 @@
   apt_repository:
     # We use this repo temporally
     repo: deb [arch=amd64] https://apt.gbif.es/ bionic main
+    filename: apt_gbif_es
     state: present
   tags:
     - packages
@@ -21,6 +22,7 @@
 - name: Uninstall demo.gbif.es apt repository
   apt_repository:
     repo: deb [arch=amd64] https://demo.gbif.es/repo bionic main
+    filename: demo_gbif_es_repo
     state: absent
   tags:
     - packages
