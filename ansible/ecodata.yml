@@ -1,4 +1,4 @@
-- hosts: ecodata
+- hosts: all
   roles:
     - common
     - java

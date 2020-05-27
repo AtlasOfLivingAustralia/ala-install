@@ -1,7 +1,13 @@
-[ecodata]
+[primary]
 vagrant1
+[secondary]
+vagrant2
 
-[ecodata:vars]
+[all]
+vagrant1
+vagrant2
+
+[all:vars]
 is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
@@ -47,3 +53,9 @@ nginx_default_vhost_required=true
 nginx_vhost_fragments_to_clear=["ecodata.vagrant1.ala.org.au"]
 
 ecodata_tomcat_server_port=8060
+
+replicaSetName=rs0
+
+ecodata_keyFile=/etc/mongodb-keyfile
+
+ecodata_SystemLog=/var/log/mongodb
