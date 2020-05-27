@@ -218,12 +218,6 @@
     name: mongod
     state: stopped
 
-- name: copy security key file to nodes
-  copy: src=mongodb-keyfile dest=/etc/mongodb-keyfile mode=0400
-
-- name: change access right of key file
-  file: path=/etc/mongodb-keyfile state=file owner=mongodb group=mongodb mode=0400
-
 # Update mongod.conf again but now with security configured
 - name: Update mongod.conf
   template:
@@ -234,35 +228,5 @@
   service:
     name: mongod
     state: started
-
-#- name: Enable replication Set
-#  blockinfile:
-#    path: /etc/mongod.conf
-#    backup: yes
-#    marker: '# {mark} Adding ReplicaSetName'
-#    block: |
-#      replication:
-#        replSetName: rs0
-#  tags:
-#    - mongodb-org
-#
-#- name: copy security key file to nodes
-#  copy: src=mongodb-keyfile dest=/etc/mongodb-keyfile mode=0400
-#
-#- name: Stop mongod Service
-#  service:
-#    name: mongod
-#    state: stopped
-#
-#- name: copy configuration file with authentication parameters
-#  copy: src=mongod.conf dest=/etc/mongod.conf mode=0644
-#
-#- name: change access right of key file
-#  file: path=/etc/mongodb-keyfile state=file owner=mongodb group=mongodb mode=0400
-#
-#- name: Start mongod as a service with security
-#  service:
-#    name: mongod
-#    state: started
 
 
