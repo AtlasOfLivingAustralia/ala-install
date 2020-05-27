@@ -12,3 +12,5 @@ ecodata_username: "ecodata"
 ecodata_artifact_url: "{{ ecodata_maven_repo_ws_url | default(maven_repo_ws_url) }}"
 ecodata_server_port: "{{ ecodata_tomcat_server_port | default('8080') }}"
 #ecodata_dbPath: "{{ ecodata_dbPath | default('/var/lib/mongodb') }} "
+
+replicaSetName: "rs0"
