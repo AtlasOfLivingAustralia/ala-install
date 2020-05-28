@@ -218,6 +218,12 @@
     name: mongod
     state: stopped
 
+- name: copy security key file to nodes
+  copy: src={{ecodata_local_authentication_keyFile}} dest=/etc/mongodb-keyFile mode=0400
+
+- name: change access right of key file
+  file: path=/etc/mongodb-keyFile state=file owner=mongodb group=mongodb mode=0400
+
 # Update mongod.conf again but now with security configured
 - name: Update mongod.conf
   template:
