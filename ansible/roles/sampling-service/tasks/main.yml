@@ -44,5 +44,34 @@
 - name: set data ownership
   file: path={{data_dir}}/ala owner={{tomcat_user}} group={{tomcat_user}} recurse=true
 
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+   appname: "sampling-service"
+   hostname: "{{ sampling_service_hostname }}"
+   context_path: "{{ sampling_service_context_path }}"
+   nginx_paths:
+      - path: "{{sampling_service_context_path}}/sampling-service/intersect/batch"
+        sort_label: "1_batch"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080/sampling-service/intersect/batch"
+      - path: "{{sampling_service_context_path}}/sampling-service"
+        sort_label: "2_spatial"
+        is_proxy: true
+        proxy_pass: "https://spatial.ala.org.au/ws"
+      - path: "{{sampling_service_context_path}}/data"
+        is_proxy: false
+        alias: "{{data_dir}}"
+        try_files: "$uri $uri/ =404"
+  tags:
+    - nginx_vhost
+  when: webserver_nginx
+
+- name: tasks if using apache
+  include_role:
+    name: sampling-service-apache
+  when: not webserver_nginx
+
 - debug: msg="To finish installation copy the layer files used by the primary layers-service into {{ data_dir }}/ala/data/layers/ready for the subdirectories diva, shape and shape_diva"
 
