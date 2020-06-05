@@ -48,6 +48,6 @@
     - modern_elasticsearch_version
 
 - name: elasticsearch-install | Setup passlib
-  apt: pkg=python-passlib
+  apt: pkg=python3-passlib
   when: elasticsearch_proxy_auth
 

@@ -91,6 +91,7 @@ skin:
   fluidLayout: {{ skin_fluid_layout | default('') }}
   orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}
   favicon: {{ skin_favicon | default('https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png') }}
+  homeUrl: {{ skin_home_url | default('http://www.ala.org.au') }}
 headerAndFooter:
   baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}
 useLegacyAuto: false

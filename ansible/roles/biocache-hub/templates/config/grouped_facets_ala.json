@@ -124,10 +124,6 @@
                 "sort":"count",
                 "field":"date_precision"
             },
-            {  
-                "sort":"index",
-                "field":"occurrence_year"
-            },
             {
                 "sort":"index",
                 "field":"occurrence_decade_i"
@@ -176,6 +172,10 @@
             {  
                 "sort":"count",
                 "field":"cl1048"
+            },
+            {  
+                "sort":"count",
+                "field":"cl1049"
             },
             {  
                 "sort":"count",
@@ -295,6 +295,10 @@
             {  
                 "sort":"count",
                 "field":"data_resource_uid"
+            },
+            {  
+                "sort":"count",
+                "field":"dataset_name"
             }
         ]
     }

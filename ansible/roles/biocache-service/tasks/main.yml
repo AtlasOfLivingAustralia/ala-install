@@ -293,18 +293,6 @@
   tags:
     - biocache-service  
 
-- name: copy all config.properties
-  template: src={{ item }} dest={{data_dir}}/biocache/{{ item }}
-  with_items:
-    - config/download-doi-email.html
-    - config/download-csdm-email.html
-    - config/applicationContext.xml
-    - config/download-doi-readme.html
-    - config/download-email.html
-    - config/download-readme.html
-  tags:
-    - biocache-service
-
 - name: ensure target directories exist [data subdirectories etc.
   file: path={{item.path}} state=directory owner={{tomcat_user}}  group={{tomcat_user}} mode={{ item.perm | default(775) }}
   with_items:
@@ -316,6 +304,7 @@
     - { path: "{{data_dir}}/biocache-upload/temp" }
     - { path: "{{data_dir}}/biocache-delete" }
     - { path: "{{data_dir}}/cache" }
+    - { path: "{{data_dir}}/cache/downloads" }
     - { path: "{{data_dir}}/tmp" }
     - { path: "{{data_dir}}/offline/exports" }
     - { path: "{{data_dir}}/tool" }
@@ -326,22 +315,10 @@
   tags:
     - biocache-service
 
-- name: copy biocache facets config
-  copy: src=config/facets.json dest={{data_dir}}/biocache/config/facets.json
-  tags:
-    - biocache-service
-    - properties
-
-- name: copy biocache logging config
-  copy: src=config/log4j.xml dest={{data_dir}}/biocache/config/log4j.xml
-  tags:
-    - biocache-service
-    - properties
-
 - name: set data ownership [all data is owned by tomcat]
 # FIXME: The ansible file module fails with a recursion limit issue that "chown" isn't prone to
 #  file: path={{data_dir}}/{{item}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  shell: "chown -R {{ tomcat_user }}:{{ tomcat_user }} {{ item }}"
+  shell: "chown -R {{ tomcat_user }}:{{ tomcat_user }} {{ item }} && chmod -R 775 {{ item }}"
   args:
     chdir: "{{ data_dir }}"
   with_items:
@@ -358,6 +335,45 @@
     - biocache-download
   tags:
     - biocache-service
+
+- name: copy all config.properties
+  template:
+    src: "{{ item }}"
+    dest: "{{ data_dir }}/biocache/{{ item }}"
+    owner: root
+    group: root
+    mode: 644
+  with_items:
+    - config/download-doi-email.html
+    - config/download-csdm-email.html
+    - config/applicationContext.xml
+    - config/download-doi-readme.html
+    - config/download-email.html
+    - config/download-readme.html
+  tags:
+    - biocache-service
+
+- name: copy biocache facets config
+  copy:
+    src: "config/facets.json"
+    dest: "{{ data_dir }}/biocache/config/facets.json"
+    owner: root
+    group: root
+    mode: 644
+  tags:
+    - biocache-service
+    - properties
+
+- name: copy biocache logging config
+  copy:
+    src: "config/log4j.xml"
+    dest: "{{ data_dir }}/biocache/config/log4j.xml"
+    owner: root
+    group: root
+    mode: 644
+  tags:
+    - biocache-service
+    - properties
 
 - name: create download and media symlinks
   file:

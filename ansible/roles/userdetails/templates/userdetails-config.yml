@@ -109,6 +109,7 @@ skin.fluidLayout: {{ skin_fluid_layout | default('false') }}
 skin.orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}
 skin.orgNameShort: {{ orgNameShort | default('ALA') }}
 skin.favicon: {{ skin_favicon | default('https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png') }}
+skin.homeUrl: {{ skin_home_url | default('http://www.ala.org.au') }}
 
 # API key for external apps
 webservice.apiKey: {{ api_key }}

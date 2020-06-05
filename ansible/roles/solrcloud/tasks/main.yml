@@ -7,6 +7,7 @@
   service:
     name: monit
     state: stopped
+    enabled: "yes"
   ignore_errors: yes
   tags:
     - solr_config  
@@ -17,6 +18,7 @@
   service:
     name: solr
     state: stopped
+    enabled: "yes"
   ignore_errors: yes
   tags:
     - solr_config  
@@ -97,6 +99,7 @@
   service:
     name: solr
     state: restarted
+    enabled: "yes"
   tags:
     - solr_config  
     - solrcloud
@@ -107,6 +110,7 @@
   service:
     name: monit
     state: restarted
+    enabled: "yes"
   ignore_errors: yes
   tags:
     - solr_config  

@@ -7,7 +7,7 @@
     - config
 
 - name: ensure mysql is running (this is idempotent so safe)
-  service: name={{ mysql_service }} state=started
+  service: name={{ mysql_service }} state=started enabled="yes"
   tags:
     - db
     - collectory
@@ -45,7 +45,7 @@
     - collectory
 
 - name: copy all template configs
-  template: src={{item}} dest={{ collectory_data_dir }}/config/{{ collectory_app | default('generic-collectory') }}-config.properties
+  template: src={{item}} dest={{ collectory_data_dir }}/config/{{ collectory_app | default('generic-collectory') }}-config.properties output_encoding=iso-8859-1
   with_items:
     - config/collectory-config.properties
   tags:

@@ -10,6 +10,8 @@
 
 - name: install monit
   apt: pkg=monit state=present update_cache=yes
+  notify:
+    - restart monit
   tags:
     - solr_monit
 
@@ -30,8 +32,22 @@
   tags:
     - solr_monit
 
+- name: copy monit solr biocache collection script
+  copy: src=biocache_collection.sh dest=/usr/local/bin/ mode=755
+  notify:
+    - restart monit
+  tags:
+    - solr_monit
+    -
 - name: copy monit solr rebalance leaders script
   copy: src=rebalanceleaders.sh dest=/usr/local/bin/ mode=755
+  notify:
+    - restart monit
+  tags:
+    - solr_monit
+
+- name: copy monit solr restart script
+  copy: src=restart_solr.sh dest=/usr/local/bin/ mode=755
   notify:
     - restart monit
   tags:
@@ -44,10 +60,5 @@
     state: link
   notify:
     - restart monit
-  tags:
-    - solr_monit
-
-- name: reload config
-  shell: "monit reload"
   tags:
     - solr_monit

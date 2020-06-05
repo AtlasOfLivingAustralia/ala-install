@@ -3,6 +3,8 @@
   apt_repository:
     repo: 'ppa:maxmind/ppa'
     state: present
+  when:
+    - geoip_enabled is defined and geoip_enabled | bool == True
   tags:
     - geoip
 
@@ -11,6 +13,8 @@
     name: "geoipupdate"
     state: latest
   register: geoipupdate_install
+  when:
+    - geoip_enabled is defined and geoip_enabled | bool == True
   tags:
     - geoip
 
@@ -22,6 +26,8 @@
     group: root
     mode: 0740
   register: geoipupdate_conf
+  when:
+    - geoip_enabled is defined and geoip_enabled | bool == True
   tags:
     - geoip
 
@@ -32,12 +38,15 @@
     minute: "30"
     job: "/usr/bin/geoipupdate --config-file {{ maxmind_geoip_conf }} --database-directory {{ maxmind_geoip_database_directory }}"
     state: present
+  when:
+    - geoip_enabled is defined and geoip_enabled | bool == True
   tags:
     - geoip
 
 - name: "If the configuration changed, manually run geoipupdate once to pick up the new config"
   command: "/usr/bin/geoipupdate --config-file {{ maxmind_geoip_conf }} --database-directory {{ maxmind_geoip_database_directory }}"
   when:
+    - geoip_enabled is defined and geoip_enabled | bool == True
     - geoipupdate_conf.changed or geoipupdate_install.changed
   tags:
     - geoip

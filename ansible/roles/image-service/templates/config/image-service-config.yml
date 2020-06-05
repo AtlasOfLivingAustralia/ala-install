@@ -53,6 +53,7 @@ skin:
   layout: {{ skin_layout | default('main') }}
   favicon: "{{ skin_favicon | default('https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png') }}"
   orgNameLong: {{ orgNameLong | default('Atlas') }}
+  homeUrl: {{ skin_home_url | default('http://www.ala.org.au') }}
 
 collectory:
   baseURL: "{{ collectory_url | default('https://collections.ala.org.au')}}"

@@ -38,7 +38,8 @@
     - /tmp/refresh_summary_breakdown_source.sql
     - /tmp/refresh_summary_totals.sql
     - /tmp/update_breakdown_summary_information.sql
-    - /tmp/definer_user.sql
+# The following is broken on MySQL-8.0, reenable if it becomes an issue in future
+#    - /tmp/definer_user.sql
   when: dbschema.changed
   tags:
     - logger-service
@@ -53,7 +54,7 @@
     - properties
 
 - name: copy all config.properties
-  template: src=logger-config.properties dest={{data_dir}}/logger/config/logger-config.properties
+  template: src=logger-config.properties dest={{data_dir}}/logger/config/logger-config.properties output_encoding=iso-8859-1
   tags:
     - logger-service
     - properties
@@ -73,6 +74,15 @@
     - apache_vhost
   when: not webserver_nginx
 
+- name: set nginx proxy target if configured
+  set_fact:
+    logger_proxy_target: "{{logger_context_path}}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - logger-service
+  when: webserver_nginx and logger_proxy_target is not defined
+
 - name: add nginx vhost if configured
   include_role:
     name: nginx_vhost
@@ -80,6 +90,31 @@
     appname: "logger-service"
     hostname: "{{ logger_hostname }}"
     context_path: "{{ logger_context_path }}"
+    nginx_paths:
+      - path: "{{logger_context_path}}/service/logger/reasons"
+        sort_label: "1_logger_reasons"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{logger_proxy_target}}/service/logger/reasons"
+      - path: "{{logger_context_path}}/service/logger/sources"
+        sort_label: "1_logger_sources"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{logger_proxy_target}}/service/logger/sources"
+      - path: "{{logger_context_path}}/service/logger/events"
+        sort_label: "1_logger_events"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:8080{{logger_proxy_target}}/service/logger/events"
+      - path: "{{logger_context_path}}"
+        sort_label: "9_default"
+        is_proxy: true
+        use_cache: false
+        force_cache: false
+        proxy_pass: "http://127.0.0.1:8080{{logger_proxy_target}}"
   tags:
     - nginx_vhost
     - deploy

@@ -213,5 +213,20 @@
   tags:
     - mongodb-org
 
+- name: Stop mongo Service
+  service:
+    name: mongod
+    state: stopped
+
+# Update mongod.conf again but now with security configured
+- name: Update mongod.conf
+  template:
+    src: mongod.conf.j2
+    dest: /etc/mongod.conf
+
+- name: Start mongod as a service with security
+  service:
+    name: mongod
+    state: started
 
 

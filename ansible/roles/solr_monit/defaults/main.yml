@@ -1,0 +1,12 @@
+---
+
+# The number of times monit fails to connect to the solr port before it initiates a restart
+solr_port_cycles: 2
+
+# The number of times monit fails to get the cluster status before it initiates a restart
+solr_http_cluster_status_cycles: 4
+solr_http_cluster_status_url: "/solr/admin/collections?action=clusterstatus&wt=json&indent=true"
+
+# The number of times monit fails to perform a select query before it initiates a restart
+solr_http_query_cycles: 6
+solr_http_query_url: "/solr/biocache/select?q=kangaroo&facet=off&rows=0"

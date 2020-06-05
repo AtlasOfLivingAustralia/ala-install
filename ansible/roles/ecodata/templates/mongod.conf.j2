@@ -1,0 +1,49 @@
+# mongod.conf
+
+# for documentation of all options, see:
+#   http://docs.mongodb.org/manual/reference/configuration-options/
+
+# Where and how to store data.
+storage:
+  dbPath: {{ecodata_dbPath}}
+  journal:
+    enabled: true
+#  engine:
+#  mmapv1:
+#  wiredTiger:
+
+# where to write logging data.
+systemLog:
+  destination: file
+  logAppend: true
+  path: {{ecodata_SystemLog}}/mongod.log
+
+# network interfaces
+# We bind to all addresses and handle security with firewals and authentication
+net:
+  port: 27017
+  #bindId: 127.0.01
+  bindIpAll: true
+
+# how the process runs
+processManagement:
+#  fork: true  # fork and run in background
+#  pidFilePath: /var/run/mongodb/mongod.pid  # location of pidfile
+  timeZoneInfo: /usr/share/zoneinfo
+
+security:
+  authorization: enabled
+#  keyFile: {{ecodata_keyFile}}
+
+#operationProfiling:
+
+replication:
+  replSetName: {{replicaSetName}}
+
+#sharding:
+
+## Enterprise-Only Options:
+
+#auditLog:
+
+#snmp:

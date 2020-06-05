@@ -414,6 +414,7 @@
    <field name="categories" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
 
    <!-- LinkIdentifier fields -->
+   <field name="linkText" type="lowercase" omitNorms="true" multiValued="false" indexed="true" stored="true"/>
    <field name="linkIdentifier" type="string" indexed="true" stored="true" multiValued="false" omitNorms="true" />
 
    <!-- Name variant fields -->

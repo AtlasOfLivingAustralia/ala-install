@@ -1,0 +1,5 @@
+---
+
+# The port that doi-service will run on
+doi_service_port: 8080
+

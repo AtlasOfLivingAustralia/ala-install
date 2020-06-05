@@ -1,10 +1,10 @@
 ---
 
 - name: elasticsearch restart
-  service: name=elasticsearch state=restarted
+  service: name=elasticsearch state=restarted enabled="yes"
 
 - name: nginx reload
-  service: name=nginx state=reloaded
+  service: name=nginx state=reloaded enabled="yes"
 
 - name: apache restart
-  service: name=apache2 state=restarted
+  service: name=apache2 state=restarted enabled="yes"

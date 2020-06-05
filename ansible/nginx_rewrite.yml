@@ -1,0 +1,14 @@
+---
+# Installs an nginx vhost for the given target with a rewrite only
+# Must define both `nginx_rewrite_hostname` and `nginx_rewrite_url` on the command line or inventory file
+
+- hosts: nginx_rewrite
+  roles:
+    - nginx_vhost
+  vars:
+    hostname: "{{ nginx_rewrite_hostname }}"
+    nginx_paths:
+      - path: "/"
+        is_proxy: false
+        rewrite: "{{ nginx_rewrite_url }}"
+  become: yes

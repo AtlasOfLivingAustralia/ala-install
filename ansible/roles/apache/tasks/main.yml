@@ -5,7 +5,7 @@
     - apache  
 
 - name: Start Apache2 (RedHat)
-  service: name=httpd state=restarted
+  service: name=httpd state=restarted enabled="yes"
   when: ansible_os_family == "RedHat"
   tags:
     - apache  
@@ -45,7 +45,7 @@
     - apache
 
 - name: Start Apache2 (Debian)
-  service: name=apache2 state=restarted
+  service: name=apache2 state=restarted enabled="yes"
   when: ansible_os_family == "Debian"
   tags:
     - apache  

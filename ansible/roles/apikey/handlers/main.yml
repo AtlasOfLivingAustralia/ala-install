@@ -1,2 +1,2 @@
 - name: restart apikey
-  service: name=apikey state=restarted
+  service: name=apikey state=restarted enabled="yes"

@@ -1,28 +1,28 @@
 # common handlers that various roles can call
 
 - name: restart tomcat
-  service: name={{tomcat}} state=restarted
+  service: name={{tomcat}} state=restarted enabled="yes"
 
 - name: restart httpd
-  service: name={{apache}} state=restarted
+  service: name={{apache}} state=restarted enabled="yes"
 
 - name: restart apache
-  service: name={{apache}} state=restarted
+  service: name={{apache}} state=restarted enabled="yes"
 
 - name: reload apache
-  service: name={{apache}} state=reloaded
+  service: name={{apache}} state=reloaded enabled="yes"
 
 - name: restart mysql
-  service: name={{mysql_service}} state=restarted
+  service: name={{mysql_service}} state=restarted enabled="yes"
 
 - name: reload nginx
-  service: name={{nginx}} state=reloaded
+  service: name={{nginx}} state=reloaded enabled="yes"
 
 - name: restart nginx
-  service: name={{nginx}} state=restarted
+  service: name={{nginx}} state=restarted enabled="yes"
 
 - name: reload postfix
-  service: name={{postfix}} state=reloaded
+  service: name={{postfix}} state=reloaded enabled="yes"
 
 - name: restart postfix
-  service: name={{postfix}} state=restarted
+  service: name={{postfix}} state=restarted enabled="yes"

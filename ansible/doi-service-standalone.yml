@@ -3,9 +3,9 @@
     - common
     - java
     - postfix
-    - {role: db-backup, db: postgres}
+    - {role: db-backup, db: postgres, db_name: "{{ doi_db_name }}", db_user: "{{ doi_db_user }}", db_password: "{{ doi_db_password }}" }
     - {role: postgresql, pg_version: "9.6"}
-    - {role: pg_instance, extensions: ["citext", "pgcrypto"]}
-    - {role: ansible-elasticsearch, es_version: 5.5.3, es_templates:false,  es_instance_name: 'doi-elasticsearch', es_data_dirs: ['/data/elasticsearch'], tags: ['elasticsearch'], es_heap_size: '1g'}
+    - {role: pg_instance, extensions: ["citext", "pgcrypto"], db_name: "{{ doi_db_name }}", db_user: "{{ doi_db_user }}", db_password: "{{ doi_db_password }}" }
+    - {role: ansible-elasticsearch, es_version: 5.5.3, es_templates: false,  es_instance_name: 'doi-elasticsearch', es_data_dirs: ['/data/elasticsearch'], tags: ['elasticsearch']}
     - webserver
     - doi-service

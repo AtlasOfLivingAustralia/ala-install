@@ -1,2 +1,2 @@
 - name: restart digivol
-  service: name=digivol state=restarted
+  service: name=digivol state=restarted enabled="yes"

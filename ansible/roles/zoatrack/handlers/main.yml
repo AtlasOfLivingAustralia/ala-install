@@ -2,18 +2,22 @@
   service:
      name: apache2
      state: restarted
+     enabled: "yes"
 
 - name: reload nginx
   service:
      name: nginx
      state: restarted
+     enabled: "yes"
 
 - name: reload tomcat
   service:
      name: "{{ tomcat }}"
      state: restarted
+     enabled: "yes"
 
 - name: reload shibd
   service:
      name: shibd
      state: restarted
+     enabled: "yes"

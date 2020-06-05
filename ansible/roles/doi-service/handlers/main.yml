@@ -1,2 +1,2 @@
 - name: restart doi-service
-  service: name=doi-service state=restarted
+  service: name=doi-service state=restarted enabled=yes

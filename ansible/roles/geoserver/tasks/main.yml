@@ -8,7 +8,7 @@
   with_items:
     - curl
     - unzip
-    - python-lxml
+    - python3-lxml
   tags:
     - geoserver
 
@@ -81,6 +81,7 @@
   service:
     name: "{{tomcat}}"
     state: restarted
+    enabled: "yes"
   tags:
     - geoserver
   become: true
@@ -89,6 +90,7 @@
   service:
       name: "{{nginx}}"
       state: restarted
+      enabled: "yes"
   tags:
     - geoserver
   when: webserver_nginx
@@ -98,6 +100,7 @@
   service:
       name: "{{apache}}"
       state: restarted
+      enabled: "yes"
   tags:
     - geoserver
   when: not webserver_nginx
@@ -152,6 +155,7 @@
   service:
     name: "{{tomcat}}"
     state: restarted
+    enabled: "yes"
   tags:
     - geoserver
   become: true

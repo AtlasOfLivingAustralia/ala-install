@@ -2,13 +2,13 @@
 
 # variable controls version (@see common/vars)
 - name: restart tomcat
-  service: name={{tomcat}} state=restarted
+  service: name={{tomcat}} state=restarted enabled=yes
 
 - name: restart httpd
-  service: name={{apache}} state=restarted
+  service: name={{apache}} state=restarted enabled=yes
 
 - name: restart apache
-  service: name={{apache}} state=restarted
+  service: name={{apache}} state=restarted enabled=yes
 
 - name: restart mysql
-  service: name=mysqld state=restarted
+  service: name=mysqld state=restarted enabled=yes
