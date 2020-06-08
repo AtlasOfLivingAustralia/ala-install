@@ -5,7 +5,7 @@
 
 - name: set ecodata_user as default value
   set_fact:
-    ecodata_user: "{{ (exec_jar) | ternary ('ecodata', 'tomcat')}}"
+    ecodata_user: "{{ (exec_jar) | ternary ('ecodata', 'tomcat7')}}"
   tags:
     - ecodata
     - deploy
@@ -45,7 +45,7 @@
     - ecodata
 
 - name: copy all config.properties
-  template: src=ecodata-config.properties dest={{data_dir}}/ecodata/config/ecodata-config.properties
+  template: src={{ecodata_properties_file | default('ecodata-config.properties')}} dest={{data_dir}}/ecodata/config/ecodata-config.properties
   tags:
     - properties
     - ecodata
@@ -223,6 +223,8 @@
   template:
     src: mongod.conf.j2
     dest: /etc/mongod.conf
+  when:
+    mongo_replica_enabled
 
 - name: Start mongod as a service with security
   service:
