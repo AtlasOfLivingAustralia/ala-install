@@ -54,13 +54,14 @@
   template:
     src: logback.groovy
     dest: "{{data_dir}}/ecodata/config/logback.groovy"
-    owner: ecodata
-    group: ecodata
+    owner: "{{ecodata_user}}"
+    group: "{{ecodata_user}}"
   notify:
     - restart ecodata
   tags:
     - properties
     - ecodata
+  when: exec_jar
 
 - name: ensure ecodata log directory exists
   file: path={{item}} state=directory owner={{ecodata_user}} group={{ecodata_user}}
@@ -101,8 +102,6 @@
 
 - name: set data ownership
   file: path={{data_dir}}/ecodata owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true
-  notify:
-    - restart ecodata
   tags:
     - properties
     - ecodata
