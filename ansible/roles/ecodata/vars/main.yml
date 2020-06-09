@@ -1,8 +1,8 @@
 # assets
 version: "{{ ecodata_version | default('LATEST')}}"
 artifactId: "ecodata"
-classifier: 'exec'
-packaging: "jar"
+classifier: "{{ ecodata_classifier | default('exec') }}"
+packaging: "{{ ecodata_packaging | default('jar') }}"
 groupId: "au.org.ala"
 ecodata_war_url: "{{maven_repo_ws_url}}"
 tomcat_java_opts_override: "-Xmx4g -Xms2g -Xss256k -XX:+UseG1GC"
@@ -13,4 +13,5 @@ ecodata_artifact_url: "{{ ecodata_maven_repo_ws_url | default(maven_repo_ws_url)
 ecodata_server_port: "{{ ecodata_tomcat_server_port | default('8080') }}"
 #ecodata_dbPath: "{{ ecodata_dbPath | default('/var/lib/mongodb') }} "
 
+mongo_replica_enabled: "{{ enable_mongo_replica_set | default(false) }}"
 replicaSetName: "rs0"

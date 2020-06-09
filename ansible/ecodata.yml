@@ -3,6 +3,6 @@
     - common
     - java
     - { role: mongodb-org, dbPath: "{{ ecodata_dbPath }}"}
-    - { role: tomcat, when: not exec_jar }
+    - { role: tomcat, tomcat: "tomcat7", when: packaging == "war" }
     - webserver
     - ecodata
