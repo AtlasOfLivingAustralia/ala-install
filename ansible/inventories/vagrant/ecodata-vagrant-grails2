@@ -59,3 +59,4 @@ replicaSetName=rs0
 ecodata_keyFile=/etc/mongodb-keyfile
 
 ecodata_SystemLog=/var/log/mongodb
+ecodata_api_key=INSERT_API_KEY_HERE
