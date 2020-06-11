@@ -91,10 +91,11 @@
     - properties
 
 #
-# Copy default/example models files
+# Copy default/example models files.  Don't override if already present
+# as the versions in ansible are quick start for new installations.
 #
 - name: Copy models files to config directory
-  copy: src=models/ dest={{data_dir}}/ecodata/models/
+  copy: src=models/ dest={{data_dir}}/ecodata/models/ force=no
   tags:
     - ecodata
     - properties
