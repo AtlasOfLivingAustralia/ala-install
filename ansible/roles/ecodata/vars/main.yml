@@ -5,7 +5,7 @@ classifier: "{{ ecodata_classifier | default('exec') }}"
 packaging: "{{ ecodata_packaging | default('jar') }}"
 groupId: "au.org.ala"
 ecodata_war_url: "{{maven_repo_ws_url}}"
-tomcat_java_opts_override: "-Xmx4g -Xms2g -Xss256k -XX:+UseG1GC"
+tomcat_java_opts_override: "{{ tomcat_java_opts_override_value | default('-Xmx4g -Xms2g -Xss256k -XX:+UseG1GC') }}"
 mongodb_root_username: "admin"
 ecodata_database: "ecodata"
 ecodata_username: "ecodata"
@@ -15,3 +15,4 @@ ecodata_server_port: "{{ ecodata_tomcat_server_port | default('8080') }}"
 
 mongo_replica_enabled: "{{ enable_mongo_replica_set | default(false) }}"
 replicaSetName: "rs0"
+nginx_cors_origin_regexp: '^https?:\/\/.+\.ala\.org\.au\/?'
