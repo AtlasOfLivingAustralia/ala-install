@@ -150,24 +150,6 @@
     - ecodata
   when: webserver_nginx
 
-
-
-#- name: Serve ecodata uploads from nginx
-#  blockinfile:
-#    path: /etc/nginx/sites-enabled/{{ ecodata_hostname }}.conf
-#    backup: yes
-#    marker: '# {mark} Serve uploaded files using nginx'
-#    insertbefore: '^.*location'
-#    block:
-#      location ^~ /uploads {
-#        alias /data/ecodata/uploads;
-#      }
-#  tags:
-#    - nginx_vhost
-#    - deploy
-#    - ecodata
-#  when: webserver_nginx
-
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ ecodata_war_url }}' context_path='{{ecodata_context_path}}' hostname='{{ ecodata_hostname }}'
   tags:
     - deploy
