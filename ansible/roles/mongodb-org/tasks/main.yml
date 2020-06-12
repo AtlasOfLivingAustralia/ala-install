@@ -90,6 +90,7 @@
   when: get_mongo_admin_users.rc == 0
   tags: mongodb-org
 
+# this will only disabled  for ecodata.
 - name: Enable security
   blockinfile:
     path: /etc/mongod.conf
@@ -101,3 +102,6 @@
   notify:
     - restart mongod
   tags: mongodb-org
+  when:
+    disabled_mongo_security_for_ecodata
+

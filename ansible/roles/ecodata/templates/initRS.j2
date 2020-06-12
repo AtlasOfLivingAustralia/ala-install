@@ -1,0 +1,6 @@
+rs.initiate( { _id: "{{ replicaSetName }}",
+               members:[
+                 {_id: 0, host: "{{ groups['primary'][0] }}:27017"},
+                 {_id: 1, host: "{{ groups['secondary'][0]}}:27017"}
+               ]
+             })
