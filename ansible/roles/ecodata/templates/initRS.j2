@@ -1,6 +1,9 @@
-rs.initiate( { _id: "{{ replicaSetName }}",
-               members:[
-                 {_id: 0, host: "{{ groups['primary'][0] }}:27017"},
-                 {_id: 1, host: "{{ groups['secondary'][0]}}:27017"}
-               ]
-             })
+rs.initiate({
+      _id: "{{ replicaSetName }}",
+      version: 1,
+      members: [
+         {_id: 0, host: "10.1.1.4:27017", priority: 1, votes: 1},
+         {_id: 1, host: "10.1.1.5:27017", priority: 0, votes: 0}
+      ]
+   })
+printjson(rs.status())

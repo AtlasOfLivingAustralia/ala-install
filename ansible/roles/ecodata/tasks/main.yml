@@ -197,85 +197,110 @@
 - name: install cron job for indexing elastic search
   cron: minute=21 hour=22 name="Elastic search indexing" job="wget -O - {{ ecodata_url }}{{ ecodata_context_path }}/admin/reIndexAll >/dev/null 2>&1" user=root state=present
 
-
-# Update mongod.conf again but now with security configured
-- name: Update mongod.conf
-  template:
-    src: mongod.conf.j2
-    dest: /etc/mongod.conf
-    owner: root
-    group: root
-    mode: 0644
+- name: comment out lines in the configuration file
+  replace:
+    path: /etc/mongod.conf
+    regexp: 'bindIp: 127.0.0.1'
+    replace: 'bindIpAll: true'
   notify:
     - restart mongod
   tags: mongodb-org
-  when:
-    mongo_replica_enabled
+
+- name: Insert replication set name
+  blockinfile:
+    path: /etc/mongod.conf
+    block: |
+      replication:
+        replSetName: {{ replicaSetName }}
+  notify:
+    - restart mongod
+  tags: mongodb-org
 
   # Copy the keyfile for authentication
 - name: copy security key file to nodes
   copy: src={{ecodata_local_authentication_keyFile}} dest=/etc/mongodb-keyFile mode=0400
+  when:
+    mongo_replica_enabled
 
+# changes access right of the key file for mongo,
 - name: change access right of key file
   file: path=/etc/mongodb-keyFile state=file owner=mongodb group=mongodb mode=0400
 
-#- name: Start mongod as a service with security
-#  service:
-#    name: mongod
-#    state: started
-#  tags: mongodb-org
+- name: Start mongod as a service with security
+  service:
+    name: mongod
+    state: stopped
+
+- name: Start mongod as a service with security
+  service:
+    name: mongod
+    state: started
 
 # copying script to create a replica set
 - name: copy initrs script
   template:
     src: initRS.j2
     dest: ./initRS.j2
-    mode: 0400
-    owner: root
-    group: root
   when:
     mongo_replication
-#
+
 ## Initialize the replica set
-#- name: Initialize the replica set
-#  command: mongo initRS.j2
-#  when:
-#    mongo_replication
+- name: Initialize the replica set
+  command: mongo ./initRS.j2
+  when:
+    mongo_replication
 
+# Copy the mongorc to the secondary node. do connect between primary and secondary node without complication
+- name: copying mongorc to secondary mongo replica set
+  template:
+    src: mongorc.js
+    dest: /etc/mongorc.js
+  when:
+    copy_mongorc_to_secondary_node
 
-## this will only disabled  for ecodata.
-#- name: Enable security
-#  blockinfile:
-#    path: /etc/mongod.conf
-#    backup: yes
-#    marker: '# {mark} Enable mongodb security authorization'
-#    block: |
-#      security:
-#        authorization: enabled
-#        keyFile: {{ecodata_keyFile}}
-#  notify:
-#    - restart mongod
-#  tags: mongodb-org
+#creating only in primary server.
+
+# https://docs.ansible.com/ansible/latest/modules/mongodb_user_module.html
+- name: Create admin user if necessary
+  mongodb_user:
+    database: "{{ mongodb_root_database | default('admin') }}"
+    name: "{{ mongodb_root_username }}"
+    password: "{{ mongodb_root_password }}"
+    replica_set: "{{replicaSetName}}"
+    state: present
+    roles: readWriteAnyDatabase
+  tags: mongodb-org
+  when:
+    create_user
+
+# this will only disabled  for ecodata.
+- name: Enable security
+  blockinfile:
+    path: /etc/mongod.conf
+    backup: yes
+    marker: '# {mark} Enable mongodb security authorization'
+    block: |
+      security:
+        authorization: enabled
+  notify:
+    - restart mongod
+  tags: mongodb-org
 
 # #Mongo users and database
-#- name: Create the ecodata database and user
-#  mongodb_user:
-#    login_user: "{{ mongodb_root_username }}"
-#    login_password: "{{ mongodb_root_password }}"
-#    login_port: "{{ mongodb_port }}"
-#    database: "{{ ecodata_database }}"
-#    name: "{{ ecodata_username }}"
-#    password: "{{ ecodata_password }}"
-#    roles:
-#      - { db: "{{ ecodata_database }}", role: "dbAdmin" }
-#      - { db: "{{ ecodata_database }}", role: "readWrite" }
-#  tags:
-#    - mongodb-org
-#  when:
-#    mongo_replica_enabled
-
-#- name: Stop mongo Service
-#  service:
-#    name: mongod
-#    state: stopped
-#
+- name: Create the ecodata database and user
+  mongodb_user:
+    login_user: "{{ mongodb_root_username }}"
+    login_password: "{{ mongodb_root_password }}"
+    login_port: "{{ mongodb_port }}"
+    database: "{{ ecodata_database }}"
+    replica_set: "{{replicaSetName}}"
+    name: "{{ ecodata_username }}"
+    password: "{{ ecodata_password }}"
+    roles:
+      - { db: "{{ ecodata_database }}", role: "dbAdmin" }
+      - { db: "{{ ecodata_database }}", role: "readWrite" }
+    state: present
+  tags:
+    - mongodb-org
+  when:
+    create_user

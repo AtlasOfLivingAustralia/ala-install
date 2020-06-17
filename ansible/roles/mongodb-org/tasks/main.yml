@@ -87,8 +87,8 @@
     state: present
     login_port: "{{ mongodb_port }}"
     roles: "userAdminAnyDatabase"
-  when: get_mongo_admin_users.rc == 0
   tags: mongodb-org
+  when: "{{ ecodata_enable_mongo_security | default(true) }}"
 
 # this will only disabled  for ecodata.
 - name: Enable security
@@ -102,6 +102,5 @@
   notify:
     - restart mongod
   tags: mongodb-org
-  when:
-    disabled_mongo_security_for_ecodata
+  when: "{{ ecodata_enable_mongo_security | default(true) }}"
 
