@@ -226,15 +226,19 @@
 - name: change access right of key file
   file: path=/etc/mongodb-keyFile state=file owner=mongodb group=mongodb mode=0400
 
-- name: Start mongod as a service with security
+- name: Stop mongod db server
   service:
     name: mongod
     state: stopped
 
-- name: Start mongod as a service with security
+- name: Start mongod server
   service:
     name: mongod
     state: started
+
+
+- name: wait connection to mongo port
+  wait_for: host=0.0.0.0 port=27017 state="started" delay=5
 
 # copying script to create a replica set
 - name: copy initrs script
@@ -258,8 +262,7 @@
   when:
     copy_mongorc_to_secondary_node
 
-#creating only in primary server.
-
+#creating admin user only in primary server. because it a replica set admin it will sync in both primary and secondary
 # https://docs.ansible.com/ansible/latest/modules/mongodb_user_module.html
 - name: Create admin user if necessary
   mongodb_user:
@@ -271,7 +274,7 @@
     roles: readWriteAnyDatabase
   tags: mongodb-org
   when:
-    create_user
+    create_user_in_primary_node
 
 # this will only disabled  for ecodata.
 - name: Enable security
@@ -282,6 +285,7 @@
     block: |
       security:
         authorization: enabled
+        keyFile: {{ecodata_keyFile}}
   notify:
     - restart mongod
   tags: mongodb-org
@@ -291,7 +295,6 @@
   mongodb_user:
     login_user: "{{ mongodb_root_username }}"
     login_password: "{{ mongodb_root_password }}"
-    login_port: "{{ mongodb_port }}"
     database: "{{ ecodata_database }}"
     replica_set: "{{replicaSetName}}"
     name: "{{ ecodata_username }}"
@@ -303,4 +306,4 @@
   tags:
     - mongodb-org
   when:
-    create_user
+    create_user_in_primary_node
