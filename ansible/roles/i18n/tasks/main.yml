@@ -45,3 +45,16 @@
   tags:
     - packages
     - i18n
+
+- name: Uninstall ala-i18n package if not in use
+  apt:
+    pkg:
+    - ala-i18n
+    state: absent
+    update_cache: yes
+  when:
+    - ansible_os_family == "Debian"
+    - i18n_package_enabled | bool == False
+  tags:
+    - packages
+    - i18n
