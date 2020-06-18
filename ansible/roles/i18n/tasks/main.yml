@@ -37,7 +37,7 @@
   apt:
     pkg:
     - ala-i18n
-    state: present
+    state: latest
     update_cache: yes
   when:
     - ansible_os_family == "Debian"
