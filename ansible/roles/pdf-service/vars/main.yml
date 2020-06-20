@@ -1,0 +1,11 @@
+# assets
+version: "{{ pdf_service_version | default('LATEST') }}"
+artifactId: "pdf-service"
+classifier: ''
+packaging: "jar"
+groupId: "au.org.ala"
+profile_service_war_url: "{{maven_repo_ws_url}}"
+data_dir: "data"
+profile_service_hostname: "{{ profile_service_host | default('localhost:8090') }}"
+profile_service_context_path: "{{ profile_service_context | default('') }}"
+

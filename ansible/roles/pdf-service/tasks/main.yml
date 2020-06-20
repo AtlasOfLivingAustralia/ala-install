@@ -1,0 +1,71 @@
+- include: ../../common/tasks/setfacts.yml
+  tags: 
+    - pdf-service
+    - nginx_vhost
+    - apache_vhost
+
+
+- name: Ensure group "pdf" exists
+  group:
+    name: pdf
+    state: present
+
+- name: Add the user 'pdf' user
+  user:
+    name: pdf
+    comment: pdf-service user
+    group: pdf
+
+#
+# install docker
+#
+- name: install docker
+  apt: pkg=docker.io update_cache=yes state=latest
+  tags:
+    - docker
+
+
+
+- name: enable docker to run on startup and start it
+  systemd:
+    name: docker
+    enabled: yes
+    state: started
+
+# webserver virtual host configuration
+#
+- include: ../../apache_vhost/tasks/main.yml 
+    context_path='{{ profile_service_context_path }}' 
+    hostname='{{ profile_service_hostname }}'
+  tags:
+    - pdf-service
+    - deploy
+    - apache_vhost
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "pdf-service"
+    hostname: "{{ profile_service_hostname }}"
+    context_path: "{{ profile_service_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - pdf-service
+  when: webserver_nginx
+
+
+# Manual setup required.
+# On the HOST
+# edit the /etc/sysctl.conf, set net.ipv4.ip_forward=1 if it is 0
+#
+# build image using pdf-gen gradle, tag with pdf-service
+#
+# Start the container with:
+# sudo docker run -d --restart always -p 127.0.0.1:8080:9090/tcp -v /data/pdfgen:/storage pdf-service
+#
+# Attach to the container
+# sudo docker exec -it <container id> /bin/bash
+# change ownership of /storage in the container to pdfgen:pdfgen
