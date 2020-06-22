@@ -10,6 +10,7 @@ server:
   connector:
     type: http
     port: {{service_port}}
+    bindHost: 127.0.0.1
 
 logging:
   level: "INFO"
