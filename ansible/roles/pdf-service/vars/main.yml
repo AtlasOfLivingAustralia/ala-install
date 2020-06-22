@@ -17,3 +17,4 @@ data_dir: "/data"
 config_dir: "{{data_dir}}/{{service_name}}/config"
 config_file_name: "{{service_name}}-config.yml"
 logging_dir: "/var/log/atlas/{{service_name}}"
+nginx_cors_origin_regexp: '^https?:\/\/.+\.ala\.org\.au\/?'
