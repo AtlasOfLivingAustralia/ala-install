@@ -1,0 +1,11 @@
+[Unit]
+Description={{service_name}}
+After=syslog.target
+
+[Service]
+User={{ service_owner | default(service_name) }}
+ExecStart=/usr/bin/java -Djava.awt.headless=true -jar /opt/atlas/{{service_name}}/{{service_name}}.jar server {{config_dir}}/{{config_file_name}}
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
