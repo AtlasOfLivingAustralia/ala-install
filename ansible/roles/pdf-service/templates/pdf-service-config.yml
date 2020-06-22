@@ -9,7 +9,7 @@ server:
   adminContextPath: /admin
   connector:
     type: http
-    port: 8080
+    port: {{service_port}}
 
 logging:
   level: "INFO"
