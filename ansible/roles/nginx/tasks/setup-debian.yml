@@ -7,4 +7,4 @@
   apt:
     name: "{{ nginx_package_name }}"
     state: latest
-    default_release: "{{ nginx_default_release }}"
+#    default_release: "{{ nginx_default_release }}"

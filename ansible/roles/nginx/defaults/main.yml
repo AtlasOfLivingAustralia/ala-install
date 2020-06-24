@@ -12,6 +12,10 @@ nginx_ppa_version: stable
 # The name of the nginx package to install.
 nginx_package_name: "nginx"
 
+# Whether to include modules e.g. PAM auth, geoip, stream etc
+# Note this overrides nginx_extra_conf_options initial value.
+nginx_use_modules: false
+
 nginx_conf_template: "nginx.conf.j2"
 nginx_mime_template: "mime.types.j2"
 nginx_vhost_template: "vhost.j2"
@@ -22,6 +26,10 @@ nginx_multi_accept: "off"
 
 nginx_error_log: "/var/log/nginx/error.log warn"
 nginx_access_log: "/var/log/nginx/access.log main"
+
+# Other log formats, including the name and then the format. E.g.,
+#     postdata '$request_body';
+nginx_other_log_formats: []
 
 nginx_sendfile: "on"
 nginx_tcp_nopush: "on"

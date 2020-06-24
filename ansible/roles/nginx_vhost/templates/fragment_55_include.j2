@@ -1,0 +1,5 @@
+{% if nginx_includes is defined and nginx_includes|length > 0 %}
+{% for item in nginx_includes %}
+include {{ item }};
+{% endfor %}
+{% endif %}

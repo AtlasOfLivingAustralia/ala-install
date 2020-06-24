@@ -1,5 +1,38 @@
-- name: determine if a virtual host is required (vhost not required for localhost, 127.0.0.1 or any hostname with a colon in it)
-  set_fact: vhost_required={{ hostname.find(':') == -1 and hostname.find('localhost') == -1 and hostname.find('127.0.0.1') == -1 }}
+- name: set ubuntu-14.04 variables
+  set_fact:
+    nginx_tls_v1_3_enabled: False
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "14.04"
+  tags:
+    - nginx_vhost
+
+- name: set ubuntu-16.04 variables
+  set_fact:
+    nginx_tls_v1_3_enabled: False
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04"
+  tags:
+    - nginx_vhost
+
+- name: set ubuntu-18.04 variables
+  set_fact:
+    nginx_tls_v1_3_enabled: True
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "18.04"
+  tags:
+    - nginx_vhost
+
+- name: set ubuntu-20.04 variables
+  set_fact:
+    nginx_tls_v1_3_enabled: True
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "20.04"
+  tags:
+    - nginx_vhost
+
+#- name: determine if a virtual host is required (vhost not required for localhost, 127.0.0.1 or any hostname with a colon in it)
+#  set_fact: vhost_required={{ hostname.find(':') == -1 and hostname.find('localhost') == -1 and hostname.find('127.0.0.1') == -1 }}
+#  tags:
+#    - nginx_vhost
+
+- name: set vhost_required
+  set_fact: vhost_required=true
   tags:
     - nginx_vhost
 
@@ -51,7 +84,9 @@
     - "{{ssl_certificate_local_dir | default('') }}/{{ssl_cert_file | default('') }}"
     - "{{ssl_certificate_local_dir | default('') }}/{{ssl_key_file | default('') }}"
     - "{{ssl_certificate_local_dir | default('') }}/{{ssl_chain_file | default('') }}"
-  when: ssl | bool == True and copy_https_certs_from_local and vhost_required
+  when: ssl | bool == True and copy_https_certs_from_local and vhost_required | bool == True
+  notify:
+   - reload nginx
   tags:
     - nginx_vhost
 
@@ -97,6 +132,37 @@
 - name: debug - check nginx_paths value
   pause: prompt="nginx_paths value is {{nginx_paths}}"
   when: nginx_paths_debug_enabled is defined and nginx_paths_debug_enabled | bool == True
+
+- name: install libnginx-mod-http-auth-pam
+  apt: name="libnginx-mod-http-auth-pam" state=present
+  when: nginx_auth_pam_shadow 
+  notify:
+   - reload nginx
+  tags:
+    - nginx_vhost
+
+- name: enable nginx mod-http-auth-pam
+  file:
+    src: "/usr/share/nginx/modules-available/mod-http-auth-pam.conf"
+    dest: "/etc/nginx/modules-enabled/50-mod-http-auth-pam.conf"
+    state: link
+  when: nginx_auth_pam_shadow 
+  notify:
+   - reload nginx
+  tags:
+    - nginx_vhost
+
+- name: pam authentication - shadow
+  command: usermod -a -G shadow www-data
+  when: nginx_auth_pam_shadow 
+  tags:
+    - nginx_vhost
+
+- name: pam authentication - pam.d
+  copy: src="files/pam-nginx" dest="/etc/pam.d/nginx" owner="root" group="root" mode=0644
+  when: nginx_auth_pam_shadow 
+  notify:
+   - reload nginx
   tags:
     - nginx_vhost
 
@@ -108,6 +174,17 @@
     owner: root
     group: root
   when: vhost_required | bool == True
+  notify:
+   - reload nginx
+  tags:
+    - nginx_vhost
+
+- name: clear old vhost fragments
+  file:
+    path: "{{ nginx_conf_dir }}/vhost_fragments/{{ item }}"
+    state: absent
+  when: nginx_vhost_fragments_to_clear is defined and nginx_vhost_fragments_to_clear|length > 0
+  with_items: "{{ nginx_vhost_fragments_to_clear }}"
   tags:
     - nginx_vhost
 
@@ -131,6 +208,8 @@
     owner: www-data
     group: www-data
   when: vhost_required | bool == True and nginx_cache | bool == True
+  notify:
+    - reload nginx
   tags:
     - nginx_vhost
 
@@ -151,24 +230,42 @@
     src: "ala_cors.j2"
     dest: "{{nginx_conf_dir}}/conf.d/ala_cors_{{appname}}"
   when: nginx_cors_origin_regexp is defined
+  notify:
+    - reload nginx
   tags:
     - nginx_vhost
 
 - name: add upstream fragment
   template:
     src: "fragment_02_upstream.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_02_upstream_{{ hostname }}_127.0.0.1_{{ tomcat_server_port | default('8080', True) }}"
+    dest: "{{nginx_conf_dir}}/conf.d/http_02_upstream_{{ hostname }}_127.0.0.1_{{ tomcat_server_port | default('8080', True) }}.conf"
   when: vhost_required | bool == True and nginx_load_balancing | bool == true and item.is_proxy and item.proxy_pass is defined
   with_items:
     - "{{ nginx_paths}} "
+  notify:
+   - reload nginx
   tags:
     - nginx_vhost
 
-- name: add blocking fragment
+- name: remove upstream fragment if not needed
+  file:
+    path: "{{nginx_conf_dir}}/conf.d/http_02_upstream_{{ hostname }}_127.0.0.1_{{ tomcat_server_port | default('8080', True) }}.conf"
+    state: absent
+  when: vhost_required | bool == True and nginx_load_balancing | bool != true
+  with_items:
+    - "{{ nginx_paths}} "
+  notify:
+   - reload nginx
+  tags:
+    - nginx_vhost
+
+- name: add blocking if configured
   template:
     src: "fragment_03_blocking.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_03_blocking"
+    dest: "{{nginx_conf_dir}}/conf.d/http_03_blocking.conf"
   when: vhost_required | bool == True
+  notify:
+   - reload nginx
   tags:
     - nginx_vhost
 
@@ -183,8 +280,10 @@
 - name: add cache fragment if configured
   template:
     src: "fragment_05_cache.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_05_cache"
+    dest: "{{nginx_conf_dir}}/conf.d/http_05_cache_{{ nginx_cache_zone }}.conf"
   when: vhost_required | bool == True and nginx_cache | bool == True
+  notify:
+   - reload nginx
   tags:
     - nginx_vhost
 
@@ -196,8 +295,6 @@
   when: vhost_required | bool == True and nginx_load_balancing | bool == false and item.is_websocket is defined and item.is_websocket | bool == true
   with_items:
     - "{{ nginx_paths}} "
-  tags:
-    - nginx_vhost
 
 # copy 10, 20, 90 as http (e.g. dest file might be /etc/nginx/vhost_fragments/bie-test.ala.org.au/http_10_start)
 - name: add start http fragment
@@ -242,6 +339,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_{{ item }}"
   with_items:
     - "50_root"
+    - "55_include"
   when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True
   tags:
     - nginx_vhost
@@ -340,6 +438,7 @@
     - "20_servername"
     - "40_ssl"
     - "50_root"
+    - "55_include"
     - "60_robots"
     - "90_end"
   when: ssl | bool == True and vhost_required | bool == True
@@ -395,7 +494,7 @@
   tags:
     - nginx_vhost
 
-# assemble servername fragments dir, put in sites-available as servername.conf or servername-appname.conf
+# assemble servername fragments dir, put in sites-available as servername.conf
 - name: assemble fragments into nginx vhost config
   assemble:
     src: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}"
@@ -406,7 +505,7 @@
   tags:
     - nginx_vhost
 
-# symlink servername.conf  or servername-appname.conf to sites-enabled
+# symlink servername.conf to sites-enabled
 - name: symlink vhost to sites-enabled
   file:
     state: link
@@ -443,4 +542,3 @@
     vfragments_suffix: ''
   tags:
     - nginx_vhost
-

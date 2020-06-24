@@ -1,0 +1,13 @@
+# Set this to a valid nginx logging line to enable logging of postdata
+# Also need to setup `nginx_other_log_formats` to define the format
+# Eg:
+#   nginx_other_log_formats=["postdata '$request_body'"]
+#   logger_service_extra_postdata_logging="access_log  /var/log/nginx/postdata.log  postdata"
+logger_service_extra_postdata_logging: ""
+
+# Set this to an array of objects containing the limit zone name and burst limits
+# nginx_rate_limit_enabled must be set to true and the overall rate limit must be setup
+# Eg:
+#   nginx_other_limit_zones=[{"name": "logger_service_main", "rate": "60r/m", "size": "10m", "ip_variable": "$binary_remote_addr"}]
+#   logger_service_extra_limit_zones=[{"name": "logger_service_main", "burst": "50"}]
+logger_service_extra_limit_zones: ""
