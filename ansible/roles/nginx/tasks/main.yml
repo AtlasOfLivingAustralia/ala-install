@@ -1,12 +1,11 @@
 ---
+# Variable setup.
 - name: Include OS specific variables
   include_vars: "{{ item }}"
   with_first_found:
     - "{{ansible_distribution | lower }}-{{ansible_lsb.release}}.yml"
     - "{{ansible_distribution | lower }}.yml"
     - "{{ansible_os_family | lower}}.yml"
-  tags:
-    - nginx
 
 - name: Define nginx_user.
   set_fact:
@@ -16,33 +15,42 @@
     - nginx
 
 # Setup/install tasks.
-- include: setup-RedHat.yml
+- include: setup-redhat.yml
   when: ansible_os_family | lower == 'redhat'
   tags:
     - nginx
 
-- include: setup-Ubuntu.yml
+- include: setup-ubuntu.yml
   when: ansible_distribution | lower == 'ubuntu'
   tags:
     - nginx
 
-- include: setup-Debian.yml
+- include: setup-debian.yml
   when: ansible_os_family | lower == 'debian'
   tags:
     - nginx
 
-- include: setup-FreeBSD.yml
+- include: setup-freebsd.yml
   when: ansible_os_family | lower == 'freebsd'
   tags:
     - nginx
 
-- include: setup-OpenBSD.yml
+- include: setup-openbsd.yml
   when: ansible_os_family | lower == 'openbsd'
   tags:
     - nginx
 
-- include: setup-Archlinux.yml
+- include: setup-archlinux.yml
   when: ansible_os_family | lower == 'archlinux'
+  tags:
+    - nginx
+
+- name: enable nginx modules if configured
+  set_fact:
+    nginx_extra_conf_options: "include {{ nginx_modules_path }}/*.conf;"
+  when:
+    - ansible_os_family == 'Debian'
+    - nginx_use_modules is defined and nginx_use_modules | bool == True
   tags:
     - nginx
 
@@ -61,7 +69,7 @@
     mode: 0644
     backup: yes
   notify:
-    - reload nginx
+    - restart nginx
   tags:
     - nginx
 
@@ -75,7 +83,7 @@
     validate: "nginx -t -c %s"
     backup: yes
   notify:
-    - reload nginx
+    - restart nginx
   tags:
     - nginx
 
