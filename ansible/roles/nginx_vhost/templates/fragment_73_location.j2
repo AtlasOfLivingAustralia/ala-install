@@ -8,6 +8,11 @@
             return 444;
         }
 {% endif %}
+{% if item.extra_logs is defined and item.extra_logs|length > 0 %}
+{% for next_extra_log in item.extra_logs %}
+        {{ next_extra_log }};
+{% endfor %}
+{% endif %}
 {% if nginx_rate_limit_enabled is defined and nginx_rate_limit_enabled | bool == True %}
         limit_req zone={{ nginx_rate_limit_name }} burst={{ nginx_rate_limit_burst }};
 {% endif %}

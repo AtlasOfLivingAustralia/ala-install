@@ -27,6 +27,10 @@ nginx_multi_accept: "off"
 nginx_error_log: "/var/log/nginx/error.log warn"
 nginx_access_log: "/var/log/nginx/access.log main"
 
+# Other log formats, including the name and then the format. E.g.,
+#     postdata '$request_body';
+nginx_other_log_formats: []
+
 nginx_sendfile: "on"
 nginx_tcp_nopush: "on"
 nginx_tcp_nodelay: "on"

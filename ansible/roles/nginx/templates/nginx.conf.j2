@@ -30,6 +30,11 @@ http {
     client_max_body_size {{ nginx_client_max_body_size }};
 
     log_format  main  '{{ nginx_log_format|indent(23) }}';
+{% if nginx_other_log_formats is defined and nginx_other_log_formats|length > 0 %}
+{% for next_log_format in nginx_other_log_formats %}
+    log_format {{ next_log_format }}
+{% endfor %}
+{% endif %}
 
     access_log  {{ nginx_access_log }};
 

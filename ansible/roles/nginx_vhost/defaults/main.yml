@@ -61,7 +61,7 @@ nginx_clear_cache_on_deploy: False
 
 # Set this to true in your inventory if you know that you are only deploying a single nginx_vhost and you want to clear previous versions before deploying each time
 clear_vhost_fragments: false
--# Set this to true in your inventory if you know that you are deploying for instance biocache and biocache/ws in the same server
+# Set this to true in your inventory if you know that you are deploying for instance biocache and biocache/ws in the same server
 vhost_with_appname_conf: false
 nginx_auth_pam_shadow: false
 # Set this to true to enable support for 'upstream' load balancing features

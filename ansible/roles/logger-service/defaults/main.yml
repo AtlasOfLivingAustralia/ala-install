@@ -1,0 +1,6 @@
+# Set this to a valid nginx logging line to enable logging of postdata
+# Also need to setup `nginx_other_log_formats` to define the format
+# Eg:
+#   nginx_other_log_formats=["postdata '$request_body'"]
+#   logger_service_extra_postdata_logging="access_log  /var/log/nginx/postdata.log  postdata"
+logger_service_extra_postdata_logging: ""
