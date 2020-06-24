@@ -1,8 +1,8 @@
     root {{nginx_root}};
-    index index.html;
-    client_max_body_size {{ nginx_client_max_body_size | default('20m') }};
+    index {{nginx_index}};
+    client_max_body_size {{ nginx_client_max_body_size | default('64m') }};
 
-{% if ssl %}
+{% if ssl | bool == True %}
     # If ssl is supported, then push this policy to all users who understand it to trigger HSTS
     add_header Content-Security-Policy upgrade-insecure-requests;
 
