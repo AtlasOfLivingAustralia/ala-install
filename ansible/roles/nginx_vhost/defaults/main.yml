@@ -99,6 +99,10 @@ nginx_rate_limit: "300r/m"
 # Default to a burst of 80, tune this in conjunction with nginx_rate_limit
 nginx_rate_limit_burst: "80"
 
+# Setup nginx_other_limit_zones to add alternative limits for some cases
+# Needs to match the zone names setup for the relevant locations
+nginx_other_limit_zones: []
+
 # Set to true to disable disk buffering e.g. for downloading large files (sets proxy_max_temp_file_size to 0)
 nginx_disable_download_disk_buffering: False
 # Set this to configure cors to some regexp
