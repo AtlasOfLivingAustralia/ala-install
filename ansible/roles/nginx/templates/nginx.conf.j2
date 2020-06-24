@@ -32,7 +32,7 @@ http {
     log_format  main  '{{ nginx_log_format|indent(23) }}';
 {% if nginx_other_log_formats is defined and nginx_other_log_formats|length > 0 %}
 {% for next_log_format in nginx_other_log_formats %}
-    log_format {{ next_log_format }}
+    log_format {{ next_log_format }};
 {% endfor %}
 {% endif %}
 
