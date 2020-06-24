@@ -9,6 +9,7 @@
         }
 {% endif %}
 {% if item.extra_logs is defined and item.extra_logs|length > 0 %}
+        access_log {{ nginx_access_log }};
 {% for next_extra_log in item.extra_logs %}
         {{ next_extra_log }};
 {% endfor %}

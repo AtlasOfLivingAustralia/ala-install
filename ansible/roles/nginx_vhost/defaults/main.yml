@@ -1,6 +1,7 @@
 ---
 redirect: ''
 nginx_conf_dir: '/etc/nginx'
+nginx_access_log: "/var/log/nginx/access.log main"
 ssl: true
 # By default activate HTTP/2, which also allows HTTP/1.1 connections
 # However, some users may find issues when HTTP/2 support is enabled at all if they can't work with ALPN

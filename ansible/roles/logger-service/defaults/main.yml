@@ -10,4 +10,11 @@ logger_service_extra_postdata_logging: ""
 # Eg:
 #   nginx_other_limit_zones=[{"name": "logger_service_main", "rate": "60r/m", "size": "10m", "ip_variable": "$binary_remote_addr"}]
 #   logger_service_extra_limit_zones=[{"name": "logger_service_main", "burst": "50"}]
-logger_service_extra_limit_zones: ""
+logger_service_extra_limit_zones: []
+
+# Set this to an array of objects containing the limit zone name and burst limits for the admin services
+# nginx_rate_limit_enabled must be set to true and the overall rate limit must be setup
+# Eg:
+#   nginx_other_limit_zones=[{"name": "logger_service_admin", "rate": "30r/m", "size": "10m", "ip_variable": "$binary_remote_addr"}]
+#   logger_service_extra_limit_zones_admin=[{"name": "logger_service_admin", "burst": "20"}]
+logger_service_extra_limit_zones_admin: []

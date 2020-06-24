@@ -117,6 +117,13 @@
         extra_logs: ["{{ logger_service_extra_postdata_logging }}"]
         extra_limit_zones: "{{ logger_service_extra_limit_zones }}"
         proxy_pass: "http://127.0.0.1:8080{{logger_proxy_target}}/service/logger"
+      - path: "{{logger_context_path}}/admin"
+        sort_label: "8_admin"
+        is_proxy: true
+        use_cache: false
+        force_cache: false
+        extra_limit_zones: "{{ logger_service_extra_limit_zones_admin }}"
+        proxy_pass: "http://127.0.0.1:8080{{logger_proxy_target}}/admin"
       - path: "{{logger_context_path}}"
         sort_label: "9_default"
         is_proxy: true
