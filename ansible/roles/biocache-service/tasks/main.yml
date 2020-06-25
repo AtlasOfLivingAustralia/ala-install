@@ -350,6 +350,7 @@
     - config/download-doi-readme.html
     - config/download-email.html
     - config/download-readme.html
+    - config/log4j.xml
   tags:
     - biocache-service
 
@@ -357,17 +358,6 @@
   copy:
     src: "config/facets.json"
     dest: "{{ data_dir }}/biocache/config/facets.json"
-    owner: root
-    group: root
-    mode: 644
-  tags:
-    - biocache-service
-    - properties
-
-- name: copy biocache logging config
-  copy:
-    src: "config/log4j.xml"
-    dest: "{{ data_dir }}/biocache/config/log4j.xml"
     owner: root
     group: root
     mode: 644

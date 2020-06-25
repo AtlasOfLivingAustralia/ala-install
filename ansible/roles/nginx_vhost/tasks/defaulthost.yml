@@ -41,6 +41,30 @@
   tags:
     - nginx_vhost
 
+- name: add upstream fragment
+  template:
+    src: "fragment_02_upstream.j2"
+    dest: "{{nginx_conf_dir}}/conf.d/http_02_upstream_ala_default_{{ hostname }}_127.0.0.1_{{ tomcat_server_port | default('8080', True) }}.conf"
+  when: ala_default_vhost | bool == True and vhost_required | bool == True and nginx_load_balancing | bool == true and item.is_proxy and item.proxy_pass is defined
+  with_items:
+    - "{{ nginx_paths}} "
+  notify:
+   - reload nginx
+  tags:
+    - nginx_vhost
+
+- name: remove upstream fragment if not needed
+  file:
+    path: "{{nginx_conf_dir}}/conf.d/http_02_upstream_ala_default_{{ hostname }}_127.0.0.1_{{ tomcat_server_port | default('8080', True) }}.conf"
+    state: absent
+  when: ala_default_vhost | bool == False or (vhost_required | bool == True and nginx_load_balancing | bool != true)
+  with_items:
+    - "{{ nginx_paths}} "
+  notify:
+   - reload nginx
+  tags:
+    - nginx_vhost
+
 - name: add start of default vhost for ala
   template:
     src: "ala_default_start.j2"
