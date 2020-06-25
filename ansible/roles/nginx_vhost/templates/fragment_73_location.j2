@@ -11,16 +11,18 @@
 {% if item.extra_logs is defined and item.extra_logs|length > 0 %}
         access_log {{ nginx_access_log }};
 {% for next_extra_log in item.extra_logs %}
+{% if next_extra_log is defined and next_extra_log|length > 0 %}
         {{ next_extra_log }};
+{% endif %}
 {% endfor %}
 {% endif %}
 {% if nginx_rate_limit_enabled is defined and nginx_rate_limit_enabled | bool == True %}
-        limit_req zone={{ nginx_rate_limit_name }} burst={{ nginx_rate_limit_burst }};
 {% if item.extra_limit_zones is defined and item.extra_limit_zones|length > 0 %}
 {% for next_extra_limit_zone in item.extra_limit_zones %}
         limit_req zone={{ next_extra_limit_zone.name }} burst={{ next_extra_limit_zone.burst }};
 {% endfor %}
 {% endif %}
+        limit_req zone={{ nginx_rate_limit_name }} burst={{ nginx_rate_limit_burst }};
 {% endif %}
 {% if item.block_by_arguments is defined and item.block_by_arguments|length > 0 %}
         # These query argument and value combinations were specified in the ansible configuration to be blocked for this location
