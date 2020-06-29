@@ -38,6 +38,14 @@
     state: absent
   notify: reload nginx
 
+- name: Check if vhost fragments directory variable is specified or warning is overriden
+  fail: msg="The variable 'nginx_vhost_fragments_to_clear' must be defined and not empty or nginx_vhost_fragments_to_clear_no_warning=True"
+  when:
+    - nginx_vhost_fragments_to_clear is not defined or nginx_vhost_fragments_to_clear | length == 0
+    - nginx_vhost_fragments_to_clear_no_warning is not defined or nginx_vhost_fragments_to_clear_no_warning | bool == False
+  tags:
+    - nginx_vhost
+
 - name: clear directory for vhost fragments
   file:
     path: "{{ nginx_vhost_path }}/../vhost_fragments/{{ item }}"
