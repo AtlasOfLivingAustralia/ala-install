@@ -185,6 +185,18 @@
   tags:
     - tomcat
 
+- name: configure tomcat umask (Debian)
+  blockinfile:
+    path={{tomcat_conf}}
+    marker="# {mark} Configure Tomcat UMASK (Ansible managed)"
+    block=UMASK="{{ tomcat_umask }}"
+    backup=yes
+  notify:
+    - restart tomcat
+  when: ansible_os_family == "Debian"
+  tags:
+    - tomcat
+
 - name: prepare user prefs directory
   file: path=/usr/share/{{ tomcat }}/.java state=directory owner={{ tomcat_user }} group={{ tomcat_user }}
   tags:
