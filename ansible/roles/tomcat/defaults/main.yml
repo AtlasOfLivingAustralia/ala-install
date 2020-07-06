@@ -9,3 +9,4 @@ tomcat_apr: true
 tomcat_users: true
 tomcat_autoDeploy: true
 tomcat_bind_addr: 127.0.0.1
+tomcat_umask: "0022"
