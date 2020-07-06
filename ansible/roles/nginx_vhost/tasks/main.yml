@@ -316,12 +316,20 @@
   tags:
     - nginx_vhost
 
-# if not ssl, delete all https
-- name: if not using https, delete all https fragments
-  file: 
-    path: "{{item}}"
+- name: Find https fragments if not using https
+  find:
+    paths: "{{ nginx_conf_dir }}/vhost_fragments/{{ hostname }}/"
+    patterns: "https_*"
+  register: https_fragments_to_delete
+  when: ssl | bool == False and vhost_required | bool == True
+  tags:
+    - nginx_vhost
+
+- name: Delete https fragments if not using https
+  file:
+    path: "{{ item.path }}"
     state: absent
-  with_fileglob: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_"
+  with_items: "{{ https_fragments_to_delete.files }}"
   when: ssl | bool == False and vhost_required | bool == True
   tags:
     - nginx_vhost
