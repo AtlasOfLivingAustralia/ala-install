@@ -48,5 +48,5 @@ specieslist_preferredDruid: dr4778
 specieslist_preferredListName: ALA Preferred Species Images
 synonym_types: synonym,homotypicSynonym,objectiveSynonym,heterotypicSynonym,subjectiveSynonym,proParteSynonym,inferredSynonym
 trove_api_key:
-trove_service_url: https://api.trove.nla.gov.au
+trove_service_url: https://api.trove.nla.gov.au/v2
 trove_url: https://trove.nla.gov.au
