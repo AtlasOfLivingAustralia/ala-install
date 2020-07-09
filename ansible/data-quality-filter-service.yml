@@ -1,0 +1,8 @@
+- hosts: biocache-hub
+  roles:
+    - common
+    - java
+    - tomcat
+    - webserver
+    - { role: biocache-hub, biocache_hub: data-quality-filter-service, grouped_facets_json: grouped_facets_ala.json }
+
