@@ -116,7 +116,7 @@
     hostname: "{{ biocollect_hostname }}"
     context_path: "{{ biocollect_context_path }}"
     nginx_paths:
-      - path: "= {{ biocollect_context_path | default('/') }}"
+      - path: "= /"
         is_proxy: false
         rewrite: "{{ biocollect_rewrite_root_url }}"
       - path: "{{ biocollect_context_path | default('/') }}"
