@@ -10,6 +10,9 @@ biocollect_war_url: "{{maven_repo_ws_url}}"
 # In any case having the valve enabled is not going to hurt
 tomcat_enable_remote_ip_valve: True
 
+# Option to redirect root requests e.g. https://biocollect.ala.org.au/ to an info page elsewhere
+biocollect_rewrite_root: False
+biocollect_rewrite_root_url: "{{ biocollect_homepage_url | default('') }}"
 
 biocollect_artifact_url: "{{ biocollect_maven_repo_ws_url | default(maven_repo_ws_url) }}"
 biocollect_server_port: "{{ biocollect_tomcat_server_port | default('8080') }}"
