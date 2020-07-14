@@ -8,8 +8,19 @@
             return 444;
         }
 {% endif %}
+{% if item.extra_logs is defined and item.extra_logs|length > 0 %}
+        access_log {{ nginx_access_log }};
+{% for next_extra_log in item.extra_logs %}
+        {{ next_extra_log }};
+{% endfor %}
+{% endif %}
 {% if nginx_rate_limit_enabled is defined and nginx_rate_limit_enabled | bool == True %}
         limit_req zone={{ nginx_rate_limit_name }} burst={{ nginx_rate_limit_burst }};
+{% if item.extra_limit_zones is defined and item.extra_limit_zones|length > 0 %}
+{% for next_extra_limit_zone in item.extra_limit_zones %}
+        limit_req zone={{ next_extra_limit_zone.name }} burst={{ next_extra_limit_zone.burst }};
+{% endfor %}
+{% endif %}
 {% endif %}
 {% if item.block_by_arguments is defined and item.block_by_arguments|length > 0 %}
         # These query argument and value combinations were specified in the ansible configuration to be blocked for this location
@@ -19,13 +30,29 @@
         }
 {% endfor %}
 {% endif %}
+{% if nginx_auth_pam_shadow is defined and nginx_auth_pam_shadow | bool == True %}
+  {% if item.no_auth_required is defined and item.no_auth_required | bool == True %}
+        # No auth required for this path (see no_auth_required setting in nginx_paths)
+        #auth_pam    "Secure Zone";
+        #auth_pam_service_name   "nginx";
+  {% else %}
+        # Auth is required for this path
+        auth_pam    "Secure Zone";
+        auth_pam_service_name   "nginx";
+  {% endif %}
+{% endif %}
 {% if item.rewrite_path is defined and item.rewrite_path %}
         rewrite ^ {{item.rewrite_path}}$1;
 {% endif %}
-{% if item.is_proxy %}
+{% if item.is_proxy is defined and item.is_proxy | bool == True %}
         # proxy_set_header Host $host;
         proxy_set_header Host {{ hostname }};
+{% if nginx_proxy_protocol_enabled | bool %}
+        proxy_set_header X-Forwarded-For $proxy_protocol_addr;
+        proxy_set_header X-Real-IP $proxy_protocol_addr;
+{% else %}
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+{% endif %}
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Port $server_port;
         proxy_read_timeout 10m;
@@ -48,20 +75,25 @@
         proxy_ignore_client_abort on;
     {% endif %}
   {% endif %}
-{% if nginx_load_balancing | bool == false and (item.is_websocket is defined and item.is_websocket | bool == true) %}
+  {% if item.proxy_buffers is defined and item.proxy_buffers | bool == True %}
+        proxy_buffer_size {{ item.proxy_buffer_size }};
+        proxy_buffers {{ item.proxy_buffers_count }} {{ item.proxy_buffers_size }};
+        proxy_busy_buffers_size {{ item.proxy_busy_buffers_size }};
+  {% endif %}
+  {% if nginx_load_balancing | bool == false and (item.is_websocket is defined and item.is_websocket | bool == true) %}
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
-{% endif %}
-{% if nginx_load_balancing | bool == true and (item.unlimited_conns is not defined or item.unlimited_conns | bool != true) %}
+  {% endif %}
+  {% if nginx_load_balancing | bool == true and (item.unlimited_conns is not defined or item.unlimited_conns | bool != true) %}
         # This backend is defined in the upstream section of the same name
         proxy_pass http://{{ hostname }}_127.0.0.1_{{tomcat_server_port | default('8080', True)}}_backend{{ '_ala_default' if ala_default_vhost is defined and ala_default_vhost else '' }}{% if item.path|length == 0 %}/{% elif item.path|first == '/' %}{{ item.path }}{% else %}/{{ item.path }}{% endif %};
-  {% if nginx_keepalive is defined and nginx_keepalive | int > 0 %}
+    {% if nginx_keepalive is defined and nginx_keepalive | int > 0 %}
         # Clear the "Connection" header because nginx_keepalive is > 0 and nginx_load_balancing is true
         proxy_set_header Connection "";
-  {% endif %}
-{% else %}
+    {% endif %}
+  {% else %}
         proxy_pass {{ item.proxy_pass }};
-{% endif %}
+  {% endif %}
 {% elif item.is_proxy_rewrite is defined and item.is_proxy_rewrite %}
         rewrite ^{{ item.path }}/?(.*) /$1 break;
         proxy_pass {{ item.proxy_pass }};
@@ -86,6 +118,16 @@ try_files {{ item.try_files }};
         deny all;
 {% elif item.expires is defined and item.expires %}
         expires {{ item.expires }};
+    {% if item.add_header is defined and item.add_header %}
+    add_header {{ item.add_header }};
+    {% endif %}
+{% elif item.default_type is defined and item.default_type %}
+    default_type {{ item.default_type }};
 {% else %}
         try_files {{ item.try_files }};
+{% endif %}
+{% if item.location_includes is defined and item.location_includes|length > 0 %}
+{% for next_location_include in item.location_includes %}
+        include {{ next_location_include }};
+{% endfor %}
 {% endif %}

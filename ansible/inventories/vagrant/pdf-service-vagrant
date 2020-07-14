@@ -1,0 +1,11 @@
+# ansible-playbook -v -i inventories/vagrant/pdf-service-vagrant pdf-service.yml --private-key ~/.vagrant.d/insecure_private_key --user vagrant --become
+
+[pdfgen]
+pdfgen.vagrant1.ala.org.au
+
+[pdfgen:vars]
+webserver_nginx=true
+ssl=false
+profile_service_context=''
+profile_service_host=pdfgen.vagrant1.ala.org.au
+pdf_service_version=1.2-SNAPSHOT

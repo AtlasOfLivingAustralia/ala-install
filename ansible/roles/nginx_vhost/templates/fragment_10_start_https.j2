@@ -1,4 +1,4 @@
 
 server {
-    listen 443 ssl {% if nginx_http2_enabled | bool %}http2{% endif %};
-    listen [::]:443 ssl {% if nginx_http2_enabled | bool %}http2{% endif %};
+    listen 443 ssl {% if nginx_proxy_protocol_enabled | bool %}proxy_protocol{% endif %} {% if nginx_http2_enabled | bool %}http2{% endif %};
+    listen [::]:443 ssl {% if nginx_proxy_protocol_enabled | bool %}proxy_protocol{% endif %} {% if nginx_http2_enabled | bool %}http2{% endif %};

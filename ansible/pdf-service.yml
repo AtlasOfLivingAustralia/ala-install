@@ -1,0 +1,5 @@
+- hosts: pdfgen
+  roles:
+    - common
+    - webserver
+    - pdf-service
