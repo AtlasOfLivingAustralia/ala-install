@@ -5,3 +5,4 @@ solr_repository: "https://archive.apache.org/dist/lucene/solr/"
 # By default bind the solr jetty server to a single interface/IP for security
 # Only set this to true if access to solr is required for other servers and you know the access is well firewalled
 solr_bind_jetty_host: true
+jts_use_1_16: false

@@ -84,7 +84,7 @@ ENABLE_REMOTE_JMX_OPTS="false"
 {% endif %}
 
 # Set the thread stack size
-SOLR_OPTS="$SOLR_OPTS -Xss256k"
+#SOLR_OPTS="$SOLR_OPTS -Xss256k"
 
 # Anything you add to the SOLR_OPTS variable will be included in the java
 # start command line as-is, in ADDITION to other options. If you specify the
