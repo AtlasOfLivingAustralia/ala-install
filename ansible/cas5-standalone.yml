@@ -3,6 +3,9 @@
   - name: Include common
     include_role:
       name: common
+  - name: Include i18n
+    include_role:
+      name: i18n
   - name: Install java
     include_role:
       name: java

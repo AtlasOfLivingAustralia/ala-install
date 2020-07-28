@@ -16,6 +16,7 @@
     - nameindex
     - solr7
     - logger-client
+    - i18n
     - biocache-properties
     - { role: biocache-db,      use_cassandra3 : true }
     - { role: collectory,       collectory_app: ala-collectory, collectory_version: "1.6.2" }

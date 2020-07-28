@@ -4,5 +4,6 @@
     - java
     - tomcat
     - webserver
+    - i18n
     - { role: biocache-hub, biocache_hub: ala-hub, grouped_facets_json: grouped_facets_ala.json }
 

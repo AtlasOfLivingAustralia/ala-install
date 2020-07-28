@@ -6,5 +6,6 @@
     - webserver
     - tomcat
     - nameindex
+    - i18n
     - bie-hub
 
