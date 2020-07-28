@@ -7,5 +7,6 @@
     - nameindex
     - biocache-properties
     - nameindex
+    - i18n
     - biocache-service
     - logger-client

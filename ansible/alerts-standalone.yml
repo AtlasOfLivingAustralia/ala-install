@@ -6,4 +6,5 @@
     - tomcat
     - webserver
     - mysql-5.7    
+    - i18n
     - alerts

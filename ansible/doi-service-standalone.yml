@@ -8,4 +8,5 @@
     - {role: pg_instance, extensions: ["citext", "pgcrypto"], db_name: "{{ doi_db_name }}", db_user: "{{ doi_db_user }}", db_password: "{{ doi_db_password }}" }
     - {role: ansible-elasticsearch, es_version: 5.5.3, es_templates: false,  es_instance_name: 'doi-elasticsearch', es_data_dirs: ['/data/elasticsearch'], tags: ['elasticsearch']}
     - webserver
+    - i18n
     - doi-service
