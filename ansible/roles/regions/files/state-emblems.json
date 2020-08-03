@@ -6,7 +6,7 @@
     },
     "plant": {
       "name": "Wahlenbergia gloriosa",
-      "guid": "http://id.biodiversity.org.au/node/apni/2892148"
+      "guid": "https://id.biodiversity.org.au/node/apni/2892148"
     }
   },
   "NEW SOUTH WALES": {
@@ -16,7 +16,7 @@
     },
     "plant": {
       "name": "Telopea speciosissima",
-      "guid": "http://id.biodiversity.org.au/node/apni/2892849"
+      "guid": "https://id.biodiversity.org.au/taxon/apni/51293559"
     },
     "animal": {
       "name": "Ornithorhynchus anatinus",
@@ -34,7 +34,7 @@
     },
     "plant": {
       "name": "Gossypium sturtianum",
-      "guid": "http://id.biodiversity.org.au/node/apni/2893745"
+      "guid": "https://id.biodiversity.org.au/node/apni/2893745"
     },
     "animal": {
       "name": "Osphranter rufus",
@@ -48,7 +48,7 @@
     },
     "plant": {
       "name": "Vappodes phalaenopsis",
-      "guid": "http://id.biodiversity.org.au/node/apni/2905089"
+      "guid": "https://id.biodiversity.org.au/node/apni/2905089"
     },
     "animal": {
       "name": "Phascolarctos cinereus",
@@ -66,7 +66,7 @@
     },
     "plant": {
       "name": "Swainsona formosa",
-      "guid": "http://id.biodiversity.org.au/node/apni/2914960"
+      "guid": "https://id.biodiversity.org.au/node/apni/2914960"
     },
     "animal": {
       "name": "Lasiorhinus latifrons",
@@ -84,7 +84,7 @@
     },
     "plant": {
       "name": "Eucalyptus globulus",
-      "guid": "http://id.biodiversity.org.au/node/apni/5272169"
+      "guid": "https://id.biodiversity.org.au/node/apni/5272169"
     },
     "animal": {
       "name": "Sarcophilus harrisii",
@@ -98,7 +98,7 @@
     },
     "plant": {
       "name": "Epacris impressa",
-      "guid": "http://id.biodiversity.org.au/node/apni/2886308"
+      "guid": "https://id.biodiversity.org.au/node/apni/2894437"
     },
     "animal": {
       "name": "Gymnobelideus leadbeateri",
@@ -116,7 +116,7 @@
     },
     "plant": {
       "name": "Anigozanthos manglesii",
-      "guid": "http://id.biodiversity.org.au/node/apni/2900921"
+      "guid": "https://id.biodiversity.org.au/node/apni/2900921"
     },
     "animal": {
       "name": "Myrmecobius fasciatus",
