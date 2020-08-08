@@ -1,0 +1,4 @@
+- hosts: hadoop
+  roles:
+    - java
+    - hadoop

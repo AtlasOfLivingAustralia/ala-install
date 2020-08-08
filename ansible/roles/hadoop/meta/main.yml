@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  author: Matt Margolin
+  description: An Ansible role that installs and configures hadoop common,hdfs and yarn
+  company: Matt Margolin
+  license: BSD2
+  min_ansible_version: 2.0
+  role_name: hadoop
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+  galaxy_tags:
+    - system
+    - cloud
+#dependencies:
+#  - role: geerlingguy.java

@@ -1,0 +1,131 @@
+- name: Create service account for Spark
+  user: 
+    name: "{{ spark.user }}"
+    system: yes
+    generate_ssh_key: yes
+    shell: "{{ spark.user_shell }}"
+    state: present
+
+- name: Upload SSH Key for user
+  copy:
+    src: "{{ ssh_key_filename }}"
+    dest: "/home/{{ spark.user }}/.ssh/id_rsa"
+    owner: "{{ spark.user }}"
+    group: "{{ spark.user }}"
+    mode: 0600
+
+- name: Add ssh key to authorized keys
+  authorized_key:
+    user: "{{ spark.user }}"
+    state: present
+    key: "{{ lookup('file', ssh_key_filename + '.pub') }}"
+    
+#- name: Add host keys
+##  shell: "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys"
+#  known_hosts:
+#    name: "{{ item }}"
+#    key: "{{ lookup('pipe', 'ssh-keyscan {{ item }},`dig +short {{ item }}`') }}"
+#  become: yes
+#  become_user: "{{ spark.user }}"
+#  with_items: "{{ spark.default_hosts +  groups['all'] }}"
+
+- name: ensure tar is present
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - tar
+  - unzip
+  become: yes
+
+- name: create install directory
+  file:
+    path: "{{ spark_installation_dir }}"
+    state: directory
+    owner: "{{ spark.user }}"
+    group: "{{ spark.user }}"
+  become: true
+
+- name: stop spark
+  shell: "nohup sbin/stop-all.sh &"
+  args:
+      chdir: "{{ spark_installation_dir }}"
+  ignore_errors: yes
+  when: inventory_hostname in groups['cluster_master']
+
+- name: download spark
+  get_url: 
+    url: "{{ spark_download }}" 
+    dest: "/tmp/{{ spark_archive }}"
+    use_proxy: no
+
+- name: unarchive to the install directory
+  unarchive:
+    src: /tmp/{{ spark_archive }}
+    dest: "{{ spark_installation_dir }}"
+    owner: "{{ spark.user }}"
+    group: "{{ spark.user }}"
+    remote_src: true
+    extra_opts:
+    - "--strip-components=1"
+
+- name: create spark working directory
+  file:
+    path: "{{ spark.working_dir }}"
+    state: directory
+    owner: "{{ spark.user }}"
+    group: "{{ spark.user }}"
+  become: true
+
+- name: set spark-env.sh
+  template:
+    src: "spark-env-sh.j2"
+    dest: "{{ spark_installation_dir }}/conf/spark-env.sh"
+    owner: "{{ spark.user }}"
+    group: "{{ spark.user }}"
+
+- name: set spark-defaults.conf
+  template:
+    src: "spark-defaults-conf.j2"
+    dest: "{{ spark_installation_dir }}/conf/spark-defaults.conf"
+    owner: "{{ spark.user }}"
+    group: "{{ spark.user }}"
+
+- name: set slaves
+  template:
+    src: "slaves.j2"
+    dest: "{{ spark_installation_dir }}/conf/slaves"
+    owner: "{{ spark.user }}"
+    group: "{{ spark.user }}"
+
+# Environment setup.
+- name: add spark profile to startup
+  template:
+    src: spark-profile.sh.j2
+    dest: /etc/profile.d/spark-profile.sh
+    owner: "{{ spark.user }}"
+    group: "{{ spark.user }}"
+    mode: 0644
+
+- name: start-cluster utility
+  template:
+    src: "spark-cluster.sh.j2"
+    dest: "{{ spark_installation_dir}}/bin/spark-cluster.sh"
+    owner: "{{ spark.user }}"
+    group: "{{ spark.user }}"
+    mode: 0744
+  when: inventory_hostname in groups['cluster_master']
+
+- name: Set JAVA_HOME if configured.
+  template:
+    src: java_home.sh.j2
+    dest: /etc/profile.d/java_home.sh
+    mode: 0644
+  when: java_home is defined and java_home
+
+- name: run on master
+  shell: ". /etc/profile.d/java_home.sh &&  sbin/start-all.sh"
+  args:
+    chdir: "{{ spark_installation_dir }}"
+  become_user: "{{ spark.user }}"
+  when: (inventory_hostname in groups['cluster_master'])

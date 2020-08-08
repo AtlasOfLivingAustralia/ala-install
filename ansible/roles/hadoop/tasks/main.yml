@@ -1,0 +1,210 @@
+---
+- name: ensure tar is present
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - tar
+    - unzip
+    - openssh-client
+  become: yes
+
+- name: Create service account for HDFS
+  user:
+    name: "{{ hadoop.user }}"
+    system: yes
+    shell: "{{ hadoop.user_shell }}"
+    generate_ssh_key: yes
+    state: present
+
+- name: Disable IPV6
+  sysctl:
+    name: "{{ item }}"
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+  with_items:
+    - "net.ipv6.conf.all.disable_ipv6"
+    - "net.ipv6.conf.default.disable_ipv6"
+    - "net.ipv6.conf.lo.disable_ipv6"
+
+- name: Upload SSH Key for user
+  copy:
+    src: "{{ ssh_key_filename }}"
+    dest: "/home/{{ hadoop.user }}/.ssh/id_rsa"
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.user }}"
+    mode: 0600
+
+- name: Add ssh key to authorized keys
+  authorized_key:
+    user: "{{ hadoop.user }}"
+    state: present
+    key: "{{ lookup('file', ssh_key_filename+'.pub') }}"
+
+- name: Add host keys
+  known_hosts:
+    name: "{{ item }}"
+    key: "{{ lookup('pipe', 'ssh-keyscan {{ item }},`dig +short {{ item }}`') }}"
+#  become: yes
+#  become_user: "{{ hadoop.user }}"
+  with_items: "{{ hadoop.default_hosts + groups|selectattr('cluster_master','defined')|list + groups|selectattr('cluster_nodes','defined')|list }}"
+
+- name: Set number of nodes
+  set_fact:
+    number_of_nodes: "{{ groups|selectattr('cluster_master','defined')|list|length|default(0) +
+    groups|selectattr('cluster_nodes','defined')|list|length|default(0) }}"
+
+- name: disable hdfs replication in single node
+  set_fact: hdfs_replication_factor=1
+  when: number_of_nodes | int < 3
+
+- name: enable hdfs replication when cluster has more then three nodes
+  set_fact: hdfs_replication_factor=3
+  when: number_of_nodes | int >= 3
+
+- name: remove pre-existent hadoop data directory
+  file:
+    path: "{{ hadoop.data_dir }}/"
+    state: absent
+
+- name: create hadoop data directory
+  file:
+    path: "{{ hadoop.data_dir }}"
+    state: directory
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.user }}"
+  become: true
+
+- name: remove pre-existent hadoop name directory
+  file:
+    path: "{{ hadoop.name_dir }}/"
+    state: absent
+
+- name: create hadoop name directory
+  file:
+    path: "{{ hadoop.name_dir }}"
+    state: directory
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.user }}"
+  become: true
+
+- name: remove pre-existent hadoop temp directory
+  file:
+    path: "{{ hadoop.temp_dir }}/"
+    state: absent
+
+- name: create hadoop temp directory
+  file:
+    path: "{{ hadoop.temp_dir }}"
+    state: directory
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.user }}"
+  become: true
+
+- name: create install temp directory
+  file:
+    path: "{{ install_temp_dir }}"
+    state: directory
+
+- name: create install directory
+  file:
+    path: "{{ hadoop_install_dir }}"
+    state: directory
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.user }}"
+  become: true
+
+- name: download hadoop
+  get_url:
+    url: "{{ hadoop.download_location }}/hadoop-{{ hadoop.version }}/{{ hadoop.hadoop_archive }}"
+    dest: "/tmp/{{ hadoop.hadoop_archive }}"
+
+- name: unarchive to the install directory
+  unarchive:
+    src: "/tmp/{{ hadoop.hadoop_archive }}"
+    dest: "{{ hadoop_install_dir }}"
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.user }}"
+    remote_src: true
+    extra_opts:
+      - "--strip-components=1"
+
+- name: Set is_master
+  set_fact:
+    is_master: true
+    is_node: false
+  when: ( 'cluster_master' in groups ) and (inventory_hostname in groups['cluster_master'])
+
+- name: set core-site.xml
+  template:
+    src: "core-site.xml.j2"
+    dest: "{{ hadoop_install_dir }}/etc/hadoop/core-site.xml"
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.user }}"
+
+- name: set hadoop-env.sh
+  template:
+    src: "hadoop-env.sh.j2"
+    dest: "{{ hadoop_install_dir }}/etc/hadoop/hadoop-env.sh"
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.user }}"
+
+- name: set hdfs-site.xml
+  template:
+    src: "hdfs-site.xml.j2"
+    dest: "{{ hadoop_install_dir }}/etc/hadoop/hdfs-site.xml"
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.user }}"
+
+- name: set slaves
+  template:
+    src: "slaves.j2"
+    dest: "{{ hadoop_install_dir }}/etc/hadoop/slaves"
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.user }}"
+#  when: number_of_nodes | int >= 3 and (inventory_hostname in groups|selectattr('cluster_master','defined')|list)
+  become: yes
+
+- name: set master
+  lineinfile:
+    line: "{{ hadoop_master_ip }}"
+    dest: "{{ hadoop_install_dir }}/etc/hadoop/master"
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.user }}"
+    create: yes
+  become: true
+  when: is_master
+
+# Environment setup.
+- name: add hadoop profile to startup
+  template:
+    src: hadoop-profile.sh.j2
+    dest: /etc/profile.d/hadoop-profile.sh
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.user }}"
+    mode: 0644
+
+- name: Set JAVA_HOME if configured.
+  template:
+    src: java_home.sh.j2
+    dest: /etc/profile.d/java_home.sh
+    mode: 0644
+  when: java_home is defined and java_home
+
+- name: format hdfs
+  shell: ". /etc/profile.d/java_home.sh &&  bin/hdfs namenode -format"
+  args:
+    chdir: "{{ hadoop_install_dir }}"
+  become: yes
+  become_user: "{{ hadoop.user }}"
+  when: is_master
+
+- name: run on master
+  shell: ". /etc/profile.d/java_home.sh &&  sbin/start-dfs.sh"
+  args:
+    chdir: "{{ hadoop_install_dir }}"
+  become_user: "{{ hadoop.user }}"
+  become: yes
+  when: is_master
