@@ -1,0 +1,99 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - pipelines
+
+- name: Install aptitude using apt
+  apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+  tags:
+    - pipelines
+
+- name: Install required system packages
+  apt: name={{ item }} state=latest update_cache=yes
+  loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+  tags:
+    - pipelines
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  tags:
+    - pipelines
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu bionic stable
+    state: present
+  tags:
+    - pipelines
+
+- name: Update apt and install docker-ce
+  apt: update_cache=yes name={{ item }} state=latest
+  with_items:
+    - docker-ce
+    - docker-ce-cli
+    - docker-compose
+    - containerd.io
+  tags:
+    - pipelines
+
+- name: Add GBIF ES Repository
+  apt_repository:
+    repo: deb https://apt.gbif.es/ bionic main
+    state: present
+  tags:
+    - pipelines
+
+- name: Add an apt key by id from a keyserver
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: F697D8D2ADB9E24A
+  tags:
+    - pipelines
+
+- name: Update apt and install pipelines
+  apt: update_cache=yes name=la-pipelines state=latest
+  tags:
+    - pipelines
+
+- name: ensure target local directories exist
+  file: path={{item}} state=directory
+  with_items:
+    - "{{ data_dir }}/spark-tmp"
+    - "{{ data_dir }}/pipelines-shp"
+  tags:
+    - pipelines
+
+- name: copy ala-nameservice YAML
+  copy: src=ala-nameservice.yml dest={{ data_dir }}/ala-nameservice.yml
+  tags:
+    - pipelines
+
+- name: Start docker instance
+  shell: "docker-compose -f {{ data_dir }}/ala-nameservice.yml up -d"
+  tags:
+    - pipelines
+
+- name: Create HDFS directories
+  shell: "{{ item }}"
+  with_items:
+    - "{{ hadoop_install_dir }}/bin/hdfs dfs -mkdir -p /pipelines-data"
+    - "{{ hadoop_install_dir }}/bin/hdfs dfs -mkdir -p /migration"
+    - "{{ hadoop_install_dir }}/bin/hdfs dfs -chown spark:spark /migration"
+    - "{{ hadoop_install_dir }}/bin/hdfs dfs -chown spark:spark /pipelines-data"
+  tags:
+    - pipelines
+
+- name: Download SHP files
+  unarchive:
+    src: "{{ item }}"
+    remote_src: yes
+    creates: "{{ data_dir }}/pipelines-shp"
+    dest: "{{ data_dir }}/pipelines-shp"
+  with_items:
+    - https://pipelines-shp.s3-ap-southeast-2.amazonaws.com/pipelines-shapefiles.zip
+    - https://biocache.ala.org.au/archives/layers/sds-layers.tgz
+  tags:
+    - pipelines
+
+#- name: Add jenkins job definitions

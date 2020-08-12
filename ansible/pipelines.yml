@@ -1,0 +1,15 @@
+#- hosts: all
+#  roles:
+#    - java
+
+- hosts: hadoop
+  roles:
+    - hadoop
+
+- hosts: spark
+  roles:
+    - spark
+
+- hosts: pipelines
+  roles:
+    - pipelines

@@ -14,20 +14,24 @@
     group: "{{ spark.user }}"
     mode: 0600
 
-- name: Add ssh key to authorized keys
-  authorized_key:
-    user: "{{ spark.user }}"
-    state: present
-    key: "{{ lookup('file', ssh_key_filename + '.pub') }}"
-    
-#- name: Add host keys
-##  shell: "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys"
-#  known_hosts:
-#    name: "{{ item }}"
-#    key: "{{ lookup('pipe', 'ssh-keyscan {{ item }},`dig +short {{ item }}`') }}"
-#  become: yes
-#  become_user: "{{ spark.user }}"
-#  with_items: "{{ spark.default_hosts +  groups['all'] }}"
+- name: Upload SSH Key for user
+  copy:
+    src: "{{ ssh_key_filename + '.pub' }}"
+    dest: "/home/{{ spark.user }}/.ssh/id_rsa.pub"
+    owner: "{{ spark.user }}"
+    group: "{{ spark.user }}"
+    mode: 0600
+
+- name: Authorized keys
+  shell: "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys"
+  become: yes
+  become_user: "{{ spark.user }}"
+
+- name: Add host keys
+  shell: "ssh-keyscan {{ item }},`dig +short {{ item }}` >> /home/{{ spark.user }}/.ssh/known_hosts"
+  become: yes
+  become_user: "{{ spark.user }}"
+  with_items: "{{ spark.default_hosts }}"
 
 - name: ensure tar is present
   package:

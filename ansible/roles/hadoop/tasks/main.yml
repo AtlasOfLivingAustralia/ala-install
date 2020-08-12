@@ -37,6 +37,14 @@
     group: "{{ hadoop.user }}"
     mode: 0600
 
+- name: Upload SSH Public Key for user
+  copy:
+    src: "{{ ssh_key_filename + '.pub' }}"
+    dest: "/home/{{ hadoop.user }}/.ssh/id_rsa.pub"
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.user }}"
+    mode: 0600
+
 - name: Add ssh key to authorized keys
   authorized_key:
     user: "{{ hadoop.user }}"
@@ -44,12 +52,10 @@
     key: "{{ lookup('file', ssh_key_filename+'.pub') }}"
 
 - name: Add host keys
-  known_hosts:
-    name: "{{ item }}"
-    key: "{{ lookup('pipe', 'ssh-keyscan {{ item }},`dig +short {{ item }}`') }}"
-#  become: yes
-#  become_user: "{{ hadoop.user }}"
-  with_items: "{{ hadoop.default_hosts + groups|selectattr('cluster_master','defined')|list + groups|selectattr('cluster_nodes','defined')|list }}"
+  shell: "ssh-keyscan {{ item }},`dig +short {{ item }}` >> /home/{{ hadoop.user }}/.ssh/known_hosts"
+  become: yes
+  become_user: "{{ hadoop.user }}"
+  with_items: "{{ hadoop.default_hosts }}"
 
 - name: Set number of nodes
   set_fact:
@@ -164,7 +170,7 @@
     dest: "{{ hadoop_install_dir }}/etc/hadoop/slaves"
     owner: "{{ hadoop.user }}"
     group: "{{ hadoop.user }}"
-#  when: number_of_nodes | int >= 3 and (inventory_hostname in groups|selectattr('cluster_master','defined')|list)
+  when: number_of_nodes | int >= 3 and (inventory_hostname in groups|selectattr('cluster_master','defined')|list)
   become: yes
 
 - name: set master
