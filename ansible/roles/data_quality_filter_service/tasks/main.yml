@@ -1,0 +1,133 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - webapps
+    - properties
+    - data_quality_filter_service
+    - hub_config
+    - facets_config
+
+#
+# Apache/Tomcat virtual host configuration
+#
+
+- include: ../../apache_vhost/tasks/main.yml context_path='/{{ data_quality_filter_service_context_path }}' hostname='{{ data_quality_filter_service_hostname }}'
+  tags:
+    - webapps
+    - apache_vhost
+    - deploy
+    - data_quality_filter_service
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "{{ data_quality_filter_service }}"
+    hostname: "{{ data_quality_filter_service_hostname }}"
+    context_path: "{{ data_quality_filter_service_context_path }}"
+    tomcat_server_port: "{{ data_quality_filter_service_server_port }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - data_quality_filter_service
+  when: webserver_nginx
+
+#
+# WAR/JAR file deployment
+#
+- name: add jar and service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: '{{ data_quality_filter_service }}'
+    jar_url: '{{ data_quality_filter_service_artifact_url }}'
+  tags:
+    - deploy
+    - service
+    - data_quality_filter_service
+  when: exec_jar
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ data_quality_filter_service_artifact_url }}' context_path='{{ data_quality_filter_service_context_path }}' hostname='{{ data_quality_filter_service_hostname }}'
+  tags:
+    - webapps
+    - tomcat_vhost
+    - deploy
+    - data_quality_filter_service
+  when: not exec_jar
+
+#
+# Properties and data file configuration
+#
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{data_quality_filter_service}} group={{data_quality_filter_service}}
+  with_items:
+    - "{{data_dir}}/{{data_quality_filter_service}}/config"
+    - "{{data_dir}}/{{data_quality_filter_service}}/logs"
+  tags:
+    - webapps
+    - properties
+    - data_quality_filter_service
+    - geolite_db
+  when: exec_jar
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{data_dir}}/{{data_quality_filter_service}}/config"
+    - "{{data_dir}}/{{data_quality_filter_service}}/logs"
+  tags:
+    - webapps
+    - properties
+    - data_quality_filter_service
+    - geolite_db
+  when: not exec_jar
+
+- name: copy all config.properties
+  template: src=config/config.properties dest={{data_dir}}/{{data_quality_filter_service}}/config/{{data_quality_filter_service_config}} force=yes output_encoding=iso-8859-1
+  tags:
+    - webapps
+    - properties
+    - data_quality_filter_service
+    - hub_config
+
+- name: copy logback config
+  template: src=config/logback.groovy dest={{data_dir}}/{{data_quality_filter_service}}/config/logback.groovy  owner={{data_quality_filter_service}} group={{data_quality_filter_service}}
+  tags:
+    - properties
+    - data_quality_filter_service
+    - hub_config
+  when: exec_jar
+
+- name: set data ownership
+  file: path={{data_dir}}/{{data_quality_filter_service}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - webapps
+    - properties
+    - data_quality_filter_service
+  when: not exec_jar
+
+- name: set data ownership
+  file:
+    path: "{{data_dir}}/{{data_quality_filter_service}}"
+    owner: "{{data_quality_filter_service}}"
+    group: "{{data_quality_filter_service}}"
+    recurse: true
+  notify:
+     - restart {{data_quality_filter_service}}
+  tags:
+    - properties
+    - data_quality_filter_service
+  when: exec_jar
+
+- name: Restart {{ data_quality_filter_service }} service
+  service:
+    name: "{{ data_quality_filter_service }}"
+    state: restarted
+    enabled: yes
+  tags:
+    - data_quality_filter_service
+    - properties
+  when: exec_jar
