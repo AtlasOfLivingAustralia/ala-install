@@ -5,3 +5,6 @@
 
 - include: zulu-8.yml
   when: use_zulu8 is defined and use_zulu8 | bool == True
+
+- include: openjdk-java-11.yml
+  when: use_openjdk11 is defined and use_openjdk11 | bool == True

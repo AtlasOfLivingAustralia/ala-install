@@ -50,17 +50,19 @@
     python_software_properties: "python-software-properties"
     tomcat_dir: "/var/lib/tomcat7"
     tomcat_webapps: "/var/lib/tomcat7/webapps/"
-    use_openjdk8: true
-    use_zulu8: False
+#    use_openjdk8: true
+#    use_zulu8: False
     psycopg2_package: "python3-psycopg2"
   when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04"
   tags:
     - setfacts
 
 # Allows switching back to tomcat7, which is available but not fully supported for Ubuntu-18.04
-- name: set ubuntu-18.04 variables - tomcat version
+- name: set ubuntu-18.04 variables - overrides
   set_fact:
     tomcat: "{{ tomcat | default('tomcat8') }}"
+#    use_openjdk8: "{{ use_openjdk8 | default('True') }}"
+#    use_openjdk11: "{{ use_openjdk11 | default('False') }}"
   when: ansible_os_family == "Debian" and ansible_distribution_version == "18.04"
   tags:
   - setfacts
@@ -84,17 +86,19 @@
     tomcat_webapps: "/var/lib/{{ tomcat }}/webapps/"
 # openjdk-8 will be removed at some point from Ubuntu-18.04, so we will need to switch to Zulu-8 or similar at that point
 # openjdk-lts on Ubuntu-18.04 is JDK-11, so will not be directly useful by our applications at this point due to lack of testing
-    use_openjdk8: true
-    use_zulu8: False
+#    use_openjdk8: true
+#    use_zulu8: False
     psycopg2_package: "python3-psycopg2"
   when: ansible_os_family == "Debian" and ansible_distribution_version == "18.04"
   tags:
     - setfacts
 
-- name: set ubuntu-20.04 variables - tomcat version
+- name: set ubuntu-20.04 variables - overrides
   set_fact:
     tomcat: "{{ tomcat | default('tomcat9') }}"
     tomcat_user: "{{ tomcat_user | default('tomcat') }}"
+#    use_openjdk8: "{{ use_openjdk8 | default('True') }}"
+#    use_openjdk11: "{{ use_openjdk11 | default('False') }}"
   when: ansible_os_family == "Debian" and ansible_distribution_version == "20.04"
   tags:
   - setfacts
@@ -117,10 +121,17 @@
     tomcat_dir: "/var/lib/{{ tomcat }}"
     tomcat_webapps: "/var/lib/{{ tomcat }}/webapps/"
 # openjdk-8 will be removed at some point from Ubuntu-18.04, so we will need to switch to Zulu-8 or similar at that point
-    use_openjdk8: true
-    use_zulu8: False
+#    use_openjdk8: true
+#    use_zulu8: False
     psycopg2_package: "python3-psycopg2"
   when: ansible_os_family == "Debian" and ansible_distribution_version == "20.04"
+  tags:
+    - setfacts
+
+- name: set java defaults for openjdk11
+  set_fact:
+    java_home: /usr/lib/jvm/java-11-openjdk-amd64
+  when: use_openjdk11 is defined and use_openjdk11 | bool == True
   tags:
     - setfacts
 

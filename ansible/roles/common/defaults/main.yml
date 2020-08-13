@@ -1,1 +1,4 @@
 packaging: "war"
+use_zulu8: False
+use_openjdk8: True
+use_openjdk11: False
