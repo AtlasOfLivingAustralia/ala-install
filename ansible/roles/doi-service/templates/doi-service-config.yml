@@ -1,4 +1,5 @@
-deployment_env: {{ deployment_env }}
+# 'prod' or 'test'
+deployment_env: {{ (doi_deployment_env | default(deployment_env)) | default('test') }}
 
 #
 # CAS Config
@@ -41,6 +42,15 @@ ands:
     client:
       id: {{ ands_doi_client_id }}
 
+datacite:
+  doi:
+    service:
+      baseApiUrl: {{ doi_datacite_api_url | default('https://api.test.datacite.org/') }}
+      user: {{ doi_datacite_user }}
+      password: {{ doi_datacite_password }}
+      prefix: {{ doi_datacite_prefix }}
+      shoulder: {{ doi_datacite_shoulder }}
+
 ala:
   base:
     url: https://www.ala.org.au
@@ -57,6 +67,9 @@ headerAndFooter:
   version: {{ header_and_footer_version | default('2') }}
 
 doi:
+  service:
+    # ANDS or DATACITE
+    provider: {{ doi_service_provider | default('DATACITE') }}
   storage:
     provider: {{ doi_storage_provider | default('LOCAL') }}
   displayTemplates:
