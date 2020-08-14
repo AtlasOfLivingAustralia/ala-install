@@ -1,6 +1,6 @@
-#- hosts: all
-#  roles:
-#    - java
+Pipel- hosts: all
+  roles:
+    - java
 
 - hosts: hadoop
   roles:
@@ -10,6 +10,14 @@
   roles:
     - spark
 
+- hosts: jenkins
+  roles:
+    - jenkins-simple
+
 - hosts: pipelines
   roles:
     - pipelines
+
+- hosts: pipelines-jenkins
+  roles:
+    - pipelines-jenkins

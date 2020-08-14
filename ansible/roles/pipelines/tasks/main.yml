@@ -52,16 +52,27 @@
     - pipelines
 
 - name: Update apt and install pipelines
-  apt: update_cache=yes name=la-pipelines state=latest
+  apt: update_cache=yes name=la-pipelines
   tags:
     - pipelines
 
-- name: ensure target local directories exist
-  file: path={{item}} state=directory
+- name: create pipelines working directories
+  file: path={{ item }} state=directory owner={{ spark_user }} group={{ spark_user }} recurse=true
   with_items:
     - "{{ data_dir }}/spark-tmp"
     - "{{ data_dir }}/pipelines-shp"
+    - "{{ data_dir }}/biocache-load"
+    - "{{ data_dir }}/dwca-tmp"
   tags:
+    - la-pipelines-config
+    - pipelines
+
+- name: Update apt and install pipelines config
+  template: src={{ item }} dest={{ data_dir }}/la-pipelines/config/{{ item }} mode=0644 output_encoding=iso-8859-1
+  with_items:
+    - la-pipelines-local.yaml
+  tags:
+    - la-pipelines-config
     - pipelines
 
 - name: copy ala-nameservice YAML
@@ -108,5 +119,3 @@
     - "{{ data_dir }}/pipelines-shp/sds-layers.tgz"
   tags:
     - pipelines
-
-#- name: Add jenkins job definitions

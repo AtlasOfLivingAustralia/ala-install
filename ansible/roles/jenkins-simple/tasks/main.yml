@@ -41,6 +41,11 @@
   when: ansible_os_family == "Debian"
   tags: jenkins
 
+- lineinfile: dest=/etc/default/jenkins backrefs=yes regexp=^HTTP_PORT=-1 line=HTTP_PORT={{ jenkins_http_port | default('-1') }}
+  notify: restart jenkins
+  when: ansible_os_family == "Debian"
+  tags: jenkins
+
 - service: name=jenkins enabled=yes state=started
   when: ansible_os_family == "Debian"
   tags: jenkins

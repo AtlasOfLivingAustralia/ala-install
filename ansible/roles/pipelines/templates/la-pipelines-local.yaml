@@ -1,0 +1,49 @@
+# Deployment specific configuration for AWS spark quoll cluster.
+# This file should be copied over `la-pipelines-local.yaml` when deployed
+# so that it is used by the scripts.
+#
+# Long term, this configuration should be moved out of the project and should be generated
+# by ansible scripts or as part of the debian package installation.
+#
+run:
+  # where to run: local, spark-embedded or spark-cluster
+  platform: local
+  local:
+    # jar: we get the jar from our dev or production environment
+    sparkTmp: {{ spark_tmp }}
+    sparkMaster: ""
+    dwcaTmp: {{ dwca_tmp }}
+    dwcaImportDir: {{ dwca_import_dir }}
+  spark-embedded:
+    # jar: we get the jar from our dev or production environment
+    sparkTmp: {{ spark_tmp }}
+    sparkMaster: ""
+    dwcaTmp: {{ dwca_tmp }}
+    dwcaImportDir: {{ dwca_import_dir }}
+  spark-cluster:
+    jar: /usr/share/la-pipelines/la-pipelines.jar
+    sparkTmp: {{ spark_tmp }}
+    sparkMaster: spark://{{ spark_master }}:7077
+
+general:
+  attempt: 1
+  hdfsSiteConfig: {{ hadoop_install_dir }}/etc/hadoop/hdfs-site.xml
+  coreSiteConfig: {{ hadoop_install_dir }}/etc/hadoop/core-site.xml
+  inputPath: hdfs://{{ hadoop_master }}:9000/pipelines-data
+  targetPath: hdfs://{{ hadoop_master }}:9000/pipelines-data
+dwca-avro:
+  hdfsTempLocation: {{ spark_tmp }}
+  tempLocation: {{ spark_tmp }}/{datasetId}
+interpret:
+  inputPath: hdfs://{{ hadoop_master }}:9000/pipelines-data/{datasetId}/1/verbatim.avro
+export-latlng:
+  inputPath: hdfs://{{ hadoop_master }}:9000/pipelines-data
+uuid:
+  inputPath: hdfs://{{ hadoop_master }}:9000/pipelines-data
+sample:
+  inputPath: hdfs://{{ hadoop_master }}:9000/pipelines-data
+sample-avro:
+  inputPath: hdfs://{{ hadoop_master }}:9000/pipelines-data
+index:
+  inputPath: hdfs://{{ hadoop_master }}:9000/pipelines-data
+  zkHost: {{ zk_host | default('localhost:2181') }}
