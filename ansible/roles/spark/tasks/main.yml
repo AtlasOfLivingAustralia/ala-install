@@ -5,6 +5,7 @@
     generate_ssh_key: yes
     shell: "{{ spark.user_shell }}"
     state: present
+  tags: "spark"
 
 - name: Upload SSH Key for user
   copy:
@@ -13,6 +14,7 @@
     owner: "{{ spark.user }}"
     group: "{{ spark.user }}"
     mode: 0600
+  tags: "spark"
 
 - name: Upload SSH Key for user
   copy:
@@ -21,17 +23,20 @@
     owner: "{{ spark.user }}"
     group: "{{ spark.user }}"
     mode: 0600
+  tags: "spark"
 
 - name: Authorized keys
   shell: "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys"
   become: yes
   become_user: "{{ spark.user }}"
+  tags: "spark"
 
 - name: Add host keys
   shell: "ssh-keyscan {{ item }},`dig +short {{ item }}` >> /home/{{ spark.user }}/.ssh/known_hosts"
   become: yes
   become_user: "{{ spark.user }}"
   with_items: "{{ spark.default_hosts }}"
+  tags: "spark"
 
 - name: ensure tar is present
   package:
@@ -41,6 +46,7 @@
   - tar
   - unzip
   become: yes
+  tags: "spark"
 
 - name: create install directory
   file:
@@ -49,6 +55,7 @@
     owner: "{{ spark.user }}"
     group: "{{ spark.user }}"
   become: true
+  tags: "spark"
 
 - name: stop spark
   shell: "nohup sbin/stop-all.sh &"
@@ -56,12 +63,14 @@
       chdir: "{{ spark_installation_dir }}"
   ignore_errors: yes
   when: inventory_hostname in groups['cluster_master']
+  tags: "spark"
 
 - name: download spark
   get_url: 
     url: "{{ spark_download }}" 
     dest: "/tmp/{{ spark_archive }}"
     use_proxy: no
+  tags: "spark"
 
 - name: unarchive to the install directory
   unarchive:
@@ -72,6 +81,7 @@
     remote_src: true
     extra_opts:
     - "--strip-components=1"
+  tags: "spark"
 
 - name: create spark working directory
   file:
@@ -80,6 +90,7 @@
     owner: "{{ spark.user }}"
     group: "{{ spark.user }}"
   become: true
+  tags: "spark"
 
 - name: set spark-env.sh
   template:
@@ -87,6 +98,9 @@
     dest: "{{ spark_installation_dir }}/conf/spark-env.sh"
     owner: "{{ spark.user }}"
     group: "{{ spark.user }}"
+  tags:
+    - "spark"
+    - "spark-config"
 
 - name: set spark-defaults.conf
   template:
@@ -94,6 +108,9 @@
     dest: "{{ spark_installation_dir }}/conf/spark-defaults.conf"
     owner: "{{ spark.user }}"
     group: "{{ spark.user }}"
+  tags:
+    - "spark"
+    - "spark-config"
 
 - name: set slaves
   template:
@@ -101,6 +118,9 @@
     dest: "{{ spark_installation_dir }}/conf/slaves"
     owner: "{{ spark.user }}"
     group: "{{ spark.user }}"
+  tags:
+    - "spark"
+    - "spark-config"
 
 # Environment setup.
 - name: add spark profile to startup
@@ -110,6 +130,7 @@
     owner: "{{ spark.user }}"
     group: "{{ spark.user }}"
     mode: 0644
+  tags: "spark"
 
 - name: start-cluster utility
   template:
@@ -119,6 +140,7 @@
     group: "{{ spark.user }}"
     mode: 0744
   when: inventory_hostname in groups['cluster_master']
+  tags: "spark"
 
 - name: Set JAVA_HOME if configured.
   template:
@@ -126,6 +148,7 @@
     dest: /etc/profile.d/java_home.sh
     mode: 0644
   when: java_home is defined and java_home
+  tags: "spark"
 
 - name: run on master
   shell: ". /etc/profile.d/java_home.sh &&  sbin/start-all.sh"
@@ -133,3 +156,4 @@
     chdir: "{{ spark_installation_dir }}"
   become_user: "{{ spark.user }}"
   when: (inventory_hostname in groups['cluster_master'])
+  tags: "spark"

@@ -1,4 +1,4 @@
-Pipel- hosts: all
+- hosts: all
   roles:
     - java
 

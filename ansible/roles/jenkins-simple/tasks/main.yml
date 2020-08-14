@@ -1,6 +1,6 @@
 - include: ../../common/tasks/setfacts.yml
 
-- apt_key: url="http://pkg.jenkins-ci.org/{{ jenkins_channel }}/jenkins-ci.org.key" state=present
+- apt_key: url="http://pkg.jenkins-ci.org/{{ jenkins_channel }}/jenkins-ci.org.key" state=present
   when: ansible_os_family == "Debian"
   tags: jenkins
 
