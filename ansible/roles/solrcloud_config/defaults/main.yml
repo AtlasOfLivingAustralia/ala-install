@@ -1,2 +1,3 @@
 dynamic_solr_schema_biocache: false
 dynamic_solr_schema_biocache_el_cl: false
+solrcloud_config_create_biocache_collection: True
