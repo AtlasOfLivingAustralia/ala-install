@@ -31,6 +31,8 @@ general:
   coreSiteConfig: {{ hadoop_install_dir }}/etc/hadoop/core-site.xml
   inputPath: hdfs://{{ hadoop_master }}:9000/pipelines-data
   targetPath: hdfs://{{ hadoop_master }}:9000/pipelines-data
+dataset-count-dump:
+  inputPath: hdfs://{{ hadoop_master }}:9000/pipelines-data
 dwca-avro:
   hdfsTempLocation: {{ spark_tmp }}
   tempLocation: {{ spark_tmp }}/{datasetId}
