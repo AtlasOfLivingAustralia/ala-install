@@ -8,7 +8,7 @@
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
           <name>datasetId</name>
-          <description></description>
+          <description>The datasetId e.g. dr893. To run for all data run with &apos;all&apos;</description>
           <defaultValue></defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>

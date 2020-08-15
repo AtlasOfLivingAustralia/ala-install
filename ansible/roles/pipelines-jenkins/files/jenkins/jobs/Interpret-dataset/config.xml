@@ -19,6 +19,7 @@
             <a class="string-array">
               <string>--cluster</string>
               <string>--embedded</string>
+              <string>--local</string>
             </a>
           </choices>
         </hudson.model.ChoiceParameterDefinition>
@@ -34,7 +35,7 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>sudo -u spark la-pipelines uuid $datasetId $mode</command>
+      <command>sudo -u spark la-pipelines interpret $datasetId $mode</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>
