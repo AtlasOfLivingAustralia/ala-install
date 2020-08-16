@@ -170,7 +170,6 @@
     dest: "{{ hadoop_install_dir }}/etc/hadoop/slaves"
     owner: "{{ hadoop.user }}"
     group: "{{ hadoop.user }}"
-  when: number_of_nodes | int >= 3 and (inventory_hostname in groups|selectattr('cluster_master','defined')|list)
   become: yes
 
 - name: set master
@@ -199,6 +198,7 @@
     mode: 0644
   when: java_home is defined and java_home
 
+# TODO this should be ran for existing installs
 - name: format hdfs
   shell: ". /etc/profile.d/java_home.sh &&  bin/hdfs namenode -format"
   args:

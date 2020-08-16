@@ -36,6 +36,37 @@
     - containerd.io
   tags:
     - pipelines
+    - docker
+
+- name: create pipelines working directories
+  file: path={{ item }} state=directory owner={{ spark_user }} group={{ spark_user }} recurse=true
+  with_items:
+    - "{{ data_dir }}/docker"
+    - "{{ data_dir }}/spark-tmp"
+    - "{{ data_dir }}/pipelines-shp"
+    - "{{ data_dir }}/biocache-load"
+    - "{{ data_dir }}/dwca-tmp"
+  tags:
+    - la-pipelines-config
+    - pipelines
+    - docker
+
+- name: Update docker directory
+  template: src={{ item }} dest=/etc/docker/daemon.json
+  with_items:
+    - daemon.json
+  tags:
+    - la-pipelines-config
+    - pipelines
+    - docker
+
+- name: Restart docker
+  service:
+    name: docker
+    state: restarted
+  tags:
+    - pipelines
+    - docker
 
 - name: Add GBIF ES Repository
   apt_repository:
@@ -54,17 +85,6 @@
 - name: Update apt and install pipelines
   apt: update_cache=yes name=la-pipelines
   tags:
-    - pipelines
-
-- name: create pipelines working directories
-  file: path={{ item }} state=directory owner={{ spark_user }} group={{ spark_user }} recurse=true
-  with_items:
-    - "{{ data_dir }}/spark-tmp"
-    - "{{ data_dir }}/pipelines-shp"
-    - "{{ data_dir }}/biocache-load"
-    - "{{ data_dir }}/dwca-tmp"
-  tags:
-    - la-pipelines-config
     - pipelines
 
 - name: Update apt and install pipelines config
@@ -92,6 +112,8 @@
     - "{{ hadoop_install_dir }}/bin/hdfs dfs -mkdir -p /migration"
     - "{{ hadoop_install_dir }}/bin/hdfs dfs -chown spark:spark /migration"
     - "{{ hadoop_install_dir }}/bin/hdfs dfs -chown spark:spark /pipelines-data"
+  become: yes
+  become_user: "{{ hadoop.user }}"
   tags:
     - pipelines
 

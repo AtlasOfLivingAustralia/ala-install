@@ -24,7 +24,10 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>sudo -u spark la-pipelines dwca-avro $datasetId</command>
+      <command>
+        sudo -u spark la-pipelines dwca-avro $datasetId
+        sudo -u spark rm -Rf /data/spark-tmp/*
+      </command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>
