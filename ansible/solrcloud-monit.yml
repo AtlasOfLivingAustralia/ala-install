@@ -1,5 +1,7 @@
 - hosts: zookeeper
   roles:
+    - common
+    - java
     - zookeeper
 - hosts: solrcloud
   roles:
