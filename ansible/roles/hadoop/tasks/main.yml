@@ -1,5 +1,5 @@
 ---
-- name: ensure tar is present
+- name: ensure tar, unzip, ssh is present
   package:
     name: "{{ item }}"
     state: present
@@ -8,6 +8,18 @@
     - unzip
     - openssh-client
   become: yes
+  tags: "hadoop"
+
+- name: Check for existing installation
+  stat:
+    path: "{{ hadoop.data_dir }}"
+  register: hadoop_pre_installed
+  tags: "hadoop"
+
+- debug:
+    msg: "The hadoop data directory exists already. To reinstall, please delete data directory {{ hadoop.data_dir }} first from each node. The rest of this role will be skipped."
+  when: hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: Create service account for HDFS
   user:
@@ -16,6 +28,8 @@
     shell: "{{ hadoop.user_shell }}"
     generate_ssh_key: yes
     state: present
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: Disable IPV6
   sysctl:
@@ -28,6 +42,8 @@
     - "net.ipv6.conf.all.disable_ipv6"
     - "net.ipv6.conf.default.disable_ipv6"
     - "net.ipv6.conf.lo.disable_ipv6"
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: Upload SSH Key for user
   copy:
@@ -36,6 +52,8 @@
     owner: "{{ hadoop.user }}"
     group: "{{ hadoop.user }}"
     mode: 0600
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: Upload SSH Public Key for user
   copy:
@@ -44,36 +62,38 @@
     owner: "{{ hadoop.user }}"
     group: "{{ hadoop.user }}"
     mode: 0600
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: Add ssh key to authorized keys
   authorized_key:
     user: "{{ hadoop.user }}"
     state: present
     key: "{{ lookup('file', ssh_key_filename+'.pub') }}"
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: Add host keys
   shell: "ssh-keyscan {{ item }},`dig +short {{ item }}` >> /home/{{ hadoop.user }}/.ssh/known_hosts"
   become: yes
   become_user: "{{ hadoop.user }}"
   with_items: "{{ hadoop.default_hosts }}"
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: Set number of nodes
   set_fact:
     number_of_nodes: "{{ groups|selectattr('cluster_master','defined')|list|length|default(0) +
     groups|selectattr('cluster_nodes','defined')|list|length|default(0) }}"
-
-- name: disable hdfs replication in single node
-  set_fact: hdfs_replication_factor=1
-  when: number_of_nodes | int < 3
-
-- name: enable hdfs replication when cluster has more then three nodes
-  set_fact: hdfs_replication_factor=3
-  when: number_of_nodes | int >= 3
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: remove pre-existent hadoop data directory
   file:
     path: "{{ hadoop.data_dir }}/"
     state: absent
+  tags: "hadoop"
+  when: not hadoop_pre_installed.stat.exists
 
 - name: create hadoop data directory
   file:
@@ -82,11 +102,15 @@
     owner: "{{ hadoop.user }}"
     group: "{{ hadoop.user }}"
   become: true
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: remove pre-existent hadoop name directory
   file:
     path: "{{ hadoop.name_dir }}/"
     state: absent
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: create hadoop name directory
   file:
@@ -95,11 +119,15 @@
     owner: "{{ hadoop.user }}"
     group: "{{ hadoop.user }}"
   become: true
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: remove pre-existent hadoop temp directory
   file:
     path: "{{ hadoop.temp_dir }}/"
     state: absent
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: create hadoop temp directory
   file:
@@ -108,11 +136,15 @@
     owner: "{{ hadoop.user }}"
     group: "{{ hadoop.user }}"
   become: true
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: create install temp directory
   file:
     path: "{{ install_temp_dir }}"
     state: directory
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: create install directory
   file:
@@ -121,11 +153,15 @@
     owner: "{{ hadoop.user }}"
     group: "{{ hadoop.user }}"
   become: true
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: download hadoop
   get_url:
     url: "{{ hadoop.download_location }}/hadoop-{{ hadoop.version }}/{{ hadoop.hadoop_archive }}"
     dest: "/tmp/{{ hadoop.hadoop_archive }}"
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: unarchive to the install directory
   unarchive:
@@ -136,12 +172,16 @@
     remote_src: true
     extra_opts:
       - "--strip-components=1"
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: Set is_master
   set_fact:
     is_master: true
     is_node: false
   when: ( 'cluster_master' in groups ) and (inventory_hostname in groups['cluster_master'])
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: set core-site.xml
   template:
@@ -149,6 +189,8 @@
     dest: "{{ hadoop_install_dir }}/etc/hadoop/core-site.xml"
     owner: "{{ hadoop.user }}"
     group: "{{ hadoop.user }}"
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: set hadoop-env.sh
   template:
@@ -156,6 +198,8 @@
     dest: "{{ hadoop_install_dir }}/etc/hadoop/hadoop-env.sh"
     owner: "{{ hadoop.user }}"
     group: "{{ hadoop.user }}"
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: set hdfs-site.xml
   template:
@@ -163,6 +207,8 @@
     dest: "{{ hadoop_install_dir }}/etc/hadoop/hdfs-site.xml"
     owner: "{{ hadoop.user }}"
     group: "{{ hadoop.user }}"
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: set slaves
   template:
@@ -171,6 +217,8 @@
     owner: "{{ hadoop.user }}"
     group: "{{ hadoop.user }}"
   become: yes
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: set master
   lineinfile:
@@ -180,7 +228,8 @@
     group: "{{ hadoop.user }}"
     create: yes
   become: true
-  when: is_master
+  when: is_master and not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 # Environment setup.
 - name: add hadoop profile to startup
@@ -190,6 +239,8 @@
     owner: "{{ hadoop.user }}"
     group: "{{ hadoop.user }}"
     mode: 0644
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: Set JAVA_HOME if configured.
   template:
@@ -197,6 +248,8 @@
     dest: /etc/profile.d/java_home.sh
     mode: 0644
   when: java_home is defined and java_home
+  when: not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 # TODO this should be ran for existing installs
 - name: format hdfs
@@ -205,7 +258,8 @@
     chdir: "{{ hadoop_install_dir }}"
   become: yes
   become_user: "{{ hadoop.user }}"
-  when: is_master
+  when: is_master and not hadoop_pre_installed.stat.exists
+  tags: "hadoop"
 
 - name: run on master
   shell: ". /etc/profile.d/java_home.sh &&  sbin/start-dfs.sh"
@@ -213,4 +267,5 @@
     chdir: "{{ hadoop_install_dir }}"
   become_user: "{{ hadoop.user }}"
   become: yes
-  when: is_master
+  when: is_master and not hadoop_pre_installed.stat.exists
+  tags: "hadoop"

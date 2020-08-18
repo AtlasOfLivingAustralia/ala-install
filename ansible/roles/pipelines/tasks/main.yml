@@ -116,6 +116,7 @@
   become_user: "{{ hadoop.user }}"
   tags:
     - pipelines
+    - hadoop
 
 - name: Download SHP files
   get_url:
