@@ -1,0 +1,39 @@
+sofficePath: /usr/bin/soffice
+htmltopdfPath: /usr/local/bin/wkhtmltopdf
+storageDir: {{ pdf_dir }}
+
+server:
+  type: simple
+#  rootPath: /api
+  applicationContextPath: /api
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: {{service_port}}
+    bindHost: 127.0.0.1
+
+logging:
+  level: "INFO"
+  loggers:
+    "io.dropwizard": "INFO"
+    "au.org.ala": "DEBUG"
+    "metrics": "OFF"
+  appenders:
+    - type: file
+      currentLogFilename: {{logging_dir}}/{{service_name}}.log
+      threshold: ALL
+      timeZone: UTC
+      archive: true
+      archivedLogFilenamePattern:  {{logging_dir}}/{{service_name}}-%d.log
+      archivedFileCount: 10
+
+
+metrics:
+  frequency: 30 minutes
+  reporters:
+    - type: log
+      logger: metrics
+      markerName: marker
+
+httpClient:
+    timeout: 5 minutes

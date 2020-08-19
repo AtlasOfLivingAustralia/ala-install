@@ -1,12 +1,13 @@
 ---
 redirect: ''
 nginx_conf_dir: '/etc/nginx'
+nginx_access_log: "/var/log/nginx/access.log main"
 ssl: true
 # By default activate HTTP/2, which also allows HTTP/1.1 connections
 # However, some users may find issues when HTTP/2 support is enabled at all if they can't work with ALPN
 nginx_http2_enabled: true
 # Allow optional activation of TLS-1.3 if users know their version of nginx supports it
-nginx_tls_v1_3_enabled: false
+nginx_tls_v1_3_enabled: true
 # By default only support TLS-1.2 for security, but allow some users to activate others or deactivate it
 nginx_tls_v1_2_enabled: true
 # Allow optional activation of the insecure TLS-1.1 protocol
@@ -17,17 +18,25 @@ nginx_tls_v1_0_enabled: false
 # Default to a modern set of TLS ciphers
 nginx_tls_ciphers: "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256"
 force_https: true
+# Add strings to this list containing the vhost fragment directory names to clear
+nginx_vhost_fragments_to_clear: []
 nginx_root: "/srv/{{ hostname }}/www/"
+nginx_index: 'index.html'
 context_path: '/'
 # By default, no robots should be accessing any servers, customise this in your inventory to allow access to specific paths
 robots_disallow_paths: ["/"]
 # Semrush completely ignore robots.txt, so banning them by default from all of our servers
-robots_disallow_useragents: ["Semrush", "SEMrush", "semrush"]
+robots_disallow_useragents: ["Semrush"]
 # Add IPs to this list in your inventory to disallow specific IP addresses in nginx
 robots_disallow_ips: ["46.229.161.131"]
 # Add IPs to this list that are known to send correct x-forwarded-for headers, and can hence be safely relied on
 # https://nginx.org/en/docs/http/ngx_http_realip_module.html
 nginx_set_real_ips: []
+# Set to true to enable the proxy protocol
+# https://docs.nginx.com/nginx/admin-guide/load-balancer/using-proxy-protocol/
+nginx_proxy_protocol_enabled: False
+# Set to "proxy_protocol" to support the nginx proxy protocol
+nginx_real_ip_header: "X-Forwarded-For"
 # If either of the following are set to true, a default host will be created
 # Any existing default host will be deactivated from sites-enabled, but left in sites-available
 aws_elb_healthcheck_default: false
@@ -51,10 +60,11 @@ nginx_cache_invalid_time: "0s"
 # Set this to true to have the nginx cache cleared when deployment completes
 nginx_clear_cache_on_deploy: False
 
-# Set this to true in your inventory if you know that you are only deploying a single nginx_vhost and you want to clear previous versions before deploying each time (not developed yet)
+# Set this to true in your inventory if you know that you are only deploying a single nginx_vhost and you want to clear previous versions before deploying each time
 clear_vhost_fragments: false
 # Set this to true in your inventory if you know that you are deploying for instance biocache and biocache/ws in the same server
 vhost_with_appname_conf: false
+nginx_auth_pam_shadow: false
 # Set this to true to enable support for 'upstream' load balancing features
 nginx_load_balancing: false
 # When load balancing is enabled, this is used to specify the maximum number of connections from nginx to the upstream load balanced server
@@ -89,6 +99,10 @@ nginx_rate_limit_size: "10m"
 nginx_rate_limit: "300r/m"
 # Default to a burst of 80, tune this in conjunction with nginx_rate_limit
 nginx_rate_limit_burst: "80"
+
+# Setup nginx_other_limit_zones to add alternative limits for some cases
+# Needs to match the zone names setup for the relevant locations
+nginx_other_limit_zones: []
 
 # Set to true to disable disk buffering e.g. for downloading large files (sets proxy_max_temp_file_size to 0)
 nginx_disable_download_disk_buffering: False

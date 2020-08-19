@@ -56,10 +56,10 @@
         sort_label: "1_batch"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:8080/sampling-service/intersect/batch"
-      - path: "^/sampling-service/(.*)$"
+      - path: "/sampling-service/"
         sort_label: "2_spatial"
-        is_proxy: false
-        rewrite_path: "https://spatial.ala.org.au/ws/"
+        is_proxy: true
+        proxy_pass: "https://spatial.ala.org.au/ws/"
       - path: "{{sampling_service_context_path}}/data"
         is_proxy: false
         alias: "{{data_dir}}"

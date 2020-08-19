@@ -41,8 +41,10 @@
   tags:
     - solrcloud_create_collection    
   ignore_errors: True
+  when: solrcloud_config_create_biocache_collection == True
 
 - name: Create biocache collection
   get_url: url="http://{{ solr_config_host }}:{{ solr_port }}/solr/admin/collections?action=CREATE&name=biocache&maxShardsPerNode=2&numShards=4&replicationFactor=2&collection.configName=biocache" dest=/tmp/create-collection.txt force=yes timeout=30
   tags:
     - solrcloud_create_collection
+  when: solrcloud_config_create_biocache_collection == True

@@ -1,0 +1,20 @@
+# assets
+version: "{{ pdf_service_version | default('LATEST') }}"
+artifactId: "pdfgen"
+classifier: 'all'
+packaging: "jar"
+groupId: "au.org.ala"
+pdf_service_artifact_url: "{{maven_repo_ws_url}}"
+
+profile_service_hostname: "{{ profile_service_host | default('localhost:8090') }}"
+profile_service_context_path: "{{ profile_service_context | default('') }}"
+use_docker: "{{ docker | default(false) }}"
+pdf_dir: "{{ data_dir }}/pdfs"
+service_name: "pdfgen"
+service_port: 8080
+pdf_user: "pdfgen"
+data_dir: "/data"
+config_dir: "{{data_dir}}/{{service_name}}/config"
+config_file_name: "{{service_name}}-config.yml"
+logging_dir: "/var/log/atlas/{{service_name}}"
+nginx_cors_origin_regexp: '^https?:\/\/.+\.ala\.org\.au\/?'

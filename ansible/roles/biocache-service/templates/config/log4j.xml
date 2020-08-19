@@ -28,7 +28,7 @@
         <param name="username" value="" />
         <param name="password" value="" />
         <param name="timeout" value="5000" /> <!-- millisecond -->
-        <param name="urlTemplate" value="https://logger.ala.org.au/service/logger/" />
+        <param name="urlTemplate" value="{{ logger_url }}/service/logger/" />
         <param name="Threshold" value="REMOTE#org.ala.client.appender.RestLevel" />
     </appender>
     <appender name="ASYNC" class="org.apache.log4j.AsyncAppender">

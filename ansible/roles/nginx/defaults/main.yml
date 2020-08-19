@@ -12,6 +12,10 @@ nginx_ppa_version: stable
 # The name of the nginx package to install.
 nginx_package_name: "nginx"
 
+# Whether to include modules e.g. PAM auth, geoip, stream etc
+# Note this overrides nginx_extra_conf_options initial value.
+nginx_use_modules: false
+
 nginx_conf_template: "nginx.conf.j2"
 nginx_mime_template: "mime.types.j2"
 nginx_vhost_template: "vhost.j2"
@@ -22,6 +26,10 @@ nginx_multi_accept: "off"
 
 nginx_error_log: "/var/log/nginx/error.log warn"
 nginx_access_log: "/var/log/nginx/access.log main"
+
+# Other log formats, including the name and then the format. E.g.,
+#     postdata '$request_body';
+nginx_other_log_formats: []
 
 nginx_sendfile: "on"
 nginx_tcp_nopush: "on"
@@ -89,3 +97,7 @@ nginx_log_format: '$remote_addr - $remote_user [$time_local] "$request" $status 
 
 # Add strings to this list containing the vhost fragment directory names to clear
 nginx_vhost_fragments_to_clear: []
+# Define the following and set it to true to override the warning about the nginx vhost fragments to clear directory not being specified
+# If there are multiple apps being deployed to a single vhost, this must be set to True to override the warnings
+# WARNING: You must also understand the issues associated with attempting to deploy multiple apps to a single vhost and when you will need to manually clear and reinstall the nginx configuration in this case
+#nginx_vhost_fragments_to_clear_no_warning: False

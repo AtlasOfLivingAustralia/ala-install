@@ -33,6 +33,10 @@ options:
       - the port to use for connector
       - will use default port for protocol (8080 for HTTP or 8009 for AJP) if omitted
     required: false
+  relaxed_query_chars:
+    description:
+      - A string containing the chars to relax to avoid requiring URL encoding
+    required: false
   connection_timeout:
     description:
       - the amount of time in ms to wait for the client before timing out
@@ -124,7 +128,7 @@ def default_port(name):
     return 8080 if name == "HTTP/1.1" else 8009
 
 
-def add_connector(aug, protocol, service, bind_addr, port, connection_timeout=20000, uri_encoding="UTF-8", redirect_port=443):
+def add_connector(aug, protocol, service, bind_addr, port, connection_timeout=20000, uri_encoding="UTF-8", redirect_port=443, relaxed_query_chars=""):
 
     aug.defvar("service", "/files/server.xml/Server/Service[#attribute/name=\"%(service)s\"]" % locals())
 
@@ -144,6 +148,8 @@ def add_connector(aug, protocol, service, bind_addr, port, connection_timeout=20
     aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/connectionTimeout" % locals(),
             str(connection_timeout))
 
+    if len(relaxed_query_chars) > 0:
+        aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/relaxedQueryChars" % locals(), relaxed_query_chars)
 
 def remove_connector(aug, protocol, port):
     aug.remove("$service/Connector[#attribute/port=\"%(port)s\"]" % locals())
@@ -160,6 +166,7 @@ def main():
             name=dict(required=True, choices=["HTTP/1.1", "AJP/1.3"]),
             service=dict(default="Catalina"),
             bind_addr=dict(default="127.0.0.1"),
+            relaxed_query_chars=dict(default=""),
             port=dict(type="int"),
             connection_timeout=dict(default=20000, type="int"),
             uri_encoding=dict(default="UTF-8"),
@@ -177,6 +184,7 @@ def main():
     name = module.params["name"]
     service = module.params["service"]
     bind_addr = module.params["bind_addr"]
+    relaxed_query_chars = module.params["relaxed_query_chars"]
     port = module.params["port"]
     connection_timeout = module.params["connection_timeout"]
     uri_encoding = module.params["uri_encoding"]
@@ -202,7 +210,7 @@ def main():
         if state == "absent":
             remove_connector(aug, name, port)
         else:
-            add_connector(aug, name, service, bind_addr, port, connection_timeout, uri_encoding, redirect_port)
+            add_connector(aug, name, service, bind_addr, port, connection_timeout, uri_encoding, redirect_port, relaxed_query_chars)
 
         try:
             aug.save()

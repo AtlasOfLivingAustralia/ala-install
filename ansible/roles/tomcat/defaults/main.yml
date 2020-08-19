@@ -9,3 +9,9 @@ tomcat_apr: true
 tomcat_users: true
 tomcat_autoDeploy: true
 tomcat_bind_addr: 127.0.0.1
+tomcat_umask: "0022"
+
+# Set to a string containing the characters to relax URL encoding on.
+# Search for `relaxedQueryChars` on this page for more details:
+# https://tomcat.apache.org/tomcat-9.0-doc/config/http.html
+tomcat_relaxed_query_chars: ""

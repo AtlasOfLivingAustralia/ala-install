@@ -1,18 +1,33 @@
-- name: Add demo.gbif.es apt key
+- name: Add apt.gbif.es key
   apt_key:
     # We use this key from the above repo temporally
     keyserver: hkp://keyserver.ubuntu.com:80
     id: BD4E3B58E30599A9FD97331D9D93BC32983433D5
+  when:
+    - ansible_os_family == "Debian"
+    - i18n_package_enabled | bool == True
   tags:
     - packages
     - i18n
-  when: ansible_os_family == "Debian"
 
 - name: Install ala-i18n apt repository
   apt_repository:
     # We use this repo temporally
-    repo: deb [arch=amd64] https://demo.gbif.es/repo bionic main
+    repo: deb [arch=amd64] https://apt.gbif.es/ bionic main
+    filename: apt_gbif_es
     state: present
+  when:
+    - ansible_os_family == "Debian"
+    - i18n_package_enabled | bool == True
+  tags:
+    - packages
+    - i18n
+
+- name: Uninstall demo.gbif.es apt repository
+  apt_repository:
+    repo: deb [arch=amd64] https://demo.gbif.es/repo bionic main
+    filename: demo_gbif_es_repo
+    state: absent
   tags:
     - packages
     - i18n
@@ -22,9 +37,24 @@
   apt:
     pkg:
     - ala-i18n
-    state: present
+    state: latest
     update_cache: yes
+  when:
+    - ansible_os_family == "Debian"
+    - i18n_package_enabled | bool == True
   tags:
     - packages
     - i18n
-  when: ansible_os_family == "Debian"
+
+- name: Uninstall ala-i18n package if not in use
+  apt:
+    pkg:
+    - ala-i18n
+    state: absent
+    update_cache: yes
+  when:
+    - ansible_os_family == "Debian"
+    - i18n_package_enabled | bool == False
+  tags:
+    - packages
+    - i18n

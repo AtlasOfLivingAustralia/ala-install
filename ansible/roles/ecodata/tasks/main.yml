@@ -54,13 +54,14 @@
   template:
     src: logback.groovy
     dest: "{{data_dir}}/ecodata/config/logback.groovy"
-    owner: ecodata
-    group: ecodata
+    owner: "{{ecodata_user}}"
+    group: "{{ecodata_user}}"
   notify:
     - restart ecodata
   tags:
     - properties
     - ecodata
+  when: exec_jar
 
 - name: ensure ecodata log directory exists
   file: path={{item}} state=directory owner={{ecodata_user}} group={{ecodata_user}}
@@ -90,10 +91,11 @@
     - properties
 
 #
-# Copy default/example models files
+# Copy default/example models files.  Don't override if already present
+# as the versions in ansible are quick start for new installations.
 #
 - name: Copy models files to config directory
-  copy: src=models/ dest={{data_dir}}/ecodata/models/
+  copy: src=models/ dest={{data_dir}}/ecodata/models/ force=no
   tags:
     - ecodata
     - properties
@@ -101,8 +103,6 @@
 
 - name: set data ownership
   file: path={{data_dir}}/ecodata owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true
-  notify:
-    - restart ecodata
   tags:
     - properties
     - ecodata
@@ -149,24 +149,6 @@
     - deploy
     - ecodata
   when: webserver_nginx
-
-
-
-#- name: Serve ecodata uploads from nginx
-#  blockinfile:
-#    path: /etc/nginx/sites-enabled/{{ ecodata_hostname }}.conf
-#    backup: yes
-#    marker: '# {mark} Serve uploaded files using nginx'
-#    insertbefore: '^.*location'
-#    block:
-#      location ^~ /uploads {
-#        alias /data/ecodata/uploads;
-#      }
-#  tags:
-#    - nginx_vhost
-#    - deploy
-#    - ecodata
-#  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ ecodata_war_url }}' context_path='{{ecodata_context_path}}' hostname='{{ ecodata_hostname }}'
   tags:
