@@ -1,0 +1,8 @@
+- hosts: data_quality_filter_service
+  roles:
+    - common
+    - java
+    - tomcat
+    - webserver
+    - data_quality_filter_service
+

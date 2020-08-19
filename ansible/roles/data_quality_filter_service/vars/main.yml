@@ -1,0 +1,12 @@
+# application versions
+data_quality_filter_service_config: "{{ data_quality_filter_service }}-config.properties"
+
+# assets
+
+version: "{{ data_quality_filter_service_version | default('LATEST') }}"
+artifactId: "{{ data_quality_filter_service | default('data-quality-filter-service') }}"
+groupId: "{{ data_quality_filter_service_group_id | default('au.org.ala') }}"
+classifier: "{{ data_quality_filter_service_classifier | default('') }}"
+packaging: "{{ data_quality_filter_service_packaging | default('war') }}"
+data_quality_filter_service_artifact_url: "{{ data_quality_filter_service_maven_repo_ws_url | default(maven_repo_ws_url) }}"
+data_quality_filter_service_server_port: "{{ data_quality_filter_service_tomcat_server_port | default('8080') }}"
