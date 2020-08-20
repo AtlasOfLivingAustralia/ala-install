@@ -1,3 +1,13 @@
+# assets
+version: "{{ ecodata_version | default('LATEST')}}"
+artifactId: "ecodata"
+classifier: "{{ ecodata_classifier | default('exec') }}"
+packaging: "{{ ecodata_packaging | default('jar') }}"
+groupId: "au.org.ala"
+ecodata_war_url: "{{maven_repo_ws_url}}"
+tomcat_java_opts_override: "{{ tomcat_java_opts_override_value | default('-Xmx4g -Xms2g -Xss256k -XX:+UseG1GC') }}"
+#ecodata_dbPath: "{{ ecodata_dbPath | default('/var/lib/mongodb') }} "
+nginx_cors_origin_regexp: '^https?:\/\/.+\.ala\.org\.au\/?'
 
 mongodb_root_username: "admin"
 ecodata_database: "ecodata"
@@ -18,13 +28,3 @@ ecodata_not_yet_admin: "{{ enable_mongo_security | default(true)}}"
 enable_security_replica_set: "{{ enable_security_after_replica_set | default(false) }}"
 
 disabled_creating_admin_user_for_replica_set: "{{ disabled_creating_admin_user | default(true) }}"
-
-# assets
-version: "{{ ecodata_version | default('LATEST')}}"
-artifactId: "ecodata"
-classifier: "{{ ecodata_classifier | default('exec') }}"
-packaging: "{{ ecodata_packaging | default('jar') }}"
-groupId: "au.org.ala"
-ecodata_war_url: "{{maven_repo_ws_url}}"
-tomcat_java_opts_override: "{{ tomcat_java_opts_override_value | default('-Xmx4g -Xms2g -Xss256k -XX:+UseG1GC') }}"
-nginx_cors_origin_regexp: '^https?:\/\/.+\.ala\.org\.au\/?'
