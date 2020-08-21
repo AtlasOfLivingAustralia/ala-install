@@ -44,7 +44,6 @@
     - "{{ data_dir }}/docker"
     - "{{ data_dir }}/spark-tmp"
     - "{{ data_dir }}/pipelines-shp"
-    - "{{ data_dir }}/biocache-load"
     - "{{ data_dir }}/dwca-tmp"
   tags:
     - la-pipelines-config
@@ -110,8 +109,10 @@
   with_items:
     - "{{ hadoop_install_dir }}/bin/hdfs dfs -mkdir -p /pipelines-data"
     - "{{ hadoop_install_dir }}/bin/hdfs dfs -mkdir -p /migration"
+    - "{{ hadoop_install_dir }}/bin/hdfs dfs -mkdir -p {{ dwca_import_dir }}"
     - "{{ hadoop_install_dir }}/bin/hdfs dfs -chown spark:spark /migration"
     - "{{ hadoop_install_dir }}/bin/hdfs dfs -chown spark:spark /pipelines-data"
+    - "{{ hadoop_install_dir }}/bin/hdfs dfs -chown spark:spark {{ dwca_import_dir }}"
   become: yes
   become_user: "{{ hadoop.user }}"
   tags:

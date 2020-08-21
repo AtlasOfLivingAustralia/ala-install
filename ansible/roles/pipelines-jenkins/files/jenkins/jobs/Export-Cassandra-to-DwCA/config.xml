@@ -3,7 +3,51 @@
   <actions/>
   <description></description>
   <keepDependencies>false</keepDependencies>
-  <properties/>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>dataResources</name>
+          <description>it can be all or comma separated list like dr000,dr002,dr003</description>
+          <defaultValue>all</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>threads</name>
+          <description></description>
+          <defaultValue>8</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>pageSize</name>
+          <description></description>
+          <defaultValue>1000</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>hdfsTargetDir</name>
+          <description>HDFS directory to copy output to</description>
+          <defaultValue>/dwca-exports</defaultValue>
+          <trim>true</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>outputDir</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>/data/dwca-export</string>
+              <string>/data/biocache-load</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>exportExtensions</name>
+          <description></description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
   <scm class="hudson.scm.NullSCM"/>
   <canRoam>true</canRoam>
   <disabled>false</disabled>
@@ -13,7 +57,18 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>sudo -u spark biocache export-dwca all /data/dwca-export -t 8 -ps 1000</command>
+      <command>#!/bin/bash
+        set -ex
+        if [[ &quot;$exportExtensions&quot; == &quot;true&quot; ]]; then
+        sudo -u spark biocache export-dwca --export-extensions true ${dataResources} ${outputDir} -t ${threads} -ps ${pageSize}
+        else
+        sudo -u spark biocache export-dwca ${dataResources} ${outputDir} -t ${threads} -ps ${pageSize}
+        fi
+        echo 'Copying files to HDFS'
+        sudo -u spark /data/hadoop/bin/hdfs dfs mkdir -p ${hdfsTargetDir}
+        # sudo -u spark /data/hadoop/bin/hdfs dfs rm -r ${hdfsTargetDir}/*
+        sudo -u spark /data/hadoop/bin/hdfs dfs -copyFromLocal ${outputDir}/* ${hdfsTargetDir}/
+      </command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>

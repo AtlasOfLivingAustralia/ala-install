@@ -179,8 +179,7 @@
   set_fact:
     is_master: true
     is_node: false
-  when: ( 'cluster_master' in groups ) and (inventory_hostname in groups['cluster_master'])
-  when: not hadoop_pre_installed.stat.exists
+  when: ( 'cluster_master' in groups ) and (inventory_hostname in groups['cluster_master']) and not hadoop_pre_installed.stat.exists
   tags: "hadoop"
 
 - name: set core-site.xml
@@ -247,8 +246,7 @@
     src: java_home.sh.j2
     dest: /etc/profile.d/java_home.sh
     mode: 0644
-  when: java_home is defined and java_home
-  when: not hadoop_pre_installed.stat.exists
+  when: java_home is defined and java_home and not hadoop_pre_installed.stat.exists
   tags: "hadoop"
 
 # TODO this should be ran for existing installs
