@@ -1,0 +1,136 @@
+# Steps up pipelines jenkins jobs and setups SSH between nodes for the jenkins user
+# to enable master/slave setup through the Jenkins admin UI
+#
+
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - pipelines_jenkins
+
+- name: Set is_master
+  set_fact:
+    is_master: true
+    is_slave: false
+  when: ( 'jenkins_master' in groups and inventory_hostname in groups['jenkins_master'])
+  tags:
+    - pipelines_jenkins
+
+- name: Set is_slave
+  set_fact:
+    is_master: false
+    is_slave: true
+  when: ( 'jenkins_slaves' in groups and inventory_hostname in groups['jenkins_slaves'])
+  tags:
+    - pipelines_jenkins
+
+- name: Jenkins and Spark
+  copy: src=100-jenkins-spark dest=/etc/sudoers.d/100-jenkins-spark
+  tags:
+    - pipelines_jenkins
+
+- name: Jenkins jobs definitions
+  copy:
+    src: jenkins/jobs/
+    dest: /var/lib/jenkins/jobs
+    owner: jenkins
+    group: jenkins
+    mode: '0644'
+  when: is_master
+  tags:
+    - pipelines_jenkins
+
+- name: Create jenkins user on slaves
+  user:
+    name: "jenkins"
+    system: yes
+    shell: "/bin/bash"
+    generate_ssh_key: yes
+    state: present
+  when: is_slave
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_slaves
+
+- name: Upload SSH Key for master
+  copy:
+    src: "{{ ssh_key_filename }}"
+    dest: "/var/lib/jenkins/.ssh/id_rsa"
+    owner: "jenkins"
+    group: "jenkins"
+    mode: 0600
+  when: is_master
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_slaves
+
+- name: Upload SSH Key for slave
+  copy:
+    src: "{{ ssh_key_filename }}"
+    dest: "/home/jenkins/.ssh/id_rsa"
+    owner: "jenkins"
+    group: "jenkins"
+    mode: 0600
+  when: is_slave
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_slaves
+
+- name: Upload SSH Public Key for Jenkins user
+  copy:
+    src: "{{ ssh_key_filename + '.pub' }}"
+    dest: "/var/lib/jenkins/.ssh/id_rsa.pub"
+    owner: "jenkins"
+    group: "jenkins"
+    mode: 0600
+  when: is_master
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_slaves
+
+- name: Upload SSH Public Key for Jenkins user
+  copy:
+    src: "{{ ssh_key_filename + '.pub' }}"
+    dest: "/home/jenkins/.ssh/id_rsa.pub"
+    owner: "jenkins"
+    group: "jenkins"
+    mode: 0600
+  when: is_slave
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_slaves
+
+- name: Add ssh key to authorized keys
+  authorized_key:
+    user: "jenkins"
+    state: present
+    key: "{{ lookup('file', ssh_key_filename + '.pub') }}"
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_slaves
+
+- name: Add host keys slave
+  shell: "ssh-keyscan {{ item }},`dig +short {{ item }}` >> /home/jenkins/.ssh/known_hosts"
+  become: yes
+  become_user: "jenkins"
+  with_items: "{{ default_hosts }}"
+  when: is_slave
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_slaves
+
+- name: Add host keys master
+  shell: "ssh-keyscan {{ item }},`dig +short {{ item }}` >> /var/lib/jenkins/.ssh/known_hosts"
+  become: yes
+  become_user: "jenkins"
+  with_items: "{{ default_hosts }}"
+  when: is_master
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_slaves
+
+- name: create jenkins working directories
+  file: path={{ item }} state=directory owner=jenkins group=jenkins recurse=true
+  with_items:
+    - "{{ data_dir }}/jenkins"
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_slaves

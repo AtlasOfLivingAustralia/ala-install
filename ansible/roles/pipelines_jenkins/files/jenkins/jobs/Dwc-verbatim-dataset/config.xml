@@ -8,21 +8,13 @@
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
           <name>datasetId</name>
-          <description>The datasetId e.g. dr893. To run for all data run with &apos;all&apos;</description>
+          <description>
+            The datasetId e.g. dr893. To run for all data run with &apos;all&apos;.
+            Use a command separated list to provide a number of datasets e.g. dr123,d124
+          </description>
           <defaultValue></defaultValue>
-          <trim>false</trim>
+          <trim>true</trim>
         </hudson.model.StringParameterDefinition>
-        <hudson.model.ChoiceParameterDefinition>
-          <name>mode</name>
-          <description></description>
-          <choices class="java.util.Arrays$ArrayList">
-            <a class="string-array">
-              <string>--cluster</string>
-              <string>--embedded</string>
-              <string>--local</string>
-            </a>
-          </choices>
-        </hudson.model.ChoiceParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
@@ -35,7 +27,9 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>sudo -u spark la-pipelines interpret $datasetId $mode</command>
+      <command>
+        sudo -u spark la-pipelines dwca-avro $datasetId
+      </command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>

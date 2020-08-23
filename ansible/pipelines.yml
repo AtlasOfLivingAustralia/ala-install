@@ -18,6 +18,6 @@
   roles:
     - pipelines
 
-- hosts: pipelines-jenkins
+- hosts: pipelines_jenkins
   roles:
-    - pipelines-jenkins
+    - pipelines_jenkins
