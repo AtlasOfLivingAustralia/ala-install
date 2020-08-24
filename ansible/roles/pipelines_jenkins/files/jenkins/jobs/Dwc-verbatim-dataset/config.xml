@@ -10,7 +10,7 @@
           <name>datasetId</name>
           <description>
             The datasetId e.g. dr893. To run for all data run with &apos;all&apos;.
-            Use a command separated list to provide a number of datasets e.g. dr123,d124
+            Use a space separated list to provide a number of datasets e.g. dr123 d124
           </description>
           <defaultValue></defaultValue>
           <trim>true</trim>
@@ -24,7 +24,7 @@
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <triggers/>
-  <concurrentBuild>false</concurrentBuild>
+  <concurrentBuild>true</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
       <command>

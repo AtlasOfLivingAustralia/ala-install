@@ -13,10 +13,13 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>sudo -u spark /data/spark/sbin/stop-slaves.sh
-sudo -u spark /data/spark/sbin/stop-master.sh
-sudo -u spark /data/spark/sbin/start-master.sh
-sudo -u spark /data/spark/sbin/start-slaves.sh</command>
+      <command>
+        sudo -u spark /data/spark/sbin/stop-slaves.sh
+        sudo -u spark /data/spark/sbin/stop-master.sh
+        sudo -u spark rm -Rf /data/spark-tmp/*
+        sudo -u spark /data/spark/sbin/start-master.sh
+        sudo -u spark /data/spark/sbin/start-slaves.sh
+      </command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>

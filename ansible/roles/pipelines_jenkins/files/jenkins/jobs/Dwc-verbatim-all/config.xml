@@ -1,0 +1,108 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.39">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.7.1"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.7.1">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description>
+    Convert all DwCA archives in the import directory to verbatim.avro  
+    This pipeline job split large and small datasets.
+  </description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.82">
+    <script>
+
+def datasets = getDatasets()
+
+def branches = [:]
+
+def names = nodeNames()
+
+datasets.eachWithIndex { datasetId , index -&gt;
+
+  def nodeName = names[index.mod(names.size())]  
+  branches[&quot;node_&quot; + nodeName] = {
+    node(nodeName) {
+      echo &apos;Datasets &apos; + datasetId
+       build job: &apos;Dwc-verbatim-dataset&apos;, parameters: [
+           new org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterValue
+               (&quot;TARGET_NODE&quot;, &quot;description&quot;, nodeName),
+           string(name: &apos;datasetId&apos;, value: datasetId)   
+       ]
+    }
+  }    
+}
+
+stage (&apos;Clear existing file locks&apos;) {
+ node(&apos;master&apos;){
+    build job: &apos;Clear-file-locks&apos;, parameters: []
+ }
+}
+
+
+stage (&apos;DwC-A to Verbatim&apos;) {
+    parallel branches
+}
+
+stage (&apos;Clear file locks&apos;) {
+ node(&apos;master&apos;){
+    build job: &apos;Clear-file-locks&apos;, parameters: []
+ }
+}
+
+
+@NonCPS def getDatasets(){
+
+    def file = new File(&quot;/tmp/dataset-archive-list.csv&quot;)
+    def datasets = []
+    def line, noOfLines = 0;
+    file.withReader { reader -&gt;
+        while ((line = reader.readLine()) != null) {
+            datasets.add(line.split(&quot;,&quot;)[0])
+        }
+    }   
+
+    def batch1 = &quot;dr2009&quot;
+
+    def batch2 = &quot;dr368 dr376 dr1089&quot;
+
+    def batch3 = &quot;dr359 dr1097&quot;
+
+    def batch4  = &quot;dr1089 dr571 dr366 dr466 dr340 dr365 dr361 dr10487 dr9942 dr710 dr1132 dr1411&quot;
+
+    datasets.removeAll(batch1.split(&quot; &quot;))
+    datasets.removeAll(batch2.split(&quot; &quot;))
+    datasets.removeAll(batch3.split(&quot; &quot;))
+    datasets.removeAll(batch4.split(&quot; &quot;))
+
+    //split into 6 batches
+    def batches = [&quot;&quot;,&quot;&quot;]
+    datasets.eachWithIndex { datasetId, index -&gt; 
+        batches[index.mod(2)] =  batches[index.mod(2)] + &quot; &quot; + datasetId 
+    }
+
+    batches &lt;&lt; batch1
+    batches &lt;&lt; batch2
+    batches &lt;&lt; batch3
+    batches &lt;&lt; batch4
+
+    return batches
+}
+
+// This method collects a list of Node names from the current Jenkins instance 
+@NonCPS def nodeNames() { 
+  return jenkins.model.Jenkins.instance.nodes.collect { node -&gt; node.name } 
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
