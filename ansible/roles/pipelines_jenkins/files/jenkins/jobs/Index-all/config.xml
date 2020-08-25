@@ -1,0 +1,114 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.39">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.7.1"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.7.1">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description>
+    Index all datasets.
+    This pipeline job split large and small datasets.
+  </description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.82">
+    <script>
+
+stage(&apos;Dump out dataset counts&apos;) {
+ node(&apos;master&apos;){
+     sh &apos;la-pipelines dataset-list&apos;
+ }
+}
+
+def datasets = splitDatasetsBySize()
+def smallDatasets = datasets[0]
+def largeDatasets = datasets[1]
+
+// def largeDatasets = [&apos;dr893&apos;, &apos;dr9967&apos;, &apos;dr6687&apos;]
+
+stage(&apos;UUID large datasets on cluster&apos;) {
+ node(&apos;master&apos;){
+     largeDatasets.each { datasetId -&gt;
+        echo &apos;Large dataset for cluster: &apos; + datasetId
+        build job: &apos;Index-dataset&apos;, parameters: [
+             string(name: &apos;datasetId&apos;, value: datasetId),   
+             string(name: &apos;mode&apos;, value: &apos;--cluster&apos;)
+        ]        
+     }
+ }    
+}
+
+// set up for 
+def names = nodeNames()
+def batches = batchDatasets(smallDatasets, names.size())
+def branches = [:]  
+
+batches.eachWithIndex { batch, index -&gt;
+  def nodeName = names[index.mod(names.size())]  
+  branches[&quot;node_&quot; + nodeName] = {
+    node(nodeName) {
+      echo &apos;Datasets &apos; + batch
+      build job: &apos;Index-dataset&apos;, parameters: [
+           new org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterValue
+               (&quot;TARGET_NODE&quot;, &quot;description&quot;, nodeName),
+           string(name: &apos;datasetId&apos;, value: batch),   
+           string(name: &apos;mode&apos;, value: &apos;--local&apos;)
+      ]
+    }
+  } 
+}
+
+stage(&apos;UUID small datasets on jenkins nodes&apos;) {  
+  parallel branches
+}
+
+
+@NonCPS def batchDatasets(datasets, noOfBatches){
+    //split into 6 batches
+    def batches = [&quot;&quot;,&quot;&quot;,&quot;&quot;,&quot;&quot;,&quot;&quot;,&quot;&quot;]
+    datasets.eachWithIndex { datasetId, index -&gt; 
+        batches[index.mod(noOfBatches)] = datasetId + &quot; &quot; + batches[index.mod(noOfBatches)]
+    }
+    return batches
+}
+
+@NonCPS def splitDatasetsBySize(){
+  def file = new File(&quot;/tmp/dataset-counts.csv&quot;)
+
+  def small = []
+  def large = []
+
+  def datasetGroups = [small, large]
+
+  def line, noOfLines = 0;
+  file.withReader { reader -&gt;
+    while ((line = reader.readLine()) != null) {
+      def datasetId = line.split(&quot;,&quot;)[0]
+      def recordCount = line.split(&quot;,&quot;)[1]
+      if (recordCount.toLong() &gt; 100000){
+        large.add(datasetId)  
+      } else {
+        small.add(datasetId)
+      }
+    }
+  }   
+  return datasetGroups
+}
+
+// This method collects a list of Node names from the current Jenkins instance 
+@NonCPS def nodeNames() { 
+  return jenkins.model.Jenkins.instance.nodes.collect { node -&gt; node.name } 
+}
+
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
