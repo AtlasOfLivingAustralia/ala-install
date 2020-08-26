@@ -30,6 +30,11 @@
   tags:
     - pipelines_jenkins
 
+- name: HDFS and Spark tools
+  copy: src=pipelines.conf dest=/etc/environment.d/pipelines.conf
+  tags:
+    - pipelines_jenkins
+
 - name: Jenkins jobs definitions
   copy:
     src: jenkins/jobs/

@@ -13,19 +13,19 @@ run:
     sparkTmp: {{ spark_tmp }}
     sparkMaster: ""
     dwcaTmp: {{ dwca_tmp }}
-    dwcaImportDir: hdfs://{{ hadoop_master }}:9000/{{ dwca_import_dir }}
+    dwcaImportDir: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}
   spark-embedded:
     # jar: we get the jar from our dev or production environment
     sparkTmp: {{ spark_tmp }}
     sparkMaster: ""
     dwcaTmp: {{ dwca_tmp }}
-    dwcaImportDir: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/{{ dwca_import_dir }}
+    dwcaImportDir: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}
   spark-cluster:
     jar: /usr/share/la-pipelines/la-pipelines.jar
     sparkTmp: {{ spark_tmp }}
     sparkMaster: spark://{{ spark_master }}:7077
     dwcaTmp: {{ dwca_tmp }}
-    dwcaImportDir: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/{{ dwca_import_dir }}
+    dwcaImportDir: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}
 
 general:
   attempt: 1
@@ -35,12 +35,14 @@ general:
   targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
 dataset-count-dump:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+dataset-archive-list:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}/
 dwca-avro:
-  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/dwca-exports/{datasetId}/{datasetId}.zip
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}/{datasetId}/{datasetId}.zip
   tempLocation: {{ spark_tmp }}/dwca-avro/{datasetId}
   hdfsTempLocation: {{ spark_tmp }}
 interpret:
-  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-data/{datasetId}/1/verbatim.avro
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}/{datasetId}/1/verbatim.avro
 export-latlng:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
 uuid:
