@@ -1,3 +1,11 @@
+if("{{ mongodb_version }}" === "3.4"){
+    rs.initiate();
+    rs.add({ host: "{{ groups['secondary'][0] }}:27017", votes: 0, hidden: true, priority: 0});
+
+    printjson(rs.status());
+};
+
+if("{{ mongodb_version }}" === "4.0"){
 rs.initiate({
       _id: "{{ replicaSetName }}",
       version: 1,
@@ -5,5 +13,6 @@ rs.initiate({
          {_id: 0, host: "{{ groups['primary'][0] }}:27017", priority: {{ primary_priority }}, votes: {{primary_votes}}, hidden: {{ primary_hidden }} },
          {_id: 1, host: "{{ groups['secondary'][0] }}:27017", priority: {{ secondary_priority }}, votes: {{ secondary_votes }}, hidden: {{ secondary_hidden }} }
       ]
-   })
-printjson(rs.status())
+   });
+   printjson(rs.status());
+};

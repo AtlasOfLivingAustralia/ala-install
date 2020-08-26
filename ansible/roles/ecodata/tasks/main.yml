@@ -179,7 +179,8 @@
 - name: install cron job for indexing elastic search
   cron: minute=21 hour=22 name="Elastic search indexing" job="wget -O - {{ ecodata_url }}{{ ecodata_context_path }}/admin/reIndexAll >/dev/null 2>&1" user=root state=present
 
-- name: comment out lines in the configuration file
+# if you are using mongo version 3.4, set mongodb_version4=false
+- name: updating blindIp in both Primary and Secondary Server for mongodb 4.0
   replace:
     path: /etc/mongod.conf
     regexp: 'bindIp: 127.0.0.1'
@@ -187,13 +188,35 @@
   notify:
     - restart mongod
   tags: mongodb-org
+  when: "{% if mongo_replica_enabled and mongo_version4 %} True {% else %} False {% endif %}"
 
-- name: Insert replication set name
+- name: Updating blindIP for primary server for mongodb 3.4
+  replace:
+    path: /etc/mongod.conf
+    regexp: 'bindIp: 127.0.0.1'
+    replace: "bindIp: {{ groups['primary'][0] }},127.0.0.1"
+  notify:
+    - restart mongod
+  tags: mongodb-org
+  when: "{% if mongo_replication and mongo_version3 and replace_blindIp_Primary_Node %} True {% else %} False {% endif %}"
+
+- name: Updating blindIP for secondary server for mongodb 3.4
+  replace:
+    path: /etc/mongod.conf
+    regexp: 'bindIp: 127.0.0.1'
+    replace: "bindIp: {{ groups['secondary'][0] }},127.0.0.1"
+  notify:
+    - restart mongod
+  tags: mongodb-org
+  when: "{% if mongo_version3 and replace_blindIp_Secondary_Node and copy_mongorc_to_secondary_node %} True {% else %} False {% endif %}"
+
+
+- name: Insert replication set name both Server
   blockinfile:
     path: /etc/mongod.conf
     block: |
       replication:
-        replSetName: {{ replicaSetName }}
+        replSetName: rs0
   notify:
     - restart mongod
   tags: mongodb-org
@@ -218,9 +241,9 @@
     name: mongod
     state: started
 
-
 - name: wait connection to mongo port
   wait_for: host=0.0.0.0 port=27017 state="started" delay=5
+  when: "{% if mongo_replication and mongo_version4 %} True {% else %} False {% endif %}"
 
 # copying script to create a replica set
 - name: copy initrs script
@@ -230,11 +253,15 @@
   when:
     mongo_replication
 
-## Initialize the replica set
-- name: Initialize the replica set
+## Initialize the replica set in mongo version 3.4
+- name: Initialize the replica set in primary node for mongo version 3.4
+  command: mongo --host "{{ groups['primary'][0] }}" ./initRS.j2
+  when: "{% if mongo_replication and mongo_version3 %} True {% else %} False {% endif %}"
+
+## Initialize the replica set in mongo version 4.x
+- name: Initialize the replica set primary node for mongo version 4.x
   command: mongo ./initRS.j2
-  when:
-    mongo_replication
+  when: "{% if mongo_replication and mongo_version4 %} True {% else %} False {% endif %}"
 
 # Copy the mongorc to the secondary node. do connect between primary and secondary node without complication
 - name: copying mongorc to secondary mongo replica set
@@ -244,10 +271,22 @@
   when:
     copy_mongorc_to_secondary_node
 
+- name: Ensure replicaset rs0 exists
+  mongodb_replicaset:
+    login_host: "{{ groups['primary'][0] }}"
+    login_port: 27017
+    replica_set: rs0
+    members:
+      - "{{ groups['primary'][0] }}:27017"
+      - "{{ groups['secondary'][0] }}:27017"
+    validate: no
+  when:  mongo_replication
+
 #creating admin user only in primary server. because it a replica set admin it will sync in both primary and secondary
 # https://docs.ansible.com/ansible/latest/modules/mongodb_user_module.html
 - name: Create admin user if necessary
   mongodb_user:
+    login_host: "{{ groups['primary'][0] }}"
     database: "{{ mongodb_root_database | default('admin') }}"
     name: "{{ mongodb_root_username }}"
     password: "{{ mongodb_root_password }}"
@@ -258,7 +297,7 @@
   when:
     create_user_in_primary_node
 
-# this will only disabled  for ecodata.
+# this will added for the ecodata.
 - name: Enable security
   blockinfile:
     path: /etc/mongod.conf
@@ -272,9 +311,10 @@
     - restart mongod
   tags: mongodb-org
 
-# #Mongo users and database
+ #Mongo users and database
 - name: Create the ecodata database and user
   mongodb_user:
+    login_host: "{{ groups['primary'][0] }}"
     login_user: "{{ mongodb_root_username }}"
     login_password: "{{ mongodb_root_password }}"
     database: "{{ ecodata_database }}"
