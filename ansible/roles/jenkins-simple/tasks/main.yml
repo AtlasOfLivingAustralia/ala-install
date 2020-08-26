@@ -4,6 +4,10 @@
   when: ansible_os_family == "Debian"
   tags: jenkins
 
+- apt_key: url="http://pkg.jenkins-ci.org/{{ jenkins_channel }}/jenkins.io.key" state=present
+  when: ansible_os_family == "Debian"
+  tags: jenkins
+
 - apt_repository: repo="deb http://pkg.jenkins-ci.org/{{ jenkins_channel }} binary/" state=present update-cache=yes
   when: ansible_os_family == "Debian"
   tags: jenkins
