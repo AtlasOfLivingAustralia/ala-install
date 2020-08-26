@@ -220,6 +220,7 @@
   notify:
     - restart mongod
   tags: mongodb-org
+  when: mongo_replica_enabled
 
   # Copy the keyfile for authentication
 - name: copy security key file to nodes
@@ -230,6 +231,8 @@
 # changes access right of the key file for mongo,
 - name: change access right of key file
   file: path=/etc/mongodb-keyFile state=file owner=mongodb group=mongodb mode=0400
+  when:
+    mongo_replica_enabled
 
 - name: Stop mongod db server
   service:
@@ -283,8 +286,9 @@
   when:  mongo_replication
 
 #creating admin user only in primary server. because it a replica set admin it will sync in both primary and secondary
+# creating both admin and ecodata user in primary node after mongo replication
 # https://docs.ansible.com/ansible/latest/modules/mongodb_user_module.html
-- name: Create admin user if necessary
+- name: Create admin user after mongo replication
   mongodb_user:
     login_host: "{{ groups['primary'][0] }}"
     database: "{{ mongodb_root_database | default('admin') }}"
@@ -310,9 +314,11 @@
   notify:
     - restart mongod
   tags: mongodb-org
+  when:
+    mongo_replica_enabled
 
  #Mongo users and database
-- name: Create the ecodata database and user
+- name: Create the ecodata database and user after mongo replication for ecodata db
   mongodb_user:
     login_host: "{{ groups['primary'][0] }}"
     login_user: "{{ mongodb_root_username }}"
@@ -329,3 +335,20 @@
     - mongodb-org
   when:
     create_user_in_primary_node
+
+#Mongo users and database for not replica set
+# Mongo users and database
+- name: Create the ecodata database and user
+  mongodb_user:
+    login_user: "{{ mongodb_root_username }}"
+    login_password: "{{ mongodb_root_password }}"
+    login_port: "{{ mongodb_port }}"
+    database: "{{ ecodata_database }}"
+    name: "{{ ecodata_username }}"
+    password: "{{ ecodata_password }}"
+    roles:
+      - { db: "{{ ecodata_database }}", role: "dbAdmin" }
+      - { db: "{{ ecodata_database }}", role: "readWrite" }
+  tags:
+    - mongodb-org
+  when: create_ecodata_user_not_for_mongo_replica
