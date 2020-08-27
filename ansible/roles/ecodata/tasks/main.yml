@@ -296,7 +296,10 @@
     password: "{{ mongodb_root_password }}"
     replica_set: "{{replicaSetName}}"
     state: present
-    roles: readWriteAnyDatabase
+    roles:
+      - { db: "{{ mongodb_root_database | default('admin') }}", role: "dbAdmin" }
+      - { db: "{{ mongodb_root_database | default('admin') }}", role: "clusterAdmin" }
+      - { db: "{{ mongodb_root_database | default('admin') }}", role: "readWriteAnyDatabase" }
   tags: mongodb-org
   when:
     create_user_in_primary_node
