@@ -78,7 +78,7 @@
     msg: "Mongo admin query output: {{ get_mongo_admin_users.rc }}, stdout if any: {{ get_mongo_admin_users.stdout }}. If equals 0 and no error in command: not admin users configured"
   tags: mongodb-org
 
-#only create mongo admin user when disabled_creating_admin_user_for_replica_set = True. but when for ecodata replica set it false because,
+# don't remove role: clusterAdmin roles its used by ecodata
 # after creating rs.initiate().
 # https://docs.ansible.com/ansible/latest/modules/mongodb_user_module.html
 - name: Create admin user if necessary
@@ -88,9 +88,12 @@
     password: "{{ mongodb_root_password }}"
     state: present
     login_port: "{{ mongodb_port }}"
-    roles: "userAdminAnyDatabase"
+    roles:
+      - { db: "{{ mongodb_root_database | default('admin') }}", role: "clusterAdmin" }
+      - { db: "{{ mongodb_root_database | default('admin') }}", role: "userAdminAnyDatabase" }
+
   tags: mongodb-org
-  when: disabled_creating_admin_user_for_replica_set | bool == True or get_mongo_admin_users.rc == 0
+  when: get_mongo_admin_users.rc == 0
 
 
 - name: Enable security
