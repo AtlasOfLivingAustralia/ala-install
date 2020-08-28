@@ -71,7 +71,7 @@ doi:
   service:
     # ANDS or DATACITE
     provider: 
-      mapping: { {{ doi_service_la_provider_name }}: '{{ doi_service_provider | default('DATACITE') }}' }
+      mapping: { {{ doi_service_la_provider_name }}: '{{ doi_service_default_provider | default('DATACITE') }}' }
 {% endif %}
   storage:
     provider: {{ doi_storage_provider | default('LOCAL') }}
