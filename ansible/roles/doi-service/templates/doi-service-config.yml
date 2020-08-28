@@ -67,9 +67,12 @@ headerAndFooter:
   version: {{ header_and_footer_version | default('2') }}
 
 doi:
+{% if doi_service_la_provider_name is defined %}  
   service:
     # ANDS or DATACITE
-    provider: {{ doi_service_provider | default('DATACITE') }}
+    provider: 
+      mapping: { {{ doi_service_la_provider_name }}: '{{ doi_service_provider | default('DATACITE') }}' }
+{% endif %}
   storage:
     provider: {{ doi_storage_provider | default('LOCAL') }}
   displayTemplates:
