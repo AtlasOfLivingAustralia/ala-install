@@ -56,6 +56,7 @@ ecodata_tomcat_server_port=8060
 
 replicaSetName=rs0
 
-ecodata_keyFile=/etc/mongodb-keyfile
+ecodata_local_authentication_keyFile=
+ecodata_keyFile=/etc/mongodb-keyFile
 
 ecodata_SystemLog=/var/log/mongodb

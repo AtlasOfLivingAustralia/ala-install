@@ -179,7 +179,6 @@
 - name: install cron job for indexing elastic search
   cron: minute=21 hour=22 name="Elastic search indexing" job="wget -O - {{ ecodata_url }}{{ ecodata_context_path }}/admin/reIndexAll >/dev/null 2>&1" user=root state=present
 
-
 # Mongo users and database
 - name: Create the ecodata database and user
   mongodb_user:
@@ -195,22 +194,112 @@
   tags:
     - mongodb-org
 
+- name: Insert replication set name both Server
+  blockinfile:
+    path: /etc/mongod.conf
+    block: |
+      replication:
+        replSetName: rs0
+  notify:
+    - restart mongod
+  tags: mongodb-org
+  when: mongo_replica_enabled
+
+  # Copy the keyfile for authentication
+- name: copy security key file to nodes
+  copy: src={{ ecodata_local_authentication_keyFile }} dest=/etc/mongodb-keyFile mode=0400
+  when:
+    mongo_replica_enabled
+
+# changes access right of the key file for mongo,
+- name: change access right of key file
+  file: path=/etc/mongodb-keyFile state=file owner=mongodb group=mongodb mode=0400
+  when:
+    mongo_replica_enabled
+
+- name: Enable security
+  blockinfile:
+    path: /etc/mongod.conf
+    backup: yes
+    marker: '# {mark} Enable mongodb security authorization'
+    block: |
+      security:
+        authorization: enabled
+        keyFile: /etc/mongodb-keyFile
+  notify:
+    - restart mongod
+  tags: mongodb-org
+  when:
+    mongo_replica_enabled
+
 - name: Stop mongo Service
   service:
     name: mongod
     state: stopped
-
-# Update mongod.conf again but now with security configured
-- name: Update mongod.conf
-  template:
-    src: mongod.conf.j2
-    dest: /etc/mongod.conf
-  when:
-    mongo_replica_enabled
 
 - name: Start mongod as a service with security
   service:
     name: mongod
     state: started
 
+- name: Updating blindIP for primary server for mongodb 3.4
+  replace:
+    path: /etc/mongod.conf
+    regexp: 'bindIp: 127.0.0.1'
+    replace: "bindIp: {{ primary_ip }},127.0.0.1"
+  notify:
+    - restart mongod
+  tags: mongodb-org
+  when: "{% if mongo_replication and mongo_version3 and replace_blindIp_Primary_Node %} True {% else %} False {% endif %}"
 
+- name: Updating blindIP for secondary server for mongodb 3.4
+  replace:
+    path: /etc/mongod.conf
+    regexp: 'bindIp: 127.0.0.1'
+    replace: "bindIp: {{ secondary_ip }},127.0.0.1"
+  notify:
+    - restart mongod
+  tags: mongodb-org
+  when: "{% if mongo_version3 and replace_blindIp_Secondary_Node and copy_mongorc_to_secondary_node %} True {% else %} False {% endif %}"
+
+
+- name: Stop mongod db server
+  service:
+    name: mongod
+    state: stopped
+
+- name: Start mongod server
+  service:
+    name: mongod
+    state: started
+
+# copying script to create a replica set
+- name: copy initrs script only for mongo version 3.4
+  template:
+    src: initRS.j2
+    dest: ./initRS.j2
+  when:
+    "{% if mongo_replication and mongo_version3 %} True {% else %} False {% endif %}"
+
+## Initialize the replica set in mongo version 3.4
+- name: Initialize the replica set in primary node for mongo version 3.4
+  command: mongo --host "{{ primary_ip }}" --authenticationDatabase "{{ mongodb_root_database | default('admin') }}" -u "{{ mongodb_root_username }}" -p "{{ mongodb_root_password }}" ./initRS.j2
+  when: "{% if mongo_replication and mongo_version3 %} True {% else %} False {% endif %}"
+
+# Copy the mongorc to the secondary node. do connect between primary and secondary node without complication
+- name: copying mongorc to secondary mongo replica set
+  template:
+    src: mongorc.js
+    dest: /etc/mongorc.js
+  when:
+    copy_mongorc_to_secondary_node
+
+- name: Stop mongod db server
+  service:
+    name: mongod
+    state: stopped
+
+- name: Start mongod server
+  service:
+    name: mongod
+    state: started
