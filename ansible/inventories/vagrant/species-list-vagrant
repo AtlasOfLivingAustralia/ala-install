@@ -41,3 +41,4 @@ header_and_footer_baseurl=https://www.ala.org.au/commonui-bs3
 iconic_species_uid=drt1502348249607
 webserver_nginx=true
 set_sql_mode=true
+nginx_vhost_fragments_to_clear = ["lists-vagrant1.ala.org.au"]

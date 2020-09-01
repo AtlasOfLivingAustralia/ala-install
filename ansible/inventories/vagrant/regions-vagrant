@@ -28,3 +28,4 @@ auth_cas_url=https://auth.ala.org.au/cas
 
 regions=regions
 webserver_nginx=true
+nginx_vhost_fragments_to_clear = ["regions.vagrant1.ala.org.au"]

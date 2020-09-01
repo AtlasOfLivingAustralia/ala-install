@@ -39,3 +39,4 @@ doi_aws_s3_bucket=change me
 #
 ssl=false
 webserver_nginx=true
+nginx_vhost_fragments_to_clear = ["doi.vagrant1.ala.org.au"]

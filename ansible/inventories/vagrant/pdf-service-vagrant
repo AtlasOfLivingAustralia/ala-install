@@ -9,3 +9,5 @@ ssl=false
 profile_service_context=''
 profile_service_host=pdfgen.vagrant1.ala.org.au
 pdf_service_version=1.2-SNAPSHOT
+
+nginx_vhost_fragments_to_clear = ["pdfgen.vagrant1.ala.org.au"]
