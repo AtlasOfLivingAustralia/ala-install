@@ -14,6 +14,7 @@ auth_cas_url=https://auth.ala.org.au/cas
 
 deployment_env=vagrant
 webserver_nginx=true
+nginx_vhost_fragments_to_clear = ["merit.vagrant1.ala.org.au"]
 ssl=false
 
 ala_baseURL=https://www.ala.org.au
