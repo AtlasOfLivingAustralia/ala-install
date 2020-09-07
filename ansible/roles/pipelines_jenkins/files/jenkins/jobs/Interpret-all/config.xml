@@ -1,5 +1,4 @@
-<?xml version='1.1' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@2.39">
+<?xml version="1.1" encoding="UTF-8" standalone="no"?><flow-definition plugin="workflow-job@2.39">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.7.1"/>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.7.1">
@@ -9,19 +8,20 @@
       <options/>
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
-  <description>
-    Interpret all datasets.
-    This pipeline job split large and small datasets.
+  <description>&#13;
+    Interpret all datasets.&#13;
+    This pipeline job split large and small datasets.&#13;
   </description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.82">
     <script>
-stage(&apos;Dump out dataset counts&apos;) {
- node(&apos;master&apos;){
-     sh &apos;la-pipelines dataset-list&apos;
+stage('Dump out dataset counts') {
+ node('master'){
+     sh 'sudo -u spark la-pipelines dataset-list'
  }
 }
 
@@ -29,15 +29,13 @@ def datasets = splitDatasetsBySize()
 def smallDatasets = datasets[0]
 def largeDatasets = datasets[1]
 
-// def largeDatasets = [&apos;dr893&apos;, &apos;dr9967&apos;, &apos;dr6687&apos;]
-
-stage(&apos;Interpret large datasets on cluster&apos;) {
- node(&apos;master&apos;){
+stage('Interpret large datasets on cluster') {
+ node('master'){
      largeDatasets.each { datasetId -&gt;
-        echo &apos;Large dataset for cluster: &apos; + datasetId
-        build job: &apos;Interpret-dataset&apos;, parameters: [
-             string(name: &apos;datasetId&apos;, value: datasetId),   
-             string(name: &apos;mode&apos;, value: &apos;--cluster&apos;)
+        echo 'Large dataset for cluster: ' + datasetId
+        build job: 'Interpret-dataset', parameters: [
+             string(name: 'datasetId', value: datasetId),
+             string(name: 'mode', value: '--cluster')
         ]        
      }
  }    
@@ -50,35 +48,34 @@ def branches = [:]
 
 batches.eachWithIndex { batch, index -&gt;
   def nodeName = names[index.mod(names.size())]  
-  branches[&quot;node_&quot; + nodeName] = {
+  branches["node_" + nodeName] = {
     node(nodeName) {
-      echo &apos;Datasets &apos; + batch
-      build job: &apos;Interpret-dataset&apos;, parameters: [
+      echo 'Datasets ' + batch
+      build job: 'Interpret-dataset', parameters: [
            new org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterValue
-               (&quot;TARGET_NODE&quot;, &quot;description&quot;, nodeName),
-           string(name: &apos;datasetId&apos;, value: batch),   
-           string(name: &apos;mode&apos;, value: &apos;--local&apos;)
+               ("TARGET_NODE", "description", nodeName),
+           string(name: 'datasetId', value: batch),
+           string(name: 'mode', value: '--local')
       ]
     }
   } 
 }
 
-stage(&apos;Interpret small datasets on jenkins nodes&apos;) {  
+stage('Interpret small datasets on jenkins nodes') {
   parallel branches
 }
 
-
 @NonCPS def batchDatasets(datasets, noOfBatches){
     //split into 6 batches
-    def batches = [&quot;&quot;,&quot;&quot;,&quot;&quot;,&quot;&quot;,&quot;&quot;,&quot;&quot;]
+    def batches = ["","","","","",""]
     datasets.eachWithIndex { datasetId, index -&gt; 
-        batches[index.mod(noOfBatches)] = datasetId + &quot; &quot; + batches[index.mod(noOfBatches)]
+        batches[index.mod(noOfBatches)] = datasetId + " " + batches[index.mod(noOfBatches)]
     }
     return batches
 }
 
 @NonCPS def splitDatasetsBySize(){
-  def file = new File(&quot;/tmp/dataset-counts.csv&quot;)
+  def file = new File("/tmp/dataset-counts.csv")
 
   def small = []
   def large = []
@@ -88,9 +85,9 @@ stage(&apos;Interpret small datasets on jenkins nodes&apos;) {
   def line, noOfLines = 0;
   file.withReader { reader -&gt;
     while ((line = reader.readLine()) != null) {
-      def datasetId = line.split(&quot;,&quot;)[0]
-      def recordCount = line.split(&quot;,&quot;)[1]
-      if (recordCount.toLong() &gt; 100000){
+      def datasetId = line.split(",")[0]
+      def recordCount = line.split(",")[1]
+      if (recordCount.toLong() &gt; 300000){
         large.add(datasetId)  
       } else {
         small.add(datasetId)

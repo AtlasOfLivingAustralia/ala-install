@@ -27,12 +27,19 @@ run:
     dwcaTmp: {{ dwca_tmp }}
     dwcaImportDir: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}
 
+collectory:
+  httpHeaders:
+    Authorization: {{ collectory_api_key }}
+
+
 general:
   attempt: 1
   hdfsSiteConfig: {{ hadoop_install_dir }}/etc/hadoop/hdfs-site.xml
   coreSiteConfig: {{ hadoop_install_dir }}/etc/hadoop/core-site.xml
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+dataset-validated-dump:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
 dataset-count-dump:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
 dataset-archive-list:
@@ -51,6 +58,12 @@ sample:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
 sample-avro:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+validation-report:
+  checkSolr: {{ check_solr }}
+  checkSampling: {{ include_sampling }}
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  zkHost: {{ zk_host | default('localhost:2181') }}
 index:
+  includeSampling: {{ include_sampling }}
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   zkHost: {{ zk_host | default('localhost:2181') }}

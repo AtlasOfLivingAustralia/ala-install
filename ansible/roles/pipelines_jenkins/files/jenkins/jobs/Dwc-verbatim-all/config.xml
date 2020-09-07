@@ -9,16 +9,20 @@
       <options/>
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
-  <description>
-    Convert all DwCA archives in the import directory to verbatim.avro  
-    This pipeline job split large and small datasets.
+  <description>&#xd;
+    Convert all DwCA archives in the import directory to verbatim.avro  &#xd;
+    This pipeline job split large and small datasets.&#xd;
   </description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.82">
-    <script>
+    <script>stage(&apos;Dump out archive list&apos;) {
+ node(&apos;master&apos;){
+     sh &apos;sudo -u spark la-pipelines archive-list&apos;
+ }
+}
 
 def datasets = getDatasets()
 
@@ -47,7 +51,6 @@ stage (&apos;Clear existing file locks&apos;) {
  }
 }
 
-
 stage (&apos;DwC-A to Verbatim&apos;) {
     parallel branches
 }
@@ -57,7 +60,6 @@ stage (&apos;Clear file locks&apos;) {
     build job: &apos;Clear-file-locks&apos;, parameters: []
  }
 }
-
 
 @NonCPS def getDatasets(){
 

@@ -58,17 +58,15 @@
   <builders>
     <hudson.tasks.Shell>
       <command>#!/bin/bash
-        set -ex
-        if [[ &quot;$exportExtensions&quot; == &quot;true&quot; ]]; then
-        sudo -u spark biocache export-dwca --export-extensions true ${dataResources} ${outputDir} -t ${threads} -ps ${pageSize}
-        else
-        sudo -u spark biocache export-dwca ${dataResources} ${outputDir} -t ${threads} -ps ${pageSize}
-        fi
-        echo 'Copying files to HDFS'
-        sudo -u spark /data/hadoop/bin/hdfs dfs mkdir -p ${hdfsTargetDir}
-        # sudo -u spark /data/hadoop/bin/hdfs dfs rm -r ${hdfsTargetDir}/*
-        sudo -u spark /data/hadoop/bin/hdfs dfs -copyFromLocal ${outputDir}/* ${hdfsTargetDir}/
+
+set -ex
+if [[ &quot;$exportExtensions&quot; == &quot;true&quot; ]]; then
+  sudo -u spark biocache export-dwca --export-extensions true ${dataResources} ${outputDir} -t ${threads} -ps ${pageSize}
+else
+  sudo -u spark biocache export-dwca ${dataResources} ${outputDir} -t ${threads} -ps ${pageSize}
+fi
       </command>
+      <configuredLocalRules/>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>
