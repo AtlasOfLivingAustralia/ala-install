@@ -38,6 +38,7 @@ layers_db_password=password
 webserver_nginx=true
 robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
 robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
+nginx_vhost_fragments_to_clear = ["vagrant1.ala.org.au"]
 
 ###
 # Geonetwork
@@ -122,6 +123,7 @@ tomcat_java_opts = -Xmx2g -Xms2g -Xss512k -Djava.awt.headless=true
 webserver_nginx=true
 robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
 robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
+nginx_vhost_fragments_to_clear = ["vagrant1.ala.org.au"]
 
 max_file_request_size=52428800
 

@@ -1,6 +1,6 @@
-CREATE KEYSPACE occ WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '2'}  AND durable_writes = true;
+CREATE KEYSPACE IF NOT EXISTS occ WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '2'}  AND durable_writes = true;
 
-CREATE TABLE occ.loc (
+CREATE TABLE IF NOT EXISTS occ.loc (
     rowkey text PRIMARY KEY,
     lat text,
     lon text
@@ -19,7 +19,7 @@ CREATE TABLE occ.loc (
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE occ.taxon (
+CREATE TABLE IF NOT EXISTS occ.taxon (
     rowkey text PRIMARY KEY,
     "commonName" text,
     conservation text,
@@ -39,7 +39,7 @@ CREATE TABLE occ.taxon (
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE occ.distribution_outliers (
+CREATE TABLE IF NOT EXISTS occ.distribution_outliers (
     rowkey text PRIMARY KEY
 ) WITH bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
@@ -56,7 +56,7 @@ CREATE TABLE occ.distribution_outliers (
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE occ.attr (
+CREATE TABLE IF NOT EXISTS occ.attr (
     rowkey text PRIMARY KEY,
     "collectionName" text,
     "collectionUid" text,
@@ -82,7 +82,7 @@ CREATE TABLE occ.attr (
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE occ.duplicates (
+CREATE TABLE IF NOT EXISTS occ.duplicates (
     rowkey text PRIMARY KEY
 ) WITH bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
@@ -99,7 +99,7 @@ CREATE TABLE occ.duplicates (
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE occ.qa (
+CREATE TABLE IF NOT EXISTS occ.qa (
     rowkey text,
     "userId" text,
     code text,
@@ -131,7 +131,7 @@ CREATE TABLE occ.qa (
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE occ.occ (
+CREATE TABLE IF NOT EXISTS occ.occ (
     rowkey text PRIMARY KEY ,
     "dataResourceUid" text,
     "IdentificationQualifierProcessor_qa" text,
@@ -558,9 +558,9 @@ CREATE TABLE occ.occ (
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
 
-CREATE INDEX ON occ.occ ("dataResourceUid");
+CREATE INDEX IF NOT EXISTS ON occ.occ ("dataResourceUid");
 
-CREATE TABLE occ.queryassert (
+CREATE TABLE IF NOT EXISTS occ.queryassert (
     rowkey text PRIMARY KEY
 ) WITH bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
@@ -577,7 +577,7 @@ CREATE TABLE occ.queryassert (
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE occ.occ_duplicates (
+CREATE TABLE IF NOT EXISTS occ.occ_duplicates (
     rowkey text PRIMARY KEY
 ) WITH bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
@@ -594,7 +594,7 @@ CREATE TABLE occ.occ_duplicates (
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE occ.occ_outliers (
+CREATE TABLE IF NOT EXISTS occ.occ_outliers (
     rowkey text PRIMARY KEY,
     "jackKnife" text
 ) WITH bloom_filter_fp_chance = 0.01
@@ -612,7 +612,7 @@ CREATE TABLE occ.occ_outliers (
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE occ.upload (
+CREATE TABLE IF NOT EXISTS occ.upload (
     rowkey text PRIMARY KEY
 ) WITH bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
@@ -629,7 +629,7 @@ CREATE TABLE occ.upload (
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE occ.occ_uuid (
+CREATE TABLE IF NOT EXISTS occ.occ_uuid (
     rowkey text PRIMARY KEY,
     value text
 ) WITH bloom_filter_fp_chance = 0.01
@@ -647,9 +647,9 @@ CREATE TABLE occ.occ_uuid (
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
 
-CREATE INDEX ON occ.occ_uuid (value);
+CREATE INDEX IF NOT EXISTS ON occ.occ_uuid (value);
 
-CREATE TABLE occ.qid (
+CREATE TABLE IF NOT EXISTS occ.qid (
     rowkey text PRIMARY KEY,
     bbox text,
     "displayString" text,
@@ -674,7 +674,7 @@ CREATE TABLE occ.qid (
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE occ.outliers (
+CREATE TABLE IF NOT EXISTS occ.outliers (
     rowkey text PRIMARY KEY,
     "jackKnifeOutliers" text,
     "jackKnifeStats" text
@@ -693,7 +693,7 @@ CREATE TABLE occ.outliers (
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE occ.dellog (
+CREATE TABLE IF NOT EXISTS occ.dellog (
     rowkey text PRIMARY KEY
 ) WITH bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
@@ -710,7 +710,7 @@ CREATE TABLE occ.dellog (
     AND read_repair_chance = 0.0
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE occ.loc_new (
+CREATE TABLE IF NOT EXISTS occ.loc_new (
     rowkey text PRIMARY KEY
 ) WITH bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}

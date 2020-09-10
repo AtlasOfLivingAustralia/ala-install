@@ -20,7 +20,7 @@ biocache_service_context_path = /biocache-service
 biocache_hub_hostname = biocache.vagrant1.ala.org.au
 biocache_hub_url = http://biocache.vagrant1.ala.org.au
 biocache_hub_base_url = http://biocache.vagrant1.ala.org.au
-biocache_hub_context_path = 
+biocache_hub_context_path =
 
 solr_hostname = localhost:8080
 solr_url = http://localhost:8080/solr
@@ -30,7 +30,7 @@ solr_context_path = /solr
 collectory_hostname = collections.vagrant1.ala.org.au
 collectory_url = http://collections.vagrant1.ala.org.au
 collectory_base_url = http://collections.vagrant1.ala.org.au
-collectory_context_path = 
+collectory_context_path =
 
 #
 # Other services not deployed as part of this script
@@ -59,7 +59,7 @@ caches_auth_enabled = false
 caches_collections_enabled = false
 name_index_dir = /data/lucene/namematching
 sample_files = none
-default_country = 
+default_country =
 layers_service_sampling = true
 bie_service_enabled = false
 
@@ -70,6 +70,7 @@ download_auth_sensitive=true
 download_email_subject=VAGRANT - [hubName] Occurrence Download Complete - [filename]
 
 webserver_nginx=true
+nginx_vhost_fragments_to_clear = ["vagrant1.ala.org.au"]
 ssl=false
 
 nameindex_variant=ala

@@ -7,6 +7,7 @@ local_repo_dir=~/.ala
 data_dir=/data
 
 webserver_nginx=true
+nginx_vhost_fragments_to_clear = ["phylolink.vagrant1.ala.org.au"]
 
 phylolink_db_password=h#1%&4
 phylolink_hostname=phylolink.vagrant1.ala.org.au

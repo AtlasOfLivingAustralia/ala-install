@@ -179,6 +179,7 @@ caches_collections_enabled=false
 caches_layers_enabled=false
 
 webserver_nginx=true
+nginx_vhost_fragments_to_clear = ["demo.vagrant1.ala.org.au"]
 ssl=false
 
 nameindex_variant=ala
