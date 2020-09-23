@@ -44,7 +44,7 @@ There are some helping tools to generate these inventories from scratch:
 * The [Living Atlas Generator](https://generator.l-a.site/), a web tool asistant to help you in these initial steps,
 * Or if you prefer the command line, the [yeoman living-atlas generator.](https://www.npmjs.com/package/generator-living-atlas)
 
-These tools also generate some [ansible-playbook wrapper](https://github.com/living-atlases/generator-living-atlas#ansible-wrapper) to deploy our main playbooks without to much pain.
+These tools also generate some [ansible-playbook wrapper](https://github.com/living-atlases/generator-living-atlas#ansible-wrapper) to deploy our main playbooks without too much pain.
 
 The [LA Quick Start Guide](https://github.com/AtlasOfLivingAustralia/documentation/wiki/LA-Quick-Start-Guide) gives you a broad view of the [prerequisites](https://github.com/AtlasOfLivingAustralia/documentation/wiki/LA-Quick-Start-Guide#before-install) and [post-intall](https://github.com/AtlasOfLivingAustralia/documentation/wiki/LA-Quick-Start-Guide#post-install) steps you need in order to setup a production LA portal.
 
