@@ -1,10 +1,10 @@
 # ALA Installation Scripts
-This project contains [Ansible](http://www.ansible.com/) playbooks for setting up ALA components on Ubuntu 16 machines.
-This project includes a playbook for setting up the [ALA demo ](http://ala-demo.gbif.org).
+This project contains [Ansible](http://www.ansible.com/) playbooks for setting up ALA components on Ubuntu 16 machines and above.
+This project includes a playbook for setting up an ALA demo.
 
-## Ansible version
+## Prerequisites
 
-### The current supported version is: **2.9.7**
+### Ansible: The current supported version is: **2.9.7**
 
 The playbooks and roles in this repository have been developed and tested against the above version.
 
@@ -35,11 +35,25 @@ ERROR: apache2_module is not a legal parameter in an Ansible task or handler.
 ```
 then you have an older version of Ansible.
 
-## Setup the Living Atlas demo
+## Setup a Living Atlas
 
-Below are some instructions for setting up the Living Atlas demo with Ansible & Vagrant on your local machine or laptop.
+A Living Atlas (LA) can be typically deployed using these [ALA ansible playbooks](https://github.com/AtlasOfLivingAustralia/ala-install/tree/master/ansible) with some custom ansible inventories with information about your LA site (like your domain, organization name, name of the servers to use, contact email, and a big etcetera).
+
+There are some helping tools to generate these inventories from scratch:
+
+* The [Living Atlas Generator](https://generator.l-a.site/), a web tool asistant to help you in these initial steps,
+* Or if you prefer the command line, the [yeoman living-atlas generator.](https://www.npmjs.com/package/generator-living-atlas)
+
+These tools also generate some [ansible-playbook wrapper](https://github.com/living-atlases/generator-living-atlas#ansible-wrapper) to deploy our main playbooks without to much pain.
+
+The [LA Quick Start Guide](https://github.com/AtlasOfLivingAustralia/documentation/wiki/LA-Quick-Start-Guide) gives you a broad view of the [prerequisites](https://github.com/AtlasOfLivingAustralia/documentation/wiki/LA-Quick-Start-Guide#before-install) and [post-intall](https://github.com/AtlasOfLivingAustralia/documentation/wiki/LA-Quick-Start-Guide#post-install) steps you need in order to setup a production LA portal.
+
+## Setup the Living Atlas demo with Vagrant
+
+Below are some instructions for setting up the Living Atlas demo with Ansible & Vagrant on your local machine or laptop using a demo simple inventory.
 
 #### 1. Vagrant
+
 [Vagrant](http://www.vagrantup.com) can be used to test ansible playbooks on your local machine. To use this, you will need to install
 [VirtualBox](https://www.virtualbox.org) and [Vagrant](http://www.vagrantup.com). We recommend using vagrant version 2.0.4. Earlier versions of vagrant will not work with the ```VagrantFile``` in this repository.
 
@@ -115,17 +129,17 @@ Once completed successfully you can view the demo on http://demo.vagrant1.ala.or
 ## Installing the ALA demo on EC2 or other cloud providers
 
 There is an inventory you can use to setup the demo on a cloud provider [here](ansible/inventories/living-atlas).
-An Ubuntu 16 instance with 15GB of RAM and 4 CPUs is recommended. The scripts where tested on 30th April 2015 and took approximately 20 mins to run on a EC2 instance.
+An Ubuntu 18 instance with 15GB of RAM and 4 CPUs is recommended. The scripts where tested on 30th April 2015 and took approximately 20 mins to run on a EC2 instance.
 
 Here are the steps to run with this inventory:
 
- *  Create your Ubuntu 16 instance. Make sure your machine is open on *ports 22, 80 and 443*. 
+ *  Create your Ubuntu 18 instance. Make sure your machine is open on *ports 22, 80 and 443*.
 
  *  Add the following to your */etc/hosts* file on the machine your are running ansible from (e.g. your laptop):
 ```
-12.12.12.12	ala-demo	ala-demo.org 
+12.12.12.12	ala-demo  ala-demo.org  living-atlas.org
 ```
-You'll need to replace "12.12.12.12" with the IP address of your newly created Ubuntu 16 instance.
+You'll need to replace "12.12.12.12" with the IP address of your newly created Ubuntu 18 instance.
 
  * Run the following:
 ```
@@ -134,10 +148,11 @@ ansible-playbook --private-key ~/.ssh/MyPrivateKey.pem --user ubuntu --become -i
  * View http://living-atlas.org
  
 ##### That worked, now what do I do ?
+
  * Have a look at the [documentation](https://github.com/AtlasOfLivingAustralia/documentation/wiki/First-data-resource) and load a data resource.
 
 
-### Vagrant
+## Installing other Vagrant playbooks
 
 The ```inventories/vagrant/``` directory contains sample inventories for most playbooks that will work against a Ubuntu Vagrant virtual machine. To use these inventories, add an entry for ```vagrant1``` and ```vagrant1.ala.org.au``` to your hosts file, or edit the inventory file and replace the hostnames and URLs, then run
 
