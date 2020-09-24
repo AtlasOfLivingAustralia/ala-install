@@ -41,7 +41,7 @@ A Living Atlas (LA) can be typically deployed using these [ALA ansible playbooks
 
 There are some helping tools to generate these inventories from scratch:
 
-* The [Living Atlas Generator](https://generator.l-a.site/), a web tool asistant to help you in these initial steps,
+* The [Living Atlas Generator](https://generator.l-a.site/), a web tool assistant to help you in these initial steps,
 * Or if you prefer the command line, the [yeoman living-atlas generator.](https://www.npmjs.com/package/generator-living-atlas)
 
 These tools also generate some [ansible-playbook wrapper](https://github.com/living-atlases/generator-living-atlas#ansible-wrapper) to deploy our main playbooks without too much pain.
