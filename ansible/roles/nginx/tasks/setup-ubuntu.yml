@@ -1,4 +1,9 @@
 ---
+- name: Add gpg dep for nginx repo
+  apt:
+    name: gpg
+    state: present
+
 - name: Add PPA key for Nginx repository
   apt_key:
     keyserver: "hkp://keyserver.ubuntu.com:80"
