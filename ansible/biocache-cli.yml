@@ -2,7 +2,7 @@
   gather_facts: False
   tasks:
   - name: install python 2
-    raw: sudo bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qy python-minimal)"
+    raw: sudo bash -c "test -e /usr/bin/python || (apt -qqy update && apt-get install -qy 'python2.*-minimal')"
 
 - hosts: biocache-cli
   roles:
