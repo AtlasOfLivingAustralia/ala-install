@@ -6,7 +6,7 @@ This project includes a playbook for setting up an ALA demo.
 
 ### Ansible: The current supported version is: **2.9.7**
 
-The playbooks and roles in this repository have been developed and tested against the above version.
+The playbooks and roles in this repository have been developed and tested against the above version. Typically you need to install ansible in your computer or in the computer you'll use to deploy from.
 
 NOTE: many linux packages have an older version of Ansible (1.7 or even 1.5). You will need to update your packages and upgrade ansible first.
 
@@ -34,6 +34,10 @@ If you see this error:
 ERROR: apache2_module is not a legal parameter in an Ansible task or handler.
 ```
 then you have an older version of Ansible.
+
+### Operating System
+
+These playbooks and roles are currently well tested on Ubuntu `18.04`. We are testing also Ubuntu `20.04` but it's a work in progress. We have less tested other distributions like Redhat or even Debian as the big majority of our production deployments run over Ubuntu.
 
 ## Setup a Living Atlas
 
