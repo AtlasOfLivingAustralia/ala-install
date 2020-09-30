@@ -1,0 +1,14 @@
+---
+# Use this playbook once on a new server to install python2 and python3
+# must pass target var e.g. ansible-playbook newserver.yml -i /path/to/inventories/your-inventory-file -u ${USER} --private-key=~/.ssh/id_rsa --extra-vars 'target=bla-bla'
+- hosts: '{{ target }}'
+  gather_facts: false
+  pre_tasks:
+  - name: Install python2 and python3 for Ansible
+    raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt-get install -qqy python3-minimal 'python2.*-minimal')"
+    register: output
+    changed_when: output.stdout != ""
+  - name: Gathering Facts
+    setup:
+  become: yes
+
