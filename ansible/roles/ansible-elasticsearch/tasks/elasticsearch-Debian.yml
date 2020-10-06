@@ -47,9 +47,10 @@
       state: present
 
   - name: Debian - Add Elasticsearch repository key
-    apt_key:
+    get_url:
       url: '{{ es_apt_key }}'
-      state: present
+      dest: /etc/apt/trusted.gpg.d/elasticsearch.asc
+      mode: 0644
     when: es_add_repository and es_apt_key | string
 
   - name: Debian - Add elasticsearch repository
