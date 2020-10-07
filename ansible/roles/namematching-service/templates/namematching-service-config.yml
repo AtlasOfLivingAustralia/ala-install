@@ -1,0 +1,35 @@
+logging:
+  level: INFO
+  loggers:
+    au.org.ala: WARN
+    org.reflections: ERROR
+  appenders:
+    - type: file
+      currentLogFilename: /var/log/atlas/namematching-service/namematching-service.log
+      archive: true
+      archivedLogFilenamePattern: /var/log/atlas/namematching-service/namematching-service-%d.log
+      archivedFileCount: 5
+      logFormat: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} : %m%n%ex"
+server:
+  applicationConnectors:
+    - type: http
+      port: {{ namematching_service_port }}
+      outputBufferSize: 32KiB
+      idleTimeout: 30 seconds
+      minBufferPoolSize: 64 bytes
+      bufferPoolIncrement: 1KiB
+      maxBufferPoolSize: 64KiB
+      acceptorThreads: 1
+      selectorThreads: 2
+      acceptQueueSize: 1024
+      reuseAddress: true
+  adminConnectors:
+    - type: http
+      port: {{ namematching_admin_port }}
+search:
+  index: {{ data_dir }}/lucene/namematching
+  groups: file:{{data_dir}}/namematching-service/config/groups.json
+  subgroups: file:{{data_dir}}/namematching-service/config/subgroups.json
+  cache:
+    entryCapacity: 1000
+    enableJmx: true

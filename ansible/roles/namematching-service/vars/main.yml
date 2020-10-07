@@ -1,0 +1,6 @@
+# assets
+version: "{{ namematching_service_version | default('LATEST') }}"
+artifactId: "ala-namematching-server"
+groupId: "au.org.ala.names"
+packaging: "jar"
+namematching_service_jar_url: "{{maven_repo_ws_url}}"
