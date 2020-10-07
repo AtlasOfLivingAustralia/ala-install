@@ -24,6 +24,8 @@
     <sensitivity-category id="1"  name="NSW Category 1 Conservation Protected" type="Conservation"/>
     <sensitivity-category id="2"  name="NSW Category 2 Conservation Protected" type="Conservation"/>
     <sensitivity-category id="3"  name="NSW Category 3 Conservation Protected" type="Conservation"/>
+    <sensitivity-category id="L"  name="Listed under The Flora and Fauna Guarantee Amendment Act 1988 (FFG Act), Victoria" type="Conservation"/>
+    <sensitivity-category id="IR"  name="In review for listing under the VFFG Act, Victoria" type="Conservation"/>
 
     <sensitivity-category id="PBC1" name="Plant pest not known in Australia" type="Plant_Pest"/>
     <sensitivity-category id="PBC2" name="Plant pest eradicated" type="Plant_Pest"/>
