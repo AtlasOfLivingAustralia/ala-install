@@ -1,0 +1,8 @@
+# Installs bie-index
+- hosts: namematching-service
+  roles:
+    - common
+    - java
+    - webserver
+    - nameindex
+    - namematching-service

@@ -1,0 +1,11 @@
+[Unit]
+Description={{service_name}}
+After=syslog.target
+
+[Service]
+User={{ service_owner | default(service_name) }}
+ExecStart=/opt/atlas/{{service_name}}/{{service_name}}
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

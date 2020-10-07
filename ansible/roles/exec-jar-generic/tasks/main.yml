@@ -1,0 +1,117 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - service
+
+- name: Update apt
+  apt:
+    update_cache: yes
+  tags:
+  - service
+
+- name: Install dependencies
+  apt:
+    name:
+      - python3-lxml
+    state: present
+  tags:
+    - service
+
+- name: "Create system user for {{service_name}}"
+  user:
+    name: "{{ service_owner | default(service_name) }}"
+    state: present
+    system: yes
+  tags:
+  - service
+
+- name: "Create {{service_name}} directories"
+  file:
+    path: "{{item}}"
+    state: directory
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_owner | default(service_name) }}"
+    mode: 0755
+  with_items:
+    - "/opt/atlas/{{service_name}}"
+    - "/var/log/atlas/{{service_name}}"
+    - "{{data_dir}}/{{service_name}}"
+    - "{{data_dir}}/{{service_name}}/config"
+  tags: 
+  - service
+
+- name: "Create {{service_name}} service file"
+  template:
+    src: systemd.service
+    dest: "/etc/systemd/system/{{service_name}}.service"
+  register: service
+  tags:
+  - service
+
+- name: "Reload services"
+  when: service.changed
+  systemd:
+    name: "{{service_name}}"
+    daemon-reload: yes
+  tags:
+  - service
+
+- name: "Enable service"
+  systemd:
+    name: "{{service_name}}"
+    enabled: true
+  tags:
+  - service
+
+- name: "Download {{service_name}} JAR"
+  maven_artifact:
+    group_id: "{{groupId}}"
+    artifact_id: "{{artifactId}}"
+    version: "{{version|default('latest')}}"
+    extension: "{{packaging|default('jar')}}"
+    classifier: "{{classifier|default('')}}"
+    repository_url: "{{maven_repo_url}}"
+    timeout: 30
+    dest: "/opt/atlas/{{service_name}}/{{service_name}}.jar"
+    mode: u=rw,g=r,o=r
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_group | default(service_name) }}"
+    verify_checksum: always
+  notify: "restart {{service_name}}"
+  tags:
+  - service
+
+- name: "Create {{service_name}} wrapper"
+  template:
+    src: wrapper
+    dest: "/opt/atlas/{{service_name}}/{{service_name}}"
+    mode: u=rwx,g=rx,o=rx
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_group | default(service_name) }}"
+  notify: "restart {{service_name}}"
+  tags:
+  - service
+
+- name: "Create {{service_name}} log4j configuration"
+  template:
+    src: "log4j.xml"
+    dest: "{{data_dir}}/{{service_name}}/config"
+    mode: u=rwx,g=rx,o=rx
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_group | default(service_name) }}"
+  when: use_log4j
+  notify: "restart {{service_name}}"
+  tags:
+    - service
+
+- name: "Create {{service_name}} logback configuration"
+  template:
+    src: "logback.xml"
+    dest: "{{data_dir}}/{{service_name}}/config"
+    mode: u=rwx,g=rx,o=rx
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_group | default(service_name) }}"
+  when: use_logback
+  notify: "restart {{service_name}}"
+  tags:
+    - service
+

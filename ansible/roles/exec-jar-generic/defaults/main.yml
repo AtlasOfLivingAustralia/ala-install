@@ -1,0 +1,2 @@
+use_log4j: false
+use_logback: false

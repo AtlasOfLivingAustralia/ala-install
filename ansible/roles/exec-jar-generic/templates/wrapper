@@ -1,0 +1,16 @@
+#!/bin/sh
+#jinja2:trim_blocks: False
+JAVA_HOME="{{ java_home }}"
+JAVA_OPTS="-Djava.awt.headless=true -Xmx{{ max_memory | default('2g') }} -Xms{{ min_memory | default('1g') }} -XX:+UseConcMarkSweepGC"
+{% if use_log4j %}
+JAVA_OPTS="${JAVA_OPTS} -Dlog4j.configuration={{data_dir}}/{{service_name}}/config/log4j.xml"
+{% endif %}
+{% if use_logback %}
+JAVA_OPTS="${JAVA_OPTS} -Dlogback.configurationFile={{data_dir}}/{{service_name}}/config/logback.xml"
+{% endif %}
+{% for extra_param in extra_params | default([]) %}
+JAVA_OPTS="${JAVA_OPTS}-D{{extra_param.key}}={{extra_param.value}}"
+{% endfor %}
+
+exec ${JAVA_HOME}/bin/java ${JAVA_OPTS} -jar /opt/atlas/{{service_name}}/{{service_name}}.jar{% for arg in args | default([]) %} "{{arg}}"{% endfor %}
+
