@@ -187,10 +187,12 @@
   - include_role:
       name: nginx_vhost
     vars:
+      appname: "{{ item.appname }}"
       hostname: "{{ cas_host_name }}"
       context_path: "{{ item.context }}"
       nginx_paths:
       - path: "/{{ item.context }}"
+        appname: "{{ item.appname }}"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:{{item.port}}/{{ item.context }}"
     with_items:
