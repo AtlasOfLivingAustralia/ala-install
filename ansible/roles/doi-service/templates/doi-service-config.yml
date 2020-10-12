@@ -1,5 +1,5 @@
-# 'prod' or 'test'
-deployment_env: {{ (doi_deployment_env | default(deployment_env)) | default('test') }}
+# 'production' or 'test'
+deployment_env: {{ (doi_deployment_env | default(deployment_env)) | default('production') }}
 
 #
 # CAS Config
