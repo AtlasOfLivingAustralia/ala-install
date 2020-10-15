@@ -1,0 +1,79 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - namematching-service
+    - deploy
+    - properties
+    - nginx_vhost
+
+#
+# JAR file deployment
+#
+# Also creates config directories
+- name: add jar and service
+  include_role:
+    name: exec-jar-generic
+  vars:
+    service_name: "namematching-service"
+    jar_url: '{{ namematching_service_jar_url }}'
+    service_owner: "{{ namematching_user }}"
+    args:
+      - server
+      - "{{data_dir}}/namematching-service/config/namematching-service-config.yml"
+  tags:
+    - deploy
+    - service
+    - namematching-service
+
+- name: Create configuration
+  template:
+    src: namematching-service-config.yml
+    dest: "{{data_dir}}/namematching-service/config/namematching-service-config.yml"
+    owner: "{{ namematching_user }}"
+    group: "{{ namematching_user }}"
+  notify:
+    - restart namematching-service
+  tags:
+    - properties
+    - namematching-service
+
+- name: Create species group files
+  copy:
+    src: "{{item}}"
+    dest: "{{data_dir}}/namematching-service/config/{{item}}"
+    owner: "{{ namematching_user }}"
+    group: "{{ namematching_user }}"
+  with_items:
+    - "groups.json"
+    - "subgroups.json"
+  notify:
+    - restart namematching-service
+  tags:
+    - properties
+    - namematching-service
+
+- name: Restart namematching service
+  service:
+    name: namematching-service
+    state: restarted
+    enabled: yes
+  tags:
+    - namematching-service
+
+- name: add nginx vhost
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "namematching-service"
+    hostname: "{{ namematching_service_hostname }}"
+    context_path: "{{ namematching_service_context_path }}"
+    nginx_paths:
+      - path: "{{ namematching_service_context_path }}"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:{{ namematching_service_port }}/{{ namematching_service_context_path }}"
+  # notify:
+  #   - reload nginx
+  tags:
+    - nginx_vhost
+    - namematching-service
+    - deploy
+  when: webserver_nginx

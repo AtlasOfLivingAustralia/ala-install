@@ -1,4 +1,12 @@
 ---
+- name: Add gnupg dep for nginx repo
+  apt:
+    name: gnupg
+    state: present
+  when:
+    - nginx_ppa_use is defined and nginx_ppa_use | bool == True
+    - ansible_os_family == "Debian" and (ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04")
+
 - name: Add PPA key for Nginx repository
   apt_key:
     keyserver: "hkp://keyserver.ubuntu.com:80"

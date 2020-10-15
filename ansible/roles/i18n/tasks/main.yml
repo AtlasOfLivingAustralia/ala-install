@@ -1,8 +1,9 @@
 - name: Add apt.gbif.es key
-  apt_key:
+  get_url:
     # We use this key from the above repo temporally
-    keyserver: hkp://keyserver.ubuntu.com:80
-    id: BD4E3B58E30599A9FD97331D9D93BC32983433D5
+    url: 'https://keyserver.ubuntu.com/pks/lookup?op=hget&search=7524d3b383016eab0ee47bfe253a51f7'
+    dest: /etc/apt/trusted.gpg.d/apt-gbif-es-demo.asc
+    mode: 0644
   when:
     - ansible_os_family == "Debian"
     - i18n_package_enabled | bool == True

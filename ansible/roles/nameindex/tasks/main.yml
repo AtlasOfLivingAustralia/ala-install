@@ -4,6 +4,15 @@
     - "nameindex-stage"
     - "nameindex-swap"
 
+- name: "Create system user for nameindex"
+  user:
+    name: "{{ nameindex_user }}"
+    state: present
+    system: yes
+  when: nameindex_user is defined
+  tags:
+    - service
+
 - name: check for directory to link
   stat:
     path: "{{ data_dir }}/lucene/namematching"
@@ -84,8 +93,6 @@
 
 - name: unpackage the lucene index if it was newly copied (ALA)
   unarchive: src={{ data_dir }}/lucene/namematching-{{ name_index_date }}.tgz dest={{ data_dir }}/lucene/ copy=no group={{ nameindex_user | default(tomcat_user) }} owner="{{ nameindex_user | default(tomcat_user) }}"
-  notify:
-    - restart tomcat
   when: nameindex_variant == "ala"
   tags:
     - "nameindex"
@@ -102,8 +109,6 @@
 
 - name: link the current lucene index as namematching (ALA)
   file: src={{ data_dir }}/lucene/namematching-{{ name_index_date }}/ dest={{ data_dir }}/lucene/namematching state=link force=yes
-  notify:
-    - restart tomcat
   when: nameindex_variant == "ala" and tmp_name_dir_status.stat.exists == True
   tags:
     - "nameindex"
@@ -145,3 +150,13 @@
   tags:
     - "nameindex"
     - "nameindex-swap"
+
+- name: trigger restart of tomcat if enabled
+  set_fact: tomcat_restart_required=true
+  notify:
+    - restart tomcat
+  when: tomcat is defined
+  tags:
+    - "nameindex"
+    - "nameindex-swap"
+

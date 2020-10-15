@@ -1,0 +1,2 @@
+- name: restart namematching-service
+  service: name=namematching-service state=restarted enabled=yes
