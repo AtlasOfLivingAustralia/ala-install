@@ -144,6 +144,14 @@
         sort_label: "2_ws"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:{{ ecodata_server_port }}{{ecodata_proxy_target}}"
+      - path: "{{ecodata_context_path}}/search/downloadAllData"
+        sort_label: "2_ws_downloads"
+        is_proxy: true
+        proxy_pass: "{{ ecodata_reporting_server }}{{ecodata_proxy_target}}/search/downloadAllData"
+      - path: "{{ecodata_context_path}}/document/downloadProjectDataFile/"
+        sort_label: "2_ws_downloads_project_data"
+        is_proxy: true
+        proxy_pass: "{{ ecodata_reporting_server }}{{ecodata_proxy_target}}/document/downloadProjectDataFile/"
   tags:
     - nginx_vhost
     - deploy
