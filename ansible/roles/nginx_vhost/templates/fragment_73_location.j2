@@ -52,7 +52,7 @@
 {% endif %}
 {% if item.is_proxy is defined and item.is_proxy | bool == True %}
         # proxy_set_header Host $host;
-        proxy_set_header Host {{ hostname }};
+        proxy_set_header Host {{ item.proxy_hostname | default(hostname) }};
 {% if nginx_proxy_protocol_enabled | bool %}
         proxy_set_header X-Forwarded-For $proxy_protocol_addr;
         proxy_set_header X-Real-IP $proxy_protocol_addr;
