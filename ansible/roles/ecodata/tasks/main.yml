@@ -149,11 +149,11 @@
         is_proxy: true
         proxy_hostname: "{{ ecodata_reporting_hostname }}"
         proxy_pass: "{{ ecodata_reporting_server }}{{ecodata_proxy_target}}/ws/search/downloadAllData"
-      - path: "{{ecodata_context_path}}/ws/document/downloadProjectDataFile/"
+      - path: "{{ecodata_context_path}}/ws/search/downloadProjectDataFile/"
         sort_label: "2_ws_downloads_project_data"
         is_proxy: true
         proxy_hostname: "{{ ecodata_reporting_hostname }}"
-        proxy_pass: "{{ ecodata_reporting_server }}{{ecodata_proxy_target}}/ws/document/downloadProjectDataFile/"
+        proxy_pass: "{{ ecodata_reporting_server }}{{ecodata_proxy_target}}/ws/search/downloadProjectDataFile/"
   tags:
     - nginx_vhost
     - deploy
