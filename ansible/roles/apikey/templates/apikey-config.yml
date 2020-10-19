@@ -71,7 +71,7 @@ bie.baseURL: {{ bie_base_url | default('https://bie.ala.org.au')}}
 bie.searchPath: {{ bie_search_path | default('/search') }}
 
 # Skin options
-skin.layout: {{ skin_layout | default('ala-main') }}
+skin.layout: {{ (apikey_skin_layout | default(skin_layout)) | default('ala-main') }}
 skin.fluidLayout: {{ skin_fluid_layout | default('false') }}
 skin.orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}
 skin.orgNameShort: {{ orgNameShort | default('ALA') }}
