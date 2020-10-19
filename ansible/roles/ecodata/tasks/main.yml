@@ -147,12 +147,12 @@
       - path: "{{ecodata_context_path}}/ws/search/downloadAllData"
         sort_label: "2_ws_downloads"
         is_proxy: true
-        proxy_hostname: "{{ ecodata_reporting_hostname }}"
+        proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
         proxy_pass: "{{ ecodata_reporting_server }}{{ecodata_proxy_target}}/ws/search/downloadAllData"
       - path: "{{ecodata_context_path}}/ws/search/downloadProjectDataFile/"
         sort_label: "2_ws_downloads_project_data"
         is_proxy: true
-        proxy_hostname: "{{ ecodata_reporting_hostname }}"
+        proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
         proxy_pass: "{{ ecodata_reporting_server }}{{ecodata_proxy_target}}/ws/search/downloadProjectDataFile/"
   tags:
     - nginx_vhost
