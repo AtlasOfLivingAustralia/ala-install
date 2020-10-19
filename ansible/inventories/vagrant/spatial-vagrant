@@ -1,4 +1,6 @@
 # Inventory to be used with spatial-standalone playbook
+# cd ~/path/to/ala-install/ansible
+# ansible-playbook -i inventories/vagrant/spatial-vagrant spatial-standalone.yml --private-key ~/.vagrant.d/insecure_private_key --user vagrant --become --ask-become-pass
 
 [spatial]
 spatial.vagrant1.ala.org.au
@@ -46,6 +48,7 @@ postgresql_username=postgres
 postgresql_password=password
 
 webserver_nginx=true
+skip_geoserver_script=false
 robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
 robots_disallow_useragents=["SemrushBot", "Mappy", "BUbiNG"]
 nginx_vhost_fragments_to_clear = ["spatial.vagrant1.ala.org.au"]
@@ -165,7 +168,7 @@ sandbox_biocache_service_url=https://sandbox.ala.org.au/biocache-service
 google_api_key=get-a-google-api-key
 spatial_hub_api_key=get-an-ala-api-key
 
-tomcat_java_opts = -Xmx1g -Xms1g -Xss256k -Djava.awt.headless=true
+tomcat_java_opts = -Xmx1g -Xms1g -Xss1024k -Djava.awt.headless=true
 
 webserver_nginx=true
 robots_disallow_paths=["/ws", "/geoserver", "/geonetwork"]
@@ -177,3 +180,5 @@ ssl=false
 nginx_client_max_body_size=120m
 
 gdal_from_src=false
+
+nginx_vhost_fragments_to_clear = ["spatial.vagrant1.ala.org.au"]
