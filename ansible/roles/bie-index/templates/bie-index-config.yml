@@ -87,7 +87,7 @@ solr:
     defType: {{ solr_deftype | default('edismax') }}
     qAlt: {{ solr_qlat | default('text:*') }}
 skin:
-  layout: {{ skin_layout | default('main') }}
+  layout: {{ (bie_index_skin_layout | default(skin_layout)) | default('main') }}
   fluidLayout: {{ skin_fluid_layout | default('') }}
   orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}
   favicon: {{ skin_favicon | default('https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png') }}
