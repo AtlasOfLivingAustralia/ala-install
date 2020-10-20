@@ -56,7 +56,7 @@ ala:
     url: https://www.ala.org.au
 
 skin:
-  layout: {{ skin_layout | default('main') }}
+  layout: {{ (doi_skin_layout | default(skin_layout)) | default('main') }}
   fluidLayout: {{ skin_fluid_layout | default('') }}
   orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}
   orgNameShort: {{ orgNameShort | default('ALA') }}

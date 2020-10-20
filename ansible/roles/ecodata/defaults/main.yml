@@ -1,0 +1,16 @@
+# GeoServer
+install_geoserver: False
+geoserver_enabled: true
+geoserver_hostname: localhost
+geoserver_url: http://localhost:8080/geoserver
+geoserver_base_url: http://localhost:8080/geoserver
+geoserver_context_path: /geoserver
+geoserver_app: geoserver
+geoserver_username: admin
+geoserver_password: geoserver
+geoserver_elastic_home: localhost
+geoserver_elastic_port: 9300
+geoserver_cluster_name: elasticsearch
+
+# elasticsearch
+elasticsearch_local: true

@@ -1,0 +1,231 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - geoserver
+    - geoserver_run_script
+    - extension
+
+- name: geoserver for ecodata - packages
+  apt: pkg={{ item }} update_cache=yes state=latest
+  with_items:
+    - curl
+    - unzip
+    - python3-lxml
+  tags:
+    - geoserver
+
+- name: geoserver for ecodata - configure geoserver data dir
+  lineinfile:
+    dest={{tomcat_conf}}
+    line='CATALINA_OPTS="${CATALINA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
+  notify:
+    - restart tomcat
+  when: ansible_os_family == "Debian"
+  tags:
+    - tomcat
+    - geoserver
+
+- debug:
+    msg: "geoserver_context_path is {{geoserver_context_path}} hostname {{ geoserver_hostname }}"
+
+- include: ../../apache_vhost/tasks/main.yml context_path='{{ geoserver_context_path }}' hostname='{{ geoserver_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - geoserver
+  when: (not webserver_nginx) and (geoserver_private == True)
+
+- name: geoserver for ecodata - add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "geoserver"
+    hostname: "{{ geoserver_hostname }}"
+    context_path: "{{ geoserver_context_path }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - geoserver
+  when: webserver_nginx and (geoserver_private == True)
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ geoserver_war_url }}' context_path='{{ geoserver_context_path }}' hostname='{{ geoserver_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - geoserver
+
+- name: geoserver for ecodata - unzip .war to get data directory
+  command: "unzip {{ tomcat_deploy_dir }}/{{ war_filename }}.war data/* -d /tmp/"
+  tags:
+    - geoserver
+
+- name: geoserver for ecodata - remove previous geoserver data dir
+  command: "rm -r {{data_dir}}/geoserver_data_dir"
+  ignore_errors: yes
+  tags:
+    - geoserver
+
+- name: geoserver for ecodata - remove previous geoserver data dir in tmp
+  command: "rm -r /tmp/geoserver_data_dir"
+  ignore_errors: yes
+  tags:
+    - geoserver
+
+- name: geoserver for ecodata - rename data dir
+  command: "mv /tmp/data /tmp/geoserver_data_dir"
+  tags:
+    - geoserver
+
+- name: geoserver for ecodata - copy data directory
+  command: "cp -r /tmp/geoserver_data_dir {{data_dir}}"
+  tags:
+    - geoserver
+
+#
+# Override the default memory settings for Tomcat to increase heap space and change the garbage collector
+#
+- name: Override default tomcat memory configuration
+  lineinfile:
+    dest={{tomcat_conf}}
+    regexp="^JAVA_OPTS"
+    line='JAVA_OPTS="{{tomcat_java_opts_override}}"'
+  tags:
+    - ecodata
+    - deploy
+    - tomcat
+  when: not exec_jar
+
+- name: Add GEOSERVER_XSTREAM_WHITELIST
+  lineinfile:
+    dest={{tomcat_conf}}
+    regexp="^GEOSERVER_XSTREAM_WHITELIST"
+    line='GEOSERVER_XSTREAM_WHITELIST=mil.nga.giat.data.elasticsearch.ElasticAttribute'
+  tags:
+    - ecodata
+    - deploy
+    - tomcat
+  when: not exec_jar
+
+- name: geoserver for ecodata - set data ownership
+  file: path={{data_dir}}/geoserver_data_dir owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - geoserver
+
+- name: geoserver for ecodata - restart tomcat to bring config effective
+  service:
+    name: "{{tomcat}}"
+    state: restarted
+    enabled: "yes"
+  tags:
+    - geoserver
+  become: true
+
+- name: geoserver for ecodata - restart nginx
+  service:
+    name: "{{nginx}}"
+    state: restarted
+    enabled: "yes"
+  tags:
+    - geoserver
+  when: webserver_nginx
+  become: true
+
+- name: geoserver for ecodata - restart apache2
+  service:
+    name: "{{apache}}"
+    state: restarted
+    enabled: "yes"
+  tags:
+    - geoserver
+  when: not webserver_nginx
+  become: true
+
+- name: "geoserver for ecodata - wait for geoserver to come up (is {{ geoserver_url }} in /etc/hosts?)"
+  uri:
+    url: "{{ geoserver_url }}/web/"
+    status_code: 200
+    validate_certs: false
+  register: result
+  until: result.status is defined and result.status == 200
+  retries: 200
+  delay: 10
+  tags:
+    - geoserver
+
+- name: "geoserver for ecodata - install geoserver zip extensions"
+  unarchive:
+    src: "{{ item }}"
+    dest: "{{ tomcat_deploy_dir }}/{{ war_filename }}/WEB-INF/lib/"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+    remote_src: yes
+  with_items: "{{ geoserver_zip_extension_urls }}"
+  when: geoserver_zip_extension_urls
+  tags:
+    - geoserver
+    - extension
+
+- name: geoserver for ecodata - install geoserver jar extensions
+  get_url:
+    url: "{{ item }}"
+    dest: "{{ tomcat_deploy_dir }}/{{ war_filename }}/WEB-INF/lib/"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+  with_items: "{{ geoserver_jar_extension_urls }}"
+  tags:
+    - geoserver
+    - extension
+
+- name: geoserver for ecodata - restart tomcat for installed extensions
+  service:
+    name: "{{tomcat}}"
+    state: restarted
+    enabled: "yes"
+  tags:
+    - geoserver
+  become: true
+
+- name: "geoserver for ecodata - wait for geoserver to come up (is {{ geoserver_url }} in /etc/hosts?)"
+  uri:
+    url: "{{ geoserver_url }}/web/"
+    status_code: 200
+    validate_certs: false
+  register: result
+  until: result.status is defined and result.status == 200
+  retries: 200
+  delay: 10
+  tags:
+    - geoserver
+
+#- name: geoserver for ecodata - change root password
+#  uri:
+#    url: "{{ geoserver_url }}/rest/security/masterpw.json"
+#    method: "PUT"
+#    user: 'admin'
+#    password: 'geoserver'
+#    force_basic_auth: yes
+#    body: '{ "oldMasterPassword": "geoserver", "newMasterPassword": "{{ geoserver_password }}" }'
+#    status_code: 200
+#  when: geoserver_password != "geoserver"
+#  tags:
+#    - password
+#    - geoserver
+
+- name: geoserver for ecodata - change admin password
+  template: src=users.xml dest={{data_dir}}/geoserver_data_dir/security/usergroup/default/users.xml
+  notify:
+    - restart tomcat
+  when: geoserver_password != "geoserver"
+  tags:
+    - password
+    - geoserver
+
+- name: geoserver for ecodata - restart tomcat to bring config effective
+  service:
+    name: "{{tomcat}}"
+    state: restarted
+    enabled: "yes"
+  tags:
+    - geoserver
+  become: true

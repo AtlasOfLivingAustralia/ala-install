@@ -3,3 +3,4 @@
 groupIdPath: "{{groupId | default('au/org/ala')}}"
 
 ansible_python_interpreter: "auto"
+# change auto to python for zoatrack

@@ -1,3 +1,7 @@
+# Inventory to be used with ecodata playbook
+# cd ~/path/to/ala-install/ansible
+# ansible-playbook -i inventories/vagrant/ecodata-vagrant-grails2 ecodata.yml --private-key ~/.vagrant.d/insecure_private_key --user vagrant --become --ask-become-pass
+
 [primary]
 ecodata.vagrant1.ala.org.au:22
 
@@ -38,7 +42,7 @@ ecodata_support_email=biocollect-support@ala.org.au
 
 scistarter_api_key=
 ecodata_properties_file=ecodata-config-grails2.properties
-ecodata_version=1.54.1-SNAPSHOT
+ecodata_version=1.56-SNAPSHOT
 ecodata_classifier=
 
 ecodata_dbPath=/data/mongodb
@@ -60,3 +64,39 @@ ecodata_keyFile=/etc/mongodb-keyfile
 
 ecodata_SystemLog=/var/log/mongodb
 ecodata_api_key=INSERT_API_KEY_HERE
+
+merit_data_provider_uuid=dp0000
+biocollect_data_provider_uuid=dp8888
+
+# email SMTP server to use for sending emails
+mail_host=mail-test.ala
+ecodata_noreply_email=ALA<no-reply>@ala.org.au
+ecodata_support_email=biocollect-support@ala.org.au
+
+google_maps_api_key=AIzaSyD7R5p12Bb9XQzy-tltZaM778-ny7Xo8eM
+
+tomcat_java_opts_override = -Xmx1g -Xms1g -Xss1024k -Djava.awt.headless=true
+
+###
+# Geoserver
+###
+
+geoserver_hostname=localhost
+geoserver_url=http://localhost:8080/geoserver
+geoserver_base_url=http://localhost:8080/geoserver
+geoserver_context_path=/geoserver
+geoserver_app=geoserver
+geoserver_workspace=ecodata
+geoserver_workspace_uri=https://ecodata.ala.org.au
+geoserver_username=admin
+geoserver_password=geoserver
+geoserver_datastore=pasearch
+geoserver_index_name=pasearch
+geoserver_elastic_home=localhost
+geoserver_elastic_port=9300
+geoserver_cluster_name=elasticsearch
+skip_geoserver_script=false
+geoserver_private=True
+
+[geoserver:vars]
+log_filename=geoserver

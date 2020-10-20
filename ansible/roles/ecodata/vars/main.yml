@@ -33,4 +33,3 @@ mongo_version4: "{{ mongodb_version_4 | default(false) }}"
 mongo_version3: "{{ mongodb_version_3 | default(false) }}"
 replace_blindIp_Primary_Node: " {{ replace_primary_blindIp | default(false) }}"
 replace_blindIp_Secondary_Node: " {{ replace_secondary_blindIp | default(false) }}"
-

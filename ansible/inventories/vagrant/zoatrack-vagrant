@@ -1,40 +1,76 @@
+# Inventory to be used with ecodata playbook
+# cd ~/path/to/ala-install/ansible
+# ansible-playbook -i inventories/vagrant/zoatrack-vagrant zoatrack.yml --private-key ~/.vagrant.d/insecure_private_key --user vagrant --become --ask-become-pass
 
 [all:vars]
-    webserver_nginx=false
-    data_dir=/data
-    hostname=vagrant2.ala.org.au
-    tomcat_conf=/etc/default/tomcat7
-    oztrack_home=/data/oztrack/
-    oztrack_custom_property_file=oztrack.custom.properties
+webserver_nginx=true
+data_dir=/data
+hostname=vagrant2.ala.org.au
+tomcat=tomcat7
+tomcat_conf=/etc/default/tomcat7
+zoatrack_home_dir=/data/zoatrack/
+zoatrack_backup_dir=/data/backup
+zoatrack_data_dir=/data/zoatrack/zoatrack
+zoatrack_custom_property_file=custom.properties
+zoatrack_smtp_hostname=localhost
+zoatrack_smtp_port=25
+zoatrack_mail_sender_name=ZoaTrack
+zoatrack_mail_sender_email=admin@zoatrack.org
+zoatrack_recaptcha_public_key=changeme
+zoatrack_recaptcha_private_key=changeme
+zoatrack_doi_minting_app_id=
+zoatrack_doi_minting_url=services.ands.org.au/doi/1.1/
+zoatrack_doi_minting_app_key=
+zoatrack_doi_minting_client_id=
+zoatrack_doi_landing_base_url=
+zoatrack_google_apikey=
+zoatrack_google_maps_apikey=
+ansible_python_interpreter=python
+# ALA API key
+zoatrack_ala_apikey=
+zoatrack_bccvl_client_id=
+zoatrack_bccvl_auth_url=
+zoatrack_bccvl_api_url=
+# whaleshark project id
+zoatrack_whaleshark_race_id=477
+#java_home=/usr/lib/jvm/java-8-oracle
+#tomcat_conf=/etc/init.d/tomcat7
 
-    #java_home=/usr/lib/jvm/java-8-oracle
-    #tomcat_conf=/etc/init.d/tomcat7
+ssl=false
+ala_hostname='vagrant-zoatrack-app'
+zoatrack_hostname=vagrant.zoatrack.org
+zoatrack_rserve_hosts=localhost
+zoatrack_num_r_connections=1
+
+nginx_vhost_fragments_to_clear=["vagrant.zoatrack.org"]
 
 [zoatrack]
-    vagrant2
+vagrant2
 
 [zoatrack:vars]
 
-    pg_service=postgresql-9.6
-    pg_version=9.6
-    pg_gis_version=2.4
-    linux_version=xenial
-    #linux_version=trusty
-
-
-    pg_user=oztrack
-    pg_password=changeme
-    pg_database=oztrack
-
-    geoserver_version=2.14.1
-    # Do not know to make it with Nexus
-    zoatrack_version=4.22-SNAPSHOT
-    zoatrack_war_url=https://nexus.ala.org.au/service/local/repositories/snapshots/content/org/oztrack/oztrack/4.22-SNAPSHOT/oztrack-4.22-20190226.031327-3.war
-
-    oztrack_tomcat_java_opts=-Xmx1g -Xms1g -Xss512k -Djava.awt.headless=true -Dorg.oztrack.conf.customConfigFile=/data/oztrack/oztrack.custom.properties
-
-
-
-
-
-
+zoatrack_pg_service=postgresql-10.10
+zoatrack_pg_version=10
+zoatrack_pg_gis_version=2.4
+pg_version=10
+pg_gis_version=2.4
+linux_version=bionic
+zoatrack_pg_user=oztrack
+zoatrack_pg_password=changeme
+zoatrack_pg_database=oztrack
+geoserver_version=2.14.1
+geoserver_hostname=localhost
+geoserver_url=http://localhost:8080/geoserver
+geoserver_context_path=/geoserver
+geoserver_data_dir=/data/zoatrack/geoserver
+# geoserver admin user
+geoserver_username=admin
+# geoserver admin pw
+geoserver_password=changeme
+geoserver_private=True
+log_filename=geoserver
+skip_geoserver_script=false
+# Do not know to make it with Nexus
+zoatrack_version=4.22-SNAPSHOT
+zoatrack_war_url=https://nexus.ala.org.au/service/local/repositories/snapshots/content/org/oztrack/oztrack/4.22-SNAPSHOT/oztrack-4.22-20191010.043600-8.war
+zoatrack_tomcat_java_opts='-Xmx4g -Xms2g -Xss512k -Djava.awt.headless=true -Dorg.oztrack.conf.customConfigFile=/data/zoatrack/zoatrack/custom.properties'
