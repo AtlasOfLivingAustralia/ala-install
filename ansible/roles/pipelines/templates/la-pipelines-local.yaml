@@ -27,10 +27,16 @@ run:
     dwcaTmp: {{ dwca_tmp }}
     dwcaImportDir: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}
 
-collectory:
-  httpHeaders:
-    Authorization: {{ collectory_api_key }}
 
+collectory:
+  wsUrl: {{ collectory_url }}
+  httpHeaders:
+    Authorization: {{ ala_api_key }}
+
+imageService:
+  wsUrl: {{ image_service_url }}
+  httpHeaders:
+    apiKey:  {{ ala_api_key }}
 
 general:
   attempt: 1
@@ -50,6 +56,10 @@ dwca-avro:
   hdfsTempLocation: {{ spark_tmp }}
 interpret:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}/{datasetId}/1/verbatim.avro
+images:
+  tempLocation: {{ spark_tmp }}
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
 export-latlng:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
 uuid:
