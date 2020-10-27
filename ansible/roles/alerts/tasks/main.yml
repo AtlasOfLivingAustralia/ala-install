@@ -3,13 +3,13 @@
     - alerts
 
 - name: create alerts DB
-  mysql_db: name={{ alerts_db_name }} state=present encoding={{ alerts_db_encoding | default('utf8') }}
+  mysql_db: name={{ alerts_db_name }} state=present encoding={{ alerts_db_encoding | default('utf8') }} login_user=root login_password='{{mysql_root_password}}'
   tags:
     - db
     - alerts
 
 - name: create alerts DB user
-  mysql_user: name={{ alerts_db_username }} password={{ alerts_db_password}} priv=*.*:ALL state=present
+  mysql_user: name={{ alerts_db_username }} password={{ alerts_db_password}} priv=*.*:ALL state=present login_user=root login_password='{{mysql_root_password}}'
   tags:
     - db
     - alerts
