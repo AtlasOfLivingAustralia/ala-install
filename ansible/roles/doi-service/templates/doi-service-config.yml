@@ -95,7 +95,7 @@ grails:
 file:
   store: {{ doi_file_store | default('/data/doi-service/files') }}
 
-googleAnalyticsId: UA-4355440-1
+googleAnalyticsId: {{ google_analytics_id | default('UA-4355440-1') }}
 
 dataSource:
   url: jdbc:postgresql://{{ doi_db_hostname }}/{{ doi_db_name }}?autoReconnect=true&connectTimeout=0&useUnicode=true&characterEncoding=UTF-8
