@@ -1,0 +1,5 @@
+- hosts: moths
+  roles:
+    - common
+    - webserver
+    - moths

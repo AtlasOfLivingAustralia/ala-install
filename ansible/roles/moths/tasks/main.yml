@@ -1,0 +1,33 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - moths
+
+- name: Git checkout
+  git:
+    repo: "{{ moths_git_clone_url }}"
+    dest: "{{ moths_git_checkout_path }}"
+    version: "{{ moths_git_tag_version }}"
+    umask: "{{ moths_git_umask }}"
+    verify_commit: "{{ moths_git_verify_commit }}"
+    gpg_whitelist: "{{ moths_git_tag_gpg_allowlist }}"
+    force: "{{ moths_git_force }}"
+    accept_hostkey: "yes"
+
+- name: add nginx vhost
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "moths"
+    hostname: "{{ moths_hostname }}"
+    context_path: "{{ moths_context_path }}"
+    nginx_root: "{{ moths_git_checkout_path }}{{ moths_git_subpath }}"
+    nginx_index: "{{ moths_index_html }}"
+    nginx_paths:
+      - path: ""
+        is_proxy: false
+        try_files: "$uri $uri/ /{{ moths_index_html }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - moths
+  when: webserver_nginx

@@ -1,0 +1,17 @@
+---
+moths_hostname: "amo.ala.org.au"
+moths_context_path: ""
+moths_index_html: "index.html"
+
+moths_git_clone_url: "https://github.com/AtlasOfLivingAustralia/moths-static.git"
+moths_git_checkout_path: "/opt/moths-static"
+moths_git_subpath: "/web"
+moths_git_tag_version: "v1.0"
+moths_git_umask: "022"
+moths_git_verify_commit: "yes"
+# This needs to contain the GPG key id for the git tag specified in moths_git_tag_version
+# Only used if moths_git_verify_commit=yes
+moths_git_tag_gpg_allowlist: ["B4E86B19FF03EDD8"]
+# If this is set to yes it will force reset the directory
+# Set to no if you have made custom changes that you would like to keep
+moths_git_force: "yes"
