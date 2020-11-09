@@ -9,6 +9,7 @@
   tags:
     - spatial-hub
     - spatial-hub-config
+    - properties
 
 - name: copy all config.yml
   template: src={{item}} dest={{data_dir}}/spatial-hub/config/{{item}} owner={{tomcat_user}} group={{tomcat_user}}
@@ -20,12 +21,14 @@
     - config
     - spatial-hub
     - spatial-hub-config
+    - properties
 
 - name: copy all log4j.properties
   template: src=log4j.properties dest={{data_dir}}/spatial-hub/config/log4j.properties owner={{tomcat_user}} group={{tomcat_user}}
   tags:
     - spatial-hub
     - spatial-hub-config
+    - properties
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ spatial_hub_context_path }}' hostname='{{ spatial_hub_hostname }}'
   tags:
@@ -78,3 +81,4 @@
   tags:
     - spatial-hub
     - spatial-hub-config
+    - properties

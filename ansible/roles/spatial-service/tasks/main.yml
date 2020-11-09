@@ -68,6 +68,7 @@
   tags:
     - spatial-service
     - spatial-service-config
+    - properties
 
 - name: copy all config.yml
   template: src=spatial-service-config.yml dest={{data_dir}}/spatial-service/config/spatial-service-config.yml
@@ -75,6 +76,7 @@
     - config
     - spatial-service
     - spatial-service-config
+    - properties
 
 - name: copy all log4j.properties
   template: src=log4j.properties dest={{data_dir}}/spatial-service/config/log4j.properties
@@ -82,6 +84,7 @@
     - config
     - spatial-service
     - spatial-service-config
+    - properties
 
 - name: set data ownership
   file: path={{data_dir}}/ala/data/ owner={{tomcat_user}} group={{tomcat_user}} recurse=true
@@ -91,3 +94,4 @@
     - config
     - spatial-service
     - spatial-service-config
+    - properties
