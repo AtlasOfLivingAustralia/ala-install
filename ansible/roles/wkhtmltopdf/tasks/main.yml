@@ -2,12 +2,7 @@
   tags:
     - wkhtmltopdf
 
-- name: download wkhtmltopdf deb
-  get_url: url={{ wkhtmltopdf_url }} dest=/tmp/wkhtmltopdf.deb force=true
-  tags:
-    - wkhtmltopdf
-
 - name: install wkhtmltopdf deb
-  apt: deb=/tmp/wkhtmltopdf.deb
+  apt: deb="{{ wkhtmltopdf_url }}"
   tags:
     - wkhtmltopdf
