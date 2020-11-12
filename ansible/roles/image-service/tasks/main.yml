@@ -11,6 +11,7 @@
     system: yes
   tags:
     - image-service
+    - properties
 
 - name: create images database
   postgresql_db: name={{ image_service_db_name }}
@@ -96,6 +97,7 @@
      - restart image-service
   tags:
     - image-service
+    - properties
 
 # Only create the symlink for apache hosts, as nginx has an inbuilt rule for this
 - name: Create symlink to data/image-service/store from /srv/[hostname]/www/store
@@ -164,6 +166,7 @@
      - restart image-service
   tags:
     - image-service
+    - properties
 
 - name: set data ownership for {{data_dir}}/image-service
   file: path={{data_dir}}/image-service owner="image-service" group="image-service"
