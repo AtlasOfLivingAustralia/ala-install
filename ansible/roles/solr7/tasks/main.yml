@@ -21,6 +21,7 @@
     - "{{data_dir}}/solr/"
   tags:
     - solr7
+    - properties
 
 - name: Run install script
   shell: "./install_solr_service.sh /tmp/solr-{{ solr_version }}.tgz -d /data/solr -f"

@@ -146,3 +146,4 @@
   copy: src=subgroups.json dest=/srv/{{bie_index_hostname}}/www/
   tags:
     - bie-index
+    - properties

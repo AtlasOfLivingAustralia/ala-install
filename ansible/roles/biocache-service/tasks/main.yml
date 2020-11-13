@@ -367,6 +367,7 @@
   file: path={{data_dir}}/biocache state=directory owner={{tomcat_user}}  group={{tomcat_user}}
   tags:
     - biocache-service  
+    - properties
 
 - name: ensure target directories exist [data subdirectories etc.
   file: path={{item.path}} state=directory owner={{tomcat_user}}  group={{tomcat_user}} mode={{ item.perm | default(775) }}
@@ -389,6 +390,7 @@
     - { path: "{{data_dir}}/biocache-download/tmp" }
   tags:
     - biocache-service
+    - properties
 
 - name: set data ownership [all data is owned by tomcat]
 # FIXME: The ansible file module fails with a recursion limit issue that "chown" isn't prone to
@@ -410,6 +412,7 @@
     - biocache-download
   tags:
     - biocache-service
+    - properties
 
 - name: copy all config.properties
   template:
@@ -428,6 +431,7 @@
     - config/log4j.xml
   tags:
     - biocache-service
+    - properties
 
 - name: copy biocache facets config
   copy:
@@ -449,11 +453,13 @@
   tags:
     - biocache-service
     - symlinks
+    - properties
 
 
 - name: set permissions for biocache-load [TODO - more restrictive permissions]
   file: path={{data_dir}}/biocache-load mode=777
   tags:
     - biocache-service  
+    - properties
   notify:
     - restart tomcat

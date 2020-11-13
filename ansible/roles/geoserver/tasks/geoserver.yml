@@ -207,30 +207,35 @@
   when: not skip_geoserver_script
   tags:
     - geoserver
+    - properties
 
 - name: copy geoserver script
   template: src=geoserver.objects.xml dest={{data_dir}}/geoserver.objects.xml
   when: not skip_geoserver_script
   tags:
     - geoserver
+    - properties
 
 - name: copy geoserver script
   template: src=geoserver.distributions.xml dest={{data_dir}}/geoserver.distributions.xml
   when: not skip_geoserver_script
   tags:
     - geoserver
+    - properties
 
 - name: copy points style.xml
   template: src=geoserver.points.xml dest={{data_dir}}/geoserver.points.xml
   when: not skip_geoserver_script
   tags:
     - geoserver
+    - properties
 
 - name: geoserver script permissions
   command: "chmod a+x {{data_dir}}/geoserver.sh"
   when: not skip_geoserver_script
   tags:
     - geoserver
+    - properties
 
 - name: Running geoserver.sh
   command: "{{data_dir}}/geoserver.sh"
