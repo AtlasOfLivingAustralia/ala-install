@@ -1,0 +1,178 @@
+- name: "set facts"
+  include_role:
+    name: common
+    tasks_from: setfacts
+  tags:
+  - setfacts
+  - cas
+
+- name: Install cas db dependencies
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - mysql-client
+    - python-mysqldb
+    - python-pymongo
+
+- name: Copy cas db dump
+  copy:
+    src: "{{ cas_db_dump }}"
+    dest: /tmp/cas.sql
+  when: cas_db_dump is defined
+
+- name: Copy apikey db dump
+  copy:
+    src: "{{ apikey_db_dump }}"
+    dest: /tmp/apikey.sql
+  when: apikey_db_dump is defined
+
+- name: Drop cas db if cas_db_dump is present
+  mysql_db:
+    state: absent
+    name: "{{ cas_db_name | default('emmet') }}"
+    login_host: "{{ cas_db_hostname }}"
+    login_port: "{{ cas_db_port | default('3306') }}"
+    login_user: "{{ mysql_root_username }}"
+    login_password: "{{ mysql_root_password }}"
+  when: cas_db_dump is defined
+  run_once: true
+
+- name: Import cas db if cas_db_dump is present
+  mysql_db:
+    state: import
+    name: "{{ cas_db_name | default('emmet') }}"
+    target: /tmp/cas.sql
+    login_host: "{{ cas_db_hostname }}"
+    login_port: "{{ cas_db_port | default('3306') }}"
+    login_user: "{{ mysql_root_username }}"
+    login_password: "{{ mysql_root_password }}"
+  when: cas_db_dump is defined
+  run_once: true
+
+- name: Import apikey db if apikey_db_dump is present
+  mysql_db:
+    state: import
+    name: "{{ apikey_db_name | default('apikey') }}"
+    target: /tmp/apikey.sql
+    login_host: "{{ apikey_db_hostname }}"
+    login_port: "{{ apikey_db_port | default('3306') }}"
+    login_user: "{{ mysql_root_username }}"
+    login_password: "{{ mysql_root_password }}"
+  when: apikey_db_dump is defined
+  run_once: true
+
+- name: Create cas and apikey db
+  mysql_db:
+    state: present
+    name: "{{ item.name }}"
+    login_host: "{{ item.login_host }}"
+    login_port: "{{ item.login_port }}"
+    login_user: "{{ item.login_user }}"
+    login_password: "{{ item.login_password }}"
+    encoding: "{{ cas_db_encoding | default('utf8') }}"
+  run_once: true
+  with_items:
+  - { name: "{{ cas_db_name | default('emmet') }}", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
+  - { name: "{{ apikey_db_name | default('apikey') }}", login_host: "{{ apikey_db_hostname }}", login_port: "{{ apikey_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
+
+- name: Need the external ipv4 address for mysql cas user when using external database
+  set_fact:
+    cas_mysql_src_host: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+  when:
+    cas_db_hostname != 'localhost'
+
+- name: otherwise localhost
+  set_fact:
+    cas_mysql_src_host: localhost
+  when:
+    cas_db_hostname == 'localhost'
+
+- name: Need the external ipv4 address for mysql apikey user when using external database
+  set_fact:
+    apikey_mysql_src_host: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+  when:
+    apikey_db_hostname != 'localhost'
+
+- name: otherwise localhost
+  set_fact:
+    apikey_mysql_src_host: localhost
+  when:
+    apikey_db_hostname == 'localhost'
+
+- name: Create cas and apikey mysql users
+  mysql_user:
+    login_host: "{{ item.login_host }}"
+    login_port: "{{ item.login_port }}"
+    login_user: "{{ item.login_user }}"
+    login_password: "{{ item.login_password }}"
+    user: "{{ item.user }}"
+    password: "{{ item.password }}"
+    priv: "{{ item.priv }}"
+    host: "{{ item.host }}"
+  with_items:
+    - { user: "{{ cas_flyway_username }}", password: "{{ cas_flyway_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:ALL", host: "{{ cas_mysql_src_host }}", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
+    - { user: "{{ cas_db_username }}", password: "{{ cas_db_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:INSERT,SELECT,UPDATE,DELETE,EXECUTE,TRIGGER/mysql.proc:SELECT", host: "{{ cas_mysql_src_host }}", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
+    - { user: "{{ apikey_db_username }}", password: "{{ apikey_db_password }}", priv: "{{ apikey_db_name | default('apikey') }}.*:ALL", host: "{{ apikey_mysql_src_host }}", login_host: "{{ apikey_db_hostname }}", login_port: "{{ apikey_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
+
+- name: "Check if mongo cas users should be created"
+  debug:
+    msg: "Should be the mongo users created? {{ cas_add_mongo_users | default(False) }}"
+
+- name: Create mongo cas users
+  mongodb_user:
+    user: "{{ item.user }}"
+    password: "{{ item.password }}"
+    database: "{{ item.database }}"
+    roles: "{{ item.roles }}"
+    replica_set: "{{ item.replica_set }}"
+    ssl: "{{ item.ssl }}"
+    state: present
+    login_host: "{{ item.login_host }}"
+    login_port: "{{ item.login_port }}"
+    login_database: "{{ item.login_database }}"
+    login_user: "{{ item.login_user }}"
+    login_password: "{{ item.login_password }}"
+  with_items:
+  - {
+    login_host: "{{ cas_tickets_host }}",
+    login_port: "{{ cas_tickets_port | default('27017') }}",
+    login_user: "{{ mongodb_root_username }}",
+    login_password: "{{ mongodb_root_password }}",
+    login_database: "{{ mongodb_root_database | default('admin') }}",
+    user: "{{ cas_tickets_username }}",
+    password: "{{ cas_tickets_password }}",
+    database: "{{ cas_tickets_db | default('cas-ticket-registry') }}",
+    replica_set: "{{ cas_tickets_replica_set | default('') }}",
+    ssl: "{{ cas_tickets_ssl_enabled | default('false') }}",
+    roles: 'readWrite'
+  }
+  - {
+    login_host: "{{ cas_services_host }}",
+    login_port: "{{ cas_services_port | default('27017') }}",
+    login_user: "{{ mongodb_root_username }}",
+    login_password: "{{ mongodb_root_password }}",
+    login_database: "{{ mongodb_root_database | default('admin') }}",
+    user: "{{ cas_services_username }}",
+    password: "{{ cas_services_password }}",
+    database: "{{ cas_services_db | default('cas-service-registry' ) }}",
+    replica_set: "{{ cas_services_replica_set | default('') }}",
+    ssl: "{{ cas_services_ssl_enabled | default('false') }}",
+    roles: 'readWrite'
+  }
+  - {
+    login_host: "{{ cas_audit_host | default('localhost') }}",
+    login_port: "{{ cas_audit_port | default('27017') }}",
+    login_user: "{{ mongodb_root_username }}",
+    login_password: "{{ mongodb_root_password }}",
+    login_database: "{{ mongodb_root_database | default('admin') }}",
+    user: "{{ cas_audit_username | default('cas') }}",
+    password: "{{ cas_audit_password | default('password') }}",
+    database: "{{ cas_audit_db | default('cas-audit-repository') }}",
+    replica_set: "{{ cas_audit_replica_set | default('') }}",
+    ssl: "{{ cas_audit_ssl_enabled | default('false') }}",
+    roles: 'readWrite'
+  }
+  tags: mongodb-org
+  run_once: true
+  when: cas_add_mongo_users is defined and cas_add_mongo_users

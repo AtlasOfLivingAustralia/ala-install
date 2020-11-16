@@ -5,6 +5,7 @@
   tags:
   - setfacts
   - userdetails
+  - properties
 
 - name: "Create system user for userdetails"
   user:
@@ -14,6 +15,7 @@
   tags:
   - user
   - userdetails
+  - properties
 
 - name: ensure target directories exist data subdirectories etc.
   file:
@@ -73,3 +75,20 @@
     - service
     - userdetails
 
+- name: add nginx vhost
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "userdetails"
+    hostname: "{{ cas_host_name }}"
+    context_path: "{{  userdetails_context_path | default('userdetails') }}"
+    nginx_paths:
+      - path: "/{{  userdetails_context_path | default('userdetails') }}"
+        appname: "userdetails"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:{{ userdetails_port | default('9001') }}/{{  userdetails_context_path | default('userdetails') }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - userdetails
+  when: webserver_nginx
