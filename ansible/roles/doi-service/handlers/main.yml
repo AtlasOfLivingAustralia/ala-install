@@ -1,4 +1,4 @@
 - name: restart doi-service
   service: name=doi-service state=restarted enabled=yes
   when:
-  - skip_handlers | default("false") == "false"
+  - skip_handlers | default("false") | bool == false
