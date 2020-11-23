@@ -1,2 +1,4 @@
 - name: restart cas-management
   service: name=cas-management state=restarted enabled="yes"
+  when:
+  - skip_handlers | default("false") | bool == false

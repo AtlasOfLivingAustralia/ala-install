@@ -1,2 +1,4 @@
 - name: restart userdetails
   service: name=userdetails state=restarted enabled="yes"
+  when:
+  - skip_handlers | default("false") | bool == false
