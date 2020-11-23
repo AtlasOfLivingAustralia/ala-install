@@ -4,7 +4,7 @@ This project includes a playbook for setting up an ALA demo.
 
 ## Prerequisites
 
-### Ansible: The current supported version is: **2.9.7**
+### Ansible: The current supported version is: **2.10.3**
 
 The playbooks and roles in this repository have been developed and tested against the above version. Typically you need to install ansible in your computer or in the computer you'll use to deploy from.
 
