@@ -53,7 +53,7 @@ datacite:
 
 ala:
   base:
-    url: https://www.ala.org.au
+    url: {{ ala_base_url | default('https://www.ala.org.au')}}
 
 skin:
   layout: {{ (doi_skin_layout | default(skin_layout)) | default('main') }}
