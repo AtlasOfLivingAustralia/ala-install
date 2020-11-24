@@ -19,10 +19,9 @@
 
 - name: Install Postgres
   apt:
-    pkg: "{{ item }}"
+    pkg: "{{ postgresql_packages }}"
     state: present
     update_cache: yes
-  with_items: "{{ postgresql_packages }}"
   tags: postgresql
   register: postgresql_installed
   notify:

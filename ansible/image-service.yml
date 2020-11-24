@@ -7,6 +7,7 @@
     - { role: postgresql, pg_version: "{{ image_service_postgresql_version | default('10') }}", postgis_version: "{{ image_service_postgis_version | default('2.4') }}" }
     - { role: pg_instance, extensions: ["citext", "pgcrypto"], db_name: "{{ image_service_db_name }}", db_user: "{{ image_service_db_username }}", db_password: "{{ image_service_db_password }}" }
     - webserver
+    - i18n
     - image-service
   become: yes
   become_user: root

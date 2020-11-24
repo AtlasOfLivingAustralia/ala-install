@@ -46,4 +46,4 @@ ssl=false
 #force_https=true
 
 
-biocollect_version=5.0-SNAPSHOT
+biocollect_version=5.1.2-SNAPSHOT

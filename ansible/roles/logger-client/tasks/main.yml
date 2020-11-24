@@ -4,6 +4,10 @@
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/logger-client/config"
+  tags:
+    - properties
 
 - name: copy all config.properties
   template: src=logger-client.properties dest={{data_dir}}/logger-client/config/logger-client.properties
+  tags:
+    - properties
