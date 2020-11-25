@@ -4,6 +4,10 @@
 
 - name: Add entries for demo into hosts file
   lineinfile: dest=/etc/hosts regexp='^127\.0\.0\.1' line="127.0.0.1 localhost {{ demo_hostname | default('') }} ala.vagrant.dev ala demo.vagrant1.ala.org.au vagrant1.ala.org.au" owner=root group=root mode=0644
+  when: skip_demo_etc_hosts | default("false") | bool == false
+  tags:
+    - demo
+    - demo-etc-hosts
 
 - name: Ensure data directory exists
   file: path=/srv/{{ demo_hostname }}/www/{{ item }} state=directory owner={{tomcat_user}} group={{tomcat_user}}
