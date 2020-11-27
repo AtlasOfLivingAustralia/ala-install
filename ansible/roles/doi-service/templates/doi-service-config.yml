@@ -48,7 +48,7 @@ datacite:
       baseApiUrl: {{ doi_datacite_api_url | default('https://api.test.datacite.org/') }}
       user: {{ doi_datacite_user }}
       password: {{ doi_datacite_password }}
-      prefix: {{ doi_datacite_prefix }}
+      prefix: '{{ doi_datacite_prefix }}'
       shoulder: {{ doi_datacite_shoulder }}
 
 ala:
