@@ -40,7 +40,7 @@ images:
     metadata: {{ image_service_url | default('https://images.ala.org.au') }}/ws/image/{0}
   index: {{ index_images | default('false') }}
 knowledgeBase:
-  service: {{ knowledgebase_base_url | default('https://support.ala.org.au') }}
+  service: {{ knowledgebase_service_url | default('https://support.ala.org.au') }}
   sitemap: /support/solutions
   sectionSelector: section.article-list .list-lead > a
   articleCssSelector: .article-title a.c-link
