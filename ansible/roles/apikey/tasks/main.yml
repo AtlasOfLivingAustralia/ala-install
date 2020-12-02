@@ -3,6 +3,7 @@
     name: common
     tasks_from: setfacts
   tags:
+  - properties
   - setfacts
   - apikey
 
@@ -12,6 +13,7 @@
     state: present
     system: yes
   tags:
+  - properties
   - user
   - apikey
 
@@ -73,3 +75,20 @@
     - service
     - apikey
 
+- name: add nginx vhost
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "apikey"
+    hostname: "{{ cas_host_name }}"
+    context_path: "{{ apikey_context_path | default('apikey') }}"
+    nginx_paths:
+      - path: "/{{ apikey_context_path | default('apikey') }}"
+        appname: "apikey"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:{{ apikey_port | default('9002') }}/{{ apikey_context_path | default('apikey') }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - apikey
+  when: webserver_nginx

@@ -1,14 +1,11 @@
 - hosts: cas-servers
+  roles:
+    - common
+    - java
+    - i18n
+    - mysql-5.7
+    - { role: mongodb-org, mongodb_version: 4.0 }
   tasks:
-  - name: Include common
-    include_role:
-      name: common
-  - name: Include i18n
-    include_role:
-      name: i18n
-  - name: Install java
-    include_role:
-      name: java
   - apt_repository:
       repo: ppa:chris-lea/redis-server
       update_cache: yes
@@ -18,14 +15,6 @@
     vars:
       packages:
       - redis-server
-  - name: Install mysql
-    include_role:
-      name: mysql-5.7
-  - name: Install mongo
-    include_role:
-      name: mongodb-org
-    vars:
-      mongodb_version: 4.0
 - name: include default cas 5 steps
   vars:
     cas_add_mongo_users: true

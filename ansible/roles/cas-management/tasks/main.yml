@@ -5,6 +5,7 @@
   tags:
   - setfacts
   - cas-management
+  - properties
 
 - name: ensure target directories exist data subdirectories etc.
   file:
@@ -70,4 +71,22 @@
   tags:
     - deploy
     - service
-    - cas
+    - cas-management
+
+- name: add nginx vhost
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "cas-management"
+    hostname: "{{ cas_host_name }}"
+    context_path: "{{  cas_management_context_path | default('cas-management') }}"
+    nginx_paths:
+      - path: "/{{  cas_management_context_path | default('cas-management') }}"
+        appname: "cas-management"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:{{ cas_management_port | default('8070') }}/{{  cas_management_context_path | default('cas-management') }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - cas-management
+  when: webserver_nginx
