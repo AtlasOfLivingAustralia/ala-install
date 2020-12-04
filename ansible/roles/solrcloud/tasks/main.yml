@@ -93,6 +93,7 @@
   copy: src=solr/solr.xml dest=/data/solr
   tags:
     - solrcloud
+    - solr_config
 
 - name: copy SOLR config
   template: src=solr.in.sh dest=/opt/solr/bin/

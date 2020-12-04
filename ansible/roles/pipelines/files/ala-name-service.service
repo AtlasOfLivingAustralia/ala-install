@@ -1,0 +1,9 @@
+[Unit]
+Description=ala-name-service script
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/ala-name-service.sh start
+
+[Install]
+WantedBy=multi-user.target

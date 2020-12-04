@@ -143,3 +143,19 @@
   tags:
     - pipelines_jenkins
     - pipelines_jenkins_slaves
+
+- name: Install pip
+  apt: update_cache=yes name={{ item }}
+  with_items:
+    - python3-pip
+  tags:
+    - validation_report
+    - pipelines_jenkins
+    - pipelines_jenkins_slaves
+
+- pip:
+    name: csvtotable
+  tags:
+    - validation_report
+    - pipelines_jenkins
+    - pipelines_jenkins_slaves
