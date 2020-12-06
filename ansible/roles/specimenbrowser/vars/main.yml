@@ -1,5 +1,5 @@
 # assets
-version: "1.2"
+version: "{{ specimenbrowser_version | default('LATEST') }}"
 artifactId: "specimenbrowser"
 classifier: ''
 packaging: "war"
