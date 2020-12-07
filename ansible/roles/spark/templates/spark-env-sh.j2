@@ -10,6 +10,7 @@ SPARK_MASTER_IP={{ spark.master_ip }}
 SPARK_MASTER_PORT={{ spark.master_port }}
 SPARK_WORKER_PORT={{ spark.worker_work_port }}
 SPARK_WORKER_WEBUI_PORT={{ spark.worker_ui_port }} #Avoid conflict with kafka ports
+SPARK_PUBLIC_DNS={{ spark.public_dns | default(inventory_hostname) }}
 
 export SPARK_DIST_CLASSPATH=$(/data/hadoop/bin/hadoop classpath)
 {% for key, value in spark.env_extras.items() | sort %}
