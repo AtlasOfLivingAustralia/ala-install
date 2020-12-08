@@ -3,16 +3,16 @@ vagrant1
 
 [volunteer-portal:vars]
 is_vagrant=true
-local_repo_dir=~/.ala
-data_dir=/data
+local_repo_dir = ~/.ala
+data_dir=/srv/data
 
 volunteer_portal_hostname=volunteer.vagrant1.ala.org.au
 volunteer_portal_context_path=
-
-auth_base_url=https://auth.ala.org.au
-auth_cas_url=https://auth.ala.org.au/cas
 
 volunteer_portal_db_name=volunteer_portal
 volunteer_portal_db_username=volunteer_portal
 volunteer_portal_db_password=password
 volunteer_portal_db_hostname=localhost
+
+auth_base_url=https://auth.ala.org.au
+auth_cas_url=https://auth.ala.org.au/cas

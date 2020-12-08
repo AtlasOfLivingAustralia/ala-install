@@ -1,0 +1,96 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - volunteer-portal-webapp
+    - deploy
+    - properties
+    - nginx_vhost
+
+#
+# JAR file deployment
+#
+- name: add jar and service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: "digivol"
+    jar_url: '{{ digivol_jar_url }}'
+  tags:
+    - deploy
+    - volunteer-portal-webapp    
+
+#
+# Properties and data file configuration
+#
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner=digivol group=digivol
+  with_items:
+    - "{{data_dir}}/digivol"
+    - "{{data_dir}}/digivol/config"
+    - "{{data_dir}}/digivol/media/images"
+    - "{{data_dir}}/digivol/elasticsearch"
+  tags:
+    - volunteer-portal-webapp
+    - properties
+
+- name: set data ownership
+  file:
+    path: "{{data_dir}}/digivol"
+    owner: digivol
+    group: digivol
+    recurse: true
+  tags:
+    - properties
+    - volunteer-portal-webapp
+
+- name: copy all config.properties
+  template:
+    src: config.properties
+    dest: "{{data_dir}}/digivol/config/digivol-config.properties"
+    owner: digivol
+    group: digivol
+  notify:
+    - restart digivol
+  tags:
+    - properties
+    - volunteer-portal-webapp
+
+- name: copy logback config
+  template:
+    src: logback.groovy
+    dest: "{{data_dir}}/digivol/config/logback.groovy"
+    owner: digivol
+    group: digivol
+  notify:
+    - restart digivol
+  tags:
+    - properties
+    - volunteer-portal-webapp
+
+- name: Restart digivol service
+  service:
+    name: digivol
+    state: restarted
+    enabled: "yes"
+  tags:
+    - deploy
+    - volunteer-portal-webapp
+
+- name: add nginx vhost
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "volunteer-portal-webapp"
+    hostname: "{{ digivol_hostname }}"
+    context_path: "{{ digivol_context_path }}"
+    nginx_root: "{{}}"
+    nginx_paths:
+      - path: "{{ digivol_context_path }}"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080/{{ digivol_context_path }}"
+  notify:
+    - reload nginx
+  tags:
+    - nginx_vhost
+    - volunteer-portal-webapp
+  when: webserver_nginx

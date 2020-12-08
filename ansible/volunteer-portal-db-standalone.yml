@@ -1,0 +1,7 @@
+- hosts: volunteer-portal-db
+  roles:
+    - common
+    - {role: db-backup, db: postgres}
+    - {role: postgresql, pg_version: "10"}
+    - {role: pg_instance, extensions: ["citext", "pgcrypto"]}
+    - volunteer-portal-db

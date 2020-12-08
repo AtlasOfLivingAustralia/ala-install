@@ -1,7 +1,7 @@
 # assets
-version: "{{ digivol_version | default('LATEST') }}"
+version: "{{ volunteer_portal_version | default('LATEST') }}"
 artifactId: "volunteer-portal"
-classifier: 'exec'
+classifier: ''
 groupId: "au.org.ala"
-packaging: "jar"
-digivol_jar_url: "{{maven_repo_ws_url}}"
+packaging: "war"
+volunteer_portal_war_url: "{{maven_repo_ws_url}}"

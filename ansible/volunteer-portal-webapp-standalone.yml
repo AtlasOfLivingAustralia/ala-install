@@ -1,0 +1,5 @@
+- hosts: volunteer-portal-webapp
+  roles:
+    - common
+    - webserver
+    - volunteer-portal-webapp

@@ -1,7 +1,10 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
-    - volunteer-portal
+    - volunteer-portal-db
     - deploy
     - properties
-    - tomcat_vhost
-    - 
+
+
+
+
+

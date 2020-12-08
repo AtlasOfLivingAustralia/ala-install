@@ -1,0 +1,8 @@
+- hosts: volunteer-portal
+  tasks:
+  - name: include digivol DB playbook
+    import_playbook: volunteer-portal-db-standalone.yml
+  - name: include digivol webapp playbook
+    import_playbook: volunteer-portal-webapp-standalone.yml
+    
+  

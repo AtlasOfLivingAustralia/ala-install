@@ -1,0 +1,7 @@
+# assets
+version: "{{ volunteer_portal_db_version | default('LATEST') }}"
+artifactId: "volunteer-portal-db"
+classifier: ''
+groupId: "au.org.ala"
+packaging: "war"
+volunteer_portal_db_war_url: "{{maven_repo_ws_url}}"
