@@ -55,8 +55,9 @@
     - geoserver
 
 - name: remove previous geoserver data dir
-  command: "rm -r /tmp/geoserver_data_dir"
-  ignore_errors: yes
+  file:
+    state: absent
+    path: "/tmp/geoserver_data_dir"
   tags:
     - geoserver
 
@@ -129,27 +130,29 @@
   tags:
     - geoserver
 
-- name: "update defaultVectorCacheFormats in gwc-gs.xml for vectortiles extension"
-  xml:
-    path: "{{data_dir}}/geoserver_data_dir/gwc-gs.xml"
-    xpath: "/GeoServerGWCConfig/defaultVectorCacheFormats"
-    add_children:
-      - string: "application/vnd.mapbox-vector-tile"
-      - string: "application/json;type=geojson"
-      - string: "application/json;type=topojson"
-  tags:
-    - geoserver
+#Need to be fixed, sine gws-gs.xml stord in /var/lib/tomcat9/webapps-spatial-test.ala.org.au/geoserver/data/
 
-- name: "update defaultOtherCacheFormats in gwc-gs.xml for vectortiles extension"
-  xml:
-    path: "{{data_dir}}/geoserver_data_dir/gwc-gs.xml"
-    xpath: "/GeoServerGWCConfig/defaultOtherCacheFormats"
-    add_children:
-      - string: "application/vnd.mapbox-vector-tile"
-      - string: "application/json;type=geojson"
-      - string: "application/json;type=topojson"
-  tags:
-    - geoserver
+#- name: "update defaultVectorCacheFormats in gwc-gs.xml for vectortiles extension"
+#  xml:
+#    path: "{{data_dir}}/geoserver_data_dir/gwc-gs.xml"
+#    xpath: "/GeoServerGWCConfig/defaultVectorCacheFormats"
+#    add_children:
+#      - string: "application/vnd.mapbox-vector-tile"
+#      - string: "application/json;type=geojson"
+#      - string: "application/json;type=topojson"
+#  tags:
+#    - geoserver
+#
+#- name: "update defaultOtherCacheFormats in gwc-gs.xml for vectortiles extension"
+#  xml:
+#    path: "{{data_dir}}/geoserver_data_dir/gwc-gs.xml"
+#    xpath: "/GeoServerGWCConfig/defaultOtherCacheFormats"
+#    add_children:
+#      - string: "application/vnd.mapbox-vector-tile"
+#      - string: "application/json;type=geojson"
+#      - string: "application/json;type=topojson"
+#  tags:
+#    - geoserver
 
 - name: restart tomcat for installed extensions
   service:

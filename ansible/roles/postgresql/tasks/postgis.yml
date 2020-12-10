@@ -45,9 +45,9 @@
   become: yes
   become_user: postgres
   with_items:
-    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version}}/postgis.sql"
-    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version}}/spatial_ref_sys.sql"
-    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version}}/postgis_comments.sql"
+    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version_folder}}/postgis.sql"
+    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version_folder}}/spatial_ref_sys.sql"
+    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version_folder}}/postgis_comments.sql"
   tags:
     - postgresql
     - postgis

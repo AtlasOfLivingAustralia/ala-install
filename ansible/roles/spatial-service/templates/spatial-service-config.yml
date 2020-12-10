@@ -71,6 +71,10 @@ security:
     bypass: {{ bypass_cas | default(true) }}
     disableCAS: {{ bypass_cas | default(true) }}
     gateway: {{ gateway_cas | default(false) }}
+  apikey:
+    check:
+      serviceUrl:  {{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}
+
 
 auth.admin_role: {{ auth_admin_role | default('ROLE_ADMIN') }}
 app.http.header.userId: {{ app_http_header_userid | default('X-ALA-userId') }}
@@ -94,7 +98,7 @@ spatialHubUrl: {{ spatial_hub_url }}
 gazField: {{ gaz_field | default('cl915') }}
 userObjectsField: {{ user_objects_field | default('cl1083') }}
 
-apiKeyCheckUrlTemplate: "{{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}"
+#apiKeyCheckUrlTemplate: "{{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}"
 spatialService.remote: "{{spatial_service_remote_url}}"
 
 journalmap.api_key: {{ journalmap_api_key | default('') }}
