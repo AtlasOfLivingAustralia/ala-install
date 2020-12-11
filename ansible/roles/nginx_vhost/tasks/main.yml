@@ -179,15 +179,6 @@
   tags:
     - nginx_vhost
 
-- name: clear old vhost fragments
-  file:
-    path: "{{ nginx_conf_dir }}/vhost_fragments/{{ item }}"
-    state: absent
-  when: nginx_vhost_fragments_to_clear is defined and nginx_vhost_fragments_to_clear|length > 0
-  with_items: "{{ nginx_vhost_fragments_to_clear }}"
-  tags:
-    - nginx_vhost
-
 # check dir exists for servername fragments
 - name: ensure vhost fragments dir is present
   file: 
