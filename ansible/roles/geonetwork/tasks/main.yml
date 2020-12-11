@@ -3,10 +3,12 @@
     - geonetwork
 
 - name: packages
-  apt: pkg={{ item }} update_cache=yes state=latest
-  with_items:
-    - curl
-    - unzip
+  apt:
+    name:
+      - curl
+      - unzip
+    update_cache: yes
+    state: latest
   tags:
     - geonetwork
 
