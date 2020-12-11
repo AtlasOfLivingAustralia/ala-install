@@ -4,11 +4,21 @@
     - geoserver_run_script
 
 - name: packages
-  apt: pkg={{ item }} update_cache=yes state=latest
-  with_items:
-    - curl
-    - unzip
-    - python3-lxml
+  apt:
+    name:
+      - 'curl'
+      - 'unzip'
+    update_cache: yes
+    state: latest
+  tags:
+    - geoserver
+
+- name: packages (python3-lxml)
+  apt:
+    name:
+      - 'python3-lxml'
+    update_cache: yes
+    state: present
   tags:
     - geoserver
 
