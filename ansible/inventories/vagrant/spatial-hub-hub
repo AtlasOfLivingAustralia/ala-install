@@ -11,13 +11,15 @@ ala.vagrant.dev
 
 [spatial-hub-hub:vars]
 
-# hub_path will contain the files
-#   * app-config.json
-#   * menu-config.json
-#   * view-config.json
-#   * {{hub}}.css
-hub_path={{inventory_dir}}/../../roles/spatial-hub-hub/files/example-hub-config
-hub=example
+# hub_path will contain the optional files
+#   * config/example-hub/app-config.json
+#   * config/example-hub/menu-config.json
+#   * config/example-hub/view-config.json
+#   * assets/css/{{hub}}.css
+#   * assets/images/
+#   * view/layouts/{{hub}}.gsp
+hub_path={{inventory_dir}}/../../roles/spatial-hub-hub/files/example-hub
+hub=example-hub
 
 data_dir=/data
 
