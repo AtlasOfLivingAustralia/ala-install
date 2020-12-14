@@ -11,8 +11,24 @@
     - spatial-hub-config
     - properties
 
+#- name: copy all config.yml
+#  template: src={{spatial_hub_portal|lower}}/{{item}} dest={{data_dir}}/spatial-hub/config/{{item}} owner={{tomcat_user}} group={{tomcat_user}}
+#  with_items:
+#    - "spatial-hub-config.yml"
+#    - "menu-config.json"
+#    - "view-config.json"
+#  tags:
+#    - config
+#    - spatial-hub
+#    - spatial-hub-config
+#    - properties
+
 - name: copy all config.yml
-  template: src={{item}} dest={{data_dir}}/spatial-hub/config/{{item}} owner={{tomcat_user}} group={{tomcat_user}}
+  template:
+    src: "{{spatial_hub_portal|lower}}/{{item}}"
+    dest: "{{data_dir}}/spatial-hub/config/{{item}}"
+    owner: "{{tomcat_user}}"
+    group: "{{tomcat_user}}"
   with_items:
     - "spatial-hub-config.yml"
     - "menu-config.json"
