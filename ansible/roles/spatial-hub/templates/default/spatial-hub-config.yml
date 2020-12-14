@@ -1,0 +1,274 @@
+grails.serverURL: "{{spatial_hub_base_url}}{{spatial_hub_context_path}}"
+grails.app.context: "{{spatial_hub_context_path}}"
+grails.assets.bundle: false
+grails.assets.minifyJs: false
+
+googleAnalyticsId: "{{google_analytics_id | default('')}}"
+google:
+  apikey: "{{ (google_apikey | default(google_api_key)) | default('get-a-google-api-key') }}"
+
+api_key: {{ spatial_service_api_key  | default('') }}
+
+i18n:
+  region: "{{ spatial_hub_locale | default('default') }}"
+
+security:
+  cas:
+    casServerName: "{{ auth_base_url }}"
+    appServerName: "{{ spatial_hub_base_url }}"
+    casServerUrlPrefix: "{{ auth_cas_url }}"
+    loginUrl: "{{ auth_cas_url }}/login"
+    logoutUrl: "{{ auth_cas_url }}/logout"
+    contextPath: "{{ spatial_hub_context_path }}"
+    bypass: {{ bypass_cas | default(true) }}
+    disableCAS: {{ bypass_cas | default(true) }}
+    gateway: {{ gateway_cas | default(false) }}
+
+autocompleteUrl: "{{ bie_service_base_url | default('https://bie-ws.ala.org.au/ws') }}/search/auto.jsonp"
+
+auth:
+    admin_role: {{ auth_admin_role | default('ROLE_ADMIN') }}
+
+app:
+    http:
+        header:
+            userId: {{ app_http_header_userid | default('X-ALA-userId') }}
+
+headerAndFooter:
+  baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}"
+  version: "{{ header_and_footer_version | default('2') }}"
+
+ala.baseURL: "{{ ala_base_url | default('https://www.ala.org.au') }}"
+bie.baseURL: "{{ bie_base_url | default('https://bie.ala.org.au') }}"
+bie.searchPath: '/search'
+
+bieService:
+    baseURL: "{{ bie_service_base_url | default('https://bie-ws.ala.org.au/ws') }}"
+
+userdetails:
+    baseUrl: "{{ user_details_base_url | default('https://auth.ala.org.au/userdetails') }}"
+
+favicon:
+    url: "{{ favicon_url | default('https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico') }}"
+
+layersService:
+    url: "{{layers_service_url}}"
+
+lists:
+    url: "{{ lists_url | default('https://lists.ala.org.au') }}"
+    threatenedSpeciesUrl: '/ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true'
+    invasiveSpeciesUrl: '/ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true'
+    facets: {{ lists_facets | default(true) }}
+    migratoryDR: {{ lists_migratory_data_resource_uid | default('dr1005') }}
+    iconicSpeciesDR: {{ lists_iconic_species_data_resource_uid | default('dr781') }}
+
+journalmap:
+    url: "{{ journalmap_url | default('https://www.journalmap.org/') }}"
+
+collections:
+    url: "{{ collections_url | default('https://collections.ala.org.au') }}"
+
+sandbox:
+    url: "{{ sandbox_url | default('https://sandbox.ala.org.au/ala-hub') }}"
+    uiUrl: "{{ sandbox_ui_url | default('https://sandbox.ala.org.au') }}"
+
+sandboxService:
+    url: "{{ sandbox_biocache_service_url | default('https://sandbox.ala.org.au/biocache-service') }}"
+
+gazField: {{ gaz_field | default('cl915') }}
+
+userObjectsField: {{ user_objects_field | default('cl1083') }}
+
+biocache:
+    url: "{{biocache_url | default('https://biocache.ala.org.au')}}"
+
+biocacheService:
+    url: "{{ biocache_service_url | default('https://biocache-ws.ala.org.au/ws')}}"
+    #Facets to ignore in the biocache grouped/facets service
+    default_facets_ignored: "{{ default_facets_ignored | default('data_resource_uid,data_provider_uid,species,collection_uid,institution_code_name,institution_uid,uncertainty') }}"
+    custom_facets:
+      Attribution: {{ custom_facets_attribution | default([ 'Data Provider;data_provider', 'Collection;collection_name', 'Data Resource;data_resource', 'Institution;institution_name']) }}
+      Location: {{ custom_facets_location | default([ 'Coordinate Uncertainty;coordinate_uncertainty' ]) }}
+      Occurrence: {{ custom_facets_occurrence | default(['Year;occurrence_year' ]) }}
+
+sampling:
+    url: "{{ sampling_url | default('https://sampling.ala.org.au/sampling-service') }}"
+
+geoserver:
+    url: "{{ geoserver_url | default('https://spatial.ala.org.au/geoserver') }}"
+
+flickr:
+    url: "{{ flicker_rest_url | default('https://api.flickr.com/services/rest/?method=') }}"
+    searchPhotos: 'flickr.photos.search'
+    # licensesInfo: 'flickr.photos.licenses.getInfo'
+    # licenses data is found at https://api.flickr.com/services/rest/?method=flickr.photos.licenses.getInfo&api_key=<api_key>&format=json&nojsoncallback=1
+    licensesData: {{ flickr_licenses | default( {"licenses":{"license":[{"id":"0","name":"All Rights Reserved","url":""},{"id":"4","name":"Attribution License","url":"https://creativecommons.org/licenses/by/2.0/"},{"id":"6","name":"Attribution-NoDerivs License","url":"https://creativecommons.org/licenses/by-nd/2.0/"},{"id":"3","name":"Attribution-NonCommercial-NoDerivs License","url":"https://creativecommons.org/licenses/by-nc-nd/2.0/"},{"id":"2","name":"Attribution-NonCommercial License","url":"https://creativecommons.org/licenses/by-nc/2.0/"},{"id":"1","name":"Attribution-NonCommercial-ShareAlike License","url":"https://creativecommons.org/licenses/by-nc-sa/2.0/"},{"id":"5","name":"Attribution-ShareAlike License","url":"https://creativecommons.org/licenses/by-sa/2.0/"},{"id":"7","name":"No known copyright restrictions","url":"https://www.flickr.com/commons/usage/"},{"id":"8","name":"United States Government Work","url":"http://www.usa.gov/copyright.shtml"},{"id":"9","name":"Public Domain Dedication (CC0)","url":"https://creativecommons.org/publicdomain/zero/1.0/"},{"id":"10","name":"Public Domain Mark","url":"https://creativecommons.org/publicdomain/mark/1.0/"}]},"stat":"ok"} ) }}
+    apiKey: {{ flickr_api_key | default('') }}
+    secret: {{ flickr_secret | default('') }}
+    tags: {{ flickr_tags | default('') }}
+    extra: "{{ flickr_extra | default('geo,date_taken,owner_name,license,url_t,url_s,url_m,title') }}"
+    contentType: {{ flickr_content_type | default('') }}
+    geoContext: {{ flickr_geo_content | default('') }}
+    filter: "{{ flickr_filter | default('&text=landscape') }}"
+    nbrOfPhotosToDisplay: {{ flickr_photos_to_display | default(15) }}
+
+#viewConfig:
+#    json: 'view-config.json'
+
+sessions:
+    dir: '{{ data_dir }}/spatial-hub/sessions'
+
+admin_role: {{ auth_admin_role | default('ROLE_ADMIN') }}
+
+skin.orgNameLong: "{{ orgNameLong | default('Atlas of Living Australia') }}"
+skin.orgNameShort: "{{ orgNameShort | default('ALA') }}"
+skin.layout: "{{ spatial_hub_skin_layout | default('portal') }}"
+
+grails.controllers.upload.maxFileSize: {{ max_request_size | default(524288000) }}
+grails.controllers.upload.maxRequestSize: {{ max_request_size | default(524288000) }}
+
+speciesDotSize: {{ species_dot_size | default(5) }}
+speciesDotOpacity: {{ species_dot_opacity | default(60) }}
+
+logger:
+    baseUrl: "{{ logger_base_url | default('https://logger.ala.org.au/service') }}"
+
+phylolink:
+    url: "{{ phylolink_url | default('https://phylolink.ala.org.au') }}"
+
+apiKeyCheckUrlTemplate: "{{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}"
+
+biocollect:
+  url: "{{ biocollect_url | default('https://biocollect.ala.org.au') }}"
+
+bccvl:
+    login:
+        url: "{{ bccvl_login_url | default('https://app.bccvl.org.au/bccvl/oauth2/authorize?client_id=F031d7ce-abb0-11e6-a678-0242ac120005&response_type=token&redirect_uri=') }}"
+    post:
+        url: "{{ bccvl_post_url | default('https://app.bccvl.org.au/API/dm/v1/import_ala_data') }}"
+keep:
+    alive:
+        timeout:
+            ms: {{ keep_alive_timeout_ms | default(10000) }}
+
+startup:
+    lat: {{ startup_lat | default(-25) }}
+    lng: {{ startup_lng | default(131) }}
+    zoom: {{ startup_zoom | default(4) }}
+    baselayer:
+        default: {{ startup_baselayer_default | default('osm') }}
+    baselayers:
+        google_roadmaps:
+            name: 'Streets'
+            layerType: 'ROADMAP'
+            type: 'google'
+            exportType: 'normal'
+            link: 'https://www.google.com/intl/en_au/help/terms_maps.html'
+            projections: ['3857']
+        google_hybrid:
+            name: 'Hybrid'
+            layerType: 'HYBRID'
+            type: 'google'
+            exportType: 'hybrid'
+            link: 'https://www.google.com/intl/en_au/help/terms_maps.html'
+            projections: ['3857']
+        outline:
+            name: 'Outline'
+            type: 'wms'
+            url: "{{ world_outline_base_layer | default('https://spatial.ala.org.au/geoserver/wms?') }}"
+            layerParams:
+                layers: 'ALA:world'
+                format: 'image/png'
+                continuousWorld: true
+            exportType: 'outline'
+        osm:
+            name: 'Open Street Map'
+            url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+            type: 'xyz'
+            exportType: 'minimal'
+            link: 'https://www.openstreetmap.org/about'
+            projections: ['3857']
+        google_satellite:
+            name: 'Satellite'
+            layerType: 'SATELLITE'
+            type: 'google'
+            exportType: 'satellite'
+            link: 'https://www.google.com/intl/en_au/help/terms_maps.html'
+            projections: ['3857']
+
+defaultareas:
+    - name: '{{ default_area_name }}'
+      fqs: ['longitude:[{{ default_area_bbox[0] }} TO {{ default_area_bbox[2] }}]', 'latitude:[{{ default_area_bbox[1] }} TO {{ default_area_bbox[3] }}]']
+      wkt: 'POLYGON(({{ default_area_bbox[0] }} {{ default_area_bbox[1] }}, {{ default_area_bbox[2] }} {{ default_area_bbox[1] }}, {{ default_area_bbox[2] }} {{ default_area_bbox[3] }}, {{ default_area_bbox[0] }} {{ default_area_bbox[3] }}, {{ default_area_bbox[0] }} {{ default_area_bbox[1] }}))'
+      areaSqKm: {{ default_area_sqkm }}
+      bbox: {{ default_area_bbox }}
+    - name: 'World'
+      fqs: []
+      wkt: 'POLYGON((-180 -90.0,180.0 -90.0,180.0 90.0,-180 90.0,-180 -90.0))'
+      areaSqKm: 510000000
+      bbox: [-180, -90, 180, 90]
+
+presetWMSServers:
+    - name: "AusCover"
+      url: "http://data.auscover.org.au/geoserver/wms?request=getCapabilities"
+    - name: "Geoserver IMOS"
+      url: "http://geoserver.imos.org.au/geoserver/wms?REQUEST=GetCapabilities"
+    - name: "GA"
+      url: "https://www.ga.gov.au/gis/services/earth_science/GA_Surface_Geology_of_Australia/MapServer/WMSServer?request=GetCapabilities"
+    - name: "Geofabric BOM"
+      url: "http://geofabric.bom.gov.au/simplefeatures/ows?request=getcapabilities"
+
+allowProxy:
+    server: "{{allowProxy_server | default('data.auscover.org.au;data.auscover.org.au:80;geoserver.imos.org.au;www.ga.gov.au/gis;geofabric.bom.gov.au')}}"
+
+getMapExamples:
+    - name: "Fractional Cover CLW - Non-PS Veg - 2012.297"
+      url: "http://data.auscover.org.au/geoserver/ows?SERVICE=WMS&REQUEST=GetMap&LAYERS=clw:FractCover.V2_2.NPV&FORMAT=image/png&SRS=epsg:3857&TRANSPARENT=true&VERSION=1.3.0&CRS=EPSG:3857&EXCEPTIONS=INIMAGE&STYLES="
+
+wms:
+    intersect: {{ wms_intersections | default(true) }}
+
+fq:
+    excludeAbsent: "{{ fq_exclude_absent | default('-occurrence_status_s:absent') }}"
+
+# (mandatory) projections.#.definition - usage new L.Proj.CRS(code, proj4js, params)
+# projections.#.definition.code = code
+# projections.#.definition.proj4js = proj4js definition (mandatory when not 3857 or 4326)
+# projections.#.definition.params = parameters (optional)
+#
+# (optional) projections.#.origin  (startup lat, lon, zoom is used when origin is not defined)
+# projections.#.origin.latitude = default latitude
+# projections.#.origin.longitude = default longitude
+# projections.#.origin.zoom = default zoom
+projection:
+    default: {{ projection_default | default('3857') }}
+#projections:
+#    3857:
+#      label: 'Pseudo-Mercator -- Spherical Mercator'
+#      definition:
+#        code: 'EPSG:3857' # leaflet supported, uses startup lat,lon,zoom
+#    4326:
+#      label: 'World Geodetic System 1984'
+#      definition:
+#        code: 'EPSG:4326' # leaflet supported, uses startup lat,lon,zoom
+#    3031:
+#      label: 'Antarctic Polar Stereographic'
+#      definition:
+#        code: 'EPSG:3031'
+#        proj4js: '+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+#        params: { resolutions: [ 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5 ] }
+#      origin:
+#        latitude: -80
+#        longitude: 0
+#        zoom: 1
+#    3575:
+#      label: 'North Pole LAEA Europe'
+#      definition:
+#        code: 'EPSG:3575'
+#        proj4js: '+proj=laea +lat_0=90 +lon_0=10 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+#        params:  { resolutions: [ 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5 ]}
+#      origin:
+#        latitude: 60
+#        longitude: 0
+#        zoom: 1
+#
