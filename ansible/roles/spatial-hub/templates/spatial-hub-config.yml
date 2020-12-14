@@ -34,7 +34,10 @@ app:
         header:
             userId: {{ app_http_header_userid | default('X-ALA-userId') }}
 
-headerAndFooter.baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}"
+headerAndFooter:
+  baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}"
+  version: "{{ header_and_footer_version | default('2') }}"
+
 ala.baseURL: "{{ ala_base_url | default('https://www.ala.org.au') }}"
 bie.baseURL: "{{ bie_base_url | default('https://bie.ala.org.au') }}"
 bie.searchPath: '/search'
