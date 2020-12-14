@@ -228,6 +228,7 @@ fi
 # To enable remote JMX connections, uncomment lines below
 # with authentication and/or ssl enabled. See https://wiki.apache.org/cassandra/JmxSecurity 
 #
+LOCAL_JMX=no
 if [ "x$LOCAL_JMX" = "x" ]; then
     LOCAL_JMX=yes
 fi
@@ -241,9 +242,11 @@ if [ "$LOCAL_JMX" = "yes" ]; then
   JVM_OPTS="$JVM_OPTS -Dcassandra.jmx.local.port=$JMX_PORT"
   JVM_OPTS="$JVM_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
 else
+  JVM_OPTS="$JVM_OPTS -Dcom.sun.management.jmxremote"
   JVM_OPTS="$JVM_OPTS -Dcassandra.jmx.remote.port=$JMX_PORT"
   JVM_OPTS="$JVM_OPTS -Dcom.sun.management.jmxremote.rmi.port=$JMX_PORT"
-  JVM_OPTS="$JVM_OPTS -Dcom.sun.management.jmxremote.authenticate=true"
+  JVM_OPTS="$JVM_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
+  JVM_OPTS="$JVM_OPTS -Djava.rmi.server.hostname={{ ala_public_dns | default(inventory_hostname) }}"
 fi
 
 # jmx ssl options
