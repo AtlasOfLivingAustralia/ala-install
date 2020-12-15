@@ -1,21 +1,12 @@
-# Deployment specific configuration for AWS spark quoll cluster.
-# This file should be copied over `la-pipelines-local.yaml` when deployed
-# so that it is used by the scripts.
-#
-# Long term, this configuration should be moved out of the project and should be generated
-# by ansible scripts or as part of the debian package installation.
-#
+# Ansible generated
 run:
-  # where to run: local, spark-embedded or spark-cluster
   platform: local
   local:
-    # jar: we get the jar from our dev or production environment
     sparkTmp: {{ spark_tmp }}
     sparkMaster: ""
     dwcaTmp: {{ dwca_tmp }}
     dwcaImportDir: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}
   spark-embedded:
-    # jar: we get the jar from our dev or production environment
     sparkTmp: {{ spark_tmp }}
     sparkMaster: ""
     dwcaTmp: {{ dwca_tmp }}
@@ -26,7 +17,6 @@ run:
     sparkMaster: spark://{{ spark_master }}:7077
     dwcaTmp: {{ dwca_tmp }}
     dwcaImportDir: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}
-
 
 collectory:
   wsUrl: {{ collectory_url }}
@@ -62,18 +52,26 @@ images:
   targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
 export-latlng:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
+speciesLists:
+  speciesAggregatesPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-species
 uuid:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
 sample:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
-sample-avro:
+  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
+index:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  zkHost: {{ zk_host | default('localhost:2181') }}
+solr:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
+  zkHost: {{ zk_host | default('localhost:2181') }}
+  includeSampling: {{ include_sampling }}
 validation-report:
   checkSolr: {{ check_solr }}
   checkSampling: {{ include_sampling }}
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   zkHost: {{ zk_host | default('localhost:2181') }}
-index:
-  includeSampling: {{ include_sampling }}
-  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
-  zkHost: {{ zk_host | default('localhost:2181') }}
+
