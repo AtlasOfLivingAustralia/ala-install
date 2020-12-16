@@ -2,7 +2,7 @@
   roles:
     - common
     - java
-    - mysql-5.7
+    - mysql-server
     - webserver
     - tomcat
     - webapi_instance
