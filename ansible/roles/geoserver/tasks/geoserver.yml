@@ -22,10 +22,19 @@
   tags:
     - geoserver
 
+#geoserver cannot start sometimes, if previous config exists
+- name: Remove GEOSERVER_DATA_DIR directory
+  file:
+    path: '{{data_dir}}/geoserver_data_dir'
+    state: absent
+
+#Changing CATALINA_OPTS does not work on Tomcat9 and Geoserver 2.14
 - name: configure geoserver data dir
-  lineinfile:
-    dest={{tomcat_conf}}
-    line='CATALINA_OPTS="${CATALINA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
+  blockinfile:
+    path={{tomcat_conf}}
+    marker="# {mark} Configure Geoserver/GWC data folder / (Ansible managed)"
+    block='JAVA_OPTS="${JAVA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
+    backup=yes
   notify:
     - restart tomcat
   when: ansible_os_family == "Debian"
@@ -57,28 +66,6 @@
   tags:
     - deploy
     - tomcat_vhost
-    - geoserver
-
-- name: unzip .war to get data directory
-  command: "unzip {{ tomcat_deploy_dir }}/{{ war_filename }}.war data/* -d /tmp/"
-  tags:
-    - geoserver
-
-- name: remove previous geoserver data dir
-  file:
-    state: absent
-    path: "/tmp/geoserver_data_dir"
-  tags:
-    - geoserver
-
-- name: rename data dir
-  command: "mv /tmp/data /tmp/geoserver_data_dir"
-  tags:
-    - geoserver
-
-- name: copy data directory
-  command: "cp -r /tmp/geoserver_data_dir {{data_dir}}"
-  tags:
     - geoserver
 
 - name: set data ownership
@@ -140,29 +127,37 @@
   tags:
     - geoserver
 
-#Need to be fixed, sine gws-gs.xml stord in /var/lib/tomcat9/webapps-spatial-test.ala.org.au/geoserver/data/
 
-#- name: "update defaultVectorCacheFormats in gwc-gs.xml for vectortiles extension"
-#  xml:
-#    path: "{{data_dir}}/geoserver_data_dir/gwc-gs.xml"
-#    xpath: "/GeoServerGWCConfig/defaultVectorCacheFormats"
-#    add_children:
-#      - string: "application/vnd.mapbox-vector-tile"
-#      - string: "application/json;type=geojson"
-#      - string: "application/json;type=topojson"
-#  tags:
-#    - geoserver
-#
-#- name: "update defaultOtherCacheFormats in gwc-gs.xml for vectortiles extension"
-#  xml:
-#    path: "{{data_dir}}/geoserver_data_dir/gwc-gs.xml"
-#    xpath: "/GeoServerGWCConfig/defaultOtherCacheFormats"
-#    add_children:
-#      - string: "application/vnd.mapbox-vector-tile"
-#      - string: "application/json;type=geojson"
-#      - string: "application/json;type=topojson"
-#  tags:
-#    - geoserver
+- name: "update defaultVectorCacheFormats in gwc-gs.xml for vectortiles extension"
+  xml:
+    path: "{{data_dir}}/geoserver_data_dir/gwc-gs.xml"
+    xpath: "/GeoServerGWCConfig/defaultVectorCacheFormats"
+    add_children:
+      - string: "application/vnd.mapbox-vector-tile"
+      - string: "application/json;type=geojson"
+      - string: "application/json;type=topojson"
+  tags:
+    - geoserver
+
+- name: "update defaultOtherCacheFormats in gwc-gs.xml for vectortiles extension"
+  xml:
+    path: "{{data_dir}}/geoserver_data_dir/gwc-gs.xml"
+    xpath: "/GeoServerGWCConfig/defaultOtherCacheFormats"
+    add_children:
+      - string: "application/vnd.mapbox-vector-tile"
+      - string: "application/json;type=geojson"
+      - string: "application/json;type=topojson"
+  tags:
+    - geoserver
+
+- name: geoserver  - change admin password
+  template: src=users.xml dest={{data_dir}}/geoserver_data_dir/security/usergroup/default/users.xml
+  notify:
+    - restart tomcat
+  when: geoserver_password != "geoserver"
+  tags:
+    - password
+    - geoserver
 
 - name: restart tomcat for installed extensions
   service:
@@ -183,36 +178,6 @@
   retries: 200
   delay: 10
   tags:
-    - geoserver
-
-- name: change root password
-  uri:
-    url: "{{ geoserver_url }}/rest/security/masterpw"
-    method: "PUT"
-    user: 'admin'
-    password: 'geoserver'
-    force_basic_auth: yes
-    body: '{ "oldMasterPassword": "geoserver", "newMasterPassword": "{{ geoserver_password }}" }'
-    status_code: 200
-    body_format: json
-  when: geoserver_password != "geoserver"
-  tags:
-    - password
-    - geoserver
-
-- name: change admin password
-  uri:
-    url: "{{ geoserver_url }}/rest/security/self/password"
-    method: "PUT"
-    user: 'admin'
-    password: 'geoserver'
-    force_basic_auth: yes
-    body: '{ "newPassword": "{{ geoserver_password }}" }'
-    status_code: 200
-    body_format: json
-  when: geoserver_password != "geoserver"
-  tags:
-    - password
     - geoserver
 
 - name: copy geoserver script

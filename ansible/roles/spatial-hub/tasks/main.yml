@@ -39,7 +39,14 @@
     - spatial-hub-config
     - properties
 
-- name: copy all log4j.properties
+- name: copy system message
+  template: src=system-message.json dest={{data_dir}}/spatial-hub/config/system-message.json owner={{tomcat_user}} group={{tomcat_user}}
+  tags:
+    - spatial-hub
+    - spatial-hub-config
+    - properties
+
+- name: copy log4j.properties
   template: src=log4j.properties dest={{data_dir}}/spatial-hub/config/log4j.properties owner={{tomcat_user}} group={{tomcat_user}}
   tags:
     - spatial-hub
