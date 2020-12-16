@@ -71,7 +71,7 @@
   set_fact:
     libtcnative: "libtcnative-1"
     tomcat_package: "{{ tomcat }}"
-    tomcat_user: "{{ tomcat }}"
+    tomcat_user: "{{ tomcat_user | default(tomcat) }}"
     tomcat_conf: "/etc/default/{{ tomcat }}"
     tomcat_conf_dir: "/etc/{{ tomcat }}"
     tomcat_log_dir: "/var/log/{{ tomcat }}"

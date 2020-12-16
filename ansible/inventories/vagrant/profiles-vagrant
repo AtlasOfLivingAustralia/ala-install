@@ -9,6 +9,9 @@ deployment_env=vagrant
 
 tomcat_java_opts=-Xmx7g -Xms512m -Xss256k -Djava.awt.headless=true
 
+profile_hub_version=2.5-SNAPSHOT
+profile_service_version=2.5-SNAPSHOT
+
 profile_service_hostname=profiles-ws.vagrant1.ala.org.au
 profile_service_url=http://profiles-ws.vagrant1.ala.org.au
 profile_service_base_url=http://profiles-ws.vagrant1.ala.org.au
@@ -25,14 +28,14 @@ apikey_check_url=https://auth.ala.org.au/apikey/ws/check?apikey=
 
 userdetails_base_url=https://auth.ala.org.au/userdetails
 images_base_url=https://images.ala.org.au
-image_upload_base_url=http://biocache-test.ala.org.au/ws
+image_upload_base_url=https://biocache-ws-test.ala.org.au/ws
 ala_base_url=https://www.ala.org.au
 collectory_base_url=https://collections.ala.org.au
-bie_base_url=https://bie.ala.org.au
+bie_base_url=https://bie-test.ala.org.au
 lists_base_url=https://lists.ala.org.au
-biocache_base_url=http://biocache-test.ala.org.au
-avh_base_url=http://avh.ala.org.au
-nsl_base_url=https://biodiversity.org.au/test-nsl
+biocache_base_url=https://biocache-test.ala.org.au
+avh_base_url=https://avh-test.ala.org.au
+nsl_base_url=https://biodiversity.org.au/nsl
 
 sandbox_upload_directory=/data/sandbox/uploads
 sandbox_base_url=http://profiles.vagrant1.ala.org.au
@@ -41,19 +44,14 @@ sandbox_context_path=/sandbox
 sandbox_image_upload_base_url=http://localhost:8080/biocache-service
 
 
-image_upload_apikey = 
-profile_service_apikey = 
+image_upload_apikey =
+profile_service_apikey =
 uploaded_images_base_url=http://images2-dev.ala.org.au
 
 biodiv_library_api_key=
 
-nameindex_datestamp = 20171012
+nameindex_datestamp = 20200214-lucene4
 nameindex_to_use=ala
-
-# ANDS test account details
-ands_doi_app_id=
-ands_doi_key=
-ands_doi_client_id=
 
 # Google Analytics account details
 analytics_serviceAccountEmail=
@@ -74,7 +72,7 @@ elasticsearch_cluster_name=profiles_es_{{ deployment_env }}
 # Map keys
 map_id=someid
 map_access_key=somekey
-
+api_key=
 
 [sandbox]
 vagrant1
@@ -130,5 +128,5 @@ auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
 auth_if_logged_in_pattern=
 
-nameindex_datestamp = 20171012
 nameindex_to_use=ala
+nameindex_datestamp=20200214-lucene4

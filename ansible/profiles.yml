@@ -4,7 +4,7 @@
     - java
     - {role: db-backup, db: mongo}
     - {role: mongodb, mongo_version: "3.4.6"}
-    - cassandra
+    - cassandra3
     - tomcat
     - webserver
     - postfix

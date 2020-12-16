@@ -6,27 +6,11 @@
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
     - "{{data_dir}}/spatial-hub/config/{{hub}}"
-    - "{{data_dir}}/spatial-hub/assets/css"
   tags:
     - spatial-hub-hub
 
-- name: copy app-config
-  copy: src={{hub_path}}/app-config.json dest={{data_dir}}/spatial-hub/config/{{hub}}/app-config.json owner={{tomcat_user}} group={{tomcat_user}}
-  tags:
-    - spatial-hub-hub
-
-- name: copy view-config
-  copy: src={{hub_path}}/view-config.json dest={{data_dir}}/spatial-hub/config/{{hub}}/view-config.json owner={{tomcat_user}} group={{tomcat_user}}
-  tags:
-    - spatial-hub-hub
-
-- name: copy menu-config
-  copy: src={{hub_path}}/menu-config.json dest={{data_dir}}/spatial-hub/config/{{hub}}/menu-config.json owner={{tomcat_user}} group={{tomcat_user}}
-  tags:
-    - spatial-hub-hub
-
-- name: copy css
-  copy: src={{hub_path}}/{{hub}}.css dest={{data_dir}}/spatial-hub/assets/css/{{hub}}.css  owner={{tomcat_user}} group={{tomcat_user}}
+- name: copy hub config
+  copy: src={{hub_path}}/ dest={{data_dir}}/spatial-hub/ owner={{tomcat_user}} group={{tomcat_user}}
   tags:
     - spatial-hub-hub
 
