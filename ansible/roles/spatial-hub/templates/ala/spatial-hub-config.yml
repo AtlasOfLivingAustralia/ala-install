@@ -15,7 +15,6 @@ i18n:
 security:
   cas:
     casServerName: "{{ auth_base_url }}"
-    appServerName: "{{ spatial_hub_base_url }}"
     casServerUrlPrefix: "{{ auth_cas_url }}"
     loginUrl: "{{ auth_cas_url }}/login"
     logoutUrl: "{{ auth_cas_url }}/logout"
