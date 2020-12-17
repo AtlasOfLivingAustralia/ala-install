@@ -54,7 +54,7 @@
         ]
       },
       {
-        "name": "Select environmental layer",
+        "name": "Select 2 environmental layers",
         "inputs": [
           "grid",
           "layer"
@@ -205,7 +205,7 @@
         ]
       },
       {
-        "name": "Layers to use in the prediction. 1 to 10.",
+        "name": "Layers to use in the prediction. Between 1 and 20 layers.",
         "inputs": [
           "layer"
         ]
@@ -291,6 +291,43 @@
         ]
       }
     ]
+  },
+  "DoubleGridding": {
+    "view": [
+      {
+        "inputs": [
+          "area"
+        ]
+      },
+      {
+        "inputs": [
+          "species"
+        ]
+      },
+      {
+        "inputs": [
+          "primaryGridCellSize"
+        ]
+      },
+      {
+        "inputs": [
+          "secondaryGridCellSize"
+        ]
+      },
+      {
+        "inputs": [
+          "yearSize"
+        ]
+      }
+    ]
+  },
+  "SpeciesByLayer": {
+    "description": "Tabulate - 1D",
+    "input": {
+      "layer": {
+        "description": "Select 1 layer"
+      }
+    }
   }
 }
 
