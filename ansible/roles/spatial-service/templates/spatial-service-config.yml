@@ -63,7 +63,6 @@ security:
     uriFilterPattern: {{ uri_filter_pattern | default('/manageLayers,/manageLayers/.*,/admin,/admin/.*,/alaAdmin.*') }}
     uriExclusionFilterPattern: {{ uri_exclusion_filter_pattern | default('/assets.*,/images.*,/css.*,/js.*,/less.*,/tasks/status/.*') }}
     authenticateOnlyIfLoggedInFilterPattern: {{ authenticate_only_if_logged_in_filter_pattern | default('/master,/master/.*,/tasks,/tasks/.*') }}
-    appServerName: {{ spatial_service_base_url }}
     casServerUrlPrefix: {{ auth_cas_url }}
     loginUrl: {{ auth_cas_url }}/login
     logoutUrl: {{ auth_cas_url }}/logout
@@ -98,7 +97,7 @@ phyloServiceUrl: {{ phylolink_url | default('https://phylolink.ala.org.au') }}
 
 spatialHubUrl: {{ spatial_hub_url }}
 
-gazField: {{ gaz_field | default('cl915') }}
+gazField: {{ gaz_field | default('cl2123') }}
 userObjectsField: {{ user_objects_field | default('cl1083') }}
 
 #apiKeyCheckUrlTemplate: "{{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}"
