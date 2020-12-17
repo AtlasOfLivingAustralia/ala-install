@@ -60,14 +60,9 @@ retryTime: "{{ retry_time | default(30000) }}"
 security:
   cas:
     casServerName: {{ auth_base_url }}
-    uriFilterPattern: {{ uri_filter_pattern | default('/manageLayers,/manageLayers/.*,/admin,/admin/.*,/alaAdmin.*') }}
-    uriExclusionFilterPattern: {{ uri_exclusion_filter_pattern | default('/assets.*,/images.*,/css.*,/js.*,/less.*,/tasks/status/.*') }}
-    authenticateOnlyIfLoggedInFilterPattern: {{ authenticate_only_if_logged_in_filter_pattern | default('/master,/master/.*,/tasks,/tasks/.*') }}
-    appServerName: {{ spatial_service_base_url }}
     casServerUrlPrefix: {{ auth_cas_url }}
     loginUrl: {{ auth_cas_url }}/login
     logoutUrl: {{ auth_cas_url }}/logout
-    contextPath: {{ spatial_service_context_path }}
     bypass: {{ bypass_cas | default(true) }}
     disableCAS: {{ bypass_cas | default(true) }}
     gateway: {{ gateway_cas | default(false) }}
