@@ -75,7 +75,7 @@ sandbox:
 sandboxService:
     url: "{{ sandbox_biocache_service_url | default('https://sandbox.ala.org.au/biocache-service') }}"
 
-gazField: {{ gaz_field | default('cl915') }}
+gazField: {{ gaz_field | default('cl2123') }}
 
 userObjectsField: {{ user_objects_field | default('cl1083') }}
 
