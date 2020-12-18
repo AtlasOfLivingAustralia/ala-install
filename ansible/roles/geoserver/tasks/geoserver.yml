@@ -27,11 +27,33 @@
   tags:
   - geoserver
 
-#geoserver cannot start sometimes, if previous config exists
-- name: Remove GEOSERVER_DATA_DIR directory
-  file:
-    path: '{{data_dir}}/geoserver_data_dir'
-    state: absent
+#- name: Create geoserver data backup folder
+#  tempfile:
+#    path: "{{ data_dir }}"
+#    state: "directory"
+#    prefix: "geoserver_data_dir_"
+#  register: geoserver_data_backup
+#  tags:
+#    - tomcat
+#    - geoserver
+#
+#- name: Backup geoserver data
+#  copy:
+#    src: "{{data_dir}}/geoserver_data_dir/"
+#    dest: "{{ geoserver_data_backup.path }}/"
+#  when: geoserver_data_backup.path is defined
+#  tags:
+#    - tomcat
+#    - geoserver
+#
+##geoserver cannot start sometimes, if previous config exists
+#- name: Remove GEOSERVER_DATA_DIR directory
+#  file:
+#    path: '{{data_dir}}/geoserver_data_dir'
+#    state: absent
+#  tags:
+#    - tomcat
+#    - geoserver
 
 #Changing CATALINA_OPTS does not work on Tomcat9 and Geoserver 2.14
 - name: configure geoserver data dir
