@@ -62,9 +62,8 @@
     - layers-db
 
 # Example: /usr/share/postgresql/12/contrib/postgis-3.0/legacy.sql
-- name: run legacy.sql to add the deprecated methods. (postgres 12)
+- name: run legacy.sql to add the deprecated methods.
   action: command psql layersdb -f /usr/share/postgresql/{{ pg_version }}/contrib/postgis-{{ postgis_version_folder }}/legacy.sql
-  when: pg_version == 12
   become: yes
   become_user: postgres
   tags:

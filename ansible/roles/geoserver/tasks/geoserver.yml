@@ -22,47 +22,11 @@
   tags:
     - geoserver
 
-#- name: Create geoserver data backup folder
-#  tempfile:
-#    path: "{{ data_dir }}"
-#    state: "directory"
-#    prefix: "geoserver_data_dir_"
-#  register: geoserver_data_backup
-#  tags:
-#    - tomcat
-#    - geoserver
-#
-#- name: Backup geoserver data
-#  copy:
-#    src: "{{data_dir}}/geoserver_data_dir/"
-#    dest: "{{ geoserver_data_backup.path }}/"
-#  when: geoserver_data_backup.path is defined
-#  tags:
-#    - tomcat
-#    - geoserver
-#
-##geoserver cannot start sometimes, if previous config exists
-#- name: Remove GEOSERVER_DATA_DIR directory
-#  file:
-#    path: '{{data_dir}}/geoserver_data_dir'
-#    state: absent
-#  tags:
-#    - tomcat
-#    - geoserver
-
-#Changing CATALINA_OPTS does not work on Tomcat9 and Geoserver 2.14
-- name: configure geoserver data dir
-  blockinfile:
-    path={{tomcat_conf}}
-    marker="# {mark} Configure Geoserver/GWC data folder / (Ansible managed)"
-    block='JAVA_OPTS="${JAVA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
-    backup=yes
-  notify:
-    - restart tomcat
-  when: ansible_os_family == "Debian"
-  tags:
-    - tomcat
-    - geoserver
+- name: "Check if {{data_dir}}/geoserver_data_dir exists"
+  stat:
+    path: '{{data_dir}}/geoserver_data_dir'
+  register: geoserver_data_dir_check
+  check_mode: no
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ geoserver_context_path }}' hostname='{{ geoserver_hostname }}'
   tags:
@@ -90,11 +54,95 @@
     - tomcat_vhost
     - geoserver
 
+- name: "wait for geoserver to come up (is {{ geoserver_hostname }} in /etc/hosts?)"
+  uri:
+    url: "{{ geoserver_url }}"
+    status_code: 200
+    validate_certs: false
+  register: result
+  until: result.status is defined and result.status == 200
+  retries: 200
+  delay: 10
+  tags:
+    - geoserver
+
+- name: "install geoserver extensions"
+  unarchive:
+    src: "{{ item }}"
+    dest: "{{ tomcat_deploy_dir }}/{{ war_filename }}/WEB-INF/lib/"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+    remote_src: yes
+  with_items: "{{ geoserver_extension_urls }}"
+  tags:
+    - geoserver
+
+- name: "{{geoserver_data_dir}} does not exist so copy it from {{ tomcat_deploy_dir }}/{{ war_filename }}/data"
+  command: "cp -r {{ tomcat_deploy_dir }}/{{ war_filename }}/data {{data_dir}}/geoserver_data_dir"
+  tags:
+    - geoserver
+  when: not geoserver_data_dir_check.stat.exists
+
 - name: set data ownership
   file: path={{data_dir}}/geoserver_data_dir owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify:
     - restart tomcat
   tags:
+    - geoserver
+
+- name: configure geoserver data dir
+  lineinfile:
+    dest={{tomcat_conf}}
+    line='CATALINA_OPTS="${CATALINA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
+  notify:
+    - restart tomcat
+  when: ansible_os_family == "Debian" and tomcat == "tomcat7"
+  tags:
+    - tomcat
+    - geoserver
+
+- name: configure geoserver data dir
+  blockinfile:
+    path={{tomcat_conf}}
+    marker="# {mark} Configure Geoserver/GWC data folder / (Ansible managed)"
+    block='JAVA_OPTS="${JAVA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
+    backup=yes
+  notify:
+    - restart tomcat
+  when: ansible_os_family == "Debian" and tomcat == "tomcat9"
+  tags:
+    - tomcat
+    - geoserver
+
+- name: "update defaultVectorCacheFormats in gwc-gs.xml for vectortiles extension"
+  xml:
+    path: "{{data_dir}}/geoserver_data_dir/gwc-gs.xml"
+    xpath: "/GeoServerGWCConfig/defaultVectorCacheFormats"
+    add_children:
+      - string: "application/vnd.mapbox-vector-tile"
+      - string: "application/json;type=geojson"
+      - string: "application/json;type=topojson"
+  tags:
+    - geoserver
+
+- name: "update defaultOtherCacheFormats in gwc-gs.xml for vectortiles extension"
+  xml:
+    path: "{{data_dir}}/geoserver_data_dir/gwc-gs.xml"
+    xpath: "/GeoServerGWCConfig/defaultOtherCacheFormats"
+    add_children:
+      - string: "application/vnd.mapbox-vector-tile"
+      - string: "application/json;type=geojson"
+      - string: "application/json;type=topojson"
+  tags:
+    - geoserver
+
+- name: geoserver  - change admin password
+  template: src=users.xml dest={{data_dir}}/geoserver_data_dir/security/usergroup/default/users.xml
+  notify:
+    - restart tomcat
+  when: geoserver_password != "geoserver"
+  tags:
+    - password
     - geoserver
 
 - name: restart tomcat to bring config effective
@@ -138,69 +186,6 @@
   tags:
     - geoserver
 
-- name: "install geoserver extensions"
-  unarchive:
-    src: "{{ item }}"
-    dest: "{{ tomcat_deploy_dir }}/{{ war_filename }}/WEB-INF/lib/"
-    owner: "{{ tomcat_user }}"
-    group: "{{ tomcat_user }}"
-    remote_src: yes
-  with_items: "{{ geoserver_extension_urls }}"
-  tags:
-    - geoserver
-
-
-- name: "update defaultVectorCacheFormats in gwc-gs.xml for vectortiles extension"
-  xml:
-    path: "{{data_dir}}/geoserver_data_dir/gwc-gs.xml"
-    xpath: "/GeoServerGWCConfig/defaultVectorCacheFormats"
-    add_children:
-      - string: "application/vnd.mapbox-vector-tile"
-      - string: "application/json;type=geojson"
-      - string: "application/json;type=topojson"
-  tags:
-    - geoserver
-
-- name: "update defaultOtherCacheFormats in gwc-gs.xml for vectortiles extension"
-  xml:
-    path: "{{data_dir}}/geoserver_data_dir/gwc-gs.xml"
-    xpath: "/GeoServerGWCConfig/defaultOtherCacheFormats"
-    add_children:
-      - string: "application/vnd.mapbox-vector-tile"
-      - string: "application/json;type=geojson"
-      - string: "application/json;type=topojson"
-  tags:
-    - geoserver
-
-- name: geoserver  - change admin password
-  template: src=users.xml dest={{data_dir}}/geoserver_data_dir/security/usergroup/default/users.xml
-  notify:
-    - restart tomcat
-  when: geoserver_password != "geoserver"
-  tags:
-    - password
-    - geoserver
-
-- name: restart tomcat for installed extensions
-  service:
-    name: "{{tomcat}}"
-    state: restarted
-    enabled: "yes"
-  tags:
-    - geoserver
-  become: true
-
-- name: "wait for geoserver to come up (is {{ geoserver_hostname }} in /etc/hosts?)"
-  uri:
-    url: "{{ geoserver_url }}"
-    status_code: 200
-    validate_certs: false
-  register: result
-  until: result.status is defined and result.status == 200
-  retries: 200
-  delay: 10
-  tags:
-    - geoserver
 
 - name: copy geoserver script
   template: src=geoserver.sh dest={{data_dir}}/geoserver.sh
