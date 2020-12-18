@@ -14,6 +14,7 @@
     appname: "spatial-service"
     hostname: "{{ spatial_service_hostname }}"
     context_path: "{{ spatial_service_context_path }}"
+    allow_x_frame: "SAMEORIGIN"
   tags:
     - nginx_vhost
     - deploy
