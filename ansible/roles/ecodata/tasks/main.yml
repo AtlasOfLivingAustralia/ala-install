@@ -149,8 +149,28 @@
         is_proxy: true
         proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
         proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/search/downloadAllData"
+      - path: "{{ecodata_context_path}}/ws/search/downloadUserList"
+        sort_label: "3_downloadUserList"
+        is_proxy: true
+        proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
+        proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/search/downloadUserList"
+      - path: "{{ecodata_context_path}}/ws/search/downloadOrganisationData"
+        sort_label: "4_downloadOrganisationData"
+        is_proxy: true
+        proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
+        proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/search/downloadOrganisationData"
+      - path: "{{ecodata_context_path}}/ws/search/downloadProjectData"
+        sort_label: "5_downloadProjectData"
+        is_proxy: true
+        proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
+        proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/search/downloadProjectData"
+      - path: "{{ecodata_context_path}}/ws/search/downloadShapefile"
+        sort_label: "6_downloadShapefile"
+        is_proxy: true
+        proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
+        proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/search/downloadShapefile"
       - path: "{{ecodata_context_path}}/ws/search/downloadProjectDataFile/"
-        sort_label: "2_ws_downloads_project_data"
+        sort_label: "7_ws_downloads_project_data"
         is_proxy: true
         proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
         proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/search/downloadProjectDataFile/"
