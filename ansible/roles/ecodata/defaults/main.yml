@@ -14,3 +14,5 @@ geoserver_cluster_name: elasticsearch
 
 # elasticsearch
 elasticsearch_local: true
+elasticsearch_primary_host: localhost
+elasticsearch_primary_port: 9300
