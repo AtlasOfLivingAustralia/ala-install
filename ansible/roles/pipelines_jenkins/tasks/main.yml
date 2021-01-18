@@ -30,8 +30,15 @@
   tags:
     - pipelines_jenkins
 
+- name: Creates environment.d directory
+  file:
+    path: /etc/environment.d/
+    state: directory
+  tags:
+    - pipelines_jenkins
+
 - name: HDFS and Spark tools
-  copy: src=pipelines.conf dest=/etc/environment.d/pipelines.conf
+  copy: src=pipelines.conf dest=/etc/environment.d/pipelines.conf force=yes
   tags:
     - pipelines_jenkins
 
@@ -59,6 +66,20 @@
     - pipelines_jenkins
     - pipelines_jenkins_slaves
 
+- name: Upload SSH Key for master - mkdir
+  file:
+    path: /var/lib/jenkins/.ssh/
+    state: directory
+    owner: "jenkins"
+    group: "jenkins"
+    mode: 0600
+  become: yes
+  become_user: "jenkins"
+  when: is_master
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_slaves
+
 - name: Upload SSH Key for master
   copy:
     src: "{{ ssh_key_filename }}"
@@ -66,6 +87,8 @@
     owner: "jenkins"
     group: "jenkins"
     mode: 0600
+  become: yes
+  become_user: "jenkins"
   when: is_master
   tags:
     - pipelines_jenkins
@@ -78,12 +101,28 @@
     owner: "jenkins"
     group: "jenkins"
     mode: 0600
+  become: yes
+  become_user: "jenkins"
   when: is_slave
   tags:
     - pipelines_jenkins
     - pipelines_jenkins_slaves
 
-- name: Upload SSH Public Key for Jenkins user
+- name: Upload SSH Public Key for Jenkins user - mkdir
+  file:
+    path: /home/jenkins/.ssh/
+    state: directory
+    owner: "jenkins"
+    group: "jenkins"
+    mode: 0600
+  become: yes
+  become_user: "jenkins"
+  when: is_slave
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_slaves
+
+- name: Upload SSH Public Key for Jenkins user - master
   copy:
     src: "{{ ssh_key_filename + '.pub' }}"
     dest: "/var/lib/jenkins/.ssh/id_rsa.pub"
@@ -95,7 +134,7 @@
     - pipelines_jenkins
     - pipelines_jenkins_slaves
 
-- name: Upload SSH Public Key for Jenkins user
+- name: Upload SSH Public Key for Jenkins user - slave
   copy:
     src: "{{ ssh_key_filename + '.pub' }}"
     dest: "/home/jenkins/.ssh/id_rsa.pub"
@@ -112,6 +151,8 @@
     user: "jenkins"
     state: present
     key: "{{ lookup('file', ssh_key_filename + '.pub') }}"
+  become: yes
+  become_user: "jenkins"
   tags:
     - pipelines_jenkins
     - pipelines_jenkins_slaves
@@ -140,20 +181,29 @@
   file: path={{ item }} state=directory owner=jenkins group=jenkins recurse=true
   with_items:
     - "{{ data_dir }}/jenkins"
+  when: is_slave
   tags:
     - pipelines_jenkins
     - pipelines_jenkins_slaves
 
-- name: Install pip
-  apt: update_cache=yes name={{ item }}
-  with_items:
-    - python3-pip
+- name: Install python-setuptools
+  apt: update_cache=yes name=python-setuptools
   tags:
+    - python-pip
+    - validation_report
+    - pipelines_jenkins
+    - pipelines_jenkins_slaves
+
+- name: Install pip
+  apt: update_cache=yes name=python3-pip
+  tags:
+    - python-pip
     - validation_report
     - pipelines_jenkins
     - pipelines_jenkins_slaves
 
 - pip:
+    executable: pip3
     name: csvtotable
   tags:
     - validation_report

@@ -13,10 +13,12 @@
   tags: jenkins
 
 - name: install packages
-  apt: name={{ item }} state=present
-  with_items:
-   - jenkins
-   - git
+  apt: name=jenkins state=present
+  when: ansible_os_family == "Debian"
+  tags: jenkins
+
+- name: install packages 2
+  apt: name=git state=present
   when: ansible_os_family == "Debian"
   tags: jenkins
 

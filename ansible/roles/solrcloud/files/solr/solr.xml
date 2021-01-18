@@ -36,7 +36,7 @@
 
     <bool name="genericCoreNodeNames">${genericCoreNodeNames:true}</bool>
 
-    <int name="zkClientTimeout">${zkClientTimeout:90000}</int>
+    <int name="zkClientTimeout">${zkClientTimeout:300000}</int>
     <int name="distribUpdateSoTimeout">${distribUpdateSoTimeout:600000}</int>
     <int name="distribUpdateConnTimeout">${distribUpdateConnTimeout:60000}</int>
 
