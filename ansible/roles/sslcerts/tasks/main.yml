@@ -53,6 +53,7 @@
     - "{{ssl_certificate_local_dir}}/{{ssl_cert_file}}"
     - "{{ssl_certificate_local_dir}}/{{ssl_key_file}}"
     - "{{ssl_certificate_local_dir}}/{{ssl_chain_file}}"
+  become: yes
   when: copy_https_certs_from_local and ssl_certificate_server_dir is defined
   notify:
     - reload apache
