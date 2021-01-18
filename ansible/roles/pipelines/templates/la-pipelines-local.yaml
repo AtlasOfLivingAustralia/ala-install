@@ -25,14 +25,8 @@ collectory:
 
 imageService:
   wsUrl: {{ image_service_url }}
-  timeoutSec: 180
   httpHeaders:
     apiKey:  {{ ala_api_key }}
-
-gbifConfig:
-  vocabularyConfig:
-    vocabulariesPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ vocabulary_dir }}
-    lifeStageVocabName: LifeStage
 
 general:
   attempt: 1
@@ -43,8 +37,7 @@ general:
 dataset-validated-dump:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
 dataset-count-dump:
-  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}/
-  dwcaImportPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}/
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
 dataset-archive-list:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}/
 dwca-avro:
@@ -57,13 +50,16 @@ images:
   tempLocation: {{ spark_tmp }}
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
-sampling:
+export-latlng:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
 speciesLists:
   speciesAggregatesPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-species
 uuid:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+sample:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
 sensitive:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
@@ -71,31 +67,11 @@ index:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
-jackKnife:
-  jackKnifePath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-jackknife
-  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
-  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
-  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
-clustering:
-  clusteringPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-clustering
-  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
-  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
-  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
 solr:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
-  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
-  jackKnifePath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-jackknife
-  clusteringPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-clustering
   zkHost: {{ zk_host | default('localhost:2181') }}
   includeSampling: {{ include_sampling }}
-  includeJackKnife: {{ include_jackknife }}
-  includeClustering: {{ include_clustering }}
-  numOfPartitions: {{ solr_num_of_partitions | default('3') }}
-export:
-  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
-  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
-  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
 validation-report:
   checkSolr: {{ check_solr }}
   checkSampling: {{ include_sampling }}
