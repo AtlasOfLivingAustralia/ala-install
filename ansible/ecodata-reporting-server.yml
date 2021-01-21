@@ -1,0 +1,5 @@
+- hosts: secondary
+  roles:
+    - common
+    - java
+    - ecodata
