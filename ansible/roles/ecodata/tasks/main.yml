@@ -253,14 +253,13 @@
   # Copy the keyfile for authentication
 - name: copy security key file to nodes
   copy: src={{ ecodata_local_authentication_keyFile }} dest=/etc/mongodb-keyFile mode=0400
-  when:
-    mongo_replica_enabled
+  tags: mongodb-org
+  when:  mongo_replica_enabled
 
 # changes access right of the key file for mongo,
 - name: change access right of key file
   file: path=/etc/mongodb-keyFile state=file owner=mongodb group=mongodb mode=0400
-  when:
-    mongo_replica_enabled
+  when: mongo_replica_enabled
 
 - name: Enable security
   blockinfile:
@@ -274,8 +273,7 @@
   notify:
     - restart mongod
   tags: mongodb-org
-  when:
-    mongo_replica_enabled
+  when: mongo_replica_enabled
 
 - name: Stop mongo Service
   service:
@@ -323,8 +321,7 @@
   template:
     src: initRS.j2
     dest: ./initRS.j2
-  when:
-    "{% if mongo_replication and mongo_version3 %} True {% else %} False {% endif %}"
+  when: "{% if mongo_replication and mongo_version3 %} True {% else %} False {% endif %}"
 
 ## Initialize the replica set in mongo version 3.4
 - name: Initialize the replica set in primary node for mongo version 3.4
@@ -336,8 +333,7 @@
   template:
     src: mongorc.js
     dest: /etc/mongorc.js
-  when:
-    copy_mongorc_to_secondary_node
+  when: copy_mongorc_to_secondary_node
 
 - name: Stop mongod db server
   service:

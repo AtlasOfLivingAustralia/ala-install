@@ -1,3 +1,3 @@
 rs.initiate();
-rs.add({ host: "{{ secondary_ip }}:27017", votes: 0, hidden: true, priority: 0});
+rs.add({ host: "{{ secondary_ip }}:27017", votes: 0, hidden: false, priority: 0});
 printjson(rs.status());

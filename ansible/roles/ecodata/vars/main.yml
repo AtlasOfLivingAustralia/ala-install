@@ -20,6 +20,10 @@ replicaSetName: "rs0"
 mongo_replication: "{{ replication | default(false)}}"
 create_user_in_primary_node: "{{ create_user | default(false) }}"      # # creating both admin and ecodata user in primary node after mongo replication
 
+mongo_replica_options: "{{ mongo_replica_enabled | ternary('&replicaSet=rs0&readPreference=nearest', '') }}"
+mongo_auth_options: "authSource={{ ecodata_database }}&gssapiServiceName=mongodb"
+mongo_connection_url: "mongodb://{{ ecodata_username }}:{{ ecodata_password }}@{{ mongo_hosts }}/{{ ecodata_database }}?{{ mongo_auth_options }}{{ mongo_replica_options }}"
+
 create_ecodata_user_not_for_mongo_replica: "{{ create_ecodata_user | default(true)}}"
 copy_mongorc_to_secondary_node: "{{ copy_mongorc | default(false) }}"
 
