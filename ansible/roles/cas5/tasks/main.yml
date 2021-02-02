@@ -93,6 +93,45 @@
     - service
     - cas
 
+- name: wait for cas is running to create the first admin user
+  wait_for: host=127.0.0.1 port={{ cas_port | default('9000') }} delay=30
+  when: cas_first_admin_email is defined and cas_first_admin_bcrypt_password is defined and cas_first_admin_temp_auth_key is defined
+  tags:
+    - cas
+    - db
+
+- name: ensure target sql directory exist
+  file: path={{item}} state=directory owner=cas group=cas
+  with_items:
+    - "{{data_dir}}/cas/setup"
+  when: cas_first_admin_email is defined and cas_first_admin_bcrypt_password is defined and cas_first_admin_temp_auth_key is defined
+  tags:
+    - cas
+    - db
+    - properties
+
+- name: copy all SQL first admin scripts
+  template: src={{ item }} dest={{data_dir}}/cas/setup/
+  with_items:
+    - "sql/role-editor.sql"
+    - "sql/admin-add.sql"
+  when: cas_first_admin_email is defined and cas_first_admin_bcrypt_password is defined and cas_first_admin_temp_auth_key is defined
+  tags:
+    - cas
+    - db
+    - properties
+
+- name: create role editor and first admin user if do not exist
+  shell: "mysql --host={{ cas_db_hostname | default('localhost') }} --port={{ cas_db_port | default('3306') }}  --user={{ cas_db_username | default('cas') }} --password={{ cas_db_password | default('password') }} {{ cas_db_name | default('emmet')  }} < {{data_dir}}/cas/setup/{{ item }}"
+  with_items:
+    - "role-editor.sql"
+    - "admin-add.sql"
+  when: cas_first_admin_email is defined and cas_first_admin_bcrypt_password is defined and cas_first_admin_temp_auth_key is defined
+  ignore_errors: no
+  tags:
+    - cas
+    - db
+
 - name: add nginx vhost
   include_role:
     name: nginx_vhost
