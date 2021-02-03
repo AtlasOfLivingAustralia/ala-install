@@ -93,6 +93,18 @@
     - service
     - cas
 
+- name: Ensure cas is in a running state
+  service:
+    name: cas
+    state: started
+  register: casService
+  until: casService.status.ActiveState == "active"
+  retries: 15
+  delay: 30
+  tags:
+    - cas
+    - db
+
 - name: wait for cas is running to create the first admin user
   wait_for: host=127.0.0.1 port={{ cas_port | default('9000') }} delay=30
   when: cas_first_admin_email is defined and cas_first_admin_bcrypt_password is defined and cas_first_admin_temp_auth_key is defined

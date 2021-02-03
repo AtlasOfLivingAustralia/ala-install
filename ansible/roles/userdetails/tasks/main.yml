@@ -75,6 +75,18 @@
     - service
     - userdetails
 
+- name: Ensure userdetails is in a running state
+  service:
+    name: userdetails
+    state: started
+  register: userdetailsService
+  until: userdetailsService.status.ActiveState == "active"
+  retries: 15
+  delay: 30
+  tags:
+    - userdetails
+    - db
+
 - name: copy all SQL auth ip scripts
   template: src={{ item }} dest={{data_dir}}/userdetails/setup/
   with_items:
@@ -90,6 +102,7 @@
   loop: "{{ (userdetails_authorize_ip_list | regex_replace(' ', '')).split(',') }}"
   when: userdetails_authorize_ip_list is defined
   ignore_errors: no
+
   tags:
     - userdetails
     - db
