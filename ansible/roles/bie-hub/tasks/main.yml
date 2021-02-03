@@ -19,21 +19,6 @@
     - properties
     - bie
 
-- name: add apikeys if do not exist
-  include_role:
-    name: apikey-add
-  vars:
-    app: "{{ oitem.app }}"
-    apikey: "{{ oitem.apikey }}"
-  with_items:
-    - { app: "bie-index", apikey: "{{ bie_index_api_key }}" }
-    - { app: "specieslists", apikey: "{{ speciesList_api_key }}" }
-  loop_control:
-    loop_var: oitem
-  when: apikey_def_creator_email is defined and apikey_def_creator_userid is defined
-  tags:
-    - apikeys_add
-
 - name: copy eolContentToUpdate.properties
   template:
     src: eolContentToUpdate.properties
