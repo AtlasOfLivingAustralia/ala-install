@@ -1,9 +1,12 @@
 - hosts: all
+  vars:
+    tomcat: "tomcat7"
+    tomcat_user: "tomcat7"
   roles:
     - common
     - java
     - { role: mongodb-org, dbPath: "{{ ecodata_dbPath }}"}
-    - { role: tomcat, tomcat: "tomcat7", when: packaging == "war" }
+    - { role: tomcat, when: packaging == "war" }
     - webserver
     - { role: geoserver, log_filename: "geoserver" , when: install_geoserver | bool}
     - ecodata

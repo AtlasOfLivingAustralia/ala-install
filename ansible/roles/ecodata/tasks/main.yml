@@ -301,7 +301,7 @@
     name: mongod
     state: started
 
-- name: Updating blindIP for primary server for mongodb 3.4
+- name: Updating bind IP for primary server for mongodb 3.4
   replace:
     path: /etc/mongod.conf
     regexp: 'bindIp: 127.0.0.1'
@@ -311,7 +311,7 @@
   tags: mongodb-org
   when: "{% if mongo_replication and mongo_version3 and replace_blindIp_Primary_Node %} True {% else %} False {% endif %}"
 
-- name: Updating blindIP for secondary server for mongodb 3.4
+- name: Updating bind IP for secondary server for mongodb 3.4
   replace:
     path: /etc/mongod.conf
     regexp: 'bindIp: 127.0.0.1'
