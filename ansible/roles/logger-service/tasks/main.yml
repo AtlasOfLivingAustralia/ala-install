@@ -81,7 +81,6 @@
   when: logger_authorize_ip_list is defined
   tags:
     - logger-service
-    - test
     - db
     - properties
 
@@ -92,7 +91,6 @@
   ignore_errors: no
   tags:
     - logger-service
-    - test
     - db
 
 - name: set nginx proxy target if configured
