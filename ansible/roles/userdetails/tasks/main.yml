@@ -75,6 +75,25 @@
     - service
     - userdetails
 
+- name: copy all SQL auth ip scripts
+  template: src={{ item }} dest={{data_dir}}/userdetails/setup/
+  with_items:
+    - "sql/auth-ip.sql"
+  when: userdetails_authorize_ip_list is defined
+  tags:
+    - userdetails
+    - db
+    - properties
+
+- name: create auth ip in db if does not exists
+  shell: "mysql --host={{ cas_db_hostname | default('localhost') }} --port={{ cas_db_port | default('3306') }}  --user={{ cas_db_username | default('cas') }} --password={{ cas_db_password | default('password') }} {{ cas_db_name | default('emmet')  }} -e \"set @ip='{{ item }}'; set @description=''; source {{data_dir}}/userdetails/setup/auth-ip.sql;\""
+  loop: "{{ (userdetails_authorize_ip_list | regex_replace(' ', '')).split(',') }}"
+  when: userdetails_authorize_ip_list is defined
+  ignore_errors: no
+  tags:
+    - userdetails
+    - db
+
 - name: add nginx vhost
   include_role:
     name: nginx_vhost
