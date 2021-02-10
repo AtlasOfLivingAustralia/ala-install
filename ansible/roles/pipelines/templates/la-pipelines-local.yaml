@@ -85,7 +85,7 @@ solr:
   zkHost: {{ zk_host | default('localhost:2181') }}
   includeSampling: {{ include_sampling }}
   includeJackKnife: {{ include_jackknife }}
-  includeClutering: {{ include_clustering }}
+  includeClustering: {{ include_clustering }}
 validation-report:
   checkSolr: {{ check_solr }}
   checkSampling: {{ include_sampling }}
