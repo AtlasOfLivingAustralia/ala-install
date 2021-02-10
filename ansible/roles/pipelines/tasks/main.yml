@@ -158,6 +158,7 @@
     - "/pipelines-all-datasets"
     - "/pipelines-species"
     - "/pipelines-jackknife"
+    - "/pipelines-clustering"
     - "/migration"
   become: yes
   become_user: "{{ hadoop.user }}"

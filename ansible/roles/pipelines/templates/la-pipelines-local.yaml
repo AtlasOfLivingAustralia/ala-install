@@ -72,13 +72,20 @@ jackKnife:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
+clustering:
+  clusteringPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-clustering
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
 solr:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
   jackKnifePath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-jackknife
+  clusteringPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-clustering
   zkHost: {{ zk_host | default('localhost:2181') }}
   includeSampling: {{ include_sampling }}
   includeJackKnife: {{ include_jackknife }}
+  includeClutering: {{ include_clustering }}
 validation-report:
   checkSolr: {{ check_solr }}
   checkSampling: {{ include_sampling }}
