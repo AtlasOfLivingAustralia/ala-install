@@ -4,7 +4,7 @@
     - java
     - tomcat
     - webserver
-    - mysql-5.7
+    - mysql
     - nameindex
     - i18n
     - species-list

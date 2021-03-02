@@ -4,5 +4,5 @@
     - java
     - tomcat
     - webserver
-    - mysql-5.7
+    - mysql
     - ozatlas-proxy

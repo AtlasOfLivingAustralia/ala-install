@@ -10,7 +10,7 @@
     - java
     - tomcat
     - cassandra3
-    - mysql-5.7
+    - mysql
     - postgresql
     - webserver
     - nameindex

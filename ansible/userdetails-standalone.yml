@@ -4,6 +4,6 @@
     - java
     - postfix
     - tomcat
-    - mysql
+    - mysql-legacy
     - webserver
     - userdetails

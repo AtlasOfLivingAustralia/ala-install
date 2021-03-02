@@ -1,25 +1,19 @@
 - include: ../../common/tasks/setfacts.yml
-
-- name: install mysql (RedHat)
-  yum:
-    name: 
-    - mysql-server
-    - MySQL-python
-    state: present
   tags:
-    - packages
     - mysql
-  register: mysql_installed
-  notify: 
-    - restart mysql
-  when: ansible_os_family == "RedHat"
 
-- name: install mysql (Debian)
-  apt:
-    pkg:
-    - "{{ mysql }}"
-    - python3-mysqldb
+- name: Install add-apt-repostory
+  apt_repository:
+    repo: deb http://archive.ubuntu.com/ubuntu trusty universe
     state: present
+
+- name: mysql | Install MySQL Packages
+  become: yes
+  apt: pkg={{ item }} state=latest update_cache=yes
+  with_items:
+    - mysql-server-5.6
+    - mysql-client-5.6
+    - python3-mysqldb
   tags:
     - packages
     - mysql
@@ -28,29 +22,11 @@
     - restart mysql
   when: ansible_os_family == "Debian"
 
-- name: set mysql variable - sql-mode for mysql-5.7
-  mysql_variables:
-    variable: sql_mode
-    value: "{{ mysql_variable_sql_mode | default('STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION')}}"
-    login_user: "root"
-    login_password: "{{ mysql_root_password | default('password') }}"
-  tags:
-    - mysql
-  when: set_sql_mode is defined and mysql == "mysql-server-5.7"
-
-- name: set mysql variable - sql-mode form mysql-8.0
-  mysql_variables:
-    variable: sql_mode
-    value: "{{ mysql_variable_sql_mode | default('STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION')}}"
-  tags:
-    - mysql
-  when: set_sql_mode is defined and mysql == "mysql-server-8.0"
-
 - name: warn about using the default root user password
   debug: msg="You are installing MySQL with a default root password of 'password'. Are you sure you want to do that? Specify a real password in your inventory file using the variable mysql_root_password."
+  when: mysql_installed.changed and  mysql_root_password is not defined
   tags:
     - mysql
-  when: mysql_installed.changed and  mysql_root_password is not defined
 
 - name: change root user password on first run
   mysql_user: name=root password={{ mysql_root_password | default('password') }} priv=*.*:ALL,GRANT host={{ item }}
@@ -59,30 +35,30 @@
     - 127.0.0.1
     - ::1
     - localhost
+  when: mysql_installed.changed
   tags:
     - mysql
-  when: mysql_installed.changed
 
 - name: delete anonymous MySQL user for the host
   mysql_user: user="" host="{{ansible_hostname}}" login_user="root" login_password={{ mysql_root_password | default('password') }} state="absent"
+  when: mysql_installed.changed
   tags:
     - mysql
-  when: mysql_installed.changed
 
 - name: delete anyonmous MySQL user for localhost
   mysql_user: user="" login_user="root" login_password={{ mysql_root_password | default('password') }} state="absent"
+  when: mysql_installed.changed
   tags:
     - mysql
-  when: mysql_installed.changed
 
 - name: drop test database
   mysql_db: name="test" login_user="root" login_password={{ mysql_root_password | default('password') }} state="absent"
+  when: mysql_installed.changed
   tags:
     - mysql
-  when: mysql_installed.changed
 
-- name: create my.cnf file 
+- name: create my.cnf file
   template: src=my.cnf dest=/root/.my.cnf owner=root mode=0600
+  when: mysql_installed.changed
   tags:
     - mysql
-  when: mysql_installed.changed
