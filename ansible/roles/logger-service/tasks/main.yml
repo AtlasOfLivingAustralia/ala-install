@@ -4,14 +4,14 @@
     - properties
 
 - name: create logger DB
-  mysql_db: name={{logger_db_name}} state=present encoding=utf8
+  mysql_db: name={{logger_db_name}} state=present encoding=utf8 login_user=root login_password='{{mysql_root_password}}'
   register: dbschema
   tags:
     - logger-service
     - db
 
 - name: create logger DB user
-  mysql_user: name={{logger_db_username}} password={{logger_db_password}} priv=*.*:ALL state=present
+  mysql_user: name='{{logger_db_username}}' password='{{logger_db_password}}' priv=*.*:ALL state=present login_user=root login_password='{{mysql_root_password}}'
   register: dbuser
   tags:
     - logger-service
@@ -27,7 +27,7 @@
     - db
 
 - name: create schema, stored procs and reference data
-  mysql_db: name={{logger_db_name}} state=import target={{item}}
+  mysql_db: name='{{logger_db_name}}' state=import target={{item}} login_user=root login_password='{{mysql_root_password}}'
   with_items:
     - /tmp/schema.sql
     - /tmp/eventLogType.sql
