@@ -2,7 +2,7 @@
   roles:
     - common
     - java
-    - mysql
+    - mysql-legacy
     - webserver
     - tomcat
     - apikey

@@ -4,7 +4,7 @@
     - java
     - postfix
     - tomcat
-    - mysql
+    - mysql-legacy
     - webserver
     - cas2
     - userdetails
