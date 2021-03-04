@@ -102,7 +102,6 @@
   loop: "{{ (userdetails_authorize_ip_list | regex_replace(' ', '')).split(',') }}"
   when: userdetails_authorize_ip_list is defined
   ignore_errors: no
-
   tags:
     - userdetails
     - db
