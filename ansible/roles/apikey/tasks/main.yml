@@ -75,6 +75,50 @@
     - service
     - apikey
 
+- name: Ensure apikey is in a running state
+  service:
+    name: apikey
+    state: started
+  register: apikeyService
+  until: apikeyService.status.ActiveState == "active"
+  retries: 15
+  delay: 30
+  tags:
+    - apikey
+    - db
+
+- name: wait for apikey is running to create the apikeys
+  wait_for: host=127.0.0.1 port={{ apikey_port | default('9002') }} delay=30
+  when: apikey_def_creator_email is defined and apikey_def_creator_userid is defined
+  tags:
+    - apikey
+    - db
+
+- name: add apikeys if do not exist
+  include_role:
+    name: apikey-add
+  vars:
+    app: "{{ oitem.app }}"
+    apikey: "{{ oitem.apikey }}"
+  with_items:
+    - { app: "alerts", apikey: "{{ alerts_apikey }}" }
+    - { app: "bie-index", apikey: "{{ bie_index_api_key }}" }
+    - { app: "biocache", apikey: "{{ biocache_api_key }}" }
+    - { app: "collectory", apikey: "{{ api_key }}" }
+    - { app: "collectory", apikey: "{{ registry_api_key }}" }
+    - { app: "doi-service", apikey: "{{ doi_service_apiKey }}" }
+    - { app: "image-service", apikey: "{{ image_service_apiKey }}" }
+    - { app: "spatialportal", apikey: "{{ spatial_service_api_key }}" }
+    - { app: "spatialportal", apikey: "{{ spatial_service_service_key }}" }
+    - { app: "spatialportal", apikey: "{{ spatial_service_slave_key }}" }
+    - { app: "specieslists", apikey: "{{ speciesList_api_key }}" }
+  loop_control:
+    loop_var: oitem
+  when: apikey_def_creator_email is defined and apikey_def_creator_userid is defined
+  tags:
+    - apikeys_add
+    - apikey
+
 - name: add nginx vhost
   include_role:
     name: nginx_vhost
