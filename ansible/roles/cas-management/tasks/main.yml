@@ -73,6 +73,18 @@
     - service
     - cas-management
 
+- name: Ensure cas-management is in a running state
+  service:
+    name: cas-management
+    state: started
+  register: casManagementService
+  until: casManagementService.status.ActiveState == "active"
+  retries: 15
+  delay: 30
+  tags:
+    - cas-management
+    - db
+
 - name: add nginx vhost
   include_role:
     name: nginx_vhost
