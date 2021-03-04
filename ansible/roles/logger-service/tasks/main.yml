@@ -74,6 +74,25 @@
     - apache_vhost
   when: not webserver_nginx
 
+- name: copy all SQL auth ip scripts
+  template: src={{ item }} dest={{data_dir}}/logger/setup/
+  with_items:
+    - "sql/auth-ip.sql"
+  when: logger_authorize_ip_list is defined
+  tags:
+    - logger-service
+    - db
+    - properties
+
+- name: create auth ip in db if does not exists
+  shell: "mysql --host={{ logger_db_hostname }} --user={{ logger_db_username }} --password={{ logger_db_password }} {{ logger_db_name }} -e \"set @ip='{{ item }}'; set @host_name='{{ item }}'; source {{data_dir}}/logger/setup/auth-ip.sql;\""
+  loop: "{{ (logger_authorize_ip_list | regex_replace(' ', '')).split(',') }}"
+  when: logger_authorize_ip_list is defined
+  ignore_errors: no
+  tags:
+    - logger-service
+    - db
+
 - name: set nginx proxy target if configured
   set_fact:
     logger_proxy_target: "{{logger_context_path}}"
