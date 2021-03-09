@@ -1,4 +1,7 @@
 - hosts: fieldcapture
+  vars:
+    tomcat: "tomcat7"
+    tomcat_user: "tomcat7"
   roles:
     - common
     - java
