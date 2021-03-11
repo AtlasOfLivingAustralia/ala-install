@@ -68,6 +68,12 @@ bcrypt:
 #  algorithm: {{ user_store_db_encoding_algorithm }}
 #  salt: {{ user_store_db_encoding_salt }}
 
+registration:
+  showAlaMessage: {{ show_ala_message | default('false') }}
+  resetPasswordArticle: {{ reset_password_article | default('') }}
+  alertArticle: {{ alert_article | default('') }}
+  activationArticle: {{ activation_article | default('') }}
+
 recaptcha:
   baseUrl: {{ recaptcha_base_url | default('https://www.google.com/recaptcha/api/') }}
   siteKey: {{ userdetails_recaptcha_site_key | default('') }}
