@@ -28,6 +28,11 @@ imageService:
   httpHeaders:
     apiKey:  {{ ala_api_key }}
 
+gbifConfig:
+  vocabularyConfig:
+    vocabulariesPath: {{ hadoop_install_dir }}{{ vocabulary_dir }}
+    lifeStageVocabName: LifeStage
+
 general:
   attempt: 1
   hdfsSiteConfig: {{ hadoop_install_dir }}/etc/hadoop/hdfs-site.xml
