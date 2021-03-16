@@ -81,6 +81,15 @@ recaptcha:
 
 ala:
   baseURL: {{ ala_base_url | default('https://www.ala.org.au') }}
+{% if ala_update_cookie_enabled | default('false') | bool %}
+  cookie:
+    domain: {{ ala_domain | default('ala.org.au') }}
+    httpOnly: {{ ala_httponly | default('true') }}
+    maxAge: {{ ala_maxage | default('-1') }}
+    name: {{ ala_auth_cookie_name | default('ALA-Auth') }}
+    path: {{ ala_path | default('/') }}
+    secure: {{ ala_secure | default('false') }}
+{% endif %}
 
 supportEmail: {{ support_email | default('support@ala.org.au') }}
 homeUrl: {{ ala_base_url | default('https://www.ala.org.au') }}
