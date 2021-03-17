@@ -104,6 +104,7 @@ lists.url: {{ lists_base_url }}/speciesList/list
 biocache.search.baseUrl: {{ biocache_base_url }}/occurrences/search
 biocache.search.url: {{ biocache_base_url }}/occurrences/search/?q=*%3A*&fq=assertion_user_id%3A
 biocache.myDownloads.url: {{ biocache_base_url }}/download/myDownloads/
+myData.url: {{ sandbox_base_url }}/tempDataResource/myData
 alerts.url: {{ alerts_base_url }}
 
 # this property is read/used by ala-auth-plugin (included by userdetails)
