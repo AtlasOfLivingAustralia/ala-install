@@ -21,3 +21,4 @@ elasticsearch_primary_server: true
 # mongo
 ecodata_local_authentication_keyFile:
 mongo_hosts: localhost:27017
+mongodb_port: 27017
