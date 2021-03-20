@@ -30,7 +30,7 @@ imageService:
 
 gbifConfig:
   vocabularyConfig:
-    vocabulariesPath: {{ hadoop_install_dir }}{{ vocabulary_dir }}
+    vocabulariesPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ vocabulary_dir }}
     lifeStageVocabName: LifeStage
 
 general:
@@ -55,16 +55,13 @@ images:
   tempLocation: {{ spark_tmp }}
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
-export-latlng:
+sampling:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
 speciesLists:
   speciesAggregatesPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-species
 uuid:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
-sample:
-  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
-  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
 sensitive:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
@@ -91,6 +88,7 @@ solr:
   includeSampling: {{ include_sampling }}
   includeJackKnife: {{ include_jackknife }}
   includeClustering: {{ include_clustering }}
+  numOfPartitions: 3
 validation-report:
   checkSolr: {{ check_solr }}
   checkSampling: {{ include_sampling }}
