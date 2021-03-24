@@ -40,6 +40,7 @@
     - "{{data_dir}}/ecodata/uploads"
     - "{{data_dir}}/ecodata/models"
     - "{{data_dir}}/ecodata/elasticsearch"
+    - "{{data_dir}}/ecodata/scripts"
   tags:
     - properties
     - ecodata
@@ -100,6 +101,15 @@
     - ecodata
     - properties
 
+- name: Copy scripts to scripts directory
+  template:
+    src: backup-ecodata.sh
+    dest: "{{data_dir}}/ecodata/scripts/backup-ecodata.sh"
+    owner: "{{ecodata_user}}"
+    group: "{{ecodata_user}}"
+  tags:
+    - ecodata
+    - properties
 
 - name: set data ownership
   file: path={{data_dir}}/ecodata owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true
