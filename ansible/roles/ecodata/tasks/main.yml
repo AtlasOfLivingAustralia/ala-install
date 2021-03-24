@@ -101,22 +101,22 @@
     - ecodata
     - properties
 
+- name: set data ownership
+  file: path={{data_dir}}/ecodata owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true mode='u=rwX,g=rX,o-rxw'
+  tags:
+    - properties
+    - ecodata
+
 - name: Copy scripts to scripts directory
   template:
     src: backup-ecodata.sh
     dest: "{{data_dir}}/ecodata/scripts/backup-ecodata.sh"
     owner: "{{ecodata_user}}"
     group: "{{ecodata_user}}"
+    mode: "u+rx,g+r,o-rxw"
   tags:
     - ecodata
     - properties
-
-- name: set data ownership
-  file: path={{data_dir}}/ecodata owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true
-  tags:
-    - properties
-    - ecodata
-
 
 #
 # WAR file deployment and virtual host configuration
