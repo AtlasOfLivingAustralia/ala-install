@@ -95,6 +95,7 @@ ala:
 
 supportEmail: {{ support_email | default('support@ala.org.au') }}
 homeUrl: {{ ala_base_url | default('https://www.ala.org.au') }}
+homeLogoUrl: {{ ala_logo_url | default('https://www.ala.org.au/app/uploads/2020/06/ALA_Logo_Inline_RGB-300x63.png') }}
 mainTitle: {{ orgNameLong | default('Atlas of Living Australia') }}
 emailSenderTitle: {{ orgNameLong | default('Atlas of Living Australia') }}
 emailSender: {{ support_email | default('support@ala.org.au') }}
