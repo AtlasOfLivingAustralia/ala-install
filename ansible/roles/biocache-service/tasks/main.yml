@@ -433,13 +433,17 @@
     - biocache-service
     - properties
 
-- name: copy biocache facets config
+- name: copy biocache  config files
   copy:
-    src: "config/facets.json"
-    dest: "{{ data_dir }}/biocache/config/facets.json"
+    src: "config/{{ item }}"
+    dest: "{{ data_dir }}/biocache/config/{{ item }}"
     owner: root
     group: root
     mode: 644
+  with_items:
+    - "facets.json"
+    - "deprecated-fields.json"
+    - "deprecated-enum-values.json"
   tags:
     - biocache-service
     - properties

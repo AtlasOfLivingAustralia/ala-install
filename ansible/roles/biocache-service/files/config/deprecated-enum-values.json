@@ -1,0 +1,55 @@
+{
+    "assertions": {
+        "badlyFormedBasisOfRecord": "BASIS_OF_RECORD_INVALID",
+        "coordinatesOutOfRange": "COORDINATE_OUT_OF_RANGE",
+        "coordinatePrecisionMismatch": "COORDINATE_PRECISION_UNCERTAINTY_MISMATCH",
+        "decimalLatLongConverted": "COORDINATE_REPROJECTED",
+        "decimalLatLongConversionFailed": "COORDINATE_REPROJECTION_FAILED",
+        "coordinatesCentreOfCountry": "COORDINATES_CENTRE_OF_COUNTRY",
+        "coordinatesCentreOfStateProvince": "COORDINATES_CENTRE_OF_STATEPROVINCE",
+        "countryCoordinateMismatch": "COUNTRY_COORDINATE_MISMATCH",
+        "countryInferredByCoordinates": "COUNTRY_DERIVED_FROM_COORDINATES",
+        "minMaxDepthReversed": "DEPTH_MIN_MAX_SWAPPED",
+        "depthNonNumeric": "DEPTH_NON_NUMERIC",
+        "depthInFeet": "DEPTH_NOT_METRIC",
+        "minMaxAltitudeReversed": "ELEVATION_MIN_MAX_SWAPPED",
+        "altitudeNonNumeric": "ELEVATION_NON_NUMERIC",
+        "altitudeInFeet": "ELEVATION_NOT_METRIC",
+        "firstOfCentury": "FIRST_OF_CENTURY",
+        "firstOfMonth": "FIRST_OF_MONTH",
+        "firstOfYear": "FIRST_OF_YEAR",
+        "geodeticDatumAssumedWgs84": "GEODETIC_DATUM_ASSUMED_WGS84",
+        "unrecognizedGeodeticDatum": "GEODETIC_DATUM_INVALID",
+        "georefPostDate": "GEOREFERENCE_POST_OCCURRENCE",
+        "idPreOccurrence": "ID_PRE_OCCURRENCE",
+        "invalidScientificName": "INVALID_SCIENTIFIC_NAME",
+        "negatedLatitude": "PRESUMED_NEGATED_LATITUDE",
+        "negatedLongitude": "PRESUMED_NEGATED_LONGITUDE",
+        "stateCoordinateMismatch": "STATE_COORDINATE_MISMATCH",
+        "resourceTaxonomicScopeMismatch": "TAXON_SCOPE_MISMATCH",
+        "uncertaintyInPrecision": "UNCERTAINTY_IN_PRECISION",
+        "unknownCountry": "UNKNOWN_COUNTRY_NAME",
+        "unknownKingdom": "UNKNOWN_KINGDOM",
+        "zeroCoordinates": "ZERO_COORDINATE"
+    },
+    "basisOfRecord": {
+        "HumanObservation": "HUMAN_OBSERVATION",
+        "PreservedSpecimen": "PRESERVED_SPECIMEN",
+        "MachineObservation": "MACHINE_OBSERVATION",
+        "MaterialSample": "MATERIAL_SAMPLE",
+        "LivingSpecimen": "LIVING_SPECIMEN",
+        "FossilSpecimen": "FOSSIL_SPECIMEN"
+    },
+    "occurrenceStatus": {
+        "present": "PRESENT",
+        "absent": "ABSENT"
+    },
+    "biome": {
+        "Terrestrial": "TERRESTRIAL",
+        "Marine": "MARINE"
+    },
+    "speciesHabitats": {
+        "Terrestrial": "TERRESTRIAL",
+        "Marine": "MARINE"
+    }
+}
