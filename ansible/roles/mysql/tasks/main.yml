@@ -14,7 +14,18 @@
     - restart mysql
   when: ansible_os_family == "RedHat"
 
-- name: install mysql (Debian)
+- name: install mysql for ansible and python 2 (Debian)
+  apt:
+    pkg:
+    - "{{ mysql }}"
+    - python-mysqldb
+    state: present
+  tags:
+    - packages
+    - mysql
+  when: ansible_os_family == "Debian" and ansible_python.version.major==2
+
+- name: install mysql for ansible and python 3 (Debian)
   apt:
     pkg:
     - "{{ mysql }}"
@@ -23,10 +34,7 @@
   tags:
     - packages
     - mysql
-  register: mysql_installed
-  notify: 
-    - restart mysql
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and ansible_python.version.major==3
 
 - name: set mysql variable - sql-mode for mysql-5.7
   mysql_variables:

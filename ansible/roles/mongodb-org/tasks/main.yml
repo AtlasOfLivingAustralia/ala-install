@@ -31,8 +31,18 @@
 
 - name: Install mongodb.org packages and related
   apt:
-    name: ['mongodb-org-shell', 'mongodb-org-server', 'mongodb-org-tools', 'python3-pip']
+    name: ['mongodb-org-shell', 'mongodb-org-server', 'mongodb-org-tools' ]
   tags: mongodb-org
+
+- name: Install pip2 when necessary
+  apt:
+    name: python-pip
+  when: ansible_python.version.major==2
+
+- name: Install python3 when necessary
+  apt:
+    name: python3-pip
+  when: ansible_python.version.major==3
 
 # https://github.com/ansible/ansible/issues/36585
 - name: force systemd to reread configs
@@ -73,7 +83,6 @@
     name: mongod
     enabled: yes
   tags: mongodb-org
-
 
 
 # https://github.com/ansible/ansible/issues/33832
