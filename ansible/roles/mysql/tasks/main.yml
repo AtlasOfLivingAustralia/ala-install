@@ -14,7 +14,7 @@
     - restart mysql
   when: ansible_os_family == "RedHat"
 
-- name: install mysql deps for ansible and python 2 (Debian)
+- name: install mysql for ansible and python 2 (Debian)
   apt:
     pkg:
     - "{{ mysql }}"
@@ -25,7 +25,7 @@
     - mysql
   when: ansible_os_family == "Debian" and ansible_python.version.major==2
 
-- name: install mysql deps for ansible and python 3 (Debian)
+- name: install mysql for ansible and python 3 (Debian)
   apt:
     pkg:
     - "{{ mysql }}"
