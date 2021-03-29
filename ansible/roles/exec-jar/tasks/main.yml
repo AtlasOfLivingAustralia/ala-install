@@ -8,12 +8,20 @@
   tags:
   - service
 
-- name: Install dependencies
+- name: Install dependencies for ansible python 2
   apt:
-    name: 
-      - python3-lxml
+    name: python-lxml
     state: present
-  tags: 
+  when: ansible_python.version.major==2
+  tags:
+  - service
+
+- name: Install dependencies for ansible python 3
+  apt:
+    name: python3-lxml
+    state: present
+  when: ansible_python.version.major==3
+  tags:
   - service
 
 - name: "Create system user for {{service_name}}"
