@@ -101,11 +101,6 @@
     - ecodata
     - properties
 
-- name: set data ownership
-  file: path={{data_dir}}/ecodata owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true mode='u=rwX,g=rX,o-rxw'
-  tags:
-    - properties
-    - ecodata
 
 - name: Copy scripts to scripts directory
   template:
@@ -117,6 +112,25 @@
   tags:
     - ecodata
     - properties
+
+- name: set data ownership
+  file: path={{data_dir}}/ecodata owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true mode='u=rwX,g=rX,o-rxw'
+  with_items:
+    - "{{data_dir}}/ecodata/config"
+    - "{{data_dir}}/ecodata/models"
+    - "{{data_dir}}/ecodata/elasticsearch"
+    - "{{data_dir}}/ecodata/scripts"
+  tags:
+    - properties
+    - ecodata
+
+- name: set uploads ownership so they can be served by nginx
+  file: path={{data_dir}}/ecodata owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true mode='u=rwX,g=rX,o=rX'
+  with_items:
+    - "{{data_dir}}/ecodata/uploads"
+  tags:
+    - properties
+    - ecodata
 
 #
 # WAR file deployment and virtual host configuration
