@@ -46,8 +46,11 @@ knowledgeBase:
   articleCssSelector: .article-title a.c-link
 wordPress:
   service: {{ ala_base_url | default('https://www.ala.org.au') }}
-  sitemap: /sitemap.xml
+  sitemap: {{  wordpress_sitemap | default('/xmlsitemap.xml') }}
+  index: index.xml
   page: /?page_id={0}
+  excludedLocations:
+    - .*/category/.*
   excludedCategories:
   - button
   contentOnlyParams: ?content-only=1&categories=1
