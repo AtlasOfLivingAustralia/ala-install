@@ -1,5 +1,6 @@
--  hosts: all
-   roles:
+- name: spatial
+- hosts: all
+  roles:
     - common
     - java
     - tomcat
@@ -13,4 +14,3 @@
     - spatial-service
     - spatial-hub
     - geonetwork
-
