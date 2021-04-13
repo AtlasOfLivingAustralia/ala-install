@@ -117,14 +117,15 @@
     },
     {
         "title": "Location",
-        "facets": [{
-            "sort": "index",
-            "dwcTerm": "country_raw",
-            "i18nValues": true,
-            "field": "country"
-        },
+        "facets": [
             {
                 "sort": "index",
+                "dwcTerm": "country_raw",
+                "i18nValues": true,
+                "field": "country"
+            },
+            {
+                "sort": "count",
                 "field": "stateProvince"
             },
             {
@@ -235,7 +236,8 @@
             {
                 "sort": "count",
                 "description": "Sensitive",
-                "field": "sensitive"
+                "field": "sensitive",
+                "i18nValues": true
             },
             {
                 "sort": "count",
@@ -263,12 +265,13 @@
     },
     {
         "title": "Occurrence",
-        "facets": [{
-            "sort": "index",
-            "dwcTerm": "recordedBy_raw",
-            "description": "Collector",
-            "field": "recordedBy"
-        },
+        "facets": [
+            {
+                "sort": "index",
+                "dwcTerm": "recordedBy_raw",
+                "description": "Collector",
+                "field": "recordedBy"
+            },
             {
                 "sort": "count",
                 "dwcTerm": "sex",
@@ -323,12 +326,13 @@
     },
     {
         "title": "Record",
-        "facets": [{
-            "sort": "index",
-            "dwcTerm": "basisOfRecord",
-            "description": "Basis Of Record - processed",
-            "field": "basisOfRecord"
-        },
+        "facets": [
+            {
+                "sort": "index",
+                "dwcTerm": "basisOfRecord",
+                "description": "Basis Of Record - processed",
+                "field": "basisOfRecord"
+            },
             {
                 "sort": "count",
                 "description": "Multimedia",
@@ -343,11 +347,12 @@
     },
     {
         "title": "Assertions",
-        "facets": [{
-            "sort": "count",
-            "description": "Sensitive",
-            "field": "sensitive"
-        },
+        "facets": [
+            {
+                "sort": "count",
+                "description": "Sensitive",
+                "field": "sensitive"
+            },
             {
                 "sort": "count",
                 "i18nValues": true,
