@@ -46,6 +46,7 @@
     "dataset_id": "datasetID",
     "dataset_name": "datasetName",
     "date_deleted": null,
+    "date_precision": "datePrecision",
     "datum": "geodeticDatum",
     "decimal_latitudelatitude": null,
     "default_values_used": "defaultValuesUsed",
