@@ -159,6 +159,7 @@
     "nomenclatural_code": "nomenclaturalCode",
     "nomenclatural_status": "nomenclaturalStatus",
     "occurrence_date": "eventDate",
+    "occurrence_decade_i": "decade",
     "occurrence_details": "occurrenceDetails",
     "occurrence_id": "occurrenceID",
     "occurrence_remarks": "occurrenceRemarks",
