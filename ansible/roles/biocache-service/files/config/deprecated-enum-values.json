@@ -44,11 +44,43 @@
         "present": "PRESENT",
         "absent": "ABSENT"
     },
+    "occurrence_status": {
+        "present": "PRESENT",
+        "absent": "ABSENT"
+    },
+    "duplicateStatus": {
+        "D": "ASSOCIATED",
+        "R": "REPRESENTATIVE"
+    },
     "biome": {
         "Terrestrial": "TERRESTRIAL",
         "Marine": "MARINE"
     },
     "speciesHabitats": {
+        "Terrestrial": "TERRESTRIAL",
+        "Marine": "MARINE"
+    },
+    "basis_of_record": {
+        "HumanObservation": "HUMAN_OBSERVATION",
+        "PreservedSpecimen": "PRESERVED_SPECIMEN",
+        "MachineObservation": "MACHINE_OBSERVATION",
+        "MaterialSample": "MATERIAL_SAMPLE",
+        "LivingSpecimen": "LIVING_SPECIMEN",
+        "FossilSpecimen": "FOSSIL_SPECIMEN"
+    },
+    "occurrence_status": {
+        "present": "PRESENT",
+        "absent": "ABSENT"
+    },
+    "duplicate_status": {
+        "D": "ASSOCIATED",
+        "R": "REPRESENTATIVE"
+    },
+    "biome": {
+        "Terrestrial": "TERRESTRIAL",
+        "Marine": "MARINE"
+    },
+    "species_habitats": {
         "Terrestrial": "TERRESTRIAL",
         "Marine": "MARINE"
     }
