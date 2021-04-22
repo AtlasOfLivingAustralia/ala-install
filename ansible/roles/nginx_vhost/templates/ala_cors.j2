@@ -1,5 +1,5 @@
 # Allow static fonts 
-location ~* .(eot|otf|svg|ttf|woff|woff2)$ {
+if ($uri ~* .(eot|otf|svg|ttf|woff|woff2)$) {
   add_header Access-Control-Allow-Origin *;
 }
 

@@ -9,7 +9,7 @@
     - db
 
 - name: create DB user
-  mysql_user: name={{webapi_db_username}} password={{webapi_db_password}} priv=*.*:ALL state=present
+  mysql_user: name={{webapi_db_username}} password={{webapi_db_password}} priv=*.*:ALL state=present login_user=root login_password={{mysql_root_password}}
   tags:
     - webapi
     - db
