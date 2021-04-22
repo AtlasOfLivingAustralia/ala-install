@@ -43,6 +43,7 @@ dataset-validated-dump:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
 dataset-count-dump:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  dwcaImportPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}/
 dataset-archive-list:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}/
 dwca-avro:
@@ -88,7 +89,7 @@ solr:
   includeSampling: {{ include_sampling }}
   includeJackKnife: {{ include_jackknife }}
   includeClustering: {{ include_clustering }}
-  numOfPartitions: 3
+  numOfPartitions: {{ solr_num_of_partitions | default('3') }}
 validation-report:
   checkSolr: {{ check_solr }}
   checkSampling: {{ include_sampling }}
