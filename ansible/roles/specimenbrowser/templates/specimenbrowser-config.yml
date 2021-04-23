@@ -1,0 +1,31 @@
+grails:
+  serverURL: {{ specimenbrowser_base_url }}{{ specimenbrowser_context_path }}
+bie:
+  baseURL: {{ bie_base_url }}
+biocache:
+  baseURL: {{ biocache_base_url }}
+  servicesUrl: {{ biocache_services_url }}
+collectory:
+  baseURL: {{ collectory_base_url }}
+  servicesUrl: {{ collectory_services_url }}
+spatial:
+  baseURL: {{ spatial_base_url }}
+ala:
+  baseURL: {{ ala_base_url }}
+  image:
+    service:
+      url: {{ ala_image_base_url }}
+security:
+  cas:
+    appServerName:  {{ specimenbrowser_base_url }}
+    casServerName:   {{ auth_cas_url }}
+skin:
+  layout: main
+  fluidLayout: {{ specimenbrowser_fluid }}
+  orgNameLong: {{ orgNameLong }}
+specimenbrowser:
+  data:
+    url: file:///data/specimenbrowser/config/data.json
+headerAndFooter:
+  baseURL: {{ header_and_footer_baseurl }}
+  version: {{ header_and_footer_version }}

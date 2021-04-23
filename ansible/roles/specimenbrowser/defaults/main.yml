@@ -1,0 +1,16 @@
+ala_base_url: https://www.ala.org.au
+ala_image_base_url: https://images.ala.org.au
+auth_cas_url: https://auth.ala.org.au
+bie_base_url: https://bie.ala.org.au
+biocache_base_url: https://biocache.ala.org.au
+biocache_services_url: https://biocache-ws.ala.org.au/ws/
+collectory_base_url: https://collections.ala.org.au
+collectory_services_url: https://collections.ala.org.au/ws/
+header_and_footer_baseurl: https://www.ala.org.au/commonui-bs3-2019
+header_and_footer_version: 2
+orgNameLong: Atlas of Living Australia
+orgNameShort: Atlas of Living Australia
+spatial_base_url: https://spatial-test.ala.org.au
+specimenbrowser_base_url: https://specimens.ala.org.au
+specimenbrowser_context_path:
+specimenbrowser_fluid: true

@@ -19,8 +19,8 @@
     - properties
     - specimenbrowser
 
-- name: copy all config.properties
-  template: src=specimenbrowser-config.properties dest={{data_dir}}/specimenbrowser/config/specimenbrowser-config.properties force=yes
+- name: copy all config
+  template: src=specimenbrowser-config.yml dest={{data_dir}}/specimenbrowser/config/specimenbrowser-config.yml force=yes
   tags:
     - properties
     - specimenbrowser

@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "title": "Blacklist for external websites",
+    "description": "A list sources that should not have articles fetched from an external site. This is usually because the article is subject to controversy or is not correct for Australia.",
+    "version": "1.0",
+    "created": "{{ ansible_date_time.date }}"
+  },
+  "blacklist": [
+{% for pattern in blacklist_source.split('|') %}
+    {
+      "source": "{{ pattern }}"
+    }{% if not loop.last %},{% endif %}
+
+{% endfor %}
+  ]
+}

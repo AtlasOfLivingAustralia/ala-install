@@ -12,17 +12,32 @@
     - properties
     - bie    
 
-- name: copy all config.properties
-  template: src=bie-hub-config.properties dest={{ data_dir }}/{{ bie_hub | default('generic-bie') }}/config/{{ bie_hub | default('generic-bie') }}-config.properties force=yes output_encoding=iso-8859-1
+- name: copy config.yml
+  template:
+    src: bie-hub-config.yml.j2
+    dest: "{{ data_dir }}/{{ bie_hub }}/config/{{ bie_hub | default('generic-bie') }}-config.yml"
+    force: yes
+    output_encoding: iso-8859-1
   tags:
     - webapps
     - properties
     - bie
 
-- name: copy eolContentToUpdate.properties
+- name: copy eolContentToUpdate.properties.jinja2
   template:
-    src: eolContentToUpdate.properties
-    dest: "{{ data_dir }}/{{ bie_hub | default('generic-bie') }}/config/eolContentToUpdate.properties"
+    src: eolContentToUpdate.properties.jinja2
+    dest: "{{ data_dir }}/{{ bie_hub }}/config/eolContentToUpdate.properties"
+  tags:
+    - webapps
+    - properties
+    - bie
+
+- name: copy blacklist
+  template:
+    src: blacklist.json.j2
+    dest: "{{ data_dir }}/{{ bie_hub }}/config/blacklist.json"
+    force: yes
+    output_encoding: utf-8
   tags:
     - webapps
     - properties
