@@ -83,5 +83,28 @@
     "species_habitats": {
         "Terrestrial": "TERRESTRIAL",
         "Marine": "MARINE"
+    },
+    "month": {
+        "January": "1",
+        "February": "2",
+        "March": "3",
+        "April": "4",
+        "May": "5",
+        "June": "6",
+        "July": "7",
+        "August": "8",
+        "September": "9",
+        "October": "10",
+        "November": "11",
+        "December": "12",
+        "01": "1",
+        "02": "2",
+        "03": "3",
+        "04": "4",
+        "05": "5",
+        "06": "6",
+        "07": "7",
+        "08": "8",
+        "09": "9"
     }
 }

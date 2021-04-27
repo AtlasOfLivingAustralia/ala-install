@@ -10,6 +10,7 @@
     "assertions_missing": null,
     "assertions_passed": null,
     "assertions_unchecked": null,
+    "assertion_user_id": "assertionUserId",
     "associated_media": "associatedMedia",
     "associated_references": "associatedReferences",
     "associated_sequences": "associatedSequences",
