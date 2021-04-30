@@ -442,8 +442,7 @@
     mode: 644
   with_items:
     - "facets.json"
-    - "deprecated-fields.json"
-    - "deprecated-enum-values.json"
+    - "pipelines-field-config.json"
   tags:
     - biocache-service
     - properties
