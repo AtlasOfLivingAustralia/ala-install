@@ -17,6 +17,7 @@
     "associated_taxa": "associatedTaxa",
     "aust_conservation": "countryConservation",
     "australian_herbarium_region": null,
+    "assertion_user_id": "assertionUserId",
     "basis_of_record": "basisOfRecord",
     "bbox": null,
     "bibliographic_citation": "bibliographicCitation",
@@ -151,6 +152,7 @@
     "measurement_value": "measurementValue",
     "min_depth_d": "minimumDepthInMeters",
     "min_elevation_d": "minimumElevationInMeters",
+    "min_elevation_d_rng": "minimumElevationInMeters",
     "misc_properties": "dynamicProperties",
     "modified_date": "modified",
     "mytest": null,
@@ -332,10 +334,6 @@
       "Marine": "MARINE"
     },
     "speciesHabitats": {
-      "Terrestrial": "TERRESTRIAL",
-      "Marine": "MARINE"
-    },
-    "biome": {
       "Terrestrial": "TERRESTRIAL",
       "Marine": "MARINE"
     },
