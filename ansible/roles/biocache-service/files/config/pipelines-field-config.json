@@ -121,6 +121,7 @@
     "last_load_date": "lastLoadDate",
     "last_modified_time": "lastLoadDate",
     "last_processed_date": "lastProcessedDate",
+    "last_assertion_date": "lastAssertionDate",
     "latitude": "decimalLatitude",
     "lga": "cl959",
     "life_stage": "lifeStage",
