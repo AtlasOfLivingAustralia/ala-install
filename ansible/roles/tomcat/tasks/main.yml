@@ -146,7 +146,7 @@
   blockinfile:
     path={{tomcat_conf}}
     marker="# {mark} Configure Tomcat Memory (Ansible managed)"
-    block='JAVA_OPTS="${JAVA_OPTS} {{tomcat_java_opts}}"'
+    block='JAVA_OPTS="${JAVA_OPTS} {{tomcat_java_opts}} {{java_security_opts}}"'
     backup=yes
   notify: 
     - restart tomcat
