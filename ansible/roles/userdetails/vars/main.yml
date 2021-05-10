@@ -6,4 +6,4 @@ packaging: "jar"
 groupId: "au.org.ala"
 userdetails_jar_url: "{{maven_repo_ws_url}}"
 
-tomcat_java_opts_override: "{{ tomcat_java_opts_override_value | default('-Xmx4g -Xms2g -Xss256k -XX:+UseG1GC') }}"
+tomcat_java_opts_override: "{{ tomcat_java_opts_override_value | default('-Xmx4g -Xms2g -Xss256k -XX:+UseG1GC') }} {{java_security_opts}}"

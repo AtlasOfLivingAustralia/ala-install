@@ -134,6 +134,7 @@
 
 - name: set java defaults for openjdk11
   set_fact:
+    java_security_opts:
     java_home: /usr/lib/jvm/java-11-openjdk-amd64
   when: use_openjdk11 is defined and use_openjdk11 | bool == True
   tags:
@@ -141,6 +142,7 @@
 
 - name: set java defaults for openjdk8
   set_fact:
+    java_security_opts: -Djava.security.properties=/etc/java-8-openjdk/security/enableLegacyTLS.security
     java_home: /usr/lib/jvm/java-8-openjdk-amd64
   when: use_openjdk8 is defined and use_openjdk8 | bool == True
   tags:
@@ -149,6 +151,7 @@
 - name: set java defaults for zulu8
   set_fact:
     java_home: /usr/lib/jvm/zulu-8-amd64/jre
+    java_security_opts:
   when: use_zulu8 is defined and use_zulu8 | bool == True
   tags:
     - setfacts

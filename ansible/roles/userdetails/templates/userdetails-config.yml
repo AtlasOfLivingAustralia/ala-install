@@ -37,7 +37,7 @@ redirectAfterFirstLogin: ${grails.serverURL}/myprofile
 # Data source configuration
 dataSource:
   dbCreate: "none"
-  url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8
+  url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&useSSL={{mysql_connection_ssl | default(false)}}
   username: {{ userdetails_db_username | default(cas_db_username) | default('cas') }}
   password: {{ userdetails_db_password | default(cas_db_password) | default('password') }}
 
@@ -100,7 +100,7 @@ mainTitle: {{ orgNameLong | default('Atlas of Living Australia') }}
 emailSenderTitle: {{ orgNameLong | default('Atlas of Living Australia') }}
 emailSender: {{ support_email | default('support@ala.org.au') }}
 
-sightings.url: {{ sightings_base_url }}/mine
+sightings.url: {{ sightings_base_url }}
 spatial.url: {{ spatial_base_url }}?tool=log
 volunteer.url: {{ volunteer_base_url }}/user/myStats
 lists.url: {{ lists_base_url }}/speciesList/list
