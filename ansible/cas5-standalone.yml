@@ -3,8 +3,8 @@
     - common
     - java
     - i18n
-    - mysql
-    - { role: mongodb-org, mongodb_version: 4.0 }
+    - mysql-server
+    - { role: mongodb-org, mongodb_version: 4.4 }
   tasks:
   - apt_repository:
       repo: ppa:chris-lea/redis-server

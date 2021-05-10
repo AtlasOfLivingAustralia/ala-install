@@ -1,3 +1,12 @@
+- name: Add mongodb.org apt key for version 4.4
+  get_url:
+    url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x20691eec35216c63caf66ce1656408e390cfb1f5'
+#    'https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x0c49f3730359a14518585931bc711f9ba15703c6'
+    dest: /etc/apt/trusted.gpg.d/mongodb.asc
+    mode: 0644
+  when: mongodb_version == 4.4
+  tags: mongodb-org
+
 - name: Add mongodb.org apt key for version 4.0
   get_url:
     url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x9DA31620334BD75D9DCB49F368818C72E52529D4'
