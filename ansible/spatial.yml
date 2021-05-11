@@ -1,5 +1,5 @@
 - name: spatial
-- hosts: all
+  hosts: all
   roles:
     - common
     - java
