@@ -6,11 +6,13 @@
     "created": "{{ ansible_date_time.date }}"
   },
   "blacklist": [
+{% if blacklist_source is not none %}
 {% for pattern in blacklist_source.split('|') %}
     {
       "source": "{{ pattern }}"
     }{% if not loop.last %},{% endif %}
 
 {% endfor %}
+{% endif %}
   ]
 }
