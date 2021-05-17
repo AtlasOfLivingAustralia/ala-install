@@ -42,7 +42,7 @@ general:
 dataset-validated-dump:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
 dataset-count-dump:
-  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}/
   dwcaImportPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}/
 dataset-archive-list:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}/
