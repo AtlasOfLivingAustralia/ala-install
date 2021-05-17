@@ -26,17 +26,14 @@ SOLR_HEAP="{{ solr_heap | default('512m') }}"
 #SOLR_JAVA_MEM="-Xms512m -Xmx512m"
 
 # Enable verbose GC logging
-GC_LOG_OPTS="-verbose:gc -XX:+PrintHeapAtGC -XX:+PrintGCDetails \
--XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationStoppedTime"
+GC_LOG_OPTS='-Xlog:gc*'
 
 # These GC settings have shown to work well for a number of common Solr workloads
-GC_TUNE="-XX:NewRatio=3 \
--XX:SurvivorRatio=4 \
+GC_TUNE="-XX:SurvivorRatio=4 \
 -XX:TargetSurvivorRatio=90 \
 -XX:MaxTenuringThreshold=8 \
--XX:+UseConcMarkSweepGC \
--XX:+UseParNewGC \
--XX:ConcGCThreads=4 -XX:ParallelGCThreads=4 \
+-XX:ConcGCThreads=4 \
+-XX:ParallelGCThreads=4 \
 -XX:+CMSScavengeBeforeRemark \
 -XX:PretenureSizeThreshold=64m \
 -XX:+UseCMSInitiatingOccupancyOnly \

@@ -18,7 +18,7 @@
 
 - name: set nginx proxy target if configured
   set_fact: 
-    biocache_service_proxy_target: "{{biocache_service_context_path}}"
+    biocache_service_proxy_target: "{{ biocache_service_context_path }}"
   tags:
     - nginx_vhost
     - deploy
@@ -43,12 +43,13 @@
    context_path: "{{ biocache_service_context_path }}"
    nginx_paths:
       - path: "{{biocache_service_context_path}}/webportal/wms/reflect"
-        sort_label: "1_wms_webportal"
+        sort_label: "1_wms_webpoproxy_x_request_idrtal"
         is_proxy: true
         use_cache: true
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_wms_tiles }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/webportal/wms/reflect"
+        proxy_x_request_id: "wmstile-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/ogc/wms/reflect"
         sort_label: "2_wms_ogc"
         is_proxy: true
@@ -56,6 +57,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_wms_tiles }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/ogc/wms/reflect"
+        proxy_x_request_id: "wmstile-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/mapping/wms/reflect"
         sort_label: "3_wms_mapping"
         is_proxy: true
@@ -63,6 +65,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_wms_tiles }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/wms/reflect"
+        proxy_x_request_id: "wmstile-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/webportal/wms/image"
         sort_label: "3_wms_webportal_image"
         is_proxy: true
@@ -70,6 +73,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_wms_tiles }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/webportal/wms/image"
+        proxy_x_request_id: "wmsimage-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/mapping/wms/image"
         sort_label: "3_wms_mapping_image"
         is_proxy: true
@@ -77,6 +81,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_wms_tiles }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/wms/image"
+        proxy_x_request_id: "wmsimage-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/occurrence/legend"
         sort_label: "4_occurrence_legend"
         is_proxy: true
@@ -84,6 +89,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_mapping_legend }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrence/legend"
+        proxy_x_request_id: "legend-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/occurrence/facets"
         sort_label: "4_occurrence_facets"
         is_proxy: true
@@ -91,6 +97,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_facets }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrence/facets"
+        proxy_x_request_id: "facets-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/occurrence/groups"
         sort_label: "4_occurrence_groups"
         is_proxy: true
@@ -98,6 +105,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_explore_group }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrence/groups"
+        proxy_x_request_id: "exploregroups-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/breakdown"
         sort_label: "4_breakdown"
         is_proxy: true
@@ -105,12 +113,14 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_breakdown }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/breakdown"
+        proxy_x_request_id: "breakdown-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/explore"
         sort_label: "4_explore"
         is_proxy: true
         use_cache: true
         force_cache: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/explore"
+        proxy_x_request_id: "explore-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/explore/endemic"
         sort_label: "4_explore_endemic"
         is_proxy: true
@@ -118,6 +128,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_explore_endemic }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/explore/endemic"
+        proxy_x_request_id: "endemic-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/explore/group"
         sort_label: "4_explore_group"
         is_proxy: true
@@ -125,6 +136,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_explore_group }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/explore/group"
+        proxy_x_request_id: "exploregroup-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/search/facets"
         sort_label: "4_search_facets"
         is_proxy: true
@@ -132,6 +144,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_facets }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/search/facets"
+        proxy_x_request_id: "searchfacets-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/search/grouped/facets"
         sort_label: "4_search_grouped_facets"
         is_proxy: true
@@ -139,6 +152,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_facets }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/search/grouped/facets"
+        proxy_x_request_id: "groupedfacets-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/occurrences/legend"
         sort_label: "4_occurrences_legend"
         is_proxy: true
@@ -146,6 +160,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_mapping_legend }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrences/legend"
+        proxy_x_request_id: "legend-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/webportal/legend"
         sort_label: "4_webportal_legend"
         is_proxy: true
@@ -153,6 +168,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_mapping_legend }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/webportal/legend"
+        proxy_x_request_id: "legend-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/mapping/legend"
         sort_label: "4_mapping_legend"
         is_proxy: true
@@ -160,12 +176,14 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_mapping_legend }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/legend"
+        proxy_x_request_id: "legend-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/occurrences/taxaCount"
         sort_label: "4_occurrences_taxacount"
         is_proxy: true
         use_cache: true
         force_cache: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrences/taxaCount"
+        proxy_x_request_id: "taxacount-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/duplicates"
         sort_label: "4_duplicates"
         is_proxy: true
@@ -173,12 +191,14 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_duplicates }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/duplicates"
+        proxy_x_request_id: "duplicates-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/images/taxon"
         sort_label: "4_images_taxon"
         is_proxy: true
         use_cache: true
         force_cache: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/images/taxon"
+        proxy_x_request_id: "imagestaxon-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/density/legend"
         sort_label: "5_density_legend"
         is_proxy: true
@@ -186,6 +206,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_mapping_legend }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/density/legend"
+        proxy_x_request_id: "densitylegend-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/density/map"
         sort_label: "6_density_map"
         is_proxy: true
@@ -193,12 +214,14 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_mapping_images }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/density/map"
+        proxy_x_request_id: "densitymap-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/occurrences/static"
         sort_label: "6_occurrences_static"
         is_proxy: true
         use_cache: true
         force_cache: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrences/static"
+        proxy_x_request_id: "static-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/assertions/user/codes"
         sort_label: "7_assertions_user_codes"
         is_proxy: true
@@ -206,6 +229,7 @@
         force_cache: true
         unlimited_conns: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/assertions/user/codes"
+        proxy_x_request_id: "usercodes-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/assertions/codes"
         sort_label: "7_assertions_codes"
         is_proxy: true
@@ -213,6 +237,7 @@
         force_cache: true
         unlimited_conns: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/assertions/codes"
+        proxy_x_request_id: "assertioncodes-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/webportal/bbox"
         sort_label: "7_webportal_bbox"
         is_proxy: true
@@ -220,6 +245,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_mapping_bounds }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/webportal/bbox"
+        proxy_x_request_id: "bbox-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/mapping/bbox"
         sort_label: "7_mapping_bbox"
         is_proxy: true
@@ -227,6 +253,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_mapping_bounds }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/bbox"
+        proxy_x_request_id: "bbox-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/webportal/bounds"
         sort_label: "7_webportal_bounds"
         is_proxy: true
@@ -234,6 +261,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_mapping_bounds }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/webportal/bounds"
+        proxy_x_request_id: "bounds-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/mapping/bounds"
         sort_label: "7_mapping_bounds"
         is_proxy: true
@@ -241,12 +269,14 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_mapping_bounds }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/bounds"
+        proxy_x_request_id: "bounds-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/webportal/dataProviders"
         sort_label: "7_webportal_dataproviders"
         is_proxy: true
         use_cache: true
         force_cache: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/webportal/dataProviders"
+        proxy_x_request_id: "dataproviders-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/chart"
         sort_label: "7_chart"
         is_proxy: true
@@ -254,6 +284,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_chart }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/chart"
+        proxy_x_request_id: "chart-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/scatterplot"
         sort_label: "7_scatterplot"
         is_proxy: true
@@ -261,6 +292,7 @@
         force_cache: true
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_scatterplot }}"
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/scatterplot"
+        proxy_x_request_id: "scatterplot-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/occurrences/download"
         sort_label: "7_occurrences_download"
         block_by_arguments: "{{ biocache_service_online_download_argument_blocking }}"
@@ -268,6 +300,7 @@
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_online_downloads }}"
         extra_logs: ["{{ biocache_service_extra_postdata_logging }}"]
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrences/download"
+        proxy_x_request_id: "download-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/occurrences/index/download"
         sort_label: "7_occurrences_index_download"
         block_by_arguments: "{{ biocache_service_online_download_argument_blocking }}"
@@ -275,6 +308,7 @@
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_online_downloads }}"
         extra_logs: ["{{ biocache_service_extra_postdata_logging }}"]
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrences/index/download"
+        proxy_x_request_id: "indexdownload-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/webportal/occurrences"
         sort_label: "7_webportal_occurrences"
         block_by_arguments: "{{ biocache_service_online_download_argument_blocking }}"
@@ -282,35 +316,41 @@
         extra_limit_zones: "{{ biocache_service_extra_limit_zones_online_downloads }}"
         extra_logs: ["{{ biocache_service_extra_postdata_logging }}"]
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/webportal/occurrences"
+        proxy_x_request_id: "webportaloccurrences-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/occurrences/offline"
         sort_label: "7_occurrences_offline_download"
         is_proxy: true
         unlimited_conns: true
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/occurrences/offline"
+        proxy_x_request_id: "$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/webportal/params"
         sort_label: "7_webportal_params"
         is_proxy: true
         unlimited_conns: true
         extra_logs: ["{{ biocache_service_extra_postdata_logging }}"]
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/webportal/params"
+        proxy_x_request_id: "params-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/mapping/params"
         sort_label: "7_mapping_params"
         is_proxy: true
         unlimited_conns: true
         extra_logs: ["{{ biocache_service_extra_postdata_logging }}"]
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/params"
+        proxy_x_request_id: "params-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/qid"
         sort_label: "7_qid"
         is_proxy: true
         unlimited_conns: true
         extra_logs: ["{{ biocache_service_extra_postdata_logging }}"]
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/qid"
+        proxy_x_request_id: "qid-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_context_path}}/mapping/qid"
         sort_label: "7_mapping_qid"
         is_proxy: true
         unlimited_conns: true
         extra_logs: ["{{ biocache_service_extra_postdata_logging }}"]
         proxy_pass: "http://127.0.0.1:8080{{biocache_service_proxy_target}}/mapping/qid"
+        proxy_x_request_id: "qid-$pid-$msec-$remote_addr-$request_length"
       - path: "{{biocache_service_download_target}}/biocache-download"
         sort_label: "8_download"
         is_proxy: false
@@ -327,18 +367,6 @@
     - deploy
     - biocache-service
   when: webserver_nginx
-
-#- name: add nginx vhost if configured
-#  include_role:
-#    name: nginx_vhost
-#  vars:
-#    hostname: "{{ biocache_service_hostname }}"
-#    context_path: "{{ biocache_service_context_path }}"
-#  tags:
-#    - biocache-service
-#    - nginx_vhost
-#    - deploy
-#  when: webserver_nginx
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ biocache_service_war_path }}' context_path='{{ biocache_service_context_path }}' hostname='{{ biocache_service_hostname }}'
   when: biocache_service_local_build is not defined
@@ -357,35 +385,25 @@
     - webapps
 
 - name: ensure tomcat context directory exists
-  file: path=/usr/share/{{tomcat}}/conf/Catalina/localhost/ state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path=/usr/share/{{ tomcat }}/conf/Catalina/localhost/ state=directory owner={{ tomcat_user }} group={{ tomcat_user }}
   tags:
     - biocache-service  
   notify:
     - restart tomcat
 
 - name: ensure application data directory exists
-  file: path={{data_dir}}/biocache state=directory owner={{tomcat_user}}  group={{tomcat_user}}
+  file: path={{ data_dir }}/biocache state=directory owner={{ tomcat_user }}  group={{ tomcat_user }}
   tags:
     - biocache-service  
     - properties
 
 - name: ensure target directories exist [data subdirectories etc.
-  file: path={{item.path}} state=directory owner={{tomcat_user}}  group={{tomcat_user}} mode={{ item.perm | default(775) }}
+  file: path={{ item.path }} state=directory owner={{ tomcat_user }}  group={{ tomcat_user }} mode={{ item.perm | default(775) }}
   with_items:
-    - { path: "{{data_dir}}/ala/layers/ready/shape" }
-    - { path: "{{data_dir}}/biocache-load" }
-    - { path: "{{data_dir}}/biocache-media" }
-    - { path: "{{data_dir}}/biocache-upload" }
-    - { path: "{{data_dir}}/biocache-upload/status" }
-    - { path: "{{data_dir}}/biocache-upload/temp" }
-    - { path: "{{data_dir}}/biocache-delete" }
     - { path: "{{data_dir}}/cache" }
     - { path: "{{data_dir}}/cache/downloads" }
-    - { path: "{{data_dir}}/tmp" }
+    - { path: "{{data_dir}}/biocache/tmp" }
     - { path: "{{data_dir}}/offline/exports" }
-    - { path: "{{data_dir}}/tool" }
-    - { path: "{{data_dir}}/output" }
-    - { path: "{{data_dir}}/output/heatmap" }
     - { path: "{{data_dir}}/biocache-download" }
     - { path: "{{data_dir}}/biocache-download/tmp" }
   tags:
@@ -400,15 +418,8 @@
     chdir: "{{ data_dir }}"
   with_items:
     - biocache
-    - ala
-    - biocache-load
-    - biocache-media
-    - biocache-upload
-    - biocache-delete    
     - cache
-    - tmp    
-    - offline    
-    - tool       
+    - offline
     - biocache-download
   tags:
     - biocache-service
@@ -457,12 +468,3 @@
     - biocache-service
     - symlinks
     - properties
-
-
-- name: set permissions for biocache-load [TODO - more restrictive permissions]
-  file: path={{data_dir}}/biocache-load mode=777
-  tags:
-    - biocache-service  
-    - properties
-  notify:
-    - restart tomcat
