@@ -2,20 +2,12 @@
   "name": "Animals",
   "rank": "kingdom",
   "included": ["Animalia"],
-  "excluded": [],
-  "parent": null
+  "excluded": []
 },
   {
     "name": "Mammals",
     "rank": "classs",
     "included": ["Mammalia"],
-    "excluded": [],
-    "parent": "Animals"
-  },
-  {
-    "name": "Birds",
-    "rank": "classs",
-    "included": ["Aves"],
     "excluded": [],
     "parent": "Animals"
   },
@@ -79,14 +71,73 @@
     "name": "Plants",
     "rank": "kingdom",
     "included": ["Plantae"],
-    "excluded": [],
-    "parent": null
+    "excluded": []
   },
   {
-    "name": "Bryophytes",
-    "rank": "phylum",
-    "included": ["Bryophyta", "Marchantiophyta", "Anthocerotophyta"],
+    "name": "Gymnosperms",
+    "rank": "subclass",
+    "included": ["Pinidae", "Cycadidae"],
     "excluded": [],
     "parent": "Plants"
+  },
+  {
+    "name": "FernsAndAllies",
+    "rank": "subclass",
+    "included": ["Equisetidae", "Lycopodiidae", "Marattiidae", "Ophioglossidae", "Polypodiidae", "Psilotidae"],
+    "excluded": [],
+    "parent": "Plants"
+  },
+  {
+    "name": "Angiosperms",
+    "rank": "subclass",
+    "included": ["Magnoliidae"],
+    "excluded": [],
+    "parent": "Plants"
+  },
+  {
+    "name": "Monocots",
+    "rank": "superorder",
+    "included": ["Lilianae"],
+    "excluded": [],
+    "parent": "Angiosperms"
+  },
+  {
+    "name": "Dicots",
+    "rank": "subclass",
+    "included": ["Magnoliidae"],
+    "excluded": ["Lilianae"],
+    "parent": "Angiosperms"
+  },
+  {
+    "name": "Fungi",
+    "rank": "phylum",
+    "included": ["Fungi"],
+    "excluded": []
+  },
+  {
+    "name": "Chromista",
+    "rank": "phylum",
+    "included": ["Chromista"],
+    "excluded": []
+  },
+  {
+    "name": "Protozoa",
+    "rank": "phylum",
+    "included": ["Protozoa"],
+    "excluded": []
+  },
+  {
+    "name": "Bacteria",
+    "rank": "phylum",
+    "included": ["Bacteria"],
+    "excluded": []
+  },
+  {
+    "name": "Algae",
+    "rank": "phylum",
+    "included": ["Bacillariophyta", "Chlorophyta", "Cyanidiophyta", "Prasinophyta", "Rhodophyta",
+      "Cryptophyta", "Ochrophyta", "Sagenista", "Cercozoa", "Euglenozoa", "Cyanobacteria"
+    ],
+    "excluded": []
   }
 ]
