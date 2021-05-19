@@ -1,5 +1,5 @@
 - name: demo basic
-  hosts: all
+  hosts: ala-demo
   roles:
     - common
     - java
