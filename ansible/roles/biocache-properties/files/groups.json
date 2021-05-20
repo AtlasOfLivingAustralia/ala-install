@@ -110,25 +110,25 @@
   },
   {
     "name": "Fungi",
-    "rank": "phylum",
+    "rank": "kingdom",
     "included": ["Fungi"],
     "excluded": []
   },
   {
     "name": "Chromista",
-    "rank": "phylum",
+    "rank": "kingdom",
     "included": ["Chromista"],
     "excluded": []
   },
   {
     "name": "Protozoa",
-    "rank": "phylum",
+    "rank": "kingdom",
     "included": ["Protozoa"],
     "excluded": []
   },
   {
     "name": "Bacteria",
-    "rank": "phylum",
+    "rank": "kingdom",
     "included": ["Bacteria"],
     "excluded": []
   },
