@@ -27,20 +27,7 @@
   tags:
     - biocache_db
 
-- name: ensure cassandra 3.x is running
-  wait_for: port=9042 delay=30
-  when: use_cassandra3 is defined
-  tags:
-    - biocache_db
-
-- name: create schema (cassandra 1)
-  shell: "cassandra-cli < /tmp/cassandra-schema.txt"
-  when: use_cassandra3 is not defined
-  tags:
-    - biocache_db
-
 - name: create schema  (cassandra 3)
   shell: "cqlsh < /tmp/cassandra3-schema.txt"
-  when: use_cassandra3 is defined
   tags:
     - biocache_db
