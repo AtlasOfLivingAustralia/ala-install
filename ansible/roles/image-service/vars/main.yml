@@ -5,5 +5,3 @@ classifier: 'exec'
 groupId: "au.org.ala"
 packaging: "jar"
 image_service_jar_url: "{{maven_repo_ws_url}}"
-additional_proxy_pass:
-  - { src: "/store", dest: "!" }
