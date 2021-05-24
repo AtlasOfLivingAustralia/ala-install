@@ -400,12 +400,13 @@
 - name: ensure target directories exist [data subdirectories etc.
   file: path={{ item.path }} state=directory owner={{ tomcat_user }}  group={{ tomcat_user }} mode={{ item.perm | default(775) }}
   with_items:
-    - { path: "{{data_dir}}/cache" }
-    - { path: "{{data_dir}}/cache/downloads" }
-    - { path: "{{data_dir}}/biocache/tmp" }
-    - { path: "{{data_dir}}/offline/exports" }
     - { path: "{{data_dir}}/biocache-download" }
     - { path: "{{data_dir}}/biocache-download/tmp" }
+    - { path: "{{data_dir}}/biocache/tmp" }
+    - { path: "{{data_dir}}/cache" }
+    - { path: "{{data_dir}}/cache/downloads" }
+    - { path: "{{data_dir}}/offline/exports" }
+    - { path: "{{data_dir}}/output/heatmap" }
   tags:
     - biocache-service
     - properties
