@@ -60,39 +60,39 @@ INSERT INTO profiles (userid, property, value)
 INSERT INTO user_role (user_id, role_id)
     SELECT user_id, role_id
     FROM (SELECT 1 as user_id, 'ROLE_ADMIN' as role_id) t
-    WHERE NOT EXISTS (SELECT 1 FROM user_role u WHERE u.user_id = t.user_id AND u.role_id = t.role_id);
+    WHERE NOT EXISTS (SELECT 1 FROM user_role u WHERE u.user_id = t.user_id AND u.role_id = CONVERT(t.role_id USING latin1));
 --
 INSERT INTO user_role (user_id, role_id)
     SELECT user_id, role_id
     FROM (SELECT 1 as user_id, 'ROLE_COLLECTION_ADMIN' as role_id) t
-    WHERE NOT EXISTS (SELECT 1 FROM user_role u WHERE u.user_id = t.user_id AND u.role_id = t.role_id);
+    WHERE NOT EXISTS (SELECT 1 FROM user_role u WHERE u.user_id = t.user_id AND u.role_id = CONVERT(t.role_id USING latin1));
 --
 INSERT INTO user_role (user_id, role_id)
     SELECT user_id, role_id
     FROM (SELECT 1 as user_id, 'ROLE_COLLECTION_EDITOR' as role_id) t
-    WHERE NOT EXISTS (SELECT 1 FROM user_role u WHERE u.user_id = t.user_id AND u.role_id = t.role_id);
+    WHERE NOT EXISTS (SELECT 1 FROM user_role u WHERE u.user_id = t.user_id AND u.role_id = CONVERT(t.role_id USING latin1));
 --
 INSERT INTO user_role (user_id, role_id)
     SELECT user_id, role_id
     FROM (SELECT 1 as user_id, 'ROLE_EDITOR' as role_id) t
-    WHERE NOT EXISTS (SELECT 1 FROM user_role u WHERE u.user_id = t.user_id AND u.role_id = t.role_id);
+    WHERE NOT EXISTS (SELECT 1 FROM user_role u WHERE u.user_id = t.user_id AND u.role_id = CONVERT(t.role_id USING latin1));
 --
 INSERT INTO user_role (user_id, role_id)
     SELECT user_id, role_id
     FROM (SELECT 1 as user_id, 'ROLE_IMAGE_ADMIN' as role_id) t
-    WHERE NOT EXISTS (SELECT 1 FROM user_role u WHERE u.user_id = t.user_id AND u.role_id = t.role_id);
+    WHERE NOT EXISTS (SELECT 1 FROM user_role u WHERE u.user_id = t.user_id AND u.role_id = CONVERT(t.role_id USING latin1));
 --
 INSERT INTO user_role (user_id, role_id)
     SELECT user_id, role_id
     FROM (SELECT 1 as user_id, 'ROLE_SPATIAL_ADMIN' as role_id) t
-    WHERE NOT EXISTS (SELECT 1 FROM user_role u WHERE u.user_id = t.user_id AND u.role_id = t.role_id);
+    WHERE NOT EXISTS (SELECT 1 FROM user_role u WHERE u.user_id = t.user_id AND u.role_id = CONVERT(t.role_id USING latin1));
 --
 INSERT INTO user_role (user_id, role_id)
     SELECT user_id, role_id
     FROM (SELECT 1 as user_id, 'ROLE_SYSTEM_ADMIN' as role_id) t
-    WHERE NOT EXISTS (SELECT 1 FROM user_role u WHERE u.user_id = t.user_id AND u.role_id = t.role_id);
+    WHERE NOT EXISTS (SELECT 1 FROM user_role u WHERE u.user_id = t.user_id AND u.role_id = CONVERT(t.role_id USING latin1));
 --
 INSERT INTO user_role (user_id, role_id)
     SELECT user_id, role_id
     FROM (SELECT 1 as user_id, 'ROLE_USER' as role_id) t
-    WHERE NOT EXISTS (SELECT 1 FROM user_role u WHERE u.user_id = t.user_id AND u.role_id = t.role_id);
+    WHERE NOT EXISTS (SELECT 1 FROM user_role u WHERE u.user_id = t.user_id AND u.role_id = CONVERT(t.role_id USING latin1));
