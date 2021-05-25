@@ -37,6 +37,7 @@
     src: blacklist.json.j2
     dest: "{{ data_dir }}/{{ bie_hub }}/config/blacklist.json"
     force: yes
+
     output_encoding: utf-8
   tags:
     - webapps
