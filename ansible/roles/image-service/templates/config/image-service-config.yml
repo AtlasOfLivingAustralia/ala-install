@@ -29,7 +29,7 @@ info:
   app:
     name: 'image-service'
     version: '{{ image_service_version }}'
-    grailsVersion: '3.3.11'
+    grailsVersion: '3.3.12'
 
 flyway:
   baselineOnMigrate: {{ image_service_baseline_on_migrate | default('true') }}
