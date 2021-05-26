@@ -40,7 +40,10 @@ dataSource:
   username: {{ image_service_db_username }}
   password: {{ image_service_db_password }}
   dbCreate: validate
-
+  properties:
+    maximumPoolSize: {{ image_service_maximum_pool_size | default(30) }} 
+    connectionTimeout: {{ image_service_connection_timeout | default(5000) }} 
+    
 imageservice:
   imagestore:
     root: "/data/image-service/store"
