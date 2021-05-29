@@ -79,15 +79,15 @@
     - jts-io-common-1.16.1.jar
   tags:
     - solrcloud
-  when: jts_use_1_16
 
-- name: Add JTS 1.13
+- name: Add JTS 1.18.1
   copy: src=libs/{{item}} dest=/opt/solr/server/lib/ext
   with_items:
-    - jts-1.13.jar
+    - jts-core-1.18.1.jar
+    - jts-io-common-1.18.1.jar
   tags:
     - solrcloud
-  when: not jts_use_1_16
+  when: jts_use_1_18
 
 - name: add common tomcat jars (for SOLR logging and JTS)
   copy: src=solr/solr.xml dest=/data/solr
