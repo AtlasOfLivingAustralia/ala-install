@@ -13,38 +13,6 @@
     - image-service
     - properties
 
-- name: create images database
-  postgresql_db: name={{ image_service_db_name }}
-  become_user: postgres
-  become: yes
-  tags:
-    - db
-    - image-service
-
-- name: create {{ image_service_db_username }} DB user
-  command: "psql -d {{ image_service_db_name }} -c \"create user {{ image_service_db_username }} with password '{{image_service_db_password}}'\""
-  become_user: postgres
-  ignore_errors: yes
-  tags:
-    - image-service
-    - db
-
-- name: create {{ image_service_db_username }} DB user
-  command: "psql -d {{ image_service_db_username }} -c \"ALTER ROLE {{ image_service_db_username }} WITH SUPERUSER\""
-  become_user: postgres
-  ignore_errors: yes
-  tags:
-    - image-service
-    - db
-
-- name: create database user images 
-  postgresql_user: db={{ image_service_db_name }} name={{ image_service_db_username }} password={{ image_service_db_password }} priv=ALL state=present
-  become_user: postgres
-  become: yes
-  tags:
-    - db
-    - image-service
-
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ image_service_context_path }}' hostname='{{ image_service_hostname }}'
   tags:
     - deploy
@@ -95,14 +63,6 @@
     - image-service
     - properties
 
-# Only create the symlink for apache hosts, as nginx has an inbuilt rule for this
-# - name: Create symlink to data/image-service/store from /srv/[hostname]/www/store
-#   command: "ln -s {{ data_dir }}/image-service/store /srv/{{ image_service_hostname }}/www/store"
-#   ignore_errors: yes
-#   when: not webserver_nginx
-#   tags: 
-#     - image-service
-
 - name: copy all config.properties
   template: src={{ item }} dest={{data_dir}}/image-service/config/
   with_items:
@@ -114,28 +74,6 @@
     - deploy
     - image-service
     - properties
-
-# - name: copy all SQL export script
-#   template: src={{ item }} dest={{data_dir}}/image-service/setup/
-#   with_items:
-#     - "sql/image-service-export.sql"
-#   notify:
-#      - restart image-service
-#   tags:
-#     - deploy
-#     - image-service
-#     - properties
-
-# - name: create stored procedures for export functions
-#   command: "psql -d {{ image_service_db_username }} -f {{data_dir}}/image-service/setup/image-service-export.sql"
-#   become_user: postgres
-#   ignore_errors: no
-#   notify:
-#      - restart image-service
-#   tags:
-#     - image-service
-#     - properties
-#     - db
 
 - name: add image-service jar and setup service
   include_role:
@@ -174,7 +112,7 @@
     - image-service
 
 - name: set data ownership postgres for {{data_dir}}/image-service/exports
-  file: path={{data_dir}}/image-service/exports owner="postgres" group="postgres" recurse=true
+  file: path={{data_dir}}/image-service/exports owner="image-service" group="image-service" recurse=true
   notify:
      - restart image-service
   tags:
