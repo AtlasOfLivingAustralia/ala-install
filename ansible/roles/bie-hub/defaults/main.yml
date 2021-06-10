@@ -20,7 +20,7 @@ biocache_hub_url: https://biocache.ala.org.au
 biocache_query_context:
 biocache_service_url: https://biocache-ws.ala.org.au/ws
 blacklist_name:
-blacklist_source:
+blacklist_source: ''
 blacklist_title:
 bypass_cas: true
 collectory_url: https://collections.ala.org.au
