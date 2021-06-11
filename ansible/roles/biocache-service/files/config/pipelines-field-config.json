@@ -96,6 +96,7 @@
         "ibra_subregion": "cl1049",
         "identification_id": "identificationID",
         "identification_qualifier": "identificationQualifier",
+        "identification_qualifier_s": "identificationQualifier",
         "identification_references": "identificationReferences",
         "identification_remarks": "identificationRemarks",
         "identification_verification_status": "identificationVerificationStatus",
