@@ -35,7 +35,7 @@ flyway:
   baselineOnMigrate: {{ image_service_baseline_on_migrate | default('true') }}
 
 dataSource:
-  url: "jdbc:postgresql://localsost/{{ image_service_db_name }}?autoReconnect=true&connectTimeout=0&useUnicode=true&characterEncoding=UTF-8"
+  url: "jdbc:postgresql://localhost/{{ image_service_db_name }}?autoReconnect=true&connectTimeout=0&useUnicode=true&characterEncoding=UTF-8"
   driverClassName: org.postgresql.Driver
   username: {{ image_service_db_username }}
   password: {{ image_service_db_password }}
