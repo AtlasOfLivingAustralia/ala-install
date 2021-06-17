@@ -59,7 +59,7 @@
             "dwcTerm": "taxonRank",
             "i18nValues": true,
             "description": "Taxon Rank - matched",
-            "field": "rank"
+            "field": "taxonRank"
         },
         {
             "sort": "count",
@@ -378,7 +378,7 @@
             {
                 "sort": "index",
                 "description": "Assertions by user",
-                "field": "assertion_user_id"
+                "field": "assertionUserId"
             },
             {
                 "sort": "count",
@@ -398,7 +398,7 @@
         },
             {
                 "sort": "count",
-                "field": "alau_user_id"
+                "field": "userId"
             },
             {
                 "sort": "count",
