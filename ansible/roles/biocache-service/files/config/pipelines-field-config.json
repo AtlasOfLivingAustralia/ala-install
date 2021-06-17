@@ -171,6 +171,7 @@
     "occurrence_id": "occurrenceID",
     "occurrence_remarks": "occurrenceRemarks",
     "occurrence_status": "occurrenceStatus",
+    "occurrence_status_s": "occurrenceStatus",
     "occurrence_year": "occurrenceYear",
     "order_id": "orderID",
     "organism_quantity": "organismQuantity",
