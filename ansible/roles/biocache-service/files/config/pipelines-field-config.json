@@ -395,6 +395,9 @@
       "Terrestrial": "TERRESTRIAL",
       "Marine": "MARINE"
     },
+    "speciesGroup": {
+      "Fish": "Fishes"
+    },
     "month": {
       "January": "1",
       "February": "2",
