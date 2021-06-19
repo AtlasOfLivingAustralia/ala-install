@@ -342,6 +342,11 @@
                 "sort": "index",
                 "description": "Presence/Absence",
                 "field": "occurrenceStatus"
+            },
+            {
+                "sort": "index",
+                "description": "Content types",
+                "field": "contentTypes"
             }
         ]
     },
