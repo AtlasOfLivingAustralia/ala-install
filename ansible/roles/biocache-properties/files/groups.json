@@ -74,6 +74,12 @@
     "excluded": []
   },
   {
+    "name": "Bryophytes",
+    "rank": "phylum",
+    "included": ["Bryophyta", "Marchantiophyta", "Anthocerotophyta"],
+    "excluded": []
+  },
+  {
     "name": "Gymnosperms",
     "rank": "subclass",
     "included": ["Pinidae", "Cycadidae"],
