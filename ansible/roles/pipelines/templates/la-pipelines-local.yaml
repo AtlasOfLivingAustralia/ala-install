@@ -25,6 +25,7 @@ collectory:
 
 imageService:
   wsUrl: {{ image_service_url }}
+  timeoutSec: 180
   httpHeaders:
     apiKey:  {{ ala_api_key }}
 
