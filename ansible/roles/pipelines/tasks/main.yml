@@ -70,21 +70,21 @@
     - pipelines
     - docker
 
-- name: Add GBIF ES Repository
-  apt_repository:
-    repo: deb https://apt.gbif.es/ bionic main
-    state: present
-  tags:
-    - la-pipelines
-    - pipelines
-
-- name: Add an apt key by id from a keyserver
-  apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: F697D8D2ADB9E24A
-  tags:
-    - la-pipelines
-    - pipelines
+#- name: Add GBIF ES Repository
+#  apt_repository:
+#    repo: deb https://apt.gbif.es/ bionic main
+#    state: present
+#  tags:
+#    - la-pipelines
+#    - pipelines
+#
+#- name: Add an apt key by id from a keyserver
+#  apt_key:
+#    keyserver: keyserver.ubuntu.com
+#    id: F697D8D2ADB9E24A
+#  tags:
+#    - la-pipelines
+#    - pipelines
 
 - name: Update apt and install pipelines
   apt: update_cache=yes name=la-pipelines

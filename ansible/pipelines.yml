@@ -2,6 +2,10 @@
   roles:
     - java
 
+- hosts: all
+  roles:
+    - i18n
+
 - hosts: hadoop
   roles:
     - hadoop

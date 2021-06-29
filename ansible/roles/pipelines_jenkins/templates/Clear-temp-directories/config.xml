@@ -1,0 +1,32 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?><flow-definition plugin="workflow-job@2.40">
+  <actions/>
+  <description>Restart support docker containers. This will restart name service and sensitive data services.</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.90">
+    <script>nodeNames().each { nodeName -&gt;
+    node(nodeName) {
+      echo 'nodeName ' + nodeName
+      sh 'sudo -u spark rm -Rf /data/spark-tmp/* || true'
+      sh 'sudo -u spark rm -Rf /data/spark/tmp/* || true'      
+      sh 'sudo -u spark rm -Rf /data/spark/logs/* || true'
+      sh 'sudo -u spark rm -Rf /data/spark/work/* || true'  
+      sh 'sudo -u spark rm -Rf /tmp/*-wsCache* || true'  
+      sh 'sudo -u spark rm -Rf /tmp/snappy-* || true'
+      sh 'sudo -u spark rm -Rf /tmp/liblz4-* || true'              
+      sh 'sudo -u spark rm -Rf /tmp/cache* || true'
+    }
+}
+
+
+// This method collects a list of Node names from the current Jenkins instance 
+@NonCPS def nodeNames() { 
+  return jenkins.model.Jenkins.instance.nodes.collect { node -&gt; node.name } 
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

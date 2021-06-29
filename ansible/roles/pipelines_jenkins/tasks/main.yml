@@ -42,13 +42,91 @@
   tags:
     - pipelines_jenkins
 
+- name: Ensures {{project_root}}/conf dir exists
+  file: path="/var/lib/jenkins/jobs/{{ item }}" state=directory owner=jenkins group=jenkins
+  with_items:
+    - Assertions-sync
+    - Clear-file-locks
+    - Clear-temp-directories
+    - Clustering
+    - Copy-dwca-to-hdfs
+    - Dwc-verbatim-all
+    - Dwc-verbatim-dataset
+    - Full-indexed-to-solr
+    - Image-load
+    - Image-load-all
+    - Image-sync
+    - Image-sync-all
+    - Index-all
+    - Index-dataset
+    - Ingest-dataset
+    - Interpret-all
+    - Interpret-dataset
+    - Interpret-dataset-diag
+    - Interpret-small-datasets
+    - Jackknife-all
+    - Refresh-vocabularies
+    - Restart-docker-services
+    - Restart-spark
+    - SDS-all
+    - SDS-dataset
+    - SDS-small-datasets
+    - Sample-dataset
+    - Solr
+    - Solr-pipeline
+    - Solr-schema
+    - UUID-all
+    - UUID-dataset
+    - Update-collection-alias
+    - Validation-report
+  when: is_master
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_jobs
+
 - name: Jenkins jobs definitions
-  copy:
-    src: jenkins/jobs/
-    dest: /var/lib/jenkins/jobs
+  template:
+    src: "templates/{{ item }}"
+    dest: "/var/lib/jenkins/jobs/{{ item }}"
     owner: jenkins
     group: jenkins
     mode: '0644'
+    force: yes
+  with_items:
+    - Assertions-sync/config.xml
+    - Clear-file-locks/config.xml
+    - Clear-temp-directories/config.xml
+    - Clustering/config.xml
+    - Copy-dwca-to-hdfs/config.xml
+    - Dwc-verbatim-all/config.xml
+    - Dwc-verbatim-dataset/config.xml
+    - Full-indexed-to-solr/config.xml
+    - Image-load/config.xml
+    - Image-load-all/config.xml
+    - Image-sync/config.xml
+    - Image-sync-all/config.xml
+    - Index-all/config.xml
+    - Index-dataset/config.xml
+    - Ingest-dataset/config.xml
+    - Interpret-all/config.xml
+    - Interpret-dataset/config.xml
+    - Interpret-dataset-diag/config.xml
+    - Interpret-small-datasets/config.xml
+    - Jackknife-all/config.xml
+    - Refresh-vocabularies/config.xml
+    - Restart-docker-services/config.xml
+    - Restart-spark/config.xml
+    - SDS-all/config.xml
+    - SDS-dataset/config.xml
+    - SDS-small-datasets/config.xml
+    - Sample-dataset/config.xml
+    - Solr/config.xml
+    - Solr-pipeline/config.xml
+    - Solr-schema/config.xml
+    - UUID-all/config.xml
+    - UUID-dataset/config.xml
+    - Update-collection-alias/config.xml
+    - Validation-report/config.xml
   when: is_master
   tags:
     - pipelines_jenkins
