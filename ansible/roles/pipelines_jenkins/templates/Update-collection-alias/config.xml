@@ -99,22 +99,10 @@ checkTotalCount,checkMinFieldsForRandomRecords,checkCompareRandomRecords,checkSe
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.90">
     <script>//import com.cloudbees.groovy.cps.NonCPS
 
-//def params = [
-//        'solr_base_url'                : 'http://aws-sc1b.ala:8983/solr/',
-//        'include_checks'               : 'checkTotalCount,checkMinFieldsForRandomRecords,checkCompareRandomRecords,checkSensitivity,checkSpeciesHabitat,checkConservationStatus,' +
-//                'checkGeoSpatialLayerCl959,checkGeoSpatialLayerCl1048,checkGeoSpatialLayerCl966,checkGeoSpatialLayerCl21',
-//        'minimum_field_count'          : '10',
-//        'random_srecords_count'         : '10',
-//        'new_collection'               : 'biocache-2018-09-12-09-39',
-//        'old_collection'               : 'biocache',
-//        'NUMBER_OF_COLLECTIONS_TO_KEEP': '2'
-//        'statistics_log_file'          : '/var/log/jenkins/biocache-statistics-test.log'
-//]
-
 if (params.cluster == "ClusterA"){
-    solrBase = "http://aws-solrcloud-quoll-1.ala:8983/solr/"
+    solrBase = "http://{{ solr_cluster_node_a }}:8983/solr/"
 } else {
-    solrBase = "http://aws-solr-2021-1.ala:8983/solr/"
+    solrBase = "http://{{ solr_cluster_node_b }}:8983/solr/"
 }
 
 collectionToKeep = params.collection_to_keep
@@ -123,10 +111,11 @@ minFieldCount = params.minimum_field_count.toInteger()
 randomRecordsCount = params.random_records_count.toInteger()
 newCollection = params.new_collection
 oldCollection = params.old_collection
-NUMBER_OF_COLLECTIONS_TO_KEEP = params.NUMBER_OF_COLLECTIONS_TO_KEEP.toInteger()
+numberOfCollectionsToKeep = params.NUMBER_OF_COLLECTIONS_TO_KEEP.toInteger()
 runChecksOnly = params.RUN_CHECKS_ONLY
 removeCollectionIfFails = params.REMOVE_COLLECTION_IF_FAILS
 statisticsLogFile = params.statistics_log_file
+
 RETRY_COUNT = 10
 RETRY_SLEEP_MILSEC = 1 * 60 * 1000
 
@@ -395,7 +384,6 @@ def getRandomRecordIds(String collection, int recordsNumber) {
         return null
     }
     return recordIds
-
 }
 
 @NonCPS
@@ -573,7 +561,7 @@ def removeOldCollections() {
         collections = collections.reverse() // reverse sorting
         collections.remove(collectionToKeep)
         println 'current COLLECTIONS = ' + collections
-        for (int i = NUMBER_OF_COLLECTIONS_TO_KEEP; i &lt; collections.size(); i++) {
+        for (int i = numberOfCollectionsToKeep; i &lt; collections.size(); i++) {
             if (removeCollection(collections[i]) == false)
                 return false
         }
@@ -652,10 +640,6 @@ stage('switchCollectionAlias') {
             }
         } else {
             unstable("SEVERE- There is a severe error in prior checkings. Switching collection cancelled!")
-            // if (removeCollectionIfFails){
-            //     unstable("SEVERE- Copied collection is going to be removed...")
-            //     removeCollection(newCollection)
-            // }    
         }
     }
 }
@@ -675,9 +659,9 @@ stage('removeOldCollections') {
                     }
                 }
             }
-        } else
+        } else {
             unstable("SEVERE- switching the alias to new collection was unsuccessful.")
-
+        }
     }
 }
 
@@ -688,14 +672,7 @@ else if (checkResult.contains(CheckStatus.WARN))
 else
     currentBuild.result = 'SUCCESS'
 
-//checkResult = []
-//for (int i = 0; i &lt; includeChecks.size(); i++) {
-//    def checkFunction = includeChecks[i]
-//    def status = "$checkFunction"()
-//    checkResult.add(status)
-//    println("INFO- check [" + checkFunction + "] returns: " + status.toString())
-//
-//}</script>
+</script>
     <sandbox>true</sandbox>
   </definition>
   <triggers/>

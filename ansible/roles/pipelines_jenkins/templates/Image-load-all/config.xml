@@ -37,12 +37,14 @@ batches.eachWithIndex { batch, index -&gt;
   branches["node_" + nodeName] = {
     node(nodeName) {
       echo 'Datasets ' + batch
-      build job: 'Image-load', parameters: [
-           new org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterValue
-               ("TARGET_NODE", "description", nodeName),
-           string(name: 'datasetId', value: batch),
-           string(name: 'mode', value: '--embedded')
-      ]
+      if (batch){
+          build job: 'Image-load', parameters: [
+               new org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterValue
+                   ("TARGET_NODE", "description", nodeName),
+               string(name: 'datasetId', value: batch),
+               string(name: 'mode', value: '--embedded')
+          ]
+      }
     }
   } 
 }

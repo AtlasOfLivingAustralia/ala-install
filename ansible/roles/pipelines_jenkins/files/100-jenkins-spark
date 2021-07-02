@@ -1,6 +1,5 @@
+jenkins ALL=(ALL) NOPASSWD: ALL
 jenkins ALL=(spark) NOPASSWD:ALL
 jenkins ALL=(hdfs) NOPASSWD:ALL
 hdfs ALL=(spark) NOPASSWD:ALL
 spark ALL=(hdfs) NOPASSWD:ALL
-
-

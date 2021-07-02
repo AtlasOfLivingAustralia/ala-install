@@ -144,6 +144,24 @@
     - pipelines_jenkins
     - pipelines_jenkins_slaves
 
+- name: adding existing jenkins user to group sudo
+  user:
+    name: 'jenkins'
+    groups: sudo
+    append: yes
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_user
+
+- name: adding existing jenkins user to group sudo
+  user:
+    name: 'jenkins'
+    groups: docker
+    append: yes
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_user
+
 - name: Upload SSH Key for master - mkdir
   file:
     path: /var/lib/jenkins/.ssh/

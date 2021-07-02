@@ -44,10 +44,20 @@
   file: path={{ item }} state=directory owner={{ spark_user }} group={{ spark_user }} recurse=true
   with_items:
     - "{{ data_dir }}/la-pipelines/config"
-    - "{{ data_dir }}/docker"
+#    - "{{ data_dir }}/docker"
     - "{{ data_dir }}/spark-tmp"
     - "{{ data_dir }}/pipelines-shp"
     - "{{ data_dir }}/dwca-tmp"
+  tags:
+    - la-pipelines-config
+    - pipelines
+    - docker
+    - la-pipelines
+
+- name: create pipelines working directories
+  file: path={{ item }} state=directory
+  with_items:
+    - "{{ data_dir }}/docker"
   tags:
     - la-pipelines-config
     - pipelines
@@ -85,6 +95,47 @@
 #  tags:
 #    - la-pipelines
 #    - pipelines
+
+
+# yq
+#  RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64 && \
+#  add-apt-repository ppa:rmescandon/yq && \
+#  apt-get -y update && \
+#  apt-get install -y -q yq
+
+- name: Add YQ Repository
+  apt_repository:
+    repo: 'ppa:rmescandon/yq'
+  tags:
+    - la-pipelines
+    - pipelines
+
+- name: Add an apt key by id from a keyserver
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: CC86BB64
+  tags:
+    - la-pipelines
+    - pipelines
+
+- name: Update apt and install pipelines
+  apt: update_cache=yes name=yq
+  tags:
+    - pipelines
+    - la-pipelines
+
+
+- name: Change the working directory to somedir/ before executing the command.
+  shell: curl -o /usr/local/bin/docopts -LJO https://github.com/docopt/docopts/releases/download/v0.6.3-rc2/docopts_linux_amd64
+  tags:
+    - la-pipelines
+    - pipelines
+
+- name: Change the working directory to somedir/ before executing the command.
+  shell: chmod +x /usr/local/bin/docopts
+  tags:
+    - la-pipelines
+    - pipelines
 
 - name: Update apt and install pipelines
   apt: update_cache=yes name=la-pipelines
@@ -175,6 +226,7 @@
     - "/pipelines-all-datasets"
     - "/pipelines-species"
     - "/pipelines-jackknife"
+    - "/pipelines-clustering"
     - "/migration"
   become: yes
   become_user: "{{ hadoop.user }}"
