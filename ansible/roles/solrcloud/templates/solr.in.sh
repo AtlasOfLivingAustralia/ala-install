@@ -99,6 +99,8 @@ SOLR_OPTS="$SOLR_OPTS -Djetty.host=${SOLR_HOST}"
 # turn off config editing for security
 SOLR_OPTS="$SOLR_OPTS -Ddisable.configEdit=true"
 
+SOLR_OPTS="$SOLR_OPTS -Dsolr.environment={{ solr_environment | default('prod,label=Production+Cluster,color=orange') }}
+
 # Location where the bin/solr script will save PID files for running instances
 # If not set, the script will create PID files in $SOLR_TIP/bin
 SOLR_PID_DIR={{ solr_home | default('/data/solr') }}
