@@ -2,7 +2,8 @@
   tags:
     - properties
     - biocache-properties
-    - biocache-layers    
+    - biocache-layers
+    - biocache-config-properties
 
 - name: ensure target directories exist
   file: path={{item}} state=directory
@@ -20,6 +21,7 @@
   tags:
     - properties
     - biocache-properties
+    - biocache-config-properties
 
 - name: Download SDS layers
   get_url: url={{ sds_layers_url | default('https://archives.ala.org.au/archives/layers/sds-layers.tgz') }} dest="{{data_dir}}/biocache/layers/sds-layers.tgz" force=yes
