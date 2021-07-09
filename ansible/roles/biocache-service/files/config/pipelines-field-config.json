@@ -348,7 +348,6 @@
       "minMaxAltitudeReversed": "ELEVATION_MIN_MAX_SWAPPED",
       "minMaxDepthReversed": "DEPTH_MIN_MAX_SWAPPED",
       "missingCollectionDate": "MISSING_COLLECTION_DATE",
-      "missingCoordinatePrecision": "MISSING_COORDINATEPRECISION",
       "missingGeodeticDatum": "MISSING_GEODETICDATUM",
       "missingGeorefencedBy": "MISSING_GEOREFERENCEDBY",
       "missingGeoreferenceProtocol": "MISSING_GEOREFERENCEPROTOCOL",
