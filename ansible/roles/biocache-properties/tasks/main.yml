@@ -30,7 +30,7 @@
     - biocache-layers   
 
 - name: Extract SDS layers
-  unarchive: src="{{data_dir}}/biocache/layers/sds-layers.tgz" dest="{{data_dir}}/biocache/layers/" copy=no
+  unarchive: src="{{data_dir}}/biocache/layers/sds-layers.tgz" dest="{{data_dir}}/biocache/layers/" copy=no owner=root group=root extra_opts=--no-same-owner
   when: sds_enabled is defined and sds_enabled == "true"
   tags:
     - properties

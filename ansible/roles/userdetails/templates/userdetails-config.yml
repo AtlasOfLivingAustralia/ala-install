@@ -20,10 +20,17 @@ security:
       - /status/**
 endpoints:
   enabled: {{ endpoints_enabled | default('true') }}
+  health:
+    sensitive: false
 management:
   security:
     enabled: true
     roles: ACTUATOR
+{% if spring_session_store_type == 'redis' %}
+  health:
+    redis:
+      enabled: true
+{% endif %}
 
 serverURL: {{ userdetails_server_name }}
 serverName: {{ userdetails_server_name }}
