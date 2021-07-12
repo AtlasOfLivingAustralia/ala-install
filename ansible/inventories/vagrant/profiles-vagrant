@@ -87,10 +87,10 @@ webserver_nginx=true
 doi_service_url=https://doi-test.ala.org.au/
 
 # Mongo config
-mongodb_root_password=logi@%%$
+mongodb_root_password=CHANGE_ME
 profiles_database=profiles
 profiles_username=acacia
-profiles_password=dealbata~~~>><<~~~
+profiles_password=CHANGE_ME
 
 [sandbox]
 ala.vagrant.dev
