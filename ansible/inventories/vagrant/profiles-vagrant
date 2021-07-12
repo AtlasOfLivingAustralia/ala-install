@@ -1,5 +1,8 @@
+# run command
+# ansible-playbook -i ala-install/ansible/inventories/vagrant/profiles-vagrant ala-install/ansible/profiles.yml --private-key ~/.vagrant.d/insecure_private_key --user vagrant --become --ask-become-pass
+
 [profiles]
-vagrant1
+ala.vagrant.dev
 
 [profiles:vars]
 is_vagrant=true
@@ -7,10 +10,10 @@ local_repo_dir=~/.ala
 data_dir=/data
 deployment_env=vagrant
 
-tomcat_java_opts=-Xmx7g -Xms512m -Xss256k -Djava.awt.headless=true
+tomcat_java_opts=-Xmx2g -Xms512m -Xss256k -Djava.awt.headless=true
 
 profile_hub_version=2.5-SNAPSHOT
-profile_service_version=2.5-SNAPSHOT
+profile_service_version=3.0-SNAPSHOT
 
 profile_service_hostname=profiles-ws.vagrant1.ala.org.au
 profile_service_url=http://profiles-ws.vagrant1.ala.org.au
@@ -22,11 +25,11 @@ profile_hub_url=http://profiles.vagrant1.ala.org.au
 profile_hub_base_url=http://profiles.vagrant1.ala.org.au
 profile_hub_context_path=
 
-auth_base_url=https://auth.ala.org.au
-auth_cas_url=https://auth.ala.org.au/cas
-apikey_check_url=https://auth.ala.org.au/apikey/ws/check?apikey=
+auth_base_url=https://auth-test.ala.org.au
+auth_cas_url=https://auth-test.ala.org.au/cas
+apikey_check_url=https://auth-test.ala.org.au/apikey/ws/check?apikey=
 
-userdetails_base_url=https://auth.ala.org.au/userdetails
+userdetails_base_url=https://auth-test.ala.org.au/userdetails
 images_base_url=https://images.ala.org.au
 image_upload_base_url=https://biocache-ws-test.ala.org.au/ws
 ala_base_url=https://www.ala.org.au
@@ -46,17 +49,18 @@ sandbox_image_upload_base_url=http://localhost:8080/biocache-service
 
 image_upload_apikey =
 profile_service_apikey =
-uploaded_images_base_url=http://images2-dev.ala.org.au
+uploaded_images_base_url=https://images-dev.ala.org.au/
 
 biodiv_library_api_key=
 
-nameindex_datestamp = 20200214-lucene4
+nameindex_datestamp = 20200214
 nameindex_to_use=ala
 
 # Google Analytics account details
-analytics_serviceAccountEmail=
-analytics_viewId=
-analytics_private_key_local_path=
+# todo: remove before commit
+analytics_serviceAccountEmail=742444384775-bvi7i0n5uh7a45qu7324td9hh4i733gn@developer.gserviceaccount.com
+analytics_viewId=199859593
+analytics_private_key_local_path=../../ansible-inventories/googleAnalytics/google-analytics-key.p12
 
 # Feature flags
 disable_authorisation=false
@@ -66,45 +70,70 @@ feature_publication=false
 apikey_ip_whitelist=
 
 # Elastic Search config
-elasticsearch_version=1.7.2
+elasticsearch_version=5.5.3
 elasticsearch_cluster_name=profiles_es_{{ deployment_env }}
 
 # Map keys
 map_id=someid
 map_access_key=somekey
-api_key=
+
+# todo: remove before commit
+api_key=3f674e46-5d72-4142-96f6-b6fc054e7fc1
+doi_resolver_prefix=https://handle.stage.datacite.org/
+
+webserver_nginx=true
+
+# DOI service config
+doi_service_url=https://doi-test.ala.org.au/
+
+# Mongo config
+mongodb_root_password=logi@%%$
+profiles_database=profiles
+profiles_username=acacia
+profiles_password=dealbata~~~>><<~~~
 
 [sandbox]
-vagrant1
+ala.vagrant.dev
 
 [sandbox:vars]
 is_vagrant=true
 local_repo_dir = ~/.ala
 data_dir=/data
 
-biocache_service_version=1.8.0
-sandbox_version=1.1
+
+biocache_service_version= 2.1.18
+sandbox_version= 2.0.1
+# todo: needed?
+biocache_cli_version = 2.5.1
 
 biocache_db_host = localhost
 cassandra_listen_host = localhost
+use_cassandra3 = true
+biocache_db_type = cassandra3
+biocache_db_port = 9042
 collectory_db_host_address = localhost
 collectory_db_host = localhost
+cassandra_rpc_address = localhost
 
 biocache_service_hostname = profiles.vagrant1.ala.org.au
 biocache_service_url = http://profiles.vagrant1.ala.org.au:8080/biocache-service
 biocache_service_base_url = http://profiles.vagrant1.ala.org.au:8080
 biocache_service_context_path = /biocache-service
 
-userdetails_url=https://auth.ala.org.au/userdetails/userDetails
+userdetails_url=https://auth-test.ala.org.au/userdetails/userDetails
 
 collectory_url = https://collections.ala.org.au
 collectory_base_url = https://collections.ala.org.au
 collectory_context_path =
 
 solr_hostname = localhost
-solr_url = http://localhost:8080/solr
+solr_host = localhost
+#solr_url = http://localhost:8080/solr
+solr_url = http://localhost:8080/solr/biocache
 solr_base_url = http://localhost:8080
 solr_context_path = /solr
+solr_heap=1g
+dynamic_solr_schema_biocache = true
 
 sandbox_hostname = profiles.vagrant1.ala.org.au
 sandbox_url = http://profiles.vagrant1.ala.org.au/sandbox
@@ -124,9 +153,14 @@ layers_service_url = https://spatial.ala.org.au/ws
 lists_service_url = https://lists.ala.org.au
 logger_url = http://logger.vagrant1.ala.org.au
 
-auth_base_url=https://auth.ala.org.au
-auth_cas_url=https://auth.ala.org.au/cas
+auth_base_url=https://auth-test.ala.org.au
+auth_cas_url=https://auth-test.ala.org.au/cas
 auth_if_logged_in_pattern=
 
 nameindex_to_use=ala
-nameindex_datestamp=20200214-lucene4
+nameindex_datestamp=20200214
+
+[all:vars]
+webserver_nginx=true
+nginx_vhost_fragments_to_clear=["profiles-ws.vagrant1.ala.org.au", "profiles.vagrant1.ala.org.au"]
+ssl=false

@@ -1,0 +1,2 @@
+elasticSearch:
+  maxBulkRequest: 250
