@@ -46,8 +46,7 @@ final info = [
 
 final debug = [
         "grails.app",
-        "grails.plugin.mail",
-        "au.org.ala"
+        "grails.plugin.mail"
 ]
 
 final trace = [
