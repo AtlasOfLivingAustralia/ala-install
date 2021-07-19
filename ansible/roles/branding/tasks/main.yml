@@ -1,0 +1,28 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - branding
+
+- name: Ensure data directory exists
+  file: path=/srv/{{ branding_url }}/www/{{ item }} state=directory owner={{ansible_user}} group={{ansible_user}}
+  with_items:
+    - "{{ branding_path }}"
+  tags:
+    - branding
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "branding"
+    hostname: "{{ branding_hostname }}"
+    context_path: "/"
+    nginx_paths:
+      - path: "/"
+        sort_label: "1"
+        is_proxy: false
+        alias: "/srv/{{ branding_url }}/www/"
+  tags:
+    - nginx_vhost
+    - deploy
+    - branding
+  when: webserver_nginx
