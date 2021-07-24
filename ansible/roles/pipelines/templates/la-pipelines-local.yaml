@@ -83,6 +83,7 @@ clustering:
   allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
 solr:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
   jackKnifePath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-jackknife
   clusteringPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-clustering
