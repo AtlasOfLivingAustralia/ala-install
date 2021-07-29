@@ -245,7 +245,7 @@
   template:
     src: java_home.sh.j2
     dest: /etc/profile.d/java_home.sh
-    mode: 0644
+    mode: 0777
   when: java_home is defined and java_home and not hadoop_pre_installed.stat.exists
   tags: "hadoop"
 
