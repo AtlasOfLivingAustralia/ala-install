@@ -3,7 +3,7 @@
         {
             'name': 'LOCATION_URL',
             'paramName': 'url',
-            'display': 'LocationURL',
+            'display': 'Location URL',
             'type': 'text'
         },
         {
@@ -22,19 +22,19 @@
         {
             'name': 'SERVICE_URL',
             'paramName': 'url',
-            'display': 'ServiceURL',
+            'display': 'Service URL',
             'type': 'text'
         },
         {
             'name': 'WEBSITE_URL',
             'paramName': 'url',
-            'display': 'WebsiteURL',
+            'display': 'Website URL',
             'type': 'text'
         },
         {
             'name': 'BASE_URL',
             'paramName': 'url',
-            'display': 'BaseURL',
+            'display': 'Base URL',
             'type': 'text'
         },
         {
@@ -46,67 +46,67 @@
         {
             'name': 'TERMS',
             'paramName': 'termsForUniqueKey',
-            'display': 'DwCtermsthatuniquely<br/>identifyarecord',
+            'display': 'Darwin core terms that uniquely identify a record',
             'type': 'text'
         },
         {
             'name': 'PARAMS',
             'paramName': 'params',
-            'display': 'JSONmapofparameters',
+            'display': 'JSON map of parameters',
             'type': 'textArea'
         },
         {
             'name': 'DOCUMENT_MAPPER',
             'paramName': 'documentMapper',
-            'display': 'Documentmapper',
+            'display': 'Document mapper',
             'type': 'text'
         },
         {
             'name': 'SITE_MAP',
             'paramName': 'siteMap',
-            'display': 'Sitemap',
+            'display': 'Site Map',
             'type': 'text'
         },
         {
             'name': 'HARVESTER',
             'paramName': 'harvester',
-            'display': 'Harvesterclass',
+            'display': 'Harvester class',
             'type': 'text'
         },
         {
             'name': 'MIME_TYPE',
             'paramName': 'mime_type',
-            'display': 'MIMEtype',
+            'display': 'MIME type',
             'type': 'text'
         },
         {
             'name': 'GROUP_ID',
             'paramName': 'group_id',
-            'display': 'GroupID',
+            'display': 'Group ID',
             'type': 'text'
         },
         {
             'name': 'API_KEY',
             'paramName': 'api_key',
-            'display': 'APIkey',
+            'display': 'API key',
             'type': 'text'
         },
         {
             'name': 'START_DATE',
             'paramName': 'start_date',
-            'display': 'Startdate',
+            'display': 'Start date',
             'type': 'text'
         },
         {
             'name': 'CONTENT_TYPE',
             'paramName': 'content_type',
-            'display': 'Contenttype',
+            'display': 'Content type',
             'type': 'text'
         },
         {
             'name': 'PRIVACY_FILTER',
             'paramName': 'privacy_filter',
-            'display': 'Privacyfilter',
+            'display': 'Privacy filter',
             'type': 'text'
         },
         {
@@ -130,46 +130,46 @@
         {
             'name': 'STRIP',
             'paramName': 'strip',
-            'display': 'Stripwhitespacesinkey',
+            'display': 'Strip whitespaces in key',
             'type': 'boolean'
         },
         {
             'name': 'INCREMENTAL',
             'paramName': 'incremental',
-            'display': 'IncrementalLoad',
+            'display': 'Incremental load',
             'type': 'boolean'
         },
         {
             'name': 'CSV_DELIMITER',
             'paramName': 'csv_delimiter',
-            'display': 'Valuedelimiter',
+            'display': 'Value delimiter',
             'type': 'delimiter',
             'defaultValue': ','
         },
         {
             'name': 'CSV_END_OF_LINE',
             'paramName': 'csv_eol',
-            'display': 'Linedelimiter',
+            'display': 'Line delimiter',
             'type': 'delimiter',
             'defaultValue': '\n'
         },
         {
             'name': 'CSV_ESCAPE',
             'paramName': 'csv_escape_char',
-            'display': 'Escapecharacter',
+            'display': 'Escape character',
             'type': 'text',
             'defaultValue': '\\'
         },
         {
             'name': 'CSV_QUOTE',
             'paramName': 'csv_text_enclosure',
-            'display': 'Textenclosure',
+            'display': 'Text enclosure',
             'type': 'text',
             'defaultValue': '"'},
         {
             'name': 'SPECIES_LIST_URL',
             'paramName': 'species_list_url',
-            'display': 'SpeciesListUrl',
+            'display': 'Species list Url',
             'type': 'text',
             'defaultValue': 'http://'
         },
