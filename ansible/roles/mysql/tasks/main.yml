@@ -31,6 +31,7 @@
     - "{{ mysql }}"
     - python3-mysqldb
     state: present
+  register: mysql_installed
   tags:
     - packages
     - mysql

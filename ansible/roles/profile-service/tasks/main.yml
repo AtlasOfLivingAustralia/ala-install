@@ -1,25 +1,98 @@
+- name: set exec_jar
+  set_fact:
+    exec_jar: '{{ grails_version is version("3", ">=") }}'
+  tags:
+    - setfacts
+    - profile-service
+
+- name: set deployment vars
+  set_fact:
+    classifier: 'exec'
+    packaging: 'jar'
+  tags:
+    - setfacts
+    - profile-service
+  when: exec_jar
+
 - include: ../../common/tasks/setfacts.yml
-  tags: 
+  tags:
     - profile-service
     - deploy
     - properties
     - apache_vhost
     - tomcat_vhost
 
+#- name: set exec_jar
+#  set_fact:
+#    exec_jar: '{{ grails_version is version("3", ">=") }}'
+#  tags:
+#    - setfacts
+#    - profile-service
+
+- name: Debug profile-service deployment details
+  debug:
+    msg: "exec_jar: {{ exec_jar }}"
+  tags:
+    - profile-service
+
+# Mongo users and database
+- name: Create the profiles database and user
+  mongodb_user:
+    login_user: "{{ mongodb_root_username }}"
+    login_password: "{{ mongodb_root_password }}"
+    login_port: "{{ mongodb_port }}"
+    database: "{{ profiles_database }}"
+    name: "{{ profiles_username }}"
+    password: "{{ profiles_password }}"
+    roles:
+      - { db: "{{ profiles_database }}", role: "dbAdmin" }
+      - { db: "{{ profiles_database }}", role: "readWrite" }
+  tags:
+    - mongodb-org
+  when: grails_version is version("3", ">=")
+
+- name: set profile_service_user as default value
+  set_fact:
+    profile_service_user: "{{ (exec_jar | bool) | ternary ('profile-service', tomcat_user)}}"
+  tags:
+    - profile-service
+    - deploy
+
+- name: "Create system user for {{profile_service_user}}"
+  user:
+    name: "{{ profile_service_user }}"
+    state: present
+    system: yes
+  tags:
+    - profile-service
+  when: exec_jar
+
 #
 # Properties file configuration
 #
 - name: ensure data directory exists
-  file: path={{data_dir}}/profile-service/config state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{data_dir}}/profile-service/config state=directory owner={{profile_service_user}} group={{profile_service_user}}
   tags:
     - profile-service
     - properties
 
+- name: ensure temporary file directory exists
+  file: path={{data_dir}}/profile-service/temp state=directory owner={{profile_service_user}} group={{profile_service_user}}
+  tags:
+    - profile-service
+    - properties      
+
 - name: ensure snapshot directory exists
-  file: path={{data_dir}}/profile-service/{{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{data_dir}}/profile-service/{{item}} state=directory owner={{profile_service_user}} group={{profile_service_user}}
   with_items:
     - snapshots
     - attachments
+  tags:
+    - profile-service
+    - properties
+
+- name: ensure target log directories exist
+  file: path=/var/log/atlas/profile-service state=directory owner={{profile_service_user}} group={{profile_service_user}}
   tags:
     - profile-service
     - properties
@@ -30,8 +103,27 @@
     - profile-service
     - properties
 
+- name: copy yml template config
+  template: src=profile-service-config.yml dest={{data_dir}}/profile-service/config/profile-service-config.yml
+  tags:
+    - profile-service
+    - properties
+
+- name: copy logback config
+  template:
+    src: logback.groovy
+    dest: "{{data_dir}}/profile-service/config/logback.groovy"
+    owner: profile-service
+    group: profile-service
+  notify:
+    - restart profile-service
+  tags:
+    - properties
+    - profile-service
+  when: grails_version is version("3", ">=")
+
 - name: set data ownership [all data is owned by tomcat]
-  file: path={{data_dir}}/profile-service owner={{tomcat_user}} group={{tomcat_user}} recurse=true  
+  file: path={{data_dir}}/profile-service owner={{profile_service_user}} group={{profile_service_user}} recurse=true
   tags:
     - profile-service
     - properties
@@ -49,8 +141,8 @@
 #
 # WAR file deployment and virtual host configuration
 #
-- include: ../../apache_vhost/tasks/main.yml 
-    context_path='{{ profile_service_context_path }}' 
+- include: ../../apache_vhost/tasks/main.yml
+    context_path='{{ profile_service_context_path }}'
     hostname='{{ profile_service_hostname }}'
   tags:
     - profile-service
@@ -58,6 +150,24 @@
     - apache_vhost
   when: not webserver_nginx
 
+#
+# Deploy executable jar
+#
+- name: add jar and service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: "profile-service"
+    jar_url: '{{ profile_service_war_url }}'
+  tags:
+    - deploy
+    - service
+    - profile-service
+  when: exec_jar
+
+#
+# Configure webserver
+#
 - name: add nginx vhost if configured
   include_role:
     name: nginx_vhost
@@ -65,6 +175,7 @@
     appname: "profile-service"
     hostname: "{{ profile_service_hostname }}"
     context_path: "{{ profile_service_context_path }}"
+    tomcat_server_port: "{{ profile_service_server_port }}"
   tags:
     - nginx_vhost
     - deploy
@@ -76,3 +187,4 @@
     - profile-service
     - deploy
     - tomcat_vhost
+  when: not (exec_jar | bool)

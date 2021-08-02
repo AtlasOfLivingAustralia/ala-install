@@ -1,0 +1,6 @@
+- hosts: fieldcapture
+  roles:
+    - common
+    - java
+    - webserver
+    - merit-grails4

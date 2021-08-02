@@ -14,7 +14,7 @@
     enabled: yes
 
 - name: create pg DB user "{{db_user}}"
-  postgresql_user: name={{ db_user }} password={{ db_password }} state=present encrypted=True
+  postgresql_user: name={{ db_user }} password={{ db_password }} role_attr_flags={{ db_role_attr_flags | default('') }} state=present encrypted=True
   become_user: postgres
   become: yes
   vars:

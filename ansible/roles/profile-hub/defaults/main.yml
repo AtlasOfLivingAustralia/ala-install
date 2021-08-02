@@ -1,1 +1,2 @@
 doi_resolver_prefix: "http://dx.doi.org/"
+grails_version: "2"

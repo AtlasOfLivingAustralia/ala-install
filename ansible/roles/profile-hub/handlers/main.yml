@@ -1,0 +1,2 @@
+- name: restart profile-hub
+  service: name=profile-hub state=restarted enabled="yes"

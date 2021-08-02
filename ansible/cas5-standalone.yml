@@ -3,7 +3,7 @@
     - common
     - java
     - i18n
-    - mysql-server
+    - mysql
     - { role: mongodb-org, mongodb_version: 4.4 }
   tasks:
   - apt_repository:

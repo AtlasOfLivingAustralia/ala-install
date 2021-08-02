@@ -8,9 +8,24 @@
   with_items:
     - curl
     - unzip
-    - python3-lxml
   tags:
     - geoserver
+
+- name: Install dependencies for ansible python 2
+  apt:
+    name: python-lxml
+    state: present
+  when: ansible_python.version.major==2
+  tags:
+  - geoserver
+
+- name: Install dependencies for ansible python 3
+  apt:
+    name: python3-lxml
+    state: present
+  when: ansible_python.version.major==3
+  tags:
+  - geoserver
 
 - name: configure geoserver data dir
   lineinfile:

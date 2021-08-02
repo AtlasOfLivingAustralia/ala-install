@@ -20,10 +20,17 @@ security:
       - /status/**
 endpoints:
   enabled: {{ endpoints_enabled | default('true') }}
+  health:
+    sensitive: false
 management:
   security:
     enabled: true
     roles: ACTUATOR
+{% if spring_session_store_type == 'redis' %}
+  health:
+    redis:
+      enabled: true
+{% endif %}
 
 serverURL: {{ userdetails_server_name }}
 serverName: {{ userdetails_server_name }}
@@ -81,17 +88,6 @@ recaptcha:
 
 ala:
   baseURL: {{ ala_base_url | default('https://www.ala.org.au') }}
-{% if ala_update_cookie_enabled | default('false') | bool %}
-  cookie:
-    quoteCookieValue: {{ ala_quote_cookie_value | default('true') }}
-    encodeCookieValue: {{ ala_encode_cookie_value | default('false') }}
-    domain: {{ ala_domain | default('ala.org.au') }}
-    httpOnly: {{ ala_httponly | default('true') }}
-    maxAge: {{ ala_maxage | default('-1') }}
-    name: {{ ala_auth_cookie_name | default('ALA-Auth') }}
-    path: {{ ala_path | default('/') }}
-    secure: {{ ala_secure | default('false') }}
-{% endif %}
 
 supportEmail: {{ support_email | default('support@ala.org.au') }}
 homeUrl: {{ ala_base_url | default('https://www.ala.org.au') }}

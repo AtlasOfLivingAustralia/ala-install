@@ -1,3 +1,25 @@
+- name: set exec_jar
+  set_fact:
+    exec_jar: '{{ grails_version is version("3", ">=") }}'
+  tags:
+    - setfacts
+    - profile-hub
+
+- name: set deployment vars
+  set_fact:
+    classifier: 'exec'
+    packaging: 'jar'
+  tags:
+    - setfacts
+    - profile-hub
+  when: exec_jar
+
+- name: Debug profile-hub deployment details
+  debug:
+    msg: "exec_jar: {{ exec_jar }}"
+  tags:
+    - profile-hub
+
 - include: ../../common/tasks/setfacts.yml
   tags:
     - profile-hub
@@ -6,29 +28,51 @@
     - apache_vhost
     - tomcat_vhost
 
+- name: set profile_hub_user as default value
+  set_fact:
+    profile_hub_user: "{{ exec_jar | ternary ('profile-hub', tomcat_user)}}"
+  tags:
+    - profile-hub
+    - deploy
+
+- name: "Create system user for {{profile_hub_user}}"
+  user:
+    name: "{{ profile_hub_user }}"
+    state: present
+    system: yes
+  tags:
+    - profile-hub
+  when: exec_jar
+
 #
 # Properties file configuration
 #
 - name: ensure data directory exists
-  file: path={{data_dir}}/profile-hub/config state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{data_dir}}/profile-hub/config state=directory owner={{profile_hub_user}} group={{profile_hub_user}}
   tags:
     - profile-hub
     - properties
 
 - name: ensure temporary file directory exists
-  file: path={{data_dir}}/profile-hub/temp state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{data_dir}}/profile-hub/temp state=directory owner={{profile_hub_user}} group={{profile_hub_user}}
   tags:
     - profile-hub
     - properties
 
 - name: ensure staged images directory exists
-  file: path={{data_dir}}/profile-hub/staged-images state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{data_dir}}/profile-hub/staged-images state=directory owner={{profile_hub_user}} group={{profile_hub_user}}
   tags:
     - profile-hub
     - properties
 
 - name: ensure private images directory exists
-  file: path={{data_dir}}/profile-hub/private-images state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{data_dir}}/profile-hub/private-images state=directory owner={{profile_hub_user}} group={{profile_hub_user}}
+  tags:
+    - profile-hub
+    - properties
+
+- name: ensure target log directories exist
+  file: path=/var/log/atlas/profile-hub state=directory owner={{profile_hub_user}} group={{profile_hub_user}}
   tags:
     - profile-hub
     - properties
@@ -42,8 +86,21 @@
     - profile-hub
     - properties
 
+- name: copy logback config
+  template:
+    src: logback.groovy
+    dest: "{{data_dir}}/profile-hub/config/logback.groovy"
+    owner: profile-hub
+    group: profile-hub
+  notify:
+    - restart profile-hub
+  tags:
+    - properties
+    - profile-hub
+  when: grails_version is version("3", ">=")
+
 - name: set data ownership [all data is owned by tomcat]
-  file: path={{data_dir}}/profile-hub owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  file: path={{data_dir}}/profile-hub owner={{profile_hub_user}} group={{profile_hub_user}} recurse=true
   tags:
     - profile-hub
     - properties
@@ -53,7 +110,7 @@
 #
 - name: copy script to delete temporary files to the home dir
   template: src=delete-temp-profile-files.sh dest={{data_dir}}/profile-hub/delete-temp-profile-files.sh
-  tags: 
+  tags:
     - profile-hub
     - cron
 
@@ -70,10 +127,25 @@
     - cron
 
 #
+# Deploy executable jar
+#
+- name: add jar and service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: "profile-hub"
+    jar_url: '{{ profile_hub_war_url }}'
+  tags:
+    - deploy
+    - service
+    - profile-hub
+  when: exec_jar
+
+#
 # WAR file deployment and virtual host configuration
 #
-- include: ../../apache_vhost/tasks/main.yml 
-    context_path='{{ profile_hub_context_path }}' 
+- include: ../../apache_vhost/tasks/main.yml
+    context_path='{{ profile_hub_context_path }}'
     hostname='{{ profile_hub_hostname }}'
   tags:
     - profile-hub
@@ -88,14 +160,17 @@
     appname: "profile-hub"
     hostname: "{{ profile_hub_hostname }}"
     context_path: "{{ profile_hub_context_path }}"
+    tomcat_server_port: "{{ profile_hub_server_port }}"
   tags:
     - nginx_vhost
     - deploy
     - profile-hub
   when: webserver_nginx
 
+# deploy to tomcat container
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ profile_hub_war_url }}' context_path='{{ profile_hub_context_path }}' hostname='{{ profile_hub_hostname }}'
   tags:
     - profile-hub
     - deploy
     - tomcat_vhost
+  when: not exec_jar

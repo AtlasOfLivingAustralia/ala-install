@@ -3,4 +3,4 @@
 INSERT INTO role (role, description)
     SELECT role, description
     FROM (SELECT 'ROLE_EDITOR' as role, '' as description) t
-    WHERE NOT EXISTS (SELECT 1 FROM role r WHERE r.role = t.role);
+    WHERE NOT EXISTS (SELECT 1 FROM role r WHERE r.role = CONVERT(t.role USING latin1));

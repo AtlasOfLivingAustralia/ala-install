@@ -2,10 +2,11 @@
   roles:
     - common
     - java
-    - {role: db-backup, db: mongo}
-    - {role: mongodb, mongo_version: "3.4.6"}
-    - cassandra3
     - tomcat
+#    - {role: db-backup, db: mongo}
+    - {role: mongodb-org, mongodb_version: 4.0}
+    - cassandra3
+    - solr6 # must be installed AFTER biocache & sandbox, or you get errors complaining about not finding 'collection1'
     - webserver
     - postfix
     - nameindex
@@ -13,8 +14,7 @@
     - biocache-db
     - biocache-properties
     - biocache-service
-    - biocache-cli
     - sandbox
-    - solr4 # must be installed AFTER biocache & sandbox, or you get errors complaining about not finding 'collection1'
+    - biocache-cli
     - profile-service
     - profile-hub

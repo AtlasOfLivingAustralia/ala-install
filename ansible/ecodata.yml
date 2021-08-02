@@ -2,6 +2,8 @@
   vars:
     tomcat: "tomcat7"
     tomcat_user: "tomcat7"
+    es_version: "7.13.4"
+    es_heap_dump_path: "/data/"
   roles:
     - common
     - java
@@ -9,4 +11,5 @@
     - { role: tomcat, when: packaging == "war" or install_geoserver }
     - webserver
     - { role: geoserver, log_filename: "geoserver" , when: install_geoserver | bool}
+    - { role: ansible-elasticsearch, es_templates: false, es_instance_name: 'ecodata-elasticsearch', es_data_dirs: ['/data/elasticsearch'], tags: ['elasticsearch'], when: install_elasticsearch | bool }
     - ecodata
