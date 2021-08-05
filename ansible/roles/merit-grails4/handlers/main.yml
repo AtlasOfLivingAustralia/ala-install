@@ -1,0 +1,2 @@
+- name: restart fieldcapture
+  service: name=fieldcapture state=restarted enabled="yes"

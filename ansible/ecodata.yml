@@ -2,7 +2,7 @@
   vars:
     tomcat: "tomcat7"
     tomcat_user: "tomcat7"
-    es_version: "7.12.1"
+    es_version: "7.13.4"
     es_heap_dump_path: "/data/"
   roles:
     - common

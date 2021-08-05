@@ -1,0 +1,6 @@
+- name: branding
+  hosts: branding
+  roles:
+    - common
+    - webserver
+    - branding
