@@ -4,14 +4,14 @@
 #packaging: "war"
 #classifier: "war"
 
-geoserver_war_url: "https://repo.osgeo.org/repository/release/org/geoserver/web/gs-web-app/2.14.1/gs-web-app-2.14.1.war"
+geoserver_war_url: "https://repo.osgeo.org/repository/release/org/geoserver/web/gs-web-app/2.19.2/gs-web-app-2.19.2.war"
 
 # URLs to extensions as .zip
 # Must be compatible with the geoserver version
 # geoserver/tasks/main.yml changes gwc defaults for vectortiles extension
 geoserver_extension_urls:
-  - "https://download.sourceforge.net/project/geoserver/GeoServer/2.14.1/extensions/geoserver-2.14.1-pyramid-plugin.zip"
-  - "https://download.sourceforge.net/project/geoserver/GeoServer/2.14.1/extensions/geoserver-2.14.1-vectortiles-plugin.zip"
+  - "https://download.sourceforge.net/project/geoserver/GeoServer/2.19.2/extensions/geoserver-2.19.2-pyramid-plugin.zip"
+  - "https://download.sourceforge.net/project/geoserver/GeoServer/2.19.2/extensions/geoserver-2.19.2-vectortiles-plugin.zip"
 
 geoserver_task: "geoserver"
 
