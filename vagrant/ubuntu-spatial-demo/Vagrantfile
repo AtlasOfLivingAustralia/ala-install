@@ -27,5 +27,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # totally insecure, but this is local dev: make the vagrant default the root key
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
-  #config.vm.provision "shell", inline: "sudo cp -r /home/vagrant/.ssh /root/"
+  #Make sure id_rsa.pub exists on host"
+  config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "/home/vagrant/.ssh/id_rsa.pub"
+  config.vm.provision :shell, :inline => "cat /home/vagrant/.ssh/id_rsa.pub >> /home/vagrant/.ssh/authorized_keys", run: "always"
 end

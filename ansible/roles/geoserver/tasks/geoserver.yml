@@ -108,13 +108,14 @@
   tags:
     - geoserver
 
+
 - name: configure geoserver data dir
   lineinfile:
     dest={{tomcat_conf}}
     line='CATALINA_OPTS="${CATALINA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
   notify:
     - restart tomcat
-  when: ansible_os_family == "Debian" and tomcat == "tomcat7"
+  when: ansible_os_family == "Debian"
   tags:
     - tomcat
     - geoserver
