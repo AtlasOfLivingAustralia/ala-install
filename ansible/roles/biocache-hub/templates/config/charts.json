@@ -39,7 +39,8 @@
       "chartType": "horizontal-bar",
       "emptyValueMsg":"Assertion not specified",
       "hideEmptyValues": true,
-      "includeOther" : "false"
+      "includeOther" : "false",
+      "growToFit": true
     },
     "type_status":{
 	"title":"By type status (as % of all type specimens)",
