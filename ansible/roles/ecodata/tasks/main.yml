@@ -325,26 +325,15 @@
     name: mongod
     state: started
 
-- name: Updating bind IP for primary server for mongodb 3.4
+- name: Updating bind IPs mongodb 3.4
   replace:
     path: /etc/mongod.conf
     regexp: 'bindIp: 127.0.0.1'
-    replace: "bindIp: {{ primary_ip }},127.0.0.1"
+    replace: "bindIp: {{ host_ip_address }},127.0.0.1"
   notify:
     - restart mongod
   tags: mongodb-org
-  when: "{% if mongo_replication and mongo_version3 and replace_blindIp_Primary_Node %} True {% else %} False {% endif %}"
-
-- name: Updating bind IP for secondary server for mongodb 3.4
-  replace:
-    path: /etc/mongod.conf
-    regexp: 'bindIp: 127.0.0.1'
-    replace: "bindIp: {{ secondary_ip }},127.0.0.1"
-  notify:
-    - restart mongod
-  tags: mongodb-org
-  when: "{% if mongo_version3 and replace_blindIp_Secondary_Node and copy_mongorc_to_secondary_node %} True {% else %} False {% endif %}"
-
+  when: "{% if mongo_replication and mongo_version3 %} True {% else %} False {% endif %}"
 
 - name: Stop mongod db server
   service:
@@ -365,7 +354,7 @@
 
 ## Initialize the replica set in mongo version 3.4
 - name: Initialize the replica set in primary node for mongo version 3.4
-  command: mongo --host "{{ primary_ip }}" --authenticationDatabase "{{ mongodb_root_database | default('admin') }}" -u "{{ mongodb_root_username }}" -p "{{ mongodb_root_password }}" ./initRS.j2
+  command: mongo --host "{{ mongo_primary_ip }}" --authenticationDatabase "{{ mongodb_root_database | default('admin') }}" -u "{{ mongodb_root_username }}" -p "{{ mongodb_root_password }}" ./initRS.j2
   when: "{% if mongo_replication and mongo_version3 %} True {% else %} False {% endif %}"
 
 # Copy the mongorc to the secondary node. do connect between primary and secondary node without complication
