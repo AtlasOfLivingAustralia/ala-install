@@ -4,6 +4,10 @@
     tomcat_user: "tomcat7"
     es_version: "7.13.4"
     es_heap_dump_path: "/data/"
+    es_api_host: "{{ elasticsearch_host | default('localhost') }}"
+    es_config:
+      network.host: "{{ elasticsearch_host | default('localhost') }}"
+      discovery.type: "single-node"
   roles:
     - common
     - java

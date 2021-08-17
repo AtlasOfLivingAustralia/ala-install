@@ -21,14 +21,14 @@ appender(APPLICATION_LOG, RollingFileAppender) {
     rollingPolicy(FixedWindowRollingPolicy) {
         fileNamePattern = "${loggingDir}/${appName}.%i.log.gz"
         minIndex=1
-        maxIndex=4
+        maxIndex=20
     }
     triggeringPolicy(SizeBasedTriggeringPolicy) {
         maxFileSize = FileSize.valueOf('10MB')
     }
 }
 
-root(ERROR, [APPLICATION_LOG])
+root(INFO, [APPLICATION_LOG])
 final error = [
         'au.org.ala.cas.client',
         "au.org.ala",

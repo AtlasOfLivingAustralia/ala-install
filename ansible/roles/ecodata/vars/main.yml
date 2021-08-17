@@ -24,16 +24,11 @@ mongo_replica_options: "{{ mongo_replica_enabled | ternary('&replicaSet=rs0&read
 mongo_auth_options: "authSource={{ ecodata_database }}&gssapiServiceName=mongodb"
 mongo_connection_url: "mongodb://{{ ecodata_username }}:{{ ecodata_password }}@{{ mongo_hosts }}/{{ ecodata_database }}?{{ mongo_auth_options }}{{ mongo_replica_options }}"
 
-create_ecodata_user_not_for_mongo_replica: "{{ create_ecodata_user | default(true)}}"
 copy_mongorc_to_secondary_node: "{{ copy_mongorc | default(false) }}"
 
 ecodata_not_yet_admin: "{{ enable_mongo_security | default(true)}}"
 
 enable_security_replica_set: "{{ enable_security_after_replica_set | default(false) }}"
 
-disabled_creating_admin_user_for_replica_set: "{{ disabled_creating_admin_user | default(true) }}"
-
 mongo_version4: "{{ mongodb_version_4 | default(false) }}"
 mongo_version3: "{{ mongodb_version_3 | default(false) }}"
-replace_blindIp_Primary_Node: " {{ replace_primary_blindIp | default(false) }}"
-replace_blindIp_Secondary_Node: " {{ replace_secondary_blindIp | default(false) }}"
