@@ -24,7 +24,7 @@ nginx_worker_processes: "{{ ansible_processor_vcpus | default(ansible_processor_
 nginx_worker_connections: "1024"
 nginx_multi_accept: "off"
 
-nginx_error_log: "/var/log/nginx/error.log warn"
+nginx_error_log: "/var/log/nginx/error.log info"
 nginx_access_log: "/var/log/nginx/access.log main"
 
 # Other log formats, including the name and then the format. E.g.,
@@ -35,10 +35,11 @@ nginx_sendfile: "on"
 nginx_tcp_nopush: "on"
 nginx_tcp_nodelay: "on"
 
-nginx_keepalive_timeout: "65"
+nginx_keepalive_timeout: "10"
 nginx_keepalive_requests: "100"
+nginx_send_timeout: "10"
 
-nginx_server_tokens: "on"
+nginx_server_tokens: "off"
 
 nginx_client_max_body_size: "64m"
 

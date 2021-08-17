@@ -1,5 +1,6 @@
 ---
 root_group: wheel
+nginx_conf_directory: /usr/local/etc/nginx
 nginx_conf_path: /usr/local/etc/nginx/conf.d
 nginx_conf_file_path: /usr/local/etc/nginx/nginx.conf
 nginx_mime_file_path: /usr/local/etc/nginx/mime.types

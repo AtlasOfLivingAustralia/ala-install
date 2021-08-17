@@ -34,7 +34,7 @@
   file:
     path: "{{nginx_conf_dir}}/vhost_fragments/ala_default"
     state: directory
-    mode: 0755
+    mode: 0750
     owner: root
     group: root
   when: ala_default_vhost and vhost_required
@@ -45,6 +45,7 @@
   template:
     src: "fragment_02_upstream.j2"
     dest: "{{nginx_conf_dir}}/conf.d/http_02_upstream_ala_default_{{ hostname }}_127.0.0.1_{{ tomcat_server_port | default('8080', True) }}.conf"
+    mode: 0640
   when: ala_default_vhost | bool == True and vhost_required | bool == True and nginx_load_balancing | bool == true and item.is_proxy and item.proxy_pass is defined
   with_items:
     - "{{ nginx_paths}} "
@@ -69,6 +70,7 @@
   template:
     src: "ala_default_start.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/10_ala_default_start"
+    mode: 0640
   when: ala_default_vhost and vhost_required
   tags:
     - nginx_vhost
@@ -77,9 +79,10 @@
   template:
     src: "fragment_70_location_start.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/70_location_{{ item.sort_label | default(item.path | basename) }}_70_start"
+    mode: 0640
   with_items:
     - "{{ nginx_paths }}"
-  when: ala_default_vhost and vhost_required
+  when: ala_default_vhost and vhost_required and ala_default_vhost_include_paths
   tags:
     - nginx_vhost
 
@@ -87,9 +90,10 @@
   template:
     src: "fragment_71_location_default.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/70_location_{{ item.sort_label | default(item.path | basename) }}_71_default"
+    mode: 0640
   with_items:
     - "{{ nginx_paths }}"
-  when: ala_default_vhost and vhost_required
+  when: ala_default_vhost and vhost_required and ala_default_vhost_include_paths
   tags:
     - nginx_vhost
 
@@ -97,9 +101,10 @@
   template:
     src: "fragment_73_location.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/70_location_{{ item.sort_label | default(item.path | basename) }}_73_content"
+    mode: 0640
   with_items:
     - "{{ nginx_paths }}"
-  when: ala_default_vhost and vhost_required
+  when: ala_default_vhost and vhost_required and ala_default_vhost_include_paths
   tags:
     - nginx_vhost
 
@@ -107,9 +112,10 @@
   template:
     src: "fragment_75_location_end.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/70_location_{{ item.sort_label | default(item.path | basename) }}_75_end"
+    mode: 0640
   with_items:
     - "{{ nginx_paths }}"
-  when: ala_default_vhost and vhost_required
+  when: ala_default_vhost and vhost_required and ala_default_vhost_include_paths
   tags:
     - nginx_vhost
 
@@ -117,6 +123,16 @@
   template:
     src: "ala_default_end.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/90_ala_default_end"
+    mode: 0640
+  when: ala_default_vhost and vhost_required
+  tags:
+    - nginx_vhost
+
+- name: add https default vhost for ala
+  template:
+    src: "ala_default_https.j2"
+    dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/91_ala_default_https"
+    mode: 0640
   when: ala_default_vhost and vhost_required
   tags:
     - nginx_vhost
@@ -125,6 +141,7 @@
   assemble:
     src: "{{nginx_conf_dir}}/vhost_fragments/ala_default"
     dest: "{{nginx_conf_dir}}/sites-available/ala_default.conf"
+    mode: 0640
   when: ala_default_vhost and vhost_required
   notify:
    - reload nginx
@@ -136,6 +153,7 @@
     state: link
     src: "{{nginx_conf_dir}}/sites-available/ala_default.conf"
     dest: "{{nginx_conf_dir}}/sites-enabled/ala_default.conf"
+    mode: 0640
   when: ala_default_vhost and vhost_required
   notify:
    - reload nginx

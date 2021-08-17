@@ -10,5 +10,5 @@ tomcat_java_opts_override: "{{ tomcat_java_opts_override_value | default('-Xmx4g
 # however in the different environments there seems to be a mix of use of ajp and http proxies to talk to tomcat
 # In any case having the valve enabled is not going to hurt
 tomcat_enable_remote_ip_valve: True
-content_type_options_header: false
-frame_options_header: false
+content_type_options_header: True
+frame_options_header: True

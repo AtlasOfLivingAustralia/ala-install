@@ -113,3 +113,6 @@ nginx_disable_download_disk_buffering: False
 # nginx_cors_origin_regexp: '^https?:\/\/(localhost|l-a\.site|.*\.l-a\.site)'
 nginx_cors_headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
 nginx_cors_methods: "GET, POST, OPTIONS"
+
+# Include path fragments in the ala_default.conf vhost - True for backwards compatibility
+ala_default_vhost_include_paths: True

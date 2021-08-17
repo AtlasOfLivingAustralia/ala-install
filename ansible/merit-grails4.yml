@@ -1,4 +1,13 @@
 - hosts: fieldcapture
+  vars:
+    # The default vhost configuration is managed by ecodata currently, which is deployed to the same server
+    nginx_default_vhost_required: False
+    aws_elb_healthcheck_default: False
+    nginx_remove_default_vhost: True
+    nginx_client_body_timeout: "10"
+    nginx_client_header_timeout: "10"
+    nginx_large_client_header_buffers: "2 1k"
+    ala_default_vhost_include_paths: False
   roles:
     - common
     - java

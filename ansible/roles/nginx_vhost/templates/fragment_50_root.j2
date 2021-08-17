@@ -1,7 +1,15 @@
     root {{nginx_root}};
     index {{nginx_index}};
     client_max_body_size {{ nginx_client_max_body_size | default('64m') }};
-
+{% if nginx_client_body_timeout is defined %}
+    client_body_timeout {{ nginx_client_body_timeout }};
+{% endif %}
+{% if nginx_client_header_timeout is defined %}
+    client_header_timeout {{ nginx_client_body_timeout }};
+{% endif %}
+{% if nginx_large_client_header_buffers is defined %}
+    large_client_header_buffers {{ nginx_large_client_header_buffers }};
+{% endif %}
 {% if ssl | bool == True %}
     # If ssl is supported, then push this policy to all users who understand it to trigger HSTS
     add_header Content-Security-Policy upgrade-insecure-requests;

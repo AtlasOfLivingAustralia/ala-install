@@ -66,7 +66,7 @@
     dest: "{{ nginx_mime_file_path }}"
     owner: root
     group: "{{ root_group }}"
-    mode: 0644
+    mode: 0640
     backup: yes
   notify:
     - restart nginx
@@ -79,7 +79,7 @@
     dest: "{{ nginx_conf_file_path }}"
     owner: root
     group: "{{ root_group }}"
-    mode: 0644
+    mode: 0640
     validate: "nginx -t -c %s"
     backup: yes
   notify:
@@ -87,7 +87,18 @@
   tags:
     - nginx
 
+- name: Override default 50x.html and index.html files to remove references to nginx
+  copy: src="files/" dest="/usr/share/nginx/html" owner="root" group="root" mode=0644
+  tags:
+    - nginx
+
 - name: Ensure nginx is started and enabled to start at boot.
   service: name=nginx state=started enabled=yes
   tags:
     - nginx
+
+- name: Set directory permissions for everything in the nginx config directory
+  command: find {{ nginx_conf_directory }} -type d ! -perm 0750 -exec chmod 0750 {} \;
+
+- name: Set file permissions for everything in the nginx config directory
+  command: find {{ nginx_conf_directory }} -type f ! -perm 0640 -exec chmod 0640 {} \;

@@ -2,12 +2,18 @@
   vars:
     tomcat: "tomcat7"
     tomcat_user: "tomcat7"
-    es_version: "7.13.4"
+    es_version: "7.14.0"
     es_heap_dump_path: "/data/"
     es_api_host: "{{ elasticsearch_host | default('localhost') }}"
     es_config:
       network.host: "{{ elasticsearch_host | default('localhost') }}"
       discovery.type: "single-node"
+    nginx_remove_default_vhost: True
+    nginx_client_body_timeout: "10"
+    nginx_client_header_timeout: "10"
+    nginx_large_client_header_buffers: "2 1k"
+    ala_default_vhost_include_paths: False
+
   roles:
     - common
     - java
