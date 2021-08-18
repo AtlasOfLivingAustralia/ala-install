@@ -20,3 +20,7 @@
     add_header X-Cache-Status $upstream_cache_status;
 
 {% endif %}
+{% if nginx_content_security_policy is defined %}
+    add_header Content-Security-Policy "{{ nginx_content_security_policy }}";
+{% endif %}
+    add_header X-Xss-Protection "1; mode=block";
