@@ -49,7 +49,7 @@ nginx_proxy_cache_path: ""
 
 nginx_gzip_enabled: True
 nginx_gzip_min_length: 1024
-nginx_gzip_types: "text/plain application/xml text/html application/html text/json application/json text/javascript application/javascript text/css application/css application/octet-stream"
+nginx_gzip_types: "text/plain application/xml application/html text/json application/json text/javascript application/javascript text/css application/css application/octet-stream"
 
 nginx_extra_conf_options: ""
 # Example extra main options, used within the main nginx's context:
