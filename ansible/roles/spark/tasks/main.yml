@@ -26,9 +26,13 @@
   tags: "spark"
 
 - name: Authorized keys
-  shell: "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys"
+  shell: "cat ~{{ spark.user }}/.ssh/id_rsa.pub >> ~{{ spark.user }}/.ssh/authorized_keys"
   become: yes
   become_user: "{{ spark.user }}"
+  tags: "spark"
+
+- name: set ownership of authorized_keys
+  shell: "chown {{ spark.user }}: ~{{ spark.user }}/.ssh/authorized_keys"
   tags: "spark"
 
 - name: Add host keys
@@ -36,6 +40,10 @@
   become: yes
   become_user: "{{ spark.user }}"
   with_items: "{{ spark.default_hosts }}"
+  tags: "spark"
+
+- name: set ownership of known_hosts
+  shell: "chown {{ spark.user }}: ~{{ spark.user }}/.ssh/known_hosts"
   tags: "spark"
 
 - name: ensure tar is present

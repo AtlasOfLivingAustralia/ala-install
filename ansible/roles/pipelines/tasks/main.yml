@@ -98,41 +98,50 @@
 #    - pipelines
 
 
-# yq
+# yq via snap (as at Sep 2021, ppa:rmescandon version does not work)
+- name: Install yq
+  community.general.snap:
+    name:
+      - yq
+  tags:
+    - la-pipelines
+    - pipelines
+
+
 #  RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64 && \
 #  add-apt-repository ppa:rmescandon/yq && \
 #  apt-get -y update && \
 #  apt-get install -y -q yq
 
-- name: Add YQ Repository
-  apt_repository:
-    repo: 'ppa:rmescandon/yq'
-  tags:
-    - la-pipelines
-    - pipelines
+#- name: Add YQ Repository
+#  apt_repository:
+#    repo: 'ppa:rmescandon/yq'
+#  tags:
+#    - la-pipelines
+#    - pipelines
+#
+#- name: Add an apt key by id from a keyserver
+#  apt_key:
+#    keyserver: keyserver.ubuntu.com
+#    id: CC86BB64
+#  tags:
+#    - la-pipelines
+#    - pipelines
+#
+#- name: Update apt and install pipelines
+#  apt: update_cache=yes name=yq
+#  tags:
+#    - pipelines
+#    - la-pipelines
 
-- name: Add an apt key by id from a keyserver
-  apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: CC86BB64
-  tags:
-    - la-pipelines
-    - pipelines
 
-- name: Update apt and install pipelines
-  apt: update_cache=yes name=yq
-  tags:
-    - pipelines
-    - la-pipelines
-
-
-- name: Change the working directory to somedir/ before executing the command.
+- name: Get docopts
   shell: curl -o /usr/local/bin/docopts -LJO https://github.com/docopt/docopts/releases/download/v0.6.3-rc2/docopts_linux_amd64
   tags:
     - la-pipelines
     - pipelines
 
-- name: Change the working directory to somedir/ before executing the command.
+- name: Make docopts executable
   shell: chmod +x /usr/local/bin/docopts
   tags:
     - la-pipelines

@@ -10,6 +10,12 @@
   become: yes
   tags: "hadoop"
 
+- name: set java home for ARM architecture
+  set_fact:
+    java_home: "/usr/lib/jvm/java-8-openjdk-arm64"
+  when: ansible_architecture == "aarch64"
+  tags: "hadoop"
+
 - name: Check for existing installation
   stat:
     path: "{{ hadoop.data_dir }}"
