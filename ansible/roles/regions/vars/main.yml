@@ -3,7 +3,7 @@ regions_config: "{{regions}}-config.properties"
 
 # assets
 version: "{{ regions_version | default('LATEST') }}"
-artifactId: "{{ regions | default('regions')}}"
+artifactId: "{{ (regions_artifact | default(regions)) | default('regions')}}"
 classifier: ''
 packaging: "war"
 groupId: "{{ regions_group_id | default('au.org.ala') }}"
