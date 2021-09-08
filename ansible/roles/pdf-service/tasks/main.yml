@@ -93,6 +93,56 @@
     - wkhtml2pdf
   when: not use_docker and wkthml2pdf_deb.rc == 1
 
+- name: Install the gpg key for nodejs LTS
+  apt_key:
+    url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+    state: present
+
+- name: Install the nodejs LTS repos
+  apt_repository:
+    repo: "deb https://deb.nodesource.com/node_{{ nodejs_version }}.x {{ ansible_distribution_release }} main"
+    state: present
+    update_cache: yes
+
+- name: Install athenapdf / electron dependencies
+  apt:
+    name:
+      - wget
+      - nodejs
+      - xvfb
+      - libasound2
+      - libgconf-2-4
+      - libgtk-3-0
+      - libgbm-dev
+      - libnotify4
+      - libnss3
+      - libxss1
+      - culmus
+    install_recommends: no
+  tags:
+    - athenapdf
+  when: not use_docker
+
+- name: Install the @ala/athenapdf node package
+  npm:
+    name: "@ala/athenapdf"
+    path: /tmp/athenapdf
+    production: yes
+    unsafe_perm: yes
+    registry: https://nexus.ala.org.au/content/repositories/public-js
+
+- name: Setup athenapdf execution environment
+  copy:
+    src: /tmp/athenapdf/node_modules/@ala/athenapdf/build/athenapdf-linux-x64/
+    dest: /opt/athenapdf
+    remote_src: True
+
+- name: Setup athenapdf execution environment (headless setup)
+  copy:
+    src: /tmp/athenapdf/node_modules/@ala/athenapdf/entrypoint.sh
+    dest: /opt/athenapdf
+    remote_src: True
+
 - name: Install java
   include_role:
     name: java
@@ -120,7 +170,6 @@
   when: not use_docker
 
 - name: "Reload services"
-  when: service.changed
   systemd:
     name: "{{service_name}}"
     daemon-reload: yes
