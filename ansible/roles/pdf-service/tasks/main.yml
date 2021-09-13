@@ -17,6 +17,10 @@
     group: "{{ pdf_user }}"
     system: true
 
+- name: install python for docker
+  apt: pkg=python3-docker
+  tags:
+    - docker
 #
 # install docker
 #
@@ -24,7 +28,6 @@
   apt: pkg=docker.io update_cache=yes state=latest
   tags:
     - docker
-  when: use_docker
 
 
 - name: enable docker to run on startup and start it
@@ -34,8 +37,35 @@
     state: started
   tags:
     - docker
-  when: use_docker
 
+- name: use the athenapdf docker image
+  docker_image:
+    name: arachnysdocker/athenapdf
+    source: pull
+  tags:
+    - docker
+    - athenapdf
+
+- name: copy script to execute docker to /opt/athenapdf
+  template:
+    src: templates/athenapdf.sh
+    dest: "{{athena_pdf_path}}/"
+    owner: pdfgen
+    group: pdfgen
+    mode: u=rx
+  tags:
+    - athenapdf
+
+- name: allow pdfgen to execute script using sudo
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/pdfgen_athenapdf
+    line: "{{ pdf_user }} ALL=NOPASSWD: {{athena_pdf_path}}/athenapdf.sh"
+    state: present
+    mode: 0440
+    create: yes
+    validate: 'visudo -cf %s'
+  tags:
+    - athenapdf
 
 - apt_repository:
     repo: ppa:libreoffice/ppa
@@ -92,56 +122,6 @@
   tags:
     - wkhtml2pdf
   when: not use_docker and wkthml2pdf_deb.rc == 1
-
-- name: Install the gpg key for nodejs LTS
-  apt_key:
-    url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
-    state: present
-
-- name: Install the nodejs LTS repos
-  apt_repository:
-    repo: "deb https://deb.nodesource.com/node_{{ nodejs_version }}.x {{ ansible_distribution_release }} main"
-    state: present
-    update_cache: yes
-
-- name: Install athenapdf / electron dependencies
-  apt:
-    name:
-      - wget
-      - nodejs
-      - xvfb
-      - libasound2
-      - libgconf-2-4
-      - libgtk-3-0
-      - libgbm-dev
-      - libnotify4
-      - libnss3
-      - libxss1
-      - culmus
-    install_recommends: no
-  tags:
-    - athenapdf
-  when: not use_docker
-
-- name: Install the @ala/athenapdf node package
-  npm:
-    name: "@ala/athenapdf"
-    path: /tmp/athenapdf
-    production: yes
-    unsafe_perm: yes
-    registry: https://nexus.ala.org.au/content/repositories/public-js
-
-- name: Setup athenapdf execution environment
-  copy:
-    src: /tmp/athenapdf/node_modules/@ala/athenapdf/build/athenapdf-linux-x64/
-    dest: /opt/athenapdf
-    remote_src: True
-
-- name: Setup athenapdf execution environment (headless setup)
-  copy:
-    src: /tmp/athenapdf/node_modules/@ala/athenapdf/entrypoint.sh
-    dest: /opt/athenapdf
-    remote_src: True
 
 - name: Install java
   include_role:

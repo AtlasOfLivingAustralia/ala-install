@@ -1,5 +1,5 @@
 sofficePath: /usr/bin/soffice
-htmltopdfPath: /usr/local/bin/wkhtmltopdf
+htmltopdfPath: sudo /opt/athenapdf/athenapdf.sh
 storageDir: {{ pdf_dir }}
 
 server:
