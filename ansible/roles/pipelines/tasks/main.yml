@@ -137,6 +137,14 @@
 
 - name: Get docopts
   shell: curl -o /usr/local/bin/docopts -LJO https://github.com/docopt/docopts/releases/download/v0.6.3-rc2/docopts_linux_amd64
+  when: is_arm is not defined
+  tags:
+    - la-pipelines
+    - pipelines
+
+- name: Get docopts
+  shell: curl -o /usr/local/bin/docopts -LJO https://github.com/docopt/docopts/releases/download/v0.6.3-rc2/docopts_linux_arm
+  when: is_arm is defined
   tags:
     - la-pipelines
     - pipelines
@@ -157,6 +165,13 @@
   template: src={{ item }} dest={{ data_dir }}/la-pipelines/config/{{ item }} mode=0644 output_encoding=iso-8859-1
   with_items:
     - la-pipelines-local.yaml
+  tags:
+    - la-pipelines-config
+    - pipelines
+    - la-pipelines
+
+- name: Set ownership of pipelines config
+  shell: "chown -R spark:spark {{ data_dir }}/la-pipelines"
   tags:
     - la-pipelines-config
     - pipelines
