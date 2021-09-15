@@ -19,4 +19,9 @@
          <value>{{ hadoop.name_dir }}</value>
          <final>true</final>
       </property>
+      <property>
+        <name>dfs.secondary.http.address</name>
+        <value>{{ hadoop.secondary_name_node }}:50090</value>
+        <description>SecondaryNameNodeHostname</description>
+      </property>
 </configuration>

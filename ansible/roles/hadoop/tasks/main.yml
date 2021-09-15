@@ -257,7 +257,7 @@
 
 # TODO this should be ran for existing installs
 - name: format hdfs
-  shell: ". /etc/profile.d/java_home.sh &&  bin/hdfs namenode -format"
+  shell: "/etc/profile.d/java_home.sh &&  bin/hdfs namenode -format"
   args:
     chdir: "{{ hadoop_install_dir }}"
   become: yes
@@ -266,7 +266,7 @@
   tags: "hadoop"
 
 - name: run on master
-  shell: ". /etc/profile.d/java_home.sh &&  sbin/start-dfs.sh"
+  shell: "/etc/profile.d/java_home.sh &&  sbin/start-dfs.sh"
   args:
     chdir: "{{ hadoop_install_dir }}"
   become_user: "{{ hadoop.user }}"
