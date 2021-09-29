@@ -92,6 +92,10 @@ solr:
   includeJackKnife: {{ include_jackknife }}
   includeClustering: {{ include_clustering }}
   numOfPartitions: {{ solr_num_of_partitions | default('3') }}
+export:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
 validation-report:
   checkSolr: {{ check_solr }}
   checkSampling: {{ include_sampling }}
