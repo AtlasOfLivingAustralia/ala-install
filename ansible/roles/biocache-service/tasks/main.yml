@@ -411,6 +411,17 @@
     - biocache-service
     - properties
 
+- name: purge old files from biocache-downloads
+  cron:
+    name: "purge biocache-downloads"
+    hour: "3"
+    minute: "35"
+    user: "{{ tomcat_user }}"
+    job: "find {{ download_dir | default('/data/biocache-download') }} -type d -mtime +180 -exec rm -rf {} \\;"
+  tags:
+    - biocache-service
+    - properties
+
 - name: set data ownership [all data is owned by tomcat]
 # FIXME: The ansible file module fails with a recursion limit issue that "chown" isn't prone to
 #  file: path={{data_dir}}/{{item}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
