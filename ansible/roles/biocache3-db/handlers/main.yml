@@ -1,0 +1,8 @@
+- name: restart cassandra
+  service: name=cassandra state=restarted enabled="yes"
+
+- name: configure cassandra
+  shell: 'cassandra-cli < /tmp/cassandra-schema.txt'
+
+- name: configure cassandra
+  shell: 'cqlsh < /tmp/cassandra3-schema.txt'

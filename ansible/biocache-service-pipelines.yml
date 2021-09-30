@@ -4,6 +4,6 @@
     - java
     - { role: tomcat, tomcat: tomcat9 }
     - webserver
-    - biocache-properties
-    - biocache-service
+    - biocache3-properties
+    - biocache3-service
     - logger-client

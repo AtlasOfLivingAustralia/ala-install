@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+{% if ala_download_css is defined and ala_download_css | bool == True %}
+     <style>
+        body{font:normal 15px Roboto,Helvetica,"Helvetica Neue",Arial,sans-serif;}
+        a {color:#C44D34;}
+        a:hover, a:focus {color: #883524;}
+    </style>
+{% endif %}
+</head>
+<body>
+    <div>
+        <p>
+            Your download is available on the URL: <a href='[url]'>[url]</a>
+        </p>
+        <p>
+            When using this dataset please use the following citation:<br>
+            <cite>{{ orgNameLong | default('Atlas of Living Australia') }} occurrence download at <a href='[searchUrl]'>
+                [searchUrl]</a> accessed on [date].</cite>
+        </p>
+        <p>
+            Also cite the contributing data providers which are listed in the included "citation.csv" file. More information
+            can be found at <a href="{{ citing_the_atlas | default('https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/') }}">
+            citing the {{ orgNameShort | default('ALA') }}</a>.
+        </p>
+        <p>
+            [doiFailureMessage]
+        </p>
+    </div>
+</body>
+</html>
