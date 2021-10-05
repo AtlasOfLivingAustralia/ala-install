@@ -10,6 +10,7 @@ tomcat_users: true
 tomcat_autoDeploy: true
 tomcat_bind_addr: 127.0.0.1
 tomcat_umask: "0022"
+tomcat_max_post_size: 2097152
 
 # Set to a string containing the characters to relax URL encoding on.
 # Search for `relaxedQueryChars` on this page for more details:

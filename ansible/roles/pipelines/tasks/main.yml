@@ -1,0 +1,210 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - pipelines
+    - docker
+    - la-pipelines
+
+- name: Install aptitude using apt
+  apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+  tags:
+    - pipelines
+
+- name: Install required system packages
+  apt: name={{ item }} state=latest update_cache=yes
+  loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+  tags:
+    - pipelines
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  tags:
+    - pipelines
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu bionic stable
+    state: present
+  tags:
+    - pipelines
+
+- name: Update apt and install docker-ce
+  apt: update_cache=yes name={{ item }} state=latest
+  with_items:
+    - docker-ce
+    - docker-ce-cli
+    - docker-compose
+    - containerd.io
+  tags:
+    - pipelines
+    - docker
+
+- name: create pipelines working directories
+  file: path={{ item }} state=directory owner={{ spark_user }} group={{ spark_user }} recurse=true
+  with_items:
+    - "{{ data_dir }}/la-pipelines/config"
+    - "{{ data_dir }}/docker"
+    - "{{ data_dir }}/spark-tmp"
+    - "{{ data_dir }}/pipelines-shp"
+    - "{{ data_dir }}/dwca-tmp"
+  tags:
+    - la-pipelines-config
+    - pipelines
+    - docker
+    - la-pipelines
+
+- name: Update docker directory
+  template: src={{ item }} dest=/etc/docker/daemon.json
+  with_items:
+    - daemon.json
+  tags:
+    - pipelines
+    - docker
+
+- name: Restart docker
+  service:
+    name: docker
+    state: restarted
+  tags:
+    - pipelines
+    - docker
+
+- name: Add an apt key by id from a keyserver
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: F697D8D2ADB9E24A
+  tags:
+    - la-pipelines
+    - pipelines
+
+- name: Add GBIF ES Repository
+  apt_repository:
+    repo: deb https://apt.gbif.es/ bionic main
+    state: present
+  tags:
+    - la-pipelines
+    - pipelines
+
+- name: Update apt and install pipelines
+  apt: update_cache=yes name=la-pipelines
+  tags:
+    - pipelines
+    - la-pipelines
+
+- name: Install pipelines config
+  template: src={{ item }} dest={{ data_dir }}/la-pipelines/config/{{ item }} mode=0644 output_encoding=iso-8859-1
+  with_items:
+    - la-pipelines-local.yaml
+  tags:
+    - la-pipelines-config
+    - pipelines
+    - la-pipelines
+
+- name: Copy docker YAML files to {{ data_dir }}
+  copy: src={{ item }} dest={{ data_dir }}/{{ item }}
+  with_items:
+    - ala-name-service.yml
+    - ala-sensitive-data-service.yml
+  tags:
+    - pipelines
+    - docker
+
+- name: Copy service scripts to /usr/bin
+  copy: src={{ item }} dest=/usr/bin/{{ item }} mode=777
+  with_items:
+    - ala-name-service.sh
+    - ala-sensitive-data-service.sh
+  tags:
+    - pipelines
+    - docker
+
+- name: Copy docker service files to /etc/systemd/system
+  copy: src={{ item }} dest=/etc/systemd/system/{{ item }}
+  with_items:
+    - ala-name-service.service
+    - ala-sensitive-data-service.service
+  tags:
+    - pipelines
+    - docker
+
+- name: enable services
+  service: name={{ item }} enabled=yes
+  with_items:
+    - ala-name-service
+    - ala-sensitive-data-service
+
+- name: Start service ala-sensitive-data-service, if not running
+  service:
+    name: ala-sensitive-data-service
+    state: started
+  tags:
+    - pipelines
+    - docker
+
+- name: Start service ala-name-service, if not running
+  service:
+    name: ala-name-service
+    state: started
+  tags:
+    - pipelines
+    - docker
+
+- name: Create HDFS base directories
+  shell: "{{ hadoop_install_dir }}/bin/hdfs dfs -mkdir -p {{ item }}"
+  with_items:
+    - "/dwca-exports"
+    - "/pipelines-data"
+    - "/pipelines-all-datasets"
+    - "/pipelines-species"
+    - "/pipelines-jackknife"
+    - "/migration"
+  become: yes
+  become_user: "{{ hadoop.user }}"
+  tags:
+    - pipelines
+    - hadoop
+    - hadoop_dir
+
+- name: Set ownership of HDFS base directories
+  shell: "{{ hadoop_install_dir }}/bin/hdfs dfs -chown spark:spark {{ item }}"
+  with_items:
+    - "/dwca-exports"
+    - "/pipelines-data"
+    - "/pipelines-all-datasets"
+    - "/pipelines-species"
+    - "/pipelines-jackknife"
+    - "/migration"
+  become: yes
+  become_user: "{{ hadoop.user }}"
+  tags:
+    - pipelines
+    - hadoop
+    - hadoop_dir
+
+- name: Download SHP files (includes global layer and EEZ derived from GBIFs geocode DB)
+  get_url:
+    url: "https://pipelines-shp.s3-ap-southeast-2.amazonaws.com/pipelines-shapefiles.zip"
+    dest: "{{ data_dir }}/pipelines-shp/pipelines-shapefiles.zip"
+  tags:
+    - pipelines
+
+- name: Download SDS files with bitmaps
+  get_url:
+    url: "https://archives.ala.org.au/archives/layers/sds-layers_with_bitmaps.tgz"
+    dest: "{{ data_dir }}/pipelines-shp/sds-layers.tgz"
+  tags:
+    - pipelines
+
+- name: Unpack SHP files
+  unarchive:
+    src: "{{ item }}"
+    dest: "{{ data_dir }}/pipelines-shp"
+    remote_src: yes
+    owner: "{{ spark_user }}"
+    group: "{{ spark_user }}"
+  with_items:
+    - "{{ data_dir }}/pipelines-shp/pipelines-shapefiles.zip"
+    - "{{ data_dir }}/pipelines-shp/sds-layers.tgz"
+  tags:
+    - pipelines

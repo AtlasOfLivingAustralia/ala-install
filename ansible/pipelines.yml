@@ -1,0 +1,27 @@
+- hosts: all
+  roles:
+    - java
+
+- hosts: all
+  roles:
+    - i18n
+
+- hosts: hadoop
+  roles:
+    - hadoop
+
+- hosts: spark
+  roles:
+    - spark
+
+- hosts: jenkins
+  roles:
+    - jenkins-simple
+
+- hosts: pipelines
+  roles:
+    - pipelines
+
+- hosts: pipelines_jenkins
+  roles:
+    - pipelines_jenkins

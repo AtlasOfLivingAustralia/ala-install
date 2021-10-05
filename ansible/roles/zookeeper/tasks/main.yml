@@ -14,6 +14,8 @@
     group: "root"
     mode: 0644
   notify: restart zookeeper
+  tags:
+    - zookeeper
 
 - name: configure zookeeper myid
   template:
@@ -23,6 +25,8 @@
     group: "root"
     mode: 0644
   notify: restart zookeeper
+  tags:
+    - zookeeper
 
 - name: Create data dir
   file:
@@ -31,6 +35,8 @@
     group: "root"
     state: directory
   notify: restart zookeeper
+  tags:
+    - zookeeper
 
 - name: Create a symbolic link
   file:
@@ -40,6 +46,8 @@
     group: "root"
     state: link
   notify: restart zookeeper
+  tags:
+    - zookeeper
 
 # We can't easily setup remote JMX if this option is present, so remove it by default
 - name: "Remove JMXLOCALONLY=true"
@@ -48,3 +56,5 @@
     regexp="^JMXLOCALONLY=true"
     state=absent
   notify: restart zookeeper
+  tags:
+    - zookeeper
