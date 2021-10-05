@@ -70,18 +70,18 @@
     - pipelines
     - docker
 
-- name: Add GBIF ES Repository
-  apt_repository:
-    repo: deb https://apt.gbif.es/ bionic main
-    state: present
-  tags:
-    - la-pipelines
-    - pipelines
-
 - name: Add an apt key by id from a keyserver
   apt_key:
     keyserver: keyserver.ubuntu.com
     id: F697D8D2ADB9E24A
+  tags:
+    - la-pipelines
+    - pipelines
+
+- name: Add GBIF ES Repository
+  apt_repository:
+    repo: deb https://apt.gbif.es/ bionic main
+    state: present
   tags:
     - la-pipelines
     - pipelines
@@ -201,6 +201,8 @@
     src: "{{ item }}"
     dest: "{{ data_dir }}/pipelines-shp"
     remote_src: yes
+    owner: "{{ spark_user }}"
+    group: "{{ spark_user }}"
   with_items:
     - "{{ data_dir }}/pipelines-shp/pipelines-shapefiles.zip"
     - "{{ data_dir }}/pipelines-shp/sds-layers.tgz"

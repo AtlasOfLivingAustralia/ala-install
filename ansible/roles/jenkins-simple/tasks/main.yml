@@ -1,14 +1,14 @@
 - include: ../../common/tasks/setfacts.yml
 
-- apt_key: url="http://pkg.jenkins-ci.org/{{ jenkins_channel }}/jenkins-ci.org.key" state=present
+- apt_key: url="https://pkg.jenkins-ci.org/{{ jenkins_channel }}/jenkins-ci.org.key" state=present
   when: ansible_os_family == "Debian"
   tags: jenkins
 
-- apt_key: url="http://pkg.jenkins-ci.org/{{ jenkins_channel }}/jenkins.io.key" state=present
+- apt_key: url="https://pkg.jenkins.io//{{ jenkins_channel }}/jenkins.io.key" state=present id=FCEF32E745F2C3D5
   when: ansible_os_family == "Debian"
   tags: jenkins
 
-- apt_repository: repo="deb http://pkg.jenkins-ci.org/{{ jenkins_channel }} binary/" state=present update-cache=yes
+- apt_repository: repo="deb https ://pkg.jenkins-ci.org/{{ jenkins_channel }} binary/" state=present update-cache=yes
   when: ansible_os_family == "Debian"
   tags: jenkins
 
