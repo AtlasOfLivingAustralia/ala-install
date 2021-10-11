@@ -21,12 +21,12 @@ run:
 collectory:
   wsUrl: {{ collectory_url }}
   httpHeaders:
-    Authorization: {{ ala_api_key }}
+    Authorization: {{ pipelines_api_key | default(ala_api_key) }}
 
 imageService:
   wsUrl: {{ image_service_url }}
   httpHeaders:
-    apiKey:  {{ ala_api_key }}
+    apiKey:  {{ pipelines_api_key | default(ala_api_key) }}
 
 gbifConfig:
   vocabularyConfig:

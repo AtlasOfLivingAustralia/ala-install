@@ -112,9 +112,10 @@
     - { app: "spatialportal", apikey: "{{ spatial_service_service_key }}" }
     - { app: "spatialportal", apikey: "{{ spatial_service_slave_key }}" }
     - { app: "specieslists", apikey: "{{ speciesList_api_key }}" }
+    - { app: "pipelines", apikey: "{{ pipelines_api_key | default('') }}" }
   loop_control:
     loop_var: oitem
-  when: apikey_def_creator_email is defined and apikey_def_creator_userid is defined
+  when: apikey_def_creator_email is defined and apikey_def_creator_userid is defined and oitem.apikey|length > 0
   tags:
     - apikeys_add
     - apikey
