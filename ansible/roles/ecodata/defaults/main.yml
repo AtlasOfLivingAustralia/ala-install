@@ -22,3 +22,4 @@ elasticsearch_primary_server: true
 ecodata_local_authentication_keyFile:
 mongo_hosts: localhost:27017
 mongodb_port: 27017
+read_preference: nearest
