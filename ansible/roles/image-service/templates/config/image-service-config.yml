@@ -58,11 +58,16 @@ skin:
   orgNameLong: {{ orgNameLong | default('Atlas') }}
   homeUrl: {{ skin_home_url | default('http://www.ala.org.au') }}
 
+# external links
 collectory:
   baseURL: "{{ collectory_url | default('https://collections.ala.org.au')}}"
 biocache:
   baseURL: "{{ biocache_url | default('https://biocache.ala.org.au')}}"
-
+  service:
+    baseURL: "{{ biocache_service_url | default('https://biocache.ala.org.au/ws')}}"
+    searchPath: /occurrences/search
+  imagesFieldName: all_image_url
+  
 # header block
 headerAndFooter:
   version: "{{ header_and_footer_version | default('1')}}"
