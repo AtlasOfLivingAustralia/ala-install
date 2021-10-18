@@ -1,0 +1,167 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?><flow-definition plugin="workflow-job@2.40">
+  <actions/>
+  <description/>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>10</daysToKeep>
+        <numToKeep>100</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>datasetId</name>
+          <description>The ID of the dataset to be loaded  e.g. dr893</description>
+          <defaultValue/>
+          <trim>true</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>mode</name>
+          <description>Whether to use cluster or not. Cluster is recommended for datasets over 100k records.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>--cluster</string>
+              <string>--embedded</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>dwcaToVerbatim</name>
+          <description>Run the load of DwCA to AVRO</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>uuid</name>
+          <description>Generate UUIDs</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>interpretation</name>
+          <description>Run the Interpretation</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>sds</name>
+          <description>Run SDS processing</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>imageSync</name>
+          <description>Run image loading</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>indexRecords</name>
+          <description>Run index generation (generates the AVRO files - not SOLR)</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>asyncUpload</name>
+          <description>Run async image upload or synchronous.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>displayName</name>
+          <description/>
+          <defaultValue>Ingest ${datasetId}</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.90">
+    <script>
+stage('Dwc-verbatim') {
+    node(){
+        if (params.dwcaToVerbatim){        
+            build job: 'Dwc-verbatim-dataset', parameters: [
+                 string(name: 'datasetId', value: datasetId),
+                 string(name: 'displayName', value: datasetId)
+            ]   
+        }
+    }
+}
+
+stage('UUID') {
+    node(){
+        if (params.dwcaToVerbatim || params.uuid){
+            build job: 'UUID-dataset', parameters: [
+                 string(name: 'datasetId', value: datasetId),
+                 string(name: 'displayName', value: datasetId),
+                 string(name: 'mode', value: mode)
+            ]   
+        }
+    }
+}
+
+stage('Interpretation') {
+    node(){
+        if (params.interpretation){
+            build job: 'Interpret-dataset', parameters: [
+                 string(name: 'datasetId', value: datasetId),
+                 string(name: 'displayName', value: datasetId),
+                 string(name: 'mode', value: mode)
+            ]   
+        }
+    }
+}
+
+stage('SDS') {
+    node(){
+        if (params.sds){
+            build job: 'SDS-dataset', parameters: [
+                 string(name: 'datasetId', value: datasetId),                
+                 string(name: 'displayName', value: datasetId),
+                 string(name: 'mode', value: mode)
+            ]   
+        }
+    }
+}
+
+stage('Image-load') {
+    node(){
+        if (params.imageSync){
+            build job: 'Image-load', parameters: [
+                 string(name: 'datasetId', value: datasetId),
+                 string(name: 'displayName', value: datasetId),
+                 string(name: 'mode', value: mode),
+                 booleanParam(name:'asyncUpload', value: asyncUpload)
+            ]   
+        }
+    }
+}
+
+stage('Image-sync') {
+    node(){
+        if (params.imageSync){
+            build job: 'Image-sync', parameters: [
+                 string(name: 'datasetId', value: datasetId),
+                 string(name: 'displayName', value: datasetId),
+                 string(name: 'mode', value: mode)
+            ]   
+        }
+    }
+}
+
+stage('Index') {
+    node(){
+        if (params.indexRecords){
+            build job: 'Index-dataset', parameters: [
+                 string(name: 'datasetId', value: datasetId),
+                 string(name: 'displayName', value: datasetId),
+                 string(name: 'mode', value: mode)
+            ]   
+        }
+    }
+}
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

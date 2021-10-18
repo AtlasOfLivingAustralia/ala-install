@@ -89,7 +89,7 @@
     - restart tomcat
 
 - name: enable the HTTP 1.1 connector (Tomcat-7/8)
-  tomcat_connector: name="HTTP/1.1" bind_addr="{{ tomcat_bind_addr }}" port="{{ tomcat_http_port }}" relaxed_query_chars="{{ tomcat_relaxed_query_chars }}" tomcat_conf_dir="{{ tomcat_conf_dir }}"
+  tomcat_connector: name="HTTP/1.1" bind_addr="{{ tomcat_bind_addr }}" port="{{ tomcat_http_port }}" max_post_size="{{ tomcat_max_post_size }}" relaxed_query_chars="{{ tomcat_relaxed_query_chars }}" tomcat_conf_dir="{{ tomcat_conf_dir }}"
   when:
     - tomcat_http | bool == True
     - tomcat == "tomcat7" or tomcat == "tomcat8"
@@ -99,7 +99,7 @@
   - restart tomcat
 
 - name: enable the HTTP 1.1 connector (Tomcat-9)
-  tomcat9_connector: name="HTTP/1.1" bind_addr="{{ tomcat_bind_addr }}" port="{{ tomcat_http_port }}" relaxed_query_chars="{{ tomcat_relaxed_query_chars }}" tomcat_conf_dir="{{ tomcat_conf_dir }}"
+  tomcat9_connector: name="HTTP/1.1" bind_addr="{{ tomcat_bind_addr }}" port="{{ tomcat_http_port }}" max_post_size="{{ tomcat_max_post_size }}" relaxed_query_chars="{{ tomcat_relaxed_query_chars }}" tomcat_conf_dir="{{ tomcat_conf_dir }}"
   when:
     - tomcat_http | bool == True
     - tomcat == "tomcat9"
@@ -109,7 +109,7 @@
   - restart tomcat
 
 - name: enable the AJP 1.3 connector (Tomcat-7/8)
-  tomcat_connector: name="AJP/1.3" bind_addr="{{ tomcat_bind_addr }}" port="{{ tomcat_ajp_port }}" relaxed_query_chars="{{ tomcat_relaxed_query_chars }}" tomcat_conf_dir="{{ tomcat_conf_dir }}"
+  tomcat_connector: name="AJP/1.3" bind_addr="{{ tomcat_bind_addr }}" port="{{ tomcat_ajp_port }}" max_post_size="{{ tomcat_max_post_size }}" relaxed_query_chars="{{ tomcat_relaxed_query_chars }}" tomcat_conf_dir="{{ tomcat_conf_dir }}"
   when:
     - tomcat_ajp | bool == True
     - tomcat == "tomcat7" or tomcat == "tomcat8"
@@ -119,7 +119,7 @@
     - restart tomcat
 
 - name: enable the AJP 1.3 connector (Tomcat-9)
-  tomcat9_connector: name="AJP/1.3" bind_addr="{{ tomcat_bind_addr }}" port="{{ tomcat_ajp_port }}" relaxed_query_chars="{{ tomcat_relaxed_query_chars }}" tomcat_conf_dir="{{ tomcat_conf_dir }}"
+  tomcat9_connector: name="AJP/1.3" bind_addr="{{ tomcat_bind_addr }}" port="{{ tomcat_ajp_port }}" max_post_size="{{ tomcat_max_post_size }}" relaxed_query_chars="{{ tomcat_relaxed_query_chars }}" tomcat_conf_dir="{{ tomcat_conf_dir }}"
   when:
     - tomcat_ajp | bool == True
     - tomcat == "tomcat9"

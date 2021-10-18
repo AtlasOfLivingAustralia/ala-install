@@ -57,6 +57,10 @@
 {% else %}
         proxy_set_header Host {{ hostname }};
 {% endif %}
+{% if item.proxy_x_request_id is defined %}
+        set $x_request_id {{ item.proxy_x_request_id }};
+        proxy_set_header X-Request-Id $x_request_id;
+{% endif %}
 {% if nginx_proxy_protocol_enabled | bool %}
         proxy_set_header X-Forwarded-For $proxy_protocol_addr;
         proxy_set_header X-Real-IP $proxy_protocol_addr;

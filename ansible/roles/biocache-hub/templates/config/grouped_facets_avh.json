@@ -126,7 +126,7 @@
             },
             {
                 "sort":"count",
-                "field":"reproductive_condition"
+                "field":"reproductiveCondition"
             },
             {
                 "sort":"count",

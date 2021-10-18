@@ -1,0 +1,3 @@
+---
+# vars file for blank
+java_home: /usr/lib/jvm/java-8-openjdk-amd64

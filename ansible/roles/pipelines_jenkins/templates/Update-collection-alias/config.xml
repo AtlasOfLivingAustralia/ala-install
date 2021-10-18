@@ -1,0 +1,680 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?><flow-definition plugin="workflow-job@2.40">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.8.4"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.8.4">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description/>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>10</daysToKeep>
+        <numToKeep>100</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>new_collection</name>
+          <description/>
+          <defaultValue>biocache-2020-04-22-10-48</defaultValue>
+          <trim>true</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>old_collection</name>
+          <description/>
+          <defaultValue>biocache</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>minimum_field_count</name>
+          <description/>
+          <defaultValue>10</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>random_records_count</name>
+          <description/>
+          <defaultValue>50</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>NUMBER_OF_COLLECTIONS_TO_KEEP</name>
+          <description/>
+          <defaultValue>2</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>collection_to_keep</name>
+          <description>accepts only one collection to prevent it from being removed.</description>
+          <defaultValue>biocache-2020-01-01-01-01</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RUN_CHECKS_ONLY</name>
+          <description>Runs the checks only. No changes to Solr (collection switch / removal)</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>statistics_log_file</name>
+          <description>The log file that statistics will be written to. This log file is monitored by filebeat to maintain statistics related to new collections in ELK.</description>
+          <defaultValue>/var/log/jenkins/biocache-statistics.log</defaultValue>
+          <trim>true</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>include_checks</name>
+          <description>Removed checkCompareRandomRecords for now. 
+
+checkTotalCount,checkMinFieldsForRandomRecords,checkCompareRandomRecords,checkSensitivity,checkConservationStatus,checkSpeciesListUid,checkGeoSpatialLayerCl959,checkGeoSpatialLayerCl1048,checkGeoSpatialLayerCl966,checkGeoSpatialLayerCl21</description>
+          <defaultValue>checkTotalCount,checkMinFieldsForRandomRecords,checkSensitivity,checkConservationStatus,checkSpeciesListUid,checkGeoSpatialLayerCl959,checkGeoSpatialLayerCl1048,checkGeoSpatialLayerCl966,checkGeoSpatialLayerCl21</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>REMOVE_COLLECTION_IF_FAILS</name>
+          <description>Remove the new collection if it fails checks.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>cluster</name>
+          <description/>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>ClusterA</string>
+              <string>ClusterB</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.90">
+    <script>//import com.cloudbees.groovy.cps.NonCPS
+
+if (params.cluster == "ClusterA"){
+    solrBase = "http://{{ solr_cluster_node_a }}:8983/solr/"
+} else {
+    solrBase = "http://{{ solr_cluster_node_b }}:8983/solr/"
+}
+
+collectionToKeep = params.collection_to_keep
+includeChecks = params.include_checks.split(',')
+minFieldCount = params.minimum_field_count.toInteger()
+randomRecordsCount = params.random_records_count.toInteger()
+newCollection = params.new_collection
+oldCollection = params.old_collection
+numberOfCollectionsToKeep = params.NUMBER_OF_COLLECTIONS_TO_KEEP.toInteger()
+runChecksOnly = params.RUN_CHECKS_ONLY
+removeCollectionIfFails = params.REMOVE_COLLECTION_IF_FAILS
+statisticsLogFile = params.statistics_log_file
+
+RETRY_COUNT = 10
+RETRY_SLEEP_MILSEC = 1 * 60 * 1000
+
+enum CheckStatus {
+    PASS, WARN, FAIL
+}
+
+@NonCPS
+def getLogDateForCollection(collection) {
+    String collectionDate = ""
+    (collection =~ /(\w+)-(\d{4}-\d{2}-\d{2})-(\d{2})-(\d{2})/).each {match, collectionName, date, hour, minute -&gt;
+        collectionDate = "${date}T${hour}:${minute}"
+    }
+    if (collectionDate.isEmpty()) {
+        unstable("Could not get log date from collection name: " + collection)
+    }
+    return collectionDate
+}
+
+@NonCPS
+def jsonParse(String baseUrl, params) {
+    def urlStr = solrBase + baseUrl + "?"
+    for (p in params) {
+        urlStr += p.key + "=" + URLEncoder.encode(p.value + '', "UTF-8") + "&amp;"
+    }
+    urlStr = urlStr[0..-2]
+    println("DEBUG- Reading url:" + urlStr)
+    try {
+        def url = new URL(urlStr)
+        def text = url.getText()
+        def response = new groovy.json.JsonSlurper().parseText(text)
+        return response
+    }
+    catch (all) {
+        println("SEVERE- Error reading url:" + urlStr)
+        return null
+    }
+}
+
+@NonCPS
+def getTotalCount(String collection) {
+    def result = jsonParse(collection + '/select', [q: '*:*', 'rows': 0, 'wt': 'json', 'facet': 'false'])
+    if (result == null) {
+        println("SEVERE- Error getting total count for collection: " + collection)
+        return -1
+    }
+    return result.response.numFound
+}
+
+@NonCPS
+def checkTotalCount() {
+    def oldCount = getTotalCount(oldCollection)
+    def newCount = getTotalCount(newCollection)
+    logStatistics(newCollection, "total-records", "count", "long", "all", newCount)
+    if (oldCount &lt; 0 || newCount &lt; 0) {
+        unstable("SEVERE- Error getting total count for collections")
+        return CheckStatus.FAIL
+    }
+    if (newCount &gt;= oldCount) {
+        println("INFO- There are more records in the new index than the current one. CURRENT#:" + oldCount + " NEW#:" + newCount + " DIFF#:" + (newCount - oldCount))
+        return CheckStatus.PASS
+    } else if (((oldCount - newCount) / oldCount) &gt; 0.001) {
+        unstable("SEVERE- There are less records in the new index than the current one [more than 0.1%]. CURRENT#:" + oldCount + " NEW#:" + newCount + " DIFF#:" + (newCount -
+                oldCount))
+        return CheckStatus.FAIL
+    } else {
+        unstable("WARNING- There are less records in the new index than the current one. CURRENT#:" + oldCount + " NEW#:" + newCount + " DIFF#:" + (newCount - oldCount))
+        return CheckStatus.WARN
+    }
+}
+
+@NonCPS
+CheckStatus checkMinFieldCount(int minFieldCount, String recordId, String collection = 'biocache') {
+    def status = CheckStatus.PASS
+    def result = jsonParse(collection + '/select', [q: 'id:' + recordId, 'rows': "10", 'wt': 'json', 'facet': 'false'])
+    if (result == null) {
+        unstable("SEVERE- Error checking minimum fields count. : minFieldCount:" + minFieldCount + ", recordId:" + recordId + ", collection:" + collection)
+        status = CheckStatus.FAIL
+    } else {
+        def docs = result.response.docs
+        if (docs.size() != 1) {
+            status = CheckStatus.FAIL
+            unstable("SEVERE- RECORD ID:" + recordId + " - There should be only one record for the id but there are " + docs.size())
+        } else {
+            def doc = docs[0]
+            if (doc.size() &lt; minFieldCount) {
+                status = CheckStatus.FAIL
+                unstable("SEVERE- RECORD ID:" + recordId + " - Number of fields are " + docs.size() + " and minimum fields of " + minFieldCount + " not met.")
+            }
+        }
+    }
+    return status
+}
+
+@NonCPS
+CheckStatus compareRecords(String recordId) {
+    CheckStatus status = CheckStatus.PASS
+    def result = jsonParse(newCollection + '/select', [q: 'id:' + recordId, 'rows': "10", 'wt': 'json', 'facet': 'false'])
+    if (result == null) {
+        unstable("SEVERE- Error in comparing records. recordId:" + recordId + ", newCollection:" + newCollection + ", oldCollection:" + oldCollection)
+        return CheckStatus.FAIL
+    }
+    def newDocs = result.response.docs
+    result = jsonParse(oldCollection + '/select', [q: 'id:' + recordId, 'rows': "10", 'wt': 'json', 'facet': 'false'])
+    if (result == null) {
+        unstable("SEVERE- Error in comparing records. recordId:" + recordId + ", newCollection:" + newCollection + ", oldCollection:" + oldCollection)
+        return CheckStatus.FAIL
+    }
+    def oldDocs = result.response.docs
+    if (newDocs.size() != 1 || oldDocs.size() != 1) {
+        unstable("SEVERE- RECORD ID:" + recordId + " - There should be only one record for the id in collection: " + newCollection + ", newDocs.size:" + newDocs.size() + ", oldDocs.size:" + oldDocs.size())
+        return CheckStatus.FAIL
+    } else {
+        def newDoc = newDocs[0]
+        def oldDoc = oldDocs[0]
+        def missingFieldSet = oldDoc.keySet() - newDoc.keySet()
+        if (missingFieldSet.size() &gt; 0) {
+            unstable("SEVERE- RECORD ID:" + recordId + " - There are " + missingFieldSet.size() + " fields which are missing in the new records. Here is the list: " + missingFieldSet
+                    .join(','))
+            return CheckStatus.FAIL
+        } else {
+            def changedFields = []
+            def diffStr = ''
+            newDoc.each {
+                if (it.value != null &amp;&amp; it.value != oldDoc[it.key]) {
+                    changedFields.add(['field': it.key, 'old': oldDoc[it.key], 'new': it.value])
+                    diffStr += "\n " + ['field': it.key, 'old': oldDoc[it.key], 'new': it.value].toString()
+                }
+            }
+            if (changedFields.size() &gt; 0) {
+                status = CheckStatus.WARN
+                unstable("WARNING- RECORD ID:" + recordId + " - There are " + changedFields.size() + " fields which have different values. Here is the list of the fields and their" +
+                        " values:" + diffStr)
+            }
+        }
+        def addedFieldSet = newDoc.keySet() - oldDoc.keySet()
+        if (addedFieldSet.size() &gt; 0) {
+            status = CheckStatus.WARN
+            unstable("WARNING- RECORD ID:" + recordId + " - There are " + addedFieldSet.size() + " fields which are added to the new record. Here is the list: " + addedFieldSet
+                    .join(','))
+        }
+    }
+    println("INFO- returning status: " + status.toString())
+    return status
+}
+
+@NonCPS
+def checkMinFieldsForRandomRecords(int recordsNumber = randomRecordsCount) {
+    def recordIds = getRandomRecordIds(oldCollection, recordsNumber)
+    if (recordIds == null) {
+        unstable("SEVERE- Error in the check of min fields for random records. recordsNumber:" + recordsNumber)
+        return CheckStatus.FAIL
+    }
+    if (recordIds.size() &lt; recordsNumber) {
+        // This can occur legitimately when entire data resources are deleted and end up with 0 as the record facet count
+        unstable("WARNING- Found less than the expected number of random record ids")
+    }
+    def retStatus
+    def statusList = []
+    for (def i = 0; i &lt; recordIds.size(); i++) {
+        if (recordIds[i] == null) {
+            unstable("SEVERE- Found a null missing recordId (min field check), failing.")
+            statusList.add(CheckStatus.FAIL)
+        } else if (recordIds[i].equalsIgnoreCase("null")) {
+            unstable("SEVERE- Found a null literal recordId (min field check), failing.")
+            statusList.add(CheckStatus.FAIL)
+        } else {
+            statusList.add(checkMinFieldCount(minFieldCount, recordIds[i], newCollection))
+        }
+    }
+
+    if (statusList.contains(CheckStatus.FAIL)) {
+        retStatus = CheckStatus.FAIL
+        unstable("SEVERE- There are " + statusList.findAll {
+            it == CheckStatus.FAIL
+        }.size() + " FAILED records out of " + recordsNumber + " checked ones.")
+    } else if (statusList.contains(CheckStatus.WARN)) {
+        retStatus = CheckStatus.WARN
+        unstable("WARNING- There are " + statusList.findAll {
+            it == CheckStatus.WARN
+        }.size() + " WARNING records out of " + recordsNumber + " checked ones.")
+    } else {
+        retStatus = CheckStatus.PASS
+        println("INFO- All " + recordsNumber + " records checks passed successfully.")
+    }
+    return retStatus
+}
+
+@NonCPS
+def getFacetData(String collection, String facetField, String q, int faceLimit, String sort) {
+    def result = jsonParse(collection + '/select', [q: q, 'rows': 0, 'wt': 'json', 'facet.field': facetField, 'facet': 'on', 'facet.limit': faceLimit, 'json.nl':
+            'map', "facet.sort"                      : sort])
+    if (result == null) {
+        unstable("SEVERE- Error in getting facet data. collection:" + collection + ", facetField:" + facetField + ", q:" + q + ", faceLimit:" + faceLimit + ", sort:" + sort)
+        return null
+    }
+    return result.facet_counts.facet_fields
+}
+
+@NonCPS
+def getDataResourceList(String collection) {
+    def dataResources = getFacetData(collection, 'dataResourceUid', 'dataResourceUid:*', -1, "index").dataResourceUid
+    return dataResources
+}
+
+@NonCPS
+def getRandomRecordIds(String collection, int recordsNumber) {
+    def dataResources
+    def retries = RETRY_COUNT
+    while (true) {
+        dataResources = getDataResourceList(collection)
+        if (dataResources == null) {
+            unstable("SEVERE- Error in getting data resource list. collection:" + collection)
+            return null
+        }
+        if (dataResources.size() &lt; 1) {
+            retries -= 1
+            if (retries == 0) {
+                unstable("SEVERE- Error in getting data resource list after " + RETRY_COUNT + "retries. collection:" + collection)
+                return null
+            }
+            unstable("WARNING- Problem in getting data resource list for collection:" + collection)
+            println("Retrying in " + RETRY_SLEEP_MILSEC / 1000 + " seconds.")
+        } else {
+            break
+        }
+    }
+    def recordIds = []
+    for (def i = 0; i &lt; recordsNumber; i++) {
+        def drOffset = new Random().nextInt(dataResources.size())
+        def dataResource = dataResources.keySet()[drOffset]
+        if (dataResources[dataResource] &lt;= 0) {
+            unstable("WARNING - Randomly selected data resource " + dataResource + " has no records.")
+            continue;
+        }
+        def recordOffset = new Random().nextInt(Math.min(dataResources[dataResource], 20000))
+
+        println("Getting id for record at offset " + recordOffset + " in data resource " + dataResource + " record count for data resource=" + dataResources[dataResource] + " drOffset=" + drOffset)
+
+        def result = jsonParse(collection + '/select', [q      : 'dataResourceUid:' + dataResource, 'rows': "1", 'wt': 'json', 'start': recordOffset + '', 'fl': 'id',
+                                                        'facet': 'false'])
+
+        if (result == null) {
+            unstable("SEVERE- Error in getting random record Ids. dataResource:" + dataResource + ", recordOffset:" + recordOffset)
+            return null
+        }
+
+    if (result.response.docs[0].id == null) {
+            unstable("SEVERE- Error in getting random record Ids. result contained a null id. dataResource:" + dataResource + ", recordOffset:" + recordOffset + ", response:" + result.response)
+            return null
+        }
+
+    if (result.response.docs[0].id.equalsIgnoreCase("null")) {
+            unstable("SEVERE- Error in getting random record Ids. result contained the literal null. dataResource:" + dataResource + ", recordOffset:" + recordOffset + ", response:" + result.response)
+            return null
+        }
+
+        def nextRecordId = result.response.docs[0].id
+        
+        println("Selected id " + nextRecordId + " from data resource " + dataResource)
+        
+        recordIds.add(nextRecordId)
+    }
+    if (recordIds.size() == 0) {
+        unstable("SEVERE - Unable to get any random record Ids.")
+        return null
+    }
+    return recordIds
+}
+
+@NonCPS
+def checkCompareRandomRecords(int recordsNumber = randomRecordsCount) {
+    def recordIds = getRandomRecordIds(oldCollection, recordsNumber)
+    if (recordIds == null) {
+        unstable("SEVERE- Error in the check of comparing random records. recordsNumber:" + recordsNumber)
+        return CheckStatus.FAIL
+    }
+    if (recordIds.size() &lt; recordsNumber) {
+        // This can occur legitimately when entire data resources are deleted and end up with 0 as the record facet count
+        unstable("WARNING- Found less than the expected number of random record ids")
+    }
+    def retStatus
+    def statusList = []
+    for (def i = 0; i &lt; recordIds.size(); i++) {
+        if (recordIds[i] == null) {
+            unstable("SEVERE- Found a null missing recordId, failing.")
+            statusList.add(CheckStatus.FAIL)
+        } else if (recordIds[i].equalsIgnoreCase("null")) {
+            unstable("SEVERE- Found a null literal recordId, failing.")
+            statusList.add(CheckStatus.FAIL)
+        } else {
+            statusList.add(compareRecords(recordIds[i]))
+        }
+    }
+    def failureCount = statusList.findAll { it == CheckStatus.FAIL }.size()
+    def warningCount = statusList.findAll { it == CheckStatus.WARN }.size()
+    if (failureCount &gt; 1) {
+        retStatus = CheckStatus.FAIL
+        unstable("SEVERE- There are " + failureCount + " FAILED records and " + warningCount + " WARNING records out of " + recordIds.size() + " checked ones.")
+    } else if (failureCount &gt; 0 || warningCount &gt; 0) {
+        retStatus = CheckStatus.WARN
+        unstable("WARNING- There are " + failureCount + " FAILED records and " + warningCount + " WARNING records out of " + recordIds.size() + " checked ones.")
+    } else {
+        retStatus = CheckStatus.PASS
+        println("INFO- All " + recordIds.size() + " records checks passed successfully.")
+    }
+    return retStatus
+}
+
+@NonCPS
+def checkFacet(String facet, String q, int checkSize = -1, int fecthSize = -1, String sort = "index") {
+    def oldFacetData = getFacetData(oldCollection, facet, q, checkSize, sort)[facet]
+    def newFacetData = getFacetData(newCollection, facet, q, fecthSize, sort)[facet]
+    if (newFacetData == null || oldFacetData == null) {
+        unstable("SEVERE- Error in checking facet. facet:" + facet + " q:" + q + " limit:" + checkSize + " sort:" + sort)
+        return CheckStatus.FAIL
+    }
+    def status = CheckStatus.PASS
+    def retstatus = []
+    oldFacetData.each {
+        if (it.key in newFacetData) {
+            def diffPercentage = java.lang.Math.round(((it.value - newFacetData[it.key]) / it.value).doubleValue()) * 100
+
+            // More than 2% of records are missing this field value in the new index
+            if (diffPercentage &gt; 2.0) {
+                status = CheckStatus.FAIL
+                unstable("SEVERE- " + diffPercentage + "% of records don't have " + facet + "=\"" + it.key + "\" . Counts- Current#:" + it.value + " New#:" +
+                        newFacetData[it.key] + " Diff#:" + (it.value - newFacetData[it.key]))
+            } else if (newFacetData[it.key] &lt; it.value) {
+                status = CheckStatus.PASS
+                println("WARNING- There is a difference between indexes for record having " + facet + "=\"" + it.key + "\" . Counts- Current#:" + it.value +
+                        " New#:" + newFacetData[it.key] + " Diff#:" + (it.value - newFacetData[it.key]))
+            } else if (newFacetData[it.key] &gt; it.value) {
+                status = CheckStatus.PASS
+                println("INFO- There are more record having " + facet + "=\"" + it.key + "\" in the new index. Counts- Current#:" + it.value +
+                        " New#:" + newFacetData[it.key] + " Diff#:" + (newFacetData[it.key] - it.value))
+            } else {
+                status = CheckStatus.PASS
+                println("INFO- There are same number of records for " + facet + "=\"" + it.key + "\" in both indexes. Counts#:" + it.value)
+            }
+        } else {
+            status = CheckStatus.FAIL
+            unstable("SEVERE- The new index doesn't have any record for " + facet + "=\"" + it.key + "\" .")
+        }
+        retstatus.add(status)
+    }
+    if (retstatus.contains(CheckStatus.FAIL))
+        return CheckStatus.FAIL
+    else if (retstatus.contains(CheckStatus.WARN))
+        return CheckStatus.WARN
+    return CheckStatus.PASS
+}
+
+def checkSensitivity() {
+    return checkFacet("sensitive", "sensitive:*")
+}
+
+def checkSpeciesListUid() {
+    return checkFacet("speciesListUid", "speciesListUid:*", 100,  100, "count")
+}
+
+def checkConservationStatus() {
+    return checkFacet("stateConservation", "stateConservation:*")
+}
+
+def checkGeoSpatialLayerCountry() {
+    return checkFacet("country", "country:*", 10,  100,"count")
+}
+
+def checkGeoSpatialLayerState() {
+    return checkFacet("stateProvince", "stateProvince:*", 10, 100, "count")
+}
+
+//Local government
+def checkGeoSpatialLayerCl959() {
+    return checkFacet("cl959", "cl959:*", 10,  100, "count")
+}
+
+//IBRA 7 region
+def checkGeoSpatialLayerCl1048() {
+    return checkFacet("cl1048", "cl1048:*", 10,  100, "count")
+}
+
+//IMCRA Meso-scale Bioregions
+def checkGeoSpatialLayerCl966() {
+    return checkFacet("cl966", "cl966:*", 10, 100,"count")
+}
+
+//IMCRA 4 Regions
+def checkGeoSpatialLayerCl21() {
+    return checkFacet("cl21", "cl21:*", 10, 100,"count")
+}
+
+@NonCPS
+def switchCollectionAlias(collection) {
+    def result = jsonParse('admin/collections', ['action': 'CREATEALIAS', 'collections': collection, 'name': 'biocache', 'wt': 'json'])
+    if (result == null) {
+        unstable("SEVERE- Error in switching collection alias. collection:" + collection)
+        return CheckStatus.FAIL
+    }
+    if (result['responseHeader']['status'] == 0) {
+        println("PASS- The biocache alias is update successfully and now pointing to " + collection + ".")
+        result = jsonParse('admin/collections', ['action': 'REBALANCELEADERS', 'collection': collection, 'wt': 'json'])
+        if (result == null) {
+            unstable("SEVERE- Error in rebalancing collections. collection:" + collection)
+            return CheckStatus.WARN
+        }
+        return CheckStatus.PASS
+    } else {
+        unstable("SEVERE- The biocache alias is not updated successfully to point to " + collection + ". Here is the response from the server:\n " + result['error']['msg'])
+        return CheckStatus.FAIL
+    }
+}
+
+@NonCPS
+def removeCollection(collection) {
+    println 'deleting COLLECTOIN:' + collection
+    def result = jsonParse('admin/collections', ['action': 'DELETE', 'name': collection, 'wt': 'json'])
+    if (result == null) {
+        unstable("SEVERE- Error in deleting old collections. collection:" + collection)
+        return false
+    }
+    if (result['responseHeader']['status'] == 0) {
+        println("INFO- The collection " + collection + " is removed from the cluster successfully.")
+        return true
+    } else {
+        unstable("WARNING- The collection " + collection + " is not removed from the cluster successfully. ERROR: " + result['error']['msg'])
+        return false
+    }
+}
+
+@NonCPS
+def removeOldCollections() {
+    def result = jsonParse('admin/collections', ['action': 'CLUSTERSTATUS', 'wt': 'json'])
+    if (result == null) {
+        unstable("SEVERE- Error in getting list of collections")
+        return false
+    }
+    if (result['responseHeader']['status'] == 0) {
+        def collections = []
+        collections.addAll(result['cluster']['collections'].keySet())
+        collections.sort()
+        collections = collections.reverse() // reverse sorting
+        collections.remove(collectionToKeep)
+        println 'current COLLECTIONS = ' + collections
+        for (int i = numberOfCollectionsToKeep; i &lt; collections.size(); i++) {
+            if (removeCollection(collections[i]) == false)
+                return false
+        }
+        return true
+    } else {
+        unstable("WARNING- The cluster status API is was not successful. ERROR: " + result['error']['msg'])
+        return false
+    }
+}
+
+@NonCPS
+def logStatistics(collectionName, logEntryCategory, logEntryType, logEntryValueType, logEntryKey, logEntryValue) {
+    def collectionDate = getLogDateForCollection(collectionName)
+    File file = new File(statisticsLogFile)
+    file &lt;&lt; "$collectionDate $logEntryCategory $logEntryType $logEntryValueType $logEntryKey: $logEntryValue\n"
+}
+
+def checkResult = []
+stage('recordDataResourceCounts') {
+    node("master") {
+        script {
+            try {
+                def newDataResources = getDataResourceList(newCollection)
+                println("newDataResources Size: " + newDataResources.size())
+                def oldDataResources = getDataResourceList(oldCollection)
+                println("oldDataResources Size: " + oldDataResources.size())
+                if (newDataResources.size() &gt; 0) {
+            newDataResources.each {
+                        logStatistics(newCollection, "data-resource-records", "count", "long", it.key, it.value)
+                        if (oldDataResources.containsKey(it.key)) {
+                            logStatistics(newCollection, "data-resource-records", "diff", "long", it.key, it.value - oldDataResources.get(it.key))
+                        } else {
+                            logStatistics(newCollection, "data-resource-records", "diff", "long", it.key, it.value)
+                        }
+                    }
+                    checkResult.add(CheckStatus.PASS)
+                } else {
+                    checkResult.add(CheckStatus.FAIL)
+                }
+            } catch (err) {
+                echo err.getMessage()
+            }
+        }
+    }
+}
+
+def status
+for (int i = 0; i &lt; includeChecks.size(); i++) {
+    def checkFunction = includeChecks[i]
+    stage(checkFunction) {
+        node("master") {
+            script {
+                status = "$checkFunction"()
+                checkResult.add(status)
+                status = null
+            }
+        }
+    }
+}
+
+
+def switchResult = CheckStatus.FAIL
+stage('switchCollectionAlias') {
+    if (runChecksOnly) {
+        println("Skipped the stage because you have ticked RUN_CHECKS_ONLY box.")
+    } else {
+        if (!checkResult.contains(CheckStatus.FAIL)) {
+            node("master") {
+                script {
+                    switchResult = switchCollectionAlias(newCollection)
+                    // Comment the line above and uncomment the line below to disable switching the alias
+                    // This is necessary when testing new biocache-store versions without breaking production
+                    // switchResult = CheckStatus.PASS
+                    checkResult.add(switchResult)
+                }
+            }
+        } else {
+            unstable("SEVERE- There is a severe error in prior checkings. Switching collection cancelled!")
+        }
+    }
+}
+
+stage('removeOldCollections') {
+    if (runChecksOnly) {
+        println("Skipped the stage because you have ticked RUN_CHECKS_ONLY box.")
+    } else {
+        if (switchResult == CheckStatus.PASS) {
+            node("master") {
+                script {
+                    def removeCollectionResult = removeOldCollections()
+                    if (removeCollectionResult == true) {
+                        checkResult.add(CheckStatus.PASS)
+                    } else {
+                        checkResult.add(CheckStatus.FAIL)
+                    }
+                }
+            }
+        } else {
+            unstable("SEVERE- switching the alias to new collection was unsuccessful.")
+        }
+    }
+}
+
+if (checkResult.contains(CheckStatus.FAIL))
+    currentBuild.result = 'FAILURE'
+else if (checkResult.contains(CheckStatus.WARN))
+    currentBuild.result = 'UNSTABLE'
+else
+    currentBuild.result = 'SUCCESS'
+
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

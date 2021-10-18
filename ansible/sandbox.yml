@@ -6,10 +6,10 @@
     - postfix
     - cassandra3
     - solr6
-    - role: jenkins-simple
-      when: sandbox_test
-    - role: jenkins-skeleton
-      when: sandbox_test
+    # - role: jenkins-simple
+    #   when: sandbox_prod
+    # - role: jenkins-skeleton
+    #   when: sandbox_prod
     - webserver
     - nameindex
     - biocache-db

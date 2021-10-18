@@ -1,0 +1,155 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?><flow-definition plugin="workflow-job@2.40">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.8.4"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.8.4">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description>&#13;
+    Interpret all datasets.&#13;
+    This pipeline job split large and small datasets.&#13;
+  </description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>interpretationTypes</name>
+          <description/>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>ALL</string>
+              <string>ALA_ATTRIBUTION</string>
+              <string>BASIC</string>
+              <string>MULTIMEDIA</string>
+              <string>LOCATION</string>
+              <string>ALA_TAXONOMY</string>
+              <string>TEMPORAL</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.90">
+    <script>
+
+stage('Remove de-registered datasets') {
+ node('master'){
+     sh 'sudo -u spark la-pipelines prune-datasets'          
+ }
+}
+
+stage('Dump out dataset counts') {
+ node('master'){
+     sh 'sudo -u spark la-pipelines dataset-list'
+ }
+}
+
+stage('Clear temp directories') {
+ node('master'){
+     build 'Clear-temp-directories'
+ }
+}
+
+
+stage('Restart docker services') {
+ node('master'){
+     build 'Restart-docker-services'
+ }
+}
+
+def datasets = splitDatasetsBySize()
+def smallDatasets = datasets[0]
+def largeDatasets = datasets[1]
+
+stage('Interpret large datasets on cluster') {
+ node('master'){
+     largeDatasets.each { datasetId -&gt;
+        echo 'Large dataset for cluster: ' + datasetId
+        build job: 'Interpret-dataset', parameters: [
+             string(name: 'datasetId', value: datasetId),
+             string(name: 'displayName', value: datasetId),
+             string(name: 'interpretationTypes', value: interpretationTypes),
+             string(name: 'mode', value: '--cluster')
+        ]        
+     }
+ }    
+}
+
+// set up for 
+def names = nodeNames()
+def batches = batchDatasets(smallDatasets, names.size())
+def branches = [:]  
+
+batches.eachWithIndex { batch, index -&gt;
+  def nodeName = names[index.mod(names.size())]  
+  branches["node_" + nodeName] = {
+    node(nodeName) {
+      echo 'Datasets ' + batch
+      if (batch){
+          build job: 'Interpret-dataset', parameters: [
+              new org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterValue
+                  ("TARGET_NODE", "description", nodeName),
+              string(name: 'datasetId', value: batch),
+              string(name: 'displayName', value: 'small-datasets-batch'),
+              string(name: 'interpretationTypes', value: interpretationTypes),
+              string(name: 'mode', value: '--local')
+          ]
+       }
+    }
+  } 
+}
+
+stage('Interpret small datasets on jenkins nodes') {
+  parallel branches
+}
+
+@NonCPS def batchDatasets(datasets, noOfBatches){
+    //split into 6 batches
+    def batches = ["","","","","",""]
+    datasets.eachWithIndex { datasetId, index -&gt; 
+        batches[index.mod(noOfBatches)] = datasetId + " " + batches[index.mod(noOfBatches)]
+    }
+    return batches
+}
+
+@NonCPS def splitDatasetsBySize(){
+  def file = new File("/tmp/dataset-counts.csv")
+
+  def small = []
+  def large = []
+
+  def datasetGroups = [small, large]
+
+  def line, noOfLines = 0;
+  file.withReader { reader -&gt;
+    while ((line = reader.readLine()) != null) {
+      def datasetId = line.split(",")[0]
+      def recordCount = line.split(",")[1]
+      if (recordCount.toLong() &gt; 300000){
+        large.add(datasetId)  
+      } else {
+        small.add(datasetId)
+      }
+    }
+  }   
+  return datasetGroups
+}
+
+// This method collects a list of Node names from the current Jenkins instance 
+@NonCPS def nodeNames() { 
+  return jenkins.model.Jenkins.instance.nodes.collect { node -&gt; node.name } 
+}
+
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

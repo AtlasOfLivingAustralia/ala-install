@@ -1,0 +1,432 @@
+[{
+    "title": "Taxon",
+    "facets": [{
+        "sort": "index",
+        "dwcTerm": "scientificName",
+        "description": "Matched Scientific Name",
+        "field": "scientificName"
+    },
+        {
+            "sort": "index",
+            "dwcTerm": "scientificName_raw",
+            "description": "Scientific Name",
+            "field": "raw_scientificName"
+        },
+        {
+            "sort": "index",
+            "description": "Subspecies",
+            "field": "subspecies"
+        },
+        {
+            "sort": "index",
+            "dwcTerm": "specificEpithet_raw",
+            "i18nValues": true,
+            "field": "species"
+        },
+        {
+            "sort": "index",
+            "dwcTerm": "genus_raw",
+            "field": "genus"
+        },
+        {
+            "sort": "index",
+            "dwcTerm": "family_raw",
+            "field": "family"
+        },
+        {
+            "sort": "index",
+            "dwcTerm": "order_raw",
+            "field": "order"
+        },
+        {
+            "sort": "index",
+            "dwcTerm": "class",
+            "description": "Class - matched",
+            "field": "class"
+        },
+        {
+            "sort": "index",
+            "dwcTerm": "phylum_raw",
+            "field": "phylum"
+        },
+        {
+            "sort": "index",
+            "dwcTerm": "kingdom_raw",
+            "field": "kingdom"
+        },
+        {
+            "sort": "count",
+            "dwcTerm": "taxonRank",
+            "i18nValues": true,
+            "description": "Taxon Rank - matched",
+            "field": "taxonRank"
+        },
+        {
+            "sort": "count",
+            "field": "matchType"
+        },
+        {
+            "sort": "index",
+            "field": "speciesGroup"
+        },
+        {
+            "sort": "index",
+            "dwcTerm": "vernacularName",
+            "description": "Vernacular Name - matched",
+            "field": "vernacularName"
+        },
+        {
+            "sort": "count",
+            "description": "Species subgroups",
+            "field": "speciesSubgroup"
+        },
+        {
+            "sort": "count",
+            "field": "interaction"
+        }
+    ]
+},
+    {
+        "title": "Identification",
+        "facets": [{
+            "sort": "index",
+            "dwcTerm": "identifiedBy_raw",
+            "field": "identifiedBy"
+        },
+            {
+                "sort": "index",
+                "dwcTerm": "identificationQualifier",
+                "field": "identificationQualifier"
+            },
+            {
+                "sort": "count",
+                "description": "Taxon identification issue",
+                "field": "taxonomicIssues"
+            },
+            {
+                "sort": "index",
+                "dwcTerm": "typeStatus",
+                "field": "typeStatus"
+            },
+            {
+                "sort": "index",
+                "dwcTerm": "originalNameUsage",
+                "field": "originalNameUsage"
+            }
+        ]
+    },
+    {
+        "title": "Location",
+        "facets": [
+            {
+                "sort": "index",
+                "dwcTerm": "country_raw",
+                "i18nValues": true,
+                "field": "country"
+            },
+            {
+                "sort": "count",
+                "field": "stateProvince"
+            },
+            {
+                "sort": "count",
+                "field": "cl2079"
+            },
+            {
+                "sort": "count",
+                "field": "cl2078"
+            },
+            {
+                "sort": "count",
+                "field": "cl925"
+            },
+            {
+                "sort": "count",
+                "field": "cl901"
+            },
+            {
+                "sort": "count",
+                "field": "cl1918"
+            },
+            {
+                "sort": "count",
+                "field": "cl958"
+            },
+            {
+                "sort": "count",
+                "field": "cl1048"
+            },
+            {
+                "sort": "count",
+                "field": "cl1049"
+            },
+            {
+                "sort": "count",
+                "field": "cl21"
+            },
+            {
+                "sort": "count",
+                "field": "cl966"
+            },
+            {
+                "sort": "count",
+                "field": "cl1085"
+            },
+            {
+                "sort": "count",
+                "field": "cl678"
+            },
+            {
+                "sort": "count",
+                "field": "cl959"
+            },
+            {
+                "sort": "count",
+                "field": "cl991"
+            },
+            {
+                "sort": "count",
+                "field": "cl916"
+            },
+            {
+                "sort": "count",
+                "field": "cl935"
+            },
+            {
+                "sort": "count",
+                "field": "cl1057"
+            },
+            {
+                "sort": "count",
+                "field": "cl2013"
+            },
+            {
+                "sort": "count",
+                "field": "cl927"
+            },
+            {
+                "sort": "count",
+                "field": "cl923"
+            },
+            {
+                "sort": "count",
+                "field": "cl619"
+            },
+            {
+                "sort": "count",
+                "field": "el1076"
+            },
+            {
+                "sort": "count",
+                "field": "cl617"
+            },
+            {
+                "sort": "count",
+                "field": "cl620"
+            },
+            {
+                "sort": "index",
+                "description": "Elevation",
+                "field": "elevation_d_rng"
+            },
+            {
+                "sort": "index",
+                "field": "min_elevation_d_rng"
+            },
+            {
+                "sort": "count",
+                "description": "Sensitive",
+                "field": "sensitive",
+                "i18nValues": true
+            },
+            {
+                "sort": "count",
+                "description": "Species habitats",
+                "field": "speciesHabitats"
+            },
+            {
+                "sort": "index",
+                "dwcTerm": "coordinateUncertaintyInMeters",
+                "description": "Coordinate Uncertainty in Metres - parsed",
+                "field": "coordinateUncertaintyInMeters"
+            },
+            {
+                "sort": "count",
+                "i18nValues": true,
+                "description": "Spatial validity",
+                "field": "spatiallyValid"
+            },
+            {
+                "sort": "index",
+                "dwcTerm": "locationID",
+                "field": "locationID"
+            }
+        ]
+    },
+    {
+        "title": "Occurrence",
+        "facets": [
+            {
+                "sort": "index",
+                "dwcTerm": "recordedBy_raw",
+                "description": "Collector",
+                "field": "recordedBy"
+            },
+            {
+                "sort": "count",
+                "dwcTerm": "sex",
+                "description": "Sex",
+                "field": "sex"
+            },
+            {
+                "sort": "count",
+                "field": "lifeStage"
+            },
+            {
+                "sort": "count",
+                "dwcTerm": "establishmentMeans",
+                "field": "establishmentMeans"
+            },
+            {
+                "sort": "index",
+                "dwcTerm": "month_raw",
+                "i18nValues": true,
+                "field": "month"
+            },
+            {
+                "sort": "index",
+                "dwcTerm": "year_raw",
+                "field": "year"
+            },
+            {
+                "sort": "count",
+                "description": "Date precision",
+                "field": "datePrecision"
+            },
+            {
+                "sort": "index",
+                "field": "decade"
+            },
+            {
+                "sort": "count",
+                "description": "State conservation",
+                "field": "stateConservation"
+            },
+            {
+                "sort": "count",
+                "description": "State conservation (unprocessed)",
+                "field": "raw_stateConservation"
+            },
+            {
+                "sort": "index",
+                "dwcTerm": "eventID",
+                "field": "eventID"
+            }
+        ]
+    },
+    {
+        "title": "Record",
+        "facets": [
+            {
+                "sort": "index",
+                "dwcTerm": "basisOfRecord",
+                "description": "Basis Of Record - processed",
+                "field": "basisOfRecord"
+            },
+            {
+                "sort": "count",
+                "description": "Multimedia",
+                "field": "multimedia"
+            },
+            {
+                "sort": "index",
+                "description": "Presence/Absence",
+                "field": "occurrenceStatus"
+            },
+            {
+                "sort": "index",
+                "description": "Content types",
+                "field": "contentTypes"
+            }
+        ]
+    },
+    {
+        "title": "Assertions",
+        "facets": [
+            {
+                "sort": "count",
+                "description": "Sensitive",
+                "field": "sensitive"
+            },
+            {
+                "sort": "count",
+                "i18nValues": true,
+                "description": "Record issues",
+                "field": "assertions"
+            },
+            {
+                "sort": "count",
+                "i18nValues": true,
+                "description": "Outlier for layer",
+                "field": "outlierLayer"
+            },
+            {
+                "sort": "count",
+                "description": "Outlier layer count",
+                "field": "outlierLayerCount"
+            },
+            {
+                "sort": "count",
+                "i18nValues": true,
+                "field": "userAssertions"
+            },
+            {
+                "sort": "index",
+                "description": "Assertions by user",
+                "field": "assertionUserId"
+            },
+            {
+                "sort": "count",
+                "field": "duplicateStatus"
+            },
+            {
+                "sort": "count",
+                "field": "duplicateType"
+            }
+        ]
+    },
+    {
+        "title": "Attribution",
+        "facets": [{
+            "sort": "count",
+            "field": "license"
+        },
+            {
+                "sort": "count",
+                "field": "userId"
+            },
+            {
+                "sort": "count",
+                "field": "collectionUid"
+            },
+            {
+                "sort": "count",
+                "field": "institutionUid"
+            },
+            {
+                "sort": "count",
+                "field": "dataProviderUid"
+            },
+            {
+                "sort": "count",
+                "description": "Data Resource ID",
+                "field": "dataResourceUid"
+            },
+            {
+                "sort": "count",
+                "dwcTerm": "datasetName",
+                "field": "datasetName"
+            }
+        ]
+    }
+]

@@ -1,0 +1,90 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.40">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.7.2"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.7.2">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description>&#xd;
+    Interpret all datasets.&#xd;
+    This pipeline job split large and small datasets.&#xd;
+  </description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.87">
+    <script>
+stage(&apos;Dump out dataset counts&apos;) {
+ node(&apos;master&apos;){
+     sh &apos;sudo -u spark la-pipelines dataset-list&apos;
+ }
+}
+
+def datasets = getDatasets()
+
+// set up for 
+def names = nodeNames()
+def batches = batchDatasets(datasets, names.size())
+def branches = [:]  
+
+batches.eachWithIndex { batch, index -&gt;
+  def nodeName = names[index.mod(names.size())]  
+  branches[&quot;node_&quot; + nodeName] = {
+    node(nodeName) {
+      echo &apos;Datasets &apos; + batch
+      build job: &apos;Image-sync&apos;, parameters: [
+           new org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterValue
+               (&quot;TARGET_NODE&quot;, &quot;description&quot;, nodeName),
+           string(name: &apos;datasetId&apos;, value: batch),
+           string(name: &apos;displayName&apos;, value: &apos;image-sync batch&apos;),
+           string(name: &apos;mode&apos;, value: &apos;--embedded&apos;)
+      ]
+    }
+  } 
+}
+
+stage(&apos;Interpret small datasets on jenkins nodes&apos;) {
+  parallel branches
+}
+
+@NonCPS def batchDatasets(datasets, noOfBatches){
+    //split into 6 batches
+    def batches = [&quot;&quot;,&quot;&quot;,&quot;&quot;,&quot;&quot;,&quot;&quot;,&quot;&quot;]
+    datasets.eachWithIndex { datasetId, index -&gt; 
+        batches[index.mod(noOfBatches)] = datasetId + &quot; &quot; + batches[index.mod(noOfBatches)]
+    }
+    return batches
+}
+
+@NonCPS def getDatasets(){
+  def file = new File(&quot;/tmp/dataset-counts.csv&quot;)
+
+  def datasets = []
+
+  def line, noOfLines = 0;
+  file.withReader { reader -&gt;
+    while ((line = reader.readLine()) != null) {
+      def datasetId = line.split(&quot;,&quot;)[0]
+      def recordCount = line.split(&quot;,&quot;)[1]
+      datasets.add(datasetId)  
+    }
+  }   
+  return datasets
+}
+
+// This method collects a list of Node names from the current Jenkins instance 
+@NonCPS def nodeNames() { 
+  return jenkins.model.Jenkins.instance.nodes.collect { node -&gt; node.name } 
+}
+
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
