@@ -32,13 +32,24 @@
     - properties
     - bie
 
-- name: copy blacklist
+- name: create blacklist
   template:
     src: blacklist.json.j2
     dest: "{{ data_dir }}/{{ bie_hub }}/config/blacklist.json"
     force: yes
-
     output_encoding: utf-8
+  when: blacklist_source is defined
+  tags:
+    - webapps
+    - properties
+    - bie
+
+- name: copy blacklist from inventory
+  copy:
+    src: "{{ inventory_dir }}/{{ blacklist_file }}"
+    dest: "{{ data_dir }}/{{ bie_hub }}/config/blacklist.json"
+    force: yes
+  when: blacklist_source is not defined
   tags:
     - webapps
     - properties
