@@ -65,8 +65,6 @@ biocache:
   baseURL: "{{ biocache_url | default('https://biocache.ala.org.au')}}"
   service:
     baseURL: "{{ biocache_service_url | default('https://biocache.ala.org.au/ws')}}"
-    searchPath: /occurrences/search
-  imagesFieldName: all_image_url
   
 # header block
 headerAndFooter:
