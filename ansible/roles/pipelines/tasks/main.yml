@@ -103,7 +103,7 @@
     - yq
 
 - name: Update apt and install pipelines
-  apt: update_cache=yes name=yq
+  apt: update_cache=yes name=yq={{ yq_version }}
   when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
   tags:
     - pipelines
