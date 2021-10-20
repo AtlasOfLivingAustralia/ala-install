@@ -44,7 +44,6 @@
   file: path={{ item }} state=directory owner={{ spark_user }} group={{ spark_user }} recurse=true
   with_items:
     - "{{ data_dir }}/la-pipelines/config"
-    - "{{ data_dir }}/docker"
     - "{{ data_dir }}/spark-tmp"
     - "{{ data_dir }}/pipelines-shp"
     - "{{ data_dir }}/dwca-tmp"
