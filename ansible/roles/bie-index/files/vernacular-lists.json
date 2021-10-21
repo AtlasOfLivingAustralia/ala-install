@@ -3,7 +3,7 @@
   "defaultNameIdField": "nameID",
   "defaultStatusField": "status",
   "defaultLanguageField": "language",
-  "defaultsourceField": "source",
+  "defaultSourceField": "source",
   "defaultTemporalField": "temporal",
   "defaultLocationIdField": "locationID",
   "defaultLocalityField": "locality",
