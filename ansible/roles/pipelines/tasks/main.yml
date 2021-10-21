@@ -44,7 +44,6 @@
   file: path={{ item }} state=directory owner={{ spark_user }} group={{ spark_user }} recurse=true
   with_items:
     - "{{ data_dir }}/la-pipelines/config"
-    - "{{ data_dir }}/docker"
     - "{{ data_dir }}/spark-tmp"
     - "{{ data_dir }}/pipelines-shp"
     - "{{ data_dir }}/dwca-tmp"
@@ -69,6 +68,71 @@
   tags:
     - pipelines
     - docker
+
+# yq is needed by the la-pipelines script
+
+# yq via snap (as at Sep 2021, ppa:rmescandon version does not work)
+- name: Install yq
+  community.general.snap:
+    name:
+      - yq
+  when: use_yq_via_snap is defined and use_yq_via_snap | bool == True
+  tags:
+    - la-pipelines
+    - pipelines
+    - yq
+
+- name: Add YQ Repository
+  apt_repository:
+    repo: 'ppa:rmescandon/yq'
+  when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
+  tags:
+    - la-pipelines
+    - pipelines
+    - yq
+
+- name: Add an apt key by id from a keyserver
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: CC86BB64
+  when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
+  tags:
+    - la-pipelines
+    - pipelines
+    - yq
+
+- name: Update apt and install pipelines
+  apt: update_cache=yes name=yq={{ yq_version }}
+  when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
+  tags:
+    - pipelines
+    - la-pipelines
+    - yq
+
+# docopts is needed by the la-pipelines script
+
+- name: Get docopts
+  shell: curl -o /usr/local/bin/docopts -LJO https://github.com/docopt/docopts/releases/download/v0.6.3-rc2/docopts_linux_amd64
+  when: is_arm is not defined
+  tags:
+    - la-pipelines
+    - pipelines
+    - docopts
+
+- name: Get docopts
+  shell: curl -o /usr/local/bin/docopts -LJO https://github.com/docopt/docopts/releases/download/v0.6.3-rc2/docopts_linux_arm
+  when: is_arm is defined
+  tags:
+    - la-pipelines
+    - pipelines
+    - docopts
+
+- name: Make docopts executable
+  shell: chmod +x /usr/local/bin/docopts
+  tags:
+    - la-pipelines
+    - pipelines
+    - docopts
 
 - name: Add an apt key by id from a keyserver
   apt_key:
