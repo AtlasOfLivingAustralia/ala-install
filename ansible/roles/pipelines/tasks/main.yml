@@ -151,10 +151,11 @@
     - pipelines
 
 - name: Update apt and install pipelines
-  apt: update_cache=yes name=la-pipelines
+  apt: update_cache=yes name=la-pipelines={{ pipelines_version }}
   tags:
     - pipelines
     - la-pipelines
+    - apt
 
 - name: Install pipelines config
   template: src={{ item }} dest={{ data_dir }}/la-pipelines/config/{{ item }} mode=0644 output_encoding=iso-8859-1
