@@ -178,6 +178,7 @@ ala:
     path: {{ auth_cookie_path | default('/') }}
   userCreator:
     userCreatePassword: {{ user_create_password }}
+    enableUserSurvey: {{ show_ala_survey | default('false') }}
     jdbc:
       dataSourceName: java:comp/env/jdbccas
       enableUpdateLastLoginTime: {{ cas_update_last_login | default('true') }}
