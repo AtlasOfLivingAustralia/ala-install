@@ -11,7 +11,7 @@ jndi:
   hikari:
     jdbccas:
       driverClass: com.mysql.jdbc.Driver
-      url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&logger=Slf4JLogger&gatherPerfMetrics=true&logSlowQueries=true&characterEncoding=UTF-8&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true&useSSL={{mysql_connection_ssl | default(false)}}
+      url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&logger=Slf4JLogger&gatherPerfMetrics=true&logSlowQueries=true&characterEncoding=UTF-8&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true&noAccessToProcedureBodies=true&useSSL={{mysql_connection_ssl | default(false)}}
       user: {{ cas_db_username | default('cas') }}
       password: {{ cas_db_password | default('password') }}
       dataSourceProperties:
@@ -20,7 +20,7 @@ jndi:
         prepStmtCacheSqlLimit: 2048
 flyway:
   baselineOnMigrate: {{ cas_db_migration_baseline | default('true') }}
-  url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true&useSSL={{mysql_connection_ssl | default(false)}}
+  url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true&noAccessToProcedureBodies=true&useSSL={{mysql_connection_ssl | default(false)}}
   user: {{ cas_flyway_username | default('root') }}
   password: {{ cas_flyway_password | default('password') }}
 
