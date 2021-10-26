@@ -10,7 +10,6 @@
     # biocache-service compatible with biocache-store
     - { role: nameindex, when: "biocache_service_version is version('3', '<')" }
     - { role: biocache-properties, when: "biocache_service_version is version('3', '<')" }
-    - { role: nameindex, when: "biocache_service_version is version('3', '<')" }
     - { role: biocache-service, when: "biocache_service_version is version('3', '<')" }
 
     # biocache-service compatible with pipelines
