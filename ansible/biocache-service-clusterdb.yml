@@ -2,11 +2,20 @@
   roles:
     - common
     - java
-    - tomcat
+
+    - { role: tomcat, when: "biocache_service_version is version('3', '<')" }
+    - { role: tomcat, tomcat: tomcat9, when: "biocache_service_version is version('3', '>=')" }
     - webserver
-    - nameindex
-    - biocache-properties
-    - nameindex
+
+    # biocache-service compatible with biocache-store
+    - { role: nameindex, when: "biocache_service_version is version('3', '<')" }
+    - { role: biocache-properties, when: "biocache_service_version is version('3', '<')" }
+    - { role: nameindex, when: "biocache_service_version is version('3', '<')" }
+    - { role: biocache-service, when: "biocache_service_version is version('3', '<')" }
+
+    # biocache-service compatible with pipelines
+    - { role: biocache3-properties, when: "biocache_service_version is version('3', '>=')" }
+    - { role: biocache3-service, when: "biocache_service_version is version('3', '>=')" }
+
     - i18n
-    - biocache-service
     - logger-client
