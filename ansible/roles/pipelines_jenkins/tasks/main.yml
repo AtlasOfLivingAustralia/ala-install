@@ -37,11 +37,6 @@
   tags:
     - pipelines_jenkins
 
-- name: HDFS and Spark tools
-  copy: src=pipelines.sh dest=/etc/profile.d/pipelines.sh force=yes
-  tags:
-    - pipelines_jenkins
-
 - name: Jenkins jobs definitions
   copy:
     src: jenkins/jobs/
