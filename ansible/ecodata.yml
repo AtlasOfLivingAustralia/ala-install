@@ -2,7 +2,7 @@
   vars:
     tomcat: "tomcat7"
     tomcat_user: "tomcat7"
-    es_version: "7.15.0"
+    es_version: "7.15.1"
     es_heap_dump_path: "/data/"
     es_api_host: "{{ elasticsearch_host | default('localhost') }}"
     es_config:
