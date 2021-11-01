@@ -87,7 +87,7 @@
     - jts-1.13.jar
   tags:
     - solrcloud
-  when: not jts_use_1_16
+  when: jts_use_1_13
 
 - name: Add JTS 1.18.1
   copy: src=libs/{{item}} dest=/opt/solr/server/lib/ext
