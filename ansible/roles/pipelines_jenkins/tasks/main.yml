@@ -67,7 +67,7 @@
     state: directory
     owner: "jenkins"
     group: "jenkins"
-    mode: 0600
+    mode: 0700
   become: yes
   become_user: "jenkins"
   when: is_master
@@ -89,13 +89,13 @@
     - pipelines_jenkins
     - pipelines_jenkins_slaves
 
-- name: Upload SSH Key for slave
-  copy:
-    src: "{{ ssh_key_filename }}"
-    dest: "/home/jenkins/.ssh/id_rsa"
+- name: Upload SSH Public Key for Jenkins user - mkdir
+  file:
+    path: /home/jenkins/.ssh/
+    state: directory
     owner: "jenkins"
     group: "jenkins"
-    mode: 0600
+    mode: 0700
   become: yes
   become_user: "jenkins"
   when: is_slave
@@ -103,10 +103,10 @@
     - pipelines_jenkins
     - pipelines_jenkins_slaves
 
-- name: Upload SSH Public Key for Jenkins user - mkdir
-  file:
-    path: /home/jenkins/.ssh/
-    state: directory
+- name: Upload SSH Key for slave
+  copy:
+    src: "{{ ssh_key_filename }}"
+    dest: "/home/jenkins/.ssh/id_rsa"
     owner: "jenkins"
     group: "jenkins"
     mode: 0600
