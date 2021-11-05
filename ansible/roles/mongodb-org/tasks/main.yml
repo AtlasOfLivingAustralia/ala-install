@@ -36,7 +36,7 @@
     repo: deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/{{ mongodb_version }} multiverse
     state: present
   tags: mongodb-org
-  when: mongodb_version != 3.4 or ansible_distribution_release != 'bionic'
+  when: (mongodb_version != 3.4 or ansible_distribution_release != 'bionic') and (mongodb_version != 4.0 or ansible_distribution_release != 'focal')
 
 - name: Use xenial repo for installing mongo 3.4 or 3.6 on bionic
   apt_repository:
@@ -45,6 +45,12 @@
   tags: mongodb-org
   when: mongodb_version == 3.4 and ansible_distribution_release == 'bionic' or mongodb_version == 3.6 and ansible_distribution_release == 'bionic'
 
+- name: Use bionic repo for installing mongo 4.0 on focal
+  apt_repository:
+    repo: deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/{{ mongodb_version }} multiverse
+    state: present
+  tags: mongodb-org
+  when: mongodb_version == 4.0 and ansible_distribution_release == 'focal'
 
 - name: Install mongodb.org packages and related
   apt:
