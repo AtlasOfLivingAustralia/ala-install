@@ -3,7 +3,8 @@
     tomcat: "tomcat7"
     tomcat_user: "tomcat7"
     es_version: "7.15.1"
-    es_heap_dump_path: "/data/"
+    es_heap_dump_path: "/data/elasticsearch"
+    es_tmp_dir: "/data/elasticsearch"
     es_api_host: "{{ elasticsearch_host | default('localhost') }}"
     es_config:
       network.host: "{{ elasticsearch_host | default('localhost') }}"
