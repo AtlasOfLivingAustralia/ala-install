@@ -1,0 +1,122 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?><flow-definition plugin="workflow-job@2.40">
+  <actions/>
+  <description>Run solr and indexing and run update collection alias with validation</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.BooleanParameterDefinition>
+          <name>includeSampling</name>
+          <description/>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>includeClustering</name>
+          <description/>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>includeJackknife</name>
+          <description/>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>cluster</name>
+          <description/>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>ClusterA</string>
+              <string>ClusterB</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.90">
+    <script>def collectionName = "biocache-" + new Date().format("yyyy-MM-dd-HH-mm")
+print collectionName
+
+def solr1 = ""
+def nodePrefix = ""
+
+if (cluster == "ClusterA"){
+    solr1 = "{{ solr_cluster_node_a }}"
+    nodePrefix = "{{ solr_cluster_a_prefix }}"
+} else {
+    solr1 = "{{ solr_cluster_node_b }}"
+    nodePrefix = "{{ solr_cluster_b_prefix }}"
+}
+
+stage 'Solr Schema Creation'
+node() {
+    script {
+        String url = "http://" + solr1 +":8983/solr/admin/collections?action=CREATE&amp;name="+ collectionName + "&amp;numShards=8&amp;maxShardsPerNode=1&amp;replicationFactor=1&amp;collection.configName=biocache13"
+        echo url
+        String response = sh(script: "curl -X GET \"$url\"", returnStdout: true).trim()
+        echo response
+    }
+}
+
+stage 'Solr Indexing'
+node() {
+    script {
+        build job: 'Solr', parameters: [
+             string(name: 'collectionName', value: collectionName),
+             booleanParam(name: 'includeSampling', value: includeSampling),
+             booleanParam(name: 'includeClustering', value: includeClustering),
+             booleanParam(name: 'includeJackknife', value: includeJackknife),
+             string(name: 'cluster', value: cluster)
+        ]  
+    }
+}
+
+//http://localhost:8986/solr/admin/collections?action=ADDREPLICA&amp;collection=biocache-2021-05-26-14-04&amp;shard=shard1&amp;node=aws-solr-2021-2.ala:8983_solr
+
+stage 'Add replicas'
+node() {
+    script {
+        url = "http://" + solr1 +":8983/solr/admin/collections?action=ADDREPLICA&amp;collection="+ collectionName + "&amp;shard=shard1&amp;node=" + nodePrefix + "-2.ala:8983_solr"
+        response = sh(script: "curl -X GET \"$url\"", returnStdout: true).trim()
+        url = "http://" + solr1 +":8983/solr/admin/collections?action=ADDREPLICA&amp;collection="+ collectionName + "&amp;shard=shard2&amp;node=" + nodePrefix + "-3.ala:8983_solr"
+        response = sh(script: "curl -X GET \"$url\"", returnStdout: true).trim()
+        url = "http://" + solr1 +":8983/solr/admin/collections?action=ADDREPLICA&amp;collection="+ collectionName + "&amp;shard=shard3&amp;node=" + nodePrefix + "-4.ala:8983_solr"
+        response = sh(script: "curl -X GET \"$url\"", returnStdout: true).trim()
+        url = "http://" + solr1 +":8983/solr/admin/collections?action=ADDREPLICA&amp;collection="+ collectionName + "&amp;shard=shard4&amp;node=" + nodePrefix + "-5.ala:8983_solr"
+        response = sh(script: "curl -X GET \"$url\"", returnStdout: true).trim()
+        url = "http://" + solr1 +":8983/solr/admin/collections?action=ADDREPLICA&amp;collection="+ collectionName + "&amp;shard=shard5&amp;node=" + nodePrefix + "-6.ala:8983_solr"
+        response = sh(script: "curl -X GET \"$url\"", returnStdout: true).trim()
+        url = "http://" + solr1 +":8983/solr/admin/collections?action=ADDREPLICA&amp;collection="+ collectionName + "&amp;shard=shard6&amp;node=" + nodePrefix + "-7.ala:8983_solr"
+        response = sh(script: "curl -X GET \"$url\"", returnStdout: true).trim()
+        url = "http://" + solr1 +":8983/solr/admin/collections?action=ADDREPLICA&amp;collection="+ collectionName + "&amp;shard=shard7&amp;node=" + nodePrefix + "-8.ala:8983_solr"
+        response = sh(script: "curl -X GET \"$url\"", returnStdout: true).trim()
+        url = "http://" + solr1 +":8983/solr/admin/collections?action=ADDREPLICA&amp;collection="+ collectionName + "&amp;shard=shard8&amp;node=" + nodePrefix + "-1.ala:8983_solr"
+        response = sh(script: "curl -X GET \"$url\"", returnStdout: true).trim()
+    }
+}
+
+stage 'Switch'
+node() {
+    script {
+        build job: 'Update-collection-alias', parameters: [
+             string(name: 'new_collection', value: collectionName),
+             string(name: 'cluster', value: cluster)             
+        ]          
+    }
+}
+
+stage 'Assertions-sync'
+node() {
+    script {
+        build job: 'Assertions-sync'
+    }
+}
+
+
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

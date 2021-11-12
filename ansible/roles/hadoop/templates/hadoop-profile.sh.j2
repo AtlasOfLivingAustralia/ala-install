@@ -1,0 +1,10 @@
+export HADOOP_PREFIX={{ hadoop_install_dir }}
+export HADOOP_COMMON_HOME={{ hadoop_install_dir }}
+export HADOOP_HDFS_HOME={{ hadoop_install_dir }}
+export HADOOP_MAPRED_HOME={{ hadoop_install_dir }}
+#export HADOOP_YARN_HOME={{ hadoop_install_dir }}
+export HADOOP_CONF_DIR={{ hadoop_install_dir }}/etc/hadoop
+#export YARN_CONF_DIR={{ hadoop_install_dir }}/etc/hadoop
+
+export HADOOP_HOME={{ hadoop_install_dir }}
+export PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH

@@ -1,0 +1,6 @@
+# yq_version: 4.13.0
+# or asterisk for 'latest':
+yq_version: "*"
+
+# version can be for instance: "2.5.5-SNAPSHOT+0~20200811164905.80~1.gbp9acadb" or "*" for 'latest'
+pipelines_version: "*"

@@ -1,0 +1,10 @@
+# Steps up pipelines migration
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - pipelines_migration
+
+# copy migration JAR to each node
+- name: download from maven repo {{ migration_jar_url }}
+  get_url: url={{ migration_jar_url }} dest="/usr/share/la-pipelines/{{ war_filename }}.jar" force=true timeout=60
+  tags:
+    - pipelines_migration

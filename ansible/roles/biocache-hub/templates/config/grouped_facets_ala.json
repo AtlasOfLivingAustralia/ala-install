@@ -233,6 +233,11 @@
             {  
                 "sort":"index",
                 "field":"occurrence_status"
+            },
+            {
+                "sort": "index",
+                "description": "Content types",
+                "field": "contentTypes"
             }
         ]
     },

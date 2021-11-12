@@ -96,6 +96,7 @@
     appname: "merit"
     hostname: "{{ merit_hostname }}"
     context_path: "{{ merit_context_path }}"
+    tomcat_server_port: "{{ merit_server_port }}"
   tags:
     - nginx_vhost
     - deploy

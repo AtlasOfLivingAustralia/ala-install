@@ -1,0 +1,98 @@
+# Ansible generated
+run:
+  platform: local
+  local:
+    sparkTmp: {{ spark_tmp }}
+    sparkMaster: ""
+    dwcaTmp: {{ dwca_tmp }}
+    dwcaImportDir: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}
+  spark-embedded:
+    sparkTmp: {{ spark_tmp }}
+    sparkMaster: ""
+    dwcaTmp: {{ dwca_tmp }}
+    dwcaImportDir: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}
+  spark-cluster:
+    jar: /usr/share/la-pipelines/la-pipelines.jar
+    sparkTmp: {{ spark_tmp }}
+    sparkMaster: spark://{{ spark_master }}:7077
+    dwcaTmp: {{ dwca_tmp }}
+    dwcaImportDir: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}
+
+collectory:
+  wsUrl: {{ collectory_url }}
+  httpHeaders:
+    Authorization: {{ pipelines_api_key | default(ala_api_key) }}
+
+imageService:
+  wsUrl: {{ image_service_url }}
+  httpHeaders:
+    apiKey:  {{ pipelines_api_key | default(ala_api_key) }}
+
+gbifConfig:
+  vocabularyConfig:
+    vocabulariesPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ vocabulary_dir }}
+    lifeStageVocabName: LifeStage
+
+general:
+  attempt: 1
+  hdfsSiteConfig: {{ hadoop_install_dir }}/etc/hadoop/hdfs-site.xml
+  coreSiteConfig: {{ hadoop_install_dir }}/etc/hadoop/core-site.xml
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+dataset-validated-dump:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+dataset-count-dump:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}/
+  dwcaImportPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}/
+dataset-archive-list:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}/
+dwca-avro:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}/{datasetId}/{datasetId}.zip
+  tempLocation: {{ spark_tmp }}/dwca-avro/{datasetId}
+  hdfsTempLocation: {{ spark_tmp }}
+interpret:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}/{datasetId}/1/verbatim.avro
+images:
+  tempLocation: {{ spark_tmp }}
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+sampling:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
+speciesLists:
+  speciesAggregatesPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-species
+uuid:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+sensitive:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+index:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
+jackKnife:
+  jackKnifePath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-jackknife
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
+clustering:
+  clusteringPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-clustering
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
+solr:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
+  jackKnifePath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-jackknife
+  clusteringPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-clustering
+  zkHost: {{ zk_host | default('localhost:2181') }}
+  includeSampling: {{ include_sampling }}
+  includeJackKnife: {{ include_jackknife }}
+  includeClustering: {{ include_clustering }}
+  numOfPartitions: {{ solr_num_of_partitions | default('3') }}
+validation-report:
+  checkSolr: {{ check_solr }}
+  checkSampling: {{ include_sampling }}
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  zkHost: {{ zk_host | default('localhost:2181') }}
+

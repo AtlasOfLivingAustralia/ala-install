@@ -14,7 +14,7 @@
     name: nginx_vhost
   vars:
     appname: "branding"
-    hostname: "{{ branding_hostname }}"
+    hostname: "{{ branding_url }}"
     context_path: "/"
     nginx_paths:
       - path: "/"

@@ -1,0 +1,78 @@
+<!DOCTYPE log4j:configuration  SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+    <appender name="FILE" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${catalina.base}/logs/biocache-service.log"/>
+        <param name="Append" value="true"/>
+        <param name="Threshold" value="INFO"/>
+        <param name="MaxFileSize" value="200MB"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%t] %p %4c  (%F:%L) - %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="REMOTE#org.ala.client.appender.RestLevel" />
+            <param name="AcceptOnMatch" value="false"/>
+        </filter>
+    </appender>
+    <appender name="ALA_LOGGER" class="org.ala.client.appender.RestfulAppender">
+        <param name="username" value="" />
+        <param name="password" value="" />
+        <param name="timeout" value="5000" /> <!-- millisecond -->
+        <param name="urlTemplate" value="{{ logger_url }}/service/logger/" />
+        <param name="Threshold" value="REMOTE#org.ala.client.appender.RestLevel" />
+    </appender>
+    <appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
+        <param name="BufferSize" value="256" /> <!-- default value is 128 messages -->
+        <param name="Blocking" value="false" />
+        <appender-ref ref="ALA_LOGGER" />
+    </appender>
+    <category name="org.ala.biocache">
+        <priority value="WARN"/>
+    </category>
+    <category name="au.org.ala.biocache">
+        <priority value="WARN"/>
+    </category>
+    <category name="au.org.ala">
+        <priority value="WARN"/>
+    </category>
+    <category name="org.scale7">
+        <priority value="WARN"/>
+    </category>
+    <category name="au.org.ala.sds.model">
+        <priority value="WARN"/>
+    </category>
+    <category name="au.org.ala.cas">
+        <priority value="WARN"/>
+    </category>
+    <category name="org.jasig">
+        <priority value="WARN"/>
+    </category>
+    <category name="org.springframework">
+        <priority value="WARN"/>
+    </category>
+    <category name="org.apache">
+        <priority value="WARN"/>
+    </category>
+    <category name="httpclient">
+        <priority value="WARN"/>
+    </category>
+    <category name="org.hibernate">
+        <priority value="WARN"/>
+    </category>
+    <category name="net.sf">
+        <priority value="WARN"/>
+    </category>
+    <category name="org.springframework.aop.interceptor.cache">
+        <priority value="WARN"/>
+    </category>
+    <category name="org.springframework.jdbc.core">
+        <priority value="WARN"/>
+    </category>
+    <category name="org.quartz">
+        <priority value="WARN"/>
+    </category>
+    <root>
+        <priority value ="WARN" />
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="ASYNC" />
+    </root>
+</log4j:configuration>

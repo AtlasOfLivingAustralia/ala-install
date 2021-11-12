@@ -126,6 +126,10 @@ skin.orgNameShort: {{ orgNameShort | default('ALA') }}
 skin.favicon: {{ skin_favicon | default('https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png') }}
 skin.homeUrl: {{ skin_home_url | default('http://www.ala.org.au') }}
 
+attributes:
+    affiliations:
+      enabled: {{ show_ala_survey | default('false') }}
+
 # API key for external apps
 webservice.apiKey: {{ api_key }}
 

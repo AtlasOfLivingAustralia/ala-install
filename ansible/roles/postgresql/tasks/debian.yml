@@ -14,7 +14,7 @@
 - name: Set postgis package names
   set_fact:
     postgresql_packages: "{{postgresql_packages}} + [ 'postgresql-{{pg_version}}-postgis-{{postgis_version}}', 'postgresql-{{pg_version}}-postgis-{{postgis_version}}-scripts', 'gdal-bin' ]"
-  when: postgis_version
+  when: postgis_version is defined
   tags: postgresql
 
 - name: Install Postgres
