@@ -1,3 +1,7 @@
+
+ecodata_context_path:
+ecodata_tomcat_server_port: 8081
+
 # GeoServer
 install_geoserver: False
 geoserver_enabled: true
