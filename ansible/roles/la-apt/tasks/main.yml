@@ -1,0 +1,21 @@
+- name: Add apt.gbif.es key
+  get_url:
+    # We use this key from the above repo temporally
+    url: 'https://keyserver.ubuntu.com/pks/lookup?op=hget&search=7524d3b383016eab0ee47bfe253a51f7'
+    dest: /etc/apt/trusted.gpg.d/apt-gbif-es-demo.asc
+    mode: 0644
+  when:
+    - ansible_os_family == "Debian"
+  tags:
+    - packages
+
+- name: Install gbif.es apt repository
+  apt_repository:
+    # We use this repo temporally
+    repo: deb [arch=amd64] https://apt.gbif.es/ bionic main
+    filename: apt_gbif_es
+    state: present
+  when:
+    - ansible_os_family == "Debian"
+  tags:
+    - packages
