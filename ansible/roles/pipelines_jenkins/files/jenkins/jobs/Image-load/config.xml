@@ -3,6 +3,9 @@
   <description/>
   <keepDependencies>false</keepDependencies>
   <properties>
+    <com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty plugin="naginator@1.18.1">
+      <optOut>false</optOut>
+    </com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
@@ -24,6 +27,18 @@
             </a>
           </choices>
         </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>displayName</name>
+          <description/>
+          <defaultValue>image ${datasetId}</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>asyncUpload</name>
+          <description>Whether to use an async upload or not.
+If set to false the job will stay active until all images are downloaded and stored by the image service.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
     
@@ -43,8 +58,14 @@
   </builders>
   <publishers/>
   <buildWrappers>
-    <hudson.plugins.ansicolor.AnsiColorBuildWrapper plugin="ansicolor@0.7.2">
+    <hudson.plugins.ansicolor.AnsiColorBuildWrapper plugin="ansicolor@0.7.5">
       <colorMapName>xterm</colorMapName>
     </hudson.plugins.ansicolor.AnsiColorBuildWrapper>
+    <org.jenkinsci.plugins.buildnamesetter.BuildNameSetter plugin="build-name-setter@2.2.0">
+      <template>#${BUILD_NUMBER} - image-load ${datasetId}       </template>
+      <descriptionTemplate/>
+      <runAtStart>true</runAtStart>
+      <runAtEnd>true</runAtEnd>
+    </org.jenkinsci.plugins.buildnamesetter.BuildNameSetter>
   </buildWrappers>
 </project>
