@@ -1,7 +1,7 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?><flow-definition plugin="workflow-job@2.40">
   <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.7.2"/>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.7.2">
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.8.4"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.8.4">
       <jobProperties/>
       <triggers/>
       <parameters/>
@@ -17,12 +17,21 @@
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
     
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.83">
-    <script>stage('Dump out dataset counts') {
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.90">
+    <script>
+
+stage('Dump out dataset counts') {
  node('master'){
      sh 'sudo -u spark la-pipelines dataset-list'
  }
 }
+
+stage('Restart docker services') {
+ node('master'){
+     build 'Restart-docker-services'
+ }
+}
+
 
 def datasets = splitDatasetsBySize()
 def smallDatasets = datasets[0]
@@ -37,6 +46,7 @@ stage('SDS large datasets on cluster') {
         echo 'Large dataset for cluster: ' + datasetId
         build job: 'SDS-dataset', parameters: [
              string(name: 'datasetId', value: datasetId),
+             string(name: 'displayName', value: datasetId),
              string(name: 'mode', value: '--cluster')
         ]        
      }
@@ -53,12 +63,15 @@ batches.eachWithIndex { batch, index -&gt;
   branches["node_" + nodeName] = {
     node(nodeName) {
       echo 'Datasets ' + batch
-      build job: 'SDS-dataset', parameters: [
-           new org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterValue
-               ("TARGET_NODE", "description", nodeName),
-           string(name: 'datasetId', value: batch),
-           string(name: 'mode', value: '--embedded')
-      ]
+      if (batch){
+          build job: 'SDS-dataset', parameters: [
+               new org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterValue
+                   ("TARGET_NODE", "description", nodeName),
+               string(name: 'datasetId', value: batch),
+               string(name: 'displayName', value: 'small-batch'),
+               string(name: 'mode', value: '--embedded')
+          ]
+        }
     }
   } 
 }
