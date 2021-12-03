@@ -124,7 +124,7 @@ interpret-sh-args:
     num-executors: {{ interpret_spark_num_executors | default(6) }}
     executor-cores: {{ interpret_spark_executor_cores | default(8) }}
     executor-memory: {{ interpret_spark_executor_memory | default('24G') }}
-    driver-memory: {{ interpret_spark_executor_memory | default('4G') }}
+    driver-memory: {{ interpret_spark_driver_memory | default('4G') }}
 
 image-sync-sh-args:
   local:
@@ -136,7 +136,7 @@ image-sync-sh-args:
     num-executors: {{ image_sync_spark_num_executors | default(16) }}
     executor-cores: {{ image_sync_spark_executor_cores | default(8) }}
     executor-memory: {{ image_sync_spark_executor_memory | default('7G') }}
-    driver-memory: {{ image_sync_spark_executor_memory | default('1G') }}
+    driver-memory: {{ image_sync_spark_driver_memory | default('1G') }}
 
 image-load-sh-args:
   local:
@@ -148,7 +148,7 @@ image-load-sh-args:
     num-executors: {{ image_load_spark_num_executors | default(16) }}
     executor-cores: {{ image_load_spark_executor_cores | default(8) }}
     executor-memory: {{ image_load_spark_executor_memory | default('7G') }}
-    driver-memory: {{ image_load_spark_executor_memory | default('1G') }}
+    driver-memory: {{ image_load_spark_driver_memory | default('1G') }}
 
 uuid-sh-args:
   local:
@@ -160,7 +160,7 @@ uuid-sh-args:
     num-executors: {{ uuid_spark_num_executors | default(6) }}
     executor-cores: {{ uuid_spark_executor_cores | default(8) }}
     executor-memory: {{ uuid_spark_executor_memory | default('20G') }}
-    driver-memory: {{ uuid_spark_executor_memory | default('4G') }}
+    driver-memory: {{ uuid_spark_driver_memory | default('4G') }}
 
 sampling-sh-args:
   local:
@@ -172,7 +172,7 @@ sampling-sh-args:
     num-executors: {{ sampling_spark_num_executors | default(8) }}
     executor-cores: {{ sampling_spark_executor_cores | default(8) }}
     executor-memory: {{ sampling_spark_executor_memory | default('16G') }}
-    driver-memory: {{ sampling_spark_executor_memory | default('4G') }}
+    driver-memory: {{ sampling_spark_driver_memory | default('4G') }}
 
 sensitive-sh-args:
   spark-embedded:
@@ -182,7 +182,7 @@ sensitive-sh-args:
     num-executors: {{ sensitive_spark_num_executors | default(8) }}
     executor-cores: {{ sensitive_spark_executor_cores | default(8) }}
     executor-memory: {{ sensitive_spark_executor_memory | default('16G') }}
-    driver-memory: {{ sensitive_spark_executor_memory | default('4G') }}
+    driver-memory: {{ sensitive_spark_driver_memory | default('4G') }}
 
 sample-sh-args:
   local:
@@ -198,7 +198,7 @@ index-sh-args:
     num-executors: {{ index_spark_num_executors | default(6) }}
     executor-cores: {{ index_spark_executor_cores | default(8) }}
     executor-memory: {{ index_spark_executor_memory | default('20G') }}
-    driver-memory: {{ index_spark_executor_memory | default('4G') }}
+    driver-memory: {{ index_spark_driver_memory | default('4G') }}
 
 jackknife-sh-args:
   local:
@@ -210,7 +210,7 @@ jackknife-sh-args:
     num-executors: {{ jackknife_spark_num_executors | default(24) }}
     executor-cores: {{ jackknife_spark_executor_cores | default(8) }}
     executor-memory: {{ jackknife_spark_executor_memory | default('7G') }}
-    driver-memory: {{ jackknife_spark_executor_memory | default('1G') }}
+    driver-memory: {{ jackknife_spark_driver_memory | default('1G') }}
 
 clustering-sh-args:
   local:
@@ -220,7 +220,7 @@ clustering-sh-args:
   spark-cluster:
     conf: spark.default.parallelism={{ clustering_spark_parallelism | default(500) }}
     executor-memory: {{ clustering_spark_executor_memory | default('20G') }}
-    driver-memory: {{ clustering_spark_executor_memory | default('4G') }}
+    driver-memory: {{ clustering_spark_driver_memory | default('4G') }}
 
 solr-sh-args:
   local:
@@ -232,4 +232,4 @@ solr-sh-args:
     num-executors: {{ solr_spark_num_executors | default(6) }}
     executor-cores: {{ solr_spark_executor_cores | default(8) }}
     executor-memory: {{ solr_spark_executor_memory | default('22G') }}
-    driver-memory: {{ solr_spark_executor_memory | default('6G') }}
+    driver-memory: {{ solr_spark_driver_memory | default('6G') }}
