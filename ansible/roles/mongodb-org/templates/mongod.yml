@@ -11,6 +11,11 @@ storage:
 #  engine:
 #  mmapv1:
 #  wiredTiger:
+{% if mongodb_cache_size_gb is defined %}
+  wiredTiger:
+    engineConfig:
+      cacheSizeGB: {{ mongodb_cache_size_gb }}
+{% endif %}
 
 # where to write logging data.
 systemLog:
