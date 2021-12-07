@@ -92,7 +92,7 @@
 
 - name: Install pip python-pymongo package
   pip:
-    name: pymongo
+    name: pymongo==3.12.2
   tags: mongodb-org
 
 - name: Enable service mongod
