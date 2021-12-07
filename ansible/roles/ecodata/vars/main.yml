@@ -33,6 +33,6 @@ enable_security_replica_set: "{{ enable_security_after_replica_set | default(fal
 mongo_version4: "{{ mongodb_version_4 | default(false) }}"
 mongo_version3: "{{ mongodb_version_3 | default(false) }}"
 
-userdetails_url: "{{ auth_base_url }}/userdetails"
+userdetails_url: "{{ auth_base_url }}/userdetails/"
 ecodata_url: "https://{{ ecodata_hostname }}"
 security_serviceUrl: "{{ auth_base_url }}/apikey/ws/check?apikey="
