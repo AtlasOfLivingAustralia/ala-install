@@ -1,0 +1,403 @@
+Code,Name,Creator,Description,Wiki,Failure implication,"Severity/
+Verification/
+Metric",Facet,Darwin Core Class,Darwin Core Fields,References,Implementation notes (algorithms),Logic,New/Currently Supported,Geospatial
+Geospatial,,,,,,,,,,,,,,
+0,GEOSPATIAL_ISSSUE,,Generic geospatial issue,,,,,,,,,,,
+2024,NEGATED_LATITUDE,GBIF,Record appears to be referencing a location in the wrong hemisphere,Wiki,Fix and report,Warning,Other,Location,decimalLatitude,,,,SUPPORTED,
+2023,NEGATED_LONGITUDE,GBIF,Record appears to be referencing a location in the wrong hemisphere,Wiki,Fix and report,Warning,Other,Location,decimalLongitude,,,,SUPPORTED,
+,INVERTED_COORDINATES,GBIF,Latitude and longitude have been transposed,Wiki,Fix and report,Warning,Other,Location,"decimalLatitude, decimalLongitude",,,,SUPPORTED,
+2000,ZERO_COORDINATES,GBIF,Latitude and longitude provided are both zero,Wiki,Exclude from mapping and other reports. Make viewable in error report,Error,Important,Location,"decimalLatitude, decimalLongitude",,,,SUPPORTED,X
+2001,COORDINATES_OUT_OF_RANGE,GBIF,Latitude >90 or <-90 and Longitude >180 or <-180,Wiki,Exclude from mapping and other reports. Make viewable in error report,Error,Important,Location,"decimalLatitude, decimalLongitude",,,,SUPPORTED,
+1005,UNKNOWN_COUNTRY_NAME,GBIF,Unrecognised or unparseable country name,Wiki,Report,Warning,Other,Location,country,,,,SUPPORTED,
+2036,ALTITUDE_OUT_OF_RANGE,GBIF,"Altitude greater than 10000m, or less than -100m",Wiki,Report,Warning,Other,Location,verbatimElevation,,,,SUPPORTED,X
+,BADLY_FORMED_ALTITUDE,GBIF,Free text string provided as altitude,Wiki,Report,Warning,Other,Location,verbatimElevation,,,,Duplicate of ALTITUDE_NON_NUMERIC,
+2037,MIN_MAX_ALTITUDE_REVERSED,GBIF,Typically a column mapping issue,Wiki,Fix and report,Warning,Other,Location," minimumElevationInMeters, maximumElevationInMeters",,,,SUPPORTED,X
+2032,DEPTH_IN_FEET,GBIF,Darwin core specifies metres should be used,Wiki,Fix and report,Warning,Other,Location,verbatimDepth,,"Bassed on unit being supplied in the field - ft, f, feet",,SUPPORTED,
+2033,DEPTH_OUT_OF_RANGE,GBIF,Depth greater than 10000,Wiki,Report,Warning,Other,Location,verbatimDepth,,,,SUPPORTED,X
+2034,MIN_MAX_DEPTH_REVERSED,GBIF,Typically a column mapping issue,Wiki,Fix and report,Warning,Other,Location,verbatimDepth,,,,SUPPORTED,X
+2038,ALTITUDE_IN_FEET,GBIF,Darwin core specifies metres should be used,Wiki,Fix and report,Warning,Other,Location,verbatimElevation,,"Bassed on unit being supplied in the field - ft, f, feet",,SUPPORTED,
+2039,ALTITUDE_NON_NUMERIC,GBIF,Should be a numeric value in metres,Wiki,Report,Warning,Other,Location,verbatimElevation,,,,SUPPORTED,X
+2035,DEPTH_NON_NUMERIC,GBIF,Should be a numeric value in metres,Wiki,Report,Warning,Other,Location,verbatimDepth,,,,"SUPPORTED 
+Not in use in Biocache 04.09.2020",X
+,,,,,,,,,,,,,,
+1004,STATEPROVINCE_COORDINATE_MISMATCH,DM,Coordinates dont match the supplied state,Wiki,Report,Warning,Other,Location,"stateProvince, decimalLatitude, decimalLongitude",,,,SUPPORTED,X
+19,COORDINATE_HABITAT_MISMATCH,DM,A marine species detected in a terrestrial environment or a terrestrial species detected in a marine environment.,Wiki,Exclude from mapping and other reports. Make viewable in error report,Error,Important,Location,"decimalLatitude, decimalLongitude,
+terrestrial spatial layer",,,,SUPPORTED,X
+20,"DETECTED_OUTLIER_ENVIRONMENTAL
+DETECTED_OUTLIER",DM,Record marked as outlier because it is outside the acepted environmental range/envelope of the species,Wiki,Optionally exclude from mapping and other reports,Error,Outlier,Location,"decimalLatitude, decimalLongitude, various spatial layers",,"SB to investigate best methods to identify potentail outliers using standard deviation, deviations from median, cumulative frequency and other measures.",,SUPPORTED,
+2018,COUNTRY_INFERRED_FROM_COORDINATES,GBIF,"Country field supplied was empty, but was inferred in processing by the supplied coordinates",Wiki,Report,Warning,Other,Location,country,GBIF 2010,,,SUPPORTED,
+1001,COORDINATES_CENTRE_OF_STATEPROVINCE,DM,Coordinates are the exact centre of the state or territory,Wiki,Exclude from mapping and other reports. Make viewable in error report,Error,Other,Location,"stateProvince, coordinatePrecision, CoordinateUncertaintyInMeters
+",,,,SUPPORTED,X
+,COORDINATE_PRECISION_MISMATCH,MN,Coordinate data does not match precision indicated - could be incorrect precision or truncation or rounding of the coordinate data (most likely with trailing zeros),Wiki,Report,Warning,Other,Location,coordinatePrecision,,,,SUPPORTED,
+,PRECISION_RANGE_MISMATCH,MN,A precision value should be between >0 and <=1 if entered according to DwC specificiations,Wiki,Report,Warning,Other,Location,coordinatePrecision,,,,SUPPORTED,
+,UNCERTAINTY_RANGE_MISMATCH,MN,Uncertainty should be a whole number >0,Wiki,Report,Warning,Other,Location,coordinateUncertaintyInMeters,,,,SUPPORTED,X
+1002,UNCERTAINTY_IN_PRECISION,MN,Uncertainty value in precision field,Wiki,Report,Warning,Other,Location,"coordinateUncertaintyInMeters, coordinatePrecision",,,,SUPPORTED,X
+,SPECIES_OUTSIDE_EXPERT_RANGE,MN,Geographic coordinates are outside the range as defined by 'expert/s' for the taxa,Wiki,Report,Warning,Important,Location,"decimalLatitude, decimalLongitude, expert range spatial layer",,E.g. corals outside known range according to Charlie Veron - probable misidentification,,SUPPORTED,
+1003,UNCERTAINTY_NOT_SPECIFIED,NC,Uncertainty was not supplied with the record,Wiki,Report,Warning,Important,Location,coordinateUncertaintyInMeters,,,,SUPPORTED,X
+1006,COORDINATES_CENTRE_OF_COUNTRY,DM,Coordinates are the exact centre of the country,Wiki,Exclude from mapping and other reports. Make viewable in error report,Error,Important,Location,"country, decimalLatitude, decimalLongitude",,,,SUPPORTED,X
+,MISSING_COORDINATEPRECISION,MN,coordinatePrecision not supplied with the record,Wiki,Report,Warning,Important,Location,coordinatePrecision,,,,SUPPORTED,
+1007,MISSING_GEODETICDATUM,MN,geodeticDatum not supplied for coordinates,Wiki,Report - also implies uncertainty,Warning,Important,Location,geodeticDatum,ICSM 2000,"If there is a reference to use of GPS, WGS84 could be infered?",,SUPPORTED,
+1009,MISSING_GEOREFERNCEDBY,MN,GeoreferencedBy not supplied with the record,Wiki,Report,Warning,Other,Location,georeferencedBy,,,,SUPPORTED,
+1010,MISSING_GEOREFERENCEPROTOCOL,MN,GeoreferenceProtocol not supplied with the record,Wiki,Report,Warning,Other,Location,georeferenceProtocol,,,,SUPPORTED,
+1011,MISSING_GEOREFERENCESOURCES,MN,GeoreferenceSources not supplied with the record,Wiki,Report,Warning,Other,Location,georeferenceSources,,,,SUPPORTED,
+1012,MISSING_GEOREFERENCEVERIFICATIONSTATUS,MN,GeoreferenceVerificationStatus not supplied with the record,Wiki,Report,Warning,Other,Location,georeferenceVerificationStatus,,,,SUPPORTED,
+,INVALID_GEODETICDATUM,SB,The geodetic datum is not valid,Wiki,Report,Warning,Important,Location,geodeticDatum,ICSM 2000,"The geodetic datum (spatial reference system) is not recorded, or is not in controlled vocabulary. Lack of datum may add a further 200 metre error to the spatial error. ",,Duplicate of UNRECOGNIZED_GEODETIC_DATUM,
+,COORDINATE_UNCERTAINTY_IN_METERS,SB,The inferred maximum uncertainty is 'n' metres,Wiki,"Report, make facetable for spatial and other analyses",Metric,Other,Location,"coordinatePrecision, geodeticDatum, coordinateUncertaintyInMeters, georeferenceProtocol,  dataGeneralizations
+","GeoRef, ICSM 2000; BioGeom a",See wiki for details.,,,
+,GEOREFERENCE_UNCERTAIN,SB,The georeference is uncertain,Wiki,Exclude from mapping and other reports. Make viewable in error report,Error,Important,Location,georeferenceVerificationStatus,,"If doubts expresssed regarding geocode, e.g. 'requires verification' or 'doubtful' or 'uncertain' or similar then exclude.",,NOT SUPPORTED,
+,GEOREFERENCE_VERIFIED,SB,The georeference  has been verified,Wiki,Report,Verification,Important,Location,georeferenceVerificationStatus,,"The georeferened  are verified as authentic, e.g. 'confirmed', 'verified'.",,NOT SUPPORTED,
+,DETECTED_OUTLIER_JACKKNIFE,SB,"The location is an outlier detected using jack-knife algorithm
+",Wiki,Optionally exclude from mapping and other reports,Error,Outlier,Location,"decimalLatitude, decimalLongitude","Chapman 2005a, ALA 2008",See wiki for details.,,SUPPORTED,
+,DETECTED_OUTLIER_OTHER,SB,Other methods of outliers detection to be investigated.,Wiki,Optionally exclude from mapping and other reports,Error,Outlier,Location,"decimalLatitude, decimalLongitude",,"An investigation will be made of the suitability of MaxEnt probababiilty values as an indicator of outliers. Other outlier detection methods will also be investigated, e.g. Chapman 2005a (p.45)  mentions these geographic outlier detection methods:
+Cumulative Freqency Curves(Diva-GIS, ANUCLIM); Principle Components Analysis (FloraMap, PATN); Cluster Analysis (FloraMap, PATN); Climatic Envelope (Diva-GIS); Reverse Jackknife (Diva-GIS, planned for BioGeomancer in 2006); Parameter Extremes (ANUCLIM); Other Methods (Standard Deviations from Mean; Deviations from Median; Use of Modelled Distributions - GARP, Lifemapper; Pattern Analysis - PATN; Ordinal Association Rules- PATN - assocation with vegetation types etc). Note: some of these are explicitly mention in other proposed outlier checks.
+
+Note that all these are environmental outlier checks of one type or another (LB).",,NOT SUPPORTED,
+,INFERRED_FALSE_PRECISION,SB,The location may have a false level of precision,Wiki,Report,Warning,Other,Location,"decimalLatitude, decimalLongitude, coordinatePrecision, geodeticDatum, coordinateUncertaintyInMeters",Chapman 2005b p26,"Indicate this if many decimal places in coordinates, but no precision or uncertainty measures. Methods to be investigated by SB",,,
+1008,MISSING_GEOREFERENCE_DATE,MN,GeoreferenceDate not supplied with the record,,Report,Warning,Other,Location,georeferenceDate,,,,SUPPORTED,
+1000,LOCATION_NOT_SUPPLIED,MN,"no indication of location (coordinates, locality, polygon, location ID, verbatim coordinates) supplied",,Exclude from mapping and other reports. Make viewable in error report,Error,Important,Location,"decimalLongitude, decimalLatitude, locality, footprtinWKT, locationID, verbatimCoordinates, verbatimLatitude, verbatimLongitude",,,,SUPPORTED,
+,DECIMAL_COORDINATES_NOT_SUPPLIED,MN,decimal latitude and longitude not supplied,,Exclude from mapping and other reports. Make viewable in error report,Error,Other,Location,"decimalLatitude, decimalLongitude",,,,SUPPORTED,
+2006,DECIMAL_LAT_LONG_COVERTED,CF,Decimal latitude and longitude were converted to WGS84,,Report,Warning,Other,Location,"decimalLatitude, decimalLongitude",,,,SUPPORTED,
+2007,DECIMAL_LAT_LONG_CONVERSION_FAILED,CF,Conversion of provided decimal latitude and longitude to WGS84 failed,Wiki,Exclude from mapping and other reports. Make viewable in error report,Error,,Location,"decimalLatitude, decimalLongitude",,,,SUPPORTED,
+,DECIMAL_LAT_LONG_CALCULATED_FROM_VERBATIM,CF,"Decimal latitude and longitude were calculated using verbatimLatitude, verbatimLongitude and verbatimSRS",,Report,Warning,,Location,"decimalLatitude, decimalLongitude, verbatimLatitude, verbatimLongitude, verbatimSRS",,,,SUPPORTED,
+,DECIMAL_LAT_LONG_CALCULATION_FROM_VERBATIM_FAILED,CF,"Failed to calculate decimal latitude and longitude from verbatimLatitude, verbatimLongitude and verbatimSRS",,Exclude from mapping and other reports. Make viewable in error report,Error,,Location,"decimalLatitude, decimalLongitude, verbatimLatitude, verbatimLongitude, verbatimSRS",,,,SUPPORTED,
+,DECIMAL_LAT_LONG_CALCULATED_FROM_EASTING_NORTHING,CF,"Decimal latitude and longitude were calculated using easting, nothing and zone",,Report,Warning,,Location,"decimalLatitude, decimalLongitude",,,,SUPPORTED,
+,DECIMAL_LAT_LONG_CALCULATION_FROM_EASTING_NORTHING_FAILED,CF,"The attempt to generate decimal coordinates from a grid reference (Easting, Northing and Zone) was not successful",Wiki,Exclude from mapping and other reports. Make viewable in error report,Error,,Location,"decimalLatitude, decimalLongitude",,,,SUPPORTED,
+2005,GEODETIC_DATUM_ASSUMED_WGS84,CF,Geodetic datum assumed to be WGS84 (EPSG:4326),,Report,Warning,,Location,geodeticDatum,,,,SUPPORTED,
+2004,UNRECOGNIZED_GEODETIC_DATUM,CF,Geodetic datum not recognized,,Exclude from mapping and other reports. Make viewable in error report,Error,,Location,geodeticDatum,,,,SUPPORTED,
+,ZERO_LATITUDE_COORDINATES,MN,Latitude value provided is zero,Wiki,,Warning,,Location,decimalLatitude,,,,,
+,ZERO_LONGITUDE_COORDINATES,MN,Longitude value provided is zero,Wiki,,Warning,,Location,decimalLiongitude,,,,,
+,COORDINATE_DECIMAL_PLACES_MISMATCH,CF,Coordinates have a mismatched number of decimal places.,,Report,Warning,,Location,"decimalLatitude, decimalLongitude, verbatimLatitude, verbatimLongitude",,Warning is raised if difference in number of decimal places between lat long is greater than 2.,,SUPPORTED,
+,COORDINATE_SUSPECT_NUMBER_DECIMAL_PLACES,CF,Latitude and or longitude has a suspect number of decimal places. GPS receivers typically measure decimal degress to a maximum of 7 decimal places .,,Report,Warning,,Location,"decimalLatitude, decimalLongitude, verbatimLatitude, verbatimLongitude",,Warning is raised if lat or long has greater than 7 decimal places,,SUPPORTED,
+,SUPPLIED_COORDINATES_CONVERTED,CF,Supplied coordinates may have been converted from another format,,Report,Warning,,Location,"decimalLatitude, decimalLongitude, verbatimLatitude, verbatimLongitude",,Warning is raised if lat or long has a decimal digit repeated 4 or more times,,SUPPORTED,
+,COORDINATE_OUT_OF_RANGE,,,,,,,,,,,,,
+2002,COORDINATE_INVALID,GBIF,Coordinate value is given in some form but unable to interpret it,,,,,,,,,,,
+2003,COORDINATE_ROUNDED,GBIF,Original coordinate modified by rounding,,,,,,,,,,,
+,COORDINATE_REPROJECTED,GBIF,,,,,,,,,,,,
+,COORDINATE_REPROJECTION_FAILED,GBIF,,,,,,,,,,,,
+2008,COORDINATE_REPROJECTION_SUSPICIOUS,GBIF,"Indicates successful coordinate reprojection according to provided datum, but which results in a datum shift larger than 0.1 decimal degrees",,,,,,,,,,,
+2009,COORDINATE_ACCURACY_INVALID,GBIF,DEPRECATED,,,,,,,,,,,
+2010,COORDINATE_PRECISION_INVALID,GBIF,Indicates an invalid or very unlikely coordinatePrecision,,,,,,,,,,,
+2011,COORDINATE_UNCERTAINTY_METERS_INVALID,GBIF,Indicates an invalid or very unlikely dwc:uncertaintyInMeters,,,,,,,,,,,
+2012,COORDINATE_PRECISION_UNCERTAINTY_MISMATCH ,GBIF,DEPRECATED,,,,,,,,,,,
+2013,FOOTPRINT_SRS_INVALID,GBIF,The Footprint Spatial Reference System given could not be interpreted,,,,,,,,,,,
+2014,FOOTPRINT_WKT_INVALID,GBIF,The Footprint Well-Known-Text given could not be interpreted,,,,,,,,,,,
+2015,COUNTRY_COORDINATE_MISMATCH,GBIF,Coordinates outside the range for the reported country,Wiki,Report,Warning,Other,Location,"country, decimalLatitude, decimalLongitude",,,,SUPPORTED,
+2016,COUNTRY_MISMATCH,,Interpreted country for dwc:country and dwc:countryCode contradict each other,,,,,,,,,,,
+2017,COUNTRY_INVALID,,Uninterpretable country values found,,,,,,,,,,,
+,COUNTRY_DERIVED_FROM_COORDINATES,,"The interpreted country is based on the coordinates, not the verbatim string information",,,,,,,,,,,
+2019,CONTINENT_COUNTRY_MISMATCH,,The interpreted continent and country do not match,,,,,,,,,,,
+2020,CONTINENT_INVALID,,Uninterpretable continent values found,,,,,,,,,,,
+2021,CONTINENT_DERIVED_FROM_COORDINATES,,"The interpreted continent is based on the coordinates, not the verbatim string information",,,,,,,,,,,
+2022,PRESUMED_SWAPPED_COORDINATE,,Latitude and longitude appear to be swapped,Wiki,,Warning,,Location,"decimalLatitude, decimalLongitude",,Replaces,,,
+,PRESUMED_NEGATED_LONGITUDE,,"Longitude appears to be negated, e.g. 32.3 instead of -32.3",,,,,,,,,,,
+,PRESUMED_NEGATED_LATITUDE,,"Latitude appears to be negated, e.g. 32.3 instead of -32.3",,,,,,,,,,,
+,DEPTH_NOT_METRIC,,"Not currently in use in biocache, listed in public enum ALAOccurrenceIssue implements InterpretationRemark",,,,,,,,,,,
+,DEPTH_UNLIKELY,,"Not currently in use in biocache, listed in public enum ALAOccurrenceIssue implements InterpretationRemark",,,,,,,,,,,
+,DEPTH_MIN_MAX_SWAPPED,,"Not currently in use in biocache, listed in public enum ALAOccurrenceIssue implements InterpretationRemark
+appears to be a duplicate of DEPTH_MIN_MAX_REVERSED",,,,,,,,,,,
+,ELEVATION_UNLIKELY,,"Not currently in use in biocache, listed in public enum ALAOccurrenceIssue implements InterpretationRemark",,,,,,,,,,,
+,ELEVATION_MIN_MAX_SWAPPED,,Set if supplied minimum elevation > maximum elevation,,,,,,,,,,,
+,ELEVATION_NOT_METRIC,,"Not currently in use in biocache, listed in public enum ALAOccurrenceIssue implements InterpretationRemark",,,,,,,,,,,
+,ELEVATION_NON_NUMERIC,,Set if elevation is a non-numeric value,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+Taxonomic,,,,,,,,,,,,,,
+10000,TAXONOMIC_ISSUE,,Generic taxonimoc issue,,,,,,,,,,,
+1036,INVALID_SCIENTIFIC_NAME,GBIF,"The scientific name provided is not structured as a valid scientific name. Also catches rank values or values such as ""UNKNOWN""",Wiki,Report,Error,Taxon/Identfication,Taxon,scientificName,,"Based on the ""blacklist"" parse type.",,SUPPORTED,
+1033,UNKNOWN_KINGDOM,GBIF,"Kingdom provided doesn't match a known kingdom e.g. Animalia, Plantae",Wiki,Report,Error,Taxon/Identfication,Taxon,kingdom,,A  vocab list of known kingdoms.,,SUPPORTED,
+,AMBIGUOUS_NAME,DM,"Name homonym issues detected with record, missing higher classification preventing placement",Wiki,Report,Error,Taxon/Identfication,Taxon,"scientificName, other taxon fields",,,,Duplicate of HOMONYM_ISSUE,
+,NAME_NOT_RECOGNISED,DM,The scientific name provided does not match any of the names lists used by the ALA.  For a full explanation of the ALA name matching process see https://github.com/AtlasOfLivingAustralia/ala-name-matching,Wiki,Report,Error,Taxon/Identfication,Taxon,scientificName,,,,SUPPORTED,X
+,NAME_NOT_IN_NATIONAL_CHECKLISTS,DM,"Name of the taxon not in the national species lists for the national in which it was recorded, but the name is in other checklists (e.g. CoL)",Wiki,Report,Error,Taxon/Identfication,Taxon,scientificName,,,,SUPPORTED,X
+,HOMONYM_ISSUE,DM,Name and classification supplied cant be used to choose between 2 homonyms,Wiki,Report,Error,Taxon/Identfication,Taxon,"scientificName, other taxon fields",,,,SUPPORTED,X
+10007,IDENTIFICATION_INCORRECT,,,,,,,,,,,,,
+1031,MISSING_TAXONRANK,MN,taxonRank not supplied with the record,Wiki,Report,Warning,Taxon/Identfication,Taxon,taxonRank,,,,SUPPORTED,
+,MISSING_IDENTIFICATIONQUALIFIER,MN,identificationQualifier not supplied with the record,Wiki,Report,Warning,Taxon/Identfication,Identification,identficationQualifier,,,,SUPPORTED,
+,MISSING_IDENTIFIEDBY,MN,identifiedBy not supplied with the record,Wiki,Report,Warning,Taxon/Identfication,Identification,identifiedBy,,,,SUPPORTED,
+,MISSING_IDENTIFICATIONREFERENCES,MN,identificationReferences not supplied with the record,Wiki,Report,Warning,Taxon/Identfication,Identification,identficationReferences,,,,SUPPORTED,
+,MISSING_DATEIDENTIFIED,MN,identificationDate not supplied with the record,Wiki,Report,Warning,Taxon/Identfication,Identification,identificationDate,,,,SUPPORTED,
+,IDENTIFICATION_UNCERTAIN,SB,The identification is uncertain,Wiki,Exclude from mapping and other reports. Should be viewable in error report,Error,Taxon/Identfication,Identification,identificationQualifier,Chapman 2005a & 2005b,"If doubts expresssed regarding taxon identification, e.g. 'requires verification' or 'doubtful' or 'uncertain' or similar then exclude.",,,
+,IDENTIFICATION_VERIFIED,SB,The identication has been verified,Wiki,Report,Verification,Taxon/Identfication,Identification,identificationQualifier,Chapman 2005a & 2005b,"The identification is verified as authentic, e.g. 'verified', 'confirmed'",,,
+1032,NAME_NOT_SUPPLIED,MN,Neither scientific name or vernacular name were supplied,,Exclude from mapping and other reports. Should be viewable in error report,Error,Taxon/Identfication,Taxon,"scientificName, vernacularName",,,,SUPPORTED,
+1019,TAXON_AFFINITY_SPECIES,,The scientific name has an aff. marker indicating a like-but-not identification,,,,,,,,,,Supported in Biocache 04.09.2020,
+1035,TAXON_DEFAULT_MATCH,,The ocurrence record was matched to a default value supplied by higher-order elements,,,,,,,,,,Supported in Biocache 04.09.2020,
+1020,TAXON_EXCLUDED_ASSOCIATED,,"The taxon, while matched, also has an excluded match",,,,,,,,,,Supported in Biocache 04.09.2020,
+1021,TAXON_CONFER_SPECIES,,"The scientific name has a cf. marker, indicating uncertain identification",,,,,,,,,,Supported in Biocache 04.09.2020,
+1022,TAXON_EXCLUDED,,The taxon is excluded (should not be found in this location),,,,,,,,,,Supported in Biocache 04.09.2020,
+1023,TAXON_ERROR,,There has been a generic taxon matching error,,,,,,,,,,Supported in Biocache 04.09.2020,
+1034,TAXON_SCOPE_MISMATCH,,The supplied hints do not match the final name match ,,,,,,,,,,Supported in Biocache 04.09.2020,
+1024,TAXON_HOMONYM,,The supplied name and hierarchy is not enough to uniquely determine the name ,,,,,,,,,,Supported in Biocache 04.09.2020,
+1025,TAXON_INDETERMINATE_SPECIES,,The supplied name contains an indeterminate species marker and an exact match could not be found,,,,,,,,,,Supported in Biocache 04.09.2020,
+1026,TAXON_MISAPPLIED_MATCHED,,The supplied name has been misapplied to another concept in the past,,,,,,,,,,Supported in Biocache 04.09.2020,
+1027,TAXON_MISAPPLIED,,The supplied name has been misapplied to another concept in the past with no accepted use ,,,,,,,,,,Supported in Biocache 04.09.2020,
+2028,TAXON_MATCH_FUZZY,GBIF,"Matching to the taxonomic backbone can only be done using a fuzzy, non exact match.",,,,,,,,,,Supported in Biocache 04.09.2020,
+2029,TAXON_MATCH_HIGHERRANK,GBIF,Matching to the taxonomic backbone can only be done on a higher rank and not the scientific name,,,,,,,,,,Supported in Biocache 04.09.2020,
+2030,TAXON_MATCH_AGGREGATE,GBIF,"Matching to the taxonomic backbone can only be done on a species level, but the occurrence was in fact considered a broader species aggregate/complex",,,,,,,,,,,
+2031,TAXON_MATCH_NONE,GBIF,Matching to the taxonomic backbone cannot be done cause there was no match at all or severalmatches with too little information to keep them apart (homonyms).,,,,,,,,,,Supported in Biocache 04.09.2020,
+1028,TAXON_PARENT_CHILD_SYNONYM,,The supplied name can be matched either onto the parent species or an autonymic subspecies,,,,,,,,,,Supported in Biocache 04.09.2020,
+1029,TAXON_QUESTION_SPECIES,,The supplied name contains a questionable identification marker (?),,,,,,,,,,Supported in Biocache 04.09.2020,
+1030,TAXON_SPECIES_PLURAL,,The supplied name contains a species plural marker and cannot be accuratey matched onto a single species,,,,,,,,,,Supported in Biocache 04.09.2020,
+,,,,,,,,,,,,,,
+Miscellanous,,,,,,,,,,,,,,
+,MISSING_BASIS_OF_RECORD,GBIF,Basis of record not supplied with the record,Wiki,Exclude from mapping and other reports. Should be viewable in error report,Error,Other,All,basisOfRecord,,,,SUPPORTED,X
+2044,BADLY_FORMED_BASIS_OF_RECORD,DM,Unable to map the supplied basis of record to the vocabulary in use,Wiki,Exclude from mapping and other reports. Should be viewable in error report,Error,Other,All,basisOfRecord,,,,SUPPORTED,X
+2045,UNRECOGNISED_TYPESTATUS,DM,Unable to map the supplied type status to the vocabulary in use,Wiki,Report,Warning,Other,Identification,typeStatus,,,,SUPPORTED,X
+2060,UNRECOGNISED_COLLECTIONCODE,DM,Code not recognised with ALA systems (Collectory),Wiki,Report,Warning,Other,All,collectionCode,,The implementation looks at collection/institution code combinations,,SUPPORTED,X
+2059,UNRECOGNISED_INSTITUTIONCODE,DM,Code not recognised with ALA systems (Collectory),Wiki,Report,Warning,Other,All,institutionCode,,The implementation looks at collection/institution code combinations,,SUPPORTED,
+2061,INSTITUTION_MATCH_FUZZY,,The given institution was fuzzily matched to a GRSciColl institution,,,,,,,,,,,
+2062,COLLECTION_MATCH_FUZZY,,The given collection was fuzzily matched to a GRSciColl collection,,,,,,,,,,,
+2063,INSTITUTION_COLLECTION_MISMATCH,,The collection matched doesn't belong to the institution matched,,,,,,,,,,,
+2064,POSSIBLY_ON_LOAN,,The given owner institution is different than the given institution. Therefore we assume it could be on loan and we don't link it to the occurrence. Deprecated by DIFFERENT_OWNER_INSTITUTION.,,,,,,,,,,,
+2065,DIFFERENT_OWNER_INSTITUTION,,The given owner institution is different than the given institution. Therefore we assume it doesn't belong to the institution and we don't link it to the occurrence.,,,,,,,,,,,
+,INVALID_IMAGE_URL,NC,Image URL is badly formatted,Wiki,Report,Warning,Other,Occurrence,,,,,SUPPORTED,X
+,RESOURCE_TAXONOMIC_SCOPE_MISMATCH,DM,The scientific name provided in the record does not match the expected taxonomic scope of the resource e.g. Mammal records attributed to bird watch group,Wiki,Report,Warning,Other,Occurrence,,,Mammal records attributed to bird watch group.  This QA makes use of the taxonomic hints to make a decision.,,SUPPORTED,
+,DATA_ARE_GENERALISED,SB,The data has been generalised,Wiki,Report,Warning,Other,All,dataGeneralizations,,If not null then report the dataGeneralization statement. If this relates to Location classes then make special attention to coordinates and precision terms. ,,SUPPORTED,
+,OCCURRENCE_IS_CULTIVATED_OR_ESCAPEE,SB,The occurence is cultivated or escaped from captivity,Wiki,Exclude from mapping and other reports. Should be viewable in error report,Error,Important,Occurrence,"establishmentMeans
+",,If the occurrence is cultivated or escaped from captivity then records are normally excluded from analyses.  Note that this does not apply to established wild populations of alien species.,,SUPPORTED,
+,OCCURRENCE_IS_EXTRALIMITAL,SB,The occurrence is outside the normal range of the species,Wiki,Optionally exclude from mapping and other reports,Error,Important,Occurrence,,,"This is a record level indication that the occurrence has been flagged as extralimital. The occurrence is outside the normal range of the species, e.g. 'extralimital', 'vagrant'",,,
+,OCCURRENCE_VERIFIED,SB,The occurrence has been verified,Wiki,Report,Verification,Important,Occurrence,,,"This is a record level indication that the occurrence has been verified as authentic. The occurrence is verified as authentic, e.g. confirmed, verified
+",,,
+,INFERRED_DUPLICATE_RECORD,SB,The occurence appears to be a duplicate,Wiki,Exclude from mapping and other reports. Should be viewable in error report,Error,Important,All,,Chapman 2005a,,,SUPPORTED,
+,MISSING_CATALOGUENUMBER,MN,catalogueNumber not supplied with the record,,,,Other,,,,,,SUPPORTED,
+,RECORDED_BY_UNPARSABLE,NC,The recordedBy field could not be parsed using the current known formats. ,,Records flagged with the assertion should be reviewed by developers so that the new format can be supported.,Warning,,Occurrence,recordedBy,,,,SUPPORTED,
+2052,OCCURRENCE_STATUS_UNPARSABLE,DM,"An occurrence status value supplied, but it was not a recognised value.",,Report,Warning,,Occurrence,occurrenceStatus,,,,,
+2053,OCCURRENCE_STATUS_INFERRED_FROM_INDIVIDUAL_COUNT,,Occurrence status was inferred from the individual count value,,,,,,,,,,,
+2054,OCCURRENCE_STATUS_INFERRED_FROM_BASIS_OF_RECORD,,Occurrence status was inferred from basis of records,,,,,,,,,,,
+,USER_ASSERTION_OTHER,,Generic miscellaneous user assertion,,,,,,,,,,,
+,ASSUMED_PRESENT_OCCURRENCE_STATUS,DM,"An occurrence status value wasnt supplied with this record and an value of ""present"" has been assumed.",,Report,Warning,,Occurrence,occurrenceStatus,,,,,
+2049,INTERPRETATION_ERROR,GBIF,"An error occurred during interpretation, leaving the record interpretation incomplete",,,,,,,,,,,
+2050,INDIVIDUAL_COUNT_INVALID,GBIF,The individual count value is not a positive integer,,,,,,,,,,,
+2051,INDIVIDUAL_COUNT_CONFLICTS_WITH_OCCURRENCE_STATUS,GBIF,"Example: individual count value > 0, but occurrence status is absent.",,,,,,,,,,,
+,,,,,,,,,,,,,,
+Temporal,,,,,,,,,,,,,,
+30000,TEMPORAL_ISSUE,,"Generic temporal issue, isailly from user assertions",,,,,,,,,,,
+1015,ID_PRE_OCCURRENCE,MN,"Identification predates the occurrence, possibly incorrect field mapping",Wiki,Report,Error,Other,"Event/
+Identification","dateIdentified, eventDate",,,dateIdentified < eventDate,SUPPORTED,
+1014,GEOREFERENCE_POST_OCCURRENCE,MN,The record was georeferenced after recording - not an error but has implications for precision and accuracy.  The amount of time may indicate severity? GeoreferenceDate isn't a current DwC field.,Wiki,Report,Error,Other,"Event/
+Location","eventDate, georeferenceDate",,,,SUPPORTED,
+1016,FIRST_OF_MONTH,MN,May indicate the date is only known or recorded to the Month.  Flag if there is no precision data. datePrecision is not a curent DwC field,Wiki,Report,Warning,Other,Event,"eventDate, datePrecision(nonDwC)",,,,SUPPORTED,
+1017,FIRST_OF_YEAR,MN,May indicate the date is only known or recorded to the Year.  Flag if there is no precision data.  datePrecision is not a curent DwC field,Wiki,Report,Warning,Other,Event,"eventDate, datePrecision(nonDwC)",,,,SUPPORTED,
+1018,FIRST_OF_CENTURY,MN,May indicate the date is only known or recorded to the Century.  Flag if there is no precision data. datePrecision is not a curent DwC field,Wiki,Report,Warning,Other,Event,"eventDate, datePrecision(nonDwC)",,,,SUPPORTED,
+,DATE_PRECISION_MISMATCH,MN,Date precision does not match the data.  datePrecision is not a curent DwC field,Wiki,Report,Error,Other,Event,"eventDate, datePrecision(nonDwC)",,,,NEW,
+,INVALID_COLLECTION_DATE,DM,"No date provided, invalid year, month or day provided, the collecting event date was given as pre 1600, in the future or is otherwise invalid or unparseable.",Wiki,Report,Error,Important,Event,eventDate,,This is used as a general date issue ,,SUPPORTED,X
+1013,MISSING_COLLECTION_DATE,SB,Collection date field is missing or null,Wiki,Exclude from mapping and other reports. Should be viewable in error report,Error,Important,Event,eventDate,,,,SUPPORTED,
+,DAY_MONTH_TRANSPOSED,DM,Supplied day and month fields appear to be transposed,Wiki,Fix and Report,Warning,Other,Event,"eventDate. day, month",,if month > 12 and day <12 we can infer the fields have been incorrectly mapped,,SUPPORTED,
+,INCOMPLETE_COLLECTION_DATE,NQ,The supplied collection date is missing a day and/or month component,,Report,Warning,Other,Event,eventDate,,"This is used to differentiate non error conditions for an event date. Previously this was included in INVALID_COLLECTION_DATE.  See https://github.com/AtlasOfLivingAustralia/ala/issues/detail?id=139 for discussion
+
+This will be not used when the pipelines infrastructure is implemented. GBIF code interprets an incomplete date as a date range. For example, 06-2012 will be interpreted as 01-062012 to 30-06-2012.
+",,"SUPPORTED in Biocache
+DEPRECATED in pipelines implementation",
+2055,GEOREFERENCED_DATE_UNLIKELY,GBIF,The recorded date is highly unlikely,,,,,,,,,,,
+2056,GEOREFERENCED_DATE_INVALID,GBIF,The date given for dwc:georeferencedDate is invalid and can't be interpreted at all,,,,,,,,,,,
+2057,AMBIGUOUS_INSTITUTION,GBIF,The given institution matches with more than 1 GRSciColl institution,,,,,,,,,,,
+2058,AMBIGUOUS_COLLECTION,GBIF,The given collection matches with more than 1 GRSciColl collection.,,,,,,,,,,,
+2025,RECORDED_DATE_MISMATCH,GBIF,"The recorded date specified as the eventDate string and the individual year, month, day are contradictory",,,,,,,,,,,
+2026,RECORDED_DATE_INVALID,GBIF,"A (partial) invalid date is given, such as a non existing date, zero month, etc.",,,,,,,,,,,
+2027,RECORDED_DATE_UNLIKELY,GBIF,"The recorded date is highly unlikely, falling either into the future or representing a very old date before 1600 thus predating modern taxonomy",,,,,,,,,,,
+2040,MODIFIED_DATE_INVALID,GBIF,"A (partial) invalid date is given for dc:modified, such as a nonexistent date, zero month, etc",,,,,,,,,,,
+2041,MODIFIED_DATE_UNLIKELY,GBIF,The date given for dc:modified is in the future or predates Unix time (1970),,,,,,,,,,,
+2042,IDENTIFIED_DATE_UNLIKELY,GBIF,The date given for dwc:dateIdentified is in the future or before Linnean times (1700),,,,,,,,,,,
+2043,IDENTIFIED_DATE_INVALID,GBIF,The date given for dwc:dateIdentified is invalid and can't be interpreted at all,,,,,,,,,,,
+2046,MULTIMEDIA_DATE_INVALID,GBIF,An invalid date is given for dc:created of a multimedia object,,,,,,,,,,,
+,,,,,,,,,,,,,,
+Other,,,,,,,,,,,,,,
+,VERIFIED,,Flag a user assertion issue as being verified,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,MEDIA_REPRESENTATIVE,,,,,,,,,,,,,
+,MEDIA_UNREPRESENTATIVE,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+1037,SENSITIVITY_REPORT_INVALID,,Sensitivity report invalid,,,,,,,,,,,
+1038,SENSITIVITY_REPORT_NOT_LOADABLE,,Sensitivity report not loadable,,,,,,,,,,,
+1039,UNRECOGNISED_COLLECTION_CODE,,Collection code unrecognised,,,,,,,,,,,
+1040,UNRECOGNISED_INSTITUTION_CODE,,Institution code unrecognised,,,,,,,,,,,
+2047,MULTIMEDIA_URI_INVALID,,An invalid URI is given for a multimedia object,,,,,,,,,,,
+2048,REFERENCES_URI_INVALID,,An invalid URI is given for dc:references,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,Collecting patterns,MN,"There could be a suite of test based on the example at right (from Australian Museum):
+Our entomology staff have been reviewing georeference information in EMu. They found that the Lat Long was wrong for K244722 The following info was identified by the ento staff member: “irn 1061424 has Australia, New South Wales, Blackheath Creek (32° 09' 25"" S, 149° 16' 05"" E)
+There are two lat/long possibilities: 
+
+Blackheath Creek NSW Official-32 9 149 16
+Blackheath CreekNSWOfficial-33 37 150 15 
+
+I am going to change that site record to the second pair. 
+I think it was a case of a data enterer picking the first one in the Gaz. I searched for the same collector (F.T. Fricke) around same date (Dec 1982). There 
+are 138 Catalogue records, pretty much all from the Blue Mts. The first pair of lat/longs are way out west near Dunedoo. The second are near 
+Blackheath.” And so they changed the records lat long in Emu to “ K.244722 - Castiarina variopicta (Thomson, 1878) - New South Wales, Blackheath Creek , (33 37' S , 150 15' E), 27 Dec 1982”",Wiki,,,,,,,,,,
+Code,Name,Creator,Description,Wiki,Failure implication,"Severity/
+Verification/
+Metric",Facet,Darwin Core Class,Darwin Core Fields,References,Implementation notes (algorithms),Logic,New/Currently Supported,Geospatial
+Geospatial,,,,,,,,,,,,,,
+0,GEOSPATIAL_ISSSUE,,Generic geospatial issue,,,,,,,,,,,
+1,NEGATED_LATITUDE,GBIF,Record appears to be referencing a location in the wrong hemisphere,Wiki,Fix and report,Warning,Other,Location,decimalLatitude,,,,SUPPORTED,
+2,NEGATED_LONGITUDE,GBIF,Record appears to be referencing a location in the wrong hemisphere,Wiki,Fix and report,Warning,Other,Location,decimalLongitude,,,,SUPPORTED,
+3,INVERTED_COORDINATES,GBIF,Latitude and longitude have been transposed,Wiki,Fix and report,Warning,Other,Location,"decimalLatitude, decimalLongitude",,,,SUPPORTED,
+4,ZERO_COORDINATES,GBIF,Latitude and longitude provided are both zero,Wiki,Exclude from mapping and other reports. Make viewable in error report,Error,Important,Location,"decimalLatitude, decimalLongitude",,,,SUPPORTED,X
+5,COORDINATES_OUT_OF_RANGE,GBIF,Latitude >90 or <-90 and Longitude >180 or <-180,Wiki,Exclude from mapping and other reports. Make viewable in error report,Error,Important,Location,"decimalLatitude, decimalLongitude",,,,SUPPORTED,
+6,UNKNOWN_COUNTRY_NAME,GBIF,Unrecognised or unparseable country name,Wiki,Report,Warning,Other,Location,country,,,,SUPPORTED,
+7,ALTITUDE_OUT_OF_RANGE,GBIF,"Altitude greater than 10000m, or less than -100m",Wiki,Report,Warning,Other,Location,verbatimElevation,,,,SUPPORTED,X
+8,BADLY_FORMED_ALTITUDE,GBIF,Free text string provided as altitude,Wiki,Report,Warning,Other,Location,verbatimElevation,,,,Duplicate of ALTITUDE_NON_NUMERIC,
+9,MIN_MAX_ALTITUDE_REVERSED,GBIF,Typically a column mapping issue,Wiki,Fix and report,Warning,Other,Location," minimumElevationInMeters, maximumElevationInMeters",,,,SUPPORTED,X
+10,DEPTH_IN_FEET,GBIF,Darwin core specifies metres should be used,Wiki,Fix and report,Warning,Other,Location,verbatimDepth,,"Bassed on unit being supplied in the field - ft, f, feet",,SUPPORTED,
+11,DEPTH_OUT_OF_RANGE,GBIF,Depth greater than 10000,Wiki,Report,Warning,Other,Location,verbatimDepth,,,,SUPPORTED,X
+12,MIN_MAX_DEPTH_REVERSED,GBIF,Typically a column mapping issue,Wiki,Fix and report,Warning,Other,Location,verbatimDepth,,,,SUPPORTED,X
+13,ALTITUDE_IN_FEET,GBIF,Darwin core specifies metres should be used,Wiki,Fix and report,Warning,Other,Location,verbatimElevation,,"Bassed on unit being supplied in the field - ft, f, feet",,SUPPORTED,
+14,ALTITUDE_NON_NUMERIC,GBIF,Should be a numeric value in metres,Wiki,Report,Warning,Other,Location,verbatimElevation,,,,SUPPORTED,X
+15,DEPTH_NON_NUMERIC,GBIF,Should be a numeric value in metres,Wiki,Report,Warning,Other,Location,verbatimDepth,,,,"SUPPORTED 
+Not in use in Biocache 04.09.2020",X
+16,COUNTRY_COORDINATE_MISMATCH,GBIF,Coordinates outside the range for the reported country,Wiki,Report,Warning,Other,Location,"country, decimalLatitude, decimalLongitude",,,,SUPPORTED,
+18,STATEPROVINCE_COORDINATE_MISMATCH,DM,Coordinates dont match the supplied state,Wiki,Report,Warning,Other,Location,"stateProvince, decimalLatitude, decimalLongitude",,,,SUPPORTED,X
+19,COORDINATE_HABITAT_MISMATCH,DM,A marine species detected in a terrestrial environment or a terrestrial species detected in a marine environment.,Wiki,Exclude from mapping and other reports. Make viewable in error report,Error,Important,Location,"decimalLatitude, decimalLongitude,
+terrestrial spatial layer",,,,SUPPORTED,X
+20,"DETECTED_OUTLIER_ENVIRONMENTAL
+DETECTED_OUTLIER",DM,Record marked as outlier because it is outside the acepted environmental range/envelope of the species,Wiki,Optionally exclude from mapping and other reports,Error,Outlier,Location,"decimalLatitude, decimalLongitude, various spatial layers",,"SB to investigate best methods to identify potentail outliers using standard deviation, deviations from median, cumulative frequency and other measures.",,SUPPORTED,
+21,COUNTRY_INFERRED_FROM_COORDINATES,GBIF,"Country field supplied was empty, but was inferred in processing by the supplied coordinates",Wiki,Report,Warning,Other,Location,country,GBIF 2010,,,SUPPORTED,
+22,COORDINATES_CENTRE_OF_STATEPROVINCE,DM,Coordinates are the exact centre of the state or territory,Wiki,Exclude from mapping and other reports. Make viewable in error report,Error,Other,Location,"stateProvince, coordinatePrecision, CoordinateUncertaintyInMeters
+",,,,SUPPORTED,X
+23,COORDINATE_PRECISION_MISMATCH,MN,Coordinate data does not match precision indicated - could be incorrect precision or truncation or rounding of the coordinate data (most likely with trailing zeros),Wiki,Report,Warning,Other,Location,coordinatePrecision,,,,SUPPORTED,
+17,PRECISION_RANGE_MISMATCH,MN,A precision value should be between >0 and <=1 if entered according to DwC specificiations,Wiki,Report,Warning,Other,Location,coordinatePrecision,,,,SUPPORTED,
+24,UNCERTAINTY_RANGE_MISMATCH,MN,Uncertainty should be a whole number >0,Wiki,Report,Warning,Other,Location,coordinateUncertaintyInMeters,,,,SUPPORTED,X
+25,UNCERTAINTY_IN_PRECISION,MN,Uncertainty value in precision field,Wiki,Report,Warning,Other,Location,"coordinateUncertaintyInMeters, coordinatePrecision",,,,SUPPORTED,X
+26,SPECIES_OUTSIDE_EXPERT_RANGE,MN,Geographic coordinates are outside the range as defined by 'expert/s' for the taxa,Wiki,Report,Warning,Important,Location,"decimalLatitude, decimalLongitude, expert range spatial layer",,E.g. corals outside known range according to Charlie Veron - probable misidentification,,SUPPORTED,
+27,UNCERTAINTY_NOT_SPECIFIED,NC,Uncertainty was not supplied with the record,Wiki,Report,Warning,Important,Location,coordinateUncertaintyInMeters,,,,SUPPORTED,X
+28,COORDINATES_CENTRE_OF_COUNTRY,DM,Coordinates are the exact centre of the country,Wiki,Exclude from mapping and other reports. Make viewable in error report,Error,Important,Location,"country, decimalLatitude, decimalLongitude",,,,SUPPORTED,X
+29,MISSING_COORDINATEPRECISION,MN,coordinatePrecision not supplied with the record,Wiki,Report,Warning,Important,Location,coordinatePrecision,,,,SUPPORTED,
+30,MISSING_GEODETICDATUM,MN,geodeticDatum not supplied for coordinates,Wiki,Report - also implies uncertainty,Warning,Important,Location,geodeticDatum,ICSM 2000,"If there is a reference to use of GPS, WGS84 could be infered?",,SUPPORTED,
+31,MISSING_GEOREFERNCEDBY,MN,GeoreferencedBy not supplied with the record,Wiki,Report,Warning,Other,Location,georeferencedBy,,,,SUPPORTED,
+32,MISSING_GEOREFERENCEPROTOCOL,MN,GeoreferenceProtocol not supplied with the record,Wiki,Report,Warning,Other,Location,georeferenceProtocol,,,,SUPPORTED,
+33,MISSING_GEOREFERENCESOURCES,MN,GeoreferenceSources not supplied with the record,Wiki,Report,Warning,Other,Location,georeferenceSources,,,,SUPPORTED,
+34,MISSING_GEOREFERENCEVERIFICATIONSTATUS,MN,GeoreferenceVerificationStatus not supplied with the record,Wiki,Report,Warning,Other,Location,georeferenceVerificationStatus,,,,SUPPORTED,
+35,INVALID_GEODETICDATUM,SB,The geodetic datum is not valid,Wiki,Report,Warning,Important,Location,geodeticDatum,ICSM 2000,"The geodetic datum (spatial reference system) is not recorded, or is not in controlled vocabulary. Lack of datum may add a further 200 metre error to the spatial error. ",,Duplicate of UNRECOGNIZED_GEODETIC_DATUM,
+36,COORDINATE_UNCERTAINTY_IN_METERS,SB,The inferred maximum uncertainty is 'n' metres,Wiki,"Report, make facetable for spatial and other analyses",Metric,Other,Location,"coordinatePrecision, geodeticDatum, coordinateUncertaintyInMeters, georeferenceProtocol,  dataGeneralizations
+","GeoRef, ICSM 2000; BioGeom a",See wiki for details.,,,
+37,GEOREFERENCE_UNCERTAIN,SB,The georeference is uncertain,Wiki,Exclude from mapping and other reports. Make viewable in error report,Error,Important,Location,georeferenceVerificationStatus,,"If doubts expresssed regarding geocode, e.g. 'requires verification' or 'doubtful' or 'uncertain' or similar then exclude.",,NOT SUPPORTED,
+38,GEOREFERENCE_VERIFIED,SB,The georeference  has been verified,Wiki,Report,Verification,Important,Location,georeferenceVerificationStatus,,"The georeferened  are verified as authentic, e.g. 'confirmed', 'verified'.",,NOT SUPPORTED,
+39,DETECTED_OUTLIER_JACKKNIFE,SB,"The location is an outlier detected using jack-knife algorithm
+",Wiki,Optionally exclude from mapping and other reports,Error,Outlier,Location,"decimalLatitude, decimalLongitude","Chapman 2005a, ALA 2008",See wiki for details.,,SUPPORTED,
+40,DETECTED_OUTLIER_OTHER,SB,Other methods of outliers detection to be investigated.,Wiki,Optionally exclude from mapping and other reports,Error,Outlier,Location,"decimalLatitude, decimalLongitude",,"An investigation will be made of the suitability of MaxEnt probababiilty values as an indicator of outliers. Other outlier detection methods will also be investigated, e.g. Chapman 2005a (p.45)  mentions these geographic outlier detection methods:
+Cumulative Freqency Curves(Diva-GIS, ANUCLIM); Principle Components Analysis (FloraMap, PATN); Cluster Analysis (FloraMap, PATN); Climatic Envelope (Diva-GIS); Reverse Jackknife (Diva-GIS, planned for BioGeomancer in 2006); Parameter Extremes (ANUCLIM); Other Methods (Standard Deviations from Mean; Deviations from Median; Use of Modelled Distributions - GARP, Lifemapper; Pattern Analysis - PATN; Ordinal Association Rules- PATN - assocation with vegetation types etc). Note: some of these are explicitly mention in other proposed outlier checks.
+
+Note that all these are environmental outlier checks of one type or another (LB).",,NOT SUPPORTED,
+41,INFERRED_FALSE_PRECISION,SB,The location may have a false level of precision,Wiki,Report,Warning,Other,Location,"decimalLatitude, decimalLongitude, coordinatePrecision, geodeticDatum, coordinateUncertaintyInMeters",Chapman 2005b p26,"Indicate this if many decimal places in coordinates, but no precision or uncertainty measures. Methods to be investigated by SB",,,
+1008,MISSING_GEOREFERENCE_DATE,MN,GeoreferenceDate not supplied with the record,,Report,Warning,Other,Location,georeferenceDate,,,,SUPPORTED,
+43,LOCATION_NOT_SUPPLIED,MN,"no indication of location (coordinates, locality, polygon, location ID, verbatim coordinates) supplied",,Exclude from mapping and other reports. Make viewable in error report,Error,Important,Location,"decimalLongitude, decimalLatitude, locality, footprtinWKT, locationID, verbatimCoordinates, verbatimLatitude, verbatimLongitude",,,,SUPPORTED,
+44,DECIMAL_COORDINATES_NOT_SUPPLIED,MN,decimal latitude and longitude not supplied,,Exclude from mapping and other reports. Make viewable in error report,Error,Other,Location,"decimalLatitude, decimalLongitude",,,,SUPPORTED,
+45,DECIMAL_LAT_LONG_COVERTED,CF,Decimal latitude and longitude were converted to WGS84,,Report,Warning,Other,Location,"decimalLatitude, decimalLongitude",,,,SUPPORTED,
+46,DECIMAL_LAT_LONG_CONVERSION_FAILED,CF,Conversion of provided decimal latitude and longitude to WGS84 failed,Wiki,Exclude from mapping and other reports. Make viewable in error report,Error,,Location,"decimalLatitude, decimalLongitude",,,,SUPPORTED,
+47,DECIMAL_LAT_LONG_CALCULATED_FROM_VERBATIM,CF,"Decimal latitude and longitude were calculated using verbatimLatitude, verbatimLongitude and verbatimSRS",,Report,Warning,,Location,"decimalLatitude, decimalLongitude, verbatimLatitude, verbatimLongitude, verbatimSRS",,,,SUPPORTED,
+48,DECIMAL_LAT_LONG_CALCULATION_FROM_VERBATIM_FAILED,CF,"Failed to calculate decimal latitude and longitude from verbatimLatitude, verbatimLongitude and verbatimSRS",,Exclude from mapping and other reports. Make viewable in error report,Error,,Location,"decimalLatitude, decimalLongitude, verbatimLatitude, verbatimLongitude, verbatimSRS",,,,SUPPORTED,
+49,DECIMAL_LAT_LONG_CALCULATED_FROM_EASTING_NORTHING,CF,"Decimal latitude and longitude were calculated using easting, nothing and zone",,Report,Warning,,Location,"decimalLatitude, decimalLongitude",,,,SUPPORTED,
+50,DECIMAL_LAT_LONG_CALCULATION_FROM_EASTING_NORTHING_FAILED,CF,"The attempt to generate decimal coordinates from a grid reference (Easting, Northing and Zone) was not successful",Wiki,Exclude from mapping and other reports. Make viewable in error report,Error,,Location,"decimalLatitude, decimalLongitude",,,,SUPPORTED,
+51,GEODETIC_DATUM_ASSUMED_WGS84,CF,Geodetic datum assumed to be WGS84 (EPSG:4326),,Report,Warning,,Location,geodeticDatum,,,,SUPPORTED,
+52,UNRECOGNIZED_GEODETIC_DATUM,CF,Geodetic datum not recognized,,Exclude from mapping and other reports. Make viewable in error report,Error,,Location,geodeticDatum,,,,SUPPORTED,
+53,ZERO_LATITUDE_COORDINATES,MN,Latitude value provided is zero,Wiki,,Warning,,Location,decimalLatitude,,,,,
+54,ZERO_LONGITUDE_COORDINATES,MN,Longitude value provided is zero,Wiki,,Warning,,Location,decimalLiongitude,,,,,
+,COORDINATE_DECIMAL_PLACES_MISMATCH,CF,Coordinates have a mismatched number of decimal places.,,Report,Warning,,Location,"decimalLatitude, decimalLongitude, verbatimLatitude, verbatimLongitude",,Warning is raised if difference in number of decimal places between lat long is greater than 2.,,SUPPORTED,
+,COORDINATE_SUSPECT_NUMBER_DECIMAL_PLACES,CF,Latitude and or longitude has a suspect number of decimal places. GPS receivers typically measure decimal degress to a maximum of 7 decimal places .,,Report,Warning,,Location,"decimalLatitude, decimalLongitude, verbatimLatitude, verbatimLongitude",,Warning is raised if lat or long has greater than 7 decimal places,,SUPPORTED,
+55,SUPPLIED_COORDINATES_CONVERTED,CF,Supplied coordinates may have been converted from another format,,Report,Warning,,Location,"decimalLatitude, decimalLongitude, verbatimLatitude, verbatimLongitude",,Warning is raised if lat or long has a decimal digit repeated 4 or more times,,SUPPORTED,
+,COORDINATE_ACCURACY_INVALID,,DEPRECATED,,,,,,,,,,,
+,COORDINATE_PRECISION_UNCERTAINTY_MISMATCH ,,DEPRECATED,,,,,,,,,,,
+,CONTINENT_COUNTRY_MISMATCH,,"Not currently in use in biocache, listed in public enum ALAOccurrenceIssue implements InterpretationRemark",,,,,,,,,,,
+,CONTINENT_DERIVED_FROM_COORDINATES,,"Not currently in use in biocache, listed in public enum ALAOccurrenceIssue implements InterpretationRemark",,,,,,,,,,,
+,DEPTH_NOT_METRIC,,"Not currently in use in biocache, listed in public enum ALAOccurrenceIssue implements InterpretationRemark",,,,,,,,,,,
+,DEPTH_UNLIKELY,,"Not currently in use in biocache, listed in public enum ALAOccurrenceIssue implements InterpretationRemark",,,,,,,,,,,
+,DEPTH_MIN_MAX_SWAPPED,,"Not currently in use in biocache, listed in public enum ALAOccurrenceIssue implements InterpretationRemark
+appears to be a duplicate of DEPTH_MIN_MAX_REVERSED",,,,,,,,,,,
+,ELEVATION_UNLIKELY,,"Not currently in use in biocache, listed in public enum ALAOccurrenceIssue implements InterpretationRemark",,,,,,,,,,,
+,ELEVATION_NOT_METRIC,,"Not currently in use in biocache, listed in public enum ALAOccurrenceIssue implements InterpretationRemark",,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+Taxonomic,,,,,,,,,,,,,,
+10000,TAXONOMIC_ISSUE,,Generic taxonimoc issue,,,,,,,,,,,
+10001,INVALID_SCIENTIFIC_NAME,GBIF,"The scientific name provided is not structured as a valid scientific name. Also catches rank values or values such as ""UNKNOWN""",Wiki,Report,Error,Taxon/Identfication,Taxon,scientificName,,"Based on the ""blacklist"" parse type.",,SUPPORTED,
+10002,UNKNOWN_KINGDOM,GBIF,"Kingdom provided doesn't match a known kingdom e.g. Animalia, Plantae",Wiki,Report,Error,Taxon/Identfication,Taxon,kingdom,,A  vocab list of known kingdoms.,,SUPPORTED,
+10003,AMBIGUOUS_NAME,DM,"Name homonym issues detected with record, missing higher classification preventing placement",Wiki,Report,Error,Taxon/Identfication,Taxon,"scientificName, other taxon fields",,,,Duplicate of HOMONYM_ISSUE,
+10004,NAME_NOT_RECOGNISED,DM,The scientific name provided does not match any of the names lists used by the ALA.  For a full explanation of the ALA name matching process see https://github.com/AtlasOfLivingAustralia/ala-name-matching,Wiki,Report,Error,Taxon/Identfication,Taxon,scientificName,,,,SUPPORTED,X
+10005,NAME_NOT_IN_NATIONAL_CHECKLISTS,DM,"Name of the taxon not in the national species lists for the national in which it was recorded, but the name is in other checklists (e.g. CoL)",Wiki,Report,Error,Taxon/Identfication,Taxon,scientificName,,,,SUPPORTED,X
+10006,HOMONYM_ISSUE,DM,Name and classification supplied cant be used to choose between 2 homonyms,Wiki,Report,Error,Taxon/Identfication,Taxon,"scientificName, other taxon fields",,,,SUPPORTED,X
+10007,IDENTIFICATION_INCORRECT,,,,,,,,,,,,,
+10008,MISSING_TAXONRANK,MN,taxonRank not supplied with the record,Wiki,Report,Warning,Taxon/Identfication,Taxon,taxonRank,,,,SUPPORTED,
+10009,MISSING_IDENTIFICATIONQUALIFIER,MN,identificationQualifier not supplied with the record,Wiki,Report,Warning,Taxon/Identfication,Identification,identficationQualifier,,,,SUPPORTED,
+10010,MISSING_IDENTIFIEDBY,MN,identifiedBy not supplied with the record,Wiki,Report,Warning,Taxon/Identfication,Identification,identifiedBy,,,,SUPPORTED,
+10011,MISSING_IDENTIFICATIONREFERENCES,MN,identificationReferences not supplied with the record,Wiki,Report,Warning,Taxon/Identfication,Identification,identficationReferences,,,,SUPPORTED,
+10012,MISSING_DATEIDENTIFIED,MN,identificationDate not supplied with the record,Wiki,Report,Warning,Taxon/Identfication,Identification,identificationDate,,,,SUPPORTED,
+10013,IDENTIFICATION_UNCERTAIN,SB,The identification is uncertain,Wiki,Exclude from mapping and other reports. Should be viewable in error report,Error,Taxon/Identfication,Identification,identificationQualifier,Chapman 2005a & 2005b,"If doubts expresssed regarding taxon identification, e.g. 'requires verification' or 'doubtful' or 'uncertain' or similar then exclude.",,,
+10014,IDENTIFICATION_VERIFIED,SB,The identication has been verified,Wiki,Report,Verification,Taxon/Identfication,Identification,identificationQualifier,Chapman 2005a & 2005b,"The identification is verified as authentic, e.g. 'verified', 'confirmed'",,,
+10015,NAME_NOT_SUPPLIED,MN,Neither scientific name or vernacular name were supplied,,Exclude from mapping and other reports. Should be viewable in error report,Error,Taxon/Identfication,Taxon,"scientificName, vernacularName",,,,SUPPORTED,
+,TAXON_AFFINITY_SPECIES,,The scientific name has an aff. marker indicating a like-but-not identification,,,,,,,,,,Supported in Biocache 04.09.2020,
+,TAXON_DEFAULT_MATCH,,The ocurrence record was matched to a default value supplied by higher-order elements,,,,,,,,,,Supported in Biocache 04.09.2020,
+,TAXON_EXCLUDED_ASSOCIATED,,"The taxon, while matched, also has an excluded match",,,,,,,,,,Supported in Biocache 04.09.2020,
+,TAXON_CONFER_SPECIES,,"The scientific name has a cf. marker, indicating uncertain identification",,,,,,,,,,Supported in Biocache 04.09.2020,
+,TAXON_EXCLUDED,,The taxon is excluded (should not be found in this location),,,,,,,,,,Supported in Biocache 04.09.2020,
+,TAXON_ERROR,,There has been a generic taxon matching error,,,,,,,,,,Supported in Biocache 04.09.2020,
+,TAXON_SCOPE_MISMATCH,,The supplied hints do not match the final name match ,,,,,,,,,,Supported in Biocache 04.09.2020,
+,TAXON_HOMONYM,,The supplied name and hierarchy is not enough to uniquely determine the name ,,,,,,,,,,Supported in Biocache 04.09.2020,
+,TAXON_INDETERMINATE_SPECIES,,The supplied name contains an indeterminate species marker and an exact match could not be found,,,,,,,,,,Supported in Biocache 04.09.2020,
+,TAXON_MISAPPLIED_MATCHED,,The supplied name has been misapplied to another concept in the past,,,,,,,,,,Supported in Biocache 04.09.2020,
+,TAXON_MISAPPLIED,,The supplied name has been misapplied to another concept in the past with no accepted use ,,,,,,,,,,Supported in Biocache 04.09.2020,
+,TAXON_MATCH_FUZZY,GBIF,"Matching to the taxonomic backbone can only be done using a fuzzy, non exact match.",,,,,,,,,,Supported in Biocache 04.09.2020,
+,TAXON_MATCH_HIGHERRANK,GBIF,Matching to the taxonomic backbone can only be done on a higher rank and not the scientific name,,,,,,,,,,Supported in Biocache 04.09.2020,
+,TAXON_MATCH_AGGREGATE,,"Matching to the taxonomic backbone can only be done on a species level, but the occurrence was in fact considered a broader species aggregate/complex",,,,,,,,,,,
+,TAXON_MATCH_NONE,GBIF,Matching to the taxonomic backbone cannot be done cause there was no match at all or severalmatches with too little information to keep them apart (homonyms).,,,,,,,,,,Supported in Biocache 04.09.2020,
+,TAXON_PARENT_CHILD_SYNONYM,,The supplied name can be matched either onto the parent species or an autonymic subspecies,,,,,,,,,,Supported in Biocache 04.09.2020,
+,TAXON_QUESTION_SPECIES,,The supplied name contains a questionable identification marker (?),,,,,,,,,,Supported in Biocache 04.09.2020,
+,TAXON_SPECIES_PLURAL,,The supplied name contains a species plural marker and cannot be accuratey matched onto a single species,,,,,,,,,,Supported in Biocache 04.09.2020,
+,,,,,,,,,,,,,,
+Miscellanous,,,,,,,,,,,,,,
+20001,MISSING_BASIS_OF_RECORD,GBIF,Basis of record not supplied with the record,Wiki,Exclude from mapping and other reports. Should be viewable in error report,Error,Other,All,basisOfRecord,,,,SUPPORTED,X
+20002,BADLY_FORMED_BASIS_OF_RECORD,DM,Unable to map the supplied basis of record to the vocabulary in use,Wiki,Exclude from mapping and other reports. Should be viewable in error report,Error,Other,All,basisOfRecord,,,,SUPPORTED,X
+20004,UNRECOGNISED_TYPESTATUS,DM,Unable to map the supplied type status to the vocabulary in use,Wiki,Report,Warning,Other,Identification,typeStatus,,,,SUPPORTED,X
+20005,UNRECOGNISED_COLLECTIONCODE,DM,Code not recognised with ALA systems (Collectory),Wiki,Report,Warning,Other,All,collectionCode,,The implementation looks at collection/institution code combinations,,SUPPORTED,X
+20006,UNRECOGNISED_INSTITUTIONCODE,DM,Code not recognised with ALA systems (Collectory),Wiki,Report,Warning,Other,All,institutionCode,,The implementation looks at collection/institution code combinations,,SUPPORTED,
+20007,INVALID_IMAGE_URL,NC,Image URL is badly formatted,Wiki,Report,Warning,Other,Occurrence,,,,,SUPPORTED,X
+20008,RESOURCE_TAXONOMIC_SCOPE_MISMATCH,DM,The scientific name provided in the record does not match the expected taxonomic scope of the resource e.g. Mammal records attributed to bird watch group,Wiki,Report,Warning,Other,Occurrence,,,Mammal records attributed to bird watch group.  This QA makes use of the taxonomic hints to make a decision.,,SUPPORTED,
+20009,DATA_ARE_GENERALISED,SB,The data has been generalised,Wiki,Report,Warning,Other,All,dataGeneralizations,,If not null then report the dataGeneralization statement. If this relates to Location classes then make special attention to coordinates and precision terms. ,,SUPPORTED,
+20010,OCCURRENCE_IS_CULTIVATED_OR_ESCAPEE,SB,The occurence is cultivated or escaped from captivity,Wiki,Exclude from mapping and other reports. Should be viewable in error report,Error,Important,Occurrence,"establishmentMeans
+",,If the occurrence is cultivated or escaped from captivity then records are normally excluded from analyses.  Note that this does not apply to established wild populations of alien species.,,SUPPORTED,
+20012,OCCURRENCE_IS_EXTRALIMITAL,SB,The occurrence is outside the normal range of the species,Wiki,Optionally exclude from mapping and other reports,Error,Important,Occurrence,,,"This is a record level indication that the occurrence has been flagged as extralimital. The occurrence is outside the normal range of the species, e.g. 'extralimital', 'vagrant'",,,
+20013,OCCURRENCE_VERIFIED,SB,The occurrence has been verified,Wiki,Report,Verification,Important,Occurrence,,,"This is a record level indication that the occurrence has been verified as authentic. The occurrence is verified as authentic, e.g. confirmed, verified
+",,,
+20014,INFERRED_DUPLICATE_RECORD,SB,The occurence appears to be a duplicate,Wiki,Exclude from mapping and other reports. Should be viewable in error report,Error,Important,All,,Chapman 2005a,,,SUPPORTED,
+20015,MISSING_CATALOGUENUMBER,MN,catalogueNumber not supplied with the record,,,,Other,,,,,,SUPPORTED,
+20016,RECORDED_BY_UNPARSABLE,NC,The recordedBy field could not be parsed using the current known formats. ,,Records flagged with the assertion should be reviewed by developers so that the new format can be supported.,Warning,,Occurrence,recordedBy,,,,SUPPORTED,
+20017,UNRECOGNISED_OCCURRENCE_STATUS,DM,"An occurrence status value supplied, but it was not a recognised value.",,Report,Warning,,Occurrence,occurrenceStatus,,,,,
+20018,ASSUMED_PRESENT_OCCURRENCE_STATUS,DM,"An occurrence status value wasnt supplied with this record and an value of ""present"" has been assumed.",,Report,Warning,,Occurrence,occurrenceStatus,,,,,
+20019,USER_ASSERTION_OTHER,,Generic miscellaneous user assertion,,,,,,,,,,,
+,,,,,,,,,,,,,,
+Temporal,,,,,,,,,,,,,,
+30000,TEMPORAL_ISSUE,,"Generic temporal issue, isailly from user assertions",,,,,,,,,,,
+30001,ID_PRE_OCCURRENCE,MN,,Wiki,Report,Error,Other,"Event/
+Identification","dateIdentified, eventDate",,,dateIdentified < eventDate,SUPPORTED,
+30002,GEOREFERENCE_POST_OCCURRENCE,MN,The record was georeferenced after recording - not an error but has implications for precision and accuracy.  The amount of time may indicate severity? GeoreferenceDate isn't a current DwC field.,Wiki,Report,Error,Other,"Event/
+Location","eventDate, georeferenceDate",,,,SUPPORTED,
+30003,FIRST_OF_MONTH,MN,May indicate the date is only known or recorded to the Month.  Flag if there is no precision data. datePrecision is not a curent DwC field,Wiki,Report,Warning,Other,Event,"eventDate, datePrecision(nonDwC)",,,,SUPPORTED,
+30004,FIRST_OF_YEAR,MN,May indicate the date is only known or recorded to the Year.  Flag if there is no precision data.  datePrecision is not a curent DwC field,Wiki,Report,Warning,Other,Event,"eventDate, datePrecision(nonDwC)",,,,SUPPORTED,
+30005,FIRST_OF_CENTURY,MN,May indicate the date is only known or recorded to the Century.  Flag if there is no precision data. datePrecision is not a curent DwC field,Wiki,Report,Warning,Other,Event,"eventDate, datePrecision(nonDwC)",,,,SUPPORTED,
+30006,DATE_PRECISION_MISMATCH,MN,Date precision does not match the data.  datePrecision is not a curent DwC field,Wiki,Report,Error,Other,Event,"eventDate, datePrecision(nonDwC)",,,,NEW,
+30007,INVALID_COLLECTION_DATE,DM,"No date provided, invalid year, month or day provided, the collecting event date was given as pre 1600, in the future or is otherwise invalid or unparseable.",Wiki,Report,Error,Important,Event,eventDate,,This is used as a general date issue ,,SUPPORTED,X
+30008,MISSING_COLLECTION_DATE,SB,Collection date field is missing or null,Wiki,Exclude from mapping and other reports. Should be viewable in error report,Error,Important,Event,eventDate,,,,SUPPORTED,
+30009,DAY_MONTH_TRANSPOSED,DM,Supplied day and month fields appear to be transposed,Wiki,Fix and Report,Warning,Other,Event,"eventDate. day, month",,if month > 12 and day <12 we can infer the fields have been incorrectly mapped,,SUPPORTED,
+30010,INCOMPLETE_COLLECTION_DATE,NQ,The supplied collection date is missing a day and/or month component,,Report,Warning,Other,Event,eventDate,,"This is used to differentiate non error conditions for an event date. Previously this was included in INVALID_COLLECTION_DATE.  See https://github.com/AtlasOfLivingAustralia/ala/issues/detail?id=139 for discussion
+
+This will be not used when the pipelines infrastructure is implemented. GBIF code interprets an incomplete date as a date range. For example, 06-2012 will be interpreted as 01-062012 to 30-06-2012.
+",,"SUPPORTED in Biocache
+DEPRECATED in pipelines implementation",
+,,,,,,,,,,,,,,
+Other,,,,,,,,,,,,,,
+50000,VERIFIED,,Flag a user assertion issue as being verified,,,,,,,,,,,
+,,,,,,,,,,,,,,
+70001,MEDIA_REPRESENTATIVE,,,,,,,,,,,,,
+70002,MEDIA_UNREPRESENTATIVE,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,Collecting patterns,MN,"There could be a suite of test based on the example at right (from Australian Museum):
+Our entomology staff have been reviewing georeference information in EMu. They found that the Lat Long was wrong for K244722 The following info was identified by the ento staff member: “irn 1061424 has Australia, New South Wales, Blackheath Creek (32° 09' 25"" S, 149° 16' 05"" E)
+There are two lat/long possibilities: 
+
+Blackheath Creek NSW Official-32 9 149 16
+Blackheath CreekNSWOfficial-33 37 150 15 
+
+I am going to change that site record to the second pair. 
+I think it was a case of a data enterer picking the first one in the Gaz. I searched for the same collector (F.T. Fricke) around same date (Dec 1982). There 
+are 138 Catalogue records, pretty much all from the Blue Mts. The first pair of lat/longs are way out west near Dunedoo. The second are near 
+Blackheath.” And so they changed the records lat long in Emu to “ K.244722 - Castiarina variopicta (Thomson, 1878) - New South Wales, Blackheath Creek , (33 37' S , 150 15' E), 27 Dec 1982”",Wiki,,,,,,,,,,
