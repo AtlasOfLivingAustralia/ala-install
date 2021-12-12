@@ -71,6 +71,7 @@
   tags:
     - deploy
     - service
+    - service-conf
     - cas-management
 
 - name: Ensure cas-management is in a running state

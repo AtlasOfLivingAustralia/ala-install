@@ -91,6 +91,7 @@
   tags:
     - deploy
     - service
+    - service-conf
     - cas
 
 - name: Ensure cas is in a running state

@@ -19,6 +19,7 @@
     - deploy
     - service
     - doi-service
+    - service-conf
 
 #
 # External configuration properties file

@@ -153,6 +153,7 @@
   when: ansible_os_family == "Debian"
   tags:
     - tomcat
+    - tomcat-security
 
 - name: Set JAVA_HOME  (Debian)
   lineinfile: " 

@@ -100,6 +100,7 @@
   notify: "restart {{service_name}}"
   tags:
   - service
+  - service-conf
 
 # Don't force start the service, rely on the handlers to do it
 # - name: "Start {{service_name}} service"
