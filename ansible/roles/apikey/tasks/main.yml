@@ -73,6 +73,7 @@
   tags:
     - deploy
     - service
+    - service-conf
     - apikey
 
 - name: Ensure apikey is in a running state
