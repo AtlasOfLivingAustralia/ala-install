@@ -140,7 +140,7 @@
     - docopts
 
 - name: Update apt and install pipelines
-  apt: update_cache=yes name=la-pipelines={{ pipelines_version }}
+  apt: update_cache=yes name=la-pipelines={{ pipelines_version }} force=yes
   tags:
     - pipelines
     - la-pipelines
