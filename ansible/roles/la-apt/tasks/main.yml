@@ -8,14 +8,15 @@
     - ansible_os_family == "Debian"
   tags:
     - packages
+    - apt
 
 - name: Install gbif.es apt repository
-  apt_repository:
+  copy:
     # We use this repo temporally
-    repo: deb [arch=amd64] https://apt.gbif.es/ bionic main
-    filename: apt_gbif_es
-    state: present
+    content: "deb [arch=amd64] https://apt.gbif.es/ {{ la_apt_repo }}  main\n"
+    dest: "/etc/apt/sources.list.d/apt_gbif_es.list"
   when:
     - ansible_os_family == "Debian"
   tags:
     - packages
+    - apt
