@@ -10,6 +10,14 @@
     - ecodata
     - deploy
 
+- name: create the user used for backups
+  user:
+    name: "{{ecodata_backup_user}}"
+    state: present
+    system: yes
+  tags:
+    - cron
+
 #
 # External configuration directories and files
 #
@@ -101,25 +109,50 @@
     - ecodata
     - properties
 
+- name: Create backup path if it doesn't exist
+  file: path="{{data_dir}}/backups" owner="{{ecodata_backup_user}}" group="{{ecodata_backup_user}}" recurse=true mode='u=rX,g=rX,o-rwx'
+  tags:
+    - cron
 
 - name: Copy scripts to scripts directory
   template:
-    src: backup-ecodata.sh
-    dest: "{{data_dir}}/ecodata/scripts/backup-ecodata.sh"
+    src: "{{ item }}"
+    dest: "{{data_dir}}/ecodata/scripts/{{item}}"
     owner: "{{ecodata_user}}"
     group: "{{ecodata_user}}"
     mode: "u+rx,g+r,o-rxw"
+  with_items:
+    - replicaSetConfig.sh
+    - replicaSetStatus.sh
+    - syncProdData.sh
+    - scheduledDownloads.sh
+    - reIndexAll.sh
+    - copyProdDocuments.sh
   tags:
     - ecodata
     - properties
 
+- name: Copy scripts to scripts directory
+  template:
+    src: "{{ item }}"
+    dest: "{{data_dir}}/ecodata/scripts/{{item}}"
+    owner: "{{ecodata_backup_user}}"
+    group: "{{ecodata_backup_user}}"
+    mode: "u+rx,g+r,o-rxw"
+  with_items:
+    - backup-ecodata.sh
+    - copyProdData.sh
+  tags:
+    - ecodata
+    - properties
+
+
 - name: set data ownership
   file: path={{data_dir}}/ecodata/{{item}} owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true mode='u=rwX,g=rX,o-rxw'
   with_items:
-    - "{{data_dir}}/ecodata/config"
-    - "{{data_dir}}/ecodata/models"
-    - "{{data_dir}}/ecodata/elasticsearch"
-    - "{{data_dir}}/ecodata/scripts"
+    - config
+    - models
+    - elasticsearch
   tags:
     - properties
     - ecodata
@@ -127,7 +160,7 @@
 - name: set uploads ownership so they can be served by nginx
   file: path={{data_dir}}/ecodata/{{item}} owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true mode='u=rwX,g=rX,o=rX'
   with_items:
-    - "{{data_dir}}/ecodata/uploads"
+    - uploads
   tags:
     - properties
     - ecodata
@@ -235,6 +268,16 @@
     - ecodata
   when: webserver_nginx
 
+#- name: Configure the /uploads location to be only accessible from MERIT and BioCollect
+#  blockinfile:
+#    dest: /etc/nginx/sites-available/{{ecodata_hostname}}.conf
+#    insertbefore: "alias /data/ecodata/uploads"
+#    block: |
+#      allow 127.0.0.1;
+#      deny all;
+#  tags:
+#    - nginx_vhost
+
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ ecodata_war_url }}' context_path='{{ecodata_context_path}}' hostname='{{ ecodata_hostname }}'
   tags:
     - deploy
@@ -261,8 +304,58 @@
 #
 # Cron Job configuration
 #
+- name: Allow ecodatabackup to configure cron
+  lineinfile:
+    path: /etc/cron.allow
+    line: "{{ecodata_backup_user}}"
+  tags:
+    - cron
+  when: scheduled_database_backup or scheduled_production_data_copy or scheduled_downloads
+
+- name: Schedule cron job to backup ecodata
+  cron: minute=13 hour=4 name="Backup ecodata database" job="{{data_dir}}/ecodata/scripts/backup-ecodata.sh >/dev/null 2>&1" user={{ecodata_backup_user}} state=present
+  tags:
+    - cron
+  when: scheduled_database_backup
+
 - name: install cron job for indexing elastic search
-  cron: minute=21 hour=22 name="Elastic search indexing" job="wget -O - {{ ecodata_url }}{{ ecodata_context_path }}/admin/reIndexAll >/dev/null 2>&1" user=root state=present
+  cron: minute=0 hour=6 weekday=0 name="Elastic search indexing" job="{{data_dir}}/ecodata/scripts/reIndexAll.sh >/dev/null 2>&1" user=root state=present
+  tags:
+    - cron
+  when: scheduled_re_index
+
+- name: Schedule cron job to load production data into the staging server
+  cron: minute=1 hour=5 weekday=0 name="Load production data" job="{{data_dir}}/ecodata/scripts/syncProdData.sh >/dev/null 2>&1" user=root state=present
+  tags:
+    - cron
+  when: scheduled_production_data_load
+
+- name: Schedule cron job to copy data from the production server
+  cron: minute=1 hour=6 name="Copy data from the production server" job="{{data_dir}}/ecodata/scripts/copyProdData.sh >/dev/null 2>&1" user="{{ecodata_backup_user}}" state=present
+  tags:
+    - cron
+  when: scheduled_production_data_copy
+
+- name: Schedule cron job to copy documents from the production server
+  cron: minute=14 name="Copy documents from the production server" job="{{data_dir}}/ecodata/scripts/copyProdDocuments.sh >/dev/null 2>&1" user=root state=present
+  tags:
+    - cron
+  when: scheduled_production_documents_copy
+
+- name: Schedule cron job to automate MERIT downloads
+  cron: minute=30 hour=17 weekday=0 name="Scheduled MERIT downloads" job="{{data_dir}}/ecodata/scripts/scheduledProjectDownloads.sh >/dev/null 2>&1" user="{{ecodata_backup_user}}" state=present
+  tags:
+    - cron
+  when: scheduled_downloads
+
+- name: Prevent ecodatabackup from futher changes to cron from ecodatabackup
+  lineinfile:
+    path: /etc/cron.allow
+    line: "{{ecodata_backup_user}}"
+    state: absent
+  tags:
+    - cron
+  when: scheduled_database_backup or scheduled_production_data_copy or scheduled_downloads
 
 # Mongo users and database
 - name: Create the ecodata database and user
