@@ -110,7 +110,7 @@
     - properties
 
 - name: Create backup path if it doesn't exist
-  file: path="{{data_dir}}/backups" owner="{{ecodata_backup_user}}" group="{{ecodata_backup_user}}" recurse=true mode='u=rX,g=rX,o-rwx'
+  file: path="{{data_dir}}/backups" owner="{{ecodata_backup_user}}" group="{{ecodata_backup_user}}" recurse=true mode='u=rwX,g=rwX,o-rwx'
   tags:
     - cron
 
