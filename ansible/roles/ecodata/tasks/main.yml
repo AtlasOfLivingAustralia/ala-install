@@ -15,6 +15,9 @@
     name: "{{ecodata_backup_user}}"
     state: present
     system: yes
+    groups:
+      - "{{ecodata_backup_user}}"
+      - "{{ecodata_user}}"
   tags:
     - cron
 
@@ -128,6 +131,7 @@
     - scheduledDownloads.sh
     - reIndexAll.sh
     - copyProdDocuments.sh
+    - scheduledProjectDownloads.sh
   tags:
     - ecodata
     - properties
