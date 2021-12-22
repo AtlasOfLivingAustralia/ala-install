@@ -40,3 +40,5 @@ scheduled_report_download: False
 scheduled_production_data_copy: False
 scheduled_production_documents_copy: False
 scheduled_downloads: False
+
+access_expiry_cron_expression: "0 10 3 * * ? *"

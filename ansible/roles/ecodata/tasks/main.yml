@@ -127,11 +127,10 @@
   with_items:
     - replicaSetConfig.sh
     - replicaSetStatus.sh
-    - syncProdData.sh
-    - scheduledDownloads.sh
+    - runProjectDownload.sh
     - reIndexAll.sh
-    - copyProdDocuments.sh
-    - scheduledProjectDownloads.sh
+    - runMuDownload.sh
+    - scheduledDAWEDownloads.sh
   tags:
     - ecodata
     - properties
@@ -145,10 +144,36 @@
     mode: "u+rx,g+r,o-rxw"
   with_items:
     - backup-ecodata.sh
-    - copyProdData.sh
   tags:
     - ecodata
     - properties
+
+- name: Copy scripts to scripts directory
+  template:
+    src: "{{ item }}"
+    dest: "{{data_dir}}/ecodata/scripts/{{item}}"
+    owner: "{{ecodata_backup_user}}"
+    group: "{{ecodata_backup_user}}"
+    mode: "u+rx,g+r,o-rxw"
+  with_items:
+    - copyProdData.sh
+  tags:
+    - cron
+  when: scheduled_production_data_copy
+
+- name: Copy scripts that copy and restore production data (not for use on production hosts)
+  template:
+    src: "{{ item }}"
+    dest: "{{data_dir}}/ecodata/scripts/{{item}}"
+    owner: "{{ecodata_user}}"
+    group: "{{ecodata_user}}"
+    mode: "u+rx,g+r,o-rxw"
+  with_items:
+      - syncProdData.sh
+      - copyProdDocuments.sh
+  tags:
+    - cron
+  when: scheduled_production_data_load or scheduled_production_documents_copy
 
 
 - name: set data ownership
@@ -347,7 +372,7 @@
   when: scheduled_production_documents_copy
 
 - name: Schedule cron job to automate MERIT downloads
-  cron: minute=30 hour=17 weekday=0 name="Scheduled MERIT downloads" job="{{data_dir}}/ecodata/scripts/scheduledProjectDownloads.sh >/dev/null 2>&1" user="{{ecodata_backup_user}}" state=present
+  cron: minute=30 hour=17 weekday=0 name="Scheduled MERIT downloads" job="{{data_dir}}/ecodata/scripts/scheduledDAWEDownloads.sh >/dev/null 2>&1" user="{{ecodata_backup_user}}" state=present
   tags:
     - cron
   when: scheduled_downloads
