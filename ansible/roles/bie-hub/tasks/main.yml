@@ -17,7 +17,6 @@
     src: bie-hub-config.yml.j2
     dest: "{{ data_dir }}/{{ bie_hub }}/config/{{ bie_hub | default('generic-bie') }}-config.yml"
     force: yes
-    output_encoding: iso-8859-1
   tags:
     - webapps
     - properties
