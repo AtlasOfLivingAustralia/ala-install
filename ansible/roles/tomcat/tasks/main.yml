@@ -142,7 +142,7 @@
   tags:
     - tomcat
 
-- name: configure tomcat memory (Debian)
+- name: configure tomcat (Debian)
   blockinfile:
     path={{tomcat_conf}}
     marker="# {mark} Configure Tomcat Memory (Ansible managed)"
