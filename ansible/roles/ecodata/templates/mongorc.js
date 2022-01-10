@@ -1,1 +1,1 @@
-rs.slaveOk()
+rs.secondaryOk()
