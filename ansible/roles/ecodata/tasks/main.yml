@@ -222,7 +222,7 @@
     context_path: "{{ ecodata_context_path }}"
     tomcat_server_port: "{{ ecodata_server_port }}"
     nginx_paths:
-      - path: "{{ecodata_proxy_target}}/uploads"
+      - path: "{{ecodata_proxy_target}}/ws/document/download"
         sort_label: "1_upload"
         is_proxy: false
         alias: "{{ upload_dir | default('/data/ecodata/uploads') }}"
@@ -297,15 +297,18 @@
     - ecodata
   when: webserver_nginx
 
-#- name: Configure the /uploads location to be only accessible from MERIT and BioCollect
-#  blockinfile:
-#    dest: /etc/nginx/sites-available/{{ecodata_hostname}}.conf
-#    insertbefore: "alias /data/ecodata/uploads"
-#    block: |
-#      allow 127.0.0.1;
-#      deny all;
-#  tags:
-#    - nginx_vhost
+- name: Configure the /uploads location to be only accessible from MERIT and BioCollect
+  blockinfile:
+    dest: /etc/nginx/sites-available/{{ecodata_hostname}}.conf
+    insertbefore: "alias /data/ecodata/uploads"
+    block: |
+      allow 127.0.0.1;
+      allow {{ merit_ip }};
+      allow {{ biocollect_ip }};
+      deny all;
+      expires 1y;
+  tags:
+    - nginx_vhost
 
 - include: ../../tomcat_deploy/tasks/main.yml war_url='{{ ecodata_war_url }}' context_path='{{ecodata_context_path}}' hostname='{{ ecodata_hostname }}'
   tags:
