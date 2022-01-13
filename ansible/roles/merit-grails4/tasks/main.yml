@@ -79,16 +79,6 @@
     - merit
 
 # WAR file deployment and virtual host configuration
-#
-- include: ../../apache_vhost/tasks/main.yml
-    context_path='{{ merit_context_path }}'
-    hostname='{{ merit_hostname }}'
-  tags:
-    - deploy
-    - apache_vhost
-    - merit
-  when: not webserver_nginx
-
 - name: add nginx vhost if configured
   include_role:
     name: nginx_vhost
@@ -99,6 +89,13 @@
     tomcat_server_port: "{{ merit_server_port }}"
   tags:
     - nginx_vhost
-    - deploy
-    - merit
+  when: webserver_nginx
+
+- name: remove trailing / in proxy pass to prevent URI decoding
+  ansible.builtin.replace:
+    path: /etc/nginx/sites-available/{{merit_hostname}}.conf
+    regexp: '^.*proxy_pass.*$'
+    replace: proxy_pass http://127.0.0.1:{{merit_server_port}};
+  tags:
+    - test
   when: webserver_nginx
