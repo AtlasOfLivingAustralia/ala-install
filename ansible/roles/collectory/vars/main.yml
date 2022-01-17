@@ -5,6 +5,8 @@ version: "{{ collectory_version | default('LATEST') }}"
 
 artifactId: "{{ collectory_app is defined | ternary(collectory_app, collectory_version is version('3', '>=') | ternary('collectory', 'ala-collectory')) }}"
 
+collectory_layout: "{{ collectory_skin_layout is defined | ternary(collectory_skin_layout, collectory_version is version('3', '>=') | ternary('ala-main', 'ala')) }}"
+
 groupId: "{{ collectory_group_id | default('au.org.ala') }}"
 # collectory does not need a value for classifier
 classifier: ''
