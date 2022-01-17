@@ -3,7 +3,7 @@
 # collectory_version: "1.5.1"
 version: "{{ collectory_version | default('LATEST') }}"
 
-artifactId: "{{ collectory_app | default('generic-collectory') }}"
+artifactId: "{{ collectory_app is defined | ternary(collectory_app, collectory_version is version('3', '>=') | ternary('collectory', 'ala-collectory')) }}"
 
 groupId: "{{ collectory_group_id | default('au.org.ala') }}"
 # collectory does not need a value for classifier
