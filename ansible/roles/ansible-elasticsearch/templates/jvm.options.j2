@@ -132,6 +132,9 @@
 # specify an alternative path for JVM fatal error logs
 -XX:ErrorFile={{ es_log_dir }}/hs_err_pid%p.log
 
+# CVE-2021-44228 mitigation
+-Dlog4j2.formatMsgNoLookups=true
+
 ## JDK 8 GC logging
 
 8:-XX:+PrintGCDetails

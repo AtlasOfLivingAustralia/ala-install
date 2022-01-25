@@ -5,6 +5,6 @@
     - tomcat
     - webserver
     - mysql
-    - nameindex
+    - nameindex # remove for NMS release
     - i18n
     - species-list

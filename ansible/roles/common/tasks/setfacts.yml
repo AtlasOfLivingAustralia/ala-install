@@ -134,7 +134,7 @@
 
 - name: set java defaults for openjdk11
   set_fact:
-    java_security_opts:
+    java_security_opts: -Dlog4j2.formatMsgNoLookups=true
     java_home: /usr/lib/jvm/java-11-openjdk-amd64
   when: use_openjdk11 is defined and use_openjdk11 | bool == True
   tags:
@@ -142,7 +142,7 @@
 
 - name: set java defaults for openjdk8
   set_fact:
-    java_security_opts: -Djava.security.properties=/etc/java-8-openjdk/security/enableLegacyTLS.security
+    java_security_opts: -Djava.security.properties=/etc/java-8-openjdk/security/enableLegacyTLS.security -Dlog4j2.formatMsgNoLookups=true
     java_home: /usr/lib/jvm/java-8-openjdk-amd64
   when: use_openjdk8 is defined and use_openjdk8 | bool == True
   tags:

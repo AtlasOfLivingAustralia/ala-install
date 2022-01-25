@@ -28,6 +28,18 @@ imageService:
   httpHeaders:
     apiKey:  {{ pipelines_api_key | default(ala_api_key) }}
 
+speciesListService:
+  wsUrl: {{specieslist_base_url | default('https://lists.ala.org.au')}}
+  timeoutSec: 70
+
+geocodeConfig:
+  country:
+    intersectMapping:
+      CX: {{geocode_region | default('AU')}}
+      CC: {{geocode_region | default('AU')}}
+      HM: {{geocode_region | default('AU')}}
+      NF: {{geocode_region | default('AU')}}
+
 gbifConfig:
   vocabularyConfig:
     vocabulariesPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ vocabulary_dir }}
@@ -56,7 +68,9 @@ images:
   tempLocation: {{ spark_tmp }}
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  recognisedPaths: "{{ image_service_url }}"
 sampling:
+  baseUrl: {{ layers_service_url | default('https://sampling.ala.org.au/sampling-service') }}/
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
 speciesLists:
@@ -95,4 +109,127 @@ validation-report:
   checkSampling: {{ include_sampling }}
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   zkHost: {{ zk_host | default('localhost:2181') }}
+export:
+  imageServicePath: "{{ image_service_url }}/image/proxyImageThumbnailLarge?imageId={0}"
 
+### la-pipelines cli additional arguments, like JVM or spark command line arguments
+
+interpret-sh-args:
+  local:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }} -Dspark.master=local[*]
+  spark-embedded:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }} -Dspark.master=local[*]
+  spark-cluster:
+    conf: spark.default.parallelism={{ interpret_spark_parallelism | default(144) }}
+    num-executors: {{ interpret_spark_num_executors | default(6) }}
+    executor-cores: {{ interpret_spark_executor_cores | default(8) }}
+    executor-memory: {{ interpret_spark_executor_memory | default('24G') }}
+    driver-memory: {{ interpret_spark_driver_memory | default('4G') }}
+
+image-sync-sh-args:
+  local:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }} -Dspark.master=local[*]
+  spark-embedded:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }} -Dspark.master=local[*]
+  spark-cluster:
+    conf: spark.default.parallelism={{ image_sync_spark_parallelism | default(144) }}
+    num-executors: {{ image_sync_spark_num_executors | default(16) }}
+    executor-cores: {{ image_sync_spark_executor_cores | default(8) }}
+    executor-memory: {{ image_sync_spark_executor_memory | default('7G') }}
+    driver-memory: {{ image_sync_spark_driver_memory | default('1G') }}
+
+image-load-sh-args:
+  local:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }} -Dspark.master=local[*]
+  spark-embedded:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }} -Dspark.master=local[*]
+  spark-cluster:
+    conf: spark.default.parallelism={{ image_load_spark_parallelism | default(144) }}
+    num-executors: {{ image_load_spark_num_executors | default(16) }}
+    executor-cores: {{ image_load_spark_executor_cores | default(8) }}
+    executor-memory: {{ image_load_spark_executor_memory | default('7G') }}
+    driver-memory: {{ image_load_spark_driver_memory | default('1G') }}
+
+uuid-sh-args:
+  local:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
+  spark-embedded:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
+  spark-cluster:
+    conf: spark.default.parallelism={{ uuid_spark_parallelism | default(500) }}
+    num-executors: {{ uuid_spark_num_executors | default(6) }}
+    executor-cores: {{ uuid_spark_executor_cores | default(8) }}
+    executor-memory: {{ uuid_spark_executor_memory | default('20G') }}
+    driver-memory: {{ uuid_spark_driver_memory | default('4G') }}
+
+sampling-sh-args:
+  local:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }} -Dspark.master=local[*]
+  spark-embedded:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }} -Dspark.master=local[*]
+  spark-cluster:
+    conf: spark.default.parallelism={{ sampling_spark_parallelism | default(144) }}
+    num-executors: {{ sampling_spark_num_executors | default(8) }}
+    executor-cores: {{ sampling_spark_executor_cores | default(8) }}
+    executor-memory: {{ sampling_spark_executor_memory | default('16G') }}
+    driver-memory: {{ sampling_spark_driver_memory | default('4G') }}
+
+sensitive-sh-args:
+  spark-embedded:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
+  spark-cluster:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
+    num-executors: {{ sensitive_spark_num_executors | default(8) }}
+    executor-cores: {{ sensitive_spark_executor_cores | default(8) }}
+    executor-memory: {{ sensitive_spark_executor_memory | default('16G') }}
+    driver-memory: {{ sensitive_spark_driver_memory | default('4G') }}
+
+sample-sh-args:
+  local:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
+
+index-sh-args:
+  local:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
+  spark-embedded:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
+  spark-cluster:
+    conf: spark.default.parallelism={{ index_spark_parallelism | default(500) }}
+    num-executors: {{ index_spark_num_executors | default(6) }}
+    executor-cores: {{ index_spark_executor_cores | default(8) }}
+    executor-memory: {{ index_spark_executor_memory | default('20G') }}
+    driver-memory: {{ index_spark_driver_memory | default('4G') }}
+
+jackknife-sh-args:
+  local:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
+  spark-embedded:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
+  spark-cluster:
+    conf: spark.default.parallelism={{ jackknife_spark_parallelism | default(500) }}
+    num-executors: {{ jackknife_spark_num_executors | default(24) }}
+    executor-cores: {{ jackknife_spark_executor_cores | default(8) }}
+    executor-memory: {{ jackknife_spark_executor_memory | default('7G') }}
+    driver-memory: {{ jackknife_spark_driver_memory | default('1G') }}
+
+clustering-sh-args:
+  local:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
+  spark-embedded:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
+  spark-cluster:
+    conf: spark.default.parallelism={{ clustering_spark_parallelism | default(500) }}
+    executor-memory: {{ clustering_spark_executor_memory | default('20G') }}
+    driver-memory: {{ clustering_spark_driver_memory | default('4G') }}
+
+solr-sh-args:
+  local:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
+  spark-embedded:
+    jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
+  spark-cluster:
+    conf: spark.default.parallelism={{ solr_spark_parallelism | default(500) }}
+    num-executors: {{ solr_spark_num_executors | default(6) }}
+    executor-cores: {{ solr_spark_executor_cores | default(8) }}
+    executor-memory: {{ solr_spark_executor_memory | default('22G') }}
+    driver-memory: {{ solr_spark_driver_memory | default('6G') }}

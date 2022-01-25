@@ -1,29 +1,24 @@
-- hosts: hadoop
+- hosts: hadoop, spark, pipelines, jenkins, pipelines_jenkins
   roles:
     - java
-    - i18n
+    - la-apt
+
+- hosts: hadoop
+  roles:
     - hadoop
 
 - hosts: spark
   roles:
-    - java
-    - i18n
     - spark
 
 - hosts: jenkins
   roles:
-    - java
-    - i18n
     - jenkins-simple
 
 - hosts: pipelines
   roles:
-    - java
-    - i18n
     - pipelines
 
 - hosts: pipelines_jenkins
   roles:
-    - java
-    - i18n
     - pipelines_jenkins

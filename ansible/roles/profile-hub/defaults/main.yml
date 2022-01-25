@@ -1,2 +1,7 @@
 doi_resolver_prefix: "http://dx.doi.org/"
 grails_version: "2"
+google_analytics_id: "UA-4355440-1"
+dimension_apiid: "cd4"
+dimension_userid: "cd5"
+dimension_collectionid: "cd6"
+dimension_profileid: "cd7"

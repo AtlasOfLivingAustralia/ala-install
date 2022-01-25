@@ -126,8 +126,16 @@ skin.orgNameShort: {{ orgNameShort | default('ALA') }}
 skin.favicon: {{ skin_favicon | default('https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png') }}
 skin.homeUrl: {{ skin_home_url | default('http://www.ala.org.au') }}
 
+attributes:
+    affiliations:
+      enabled: {{ show_ala_survey | default('false') }}
+
 # API key for external apps
 webservice.apiKey: {{ api_key }}
+
+# show api link
+apiKey.showLink: {{ api_key_show_link | default('false') }}
+apiKey.showSecret: {{ api_key_show_secret | default('false') }}
 
 # Default primary fields for Export to CSV functionality
 admin.export.csv.primary.fields: {{ admin_export_csv_primary_fields | default('id,userName,firstName,lastName,email,activated,locked,created')}}

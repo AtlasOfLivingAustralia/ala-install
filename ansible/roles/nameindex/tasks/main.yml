@@ -86,7 +86,7 @@
     - "nameindex-stage"
 
 - name: Download lucene index (non-ALA) - please note, this step takes a long time. If it causes an issue, use '--skip-tags nameindex' to bypass it, to complete an installation
-  get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene/namematching.tgz force={{ force_nameindex_download | default(false) }} timeout=10000
+  get_url: url={{lucene_namematching_url}} dest={{data_dir}}/lucene/namematching.tgz force={{ force_nameindex_download | default(false) }} timeout=10000 checksum={{nameindex_checksum}}
   when: nameindex_variant != "ala"
   register: nameindex_nonala_downloaded
   tags:
@@ -95,7 +95,7 @@
 
 - name: DEBUG Index download status
   debug:
-    msg: "Download status is variant={{ nameindex_variant }}, ala={{ nameindex_ala_downloaded }}, nonala={{ nameindex_nonala_downloaded }} existing={{  existing_name_dir_status }}"
+    msg: "Download status is variant={{ nameindex_variant }}, ala={{ nameindex_ala_downloaded }}, nonala={{ nameindex_nonala_downloaded }} existing={{ existing_name_dir_status.stat.exists }}"
   tags:
     - "nameindex"
     - "nameindex-stage"
@@ -114,10 +114,16 @@
     - "nameindex"
     - "nameindex-stage"
 
-- name: check for directory to link (ALA)
+- name: unpackage the lucene index if it was newly copied (not ALA)
+  unarchive: src={{ data_dir }}/lucene/namematching.tgz dest={{ data_dir }}/lucene/ copy=no group={{ nameindex_user | default(tomcat_user) }} owner="{{ nameindex_user | default(tomcat_user) }}"
+  when: nameindex_variant != "ala" and nameindex_nonala_downloaded.changed
+  tags:
+    - "nameindex"
+    - "nameindex-stage"
+
+- name: check for directory to link
   stat:
     path: "{{ data_dir }}/lucene/namematching-{{ name_index_date }}/"
-  when: nameindex_variant == "ala"
   register: tmp_name_dir_status
   tags:
     - "nameindex"
@@ -130,17 +136,17 @@
     - "nameindex"
     - "nameindex-swap"
 
-## Else if not ALA, perform the following steps (apparently the date and file permissions do not matter for non-ALA users...)
-- name: ensure lucene namematching directory exists (not ALA)
-  file: path={{ data_dir }}/lucene/namematching state=directory
+- name: DEBUG Link non ALA namematching
+  debug:
+    msg: "Trying to link {{ data_dir }}/lucene/namematching-{{ name_index_date }}/ (exists: {{ tmp_name_dir_status.stat.exists }}) to {{ data_dir }}/lucene/namematching"
   when: nameindex_variant != "ala"
   tags:
     - "nameindex"
-    - "nameindex-swap"
+    - "nameindex-stage"
 
-- name: unpackage the lucene index if it was newly copied (not ALA)
-  unarchive: src={{ data_dir }}/lucene/namematching.tgz dest={{ data_dir }}/lucene/ copy=no group={{ nameindex_user | default(tomcat_user) }} owner="{{ nameindex_user | default(tomcat_user) }}"
-  when: nameindex_variant != "ala" and nameindex_nonala_downloaded.changed
+- name: link the current lucene index as namematching (Non ALA)
+  file: src={{ data_dir }}/lucene/namematching-{{ name_index_date }}/ dest={{ data_dir }}/lucene/namematching state=link force=yes
+  when: nameindex_variant != "ala" and tmp_name_dir_status.stat.exists == True
   tags:
     - "nameindex"
     - "nameindex-swap"

@@ -19,6 +19,7 @@
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
   tags:
     - pipelines
 
@@ -26,6 +27,7 @@
   apt_repository:
     repo: deb https://download.docker.com/linux/ubuntu bionic stable
     state: present
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
   tags:
     - pipelines
 
@@ -36,6 +38,7 @@
     - docker-ce-cli
     - docker-compose
     - containerd.io
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
   tags:
     - pipelines
     - docker
@@ -57,6 +60,7 @@
   template: src={{ item }} dest=/etc/docker/daemon.json
   with_items:
     - daemon.json
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
   tags:
     - pipelines
     - docker
@@ -65,6 +69,7 @@
   service:
     name: docker
     state: restarted
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
   tags:
     - pipelines
     - docker
@@ -134,27 +139,12 @@
     - pipelines
     - docopts
 
-- name: Add an apt key by id from a keyserver
-  apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: F697D8D2ADB9E24A
-  tags:
-    - la-pipelines
-    - pipelines
-
-- name: Add GBIF ES Repository
-  apt_repository:
-    repo: deb https://apt.gbif.es/ bionic main
-    state: present
-  tags:
-    - la-pipelines
-    - pipelines
-
 - name: Update apt and install pipelines
-  apt: update_cache=yes name=la-pipelines
+  apt: update_cache=yes name=la-pipelines={{ pipelines_version }} force=yes
   tags:
     - pipelines
     - la-pipelines
+    - apt
 
 - name: Install pipelines config
   template: src={{ item }} dest={{ data_dir }}/la-pipelines/config/{{ item }} mode=0644 output_encoding=iso-8859-1
@@ -164,6 +154,7 @@
     - la-pipelines-config
     - pipelines
     - la-pipelines
+    - properties
 
 - name: Copy docker YAML files to {{ data_dir }}
   copy: src={{ item }} dest={{ data_dir }}/{{ item }}
@@ -173,12 +164,14 @@
   tags:
     - pipelines
     - docker
+    - properties
 
 - name: Copy service scripts to /usr/bin
   copy: src={{ item }} dest=/usr/bin/{{ item }} mode=777
   with_items:
     - ala-name-service.sh
     - ala-sensitive-data-service.sh
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
   tags:
     - pipelines
     - docker
@@ -188,6 +181,7 @@
   with_items:
     - ala-name-service.service
     - ala-sensitive-data-service.service
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
   tags:
     - pipelines
     - docker
@@ -197,11 +191,13 @@
   with_items:
     - ala-name-service
     - ala-sensitive-data-service
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
 
 - name: Start service ala-sensitive-data-service, if not running
   service:
     name: ala-sensitive-data-service
     state: started
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
   tags:
     - pipelines
     - docker
@@ -210,9 +206,101 @@
   service:
     name: ala-name-service
     state: started
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
   tags:
     - pipelines
     - docker
+
+- name: Setup namematching package
+  ansible.builtin.debconf:
+    name: ala-namematching-service
+    question: "{{ item.question }}"
+    value: "{{ item.value }}"
+    vtype: string
+  with_items:
+  - {
+    question: "ala-namematching-service/source",
+    value: "{{ ala_namemaching_service_source | default('https://archives.ala.org.au/archives/nameindexes/20210811/namematching-20210811.tgz') }}"
+    }
+  - {
+    question: "ala-namematching-service/sha1",
+    value: "{{ ala_namemaching_service_source_sha1 | default('563814a7b5d886b746e10eb40c44f0d9bda62371') }}"
+    }
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
+  tags:
+    - pipelines
+    - la-pipelines
+    - apt
+
+- name: Setup sensitive-data-service package
+  ansible.builtin.debconf:
+    name: ala-sensitive-data-service
+    question: "{{ item.question }}"
+    value: "{{ item.value }}"
+    vtype: string
+  with_items:
+  - {
+    question: "ala-sensitive-data-service/sds-url",
+    value: "{{ sds_url | default('https://sds.ala.org.au') }}"
+    }
+  - {
+    question: "ala-sensitive-data-service/spatial-url",
+    value: "{{ spatial_url | default('https://spatial.ala.org.au') }}"
+    }
+  - {
+    question: "ala-sensitive-data-service/layers-url",
+    value: "{{ sds_layers_url | default('https://archives.ala.org.au/archives/layers/sds-layers.tgz') }}"
+    }
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
+  tags:
+    - pipelines
+    - la-pipelines
+    - apt
+
+- name: Install ala-namematching-service an ala-sensitive-data-service directly if not using docker
+  apt:
+    name:
+      - ala-namematching-service={{ ala_namematching_service_version }}
+      - ala-sensitive-data-service={{ ala_sensitive_data_service_version }}
+    state: present
+    autoclean: yes
+    update_cache: yes
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
+  tags:
+    - pipelines
+    - la-pipelines
+    - apt
+
+# See:
+# https://github.com/ansible/ansible/issues/29352
+# https://github.com/ansible/ansible/pull/39794
+# https://github.com/ansible/ansible/pull/74196
+- name: dpkg-reconfigure to get rid of configuration changes
+  shell: "dpkg-reconfigure -f noninteractive {{ item }}"
+  with_items:
+    - ala-namematching-service
+    - ala-sensitive-data-service
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
+  tags:
+    - pipelines
+    - la-pipelines
+    - apt
+
+- name: Start service ala-namematching-service installed via apt, if not running
+  service:
+    name: ala-namematching-service
+    state: started
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
+  tags:
+    - pipelines
+
+- name: Start service ala-sensitive-data-service installed via apt, if not running
+  service:
+    name: ala-sensitive-data-service
+    state: started
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
+  tags:
+    - pipelines
 
 - name: Create HDFS base directories
   shell: "{{ hadoop_install_dir }}/bin/hdfs dfs -mkdir -p {{ item }}"
