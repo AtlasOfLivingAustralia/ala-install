@@ -24,6 +24,11 @@
       "vernacularNameField": "vernacular name",
       "taxonRemarksField": "Notes",
       "defaultStatus": "traditionalKnowledge"
+    },
+    {
+      "uid": "dr17880",
+      "vernacularNameField": "vernacular name",
+      "defaultStatus": "traditionalKnowledge"
     }
   ]
 }

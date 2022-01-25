@@ -604,7 +604,7 @@
     { "code": "N124", "name": "Dhämalamirr", "scope": "I", "type": "L", "uri": "https://collection.aiatsis.gov.au/austlang/language/n124" },
     { "code": "N125", "name": "Gigi", "scope": "I", "type": "L", "uri": "https://collection.aiatsis.gov.au/austlang/language/n125" },
     { "code": "N126", "name": "Nunydjirrpi", "scope": "I", "type": "L", "uri": "https://collection.aiatsis.gov.au/austlang/language/n126" },
-    { "code": "N128", "name": "Wubuy / Nunggubuyu", "scope": "I", "type": "L", "uri": "https://collection.aiatsis.gov.au/austlang/language/n128" },
+    { "code": "N128", "name": "Wubuy", "scope": "I", "type": "L", "uri": "https://collection.aiatsis.gov.au/austlang/language/n128" },
     { "code": "N129", "name": "Bararrngu", "scope": "I", "type": "L", "uri": "https://collection.aiatsis.gov.au/austlang/language/n129" },
     { "code": "N13", "name": "Maranunggu", "scope": "I", "type": "L", "uri": "https://collection.aiatsis.gov.au/austlang/language/n13" },
     { "code": "N130", "name": "Golpa", "scope": "I", "type": "L", "uri": "https://collection.aiatsis.gov.au/austlang/language/n130" },
