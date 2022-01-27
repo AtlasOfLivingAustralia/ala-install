@@ -77,19 +77,9 @@
     - bie
   when: webserver_nginx and bie_hub_proxy_target is not defined
 
-# Trove path is needed until trove API cleanly supports https
-- name: add nginx vhost if configured
-  include_role:
-    name: nginx_vhost
-  vars:
-    appname: "bie-hub"
-    hostname: "{{ bie_hub_hostname }}"
-    context_path: "{{ bie_hub_context_path }}"
-    nginx_paths:
-      - path: "~ {{bie_index_context_path }}/(.*)$"
-        sort_label: "1_ws"
-        is_proxy: false
-        rewrite: "$scheme://{{bie_index_hostname }}{{bie_index_context_path }}/$1$is_args$args"
+- name: Define basic nginx_paths
+  set_fact:
+    bie_nginx_paths:
       - path: "{{bie_hub_context_path}}/species"
         sort_label: "2_species"
         is_proxy: true
@@ -135,6 +125,43 @@
         sort_label: "9_default"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:8080{{bie_hub_proxy_target}}"
+  when: webserver_nginx
+  tags:
+    - nginx_vhost
+    - deploy
+    - bie
+
+- name: bie-ws additional path when context is not / or empty
+  set_fact:
+    bie_nginx_additional_path:
+      - path: "~ {{bie_index_context_path }}/(.*)$"
+        sort_label: "1_ws"
+        is_proxy: false
+        rewrite: "$scheme://{{bie_index_hostname }}{{bie_index_context_path }}/$1$is_args$args"
+  when: webserver_nginx and bie_index_context_path != '/' and bie_index_context_path != ''
+  tags:
+    - nginx_vhost
+    - deploy
+    - bie
+
+- name: Append bie-ws additional path when needed
+  set_fact:
+     bie_nginx_paths: "{{ bie_nginx_additional_path + bie_nginx_paths }}"
+  when: webserver_nginx and bie_index_context_path != '/' and bie_index_context_path != ''
+  tags:
+    - nginx_vhost
+    - deploy
+    - bie
+
+# Trove path is needed until trove API cleanly supports https
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "bie-hub"
+    hostname: "{{ bie_hub_hostname }}"
+    context_path: "{{ bie_hub_context_path }}"
+    nginx_paths: "{{ bie_nginx_paths }}"
   tags:
     - nginx_vhost
     - deploy
