@@ -10,6 +10,11 @@
     - ecodata
     - deploy
 
+- name: Ensure group for the backup user exists
+  ansible.builtin.group:
+    name: "{{ecodata_backup_user}}"
+    state: present
+
 - name: create the user used for backups
   user:
     name: "{{ecodata_backup_user}}"
