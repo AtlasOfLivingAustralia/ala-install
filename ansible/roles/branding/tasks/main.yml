@@ -16,6 +16,7 @@
     appname: "branding"
     hostname: "{{ branding_url }}"
     context_path: "/"
+    nginx_cors_origin_regexp: "{{ branding_nginx_cors_origin_regexp if branding_nginx_cors_origin_regexp is defined }}"
     nginx_paths:
       - path: "/"
         sort_label: "1"
