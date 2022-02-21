@@ -7,6 +7,7 @@ security:
     logoutUrl: ${security.cas.casServerUrlPrefix}/logout
     appServerName: {{ userdetails_server_name }}
     authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+    contextPath: /{{ userdetails_context_path | default('userdetails')}}
   user:
     name: {{ userdetails_endpoint_user | default('admin') }}
     password: {{ userdetails_endpoint_password | default('secret') }}
