@@ -321,6 +321,21 @@
                 "sort": "index",
                 "dwcTerm": "eventID",
                 "field": "eventID"
+            },
+            {
+                "sort":"index",
+                "dwcTerm": "parentEventID",
+                "field":"parentEventID"
+            },
+            {
+                "sort":"index",
+                "dwcTerm": "fieldNumber",
+                "field":"fieldNumber"
+            },
+            {
+                "sort":"index",
+                "dwcTerm": "datasetName",
+                "field":"datasetName"
             }
         ]
     },
