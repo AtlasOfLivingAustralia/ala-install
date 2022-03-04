@@ -77,3 +77,4 @@
     - restart tomcat
   tags:
     - sds
+    - properties
