@@ -48,13 +48,13 @@
     - properties
 
 - name: Copy sensitivity categories XML
-  copy: src="sensitivity-categories.xml" dest="{{data_dir}}/sds/sensitivity-categories.xml"
+  copy: src="{{ sensitivity_categories_file | default ('sensitivity-categories.xml') }}" dest="{{data_dir}}/sds/sensitivity-categories.xml"
   tags:
     - sds
     - properties
 
 - name: Copy sensitivity zones XML
-  copy: src="sensitivity-zones.xml" dest="{{data_dir}}/sds/sensitivity-zones.xml"
+  copy: src="{{ sensitivity_zones_file | default ('sensitivity-zones.xml') }}" dest="{{data_dir}}/sds/sensitivity-zones.xml"
   tags:
     - sds
     - properties
@@ -77,4 +77,3 @@
     - restart tomcat
   tags:
     - sds
-    - properties
