@@ -107,3 +107,15 @@ collections:
 
 userDetails:
   url: {{ auth_base_url }}/userdetails/
+
+# swagger configuration
+swagger:
+  info:
+    description: "{{ doi_swagger_info_description | default('Generate DOIs for ALA applications') }}"
+    version: "{{ doi_swagger_info_version | default('1.0') }}"
+    title:  "{{ doi_swagger_info_title | default('ALA DOI service') }}"
+    termsOfServices: "{{ swagger_info_terms_of_services | default('https://www.ala.org.au/who-we-are/terms-of-use/') }}"
+    contact:
+      name:  "{{ swagger_contact_name | default('ALA Support') }}"
+      url: "{{ swagger_contact_url | default('https://www.ala.org.au') }}"
+      email: "{{ swagger_contact_email | default('support@ala.org.au') }}"
