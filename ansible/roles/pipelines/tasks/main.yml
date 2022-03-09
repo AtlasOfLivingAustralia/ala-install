@@ -174,6 +174,7 @@
   when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
   tags:
     - pipelines
+    - pipelines-services
     - docker
 
 - name: Copy docker service files to /etc/systemd/system
@@ -184,6 +185,7 @@
   when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
   tags:
     - pipelines
+    - pipelines-services
     - docker
 
 - name: enable services
@@ -192,6 +194,9 @@
     - ala-name-service
     - ala-sensitive-data-service
   when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
+  tags:
+    - pipelines-services
+    - pipelines
 
 - name: Start service ala-sensitive-data-service, if not running
   service:
@@ -200,6 +205,7 @@
   when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
   tags:
     - pipelines
+    - pipelines-services
     - docker
 
 - name: Start service ala-name-service, if not running
@@ -209,6 +215,7 @@
   when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
   tags:
     - pipelines
+    - pipelines-services
     - docker
 
 - name: Setup namematching package
@@ -229,6 +236,7 @@
   when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
   tags:
     - pipelines
+    - pipelines-services
     - la-pipelines
     - apt
 
@@ -251,9 +259,18 @@
     question: "ala-sensitive-data-service/layers-url",
     value: "{{ sds_layers_url | default('https://archives.ala.org.au/archives/layers/sds-layers.tgz') }}"
     }
+  - {
+    question: "ala-sensitive-data-service/source",
+    value: "{{ ala_sensitive_data_service_namematching_source | default('https://archives.ala.org.au/archives/nameindexes/latest/namematching-20200214.tgz') }}"
+    }
+  - {
+    question: "ala-sensitive-data-service/sha1",
+    value: "{{ ala_sensitive_data_service_namematching_sha1 | default('f9e42325db8d41ca0c8afeb6aeadf670978a13ac') }}"
+    }
   when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
   tags:
     - pipelines
+    - pipelines-services
     - la-pipelines
     - apt
 
@@ -268,6 +285,7 @@
   when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
   tags:
     - pipelines
+    - pipelines-services
     - la-pipelines
     - apt
 
@@ -283,6 +301,7 @@
   when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
   tags:
     - pipelines
+    - pipelines-services
     - la-pipelines
     - apt
 
@@ -293,6 +312,7 @@
   when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
   tags:
     - pipelines
+    - pipelines-services
 
 - name: Start service ala-sensitive-data-service installed via apt, if not running
   service:
@@ -301,6 +321,7 @@
   when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
   tags:
     - pipelines
+    - pipelines-services
 
 - name: Create HDFS base directories
   shell: "{{ hadoop_install_dir }}/bin/hdfs dfs -mkdir -p {{ item }}"
@@ -336,17 +357,21 @@
 
 - name: Download SHP files (includes global layer and EEZ derived from GBIFs geocode DB)
   get_url:
-    url: "https://pipelines-shp.s3-ap-southeast-2.amazonaws.com/pipelines-shapefiles.zip"
+    url: "{{ pipelines_shapefiles_url | default('https://pipelines-shp.s3-ap-southeast-2.amazonaws.com/pipelines-shapefiles.zip') }}"
     dest: "{{ data_dir }}/pipelines-shp/pipelines-shapefiles.zip"
+    checksum: "{{ pipelines_shapefiles_checksum | default('sha1:d4755425902e109e749c319f8d4ee98fa7ef2c4d') }}"
   tags:
     - pipelines
+    - pipelines-layers
 
 - name: Download SDS files with bitmaps
   get_url:
-    url: "https://archives.ala.org.au/archives/layers/sds-layers_with_bitmaps.tgz"
+    url: "{{ sds_layers_with_bitmaps_url | default('https://archives.ala.org.au/archives/layers/sds-layers_with_bitmaps.tgz') }}"
+    checksum: "{{ sds_layers_with_bitmaps_checksum | default('sha1:edc02525fdc1df0c587887b6df91d0b6ecd63cd7') }}"
     dest: "{{ data_dir }}/pipelines-shp/sds-layers.tgz"
   tags:
     - pipelines
+    - pipelines-layers
 
 - name: Unpack SHP files
   unarchive:
@@ -360,3 +385,4 @@
     - "{{ data_dir }}/pipelines-shp/sds-layers.tgz"
   tags:
     - pipelines
+    - pipelines-layers
