@@ -171,3 +171,4 @@ spring:
       nodes: {{ spring_session_redis_host }}:{{ spring_session_redis_port | default('6379') }}
 {% endif %}
 {% endif %}
+privacyPolicy:{{ privacy_policy_url | default('https://www.ala.org.au/about/terms-of-use/privacy-policy/') }}

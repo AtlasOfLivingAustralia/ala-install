@@ -1,5 +1,5 @@
-# Setup the CAS filter pattern to work with both /admin and /service/admin variants
-logger_uri_filter_pattern: "/admin.*,/service/admin.*"
+# Setup the CAS filter pattern to work with both /admin and /alaAdmin variants
+logger_uri_filter_pattern: "/admin/*,/alaAdmin/*"
 
 # Set this to a valid nginx logging line to enable logging of postdata
 # Also need to setup `nginx_other_log_formats` to define the format
