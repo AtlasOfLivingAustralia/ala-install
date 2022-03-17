@@ -5,6 +5,6 @@
     - tomcat
     - webserver
     - mysql
-    - nameindex
+    # use name matching service, replacing local instance
     - i18n
     - species-list
