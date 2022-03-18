@@ -50,6 +50,13 @@
     - pipelines_jenkins
     - pipelines_jenkins_jobs
 
+- name: Copy scriptApprovals to Jenkins if not extis
+  copy: src=scriptApprovals.xml dest=/var/lib/jenkins/scriptApproval.xml owner="jenkins" group="jenkins" mode=0644 force=no
+  when: is_master
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_jobs
+
 - name: Create jenkins user on slaves
   user:
     name: "jenkins"
