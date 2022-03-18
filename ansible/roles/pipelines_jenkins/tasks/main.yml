@@ -38,13 +38,14 @@
     - pipelines_jenkins
 
 - name: Jenkins jobs definitions
-  copy:
-    src: jenkins/jobs/
-    dest: /var/lib/jenkins/jobs
+  template:
+    src: "{{ item }}"
+    dest: /var/lib/jenkins/jobs/{{ item | dirname | basename }}/{{ item | basename | regex_replace('\.j2$', '') }}
     owner: jenkins
     group: jenkins
     mode: '0644'
   when: is_master
+  with_items: "{{ (role_path + '/templates/jenkins/jobs/*/*.j2') | fileglob}}"
   tags:
     - pipelines_jenkins
     - pipelines_jenkins_jobs
