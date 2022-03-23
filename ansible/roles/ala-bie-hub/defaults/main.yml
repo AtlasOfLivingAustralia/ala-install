@@ -1,0 +1,54 @@
+ala_base_url: https://www.ala.org.au
+alerts_url: https://alerts.ala.org.au/ws/
+allowed_image_editing_roles: ROLE_ADMIN,ROLE_EDITOR
+bhl_api_key:
+bhl_extend: false
+bhl_fulltext: false
+bhl_service_url: https://www.biodiversitylibrary.org/api3
+bhl_url: https://biodiversitylibrary.org
+bie_base_uri_exclusion_filter_pattern: /images.*,/css.*,/js.*,/less.*
+bie_base_uri_filter_pattern: /admin.*,/alaAdmin.*
+bie_base_url: https://bie.ala.org.au
+bie_hub: ala-bie-hub
+bie_hub_facets: idxtype,rank,locatedInHubCountry,imageAvailable,speciesGroup,taxonomicStatus,conservationStatusAUS_s,conservationStatusACT_s,conservationStatusNSW_s,conservationStatusQLD_s,conservationStatusVIC_s,conservationStatusTAS_s,conservationStatusSA_s,conservationStatusWA_s,conservationStatusNT_s
+bie_hub_tabs: overview,gallery,names,classification,records,literature,sequences,data-partners
+bie_index_api_key:
+bie_query_context:
+bie_search_path: /search
+bie_skin_layout: ala
+biocache_hub_url: https://biocache.ala.org.au
+biocache_query_context:
+biocache_service_url: https://biocache-ws.ala.org.au/ws
+blacklist_file: blacklist.json
+bypass_cas: true
+collectory_url: https://collections.ala.org.au
+default_map_colour: e6704c
+default_map_lat: -25.61
+default_map_lon: 134.35
+default_map_url: https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png
+default_map_zoom: 4
+eol_lang: en
+genbank_url: https://www.ncbi.nlm.nih.gov
+header_and_footer_baseurl: https://www.ala.org.au/commonui-bs3
+header_and_footer_version: "1"
+image_service_url: https://images.ala.org.au
+layers_url: https://spatial.ala.org.au/ws
+map_simpleMapButton: false
+orgNameLong: Atlas of Living Australia
+orgNameShort: Atlas of Living Australia
+namematching_service_url: https://namematching-ws.ala.org.au
+profile_service_url: https://profiles-ws.ala.org.au/
+regions_url: https://regions.ala.org.au
+scholar_url: https://scholar.google.com
+sightings_url: https://sightings.ala.org.au/
+skin_favicon: https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png
+skin_fluid_layout:
+skin_home_url: http://www.ala.org.au
+spatial_url: https://spatial.ala.org.au
+species_list_url: https://lists.ala.org.au
+specieslist_preferredDruid: dr4778
+specieslist_preferredListName: ALA Preferred Species Images
+synonym_types: synonym,homotypicSynonym,objectiveSynonym,heterotypicSynonym,subjectiveSynonym,proParteSynonym,inferredSynonym
+trove_api_key:
+trove_service_url: https://api.trove.nla.gov.au/v2
+trove_url: https://trove.nla.gov.au

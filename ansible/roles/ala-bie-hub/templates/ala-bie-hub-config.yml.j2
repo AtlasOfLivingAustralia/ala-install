@@ -1,0 +1,163 @@
+grails:
+  serverURL: {{ bie_base_url }}{{ala_bie_hub_context_path}}
+  cors:
+    enabled: true
+serverName: {{ bie_base_url }}
+
+# CAS Config
+security:
+  cas:
+    casServerName: {{ auth_base_url }}
+    uriFilterPattern: {{ bie_base_uri_filter_pattern }}
+    uriExclusionFilterPattern: {{ bie_base_uri_exclusion_filter_pattern }}
+    appServerName: {{ bie_base_url }}
+    casServerUrlPrefix: {{ auth_cas_url }}
+    loginUrl: {{ auth_cas_url }}/login
+    logoutUrl: {{ auth_cas_url }}/logout
+    contextPath: {{ ala_bie_hub_context_path }}
+    bypass: {{ bypass_cas  }}
+    applyUriFiltersToTicketValidation: false
+disableCAS: {{ bypass_cas }}
+userDetails:
+  url: {{ auth_base_url }}/userdetails/
+
+# BIE index webservices
+bie:
+  baseURL: {{ bie_base_url }}
+  searchPath: {{ bie_search_path }}
+  index:
+    url: {{ bie_index_base_url }}{{ bie_index_context_path }}
+
+# Query contexts - used to filter search results
+bieService:
+  baseUrl: {{ bie_index_base_url }}{{ bie_index_context_path }}
+  queryContext: {{ bie_query_context }}
+  apiKey: {{ bie_index_api_key }}
+biocacheService:
+  baseURL: {{ biocache_service_url }}
+  queryContext: {{ biocache_query_context }}
+
+# Header and footer
+headerAndFooter:
+  baseURL: {{ header_and_footer_baseurl }}
+  version: {{ header_and_footer_version }}
+
+ala:
+  baseURL: {{ ala_base_url }}
+  image:
+    service:
+      url: {{ image_service_url }}
+allowedImageEditingRoles: {{ allowed_image_editing_roles }}
+
+# Skin and layout
+skin:
+  homeUrl: {{ skin_home_url }}
+  layout: {{ bie_skin_layout }}
+  orgNameLong: {{ orgNameLong  }}
+  fluidLayout: {{ skin_fluid_layout }}
+  orgNameShort: {{ orgNameShort }}
+  favicon: {{ skin_favicon }}
+
+languageCodesUrl: file://{{ data_dir }}/{{ ala_bie_hub  }}/config/languages.json
+
+# Facets displayed on search page
+facets: {{ ala_bie_hub_facets }}
+
+# Tabs displayed on species page
+show:
+  tabs: {{ ala_bie_hub_tabs }}
+
+# ALA services
+biocache:
+  baseURL: {{ biocache_hub_url }}
+
+# Other ALA Services
+profileService:
+  baseURL: {{ profile_service_url  }}
+spatial:
+  baseURL: {{ spatial_base_url | default(spatial_url) }}
+collectory:
+  baseURL: {{ collectory_url }}
+speciesList:
+  baseURL: {{ species_list_url }}
+  preferredSpeciesListDruid: {{ specieslist_preferredDruid }}
+  preferredListName: {{ specieslist_preferredListName }}
+  apiKey: {{ speciesList_api_key }}
+alerts:
+  baseUrl: {{ alerts_url }}
+regions:
+  baseURL: {{ regions_base_url | default(regions_url) }}
+sightings:
+  url: {{ sightings_url }}
+layersService:
+  baseURL: {{ layers_service_url | default(layers_url) }}
+imageServiceBaseURL: {{ image_service_url }}
+image:
+  baseUrl: {{ image_service_url }}
+  thumbnailUrl: {{ image_service_url }}/image/proxyImageThumbnail?imageId=
+
+# External Literature and reference sources
+synonymsTypes: {{ synonym_types }}
+literature:
+  bhl:
+    url: {{ bhl_url }}
+    api: {{ bhl_service_url  }}
+    apikey: {{ bhl_api_key  }}
+    fulltext: {{ bhl_fulltext }}
+    pageSize: 200
+    extend: {{ bhl_extend }}
+  genbank:
+    url: {{ genbank_url  }}
+  scholar:
+    url: {{ scholar_url }}
+  trove:
+    url: {{ trove_url }}
+    api: {{ trove_service_url  }}
+    apikey: {{ trove_api_key }}
+external:
+  blacklist: file://{{ data_dir }}/{{ ala_bie_hub }}/config/blacklist.json
+
+# Mapping options
+defaultDecimalLatitude: {{ default_map_lat }}
+defaultDecimalLongitude: {{ default_map_lon }}
+defaultZoomLevel: {{ default_map_zoom }}
+map:
+  default:
+    url: {{ default_map_url }}
+  simpleMapButton: {{ map_simpleMapButton }}
+  records:
+    colour: {{ default_map_colour }}
+
+{% if vernacular_pull_categories is defined %}
+# A category of vernacular names pulled out from the standard list and given special display treatment
+vernacularName:
+  pull:
+    categories: {{ vernacular_pull_categories }}
+    active: true
+    label: {{ vernacular_pull_title }}
+    labelDetail: {{ vernacular_pull_detail }}
+    showHeader: true
+    showLanguage: true
+{% endif %}
+
+{% if update_file_location is defined %}
+# Update EOL response, a separate file stores configuration values
+update:
+  file:
+    location: {{ update_file_location }}
+{% endif %}
+
+eol:
+  lang: {{ eol_lang }}
+{% if eol_sanitise is defined %}
+# Sanitise EOL content
+  sanitise: {{ eol_sanitise }}
+# comma-delimited HTML elements
+  html:
+    allowedElements: {{ eol_html_allowedElements }}
+# comma-delimited HTML attributes (attribute;pattern;element)
+    allowAttributes: {{ eol_html_allowAttributes }}
+{% endif %}
+
+namematching:
+  serviceURL: {{ namematching_service_url }}
