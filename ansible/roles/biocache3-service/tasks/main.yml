@@ -416,7 +416,7 @@
     name: "purge biocache-downloads"
     hour: "3"
     minute: "35"
-    job: "find {{ download_dir | default('/data/biocache-download') }} -type d -mtime +180 -exec rm -rf {} \\;"
+    job: "find {{ download_dir | default('/data/biocache-download') }} -type d -mtime +90 -exec rm -rf {} \\;"
   tags:
     - biocache-service
     - properties
