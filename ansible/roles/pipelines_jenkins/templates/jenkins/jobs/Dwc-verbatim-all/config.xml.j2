@@ -86,8 +86,8 @@ stage (&apos;Clear file locks&apos;) {
     datasets.removeAll(batch3.split(&quot; &quot;))
     datasets.removeAll(batch4.split(&quot; &quot;))
 
-    //split into 6 batches
-    def batches = [&quot;&quot;,&quot;&quot;]
+    //split into n-node batches
+    def batches = [&quot;&quot;] * jenkins.model.Jenkins.instance.nodes.size()
     datasets.eachWithIndex { datasetId, index -&gt; 
         batches[index.mod(2)] =  batches[index.mod(2)] + &quot; &quot; + datasetId 
     }

@@ -6,7 +6,10 @@
     
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.90">
-    <script>nodeNames().each { nodeName -&gt;
+    <script>// Skip if we are not using docker
+def use_docker_with_pipelines = {{ use_docker_with_pipelines | string | lower }}
+if (!use_docker_with_pipelines) return
+nodeNames().each { nodeName -&gt;
     node(nodeName) {
       echo 'nodeName ' + nodeName
       sh 'sudo sh -c "docker kill $(docker ps -q)" || true'
