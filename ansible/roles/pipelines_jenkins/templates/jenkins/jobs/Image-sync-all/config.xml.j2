@@ -53,7 +53,7 @@ stage('Interpret small datasets on jenkins nodes') {
 
 @NonCPS def batchDatasets(datasets, noOfBatches){
     //split into n-node batches
-    def batches = [&quot;&quot;] * jenkins.model.Jenkins.instance.nodes.size()
+    def batches = [&quot;&quot;] * noOfBatches
     datasets.eachWithIndex { datasetId, index -&gt; 
         batches[index.mod(noOfBatches)] = datasetId + " " + batches[index.mod(noOfBatches)]
     }
