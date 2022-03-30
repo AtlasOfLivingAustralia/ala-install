@@ -83,8 +83,8 @@ stage('SDS small datasets on jenkins nodes') {
 
 
 @NonCPS def batchDatasets(datasets, noOfBatches){
-    //split into 6 batches
-    def batches = ["","","","","",""]
+    //split into n-node batches
+    def batches = [&quot;&quot;] * noOfBatches
     datasets.eachWithIndex { datasetId, index -&gt; 
         batches[index.mod(noOfBatches)] = datasetId + " " + batches[index.mod(noOfBatches)]
     }
