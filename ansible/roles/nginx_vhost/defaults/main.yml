@@ -113,3 +113,5 @@ nginx_disable_download_disk_buffering: False
 # nginx_cors_origin_regexp: '^https?:\/\/(localhost|l-a\.site|.*\.l-a\.site)'
 nginx_cors_headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
 nginx_cors_methods: "GET, POST, OPTIONS"
+# by default, Access-Control-Allow-Credentials header is not included; to include it, set this to True
+nginx_cors_allow_credentials: False
