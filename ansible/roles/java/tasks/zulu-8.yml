@@ -23,17 +23,15 @@
   tags:
     - java
 
-- name: install zulu-8 (Debian)
-  apt: pkg=zulu-8 state=latest
-  become: yes
-  when:
-    - use_zulu8 is defined and use_zulu8 | bool == True
-    - ansible_os_family == "Debian"
-  tags:
-    - java
+- set_fact:
+    java_package: "{{ 'zulu8-ca-' + java_package_suffix[java_headless | bool][java_jre | bool] }}"
 
-- name: install ca-certificates (Debian)
-  apt: pkg=ca-certificates state=latest update_cache=yes
+- name: install ca-certificates and Azul Zulu Java (Debian)
+  apt: 
+    pkg: 
+    - ca-certificates
+    - "{{ java_package }}"
+    state: latest update_cache=yes
   when:
     - use_zulu8 is defined and use_zulu8 | bool == True
     - ansible_os_family == "Debian"

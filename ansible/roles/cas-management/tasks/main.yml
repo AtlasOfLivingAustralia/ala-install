@@ -67,6 +67,10 @@
     service_name: "cas-management"
     service_owner: 'cas'
     service_group: 'cas'
+    use_openjdk11: True
+    use_openjdk8: False
+    java_headless: True
+    java_jre: True
     jar_url: '{{ cas_management_jar_url }}'
   tags:
     - deploy

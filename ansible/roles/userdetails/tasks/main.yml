@@ -70,6 +70,10 @@
   vars:
     service_name: "userdetails"
     jar_url: '{{ userdetails_jar_url }}'
+    use_openjdk11: True
+    use_openjdk8: False
+    java_headless: true
+    java_jre: true
   tags:
     - deploy
     - service

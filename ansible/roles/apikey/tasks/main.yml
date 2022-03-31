@@ -70,6 +70,10 @@
   vars:
     service_name: "apikey"
     jar_url: '{{ apikey_jar_url }}'
+    use_openjdk11: False
+    use_openjdk8: True
+    java_headless: true
+    java_jre: true
   tags:
     - deploy
     - service

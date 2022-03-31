@@ -1,2 +1,12 @@
 # java version to use - only read for CentOS. Debian is using use_openjdk7 to switch between Java-7 and Java-8
 java: java-1.7.0-openjdk-devel
+java_headless: false
+java_jre: false
+
+java_package_suffix:
+  False:
+    False: "jdk"
+    True: "jre"
+  True:
+    False: "jdk-headless"
+    True: "jre-headless"

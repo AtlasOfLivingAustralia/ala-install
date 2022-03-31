@@ -18,11 +18,6 @@ jndi:
         cachePrepStmts: true
         prepStmtCacheSize: 250
         prepStmtCacheSqlLimit: 2048
-flyway:
-  baselineOnMigrate: {{ cas_db_migration_baseline | default('true') }}
-  url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true&noAccessToProcedureBodies=true&useSSL={{mysql_connection_ssl | default(false)}}
-  user: {{ cas_flyway_username | default('root') }}
-  password: {{ cas_flyway_password | default('password') }}
 
 logging:
   config: "{{ log4j2_config_location | default('file:/data/cas/config/log4j2.xml') }}"
@@ -33,9 +28,6 @@ cas:
     prefix: ${cas.server.name}/{{ cas_context_path | default('cas') }}
   host:
     name: {{ cas_host_name }}
-  adminPagesSecurity:
-    ip: {{ cas_admin_pages_ip | default('.*') }}
-    actuatorEndpointsEnabled: true
   http-web-request:
     cors:
       enabled: {{ cas_cors_enabled | default('true')}}
@@ -60,16 +52,17 @@ cas:
   authn:
     throttle:
       failure:
-        range-seconds: {{ cas_throttle_range | default('30') }}
-        threshold: {{ cas_throttle_threshold | default('3') }}
+        range-seconds: {{ cas_throttle_range | default('10') }}
+        threshold: {{ cas_throttle_threshold | default('5') }}
     pac4j:
-      typedIdUsed: true
-      cookie:
-        crypto:
-          signing:
-            key: {{ pac4j_cookie_signing_key }}
-          encryption:
-            key: {{ pac4j_cookie_encryption_key }}
+      core:
+        typedIdUsed: true
+      # cookie:
+      #   crypto:
+      #     signing:
+      #       key: {{ pac4j_cookie_signing_key }}
+      #     encryption:
+      #       key: {{ pac4j_cookie_encryption_key }}
 {% if pac4j_facebook_consumer_key is defined %}
       facebook:
         # fields:
@@ -110,23 +103,29 @@ cas:
 {% endif %}
 {% if pac4j_aaf_consumer_key is defined %}
       oidc:
-      - client-name: aaf
-        discovery-uri: {{ pac4j_aaf_discovery_uri | default('https://central.test.aaf.edu.au/.well-known/openid-configuration') }}
-        id: {{ pac4j_aaf_consumer_key }}
-        secret: {{ pac4j_aaf_consumer_secret }}
-        scope: openid profile email
+      - generic:
+          client-name: aaf
+          discovery-uri: {{ pac4j_aaf_discovery_uri | default('https://central.test.aaf.edu.au/.well-known/openid-configuration') }}
+          id: {{ pac4j_aaf_consumer_key }}
+          secret: {{ pac4j_aaf_consumer_secret }}
+          scope: openid profile email
+          cssClass: aaf-logo
 {% endif %}
     oidc:
-      issuer: ${cas.server.name}/cas/oidc
-      jwksFile: file:/data/cas/keystore.jwks
+      core:
+        issuer: ${cas.server.name}/cas/oidc
+      jwks:
+        file-system:
+          jwks-file: file:/data/cas/keystore.jwks
   monitor:
-    endpoints:
-      enabled: true
+    # endpoints:
+    #   enabled: true
     jdbc:
       validationQuery: /* ping */ SELECT 1
       dataSourceName: java:comp/env/jdbccas
   serviceRegistry:
-    initFromJson: {{ serviceRegistryInitFromJson | default('true') }}
+    core:
+      init-from-json: {{ serviceRegistryInitFromJson | default('true') }}
     mongo:
       sslEnabled: {{ cas_services_ssl_enabled | default('false') }}
       clientUri: {{ cas_services_uri | default('') }}
@@ -219,6 +218,11 @@ management:
     roles: ACTUATOR
 
 spring:
+  flyway:
+    baselineOnMigrate: {{ cas_db_migration_baseline | default('true') }}
+    url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true&noAccessToProcedureBodies=true&useSSL={{mysql_connection_ssl | default(false)}}
+    user: {{ cas_flyway_username | default('root') }}
+    password: {{ cas_flyway_password | default('password') }}
 {% if bootadmin_enabled | bool %}
   boot:
     admin:
@@ -236,16 +240,15 @@ spring:
             password: ${security.user.password}
 {% endif %}
   session:
+    enabled: {{ spring_session_enabled | default('false') }}
     store-type: {{ spring_session_store_type | default('none') }}
-    {% if spring_session_store_type == 'redis' %}disable-redis-config-action: {{ is_secured_redis | default('false') | bool }}
-    redis:
-      namespace: {{ cas_redis_namespace | default('cas') }}
-  redis:
-    host: {{ spring_session_redis_host }}
-    password: {{ spring_session_redis_password }}
-    port: {{ spring_session_redis_port | default('6379') }}
-{% if spring_session_redis_clustered | bool %}
-    cluster:
-      nodes: {{ spring_session_redis_host }}:{{ spring_session_redis_port | default('6379') }}
-{% endif %}
+{% if spring_session_store_type == 'mongodb' %}
+  data:
+    mongodb:
+      uri: {{ cas_session_mongo_uri }}
+      # host: {{ userdetails_mongodb_host }}
+      # port: {{ userdetails_mongodb_port }}
+      # username: {{ userdetails_mongodb_username }}
+      # password: {{ userdetails_mongodb_password }}
+      database: {{ cas_session_mongo_database | default('sessions') }}
 {% endif %}

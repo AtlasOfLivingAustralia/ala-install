@@ -1,12 +1,17 @@
 # CAS Config
 security:
-  cas:
-    casServerName: {{ cas_server_name }}
-    casServerUrlPrefix: ${security.cas.casServerName}/{{ cas_context_path | default('cas') }}
-    loginUrl: ${security.cas.casServerUrlPrefix}/login
-    logoutUrl: ${security.cas.casServerUrlPrefix}/logout
-    appServerName: {{ userdetails_server_name }}
+  cas: 
+    enabled: false
+    # casServerName: {{ cas_server_name }}
+    # casServerUrlPrefix: ${security.cas.casServerName}/{{ cas_context_path | default('cas') }}
+    # loginUrl: ${security.cas.casServerUrlPrefix}/login
+    # logoutUrl: ${security.cas.casServerUrlPrefix}/logout
+    # appServerName: {{ userdetails_server_name }}
     authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+  oidc:
+    client-id: {{ userdetails_oidc_client_id }}
+    secret: {{ userdetails_oidc_secret }}
+    discovery-uri: {{ cas_server_name }}/{{ cas_context_path}}/oidc/.well-known
   user:
     name: {{ userdetails_endpoint_user | default('admin') }}
     password: {{ userdetails_endpoint_password | default('secret') }}
@@ -26,9 +31,9 @@ management:
   security:
     enabled: true
     roles: ACTUATOR
-{% if spring_session_store_type == 'redis' %}
+{% if spring_session_store_type == 'mongodb' %}
   health:
-    redis:
+    mongodb:
       enabled: true
 {% endif %}
 
@@ -38,7 +43,8 @@ grails:
   serverURL: {{ userdetails_server_name }}/{{ userdetails_context_path | default('userdetails') }}
 server:
   port: {{ userdetails_port | default('9001') }}
-  contextPath: /{{ userdetails_context_path  | default('userdetails') }}
+  servlet:
+    contextPath: /{{ userdetails_context_path  | default('userdetails') }}
 redirectAfterFirstLogin: ${grails.serverURL}/myprofile
 
 # Data source configuration
@@ -158,17 +164,15 @@ spring:
             password: ${security.user.password}
 {% endif %}
   session:
+    enabled: {{ spring_session_enabled | default('false') }}
     store-type: {{ spring_session_store_type | default('none') }}
-    {% if spring_session_store_type == 'redis' %}disable-redis-config-action: {{ is_secured_redis | default('false') | bool }}
-    redis:
-      namespace: {{ userdetails_redis_namespace | default('userdetails') }}
-  redis:
-    host: {{ spring_session_redis_host }}
-    password: {{ spring_session_redis_password }}
-    port: {{ spring_session_redis_port | default('6379') }}
-{% if spring_session_redis_clustered | bool %}
-    cluster:
-      nodes: {{ spring_session_redis_host }}:{{ spring_session_redis_port | default('6379') }}
-{% endif %}
+  {% if spring_session_store_type == 'mongodb' %}data:
+    mongodb:
+      uri: {{ userdetails_mongodb_uri }}
+      # host: {{ userdetails_mongodb_host }}
+      # port: {{ userdetails_mongodb_port }}
+      # username: {{ userdetails_mongodb_username }}
+      # password: {{ userdetails_mongodb_password }}
+      database: {{ userdetails_session_database | default('sessions') }}
 {% endif %}
 privacyPolicy:{{ privacy_policy_url | default('https://www.ala.org.au/about/terms-of-use/privacy-policy/') }}

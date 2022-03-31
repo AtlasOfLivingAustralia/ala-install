@@ -87,6 +87,10 @@
       value: /data/cas/config/pwe.properties
     log_config_filename: 'log4j2.xml'
     service_name: "cas"
+    use_openjdk11: True
+    use_openjdk8: False
+    java_headless: true
+    java_jre: true
     jar_url: '{{ cas_jar_url }}'
   tags:
     - deploy
