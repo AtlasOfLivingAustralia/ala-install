@@ -115,6 +115,7 @@
     - { app: "specieslists", apikey: "{{ speciesList_api_key }}" }
     - { app: "pipelines", apikey: "{{ pipelines_api_key | default('') }}" }
     - { app: "data-quality", apikey: "{{ data_quality_api_key | default('') }}" }
+    - { app: "ecodata", apikey: "{{ ecodata_api_key | default('') }}" }
   loop_control:
     loop_var: oitem
   when: apikey_def_creator_email is defined and apikey_def_creator_userid is defined and oitem.apikey|length > 0

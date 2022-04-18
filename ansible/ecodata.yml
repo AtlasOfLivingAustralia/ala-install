@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: ecodata,ecodata-reporting,primary,secondary
   vars:
     tomcat: "tomcat7"
     tomcat_user: "tomcat7"

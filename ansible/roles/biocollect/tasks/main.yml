@@ -2,6 +2,7 @@
   tags:
     - deploy
     - biocollect
+    - properties
 
 - name: set biocollect_user as default value
   set_fact:
@@ -9,7 +10,7 @@
   tags:
     - biocollect
     - deploy
-
+    - properties
 
 - name: add jar and service
   include_role:
@@ -123,7 +124,7 @@
       - path: "{{ biocollect_context_path | default('/') }}"
         is_proxy: true
         sort_label: "tomcatproxy"
-        proxy_pass: "http://127.0.0.1:8080"
+        proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}"
   tags:
     - nginx_vhost
     - deploy
