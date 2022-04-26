@@ -37,13 +37,29 @@
   tags:
     - pipelines_jenkins
 
+- name: Create /data/dwca-export for Copy-dwca-to-hdfs job
+  file:
+    path: /data/dwca-export/
+    state: directory
+  when: is_master
+  tags:
+    - pipelines_jenkins
+
 - name: Jenkins jobs definitions
-  copy:
-    src: jenkins/jobs/
-    dest: /var/lib/jenkins/jobs
+  template:
+    src: "{{ item }}"
+    dest: /var/lib/jenkins/jobs/{{ item | dirname | basename }}/{{ item | basename | regex_replace('\.j2$', '') }}
     owner: jenkins
     group: jenkins
     mode: '0644'
+  when: is_master
+  with_items: "{{ (role_path + '/templates/jenkins/jobs/*/*.j2') | fileglob}}"
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_jobs
+
+- name: Copy scriptApprovals to Jenkins if not extis
+  copy: src=scriptApprovals.xml dest=/var/lib/jenkins/scriptApproval.xml owner="jenkins" group="jenkins" mode=0644 force=no
   when: is_master
   tags:
     - pipelines_jenkins

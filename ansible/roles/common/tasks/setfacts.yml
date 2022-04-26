@@ -132,19 +132,35 @@
   tags:
     - setfacts
 
-- name: set java defaults for openjdk11
+- name: set java defaults for openjdk11 (amd64)
   set_fact:
     java_security_opts: -Dlog4j2.formatMsgNoLookups=true
     java_home: /usr/lib/jvm/java-11-openjdk-amd64
-  when: use_openjdk11 is defined and use_openjdk11 | bool == True
+  when: use_openjdk11 is defined and use_openjdk11 | bool == True and ansible_architecture != "aarch64"
   tags:
     - setfacts
 
-- name: set java defaults for openjdk8
+- name: set java defaults for openjdk11 (arm64)
+  set_fact:
+    java_security_opts: -Dlog4j2.formatMsgNoLookups=true
+    java_home: /usr/lib/jvm/java-11-openjdk-arm64
+  when: use_openjdk11 is defined and use_openjdk11 | bool == True and ansible_architecture == "aarch64"
+  tags:
+    - setfacts
+
+- name: set java defaults for openjdk8 (amd64)
   set_fact:
     java_security_opts: -Djava.security.properties=/etc/java-8-openjdk/security/enableLegacyTLS.security -Dlog4j2.formatMsgNoLookups=true
     java_home: /usr/lib/jvm/java-8-openjdk-amd64
-  when: use_openjdk8 is defined and use_openjdk8 | bool == True
+  when: use_openjdk8 is defined and use_openjdk8 | bool == True and ansible_architecture != "aarch64"
+  tags:
+    - setfacts
+
+- name: set java defaults for openjdk8 (arm64)
+  set_fact:
+    java_security_opts: -Djava.security.properties=/etc/java-8-openjdk/security/enableLegacyTLS.security -Dlog4j2.formatMsgNoLookups=true
+    java_home: /usr/lib/jvm/java-8-openjdk-arm64
+  when: use_openjdk8 is defined and use_openjdk8 | bool == True and ansible_architecture == "aarch64"
   tags:
     - setfacts
 

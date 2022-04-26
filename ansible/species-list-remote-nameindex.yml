@@ -1,0 +1,10 @@
+- hosts: species-list
+  roles:
+    - common
+    - java
+    - tomcat
+    - webserver
+    - mysql
+    # use name matching service, replacing local instance
+    - i18n
+    - species-list

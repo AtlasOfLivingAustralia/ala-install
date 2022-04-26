@@ -45,6 +45,10 @@ bieService:
 userdetails:
     baseUrl: "{{ user_details_base_url | default('https://auth.ala.org.au/userdetails') }}"
 
+# ala-auth-plugin conf
+userDetails:
+    url: {{ auth_base_url }}/userdetails/
+
 favicon:
     url: "{{ favicon_url | default('https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico') }}"
 

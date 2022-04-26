@@ -17,6 +17,8 @@ security:
     bypass:   {{ bypass_cas | default(true) }}
   apikey:
     serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
+userDetails:
+  url: {{ auth_base_url }}/userdetails/
 biocache:
   base: {{ biocache_base_url | default('https://biocache.ala.org.au') }}
   service: {{ biocache_service_url | default('https://biocache-ws.ala.org.au/ws') }}

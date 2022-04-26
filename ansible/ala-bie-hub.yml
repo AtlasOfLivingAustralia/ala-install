@@ -1,0 +1,10 @@
+# Installs ala-bie-hub
+- hosts: ala-bie-hub
+  roles:
+    - common
+    - java
+    - webserver
+    - tomcat
+    - i18n
+    - ala-bie-hub
+
