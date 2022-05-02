@@ -5,6 +5,6 @@
     - tomcat
     - webserver
     - mysql
-    - nameindex
+    - { role: nameindex, when: "species_list_version is version('4', '<')" }
     - i18n
     - species-list
