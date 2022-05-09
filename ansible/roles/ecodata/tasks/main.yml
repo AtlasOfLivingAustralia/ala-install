@@ -2,6 +2,7 @@
   tags:
     - ecodata
     - deploy
+    - properties
 
 - name: set ecodata_user as default value
   set_fact:
@@ -9,6 +10,7 @@
   tags:
     - ecodata
     - deploy
+    - properties
 
 #
 # External configuration directories and files
