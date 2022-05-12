@@ -136,5 +136,115 @@
   tags:
     - solr_config  
     - solrcloud
-    - solr_restart    
+    - solr_restart
 
+- name: Check if biocache collection exists
+  uri:
+    url: "http://localhost:8983/solr/biocache/select?q=*:*"
+    method: GET
+    status_code: [200,404]
+  register: collection
+  tags:
+    - solrcloud
+    - solr_create_collection
+
+# https://solr.apache.org/guide/8_8/configsets-api.html
+- name: Check if biocache configsets exist already
+  uri:
+    url: "http://localhost:8983/solr/admin/configs?action=LIST&name=biocache&omitHeader=true"
+    method: GET
+    body_format: json
+    return_content: yes
+    status_code: 200
+  register: solr_configsets
+  tags:
+    - solrcloud
+    - solr_configsets
+  when: collection.status == 404
+
+- name: Debug current configsets
+  debug:
+    var: solr_configsets.json.configSets
+  tags:
+    - solrcloud
+    - solr_configsets
+  when: collection.status == 404
+
+- name: Delete biocache configset if exists
+  uri:
+    url: "http://localhost:8983/solr/admin/configs?action=DELETE&name=biocache&omitHeader=true"
+    method: GET
+    status_code: 200
+  tags:
+    - solrcloud
+    - solr_configsets
+  when: collection.status == 404 and 'biocache' in solr_configsets.json.configSets
+
+- name: ensure target directory for configset exist
+  file:
+    path: /tmp/solr-config
+    state: directory
+  tags:
+    - solrcloud
+    - solr_configsets
+  when: collection.status == 404
+
+- name: Download solr configset from gbif/pipelines
+  get_url:
+    url: https://raw.githubusercontent.com/gbif/pipelines/dev/livingatlas/solr/conf/{{ item }}
+    dest: /tmp/solr-config/{{item}}
+  with_items:
+    - elevate.xml
+    - managed-schema
+    - protwords.txt
+    - solrconfig.xml
+    - stopwords.txt
+    - synonyms.txt
+  tags:
+    - solrcloud
+    - solr_configsets
+  when: collection.status == 404
+
+- name: Delete previous configset zip if exists
+  file:
+    path: /tmp/solr-config.zip
+    state: absent
+  tags:
+    - solrcloud
+    - solr_configsets
+  when: collection.status == 404
+
+- name: Create a zip archive of the solr configset
+  archive:
+    path:
+    - /tmp/solr-config/
+    dest: /tmp/solr-config.zip
+    path: /tmp/solr-config/
+    format: zip
+  tags:
+    - solrcloud
+    - solr_configsets
+  when: collection.status == 404
+
+- name: Update solr biocache configset
+  uri:
+    url: http://localhost:8983/solr/admin/configs?action=UPLOAD&name=biocache
+    method: POST
+    remote_src: true
+    src: /tmp/solr-config.zip
+    headers:
+      Content-Type: "application/octet-stream"
+  tags:
+    - solrcloud
+    - solr_configsets
+  when: collection.status == 404
+
+- name: Create biocache collection if not exists
+  uri:
+    url: "http://localhost:8983/solr/admin/collections?action=CREATE&name=biocache&numShards=1&replicationFactor=1&collection.configName=biocache"
+    method: GET
+    status_code: 200
+  tags:
+    - solrcloud
+    - solr_create_collection
+  when: collection.status == 404
