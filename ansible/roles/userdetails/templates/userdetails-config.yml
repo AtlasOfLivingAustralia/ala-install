@@ -1,16 +1,23 @@
 # CAS Config
 security:
-  cas: 
-    enabled: false
-    # casServerName: {{ cas_server_name }}
-    # casServerUrlPrefix: ${security.cas.casServerName}/{{ cas_context_path | default('cas') }}
-    # loginUrl: ${security.cas.casServerUrlPrefix}/login
-    # logoutUrl: ${security.cas.casServerUrlPrefix}/logout
-    # appServerName: {{ userdetails_server_name }}
+  core:
     authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+  cas:
+    enabled: {{ userdetails_use_cas | default('true') }}
+    casServerName: {{ cas_server_name }}
+    casServerUrlPrefix: ${security.cas.casServerName}/{{ cas_context_path | default('cas') }}
+    loginUrl: ${security.cas.casServerUrlPrefix}/login
+    logoutUrl: ${security.cas.casServerUrlPrefix}/logout
+    appServerName: {{ userdetails_server_name }}
+    # authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
   oidc:
+    enabled: {{ userdetails_use_oidc | default('false') }}
     client-id: {{ userdetails_oidc_client_id }}
     secret: {{ userdetails_oidc_secret }}
+    discovery-uri: {{ cas_server_name }}/{{ cas_context_path}}/oidc/.well-known
+  jwt:
+    enabled: {{ userdetails_jwt_enabled | default('false') }}
+    fallback-to-legacy-behaviour: {{ userdetails_jwt_fallback_to_legacy | default('true') }}
     discovery-uri: {{ cas_server_name }}/{{ cas_context_path}}/oidc/.well-known
   user:
     name: {{ userdetails_endpoint_user | default('admin') }}
@@ -139,10 +146,6 @@ attributes:
 # API key for external apps
 webservice.apiKey: {{ api_key }}
 
-# show api link
-apiKey.showLink: {{ api_key_show_link | default('false') }}
-apiKey.showSecret: {{ api_key_show_secret | default('false') }}
-
 # Default primary fields for Export to CSV functionality
 admin.export.csv.primary.fields: {{ admin_export_csv_primary_fields | default('id,userName,firstName,lastName,email,activated,locked,created')}}
 
@@ -166,13 +169,23 @@ spring:
   session:
     enabled: {{ spring_session_enabled | default('false') }}
     store-type: {{ spring_session_store_type | default('none') }}
-  {% if spring_session_store_type == 'mongodb' %}data:
+{% if spring_session_store_type == 'mongodb' %}
     mongodb:
-      uri: {{ userdetails_mongodb_uri }}
-      # host: {{ userdetails_mongodb_host }}
-      # port: {{ userdetails_mongodb_port }}
-      # username: {{ userdetails_mongodb_username }}
-      # password: {{ userdetails_mongodb_password }}
-      database: {{ userdetails_session_database | default('sessions') }}
+      collectionName: {{ spring_session_mongo_collection | default('userdetails-sessions') }}
+  data:
+    mongodb:
+      uri: {{ spring_session_mongo_uri }}
 {% endif %}
-privacyPolicy:{{ privacy_policy_url | default('https://www.ala.org.au/about/terms-of-use/privacy-policy/') }}
+    {% if spring_session_store_type == 'redis' %}disable-redis-config-action: {{ is_secured_redis | default('false') | bool }}
+    redis:
+      namespace: {{ apikey_redis_namespace | default('apikey') }}
+  redis:
+    host: {{ spring_session_redis_host }}
+    password: {{ spring_session_redis_password }}
+    port: {{ spring_session_redis_port | default('6379') }}
+{% if spring_session_redis_clustered | bool %}
+    cluster:
+      nodes: {{ spring_session_redis_host }}:{{ spring_session_redis_port | default('6379') }}
+{% endif %}
+{% endif %}
+privacyPolicy: {{ privacy_policy_url | default('https://www.ala.org.au/about/terms-of-use/privacy-policy/') }}

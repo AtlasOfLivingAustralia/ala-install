@@ -95,7 +95,15 @@ spring:
             password: ${security.user.password}
 {% endif %}
   session:
-    store-type: {{ spring_session_store_type | default('none') }}
+    store-type: {% if spring_session_store_type == 'mongodb' %}mongo{% else %}{{ spring_session_store_type | default('none') }}{% endif %}
+
+{% if spring_session_store_type == 'mongodb' %}
+    mongo:
+      collectionName: {{ spring_session_mongo_collection | default('apikey-sessions') }}
+  data:
+    mongodb:
+      uri: {{ spring_session_mongo_uri }}
+{% endif %}
     {% if spring_session_store_type == 'redis' %}disable-redis-config-action: {{ is_secured_redis | default('false') | bool }}
     redis:
       namespace: {{ apikey_redis_namespace | default('apikey') }}

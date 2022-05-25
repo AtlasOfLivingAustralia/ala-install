@@ -31,8 +31,12 @@ cas:
   http-web-request:
     cors:
       enabled: {{ cas_cors_enabled | default('true')}}
+      allow-origin-patterns:
+{% for allowed_origin_pattern in cas_cors_allowed_origin_patternss | default(["'*'"]) %}
+      - {{allowed_origin_pattern}}
+{% endfor %}
       allow-origins:
-{% for allowed_origin in cas_cors_allowed_origins | default(["'*'"]) %}
+{% for allowed_origin in cas_cors_allowed_origins | default([]) %}
       - {{allowed_origin}}
 {% endfor %}
   jdbc:
@@ -111,6 +115,18 @@ cas:
           scope: openid profile email
           cssClass: aaf-logo
 {% endif %}
+    oauth:
+      crypto:
+        encryption:
+          key: {{ cas_oauth_encryption_key }}
+        signing:
+          key: {{ cas_oauth_signing_key }}
+      access-token:
+        crypto:
+          encryption:
+            key: {{ cas_oauth_access_token_encryption_key }}
+          signing:
+            key: {{ cas_oauth_access_token_signing_key }}
     oidc:
       core:
         issuer: ${cas.server.name}/cas/oidc
@@ -243,12 +259,9 @@ spring:
     enabled: {{ spring_session_enabled | default('false') }}
     store-type: {{ spring_session_store_type | default('none') }}
 {% if spring_session_store_type == 'mongodb' %}
+    mongodb:
+      collectionName: {{ spring_session_mongo_collection | default('cas-sessions') }}
   data:
     mongodb:
-      uri: {{ cas_session_mongo_uri }}
-      # host: {{ userdetails_mongodb_host }}
-      # port: {{ userdetails_mongodb_port }}
-      # username: {{ userdetails_mongodb_username }}
-      # password: {{ userdetails_mongodb_password }}
-      database: {{ cas_session_mongo_database | default('sessions') }}
+      uri: {{ spring_session_mongo_uri }}
 {% endif %}
