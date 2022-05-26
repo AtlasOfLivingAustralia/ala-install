@@ -1,0 +1,9 @@
+- hosts: biocache-service-clusterdb
+  roles:
+    - common
+    - java
+    - { role: tomcat, tomcat: tomcat9 }
+    - webserver
+    - biocache3-properties
+    - biocache3-service
+    - logger-client

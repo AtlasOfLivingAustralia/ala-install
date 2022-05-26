@@ -9,7 +9,7 @@
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
   <description>&#13;
-    Interpret all datasets.&#13;
+    Image-sync all datasets.&#13;
     This pipeline job split large and small datasets.&#13;
   </description>
   <keepDependencies>false</keepDependencies>
@@ -47,7 +47,7 @@ batches.eachWithIndex { batch, index -&gt;
   } 
 }
 
-stage('Interpret small datasets on jenkins nodes') {
+stage('Image-sync small datasets on jenkins nodes') {
   parallel branches
 }
 
