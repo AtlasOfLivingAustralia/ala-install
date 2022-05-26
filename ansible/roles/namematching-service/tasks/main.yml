@@ -18,7 +18,7 @@
     service_owner: "{{ namematching_user }}"
     args:
       - server
-      - "{{data_dir}}/namematching-service/config/namematching-service-config.yml"
+      - "{{data_dir}}/namematching-service/config/sensitive-data-service-config.yml"
   tags:
     - deploy
     - service
@@ -26,8 +26,8 @@
 
 - name: Create configuration
   template:
-    src: namematching-service-config.yml
-    dest: "{{data_dir}}/namematching-service/config/namematching-service-config.yml"
+    src: sensitive-data-service-config.yml
+    dest: "{{data_dir}}/namematching-service/config/sensitive-data-service-config.yml"
     owner: "{{ namematching_user }}"
     group: "{{ namematching_user }}"
   notify:

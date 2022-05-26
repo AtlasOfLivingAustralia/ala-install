@@ -1,0 +1,123 @@
+logging:
+  level: INFO
+  loggers:
+    au.org.ala: WARN
+    org.reflections: ERROR
+  appenders:
+    - type: file
+      currentLogFilename: /var/log/atlas/sensitive-data-service/sensitive-data-service.log
+      archive: true
+      archivedLogFilenamePattern: /var/log/atlas/sensitive-data-service/sensitive-data-service-%d.log
+      archivedFileCount: 5
+      logFormat: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} : %m%n%ex"
+server:
+  applicationConnectors:
+    - type: http
+      port: {{ sensitive_data_service_port }}
+      outputBufferSize: 32KiB
+      idleTimeout: 30 seconds
+      minBufferPoolSize: 64 bytes
+      bufferPoolIncrement: 1KiB
+      maxBufferPoolSize: 64KiB
+      acceptorThreads: 1
+      selectorThreads: 2
+      acceptQueueSize: 1024
+      reuseAddress: true
+  adminConnectors:
+    - type: http
+      port: {{ sensitive_data_admin_port }}
+conservation:
+  index: /data/lucene/namematching-{{ nameindex_datestamp }}
+  speciesUrl: {{ sds_url }}/sensitive-species-data.xml
+  zonesUrl: {{ sds_url }}/sensitivity-zones.xml
+  categoriesUrl: {{ sds_url }}/sensitivity-categories.xml
+  layersUrl: {{ sds_url }}/ws/layers
+  layersServiceUrl: {{ layers_service_url }}
+  cache:
+    entryCapacity: 10000
+    enableJmx: true
+  generalisations:
+    - action: message
+      field: dwc:informationWithheld
+      message: Record is {2} in {1}. Information withheld by {0}.
+      append: true
+      trigger: WITHHOLD
+    - action: message
+      field: dwc:dataGeneralizations
+      message: Record is {2} in {1}. Generalised to {3} by {0}.
+      append: true
+      trigger: GENERALISE
+    - action: latLong
+      latitudeField: dwc:decimalLatitude
+      longitudeField: dwc:decimalLongitude
+    - action: clear
+      field: dwc:verbatimLatitude
+    - action: clear
+      field: dwc:verbatimLongitude
+    - action: clear
+      field: dwc:verbatimCoordinates
+    - action: clear
+      field: dwc:locality
+    - action: clear
+      field: dwc:verbatimLocality
+    - action: retain
+      field: dwc:municipality
+    - action: retain
+      field: dwc:stateProvince
+    - action: retain
+      field: dwc:country
+    - action: clear
+      field: dwc:locationRemarks
+    - action: clear
+      field: gridReference
+    - action: clear
+      field: footprintWKT
+    - action: add
+      field: dwc:coordinateUncertaintyInMeters
+      retainUnparsable: false
+      useSensitivity: true
+      add: 0
+    - action: add
+      field: generalisationToApplyInMetres
+      retainUnparsable: false
+      useSensitivity: true
+      add: 0
+    - action: add
+      field: generalisationInMetres
+      retainUnparsable: false
+      useSensitivity: true
+      add: 0
+    - action: clear
+      field: northing
+    - action: clear
+      field: easting
+    - action: clear
+      field: bbox
+    - action: clear
+      field: dwc:eventID
+    - action: clear
+      field: dwc:eventDate
+    - action: clear
+      field: dwc:eventTime
+    - action: clear
+      field: eventDateEnd
+    - action: clear
+      field: dwc:verbatimEventDate
+    - action: clear
+      field: dwc:day
+    - action: clear
+      field: dwc:month
+    - action: retain
+      field: dwc:year
+    - action: retain
+      field: dwc:scientificName
+    - action: retain
+      field: dwc:family
+    - action: retain
+      field: dwc:genus
+    - action: retain
+      field: dwc:specificEpithet
+    - action: retain
+      field: dwc:infraspecificEpithet
+    - action: retain
+      field: intraspecificEpithet

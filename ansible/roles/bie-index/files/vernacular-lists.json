@@ -29,6 +29,10 @@
       "uid": "dr17880",
       "vernacularNameField": "vernacular name",
       "defaultStatus": "traditionalKnowledge"
+    {
+      "uid": "dr17886",
+      "vernacularNameField": "vernacular name",
+      "defaultStatus": "traditionalKnowledge"
     }
   ]
 }
