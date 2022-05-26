@@ -1,6 +1,12 @@
 {
   "defaultVernacularNameField": "name",
   "defaultNameIdField": "nameID",
+  "defaultKingdomField": "kingdom",
+  "defaultPhylumField": "phylum",
+  "defaultClassField": "class",
+  "defaultOrderField": "order",
+  "defaultFamilyField": "family",
+  "defaultRankField": "rank",
   "defaultStatusField": "status",
   "defaultLanguageField": "language",
   "defaultSourceField": "source",
