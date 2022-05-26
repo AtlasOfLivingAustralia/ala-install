@@ -52,6 +52,8 @@
     owner: jenkins
     group: jenkins
     mode: '0644'
+    # Only install this template if not exists, so this allows not to lost custom customizations in some job
+    force: "{{ pipelines_jenkins_update_existing_jobs | default('no') }}"
   when: is_master
   with_items: "{{ (role_path + '/templates/jenkins/jobs/*/*.j2') | fileglob}}"
   tags:
