@@ -37,14 +37,6 @@
   tags:
     - pipelines_jenkins
 
-- name: Create /data/dwca-export for Copy-dwca-to-hdfs job
-  file:
-    path: /data/dwca-export/
-    state: directory
-  when: is_master
-  tags:
-    - pipelines_jenkins
-
 - name: Jenkins jobs definitions
   template:
     src: "{{ item }}"
