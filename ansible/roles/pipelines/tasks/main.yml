@@ -50,6 +50,7 @@
     - "{{ data_dir }}/spark-tmp"
     - "{{ data_dir }}/pipelines-shp"
     - "{{ data_dir }}/dwca-tmp"
+    - "{{ data_dir }}/dwca-export"
   tags:
     - la-pipelines-config
     - pipelines
