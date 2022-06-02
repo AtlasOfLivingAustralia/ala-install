@@ -15,3 +15,8 @@
   include_role: name=mysql-8.0
   when: ansible_os_family == "Debian" and ansible_distribution_version == "20.04"
   tags: mysql-server
+
+- name: Install mysql-server 8.0 for Ubuntu 22.04
+  include_role: name=mysql-8.0
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "22.04"
+  tags: mysql-server
