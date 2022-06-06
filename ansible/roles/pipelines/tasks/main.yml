@@ -51,6 +51,7 @@
     - "{{ data_dir }}/pipelines-shp"
     - "{{ data_dir }}/dwca-tmp"
     - "{{ data_dir }}/dwca-export"
+    - "{{ data_dir }}/migration"
   tags:
     - la-pipelines-config
     - pipelines
@@ -332,6 +333,8 @@
     - "/pipelines-all-datasets"
     - "/pipelines-species"
     - "/pipelines-jackknife"
+    - "/pipelines-clustering"
+    - "/pipelines-vocabularies"
     - "/migration"
   become: yes
   become_user: "{{ hadoop.user }}"
@@ -348,6 +351,8 @@
     - "/pipelines-all-datasets"
     - "/pipelines-species"
     - "/pipelines-jackknife"
+    - "/pipelines-clustering"
+    - "/pipelines-vocabularies"
     - "/migration"
   become: yes
   become_user: "{{ hadoop.user }}"
