@@ -37,6 +37,19 @@
   tags:
     - pipelines_jenkins
 
+- name: Jenkins jobs definitions directories
+  file:
+    dest: /var/lib/jenkins/jobs/{{ item | dirname | basename }}
+    state: directory
+    owner: jenkins
+    group: jenkins
+    mode: '0755'
+  when: is_master
+  with_items: "{{ (role_path + '/templates/jenkins/jobs/*/*.j2') | fileglob}}"
+  tags:
+    - pipelines_jenkins
+    - pipelines_jenkins_jobs
+
 - name: Jenkins jobs definitions
   template:
     src: "{{ item }}"
