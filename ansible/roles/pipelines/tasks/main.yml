@@ -51,6 +51,7 @@
     - "{{ data_dir }}/pipelines-shp"
     - "{{ data_dir }}/dwca-tmp"
     - "{{ data_dir }}/dwca-export"
+    - "{{ data_dir }}/migration"
   tags:
     - la-pipelines-config
     - pipelines
