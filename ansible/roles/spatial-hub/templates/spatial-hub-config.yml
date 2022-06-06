@@ -19,7 +19,10 @@ security:
     casServerUrlPrefix: "{{ auth_cas_url }}"
     loginUrl: "{{ auth_cas_url }}/login"
     logoutUrl: "{{ auth_cas_url }}/logout"
+{% if spatial_hub_context_path != '/' %}
+    # if contextPath: "/" we have a too many redirects with CAS
     contextPath: "{{ spatial_hub_context_path }}"
+{% endif %}
     bypass: {{ bypass_cas | default(true) }}
     disableCAS: {{ bypass_cas | default(true) }}
     gateway: {{ gateway_cas | default(false) }}
