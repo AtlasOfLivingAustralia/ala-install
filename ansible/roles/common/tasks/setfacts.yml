@@ -132,6 +132,29 @@
   tags:
     - setfacts
 
+- name: set ubuntu-22.04 variables
+  set_fact:
+    libtcnative: "libtcnative-1"
+    tomcat_package: "{{ tomcat }}"
+    tomcat_user: "{{ tomcat_user }}"
+    tomcat_conf: "/etc/default/{{ tomcat }}"
+    tomcat_conf_dir: "/etc/{{ tomcat }}"
+    tomcat_log_dir: "/var/log/{{ tomcat }}"
+    apache: "apache2"
+    nginx: "nginx"
+    postfix: "postfix"
+    mysql_service: "mysql"
+    mysql: "mysql-server-8.0"
+    cassandra_yaml: "/etc/cassandra/cassandra.yaml"
+    cassandra_user: "cassandra"
+    python_software_properties: "python3-software-properties"
+    tomcat_dir: "/var/lib/{{ tomcat }}"
+    tomcat_webapps: "/var/lib/{{ tomcat }}/webapps/"
+    psycopg2_package: "python3-psycopg2"
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "22.04"
+  tags:
+    - setfacts
+
 - name: set java defaults for openjdk11 (amd64)
   set_fact:
     java_security_opts: -Dlog4j2.formatMsgNoLookups=true
