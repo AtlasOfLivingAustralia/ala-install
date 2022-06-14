@@ -113,11 +113,6 @@
                 "sort":"count",
                 "field":"establishment_means"
             },
-
-            {
-                "sort":"index",
-                "field":"occurrence_decade_i"
-            },
             {
                 "sort":"count",
                 "field":"state_conservation"
@@ -129,11 +124,6 @@
             {
                 "sort":"count",
                 "field":"country_conservation"
-            },
-
-            {
-                "sort":"index",
-                "field":"dataset_name"
             }
         ]
     },
@@ -141,7 +131,7 @@
         "title":"Event",
         "facets":[
             {
-                "sort":"count",
+                "sort":"index",
                 "field":"dataset_name"
             },
             {
@@ -173,8 +163,7 @@
             {
                 "sort":"index",
                 "field":"occurrence_decade_i"
-            },
-
+            }
         ]
     },
     {
