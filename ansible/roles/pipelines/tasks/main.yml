@@ -379,6 +379,16 @@
     - pipelines
     - pipelines-layers
 
+- name: Download extra tar with layers
+  get_url:
+    url: "{{ pipelines_shapefiles_extra_url }}"
+    checksum: "{{ pipelines_shapefiles_extra_checksum }}"
+    dest: "{{ data_dir }}/pipelines-shp/extra-layers.tgz"
+  tags:
+    - pipelines
+    - pipelines-layers
+  when: pipelines_shapefiles_extra_url is defined
+
 - name: Unpack SHP files
   unarchive:
     src: "{{ item }}"
@@ -389,6 +399,8 @@
   with_items:
     - "{{ data_dir }}/pipelines-shp/pipelines-shapefiles.zip"
     - "{{ data_dir }}/pipelines-shp/sds-layers.tgz"
+    - "{{ data_dir }}/pipelines-shp/extra-layers.tgz"
   tags:
     - pipelines
     - pipelines-layers
+  when: item is defined
