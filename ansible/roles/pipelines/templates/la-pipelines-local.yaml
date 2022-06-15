@@ -39,6 +39,8 @@ geocodeConfig:
       CC: {{geocode_region | default('AU')}}
       HM: {{geocode_region | default('AU')}}
       NF: {{geocode_region | default('AU')}}
+  stateProvince:
+    path: /data/pipelines-shp/{{ geocode_state_province_layer | default('cw_state_poly') }}
 
 gbifConfig:
   vocabularyConfig:
