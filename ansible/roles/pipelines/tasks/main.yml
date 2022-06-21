@@ -284,6 +284,7 @@
     state: present
     autoclean: yes
     update_cache: yes
+    force: yes
   when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
   tags:
     - pipelines
