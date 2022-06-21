@@ -95,6 +95,11 @@ imageServiceBaseURL: {{ image_service_url }}
 image:
   baseUrl: {{ image_service_url }}
   thumbnailUrl: {{ image_service_url }}/image/proxyImageThumbnail?imageId=
+ausTraits:
+    baseURL: {{ ausTraits_base_url | default('http://tcyfjstumgmyag96.dev.austraits.cloud.edu.au') }}
+    homeURL: {{ ausTraits_home_url | default('https://austraits.org/') }}
+    sourceURL: {{ ausTraits_source_url | default('https://zenodo.org/record/5112001#.Yp2RVahBwuX') }}
+    definitionsURL: {{ ausTraits_definitions_url | default('https://edit-test.ala.org.au/austraits-definitions/') }}
 
 # External Literature and reference sources
 synonymsTypes: {{ synonym_types }}
