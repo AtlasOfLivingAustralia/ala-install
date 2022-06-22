@@ -53,7 +53,13 @@ These tools also generate some [ansible-playbook wrapper](https://github.com/liv
 
 The [LA Quick Start Guide](https://github.com/AtlasOfLivingAustralia/documentation/wiki/LA-Quick-Start-Guide) gives you a broad view of the [prerequisites](https://github.com/AtlasOfLivingAustralia/documentation/wiki/LA-Quick-Start-Guide#before-install) and [post-intall](https://github.com/AtlasOfLivingAustralia/documentation/wiki/LA-Quick-Start-Guide#post-install) steps you need in order to setup a production LA portal.
 
-## Setup the Living Atlas demo with Vagrant
+## Setup the Living Atlas demo using microstack
+
+Follow [this howto](https://github.com/AtlasOfLivingAustralia/documentation/wiki/Setup-a-LA-demo-using-microstack) to setup a LA demo using `microstack` and the `la-toolkit`.
+
+## Setup the Living Atlas demo with Vagrant 
+
+**Deprecated:** we used this method more in the past.
 
 Below are some instructions for setting up the Living Atlas demo with Ansible & Vagrant on your local machine or laptop using a demo simple inventory.
 

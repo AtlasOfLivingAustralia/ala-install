@@ -1,0 +1,145 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - sensitive-data-service
+    - deploy
+    - properties
+    - nginx_vhost
+
+- name: Create directories
+  file:
+    path: "{{data_dir}}/{{ item }}"
+    state: directory
+    owner: "{{ sensitive_data_user }}"
+    group: "{{ sensitive_data_user }}"
+  with_items:
+    - sds/config
+    - sensitive-data-service/config
+    - biocache/layers
+#
+# JAR file deployment
+#
+# Also creates config directories
+- name: add jar and service
+  include_role:
+    name: exec-jar-generic
+  vars:
+    service_name: "sensitive-data-service"
+    jar_url: '{{ sensitive_data_service_jar_url }}'
+    service_owner: "{{ sensitive_data_user }}"
+    args:
+      - server
+      - "{{data_dir}}/sensitive-data-service/config/sensitive-data-service-config.yml"
+  tags:
+    - deploy
+    - service
+    - sensitive-data-service
+
+- name: Create configuration
+  template:
+    src: sensitive-data-service-config.yml
+    dest: "{{data_dir}}/sensitive-data-service/config/sensitive-data-service-config.yml"
+    owner: "{{ sensitive_data_user }}"
+    group: "{{ sensitive_data_user }}"
+  notify:
+    - restart sensitive-data-service
+  tags:
+    - properties
+    - sensitive-data-service
+
+- name: Create SDS configuration
+  template:
+    src: sds-config.properties
+    dest: "{{data_dir}}/sds/sds-config.properties"
+    owner: "{{ sensitive_data_user }}"
+    group: "{{ sensitive_data_user }}"
+  notify:
+    - restart sensitive-data-service
+  tags:
+    - properties
+    - sensitive-data-service
+
+- name: Create SDS configuration
+  template:
+    src: sds-config.properties
+    dest: "{{data_dir}}/sds/config/sds-config.properties"
+    owner: "{{ sensitive_data_user }}"
+    group: "{{ sensitive_data_user }}"
+  notify:
+    - restart sensitive-data-service
+  tags:
+    - properties
+    - sensitive-data-service
+
+- name: Get SDS configuration from server
+  get_url:
+    url: "{{sds_url}}/{{item}}"
+    dest: "{{data_dir}}/sds/{{item}}"
+    owner: "{{ sensitive_data_user }}"
+    group: "{{ sensitive_data_user }}"
+  with_items:
+    - "sensitive-species-data.xml"
+    - "sensitivity-zones.xml"
+    - "sensitivity-categories.xml"
+  notify:
+    - restart sensitive-data-service
+  tags:
+    - properties
+    - sensitive-data-service
+
+- name: Get SDS layers from server
+  get_url:
+    url: "{{sds_url}}/ws/layers"
+    dest: "{{data_dir}}/sds/layers.json"
+    owner: "{{ sensitive_data_user }}"
+    group: "{{ sensitive_data_user }}"
+  notify:
+    - restart sensitive-data-service
+  tags:
+    - properties
+    - sensitive-data-service
+
+- name: Get spatial layers from archive
+  get_url:
+    url: "{{ layers_url }}"
+    dest: "{{data_dir}}/biocache/layers/layers.tgz"
+    owner: "{{ sensitive_data_user }}"
+    group: "{{ sensitive_data_user }}"
+  tags:
+     - sensitive-data-service
+
+- name: Uncompress layers
+  unarchive:
+    src: "{{ data_dir }}/biocache/layers/layers.tgz"
+    dest: "{{ data_dir }}/biocache/layers"
+    copy: no
+    owner: "{{ sensitive_data_user }}"
+    group: "{{ sensitive_data_user }}"
+  tags:
+    - sensitive-data-service
+
+- name: Restart sensitive_data service
+  service:
+    name: sensitive-data-service
+    state: restarted
+    enabled: yes
+  tags:
+    - sensitive-data-service
+
+- name: add nginx vhost
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "sensitive-data-service"
+    hostname: "{{ sensitive_data_service_hostname }}"
+    context_path: "{{ sensitive_data_service_context_path }}"
+    nginx_paths:
+      - path: "{{ sensitive_data_service_context_path }}"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:{{ sensitive_data_service_port }}/{{ sensitive_data_service_context_path }}"
+  # notify:
+  #   - reload nginx
+  tags:
+    - nginx_vhost
+    - sensitive-data-service
+    - deploy
+  when: webserver_nginx

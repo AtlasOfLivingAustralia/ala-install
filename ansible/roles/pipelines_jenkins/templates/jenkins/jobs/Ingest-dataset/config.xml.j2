@@ -87,10 +87,10 @@ stage('Dwc-verbatim') {
     }
 }
 
-stage('UUID') {
+stage('Interpretation') {
     node(){
-        if (params.dwcaToVerbatim || params.uuid){
-            build job: 'UUID-dataset', parameters: [
+        if (params.interpretation){
+            build job: 'Interpret-dataset', parameters: [
                  string(name: 'datasetId', value: datasetId),
                  string(name: 'displayName', value: datasetId),
                  string(name: 'mode', value: mode)
@@ -99,10 +99,10 @@ stage('UUID') {
     }
 }
 
-stage('Interpretation') {
+stage('UUID') {
     node(){
-        if (params.interpretation){
-            build job: 'Interpret-dataset', parameters: [
+        if (params.dwcaToVerbatim || params.uuid){
+            build job: 'UUID-dataset', parameters: [
                  string(name: 'datasetId', value: datasetId),
                  string(name: 'displayName', value: datasetId),
                  string(name: 'mode', value: mode)

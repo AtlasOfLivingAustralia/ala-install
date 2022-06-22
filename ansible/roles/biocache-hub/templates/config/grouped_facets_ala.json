@@ -1,3 +1,4 @@
+
 [
     {
         "title":"Taxon",
@@ -113,22 +114,6 @@
                 "field":"establishment_means"
             },
             {
-                "sort":"index",
-                "field":"month"
-            },
-            {
-                "sort":"index",
-                "field":"year"
-            },
-            {
-                "sort":"count",
-                "field":"date_precision"
-            },
-            {
-                "sort":"index",
-                "field":"occurrence_decade_i"
-            },
-            {
                 "sort":"count",
                 "field":"state_conservation"
             },
@@ -139,10 +124,15 @@
             {
                 "sort":"count",
                 "field":"country_conservation"
-            },
+            }
+        ]
+    },
+    {
+        "title":"Event",
+        "facets":[
             {
                 "sort":"index",
-                "field":"event_id"
+                "field":"dataset_name"
             },
             {
                 "sort":"index",
@@ -154,7 +144,25 @@
             },
             {
                 "sort":"index",
-                "field":"dataset_name"
+                "field":"event_id"
+            },
+
+            {
+                "sort":"index",
+                "field":"month"
+            },
+            {
+                "sort":"index",
+                "field":"year"
+            },
+
+            {
+                "sort":"count",
+                "field":"date_precision"
+            },
+            {
+                "sort":"index",
+                "field":"occurrence_decade_i"
             }
         ]
     },
@@ -312,10 +320,6 @@
             {
                 "sort":"count",
                 "field":"data_resource_uid"
-            },
-            {
-                "sort":"count",
-                "field":"dataset_name"
             }
         ]
     }

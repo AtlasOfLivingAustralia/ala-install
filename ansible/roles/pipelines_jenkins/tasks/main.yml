@@ -37,13 +37,18 @@
   tags:
     - pipelines_jenkins
 
-- name: Create /data/dwca-export for Copy-dwca-to-hdfs job
+- name: Jenkins jobs definitions directories
   file:
-    path: /data/dwca-export/
+    dest: /var/lib/jenkins/jobs/{{ item | dirname | basename }}
     state: directory
+    owner: jenkins
+    group: jenkins
+    mode: '0755'
   when: is_master
+  with_items: "{{ (role_path + '/templates/jenkins/jobs/*/*.j2') | fileglob}}"
   tags:
     - pipelines_jenkins
+    - pipelines_jenkins_jobs
 
 - name: Jenkins jobs definitions
   template:
@@ -52,6 +57,8 @@
     owner: jenkins
     group: jenkins
     mode: '0644'
+    # Only install this template if not exists, so this allows not to lost custom customizations in some job
+    force: "{{ pipelines_jenkins_update_existing_jobs | default('no') }}"
   when: is_master
   with_items: "{{ (role_path + '/templates/jenkins/jobs/*/*.j2') | fileglob}}"
   tags:

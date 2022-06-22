@@ -59,6 +59,8 @@ wordPress:
 lists:
   service: {{ specieslist_service_url | default('https://lists.ala.org.au/ws') }}
   items: /speciesListItems/{0}?includeKVP=true
+naming:
+  service: {{ namematching_service_url | default('https://namematching-ws.ala.org.au') }}
 attribution:
   default: {{ default_name_source | default('National Species Lists') }}
   common: {{ default_common_name_source | default('National Species Lists') }}
