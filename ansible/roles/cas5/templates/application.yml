@@ -186,11 +186,12 @@ ala:
   userDetailsBaseUrl: {{ userdetails_base_url }}/{{ userdetails_context_path | default('userdetails') }}/
   cookie:
     domain: {{ auth_cookie_domain | default('ala.org.au') }}
-    secure: {{ auth_cookie_secure | default('false') }}
+    secure: {{ auth_cookie_secure | default('true') }}
     httpOnly: {{ auth_cookie_httpOnly | default('true') }}
     maxAge: {{ auth_cookie_maxAge | default('-1') }}
     name: {{ auth_cookie_name | default('ALA-Auth') }}
     path: {{ auth_cookie_path | default('/') }}
+    sameSitePolicy: {{ auth_cookie_sameSitePolicy | default('Lax') }}
   userCreator:
     userCreatePassword: {{ user_create_password }}
     enableUserSurvey: {{ show_ala_survey | default('false') }}

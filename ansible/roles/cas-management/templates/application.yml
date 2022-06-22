@@ -1,0 +1,62 @@
+# CAS server that management app will authenticate with
+# This server will authenticate for any app (service) and you can login as casuser/Mellon
+mgmt:
+  serverName: {{ cas_management_server_name }}
+  adminRoles:
+    - ROLE_ADMIN
+  authzAttributes:
+    - role
+  userPropertiesFile: file:/data/cas-management/config/users.properties
+  version-control:
+    enabled: {{ cas_management_enable_version_control | default('false') }}
+    services-repo: {{ cas_management_services_repo | default('/data/cas-management/services-repo') }}
+  delegated:
+    user-repos-dir: {{ cas_management_user_repos_dir | default('/data/cas-management/user-repos') }}
+
+server:
+  servlet:
+    context-path: /{{ cas_management_context_path | default('cas-management') }}
+  port: {{ cas_management_server_port | default(8070) }}
+  ssl:
+    enabled: false
+
+logging:
+  config: file:/data/cas-management/config/log4j2.xml
+
+cas:
+  server:
+    name: {{ cas_server_name }}
+    prefix: ${cas.server.name}/{{ cas_context_path | default('cas') }}
+  authn:
+    attributeRepository:
+      jdbc:
+      - dataSourceName: ''
+        url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull
+        user: {{cas_db_username | default('cas') }}
+        password: {{cas_db_password | default('password') }}
+  service-registry:
+    mongo:
+      client-uri: {{ cas_services_uri | default('') }}
+      databaseName: {{ cas_services_collection | default('cas-service-registry') }}
+      collection: {{ cas_services_collection | default('services') }}
+      # sslEnabled: {{ cas_services_ssl_enabled | default('false') }}
+      # host: {{ cas_services_host | default('localhost') }}
+      # port: {{ cas_services_port | default('27017') }}
+      # replicaSet: {{ cas_services_replica_set | default('') }}
+      # authenticationDatabaseName: {{ cas_services_auth_db | default('') }}
+      # userId: {{ cas_services_username | default('cas') }}
+      # password: {{ cas_services_password | default('password') }}
+
+spring:
+  thymeleaf:
+    mode: HTML
+  session:
+    enabled: {{ spring_session_enabled | default('false') }}
+    store-type: {{ spring_session_store_type | default('none') }}
+{% if spring_session_store_type == 'mongodb' %}
+    mongodb:
+      collectionName: {{ spring_session_mongo_collection | default('cas-mgmt-sessions') }}
+  data:
+    mongodb:
+      uri: {{ spring_session_mongo_uri }}
+{% endif %}
