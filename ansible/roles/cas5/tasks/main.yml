@@ -76,6 +76,23 @@
     - properties
     - cas
 
+# Auto generated if not present, auto generation not suitable for multiple
+- name: copy JWKS (if present)
+  copy:
+    src:  "{{ inventory_dir }}/{{ cas_jwks_file | default('keystore.jwks') }}"
+    dest: "{{data_dir}}/cas/keystore.jwks"
+    owner: cas
+    group: cas
+    mode: u=rw,g=,o=
+  notify:
+    - restart cas
+  with_first_found:
+    - files:
+      - "{{ inventory_dir }}/{{ cas_jwks_file | default('keystore.jwks') }}"
+      skip: true
+  tags:
+    - cas
+
 - name: add jar and service
   include_role:
     name: exec-jar
