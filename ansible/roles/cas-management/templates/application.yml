@@ -37,7 +37,7 @@ cas:
   service-registry:
     mongo:
       client-uri: {{ cas_services_uri | default('') }}
-      databaseName: {{ cas_services_collection | default('cas-service-registry') }}
+      databaseName: {{ cas_services_db | default('cas-service-registry') }}
       collection: {{ cas_services_collection | default('services') }}
       # sslEnabled: {{ cas_services_ssl_enabled | default('false') }}
       # host: {{ cas_services_host | default('localhost') }}
