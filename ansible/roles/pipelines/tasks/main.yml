@@ -146,6 +146,7 @@
   tags:
     - pipelines
     - la-pipelines
+    - la-pipelines-apt
     - apt
 
 - name: Install pipelines config
