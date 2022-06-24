@@ -34,7 +34,7 @@ speciesListService:
 
 geocodeConfig:
   country:
-    path: /data/pipelines-shp/{{ geocode_country_layer | default('political') }}
+    path: {{ data_dir }}/pipelines-shp/{{ geocode_country_layer | default('political') }}
     field: {{ geocode_country_field | default('ISO_A2') }}
     intersectMapping:
       CX: {{geocode_region | default('AU')}}
@@ -45,6 +45,11 @@ geocodeConfig:
     path: /data/pipelines-shp/{{ geocode_state_province_layer | default('cw_state_poly') }}
     field: {{ geocode_state_province_field | default('FEATURE') }}
 
+{% if state_province_centre_points_file is defined %}
+locationInfoConfig:
+    stateProvinceCentrePointsFile : {{ data_dir }}/la-pipelines/config/stateProvinceCentrePoints.txt
+
+{% endif %}
 gbifConfig:
   vocabularyConfig:
     vocabulariesPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ vocabulary_dir }}
