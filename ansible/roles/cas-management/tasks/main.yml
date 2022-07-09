@@ -33,17 +33,17 @@
     - cas-management
 
 # TODO Seems to not be used by app and can be removed?
-- name: copy application.properties
-  template:
-    src: application.properties
-    dest: "{{data_dir}}/cas-management/config/application.properties"
-    owner: cas
-    group: cas
-  notify:
-    - restart cas-management
-  tags:
-    - properties
-    - cas-management
+# - name: copy application.properties
+#   template:
+#     src: application.properties
+#     dest: "{{data_dir}}/cas-management/config/application.properties"
+#     owner: cas
+#     group: cas
+#   notify:
+#     - restart cas-management
+#   tags:
+#     - properties
+#     - cas-management
 
 - name: copy application.yml
   template:

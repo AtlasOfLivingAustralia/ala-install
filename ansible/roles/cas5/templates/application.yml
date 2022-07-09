@@ -43,15 +43,15 @@ cas:
     showSql: false
   audit:
     mongo:
-      sslEnabled: {{ cas_audit_ssl_enabled | default('false') }}
+#      sslEnabled: {{ cas_audit_ssl_enabled | default('false') }}
       clientUri: {{ cas_audit_uri | default('') }}
-      host: {{ cas_audit_host | default('localhost') }}
-      port: {{ cas_audit_port | default('27017') }}
-      replicaSet: {{ cas_audit_replica_set | default('') }}
-      databaseName: {{ cas_audit_db | default('cas-audit-repository') }}
-      authenticationDatabaseName: {{ cas_audit_auth_db | default('') }}
-      userId: {{ cas_audit_username | default('cas') }}
-      password: {{ cas_audit_password | default('password') }}
+#      host: {{ cas_audit_host | default('localhost') }}
+#      port: {{ cas_audit_port | default('27017') }}
+#      replicaSet: {{ cas_audit_replica_set | default('') }}
+#      databaseName: {{ cas_audit_db | default('cas-audit-repository') }}
+#      authenticationDatabaseName: {{ cas_audit_auth_db | default('') }}
+#      userId: {{ cas_audit_username | default('cas') }}
+#      password: {{ cas_audit_password | default('password') }}
       timeout: {{ cas_audit_timeout | default('PT5S') }}
   authn:
     throttle:
@@ -143,16 +143,16 @@ cas:
     core:
       init-from-json: {{ serviceRegistryInitFromJson | default('true') }}
     mongo:
-      sslEnabled: {{ cas_services_ssl_enabled | default('false') }}
+#      sslEnabled: {{ cas_services_ssl_enabled | default('false') }}
       clientUri: {{ cas_services_uri | default('') }}
-      host: {{ cas_services_host | default('localhost') }}
-      port: {{ cas_services_port | default('27017') }}
-      replicaSet: {{ cas_services_replica_set | default('') }}
+#      host: {{ cas_services_host | default('localhost') }}
+#      port: {{ cas_services_port | default('27017') }}
+#      replicaSet: {{ cas_services_replica_set | default('') }}
       collection: {{ cas_services_collection | default('services') }}
-      databaseName: {{ cas_services_db | default('cas-service-registry') }}
-      authenticationDatabaseName: {{ cas_services_auth_db | default('') }}
-      userId: {{ cas_services_username | default('cas') }}
-      password: {{ cas_services_password | default('password') }}
+#      databaseName: {{ cas_services_db | default('cas-service-registry') }}
+#      authenticationDatabaseName: {{ cas_services_auth_db | default('') }}
+#      userId: {{ cas_services_username | default('cas') }}
+#      password: {{ cas_services_password | default('password') }}
       timeout: {{ cas_services_timeout | default('PT5S') }}
   ticket:
     registry:
@@ -160,15 +160,15 @@ cas:
         schedule:
           enabled: {{ cas_ticket_registry_cleaner_enabled | default('true') }}
       mongo:
-        sslEnabled: {{ cas_tickets_ssl_enabled | default('false') }}
+#        sslEnabled: {{ cas_tickets_ssl_enabled | default('false') }}
         clientUri: {{ cas_tickets_uri | default('') }}
-        host: {{ cas_tickets_host | default('localhost') }}
-        port: {{ cas_tickets_port | default('27017') }}
-        replicaSet: {{ cas_tickets_replica_set | default('') }}
-        databaseName: {{ cas_tickets_db | default('cas-ticket-registry') }}
-        authenticationDatabaseName: {{ cas_tickets_auth_db | default('') }}
-        userId: {{ cas_tickets_username | default('cas') }}
-        password: {{ cas_tickets_password | default('password') }}
+#        host: {{ cas_tickets_host | default('localhost') }}
+#        port: {{ cas_tickets_port | default('27017') }}
+#        replicaSet: {{ cas_tickets_replica_set | default('') }}
+#        databaseName: {{ cas_tickets_db | default('cas-ticket-registry') }}
+#        authenticationDatabaseName: {{ cas_tickets_auth_db | default('') }}
+#        userId: {{ cas_tickets_username | default('cas') }}
+#        password: {{ cas_tickets_password | default('password') }}
         timeout: {{ cas_tickets_timeout | default('PT15S') }}
     st:
       timeToKillInSeconds: {{ cas_service_ticket_timeout | default('10') }}

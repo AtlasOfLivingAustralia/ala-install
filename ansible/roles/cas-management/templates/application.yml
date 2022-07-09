@@ -12,6 +12,10 @@ mgmt:
     services-repo: {{ cas_management_services_repo | default('/data/cas-management/services-repo') }}
   delegated:
     user-repos-dir: {{ cas_management_user_repos_dir | default('/data/cas-management/user-repos') }}
+  cas-servers:
+  - name: {{ cas_server_name }}
+    url: {{ cas_server_name }}/{{ cas_context_path | default('cas') }}
+  delegated-identity-providers: {{ cas_management_delegated_identity_providers | default('Google, Facebook, Twitter, aaf')}}
 
 server:
   servlet:
