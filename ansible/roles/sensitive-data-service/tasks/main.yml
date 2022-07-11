@@ -23,14 +23,6 @@
     - properties
     - sensitive-data-service
 
-- name: Restart ala-sensitive-data service
-  service:
-    name: ala-sensitive-data-service
-    state: restarted
-    enabled: yes
-  tags:
-    - sensitive-data-service
-
 - name: Disable previous sensitive_data service (not packaged war)
   service:
     name: sensitive-data-service

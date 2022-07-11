@@ -18,10 +18,20 @@
     owner: "{{ namematching_user }}"
     group: "{{ namematching_user }}"
   notify:
-    - restart namematching-service
+    - restart ala-namematching-service
   tags:
     - properties
     - namematching-service
+
+- name: "Create ala-namematching-service directories"
+  file:
+    path: "{{item}}"
+    state: directory
+    owner: "{{ namematching_user }}"
+    group: "{{ namematching_user }}"
+    mode: 0755
+  with_items:
+    - "/var/log/atlas/namematching-service"
 
 - name: Customize species group files
   copy:
@@ -33,16 +43,10 @@
     - "groups.json"
     - "subgroups.json"
   notify:
-    - restart namematching-service
+    - restart ala-namematching-service
   tags:
     - properties
     - namematching-service
-
-- name: Restart ala-namematching service
-  service:
-    name: ala-namematching-service
-    state: restarted
-    enabled: yes
 
 - name: Disable previous namematching service (not packaged war)
   service:
