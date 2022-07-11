@@ -239,4 +239,15 @@ SET character_set_client = @saved_cs_client;
 CREATE INDEX esbee_entity_uid ON event_summary_breakdown_email_entity (entity_uid(6));
 CREATE INDEX esbre_entity_uid ON event_summary_breakdown_reason_entity (entity_uid(6));
 
+-- required indexes for log_event to allow faster/more efficient sorting. 
 CREATE INDEX month_idx ON log_event (`month`);
+CREATE INDEX log_event_type_id_idx ON log_event (`log_event_type_id`);
+CREATE INDEX log_source_type_id_idx ON log_event (`log_source_type_id`);
+CREATE INDEX log_reason_type_id_idx ON log_event (`log_reason_type_id`);
+CREATE INDEX user_email_idx ON log_event (`user_email`);
+CREATE INDEX source_idx ON log_event (`source`);
+
+-- required indexes for log_detail to allow faster/more efficient sorting.
+CREATE INDEX entity_type_idx ON log_detail (`entity_type`);
+CREATE INDEX entity_uid_idx ON log_detail (`entity_uid`);
+CREATE INDEX record_count_idx ON log_detail (`record_count`);
