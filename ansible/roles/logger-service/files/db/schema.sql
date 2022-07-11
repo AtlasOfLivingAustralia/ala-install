@@ -238,3 +238,5 @@ SET character_set_client = @saved_cs_client;
 
 CREATE INDEX esbee_entity_uid ON event_summary_breakdown_email_entity (entity_uid(6));
 CREATE INDEX esbre_entity_uid ON event_summary_breakdown_reason_entity (entity_uid(6));
+
+CREATE INDEX month_idx ON log_event (`month`);
