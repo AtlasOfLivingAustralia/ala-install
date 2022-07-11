@@ -2,7 +2,6 @@
 - hosts: sensitive-data-service
   roles:
     - common
-    - java
     - webserver
-    - nameindex
+    - la-apt
     - sensitive-data-service
