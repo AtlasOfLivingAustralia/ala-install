@@ -3,5 +3,5 @@ artifactId: "image-service"
 image_service_url: "{{maven_repo_ws_url}}"
 classifier: 'exec'
 groupId: "au.org.ala"
-packaging: "jar"
+packaging: "war"
 image_service_jar_url: "{{maven_repo_ws_url}}"
