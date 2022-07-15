@@ -4,7 +4,7 @@
     - common
     - { role: ansible-elasticsearch, es_templates: false,  es_instance_name: 'images', tags: ['elasticsearch']}
     - { role: db-backup, db: postgres, db_name: "images", db_user: "{{ image_service_db_username }}", db_password: "{{ image_service_db_password }}" }
-    - { role: postgresql, pg_version: "{{ image_service_postgresql_version | default('10') }}", postgis_version: "{{ image_service_postgis_version | default('2.4') }}" }
+    - postgresql
     - { role: pg_instance, extensions: ["citext", "pgcrypto"], db_name: "{{ image_service_db_name }}", db_user: "{{ image_service_db_username }}", db_password: "{{ image_service_db_password }}", db_role_attr_flags: "NOSUPERUSER" }
     - webserver
     - i18n
