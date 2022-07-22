@@ -117,3 +117,12 @@ ala:
 bie:
   baseURL: {{ bie_base_url | default('https://bie.ala.org.au') }}
   searchPath: {{ bie_search_path | default('/search') }}
+
+  #oidc related
+security:
+  oidc:
+    clientId: {{ clientId | default('') }}
+    secret: {{ secret | default('') }}
+    discoveryUri: {{ discoveryUri | default('') }}
+  jwt:
+    discoveryUri: {{ discoveryUri | default('') }}
