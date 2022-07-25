@@ -31,7 +31,8 @@ grails:
   serverURL: {{ apikey_server_name }}/{{ apikey_context_path | default('apikey') }}
 server:
   port: {{ apikey_port | default('9002') }}
-  contextPath: /{{ apikey_context_path | default('apikey') }}
+  servlet:
+    contextPath: /{{ apikey_context_path | default('apikey') }}
 
 # Data source configuration
 dataSource:
@@ -39,8 +40,6 @@ dataSource:
   url: jdbc:mysql://{{ apikey_db_hostname | default('localhost') }}:{{ apikey_db_port | default('3306') }}/{{ apikey_db_name | default('apikey') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&useSSL={{mysql_connection_ssl | default(false)}}
   username: {{ apikey_db_username }}
   password: {{ apikey_db_password }}
-flyway:
-  baselineOnMigrate: {{ apikey_db_migration_baseline | default('true') }}
 
 ala:
   baseURL: {{ ala_baseurl | default('https://www.ala.org.au') }}
@@ -78,6 +77,8 @@ skin.orgNameShort: {{ orgNameShort | default('ALA') }}
 skin.favicon: {{ skin_favicon | default('https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png') }}
 
 spring:
+  flyway:
+    baselineOnMigrate: {{ apikey_db_migration_baseline | default('true') }}
 {% if bootadmin_enabled | bool %}
   boot:
     admin:
@@ -95,8 +96,8 @@ spring:
             password: ${security.user.password}
 {% endif %}
   session:
-    store-type: {% if spring_session_store_type == 'mongodb' %}mongo{% else %}{{ spring_session_store_type | default('none') }}{% endif %}
-
+    enabled: {{ spring_session_enabled | default('false') }}
+    store-type: {{ spring_session_store_type | default('none') }}
 {% if spring_session_store_type == 'mongodb' %}
     mongo:
       collectionName: {{ spring_session_mongo_collection | default('apikey-sessions') }}

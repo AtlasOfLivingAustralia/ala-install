@@ -2,6 +2,6 @@
 version: "{{ apikey_version | default('LATEST') }}"
 artifactId: "apikey" 
 classifier: 'exec'
-packaging: "jar"
+packaging: "war"
 groupId: "au.org.ala"
 apikey_jar_url: "{{maven_repo_ws_url}}"

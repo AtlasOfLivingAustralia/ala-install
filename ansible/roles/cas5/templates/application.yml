@@ -54,6 +54,9 @@ cas:
 #      password: {{ cas_audit_password | default('password') }}
       timeout: {{ cas_audit_timeout | default('PT5S') }}
   authn:
+    attribute-repository:
+      core:
+        defaultAttributesToRelease: {{ cas_default_attributes_to_release | default('[]') }}
     throttle:
       failure:
         range-seconds: {{ cas_throttle_range | default('10') }}

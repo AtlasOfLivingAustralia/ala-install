@@ -56,8 +56,8 @@
 
 - name: copy logback config
   template:
-    src: logback.groovy
-    dest: "{{data_dir}}/apikey/config/logback.groovy"
+    src: logback.xml
+    dest: "{{data_dir}}/apikey/config/logback.xml"
     owner: apikey
     group: apikey
   tags:
@@ -67,13 +67,16 @@
 - name: add jar and service
   include_role:
     name: exec-jar
+    apply:
+      tags: apikey
   vars:
     service_name: "apikey"
     jar_url: '{{ apikey_jar_url }}'
-    use_openjdk11: False
-    use_openjdk8: True
+    use_openjdk11: True
+    use_openjdk8: False
     java_headless: true
     java_jre: true
+    log_config_filename: logback.xml
   tags:
     - deploy
     - service
