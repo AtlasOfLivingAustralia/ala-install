@@ -10,6 +10,13 @@
     - packages
     - apt
 
+- name: "Show apt repo"
+  debug:
+    msg: "using apt repository '{{ la_apt_repo }}' from apt.gbif.es"
+  tags:
+    - packages
+    - apt
+
 - name: Install gbif.es apt repository
   copy:
     # We use this repo temporally
