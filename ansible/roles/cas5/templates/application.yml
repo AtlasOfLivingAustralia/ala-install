@@ -56,7 +56,7 @@ cas:
   authn:
     attribute-repository:
       core:
-        defaultAttributesToRelease: {{ cas_default_attributes_to_release | default('[]') }}
+        default-attributes-to-release: {{ cas_default_attributes_to_release | default('[]') }}
     throttle:
       failure:
         range-seconds: {{ cas_throttle_range | default('10') }}
@@ -142,7 +142,7 @@ cas:
     jdbc:
       validationQuery: /* ping */ SELECT 1
       dataSourceName: java:comp/env/jdbccas
-  serviceRegistry:
+  service-registry:
     core:
       init-from-json: {{ serviceRegistryInitFromJson | default('true') }}
     mongo:
