@@ -56,14 +56,14 @@
 - name: ensure biocollect log directory exists
   file: path={{item}} state=directory owner={{biocollect_user}} group={{biocollect_user}}
   with_items:
-    - "/var/log/atlas/biocollect"
+    - "{{data_dir}}/biocollect/logs"
   tags:
     - properties
     - biocollect
   when: exec_jar
 
 - name: set biocollect log ownership
-  file: path=/var/log/atlas/biocollect owner='{{biocollect_user}}' group='{{biocollect_user}}' recurse=true
+  file: path='{{data_dir}}/biocollect/logs' owner='{{biocollect_user}}' group='{{biocollect_user}}' recurse=true
   notify:
     - restart biocollect
   tags:

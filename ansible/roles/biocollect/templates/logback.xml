@@ -5,9 +5,8 @@
     <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
 
     <appender name="STDOUT" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/var/log/atlas/biocollect/biocollect.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>/var/log/atlas/biocollect/biocollect.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <fileNamePattern>/data/biocollect/logs/biocollect.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             <!-- each archived file, size max 10MB -->
             <maxFileSize>10MB</maxFileSize>
             <!-- total size of all archive files, if total size > 5GB, it will delete old archived file -->
