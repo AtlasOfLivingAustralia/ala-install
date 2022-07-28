@@ -16,6 +16,12 @@ security:
     casServerLogoutUrl: {{ auth_cas_url }}/logout
     loginUrl: {{ auth_cas_url }}/login
     logoutUrl: {{ auth_cas_url }}/logout
+  oidc:
+    clientId: {{ clientId | default('') }}
+    secret: {{ secret | default('') }}
+    discoveryUri: {{ discoveryUri | default('') }}
+  jwt:
+    discoveryUri: {{ discoveryUri | default('') }}
   apikey:
     ip:
       whitelist: {{ image_service_whitelist | default('') }}

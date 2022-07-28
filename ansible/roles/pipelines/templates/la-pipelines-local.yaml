@@ -18,6 +18,11 @@ run:
     dwcaTmp: {{ dwca_tmp }}
     dwcaImportDir: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ dwca_import_dir }}
 
+alaNameMatch:
+  wsUrl: {{ namematching_service_url | default('http://localhost:9179') }}
+sds:
+  wsUrl: {{ sds_url | default('http://localhost:9189') }}
+
 collectory:
   wsUrl: {{ collectory_url }}
   httpHeaders:
@@ -29,11 +34,13 @@ imageService:
     apiKey:  {{ pipelines_api_key | default(ala_api_key) }}
 
 speciesListService:
-  wsUrl: {{specieslist_base_url | default('https://lists.ala.org.au')}}
+  wsUrl: {{ specieslist_base_url | default('https://lists.ala.org.au')}}
   timeoutSec: 70
 
 geocodeConfig:
   country:
+    path: {{ data_dir }}/pipelines-shp/{{ geocode_country_layer | default('political') }}
+    field: {{ geocode_country_field | default('ISO_A2') }}
     intersectMapping:
       CX: {{geocode_region | default('AU')}}
       CC: {{geocode_region | default('AU')}}
@@ -41,7 +48,13 @@ geocodeConfig:
       NF: {{geocode_region | default('AU')}}
   stateProvince:
     path: /data/pipelines-shp/{{ geocode_state_province_layer | default('cw_state_poly') }}
+    field: {{ geocode_state_province_field | default('FEATURE') }}
 
+{% if state_province_centre_points_file is defined %}
+locationInfoConfig:
+    stateProvinceCentrePointsFile : {{ data_dir }}/la-pipelines/config/stateProvinceCentrePoints.txt
+
+{% endif %}
 gbifConfig:
   vocabularyConfig:
     vocabulariesPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ vocabulary_dir }}
@@ -66,6 +79,7 @@ dwca-avro:
   hdfsTempLocation: {{ spark_tmp }}
 interpret:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}/{datasetId}/1/verbatim.avro
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
 images:
   tempLocation: {{ spark_tmp }}
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
@@ -76,9 +90,12 @@ sampling:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
 speciesLists:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   speciesAggregatesPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-species
 uuid:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
 sensitive:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
@@ -96,11 +113,16 @@ clustering:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
+outlier:
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
 solr:
   inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
   allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
   jackKnifePath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-jackknife
   clusteringPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-clustering
+  outlierPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-outlier
   zkHost: {{ zk_host | default('localhost:2181') }}
   includeSampling: {{ include_sampling }}
   includeJackKnife: {{ include_jackknife }}
@@ -122,7 +144,7 @@ interpret-sh-args:
   spark-embedded:
     jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }} -Dspark.master=local[*]
   spark-cluster:
-    conf: spark.default.parallelism={{ interpret_spark_parallelism | default(144) }}
+    conf: spark.default.parallelism={{ interpret_spark_parallelism | default(48) }}
     num-executors: {{ interpret_spark_num_executors | default(6) }}
     executor-cores: {{ interpret_spark_executor_cores | default(8) }}
     executor-memory: {{ interpret_spark_executor_memory | default('24G') }}
@@ -134,7 +156,7 @@ image-sync-sh-args:
   spark-embedded:
     jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }} -Dspark.master=local[*]
   spark-cluster:
-    conf: spark.default.parallelism={{ image_sync_spark_parallelism | default(144) }}
+    conf: spark.default.parallelism={{ image_sync_spark_parallelism | default(48) }}
     num-executors: {{ image_sync_spark_num_executors | default(16) }}
     executor-cores: {{ image_sync_spark_executor_cores | default(8) }}
     executor-memory: {{ image_sync_spark_executor_memory | default('7G') }}
@@ -146,7 +168,7 @@ image-load-sh-args:
   spark-embedded:
     jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }} -Dspark.master=local[*]
   spark-cluster:
-    conf: spark.default.parallelism={{ image_load_spark_parallelism | default(144) }}
+    conf: spark.default.parallelism={{ image_load_spark_parallelism | default(48) }}
     num-executors: {{ image_load_spark_num_executors | default(16) }}
     executor-cores: {{ image_load_spark_executor_cores | default(8) }}
     executor-memory: {{ image_load_spark_executor_memory | default('7G') }}
@@ -158,7 +180,7 @@ uuid-sh-args:
   spark-embedded:
     jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
   spark-cluster:
-    conf: spark.default.parallelism={{ uuid_spark_parallelism | default(500) }}
+    conf: spark.default.parallelism={{ uuid_spark_parallelism | default(48) }}
     num-executors: {{ uuid_spark_num_executors | default(6) }}
     executor-cores: {{ uuid_spark_executor_cores | default(8) }}
     executor-memory: {{ uuid_spark_executor_memory | default('20G') }}
@@ -170,7 +192,7 @@ sampling-sh-args:
   spark-embedded:
     jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }} -Dspark.master=local[*]
   spark-cluster:
-    conf: spark.default.parallelism={{ sampling_spark_parallelism | default(144) }}
+    conf: spark.default.parallelism={{ sampling_spark_parallelism | default(48) }}
     num-executors: {{ sampling_spark_num_executors | default(8) }}
     executor-cores: {{ sampling_spark_executor_cores | default(8) }}
     executor-memory: {{ sampling_spark_executor_memory | default('16G') }}
@@ -196,7 +218,7 @@ index-sh-args:
   spark-embedded:
     jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
   spark-cluster:
-    conf: spark.default.parallelism={{ index_spark_parallelism | default(500) }}
+    conf: spark.default.parallelism={{ index_spark_parallelism | default(48) }}
     num-executors: {{ index_spark_num_executors | default(6) }}
     executor-cores: {{ index_spark_executor_cores | default(8) }}
     executor-memory: {{ index_spark_executor_memory | default('20G') }}
@@ -208,7 +230,7 @@ jackknife-sh-args:
   spark-embedded:
     jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
   spark-cluster:
-    conf: spark.default.parallelism={{ jackknife_spark_parallelism | default(500) }}
+    conf: spark.default.parallelism={{ jackknife_spark_parallelism | default(48) }}
     num-executors: {{ jackknife_spark_num_executors | default(24) }}
     executor-cores: {{ jackknife_spark_executor_cores | default(8) }}
     executor-memory: {{ jackknife_spark_executor_memory | default('7G') }}
@@ -220,7 +242,7 @@ clustering-sh-args:
   spark-embedded:
     jvm: {{ pipelines_jvm_def_options | default('-Xmx8g -XX:+UseG1GC') }}
   spark-cluster:
-    conf: spark.default.parallelism={{ clustering_spark_parallelism | default(500) }}
+    conf: spark.default.parallelism={{ clustering_spark_parallelism | default(48) }}
     executor-memory: {{ clustering_spark_executor_memory | default('20G') }}
     driver-memory: {{ clustering_spark_driver_memory | default('4G') }}
 
