@@ -57,6 +57,11 @@ export TABS="tabs=Regional+Funding+Final+Report&tabs=Indigenous+Employment+and+B
 /{{data_dir}}/ecodata/scripts/runProjectDownload.sh $EMAIL "$FQ" $TABS
 sleep 5m
 
+export FQ="fq=associatedProgramFacet%3AEnvironmental+Stewardship"
+export TABS="tabs=ESP+Annual+Report+Submission&tabs=ESP+PMU+or+Zone+reporting&tabs=ESP+SMU+Reporting&tabs=ESP+Species"
+/{{data_dir}}/ecodata/scripts/runProjectDownload.sh $EMAIL "$FQ" $TABS
+sleep 5m
+
 export END_DATE="$(date +%Y-%m-%d)T00:00:00Z"
 
 export SUMMARY_FLAG=false
