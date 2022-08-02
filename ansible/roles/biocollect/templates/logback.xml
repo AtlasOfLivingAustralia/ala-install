@@ -6,7 +6,7 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>/data/biocollect/logs/biocollect.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <fileNamePattern>{{data_dir}}/biocollect/logs/biocollect.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             <!-- each archived file, size max 10MB -->
             <maxFileSize>10MB</maxFileSize>
             <!-- total size of all archive files, if total size > 5GB, it will delete old archived file -->
