@@ -18,14 +18,11 @@ security:
     loginUrl: {{ auth_cas_url }}/login
     logoutUrl: {{ auth_cas_url }}/logout
   oidc:
-    enabled: {{ oidc_enabled | default(false) }}
-    clientId: {{ oidc_client_id | default('changeme') }}
-    secret: {{ oidc_secret | default('changeme') }}
-    discoveryUri: {{ oidc_discovery_uri | default('https://auth.ala.org.au/cas/oidc/.well-known') }}
+    clientId: {{ clientId | default('') }}
+    secret: {{ secret | default('') }}
+    discoveryUri: {{ discoveryUri | default('') }}
   jwt:
-    enabled: {{ jwt_enabled | default(false) }}
-    fallbackToLegacyKeys: {{ jwt_fallback_to_legacy_keys | default(true) }}
-    discoveryUri: {{ jwt_discovery_uri | default('${security.oidc.discoveryUri}')}}
+    discoveryUri: {{ discoveryUri | default('') }}
   apikey:
     ip:
       whitelist: {{ image_service_whitelist | default('') }}

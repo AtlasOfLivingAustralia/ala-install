@@ -3,6 +3,8 @@
     - pipelines
     - docker
     - la-pipelines
+    - hadoop_vocab
+    - la-pipelines-config
 
 - name: Install aptitude using apt
   apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
@@ -146,6 +148,7 @@
   tags:
     - pipelines
     - la-pipelines
+    - la-pipelines-apt
     - apt
 
 - name: Install pipelines config
@@ -361,6 +364,45 @@
     - pipelines
     - hadoop
     - hadoop_dir
+
+- name: Get Gbif API vocabularies
+  run_once: true
+  uri:
+    url: "http://api.gbif.org/v1/vocabularies/{{ item }}/releases/latest/export"
+    dest: /tmp/{{ item }}.json
+  with_items:
+    - LifeStage
+    - DegreeOfEstablishment
+    - EstablishmentMeans
+    - Pathway
+  tags:
+    - pipelines
+    - hadoop
+    - hadoop_vocab
+
+- name: Copy Gbif API vocabularies to dfs
+  run_once: true
+  shell: "{{ hadoop_install_dir }}/bin/hdfs dfs -copyFromLocal -f /tmp/{{ item }}.json /pipelines-vocabularies/ "
+  with_items:
+    - LifeStage
+    - DegreeOfEstablishment
+    - EstablishmentMeans
+    - Pathway
+  become_user: "{{ hadoop.user }}"
+  tags:
+    - pipelines
+    - hadoop
+    - hadoop_vocab
+
+- name: Copy state/province vocab
+  copy: src={{ item.src }} dest={{ data_dir }}/la-pipelines/config/{{ item.dest }} mode=0644
+  with_items:
+    - { src: "{{ state_province_centre_points_file }}", dest: stateProvinceCentrePoints.txt }
+  when: state_province_centre_points_file is defined
+  tags:
+    - pipelines
+    - hadoop
+    - hadoop_vocab
 
 - name: Download SHP files (includes global layer and EEZ derived from GBIFs geocode DB)
   get_url:

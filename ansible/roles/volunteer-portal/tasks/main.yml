@@ -83,13 +83,10 @@
     appname: "volunteer-portal"
     hostname: "{{ digivol_hostname }}"
     context_path: "{{ digivol_context_path }}"
-    nginx_root: "{{}}"
     nginx_paths:
       - path: "{{ digivol_context_path }}"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:8080/{{ digivol_context_path }}"
-  notify:
-    - reload nginx
   tags:
     - nginx_vhost
     - volunteer-portal
