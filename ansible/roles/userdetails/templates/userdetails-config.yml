@@ -52,6 +52,14 @@ server:
   port: {{ userdetails_port | default('9001') }}
   servlet:
     contextPath: /{{ userdetails_context_path  | default('userdetails') }}
+  forward-headers-strategy: native
+  tomcat:
+    remoteip:
+      protocol-header: x-forwarded-proto
+      port-header: x-forwarded-port
+      remote-ip-header: x-forwarded-for
+      protocol-header-https-value: https
+
 redirectAfterFirstLogin: ${grails.serverURL}/myprofile
 
 # Data source configuration

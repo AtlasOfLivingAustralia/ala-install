@@ -33,6 +33,13 @@ server:
   port: {{ apikey_port | default('9002') }}
   servlet:
     contextPath: /{{ apikey_context_path | default('apikey') }}
+  forward-headers-strategy: native
+  tomcat:
+    remoteip:
+      protocol-header: x-forwarded-proto
+      port-header: x-forwarded-port
+      remote-ip-header: x-forwarded-for
+      protocol-header-https-value: https
 
 # Data source configuration
 dataSource:

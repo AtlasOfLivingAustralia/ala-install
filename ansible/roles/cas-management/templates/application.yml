@@ -23,6 +23,13 @@ server:
   port: {{ cas_management_server_port | default(8070) }}
   ssl:
     enabled: false
+  forward-headers-strategy: native
+  tomcat:
+    remoteip:
+      protocol-header: x-forwarded-proto
+      port-header: x-forwarded-port
+      remote-ip-header: x-forwarded-for
+      protocol-header-https-value: https
 
 logging:
   config: file:/data/cas-management/config/log4j2.xml
