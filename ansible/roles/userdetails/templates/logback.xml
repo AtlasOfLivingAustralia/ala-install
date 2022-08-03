@@ -23,6 +23,7 @@
     </encoder>
   </appender>
 
+  <logger name="org.hibernate.orm.deprecation" level="ERROR" />
   <logger name="org.grails.config.NavigableMap" level="ERROR" />
   <logger name="grails.spring.BeanBuilder" level="ERROR" />
   <logger name="grails.plugin.cache.web.filter" level="ERROR" />

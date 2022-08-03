@@ -23,6 +23,7 @@
     </encoder>
   </appender>
 
+  <logger name="org.hibernate.orm.deprecation" level="ERROR" />
   <logger name="org.grails.config.NavigableMap" level="ERROR" />
   <logger name="de.codecentric.boot.admin" level="INFO" />
   <logger name="grails.plugin.externalconfig.ExternalConfig" level="INFO" />
