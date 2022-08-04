@@ -135,6 +135,9 @@ validation-report:
   zkHost: {{ zk_host | default('localhost:2181') }}
 export:
   imageServicePath: "{{ image_service_url }}/image/proxyImageThumbnailLarge?imageId={0}"
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
 
 ### la-pipelines cli additional arguments, like JVM or spark command line arguments
 

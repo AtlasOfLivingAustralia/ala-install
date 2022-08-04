@@ -81,6 +81,9 @@
   vars:
     service_name: 'image-service'
     jar_url: '{{ image_service_jar_url }}'
+    use_openjdk11: True
+    use_openjdk8: False
+    java_headless: True
   tags:
     - deploy
     - service
