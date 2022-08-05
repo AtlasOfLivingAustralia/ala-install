@@ -1,4 +1,6 @@
 - hosts: image-service
+  vars:
+    use_postgis: true
   roles:
     - java
     - common
