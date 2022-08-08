@@ -13,14 +13,14 @@ security:
     casServerUrlPrefix:   {{ auth_cas_url }}
     loginUrl:   {{ auth_cas_url }}/login
     logoutUrl:   {{ auth_cas_url }}/logout
+    contextPath:   {{ bie_index_context_path }}
+    bypass:   {{ bypass_cas | default(true) }}
   oidc:
     clientId: {{ clientId | default('') }}
     secret: {{ secret | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
-    contextPath:   {{ bie_index_context_path }}
-    bypass:   {{ bypass_cas | default(true) }}
   apikey:
     serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
 userDetails:
