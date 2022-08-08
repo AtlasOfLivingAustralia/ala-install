@@ -51,6 +51,8 @@
   mysql_variables:
     variable: sql_mode
     value: "{{ mysql_variable_sql_mode | default('STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION')}}"
+    login_user: "{{ mysql_root_username | default('root') }}"
+    login_password: "{{ mysql_root_password | default('password') }}"
   tags:
     - mysql
   when: set_sql_mode is defined and mysql == "mysql-server-8.0"

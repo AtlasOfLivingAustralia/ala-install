@@ -103,12 +103,6 @@
     - profile-service
     - properties
 
-- name: copy yml template config
-  template: src=profile-service-config.yml dest={{data_dir}}/profile-service/config/profile-service-config.yml
-  tags:
-    - profile-service
-    - properties
-
 - name: copy logback config
   template:
     src: logback.groovy

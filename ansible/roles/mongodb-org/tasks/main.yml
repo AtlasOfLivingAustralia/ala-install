@@ -1,3 +1,11 @@
+- name: Add mongodb.org apt key for version 5.0
+  get_url:
+    url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xf5679a222c647c87527c2f8cb00a0bd1e2c63c11'
+    dest: /etc/apt/trusted.gpg.d/mongodb50.asc
+    mode: 0644
+  when: mongodb_version == 5.0
+  tags: mongodb-org
+
 - name: Add mongodb.org apt key for version 4.4
   get_url:
     url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x20691eec35216c63caf66ce1656408e390cfb1f5'
@@ -33,7 +41,7 @@
 
 - name: Add mongodb.org repo
   apt_repository:
-    repo: deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/{{ mongodb_version }} multiverse
+    repo: deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/{{ mongodb_version }} multiverse
     state: present
   tags: mongodb-org
   when: mongodb_version != 3.4 or ansible_distribution_release != 'bionic'
