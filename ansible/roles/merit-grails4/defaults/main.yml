@@ -1,2 +1,6 @@
 merit_server_port: 8080
 pdfgen_base_url: https://pdfgen.ala.org.au/
+
+# oidc settings
+oidc_client_id:
+oidc_client_secret:
