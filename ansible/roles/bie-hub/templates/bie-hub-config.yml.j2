@@ -17,6 +17,12 @@ security:
     contextPath: {{ bie_hub_context_path }}
     bypass: {{ bypass_cas  }}
     applyUriFiltersToTicketValidation: false
+  oidc:
+    clientId: {{ clientId | default('') }}
+    secret: {{ secret | default('') }}
+    discoveryUri: {{ discoveryUri | default('') }}
+  jwt:
+    discoveryUri: {{ discoveryUri | default('') }}
 disableCAS: {{ bypass_cas }}
 userDetails:
   url: {{ auth_base_url }}/userdetails/
@@ -161,3 +167,4 @@ eol:
 
 namematching:
   serviceURL: {{ namematching_service_url }}
+
