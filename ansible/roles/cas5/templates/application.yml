@@ -126,6 +126,8 @@ cas:
           cssClass: aaf-logo
 {% endif %}
     oauth:
+      core:
+        userProfileViewType: {{ cas_oauth_profile_view_type | default('FLAT') }}
       crypto:
         encryption:
           key: {{ cas_oauth_encryption_key }}
