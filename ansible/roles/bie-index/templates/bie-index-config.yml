@@ -13,6 +13,12 @@ security:
     casServerUrlPrefix:   {{ auth_cas_url }}
     loginUrl:   {{ auth_cas_url }}/login
     logoutUrl:   {{ auth_cas_url }}/logout
+  oidc:
+    clientId: {{ clientId | default('') }}
+    secret: {{ secret | default('') }}
+    discoveryUri: {{ discoveryUri | default('') }}
+  jwt:
+    discoveryUri: {{ discoveryUri | default('') }}
     contextPath:   {{ bie_index_context_path }}
     bypass:   {{ bypass_cas | default(true) }}
   apikey:
@@ -117,12 +123,3 @@ ala:
 bie:
   baseURL: {{ bie_base_url | default('https://bie.ala.org.au') }}
   searchPath: {{ bie_search_path | default('/search') }}
-
-  #oidc related
-security:
-  oidc:
-    clientId: {{ clientId | default('') }}
-    secret: {{ secret | default('') }}
-    discoveryUri: {{ discoveryUri | default('') }}
-  jwt:
-    discoveryUri: {{ discoveryUri | default('') }}
