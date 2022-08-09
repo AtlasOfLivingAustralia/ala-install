@@ -2,7 +2,7 @@
 version: "{{ user_details_version | default('LATEST') }}"
 artifactId: "userdetails"
 classifier: 'exec'
-packaging: "jar"
+packaging: "war"
 groupId: "au.org.ala"
 userdetails_jar_url: "{{maven_repo_ws_url}}"
 

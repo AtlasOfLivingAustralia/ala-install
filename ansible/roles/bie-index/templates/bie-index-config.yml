@@ -15,6 +15,12 @@ security:
     logoutUrl:   {{ auth_cas_url }}/logout
     contextPath:   {{ bie_index_context_path }}
     bypass:   {{ bypass_cas | default(true) }}
+  oidc:
+    clientId: {{ clientId | default('') }}
+    secret: {{ secret | default('') }}
+    discoveryUri: {{ discoveryUri | default('') }}
+  jwt:
+    discoveryUri: {{ discoveryUri | default('') }}
   apikey:
     serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
 userDetails:

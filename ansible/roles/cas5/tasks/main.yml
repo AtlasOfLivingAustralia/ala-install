@@ -76,6 +76,23 @@
     - properties
     - cas
 
+# Auto generated if not present, auto generation not suitable for load balanced instances
+- name: copy JWKS (if present)
+  copy:
+    src:  "{{ inventory_dir }}/{{ cas_jwks_file | default('keystore.jwks') }}"
+    dest: "{{data_dir}}/cas/keystore.jwks"
+    owner: cas
+    group: cas
+    mode: u=rw,g=,o=
+  notify:
+    - restart cas
+  with_first_found:
+    - files:
+      - "{{ inventory_dir }}/{{ cas_jwks_file | default('keystore.jwks') }}"
+      skip: true
+  tags:
+    - cas
+
 - name: add jar and service
   include_role:
     name: exec-jar
@@ -87,6 +104,10 @@
       value: /data/cas/config/pwe.properties
     log_config_filename: 'log4j2.xml'
     service_name: "cas"
+    use_openjdk11: True
+    use_openjdk8: False
+    java_headless: true
+    java_jre: true
     jar_url: '{{ cas_jar_url }}'
   tags:
     - deploy

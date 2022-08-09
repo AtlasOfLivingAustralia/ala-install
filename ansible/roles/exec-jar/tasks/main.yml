@@ -2,6 +2,9 @@
   tags:
     - service
 
+- import_role:
+    name: java
+
 - name: Update apt
   apt:
     update_cache: yes
@@ -79,14 +82,6 @@
     owner: "{{ service_owner | default(service_name) }}"
     group: "{{ service_group | default(service_name) }}"
     verify_checksum: always
-  # get_url:
-  #   url: "{{jar_url}}"
-  #   timeout: "30"
-  #   dest: "/opt/atlas/{{service_name}}/{{service_name}}.jar"
-  #   mode: u=rwx,g=rx,o=rx
-  #   owner: "{{ service_owner | default(service_name) }}"
-  #   group: "{{ service_group | default(service_name) }}"
-  #   force: yes
   notify: "restart {{service_name}}"
   tags:
   - service

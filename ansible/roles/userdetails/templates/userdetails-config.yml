@@ -1,12 +1,24 @@
 # CAS Config
 security:
+  core:
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
   cas:
+    enabled: {{ userdetails_use_cas | default('true') }}
     casServerName: {{ cas_server_name }}
     casServerUrlPrefix: ${security.cas.casServerName}/{{ cas_context_path | default('cas') }}
     loginUrl: ${security.cas.casServerUrlPrefix}/login
     logoutUrl: ${security.cas.casServerUrlPrefix}/logout
     appServerName: {{ userdetails_server_name }}
-    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+    # authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+  oidc:
+    enabled: {{ userdetails_use_oidc | default('false') }}
+    client-id: {{ userdetails_oidc_client_id }}
+    secret: {{ userdetails_oidc_secret }}
+    discovery-uri: {{ cas_server_name }}/{{ cas_context_path}}/oidc/.well-known
+  jwt:
+    enabled: {{ userdetails_jwt_enabled | default('false') }}
+    fallback-to-legacy-behaviour: {{ userdetails_jwt_fallback_to_legacy | default('true') }}
+    discovery-uri: {{ cas_server_name }}/{{ cas_context_path}}/oidc/.well-known
   user:
     name: {{ userdetails_endpoint_user | default('admin') }}
     password: {{ userdetails_endpoint_password | default('secret') }}
@@ -26,9 +38,9 @@ management:
   security:
     enabled: true
     roles: ACTUATOR
-{% if spring_session_store_type == 'redis' %}
+{% if spring_session_store_type == 'mongodb' %}
   health:
-    redis:
+    mongodb:
       enabled: true
 {% endif %}
 
@@ -38,7 +50,16 @@ grails:
   serverURL: {{ userdetails_server_name }}/{{ userdetails_context_path | default('userdetails') }}
 server:
   port: {{ userdetails_port | default('9001') }}
-  contextPath: /{{ userdetails_context_path  | default('userdetails') }}
+  servlet:
+    contextPath: /{{ userdetails_context_path  | default('userdetails') }}
+  forward-headers-strategy: native
+  tomcat:
+    remoteip:
+      protocol-header: x-forwarded-proto
+      port-header: x-forwarded-port
+      remote-ip-header: x-forwarded-for
+      protocol-header-https-value: https
+
 redirectAfterFirstLogin: ${grails.serverURL}/myprofile
 
 # Data source configuration
@@ -131,11 +152,10 @@ attributes:
       enabled: {{ show_ala_survey | default('false') }}
 
 # API key for external apps
-webservice.apiKey: {{ api_key }}
-
-# show api link
-apiKey.showLink: {{ api_key_show_link | default('false') }}
-apiKey.showSecret: {{ api_key_show_secret | default('false') }}
+webservice:
+  apiKey: {{ api_key }}
+  jwt: {{ userdetails_jwt_client_enabled | default('true') }}
+  scope: {{ userdetails_jwt_scopes | default('openid ala/internal') }}
 
 # Default primary fields for Export to CSV functionality
 admin.export.csv.primary.fields: {{ admin_export_csv_primary_fields | default('id,userName,firstName,lastName,email,activated,locked,created')}}
@@ -158,10 +178,18 @@ spring:
             password: ${security.user.password}
 {% endif %}
   session:
+    enabled: {{ spring_session_enabled | default('false') }}
     store-type: {{ spring_session_store_type | default('none') }}
+{% if spring_session_store_type == 'mongodb' %}
+    mongodb:
+      collectionName: {{ spring_session_mongo_collection | default('userdetails-sessions') }}
+  data:
+    mongodb:
+      uri: {{ spring_session_mongo_uri }}
+{% endif %}
     {% if spring_session_store_type == 'redis' %}disable-redis-config-action: {{ is_secured_redis | default('false') | bool }}
     redis:
-      namespace: {{ userdetails_redis_namespace | default('userdetails') }}
+      namespace: {{ apikey_redis_namespace | default('apikey') }}
   redis:
     host: {{ spring_session_redis_host }}
     password: {{ spring_session_redis_password }}
@@ -171,4 +199,4 @@ spring:
       nodes: {{ spring_session_redis_host }}:{{ spring_session_redis_port | default('6379') }}
 {% endif %}
 {% endif %}
-privacyPolicy:{{ privacy_policy_url | default('https://www.ala.org.au/about/terms-of-use/privacy-policy/') }}
+privacyPolicy: {{ privacy_policy_url | default('https://www.ala.org.au/about/terms-of-use/privacy-policy/') }}
