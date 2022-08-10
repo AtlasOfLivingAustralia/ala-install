@@ -27,9 +27,9 @@ server:
     - type: http
       port: {{ namematching_admin_port }}
 search:
-  index: {{ data_dir }}/lucene/namematching
-  groups: file:{{data_dir}}/namematching-service/config/groups.json
-  subgroups: file:{{data_dir}}/namematching-service/config/subgroups.json
+  index: {{ data_dir }}/lucene/namematching-nm
+  groups: file:{{data_dir}}/ala-namematching-service/config/groups.json
+  subgroups: file:{{data_dir}}/ala-namematching-service/config/subgroups.json
   cache:
     entryCapacity: 1000
     enableJmx: true
