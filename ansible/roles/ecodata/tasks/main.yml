@@ -403,6 +403,7 @@
     database: "{{ ecodata_database }}"
     name: "{{ ecodata_username }}"
     password: "{{ ecodata_password }}"
+    strict_compatibility: no
     roles:
       - { db: "{{ ecodata_database }}", role: "dbAdmin" }
       - { db: "{{ ecodata_database }}", role: "readWrite" }
