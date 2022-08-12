@@ -50,6 +50,20 @@
     group: userdetails
   notify:
     - restart userdetails
+  when: user_details_version is version('3', '>=')
+  tags:
+    - properties
+    - userdetails
+
+- name: copy userdetails-config.yml
+  template:
+    src: userdetails-config-pre-3.yml
+    dest: "{{data_dir}}/userdetails/config/userdetails-config.yml"
+    owner: userdetails
+    group: userdetails
+  notify:
+    - restart userdetails
+  when: user_details_version is version('3', '<')
   tags:
     - properties
     - userdetails
@@ -72,8 +86,8 @@
   vars:
     service_name: "userdetails"
     jar_url: '{{ userdetails_jar_url }}'
-    use_openjdk11: True
-    use_openjdk8: False
+    use_openjdk11: "{{ user_details_version is version('3', '>=') }}"
+    use_openjdk8: "{{ user_details_version is version('3', '<') }}"
     java_headless: true
     java_jre: true
     log_config_filename: logback.xml
