@@ -8,8 +8,8 @@ serverName: {{ bie_base_url }}
 security:
   cas:
     casServerName: {{ auth_base_url }}
-    uriFilterPattern: {{ bie_base_uri_filter_pattern }}
-    uriExclusionFilterPattern: {{ bie_base_uri_exclusion_filter_pattern }}
+    uriFilterPattern: {{ bie_hub_uri_filter_pattern }}
+    uriExclusionFilterPattern: {{ bie_hub_uri_exclusion_filter_pattern }}
     appServerName: {{ bie_base_url }}
     casServerUrlPrefix: {{ auth_cas_url }}
     loginUrl: {{ auth_cas_url }}/login
