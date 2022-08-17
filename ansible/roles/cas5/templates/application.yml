@@ -179,6 +179,8 @@ cas:
         schedule:
           enabled: {{ cas_ticket_registry_cleaner_enabled | default('true') }}
       mongo:
+        update-indexes: {{ cas_tickets_update_indexes | default('true') }}
+        drop-indexes: {{ cas_tickets_drop_indexes | default('false') }}
 #        sslEnabled: {{ cas_tickets_ssl_enabled | default('false') }}
         clientUri: {{ cas_tickets_uri | default('') }}
 #        host: {{ cas_tickets_host | default('localhost') }}
