@@ -1,0 +1,174 @@
+# CAS Config
+security:
+  cas:
+    casServerName: {{ cas_server_name }}
+    casServerUrlPrefix: ${security.cas.casServerName}/{{ cas_context_path | default('cas') }}
+    loginUrl: ${security.cas.casServerUrlPrefix}/login
+    logoutUrl: ${security.cas.casServerUrlPrefix}/logout
+    appServerName: {{ userdetails_server_name }}
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+  user:
+    name: {{ userdetails_endpoint_user | default('admin') }}
+    password: {{ userdetails_endpoint_password | default('secret') }}
+    role:
+      - ACTUATOR
+  basic:
+    enabled: true
+    authorizeMode: role
+    realm: ALA CAS
+    path:
+      - /status/**
+endpoints:
+  enabled: {{ endpoints_enabled | default('true') }}
+  health:
+    sensitive: false
+management:
+  security:
+    enabled: true
+    roles: ACTUATOR
+{% if spring_session_store_type == 'redis' %}
+  health:
+    redis:
+      enabled: true
+{% endif %}
+
+serverURL: {{ userdetails_server_name }}
+serverName: {{ userdetails_server_name }}
+grails:
+  serverURL: {{ userdetails_server_name }}/{{ userdetails_context_path | default('userdetails') }}
+server:
+  port: {{ userdetails_port | default('9001') }}
+  contextPath: /{{ userdetails_context_path  | default('userdetails') }}
+redirectAfterFirstLogin: ${grails.serverURL}/myprofile
+
+# Data source configuration
+dataSource:
+  dbCreate: "none"
+  url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&useSSL={{mysql_connection_ssl | default(false)}}
+  username: {{ userdetails_db_username | default(cas_db_username) | default('cas') }}
+  password: {{ userdetails_db_password | default(cas_db_password) | default('password') }}
+
+oauth:
+  providers:
+{% if oauth_providers_flickr_enabled | default('true') | bool %}
+    flickr:
+      enabled: true
+      key: {{ oauth_providers_flickr_key }}
+      secret: {{ oauth_providers_flickr_secret }}
+      callback: ${grails.serverURL}/profile/flickrCallback
+{% endif %}
+{% if oauth_providers_inaturalist_enabled | default('false') | bool %}
+    inaturalist:
+      enabled: true
+      key: {{ oauth_providers_inaturalist_key | default('DISABLED') }}
+      secret: {{ oauth_providers_inaturalist_secret | default('DISABLED') }}
+      callback: ${grails.serverURL}/profile/inaturalistCallback
+inaturalist:
+  name: {{ inaturalist_name | default('iNaturalist Australia') }}
+  baseUrl: {{ inaturalist_base_url | default('https://inaturalist.ala.org.au/') }}
+{% endif %}
+password:
+  encoder: {{ user_store_db_encoder | default('bcrypt') }} # or legacy
+bcrypt:
+  strength: {{ user_store_db_bcrypt_strength | default('10') }}
+#encoding:
+#  algorithm: {{ user_store_db_encoding_algorithm }}
+#  salt: {{ user_store_db_encoding_salt }}
+
+registration:
+  showAlaMessage: {{ show_ala_message | default('false') }}
+  resetPasswordArticle: {{ reset_password_article | default('') }}
+  alertArticle: {{ alert_article | default('') }}
+  activationArticle: {{ activation_article | default('') }}
+
+recaptcha:
+  baseUrl: {{ recaptcha_base_url | default('https://www.google.com/recaptcha/api/') }}
+  siteKey: {{ userdetails_recaptcha_site_key | default('') }}
+  secretKey: {{ userdetails_recaptcha_secret_key | default('') }}
+
+ala:
+  baseURL: {{ ala_base_url | default('https://www.ala.org.au') }}
+
+supportEmail: {{ support_email | default('support@ala.org.au') }}
+homeUrl: {{ ala_base_url | default('https://www.ala.org.au') }}
+homeLogoUrl: {{ ala_logo_url | default('https://www.ala.org.au/app/uploads/2020/06/ALA_Logo_Inline_RGB-300x63.png') }}
+mainTitle: {{ orgNameLong | default('Atlas of Living Australia') }}
+emailSenderTitle: {{ orgNameLong | default('Atlas of Living Australia') }}
+emailSender: {{ support_email | default('support@ala.org.au') }}
+
+sightings.url: {{ sightings_base_url }}
+spatial.url: {{ spatial_base_url }}?tool=log
+volunteer.url: {{ volunteer_base_url }}/user/myStats
+lists.url: {{ lists_base_url }}/speciesList/list
+biocache.search.baseUrl: {{ biocache_base_url }}/occurrences/search
+biocache.search.url: {{ biocache_base_url }}/occurrences/search/?q=*%3A*&fq=assertion_user_id%3A
+biocache.myDownloads.url: {{ biocache_base_url }}/download/myDownloads/
+myData.url: {{ sandbox_base_url }}/tempDataResource/myData
+alerts.url: {{ alerts_base_url }}
+
+# this property is read/used by ala-auth-plugin (included by userdetails)
+userDetails:
+  url: {{ userdetails_base_url }}/{{ userdetails_context_path | default('userdetails') }}/
+
+# Header and footer
+headerAndFooter:
+  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3')}}
+  version: {{ header_and_footer_version | default('1')}}
+ala.baseURL: {{ ala_base_url | default('https://www.ala.org.au')}}
+bie.baseURL: {{ bie_base_url | default('https://bie.ala.org.au')}}
+bie.searchPath: {{ bie_search_path | default('/search') }}
+
+# Skin options
+skin.layout: {{ (userdetails_skin_layout | default(skin_layout)) | default('ala-main') }}
+skin.fluidLayout: {{ skin_fluid_layout | default('false') }}
+skin.orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}
+skin.orgNameShort: {{ orgNameShort | default('ALA') }}
+skin.favicon: {{ skin_favicon | default('https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png') }}
+skin.homeUrl: {{ skin_home_url | default('http://www.ala.org.au') }}
+
+attributes:
+    affiliations:
+      enabled: {{ show_ala_survey | default('false') }}
+
+# API key for external apps
+webservice.apiKey: {{ api_key }}
+
+# show api link
+apiKey.showLink: {{ api_key_show_link | default('false') }}
+apiKey.showSecret: {{ api_key_show_secret | default('false') }}
+
+# Default primary fields for Export to CSV functionality
+admin.export.csv.primary.fields: {{ admin_export_csv_primary_fields | default('id,userName,firstName,lastName,email,activated,locked,created')}}
+
+spring:
+{% if bootadmin_enabled | bool %}
+  boot:
+    admin:
+      url: {{ bootadmin_url | default('https://bootadmin.ala.org.au') }}
+      username: {{ bootadmin_username }}
+      password: {{ bootadmin_password }}
+      client:
+        enabled: true
+        service-url: {{ bootadmin_client_base_url | default('${serverURL}/') }}{{ userdetails_context_path | default('userdetails') }}
+        management-url: {{ bootadmin_client_base_url | default('${serverURL}/') }}{{ userdetails_context_path | default('userdetails') }}/status
+        name: {{ userdetails_bootadmin_client_name | default('User Details') }}
+        metadata:
+          user:
+            name: ${security.user.name}
+            password: ${security.user.password}
+{% endif %}
+  session:
+    store-type: {{ spring_session_store_type | default('none') }}
+    {% if spring_session_store_type == 'redis' %}disable-redis-config-action: {{ is_secured_redis | default('false') | bool }}
+    redis:
+      namespace: {{ userdetails_redis_namespace | default('userdetails') }}
+  redis:
+    host: {{ spring_session_redis_host }}
+    password: {{ spring_session_redis_password }}
+    port: {{ spring_session_redis_port | default('6379') }}
+{% if spring_session_redis_clustered | bool %}
+    cluster:
+      nodes: {{ spring_session_redis_host }}:{{ spring_session_redis_port | default('6379') }}
+{% endif %}
+{% endif %}
+privacyPolicy:{{ privacy_policy_url | default('https://www.ala.org.au/about/terms-of-use/privacy-policy/') }}
