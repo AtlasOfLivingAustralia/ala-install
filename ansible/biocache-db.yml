@@ -1,4 +1,7 @@
 - hosts: biocache-db
+  vars:
+    use_openjdk11: false
+    use_openjdk8: true
   roles:
     - java
     - cassandra3
