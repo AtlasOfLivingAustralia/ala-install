@@ -243,7 +243,9 @@
   shell: "{{ hadoop_install_dir }}/bin/hdfs dfs -mkdir -p {{ item }}"
   with_items:
     - "/dwca-exports"
+    - "/dwca-imports"
     - "/pipelines-data"
+    - "/pipelines-outlier"
     - "/pipelines-all-datasets"
     - "/pipelines-species"
     - "/pipelines-jackknife"
@@ -261,7 +263,9 @@
   shell: "{{ hadoop_install_dir }}/bin/hdfs dfs -chown spark:spark {{ item }}"
   with_items:
     - "/dwca-exports"
+    - "/dwca-imports"
     - "/pipelines-data"
+    - "/pipelines-outlier"
     - "/pipelines-all-datasets"
     - "/pipelines-species"
     - "/pipelines-jackknife"
