@@ -31,6 +31,14 @@
   when: mongodb_version == 3.4
   tags: mongodb-org
 
+- name: Add mongodb.org apt key for version 5.0
+  get_url:
+    url: 'https://www.mongodb.org/static/pgp/server-5.0.asc'
+    dest: /etc/apt/trusted.gpg.d/mongodb.asc
+    mode: 0644
+  when: mongodb_version == 5.0
+  tags: mongodb-org
+
 - name: Add mongodb.org repo
   apt_repository:
     repo: deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/{{ mongodb_version }} multiverse
@@ -55,6 +63,12 @@
 - name: Install mongodb.org packages and related
   apt:
     name: ['mongodb-org-shell', 'mongodb-org-server', 'mongodb-org-tools' ]
+  tags: mongodb-org
+
+- name: Install mongosh with mongo 5.0
+  apt:
+    name: ['mongodb-mongosh']
+  when: mongodb_version == 5.0
   tags: mongodb-org
 
 - name: Install pip2 when necessary
@@ -96,9 +110,11 @@
     state: absent
   tags: mongodb-org
 
+# There is an incompatibility with the mongdb_user role and pymongo v4+ so force v3.12.2
 - name: Install pip python-pymongo package
   pip:
     name: pymongo
+    version: 3.12.2
   tags: mongodb-org
 
 - name: Enable service mongod

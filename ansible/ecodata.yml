@@ -2,7 +2,7 @@
   vars:
     tomcat: "tomcat7"
     tomcat_user: "tomcat7"
-    es_version: "7.16.2"
+    es_version: "7.17.6"
     es_heap_dump_path: "/data/elasticsearch"
     es_tmp_dir: "/data/elasticsearch"
     es_api_host: "{{ elasticsearch_primary_host | default('localhost') }}"
@@ -20,9 +20,9 @@
     nginx_client_header_timeout: "10"
     nginx_large_client_header_buffers: "4 4k"
     ala_default_vhost_include_paths: False
-    nginx_content_security_policy: "script-src 'self' 'unsafe-inline' 'unsafe-eval' data: https://www.google-analytics.com https://maps.googleapis.com https://ssl.google-analytics.com https://www.google.com https://www.gstatic.com; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; worker-src blob:"
+#    nginx_content_security_policy: "script-src 'self' 'unsafe-inline' 'unsafe-eval' data: https://www.google-analytics.com https://maps.googleapis.com https://ssl.google-analytics.com https://www.google.com https://www.gstatic.com; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; worker-src blob:"
 # ecodata-dev config for graphql browser
-#    nginx_content_security_policy: "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net data: https://www.google-analytics.com https://maps.googleapis.com https://ssl.google-analytics.com https://www.google.com https://www.gstatic.com; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; worker-src blob:"
+    nginx_content_security_policy: "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net data: https://www.google-analytics.com https://maps.googleapis.com https://ssl.google-analytics.com https://www.google.com https://www.gstatic.com; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; worker-src blob:"
 
   roles:
     - common

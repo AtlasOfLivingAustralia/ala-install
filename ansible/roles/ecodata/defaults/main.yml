@@ -42,3 +42,7 @@ scheduled_production_documents_copy: False
 scheduled_downloads: False
 
 access_expiry_cron_expression: "0 10 3 * * ? *"
+
+# oidc settings
+oidc_client_id:
+oidc_client_secret:
