@@ -50,6 +50,20 @@
     group: apikey
   notify:
     - restart apikey
+  when: apikey_version is version('1.7.0', '>=')
+  tags:
+    - properties
+    - apikey
+
+- name: copy apikey-config.yml
+  template:
+    src: apikey-config-pre-1.7.0.yml
+    dest: "{{data_dir}}/apikey/config/apikey-config.yml"
+    owner: apikey
+    group: apikey
+  notify:
+    - restart apikey
+  when: apikey_version is version('1.7.0', '<')
   tags:
     - properties
     - apikey
@@ -72,8 +86,8 @@
   vars:
     service_name: "apikey"
     jar_url: '{{ apikey_jar_url }}'
-    use_openjdk11: True
-    use_openjdk8: False
+    use_openjdk11: "{{ apikey_version is version('1.7.0', '>=') }}"
+    use_openjdk8: "{{ apikey_version is version('1.7.0', '<') }}"
     java_headless: true
     java_jre: true
     log_config_filename: logback.xml
