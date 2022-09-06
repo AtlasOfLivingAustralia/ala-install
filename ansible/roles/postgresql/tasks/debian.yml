@@ -14,7 +14,7 @@
 - name: Set postgis package names
   set_fact:
     postgresql_packages: "{{postgresql_packages}} + [ 'postgresql-{{pg_version}}-postgis-{{postgis_version}}', 'postgresql-{{pg_version}}-postgis-{{postgis_version}}-scripts', 'gdal-bin' ]"
-  when: postgis_version is defined and install_postgis | bool == True
+  when: postgis_version is defined
   tags: postgresql
 
 - name: Install Postgres
@@ -55,7 +55,7 @@
 # Not pulling in recommended packages as that would pull in postgres-10
 - name: Install separate postgis package to get shp2pgsql binary
   apt: pkg="postgis" state="present" update_cache="yes" install_recommends="no"
-  when: postgis_version is defined and install_postgis | bool == True
+  when: postgis_version is defined
   tags:
     - postgresql
   register: postgresql_installed
@@ -65,7 +65,7 @@
 # PostGIS 2.2+ only needs CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology; etc on the target DB
 - debug:
     msg: "PostGIS-enabled databases also need a corresponding pg_instance role with postgis in the extensions list"
-  when: postgis_version is defined and install_postgis | bool == True
+  when: postgis_version is defined
 
 - name: start postgresql and configure to startup automatically
   service:

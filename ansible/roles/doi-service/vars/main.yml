@@ -3,5 +3,5 @@ version: "{{ doi_service_version | default('LATEST') }}"
 artifactId: "doi-service"
 classifier: 'exec'
 groupId: "au.org.ala"
-packaging: "jar"
+packaging: "war"
 doi_service_jar_url: "{{maven_repo_ws_url}}"

@@ -227,3 +227,11 @@
     - validation_report
     - pipelines_jenkins
     - pipelines_jenkins_slaves
+
+- name: Install la-pipelines-migration (for migrate-uuid job)
+  apt: update_cache=yes name=la-pipelines-migration force=yes
+  when: is_master
+  tags:
+    - pipelines_jenkins
+    - la-pipelines-apt
+    - apt
