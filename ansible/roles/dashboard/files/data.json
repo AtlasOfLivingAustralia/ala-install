@@ -1,31 +1,34 @@
 {
-"taxaCounts": {
-	"acceptedNames": "195424",
-	"acceptedSpeciesNames": "152080",
-	"synonymNames": "146974",
-	"speciesWithRecords": "111566"
+	"taxaCounts": {
+		"acceptedNames": "195424",
+		"acceptedSpeciesNames": "152080",
+		"synonymNames": "146974",
+		"speciesWithRecords": "111566"
 	},
-"collections": {
-	"total": 147,
-	"plants": 43,
-	"micro": 31,
-	"insects": 25,
-	"otherFauna": 59
+	"collections": {
+		"total": 147,
+		"plants": 43,
+		"micro": 31,
+		"insects": 25,
+		"otherFauna": 59
 	},
-"boldCounts": {
-	"records": 606922,
-	"species": 37557,
-	"countries": 220,
-	"institutions": 790
+	"boldCounts": {
+		"records": 606922,
+		"species": 37557,
+		"countries": 220,
+		"institutions": 790
 	},
-"identifyLife": {
-	"keys": 532
+	"identifyLife": {
+		"keys": 532
 	},
- "volunteerPortalCounts": {
- 	"recordsTranscribed": 11890,
- 	"pagesTranscribed": 295,
- 	"volunteers": 147,
- 	"activeProjects": 5,
- 	"completedProjects": 6
-  }
+	"volunteerPortalCounts": {
+		"specimens": 1177898,
+		"fieldnotes": 219312,
+		"cameratraps": 4099105,
+		"audio": 5000,
+		"volunteerCount": 12071,
+		"expeditionCount": 6419,
+		"activeExpeditionsCount": 353,
+		"completedExpeditionsCount": 656
+	}
 }
