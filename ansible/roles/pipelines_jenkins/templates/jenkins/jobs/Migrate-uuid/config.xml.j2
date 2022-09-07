@@ -1,6 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?><project>
   <actions/>
-  <description>MIgrates UUIDs and first load date information from the current production Cassandra cluster.&#13;
+  <description>Migrates UUIDs and first load date information from the current production Cassandra cluster.&#13;
 CSVs are exported created using CQLSH using a script on cassandra (aws-cass-cluster-1b.ala. in ALA) so please adapt this job for your site&#13;
 These are then Gzipped and SCP-ed to this machine and a Spark job then distributes them into dataset directories in HDFS&#13;
 and creates AVRO files.&#13;
@@ -57,7 +57,7 @@ then
   sudo -u hdfs /data/hadoop/bin/hdfs dfs -rm -r /pipelines-data/*/1/identifiers
 
   # run spark job
-  export MIGRATION_JAR="/usr/share/la-pipelines/migration.jar"
+  export MIGRATION_JAR="/usr/share/la-pipelines/la-pipelines-migration.jar"
   export HDFS_SITE_CONF="/data/hadoop/etc/hadoop/hdfs-site.xml"
   export CORE_SITE_CONF="/data/hadoop/etc/hadoop/core-site.xml"
   export FS_PATH="hdfs://{{ master_node }}:9000"
