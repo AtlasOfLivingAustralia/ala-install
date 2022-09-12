@@ -1,7 +1,9 @@
 ---
 
 # The port that namematching-service will run on
-namematching_service_port: 8080
-namematching_admin_port: 8081
-namematching_user: namematching-service
+namematching_service_port: 9179
+namematching_admin_port: 9180
+namematching_user: namematching
 namematching_service_context_path:
+# * = latest
+ala_namematching_service_version: "*"

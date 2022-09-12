@@ -1,0 +1,58 @@
+- name: Setup sensitive-data-service package
+  ansible.builtin.debconf:
+    name: ala-sensitive-data-service
+    question: "{{ item.question }}"
+    value: "{{ item.value }}"
+    vtype: string
+  with_items:
+  - {
+    question: "ala-sensitive-data-service/sds-url",
+    value: "{{ sds_url | default('https://sds.ala.org.au') }}"
+    }
+  - {
+    question: "ala-sensitive-data-service/spatial-url",
+    value: "{{ spatial_url | default('https://spatial.ala.org.au') }}"
+    }
+  - {
+    question: "ala-sensitive-data-service/layers-url",
+    value: "{{ sds_layers_url | default('https://archives.ala.org.au/archives/layers/sds-layers.tgz') }}"
+    }
+  - {
+    question: "ala-sensitive-data-service/source",
+    value: "{{ ala_sensitive_data_service_namematching_source | default('https://archives.ala.org.au/archives/nameindexes/latest/namematching-20200214.tgz') }}"
+    }
+  - {
+    question: "ala-sensitive-data-service/sha1",
+    value: "{{ ala_sensitive_data_service_namematching_sha1 | default('f9e42325db8d41ca0c8afeb6aeadf670978a13ac') }}"
+    }
+  tags:
+    - apt
+
+- name: Install the ala-sensitive-data-service package
+  apt:
+    name:
+      - ala-sensitive-data-service={{ ala_sensitive_data_service_version }}
+    state: present
+    autoclean: yes
+    update_cache: yes
+    force: yes
+  tags:
+    - apt
+
+# See:
+# https://github.com/ansible/ansible/issues/29352
+# https://github.com/ansible/ansible/pull/39794
+# https://github.com/ansible/ansible/pull/74196
+- name: dpkg-reconfigure to get rid of configuration changes
+  shell: "dpkg-reconfigure -f noninteractive {{ item }}"
+  with_items:
+    - ala-sensitive-data-service
+  tags:
+    - apt
+
+- name: Start service ala-sensitive-data-service installed via apt, if not running
+  service:
+    name: ala-sensitive-data-service
+    state: started
+  tags:
+    - apt

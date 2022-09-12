@@ -2,7 +2,6 @@
 - hosts: namematching-service
   roles:
     - common
-    - java
     - webserver
-    - nameindex
+    - la-apt
     - namematching-service

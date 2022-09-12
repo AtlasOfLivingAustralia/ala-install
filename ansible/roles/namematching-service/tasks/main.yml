@@ -5,59 +5,55 @@
     - properties
     - nginx_vhost
 
-#
-# JAR file deployment
-#
-# Also creates config directories
-- name: add jar and service
-  include_role:
-    name: exec-jar-generic
-  vars:
-    service_name: "namematching-service"
-    jar_url: '{{ namematching_service_jar_url }}'
-    service_owner: "{{ namematching_user }}"
-    args:
-      - server
-      - "{{data_dir}}/namematching-service/config/namematching-service-config.yml"
+- include: ./apt.yml
   tags:
-    - deploy
-    - service
     - namematching-service
+    - deploy
+    - apt
 
-- name: Create configuration
+- name: Customize configuration already added by apt package
   template:
     src: namematching-service-config.yml
-    dest: "{{data_dir}}/namematching-service/config/namematching-service-config.yml"
+    dest: "{{data_dir}}/ala-namematching-service/config/config.yml"
     owner: "{{ namematching_user }}"
     group: "{{ namematching_user }}"
   notify:
-    - restart namematching-service
+    - restart ala-namematching-service
   tags:
     - properties
     - namematching-service
 
-- name: Create species group files
+- name: "Create ala-namematching-service directories"
+  file:
+    path: "{{item}}"
+    state: directory
+    owner: "{{ namematching_user }}"
+    group: "{{ namematching_user }}"
+    mode: 0755
+  with_items:
+    - "/var/log/atlas/namematching-service"
+
+- name: Customize species group files
   copy:
     src: "{{item}}"
-    dest: "{{data_dir}}/namematching-service/config/{{item}}"
+    dest: "{{data_dir}}/ala-namematching-service/config/{{item}}"
     owner: "{{ namematching_user }}"
     group: "{{ namematching_user }}"
   with_items:
     - "groups.json"
     - "subgroups.json"
   notify:
-    - restart namematching-service
+    - restart ala-namematching-service
   tags:
     - properties
     - namematching-service
 
-- name: Restart namematching service
+- name: Disable previous namematching service (not packaged war)
   service:
     name: namematching-service
-    state: restarted
-    enabled: yes
-  tags:
-    - namematching-service
+    state: stopped
+    enabled: no
+  ignore_errors: yes
 
 - name: add nginx vhost
   include_role:

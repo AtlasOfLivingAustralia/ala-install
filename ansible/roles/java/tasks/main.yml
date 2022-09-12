@@ -1,5 +1,12 @@
 - include: ../../common/tasks/setfacts.yml 
 
+
+- name: "Show java version"
+  debug:
+    msg: "Using java versions: java8={{ use_openjdk8 }} java11={{ use_openjdk11 }}'"
+  tags:
+    - java
+
 - include: openjdk-java-8.yml
   when: use_openjdk8 is defined and use_openjdk8 | bool == True
 
