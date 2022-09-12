@@ -12,8 +12,8 @@ security:
     # authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
   oidc:
     enabled: {{ userdetails_use_oidc | default('false') }}
-    client-id: {{ userdetails_oidc_client_id }}
-    secret: {{ userdetails_oidc_secret }}
+    client-id: {{ userdetails_oidc_client_id | default('') }}
+    secret: {{ userdetails_oidc_secret| default('') }}
     discovery-uri: {{ cas_server_name }}/{{ cas_context_path}}/oidc/.well-known
   jwt:
     enabled: {{ userdetails_jwt_enabled | default('false') }}

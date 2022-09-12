@@ -1,4 +1,6 @@
 - hosts: phylolink
+  vars:
+    use_postgis: true
   roles:
     - phylolink-dependencies
     - common
