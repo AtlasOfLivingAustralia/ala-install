@@ -95,17 +95,17 @@ conservation:
       field: bbox
     - action: clear
       field: dwc:eventID
-    - action: clear
+    - action: retain
       field: dwc:eventDate
-    - action: clear
+    - action: retain
       field: dwc:eventTime
-    - action: clear
+    - action: retain
       field: eventDateEnd
-    - action: clear
+    - action: retain
       field: dwc:verbatimEventDate
-    - action: clear
+    - action: retain
       field: dwc:day
-    - action: clear
+    - action: retain
       field: dwc:month
     - action: retain
       field: dwc:year
