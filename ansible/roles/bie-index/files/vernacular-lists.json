@@ -25,20 +25,5 @@
   "defaultStatus": "common",
   "defaultLanguage": "en",
   "lists": [
-    {
-      "uid": "dr13266",
-      "vernacularNameField": "vernacular name",
-      "taxonRemarksField": "Notes",
-      "defaultStatus": "traditionalKnowledge"
-    },
-    {
-      "uid": "dr17880",
-      "vernacularNameField": "vernacular name",
-      "defaultStatus": "traditionalKnowledge"
-    {
-      "uid": "dr17886",
-      "vernacularNameField": "vernacular name",
-      "defaultStatus": "traditionalKnowledge"
-    }
   ]
 }

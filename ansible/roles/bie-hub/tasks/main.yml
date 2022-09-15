@@ -42,6 +42,7 @@
     - webapps
     - properties
     - bie
+    - bie-forbidden
 
 - name: copy blacklist from inventory
   copy:
@@ -53,6 +54,7 @@
     - webapps
     - properties
     - bie
+    - bie-forbidden
 
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/{{ bie_hub | default('generic-bie') }}/ owner={{tomcat_user}} group={{tomcat_user}} recurse=true
