@@ -51,6 +51,9 @@
   vars:
     service_name: "ecodata"
     jar_url: '{{ ecodata_artifact_url }}'
+    extra_params:
+      - key: "java.io.tmpdir"
+        value: "{{data_dir}}/tmp"
   tags:
     - deploy
     - service
@@ -65,6 +68,7 @@
     - "{{data_dir}}/ecodata/models"
     - "{{data_dir}}/ecodata/elasticsearch"
     - "{{data_dir}}/ecodata/scripts"
+    - "{{data_dir}}/tmp"
   tags:
     - properties
     - ecodata
