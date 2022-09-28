@@ -10,6 +10,14 @@
     - ecodata
     - deploy
 
+- name: "Create system user for ecodata"
+  user:
+    name: "{{ ecodata_user }}"
+    state: present
+    system: yes
+  tags:
+    - service
+
 - name: Ensure group for the backup user exists
   ansible.builtin.group:
     name: "{{ecodata_backup_user}}"
@@ -69,10 +77,13 @@
 
 - name: copy logback config
   template:
-    src: logback.groovy
-    dest: "{{data_dir}}/ecodata/config/logback.groovy"
+    src: "{{item}}"
+    dest: "{{data_dir}}/ecodata/config/{{item}}"
     owner: "{{ecodata_user}}"
     group: "{{ecodata_user}}"
+  with_items:
+    - logback.groovy
+    - logback.xml
   notify:
     - restart ecodata
   tags:
@@ -403,7 +414,6 @@
     database: "{{ ecodata_database }}"
     name: "{{ ecodata_username }}"
     password: "{{ ecodata_password }}"
-    strict_compatibility: no
     roles:
       - { db: "{{ ecodata_database }}", role: "dbAdmin" }
       - { db: "{{ ecodata_database }}", role: "readWrite" }
