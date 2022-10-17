@@ -1,0 +1,79 @@
+service:
+  bie.ws.url: {{bie_service_ws_url}}
+  biocache.ws.url: {{biocache_service_ws_url}}
+
+collections.url: {{collectory_base_url|default('https://collections.ala.org.au')}}
+image.ws.url: {{images_service_base_url|default('https://images.ala.org.au/ws')}}
+
+fieldguide:
+  url: {{fieldguide_base_url}}
+  store: {{fieldguide_store|default('/data/fieldguide/store')}}
+
+threadPoolSize: 4
+
+email:
+  enabled: true
+  from: "support@ala.org.au"
+  text:
+    success: "Your download is available on the URL:
+               <br><br>[url]<br><br>When using this field guide please use the following citation:
+               <br><br><cite>Atlas of Living Australia field guide generated from [query] accessed on [date].
+               </cite><br><br>More information can be found at 
+               <a href='http://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/'>citing the ALA</a>.<br><br>"
+  subject:
+    success: "ALA Field Guide Download Complete - [filename]"
+
+
+# validate email addresses against registered users
+validateEmail: true
+
+# NOTE: add the server IP to userdetails authorised systems
+userDetails:
+  url: {{auth_base_url}}/userdetails/
+
+#
+#  CAS SETTINGS
+#
+#  NOTE: Some of these will be ignored if default_config exists
+security:
+  cas:
+    casServerName: {{auth_base_url}}
+    loginUrl: {{auth_cas_url}}/login
+    logoutUrl: {{auth_cas_url}}/logout
+    casServerUrlPrefix: {{auth_base_url}}/cas
+    bypass: false # set to true for non-ALA deployment
+    gateway: false
+    uriExclusionFilterPattern: []
+    uriFilterPattern: []
+    #if false, ticket params always proceed
+    #true, only processes urls listed in authenticateOnlyIfLoggedInFilterPattern
+    applyUriFiltersToTicketValidation: false
+    authenticateOnlyIfCookieFilterPattern: ['/', '/*']
+    disableCAS: true
+    ignoreCase: true
+    authCookieName: ALA-Auth
+    enabled: false
+  oidc:
+    enabled: true
+    discovery-uri: {{auth_cas_url}}/oidc/.well-known
+    clientId: {{oidc_client_id}}
+    secret: {{oidc_secret}}
+    allowUnsignedIdTokens: true
+    scope: 'openid email ala'
+  jwt:
+    enabled: true
+    discoveryUri: {{auth_cas_url}}/oidc/.well-known
+    fallbackToLegacyBehaviour: true
+
+openapi:
+  title: Fieldguide REST services
+  description: REST services for interacting with the fieldguide webapp
+  terms: https://www.ala.org.au/terms
+  contact:
+    name: Support
+    email: support@ala.org.au
+  license:
+    name: Mozilla Public License 1.1
+    url: https://www.mozilla.org/en-US/MPL/1.1/
+  version: '@info.app.version@'
+  cachetimeoutms: 4000

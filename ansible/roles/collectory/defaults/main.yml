@@ -1,0 +1,2 @@
+collectory_cas_enabled: false
+collectory_oidc_enabled: true

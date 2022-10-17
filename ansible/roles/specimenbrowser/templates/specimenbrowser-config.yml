@@ -19,8 +19,12 @@ security:
   cas:
     appServerName:  {{ specimenbrowser_base_url }}
     casServerName:   {{ auth_cas_url }}
+  oidc:
+    clientId: {{ clientId | default('') }}
+    secret: {{ secret | default('') }}
+    discoveryUri: {{ discoveryUri | default('') }}
 skin:
-  layout: main
+  layout: {{ skin_layout | default('ala-main') }}
   fluidLayout: {{ specimenbrowser_fluid }}
   orgNameLong: {{ orgNameLong }}
 specimenbrowser:
