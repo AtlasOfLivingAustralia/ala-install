@@ -12,8 +12,8 @@ security:
     # authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
   oidc:
     enabled: {{ userdetails_use_oidc | default('false') }}
-    client-id: {{ userdetails_oidc_client_id }}
-    secret: {{ userdetails_oidc_secret }}
+    client-id: {{ userdetails_oidc_client_id | default('') }}
+    secret: {{ userdetails_oidc_secret| default('') }}
     discovery-uri: {{ cas_server_name }}/{{ cas_context_path}}/oidc/.well-known
   jwt:
     enabled: {{ userdetails_jwt_enabled | default('false') }}
@@ -98,9 +98,9 @@ bcrypt:
 
 registration:
   showAlaMessage: {{ show_ala_message | default('false') }}
-  resetPasswordArticle: {{ reset_password_article | default('') }}
-  alertArticle: {{ alert_article | default('') }}
-  activationArticle: {{ activation_article | default('') }}
+  resetPasswordArticle: {{ reset_password_article | default('https://support.ala.org.au/support/solutions/articles/6000194958-my-username-password-isn-t-working-or-i-can-t-remember-my-username-password') }}
+  alertArticle: {{ alert_article | default('https://support.ala.org.au/support/solutions/articles/6000195858-how-do-i-manage-email-alerts-from-the-ala') }}
+  activationArticle: {{ activation_article | default('https://support.ala.org.au/support/solutions/articles/6000195196-i-created-an-account-but-did-not-receive-the-account-activation-email') }}
 
 recaptcha:
   baseUrl: {{ recaptcha_base_url | default('https://www.google.com/recaptcha/api/') }}
@@ -199,4 +199,15 @@ spring:
       nodes: {{ spring_session_redis_host }}:{{ spring_session_redis_port | default('6379') }}
 {% endif %}
 {% endif %}
+
+# Allow to disable some tools for non-ALA Portals
+myProfile:
+  useDigiVol: {{ use_digivol | default('true') }}
+  useSandbox: {{ use_sandbox | default('true') }}
+  useBiocollect: {{ use_biocollect | default('true') }}
+
 privacyPolicy: {{ privacy_policy_url | default('https://www.ala.org.au/about/terms-of-use/privacy-policy/') }}
+termsOfUse: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
+
+openapi:
+  terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
