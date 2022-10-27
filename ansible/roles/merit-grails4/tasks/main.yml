@@ -16,7 +16,9 @@
     name: exec-jar
   vars:
     service_name: "fieldcapture"
-    jar_url: '{{ merit_artifact_url }}'
+    maven_repo_url: '{{ merit_repo_url }}'
+    maven_repo_username: '{{ merit_repo_username }}'
+    maven_repo_password: '{{ merit_repo_password }}'
   tags:
     - deploy
     - service
