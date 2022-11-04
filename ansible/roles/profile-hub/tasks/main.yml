@@ -88,8 +88,8 @@
 
 - name: copy logback config
   template:
-    src: logback.groovy
-    dest: "{{data_dir}}/profile-hub/config/logback.groovy"
+    src: logback.xml
+    dest: "{{data_dir}}/profile-hub/config/logback.xml"
     owner: profile-hub
     group: profile-hub
   notify:
@@ -97,7 +97,24 @@
   tags:
     - properties
     - profile-hub
-  when: grails_version is version("3", ">=")
+
+- name: ensure profile-hub log directory exists
+  file: path={{item}} state=directory owner={{profile_hub_user}} group={{profile_hub_user}}
+  with_items:
+    - "{{data_dir}}/profile-hub/logs"
+  tags:
+    - properties
+    - profile-hub
+  when: exec_jar
+
+- name: set profile-hub log ownership
+  file: path='{{data_dir}}/profile-hub/logs' owner='{{profile_hub_user}}' group='{{profile_hub_user}}' recurse=true
+  notify:
+    - restart profile-hub
+  tags:
+    - properties
+    - profile-hub
+  when: exec_jar
 
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/profile-hub owner={{profile_hub_user}} group={{profile_hub_user}} recurse=true

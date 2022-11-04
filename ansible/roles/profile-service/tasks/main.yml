@@ -105,8 +105,8 @@
 
 - name: copy logback config
   template:
-    src: logback.groovy
-    dest: "{{data_dir}}/profile-service/config/logback.groovy"
+    src: logback.xml
+    dest: "{{data_dir}}/profile-service/config/logback.xml"
     owner: profile-service
     group: profile-service
   notify:
@@ -114,7 +114,24 @@
   tags:
     - properties
     - profile-service
-  when: grails_version is version("3", ">=")
+
+- name: ensure profile-service log directory exists
+  file: path={{item}} state=directory owner={{profile_service_user}} group={{profile_service_user}}
+  with_items:
+    - "{{data_dir}}/profile-service/logs"
+  tags:
+    - properties
+    - profile-service
+  when: exec_jar
+
+- name: set profile-service log ownership
+  file: path='{{data_dir}}/profile-service/logs' owner='{{profile_service_user}}' group='{{profile_service_user}}' recurse=true
+  notify:
+    - restart profile-service
+  tags:
+    - properties
+    - profile-service
+  when: exec_jar
 
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/profile-service owner={{profile_service_user}} group={{profile_service_user}} recurse=true
