@@ -64,7 +64,7 @@ wordPress:
   contentOnlyParams: ?content-only=1&categories=1
 lists:
   service: {{ specieslist_service_url | default('https://lists.ala.org.au/ws') }}
-  items: /speciesListItems/{0}?includeKVP=true
+  items: /speciesListItems/{0}?includeKVP=true&max={1}&offset={2}
 naming:
   service: {{ namematching_service_url | default('https://namematching-ws.ala.org.au') }}
 attribution:
