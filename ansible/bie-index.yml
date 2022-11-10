@@ -5,7 +5,6 @@
     - java
     - webserver
     - tomcat
-    - biocache-properties
     - i18n
     - bie-index
     - namedata
