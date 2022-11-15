@@ -96,15 +96,6 @@
     - biocollect
   when: not webserver_nginx
 
-- name: ensure target directories exist for nginx proxy file storage
-  file: path={{item}} state=directory owner=www-data group=www-data
-  with_items:
-    - "{{data_dir}}/biocollect/www"
-  tags:
-    - nginx_vhost
-    - deploy
-    - biocollect
-
 - name: add nginx vhost if configured (no root rewrite)
   include_role:
     name: nginx_vhost
@@ -120,7 +111,7 @@
       - path: "{{biocollect_context_path}}/download/"
         sort_label: "2_download"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{biocollect_context_path}}/download/;proxy_store on;proxy_temp_path {{ data_dir }}/biocollect/www"
+        proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{biocollect_context_path}}/download/;proxy_store on;proxy_temp_path {{ data_dir }}/biocollect/www; gzip off"
   tags:
     - nginx_vhost
     - deploy
@@ -146,7 +137,7 @@
       - path: "{{biocollect_context_path}}/download/"
         sort_label: "3_download"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{biocollect_context_path}}/download/;proxy_store on;proxy_temp_path {{ data_dir }}/biocollect/www"
+        proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{biocollect_context_path}}/download/; gzip off"
   tags:
     - nginx_vhost
     - deploy
