@@ -358,6 +358,7 @@
       - path: "{{biocache_service_context_path}}"
         sort_label: "9_ws"
         is_proxy: true
+        inject_api_key: "{{ jwt_auth_enabled }}"
         use_cache: false
         force_cache: false
         unlimited_conns: true

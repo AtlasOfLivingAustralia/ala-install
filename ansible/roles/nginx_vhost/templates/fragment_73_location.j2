@@ -140,6 +140,13 @@ try_files {{ item.try_files }};
 {% else %}
         try_files {{ item.try_files }};
 {% endif %}
+{% if item.inject_api_key is defined and item.inject_api_key | bool == True %}
+        set $defaultKeyValue "";
+        if ($arg_apikey) {
+            set $defaultKeyValue $arg_apikey;
+        }
+        proxy_set_header apiKey $defaultKeyValue; 
+{% endif %}
 {% if item.location_includes is defined and item.location_includes|length > 0 %}
 {% for next_location_include in item.location_includes %}
         include {{ next_location_include }};
