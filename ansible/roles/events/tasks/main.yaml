@@ -1,0 +1,122 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - docker
+    - events
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  tags:
+    - docker
+    - events
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu bionic stable
+    state: present
+  tags:
+    - docker
+    - events
+
+- name: Update apt and install docker-ce
+  apt: update_cache=yes name={{ item }} state=latest
+  with_items:
+    - docker-ce
+    - docker-ce-cli
+    - docker-compose
+    - containerd.io
+  tags:
+    - docker
+    - events
+
+- name: Update docker directory
+  template: src={{ item }} dest=/etc/docker/{{ item }}
+  with_items:
+    - daemon.json
+  tags:
+    - docker
+    - events
+
+- name: Restart docker
+  service:
+    name: docker
+    state: restarted
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
+  tags:
+    - docker
+    - events
+
+- name: Copy docker YAML files to {{ data_dir }}
+  template: src={{ item }} dest={{ data_dir }}/{{ item }}
+  with_items:
+    - graphql-service.yml
+    - es2vt.env
+    - es-api.env
+    - graphql-api.env
+  tags:
+    - docker
+    - events
+
+
+- name: Copy service scripts to /usr/bin
+  copy: src={{ item }} dest=/usr/bin/{{ item }} mode=777
+  with_items:
+    - graphql-service.sh
+  tags:
+    - docker
+    - events
+
+- name: Copy docker service files to /etc/systemd/system
+  copy: src={{ item }} dest=/etc/systemd/system/{{ item }}
+  with_items:
+    - graphql-service.service
+  tags:
+    - docker
+    - events
+
+- name: enable services
+  service: name={{ item }} enabled=yes
+  with_items:
+    - graphql-service.service
+  tags:
+    - docker
+    - events
+
+- name: Start service graphql-service, if not running
+  service:
+    name: graphql-service
+    state: started
+  tags:
+    - docker
+    - events
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "events"
+    hostname: "{{ events_hostname }}"
+    context_path: ""
+    nginx_paths:
+      - path: "/es/"
+        sort_label: "1_es"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:4001/"
+      - path: "/graphql"
+        sort_label: "1_graphql"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:4000"
+      - path: "/tile/"
+        sort_label: "1_tile"
+        is_proxy: true
+        use_cache: true
+        force_cache: true
+        proxy_pass: "http://127.0.0.1:4002/"
+  tags:
+    - events
+

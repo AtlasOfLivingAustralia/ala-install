@@ -1,0 +1,3 @@
+graphql_image: "{{ graphql_image | default('atlasoflivingaustralia/graphql-api:5cf0cb50')}}"
+es_image: "{{ es_image | default('atlasoflivingaustralia/es-api:79e116ca')}}"
+es2vt_image: "{{ es2vt_image | default('atlasoflivingaustralia/es2vt:8af41c39')}}"
