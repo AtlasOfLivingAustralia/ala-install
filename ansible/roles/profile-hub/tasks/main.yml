@@ -152,6 +152,9 @@
   vars:
     service_name: "profile-hub"
     jar_url: '{{ profile_hub_war_url }}'
+    maven_repo_url: '{{ profile_hub_repo_url }}'
+    maven_repo_username: '{{ profile_repo_username }}'
+    maven_repo_password: '{{ profile_repo_password }}'
   tags:
     - deploy
     - service
