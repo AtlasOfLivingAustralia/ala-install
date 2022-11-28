@@ -1,0 +1,223 @@
+# CAS Config
+security:
+  core:
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+  cas:
+    enabled: {{ userdetails_use_cas | default('true') }}
+    casServerName: {{ cas_server_name }}
+    casServerUrlPrefix: ${security.cas.casServerName}/{{ cas_context_path | default('cas') }}
+    loginUrl: ${security.cas.casServerUrlPrefix}/login
+    logoutUrl: ${security.cas.casServerUrlPrefix}/logout
+    appServerName: {{ userdetails_server_name }}
+    # authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+  oidc:
+    enabled: {{ userdetails_use_oidc | default('false') }}
+    client-id: {{ userdetails_oidc_client_id | default('') }}
+    secret: {{ userdetails_oidc_secret | default('') }}
+    discovery-uri: {{ userdetails_oidc_discovery_uri | default('') }}
+    logoutUrl: {{ userdetails_oidc_logoutUrl | default('') }}
+  jwt:
+    enabled: {{ userdetails_jwt_enabled | default('false') }}
+    fallback-to-legacy-behaviour: {{ userdetails_jwt_fallback_to_legacy | default('true') }}
+    discovery-uri: {{ userdetails_oidc_discovery_uri | default('') }}
+  user:
+    name: {{ userdetails_endpoint_user | default('admin') }}
+    password: {{ userdetails_endpoint_password | default('secret') }}
+    role:
+      - ACTUATOR
+  basic:
+    enabled: true
+    authorizeMode: role
+    realm: ALA CAS
+    path:
+      - /status/**
+endpoints:
+  enabled: {{ endpoints_enabled | default('true') }}
+  health:
+    sensitive: false
+management:
+  security:
+    enabled: true
+    roles: ACTUATOR
+{% if spring_session_store_type == 'mongodb' %}
+  health:
+    mongodb:
+      enabled: true
+{% endif %}
+
+serverURL: {{ userdetails_server_name }}
+serverName: {{ userdetails_server_name }}
+grails:
+  serverURL: {{ userdetails_server_name }}/{{ userdetails_context_path | default('userdetails') }}
+server:
+  port: {{ userdetails_port | default('9001') }}
+  servlet:
+    contextPath: /{{ userdetails_context_path  | default('userdetails') }}
+  forward-headers-strategy: native
+  tomcat:
+    remoteip:
+      protocol-header: x-forwarded-proto
+      port-header: x-forwarded-port
+      remote-ip-header: x-forwarded-for
+      protocol-header-https-value: https
+
+redirectAfterFirstLogin: ${grails.serverURL}/myprofile
+
+# Data source configuration
+dataSource:
+  dbCreate: "none"
+  driverClassName: "org.h2.Driver"
+  pooled: false
+  jmxExport: true
+  url: jdbc:h2:./prodDb;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
+  username:
+  password:
+
+oauth:
+  providers:
+{% if oauth_providers_flickr_enabled | default('true') | bool %}
+    flickr:
+      enabled: true
+      key: {{ oauth_providers_flickr_key }}
+      secret: {{ oauth_providers_flickr_secret }}
+      callback: ${grails.serverURL}/profile/flickrCallback
+{% endif %}
+{% if oauth_providers_inaturalist_enabled | default('false') | bool %}
+    inaturalist:
+      enabled: true
+      key: {{ oauth_providers_inaturalist_key | default('DISABLED') }}
+      secret: {{ oauth_providers_inaturalist_secret | default('DISABLED') }}
+      callback: ${grails.serverURL}/profile/inaturalistCallback
+inaturalist:
+  name: {{ inaturalist_name | default('iNaturalist Australia') }}
+  baseUrl: {{ inaturalist_base_url | default('https://inaturalist.ala.org.au/') }}
+{% endif %}
+password:
+  encoder: {{ user_store_db_encoder | default('bcrypt') }} # or legacy
+bcrypt:
+  strength: {{ user_store_db_bcrypt_strength | default('10') }}
+#encoding:
+#  algorithm: {{ user_store_db_encoding_algorithm }}
+#  salt: {{ user_store_db_encoding_salt }}
+
+registration:
+  showAlaMessage: {{ show_ala_message | default('false') }}
+  resetPasswordArticle: {{ reset_password_article | default('https://support.ala.org.au/support/solutions/articles/6000194958-my-username-password-isn-t-working-or-i-can-t-remember-my-username-password') }}
+  alertArticle: {{ alert_article | default('https://support.ala.org.au/support/solutions/articles/6000195858-how-do-i-manage-email-alerts-from-the-ala') }}
+  activationArticle: {{ activation_article | default('https://support.ala.org.au/support/solutions/articles/6000195196-i-created-an-account-but-did-not-receive-the-account-activation-email') }}
+
+recaptcha:
+  baseUrl: {{ recaptcha_base_url | default('https://www.google.com/recaptcha/api/') }}
+  siteKey: {{ userdetails_recaptcha_site_key | default('') }}
+  secretKey: {{ userdetails_recaptcha_secret_key | default('') }}
+
+ala:
+  baseURL: {{ ala_base_url | default('https://www.ala.org.au') }}
+
+supportEmail: {{ support_email | default('support@ala.org.au') }}
+homeUrl: {{ ala_base_url | default('https://www.ala.org.au') }}
+homeLogoUrl: {{ ala_logo_url | default('https://www.ala.org.au/app/uploads/2020/06/ALA_Logo_Inline_RGB-300x63.png') }}
+mainTitle: {{ orgNameLong | default('Atlas of Living Australia') }}
+emailSenderTitle: {{ orgNameLong | default('Atlas of Living Australia') }}
+emailSender: {{ support_email | default('support@ala.org.au') }}
+
+sightings.url: {{ sightings_base_url }}
+spatial.url: {{ spatial_base_url }}?tool=log
+volunteer.url: {{ volunteer_base_url }}/user/myStats
+lists.url: {{ lists_base_url }}/speciesList/list
+biocache.search.baseUrl: {{ biocache_base_url }}/occurrences/search
+biocache.search.url: {{ biocache_base_url }}/occurrences/search/?q=*%3A*&fq=assertion_user_id%3A
+biocache.myDownloads.url: {{ biocache_base_url }}/download/myDownloads/
+myData.url: {{ sandbox_base_url }}/tempDataResource/myData
+alerts.url: {{ alerts_base_url }}
+
+# this property is read/used by ala-auth-plugin (included by userdetails)
+userDetails:
+  url: {{ userdetails_base_url }}/{{ userdetails_context_path | default('userdetails') }}/
+
+# Header and footer
+headerAndFooter:
+  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3')}}
+  version: {{ header_and_footer_version | default('1')}}
+ala.baseURL: {{ ala_base_url | default('https://www.ala.org.au')}}
+bie.baseURL: {{ bie_base_url | default('https://bie.ala.org.au')}}
+bie.searchPath: {{ bie_search_path | default('/search') }}
+
+# Skin options
+skin.layout: {{ (userdetails_skin_layout | default(skin_layout)) | default('ala-main') }}
+skin.fluidLayout: {{ skin_fluid_layout | default('false') }}
+skin.orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}
+skin.orgNameShort: {{ orgNameShort | default('ALA') }}
+skin.favicon: {{ skin_favicon | default('https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png') }}
+skin.homeUrl: {{ skin_home_url | default('http://www.ala.org.au') }}
+
+attributes:
+    affiliations:
+      enabled: {{ show_ala_survey | default('false') }}
+    authorisedSystem:
+      enabled: {{ show_authorised_system | default('false') }}
+
+# API key for external apps
+webservice:
+  apiKey: {{ api_key }}
+  jwt: {{ userdetails_jwt_client_enabled | default('true') }}
+  scope: {{ userdetails_jwt_scopes | default('openid ala/internal') }}
+
+# Default primary fields for Export to CSV functionality
+admin.export.csv.primary.fields: {{ admin_export_csv_primary_fields | default('id,userName,firstName,lastName,email,activated,locked,created')}}
+
+spring:
+{% if bootadmin_enabled | bool %}
+  boot:
+    admin:
+      url: {{ bootadmin_url | default('https://bootadmin.ala.org.au') }}
+      username: {{ bootadmin_username }}
+      password: {{ bootadmin_password }}
+      client:
+        enabled: true
+        service-url: {{ bootadmin_client_base_url | default('${serverURL}/') }}{{ userdetails_context_path | default('userdetails') }}
+        management-url: {{ bootadmin_client_base_url | default('${serverURL}/') }}{{ userdetails_context_path | default('userdetails') }}/status
+        name: {{ userdetails_bootadmin_client_name | default('User Details') }}
+        metadata:
+          user:
+            name: ${security.user.name}
+            password: ${security.user.password}
+{% endif %}
+  session:
+    enabled: {{ spring_session_enabled | default('false') }}
+    store-type: {{ spring_session_store_type | default('none') }}
+{% if spring_session_store_type == 'mongodb' %}
+    mongodb:
+      collectionName: {{ spring_session_mongo_collection | default('userdetails-sessions') }}
+  data:
+    mongodb:
+      uri: {{ spring_session_mongo_uri }}
+{% endif %}
+    {% if spring_session_store_type == 'redis' %}disable-redis-config-action: {{ is_secured_redis | default('false') | bool }}
+    redis:
+      namespace: {{ apikey_redis_namespace | default('apikey') }}
+  redis:
+    host: {{ spring_session_redis_host }}
+    password: {{ spring_session_redis_password }}
+    port: {{ spring_session_redis_port | default('6379') }}
+{% if spring_session_redis_clustered | bool %}
+    cluster:
+      nodes: {{ spring_session_redis_host }}:{{ spring_session_redis_port | default('6379') }}
+{% endif %}
+{% endif %}
+
+# Allow to disable some tools for non-ALA Portals
+myProfile:
+  useDigiVol: {{ use_digivol | default('true') }}
+  useSandbox: {{ use_sandbox | default('true') }}
+  useBiocollect: {{ use_biocollect | default('true') }}
+
+privacyPolicy: {{ privacy_policy_url | default('https://www.ala.org.au/about/terms-of-use/privacy-policy/') }}
+termsOfUse: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
+
+openapi:
+  terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
+
+cognito:
+  region: {{ cognito_region | default('') }}
+  poolId: {{ cognito_poolId | default('') }}

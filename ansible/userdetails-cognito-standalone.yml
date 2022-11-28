@@ -1,0 +1,10 @@
+- hosts: userdetails
+  vars:
+    webserver_nginx: true
+  roles:
+    - common
+    - java
+    - postfix
+    - tomcat
+    - webserver
+    - userdetails-cognito
