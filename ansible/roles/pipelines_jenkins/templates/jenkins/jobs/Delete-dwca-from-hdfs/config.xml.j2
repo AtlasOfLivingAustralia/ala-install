@@ -62,6 +62,8 @@ for f in $datasetId
 do
   echo &quot;Remove $f from DFS&quot;
   sudo -u spark /data/hadoop/bin/hdfs dfs -rm -r -f /dwca-exports/$f
+  sudo -u spark /data/hadoop/bin/hdfs dfs -rm -r -f /pipelines-data/$f
+  sudo -u spark rm -r /data/dwca-export/$f || true
 done
 </command>
       <configuredLocalRules/>
