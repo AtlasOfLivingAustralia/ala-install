@@ -51,6 +51,8 @@
   vars:
     service_name: "ecodata"
     jar_url: '{{ ecodata_artifact_url }}'
+    maven_repo_username: '{{ ecodata_repo_username }}'
+    maven_repo_password: '{{ ecodata_repo_password }}'
     extra_params:
       - key: "java.io.tmpdir"
         value: "{{data_dir}}/tmp"
