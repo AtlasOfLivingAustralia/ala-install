@@ -23,11 +23,11 @@ if [ $(date +%d) -eq 1 ]; then
 fi
 
 
-#only keep a week of dailys
-find {{data_dir}}/backups/daily -mtime +7 -delete
+# only keep 2 weeks of dailys
+find {{data_dir}}/backups/daily -mtime +14 -delete
 
 # keep a month of weeklys
 find {{data_dir}}/backups/weekly -mtime +30 -delete
 
-# and 6 months of monthlys
-find {{data_dir}}/backups/monthly -mtime +180 -delete
+# and year of monthlys
+find {{data_dir}}/backups/monthly -mtime +365 -delete
