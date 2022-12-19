@@ -29,5 +29,5 @@ find {{data_dir}}/backups/daily -mtime +14 -delete
 # keep a month of weeklys
 find {{data_dir}}/backups/weekly -mtime +30 -delete
 
-# and year of monthlys
-find {{data_dir}}/backups/monthly -mtime +365 -delete
+# and 2 years of monthlys
+find {{data_dir}}/backups/monthly -mtime +730 -delete
