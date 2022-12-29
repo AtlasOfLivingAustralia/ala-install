@@ -40,6 +40,7 @@ namematching_service_url: https://namematching-ws.ala.org.au
 profile_service_url: https://profiles-ws.ala.org.au/
 regions_url: https://regions.ala.org.au
 scholar_url: https://scholar.google.com
+google_url: https://www.google.com.au
 sightings_url: https://sightings.ala.org.au/
 skin_favicon: https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png
 skin_fluid_layout:
