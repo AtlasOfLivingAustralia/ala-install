@@ -47,6 +47,15 @@
     - specieslist
     - properties
 
+
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{data_dir}}/specieslist-webapp/config/logback.xml"
+  tags:
+    - specieslist
+    - properties
+
 - name: set data ownership
   file: path={{data_dir}}/specieslist-webapp owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 
