@@ -28,6 +28,14 @@
     - properties
     - alerts
 
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{data_dir}}/alerts/config/logback.xml"
+  tags:
+    - properties
+    - alerts
+
 - name: set data ownership
   file: path={{data_dir}}/alerts owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify:
