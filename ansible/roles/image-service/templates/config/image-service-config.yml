@@ -7,6 +7,7 @@ server:
 
 security:
   cas:
+    enabled: {{ cas_enabled | default(true) }}
     appServerName: "{{image_service_base_url}}"
     bypass: {{ bypass_cas | default(false) }}
     disableCAS: {{ bypass_cas | default(false) }}
@@ -35,7 +36,7 @@ info:
   app:
     name: 'image-service'
     version: '{{ image_service_version }}'
-    grailsVersion: '3.3.12'
+    grailsVersion: '4.1.1'
 
 flyway:
   baselineOnMigrate: {{ image_service_baseline_on_migrate | default('true') }}

@@ -27,11 +27,11 @@ server:
     - type: http
       port: {{ sensitive_data_admin_port }}
 conservation:
-  index: /data/lucene/namematching-{{ nameindex_datestamp }}
-  speciesUrl: {{ sds_url }}/sensitive-species-data.xml
-  zonesUrl: {{ sds_url }}/sensitivity-zones.xml
-  categoriesUrl: {{ sds_url }}/sensitivity-categories.xml
-  layersUrl: {{ sds_url }}/ws/layers
+  index: /data/lucene/namematching-nm
+  speciesUrl: file://{{ data_dir }}/sds/sensitive-species-data.xml
+  zonesUrl: {{ data_dir }}/sds/sensitivity-zones.xml
+  categoriesUrl: {{ data_dir }}/sds/sensitivity-categories.xml
+  layersUrl: {{ data_dir }}/sds/layers.json
   layersServiceUrl: {{ layers_service_url }}
   cache:
     entryCapacity: 10000
@@ -95,17 +95,17 @@ conservation:
       field: bbox
     - action: clear
       field: dwc:eventID
-    - action: clear
+    - action: retain
       field: dwc:eventDate
-    - action: clear
+    - action: retain
       field: dwc:eventTime
-    - action: clear
+    - action: retain
       field: eventDateEnd
-    - action: clear
+    - action: retain
       field: dwc:verbatimEventDate
-    - action: clear
+    - action: retain
       field: dwc:day
-    - action: clear
+    - action: retain
       field: dwc:month
     - action: retain
       field: dwc:year

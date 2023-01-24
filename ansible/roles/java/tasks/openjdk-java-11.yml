@@ -2,14 +2,15 @@
   tags:
     - java
 
-- name: install openjdk 11 java (Debian)
-  apt: pkg=openjdk-11-jdk state=latest
-  when: ansible_os_family == "Debian"
-  tags:
-    - java
+- set_fact:
+    java_package: "{{ 'openjdk-11-' + java_package_suffix[java_headless | bool][java_jre | bool] }}"
 
-- name: install ca-certificates (Debian)
-  apt: pkg=ca-certificates state=latest
+- name: install openjdk 11 java (Debian)
+  apt: 
+    pkg:
+    - ca-certificates
+    - "{{ java_package }}"
+    state: latest
   when: ansible_os_family == "Debian"
   tags:
     - java

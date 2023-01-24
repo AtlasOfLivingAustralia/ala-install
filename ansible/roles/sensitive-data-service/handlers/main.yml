@@ -1,2 +1,2 @@
-- name: restart sensitive-data-service
-  service: name=sensitive-data-service state=restarted enabled=yes
+- name: restart ala-sensitive-data-service
+  service: name=ala-sensitive-data-service state=restarted enabled=yes

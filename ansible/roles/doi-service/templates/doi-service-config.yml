@@ -14,11 +14,11 @@ security:
     loginUrl: {{ auth_cas_url }}/login
     logoutUrl: {{ auth_cas_url }}/logout
   oidc:
-    clientId: { { clientId | default('') } }
-    secret: { { secret | default('') } }
-    discoveryUri: { { discoveryUri | default('') } }
+    clientId: {{ clientId | default('') }}
+    secret: {{ secret | default('') }}
+    discoveryUri: {{ discoveryUri | default('') }}
   jwt:
-    discoveryUri: { { discoveryUri | default('') } }
+    discoveryUri: {{ discoveryUri | default('') }}
   apikey:
     check:
       serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
@@ -125,3 +125,9 @@ swagger:
       name:  "{{ swagger_contact_name | default('ALA Support') }}"
       url: "{{ swagger_contact_url | default('https://www.ala.org.au') }}"
       email: "{{ swagger_contact_email | default('support@ala.org.au') }}"
+
+openapi:
+  components:
+    security:
+      oauth2:
+        baseUrl: {{ auth_cas_url }}/oidc

@@ -29,6 +29,8 @@
   vars:
     service_name: "ecodata"
     jar_url: '{{ ecodata_artifact_url }}'
+    use_openjdk11: True
+    use_openjdk8: False
   tags:
     - deploy
     - service

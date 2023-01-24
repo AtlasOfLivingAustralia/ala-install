@@ -6,8 +6,8 @@ bhl_extend: false
 bhl_fulltext: false
 bhl_service_url: https://www.biodiversitylibrary.org/api3
 bhl_url: https://biodiversitylibrary.org
-bie_base_uri_exclusion_filter_pattern: /images.*,/css.*,/js.*,/less.*
-bie_base_uri_filter_pattern: /admin.*,/alaAdmin.*
+bie_hub_uri_exclusion_filter_pattern: /images.*,/css.*,/js.*,/less.*
+bie_hub_uri_filter_pattern: /admin/*,/alaAdmin/*
 bie_base_url: https://bie.ala.org.au
 bie_hub: generic-bie
 bie_hub_facets: idxtype,rank,locatedInHubCountry,imageAvailable,speciesGroup,taxonomicStatus,conservationStatusAUS_s,conservationStatusACT_s,conservationStatusNSW_s,conservationStatusQLD_s,conservationStatusVIC_s,conservationStatusTAS_s,conservationStatusSA_s,conservationStatusWA_s,conservationStatusNT_s
@@ -40,6 +40,7 @@ namematching_service_url: https://namematching-ws.ala.org.au
 profile_service_url: https://profiles-ws.ala.org.au/
 regions_url: https://regions.ala.org.au
 scholar_url: https://scholar.google.com
+google_url: https://www.google.com.au
 sightings_url: https://sightings.ala.org.au/
 skin_favicon: https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png
 skin_fluid_layout:

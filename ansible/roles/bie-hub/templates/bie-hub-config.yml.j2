@@ -8,8 +8,8 @@ serverName: {{ bie_base_url }}
 security:
   cas:
     casServerName: {{ auth_base_url }}
-    uriFilterPattern: {{ bie_base_uri_filter_pattern }}
-    uriExclusionFilterPattern: {{ bie_base_uri_exclusion_filter_pattern }}
+    uriFilterPattern: {{ bie_hub_uri_filter_pattern }}
+    uriExclusionFilterPattern: {{ bie_hub_uri_exclusion_filter_pattern }}
     appServerName: {{ bie_base_url }}
     casServerUrlPrefix: {{ auth_cas_url }}
     loginUrl: {{ auth_cas_url }}/login
@@ -17,6 +17,14 @@ security:
     contextPath: {{ bie_hub_context_path }}
     bypass: {{ bypass_cas  }}
     applyUriFiltersToTicketValidation: false
+    enabled: {{ security_cas_enabled | default(false) }}
+  oidc:
+    enabled: {{ security_oidc_enabled | default(true) }}
+    clientId: {{ (bie_hub_clientId | default(clientId)) | default('') }}
+    secret: {{ (bie_hub_secret | default(secret)) | default('') }}
+    discoveryUri: {{ discoveryUri | default('') }}
+  jwt:
+    discoveryUri: {{ discoveryUri | default('') }}
 disableCAS: {{ bypass_cas }}
 userDetails:
   url: {{ auth_base_url }}/userdetails/
@@ -47,6 +55,7 @@ ala:
   image:
     service:
       url: {{ image_service_url }}
+imageServiceBaseUrl: {{ image_service_url }}
 allowedImageEditingRoles: {{ allowed_image_editing_roles }}
 
 # Skin and layout
@@ -78,6 +87,7 @@ spatial:
   baseURL: {{ spatial_base_url | default(spatial_url) }}
 collectory:
   baseURL: {{ collectory_url }}
+  threatenedSpeciesCodesUrl: {{ collectory_url }}/public/showDataResource
 speciesList:
   baseURL: {{ species_list_url }}
   preferredSpeciesListDruid: {{ specieslist_preferredDruid }}
@@ -115,6 +125,8 @@ literature:
     url: {{ genbank_url  }}
   scholar:
     url: {{ scholar_url }}
+  google:
+    url: {{ google_url }}
   trove:
     url: {{ trove_url }}
     api: {{ trove_service_url  }}
@@ -166,3 +178,10 @@ eol:
 
 namematching:
   serviceURL: {{ namematching_service_url }}
+
+dataquality:
+  baseUrl: {{ data_quality_profiles_url | default('https://dataquality.ala.org.au/data-profiles') }}
+
+speciesParent : {{ specieslist_iconic_species_url | default('https://lists.ala.org.au/iconic-species') }}
+
+supportEmail: {{ support_email | default('support@ala.org.au') }}

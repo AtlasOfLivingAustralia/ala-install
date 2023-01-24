@@ -21,7 +21,7 @@ run:
 alaNameMatch:
   wsUrl: {{ namematching_service_url | default('http://localhost:9179') }}
 sds:
-  wsUrl: {{ sds_url | default('http://localhost:9189') }}
+  wsUrl: {{ sensitive_data_service_url | default('http://localhost:9189') }}
 
 collectory:
   wsUrl: {{ collectory_url }}
@@ -135,6 +135,9 @@ validation-report:
   zkHost: {{ zk_host | default('localhost:2181') }}
 export:
   imageServicePath: "{{ image_service_url }}/image/proxyImageThumbnailLarge?imageId={0}"
+  inputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  targetPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}{{ pipelines_data_dir }}
+  allDatasetsInputPath: hdfs://{{ hadoop_master }}:{{ hadoop_port }}/pipelines-all-datasets
 
 ### la-pipelines cli additional arguments, like JVM or spark command line arguments
 

@@ -48,6 +48,20 @@
     dest: "{{data_dir}}/cas/config/application.yml"
     owner: cas
     group: cas
+  when: cas_version is version('6', '>=')
+  notify:
+    - restart cas
+  tags:
+    - properties
+    - cas
+
+- name: copy application.yml
+  template:
+    src: application-pre-6.yml
+    dest: "{{data_dir}}/cas/config/application.yml"
+    owner: cas
+    group: cas
+  when: cas_version is version('6', '<')
   notify:
     - restart cas
   tags:
@@ -76,6 +90,23 @@
     - properties
     - cas
 
+# Auto generated if not present, auto generation not suitable for load balanced instances
+- name: copy JWKS (if present)
+  copy:
+    src:  "{{ inventory_dir }}/{{ cas_jwks_file | default('keystore.jwks') }}"
+    dest: "{{data_dir}}/cas/keystore.jwks"
+    owner: cas
+    group: cas
+    mode: u=rw,g=,o=
+  notify:
+    - restart cas
+  with_first_found:
+    - files:
+      - "{{ inventory_dir }}/{{ cas_jwks_file | default('keystore.jwks') }}"
+      skip: true
+  tags:
+    - cas
+
 - name: add jar and service
   include_role:
     name: exec-jar
@@ -87,6 +118,10 @@
       value: /data/cas/config/pwe.properties
     log_config_filename: 'log4j2.xml'
     service_name: "cas"
+    use_openjdk11: "{{ cas_version is version('6', '>=') }}"
+    use_openjdk8: "{{ cas_version is version('6', '<') }}"
+    java_headless: true
+    java_jre: true
     jar_url: '{{ cas_jar_url }}'
   tags:
     - deploy

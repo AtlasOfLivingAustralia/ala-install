@@ -50,14 +50,14 @@
     - properties
 
 - name: copy all config.properties
-  template: src=fieldguide-config.properties dest={{data_dir}}/{{fieldguide_app}}/config/{{fieldguide_app}}-config.properties
+  template: src=fieldguide-config.yml dest={{data_dir}}/{{fieldguide_app}}/config/{{fieldguide_app}}-config.yml
   tags:
     - fieldguide
     - properties
 
 - name: set data ownership
   file: path={{data_dir}}/{{fieldguide_app}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify: 
+  notify:
     - restart tomcat
   tags:
     - fieldguide
