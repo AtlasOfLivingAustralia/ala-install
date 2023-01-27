@@ -1,6 +1,6 @@
 # assets
 version: "{{ user_details_version | default('LATEST') }}"
-artifactId: "userdetails"
+artifactId: "userdetails-cognito"
 classifier: 'exec'
 packaging: "{{ (user_details_version is version('3', '>=')) | ternary('war', 'jar') }}"
 groupId: "au.org.ala"

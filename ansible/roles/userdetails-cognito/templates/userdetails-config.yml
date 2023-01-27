@@ -2,6 +2,7 @@
 security:
   core:
     authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+    roleAttribute: {{ security_core_roleAttribute | default('ala:role') }}
   cas:
     enabled: {{ userdetails_use_cas | default('true') }}
     casServerName: {{ cas_server_name }}
@@ -20,6 +21,8 @@ security:
     enabled: {{ userdetails_jwt_enabled | default('false') }}
     fallback-to-legacy-behaviour: {{ userdetails_jwt_fallback_to_legacy | default('true') }}
     discovery-uri: {{ userdetails_oidc_discovery_uri | default('') }}
+    roleAttributes: {{ security_jwt_roleAttributes | default('cognito:groups') }}
+    rolesFromAccessToken: {{ security_jwt_rolesFromAccessToken | default('true')}}
   user:
     name: {{ userdetails_endpoint_user | default('admin') }}
     password: {{ userdetails_endpoint_password | default('secret') }}
@@ -221,3 +224,5 @@ openapi:
 cognito:
   region: {{ cognito_region | default('') }}
   poolId: {{ cognito_poolId | default('') }}
+
+ala.admin.systemMessage.path: {{  ala_admin_system_message_path | default('/data/userdetails/config') }}
