@@ -1,0 +1,2 @@
+# Use this to add extra parameters to the service for JMX or heap configuration or other parameters
+extra_java_opts: ""
