@@ -51,6 +51,7 @@
       "virtualenv",
       "python3-setuptools",
       "zip",
+      "maven",
     ]
   tags:
     - arga-service
@@ -98,7 +99,16 @@
   tags:
     - arga-service
 
-- name: creates multiple directories in one task
+- name: Create /data/* directories for service
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - /data/www
+  tags:
+    - arga-service
+
+- name: Create /data/* directories for Pipelines
   file:
     path: "{{ item }}"
     state: directory
@@ -106,7 +116,25 @@
     - /data/biocache-load
     - /data/pipelines-shp
     - /data/pipelines-data
-    - /data/www
+    - /data/dwca-tmp
+    - /data/spark-tmp
+    - /data/pipelines-vocabularies
+    - /data/pipelines-species
+    - /data/pipelines-all-datasets
+  tags:
+    - pipelines
+
+- name: Download GBIF vocabulary files for Pipelines
+  get_url:
+    url: "https://api.gbif.org/v1/vocabularies/{{ item }}/releases/LATEST/export"
+    dest: /data/pipelines-vocabularies/{{ item }}.json
+  loop:
+    - DegreeOfEstablishment
+    - EstablishmentMeans
+    - LifeStage
+    - Pathway
+  tags:
+    - pipelines
 
 # - apt_repository:
 #     repo: ppa:libreoffice/ppa
@@ -306,4 +334,6 @@
     repo: https://github.com/gbif/pipelines.git
     dest: /data/pipelines/
     clone: yes
-    update: yes
+    update: no
+  tags:
+    - pipelines
