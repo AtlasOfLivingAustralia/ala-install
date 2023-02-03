@@ -8,6 +8,7 @@
 
 *.iml
 .vagrant
+.history
 
 vagrant/centos/.vagrant
 vagrant/ubuntu-trusty/.vagrant

@@ -49,6 +49,8 @@
 {% endif %}
 {% if item.rewrite_path is defined and item.rewrite_path %}
         rewrite ^ {{item.rewrite_path}}$1;
+{% elif item.rewrite_path_alt is defined and item.rewrite_path_alt %}
+        rewrite ^{{item.rewrite_path_alt}}$1;
 {% endif %}
 {% if item.is_proxy is defined and item.is_proxy | bool == True %}
         # proxy_set_header Host $host;

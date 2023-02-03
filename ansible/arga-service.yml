@@ -1,0 +1,6 @@
+- hosts: arga-service
+  roles:
+    - common
+    - java
+    - webserver
+    - arga-service
