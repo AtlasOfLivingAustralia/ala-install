@@ -123,8 +123,8 @@
     appname: "arga-service"
     hostname: "{{ arga_service_hostname }}"
     nginx_paths:
-      - path: "{{ solr_nginx_proxy_regex | default('~ ^/api/(get|select|query)$') }}"
-        rewrite_path_alt: "/api/(get|select|query)$ /solr/biocache/$1 break"
+      - path: "{{ solr_nginx_proxy_regex }}"
+        rewrite_path_alt: "{{ solr_nginx_rewrite_regex }}"
         is_proxy: true
         is_proxy_rewrite: true
         proxy_pass: "http://localhost:{{ service_port }}"
@@ -160,7 +160,7 @@
 
 - name: Clone Pipelines github repository
   git:
-    repo: https://github.com/gbif/pipelines.git
+    repo: "{{ pipelines_repo_url }}"
     dest: /data/pipelines/
     clone: yes
     update: no
