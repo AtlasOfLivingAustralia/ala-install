@@ -5,7 +5,7 @@
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
     <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
 
-    <variable name="appName" value="specieslist-webapp"/>
+    <variable name="appName" value="logger-service"/>
     <property name="LOG_DIR" value="/var/log/tomcat9" />
 
     <appender name="TOMCAT_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
