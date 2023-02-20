@@ -121,10 +121,10 @@ registration:
   alertArticle: {{ alert_article | default('https://support.ala.org.au/support/solutions/articles/6000195858-how-do-i-manage-email-alerts-from-the-ala') }}
   activationArticle: {{ activation_article | default('https://support.ala.org.au/support/solutions/articles/6000195196-i-created-an-account-but-did-not-receive-the-account-activation-email') }}
 
-recaptcha:
-  baseUrl: {{ recaptcha_base_url | default('https://www.google.com/recaptcha/api/') }}
-  siteKey: {{ userdetails_recaptcha_site_key | default('') }}
-  secretKey: {{ userdetails_recaptcha_secret_key | default('') }}
+#recaptcha:
+#  baseUrl: {{ recaptcha_base_url | default('https://www.google.com/recaptcha/api/') }}
+#  siteKey: {{ userdetails_recaptcha_site_key | default('') }}
+#  secretKey: {{ userdetails_recaptcha_secret_key | default('') }}
 
 ala:
   baseURL: {{ ala_base_url | default('https://www.ala.org.au') }}
@@ -149,6 +149,11 @@ alerts.url: {{ alerts_base_url }}
 # this property is read/used by ala-auth-plugin (included by userdetails)
 userDetails:
   url: {{ userdetails_base_url }}/{{ userdetails_context_path | default('userdetails') }}/
+userdetails:
+  features:
+    authorisedSystems: {{ enabled_authorisedSystems | default('true')}}
+    bulkCreate: {{ enabled_bulkCreate | default('false')}}
+    exportUsers: {{ enabled_exportUsers | default('false')}}
 
 # Header and footer
 headerAndFooter:
