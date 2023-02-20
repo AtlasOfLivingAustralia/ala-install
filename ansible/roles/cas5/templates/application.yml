@@ -170,7 +170,7 @@ cas:
     tgt:
       primary:
         maxTimeToLiveInSeconds: {{ cas_login_timeout | default('86400') }}
-        timeToKillInSeconds: {{ cas_login_timeout | default('86400') }}
+        timeToKillInSeconds: {{ cas_login_time_to_kill | default('86400') }}
       rememberMe:
         enabled: true
         timeToKillInSeconds: {{ cas_remember_me_timeout | default('7884000') }}
