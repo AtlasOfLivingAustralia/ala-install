@@ -35,7 +35,7 @@
   tags:
     - properties
     - alerts
-
+    
 - name: set data ownership
   file: path={{data_dir}}/alerts owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify:
