@@ -62,7 +62,7 @@
 - name: copy logback config
   template:
     src: logback.xml
-    dest: "{{data_dir}}/logger-service/config/logback.xml"
+    dest: "{{data_dir}}/logger/config/logback.xml"
   tags:
     - properties
     - logger-service
