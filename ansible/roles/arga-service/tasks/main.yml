@@ -2,7 +2,6 @@
   tags:
     - arga-service
     - nginx_vhost
-    # - apache_vhost
 
 - name: Ensure group exists
   group:
@@ -15,24 +14,6 @@
     comment: arga-service user
     group: "{{ arga_user }}"
     system: true
-
-#
-# install docker
-#
-# - name: install docker
-#   apt: pkg=docker.io update_cache=yes state=latest
-#   tags:
-#     - docker
-#   when: use_docker
-
-# - name: enable docker to run on startup and start it
-#   systemd:
-#     name: docker
-#     enabled: yes
-#     state: started
-#   tags:
-#     - docker
-#   when: use_docker
 
 - name: Install aptitude using apt
   apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
@@ -83,14 +64,6 @@
   tags:
     - arga-service
 
-# - name: Update docker directory
-#   template: src={{ item }} dest=/etc/docker/daemon.json
-#   with_items:
-#     - daemon.json
-#   #when: use_docker
-#   tags:
-#     - arga-service
-
 - name: Restart docker
   service:
     name: docker
@@ -136,143 +109,12 @@
   tags:
     - pipelines
 
-# - apt_repository:
-#     repo: ppa:libreoffice/ppa
-#     state: present
-#   tags:
-#     - libreoffice
-# #   when: not use_docker
-
-# - name: install wkhtml2pdf and libreoffice when not using a docker container
-#   apt:
-#     name:
-#       - libreoffice
-#       - unoconv
-#       - fonts-dejavu
-#       - fonts-sil-gentium-basic
-#       - fonts-sil-gentium
-#       - fonts-liberation
-#     install_recommends: no
-#   tags:
-#     - libreoffice
-#   when: not use_docker
-
-# - name: Check if wkthml2pdf is installed
-#   command: dpkg-query -W wkhtml2pdf
-#   register: wkthml2pdf_deb
-#   failed_when: wkthml2pdf_deb.rc > 1
-#   changed_when: wkthml2pdf_deb.rc == 1
-#   tags:
-#     - wkhtml2pdf
-#   when: not use_docker
-
-# - name: ensure target directories exist [data subdirectories etc.]
-#   file: path={{item}} state=directory owner='{{ arga_user }}' group='{{ arga_user }}'
-#   with_items:
-#     - "{{data_dir}}/downloads"
-#     - "{{arga_dir}}"
-#     - "/opt/atlas/{{service_name}}"
-#     - "{{logging_dir}}"
-#     - "{{config_dir}}"
-#   tags:
-#     - wkhtml2pdf
-#   when: not use_docker
-
-# - name: Download wkhtml2pdf
-#   get_url:
-#     url: "https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb"
-#     dest: "{{data_dir}}/downloads/wkhtmltox_0.12.6-1.bionic_amd64.deb"
-#   tags:
-#     - wkhtml2pdf
-#   when: not use_docker and wkthml2pdf_deb.rc == 1
-
-# - name: Install wkhtml2pdf
-#   apt: deb="/data/downloads/wkhtmltox_0.12.6-1.bionic_amd64.deb"
-#   tags:
-#     - wkhtml2pdf
-#   when: not use_docker and wkthml2pdf_deb.rc == 1
-
 - name: Install java
   include_role:
     name: java
   tags:
     - arga-service
   when: use_docker
-
-# - name: "Create {{service_name}} config file"
-#   template:
-#     src: pdf-service-config.yml
-#     dest: "{{config_dir}}/{{config_file_name}}"
-#   register: service
-#   tags:
-#     - service
-#   when: not use_docker
-
-# - name: "Create {{service_name}} service file"
-#   template:
-#     src: systemd.service
-#     dest: "/etc/systemd/system/{{service_name}}.service"
-#   register: service
-#   tags:
-#     - service
-#   when: not use_docker
-
-# - name: "Reload services"
-#   when: service.changed
-#   systemd:
-#     name: "{{service_name}}"
-#     daemon-reload: yes
-#   tags:
-#     - service
-#   when: not use_docker
-
-# - name: "Enable service"
-#   systemd:
-#     name: "{{service_name}}"
-#     enabled: true
-#   tags:
-#     - service
-#   when: not use_docker
-
-# - name: Install dependencies
-#   apt:
-#     name:
-#       - python3-lxml
-#     state: present
-#   tags:
-#     - service
-#   when: not use_docker
-
-# - name: "Download {{service_name}} JAR"
-#   maven_artifact:
-#     group_id: "{{groupId}}"
-#     artifact_id: "{{artifactId}}"
-#     version: "{{version|default('latest')}}"
-#     extension: "{{packaging|default('jar')}}"
-#     classifier: "{{classifier|default('')}}"
-#     repository_url: "{{maven_repo_url}}"
-#     timeout: 30
-#     dest: "/opt/atlas/{{service_name}}/{{service_name}}.jar"
-#     mode: u=rwx,g=rx,o=rx
-#     owner: "{{ arga_user | default(service_name) }}"
-#     group: "{{ arga_user | default(service_name) }}"
-#     verify_checksum: always
-#   notify: "restart service"
-#   tags:
-#     - service
-#   when: not use_docker
-
-#
-# webserver virtual host configuration
-#
-# - include: ../../apache_vhost/tasks/main.yml
-#     context_path='{{ profile_service_context_path }}'
-#     hostname='{{ profile_service_hostname }}'
-#   tags:
-#     - pdf-service
-#     - deploy
-#     - apache_vhost
-#   when: not webserver_nginx
 
 - name: add nginx vhost if configured
   include_role:
@@ -281,8 +123,8 @@
     appname: "arga-service"
     hostname: "{{ arga_service_hostname }}"
     nginx_paths:
-      - path: "{{ solr_nginx_proxy_regex | default('~ ^/api/(get|select|query)$') }}"
-        rewrite_path_alt: "/api/(get|select|query)$ /solr/biocache/"
+      - path: "{{ solr_nginx_proxy_regex }}"
+        rewrite_path_alt: "{{ solr_nginx_rewrite_regex }}"
         is_proxy: true
         is_proxy_rewrite: true
         proxy_pass: "http://localhost:{{ service_port }}"
@@ -294,19 +136,6 @@
     - deploy
     - arga-service
   when: webserver_nginx
-
-# Manual setup required for docker not automated
-# On the HOST
-# edit the /etc/sysctl.conf, set net.ipv4.ip_forward=1 if it is 0
-#
-# build image using pdf-gen gradle, tag with pdf-service
-#
-# Start the container with:
-# sudo docker run -d --restart always -p 127.0.0.1:8080:9090/tcp -v /data/pdfgen:/storage pdf-service
-#
-# Attach to the container
-# sudo docker exec -it <container id> /bin/bash
-# change ownership of /storage in the container to pdfgen:pdfgen
 
 - name: Create solr8 docker directory
   file:
@@ -331,7 +160,7 @@
 
 - name: Clone Pipelines github repository
   git:
-    repo: https://github.com/gbif/pipelines.git
+    repo: "{{ pipelines_repo_url }}"
     dest: /data/pipelines/
     clone: yes
     update: no

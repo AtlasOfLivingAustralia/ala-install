@@ -47,7 +47,6 @@
     - specieslist
     - properties
 
-
 - name: copy logback config
   template:
     src: logback.xml
