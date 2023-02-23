@@ -1,7 +1,7 @@
 # CAS server that management app will authenticate with
 # This server will authenticate for any app (service) and you can login as casuser/Mellon
 mgmt:
-  serverName: {{ cas_management_server_name }}
+  server-name: {{ cas_management_server_name }}
   adminRoles:
     - ROLE_ADMIN
   authzAttributes:
