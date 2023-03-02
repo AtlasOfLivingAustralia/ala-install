@@ -18,6 +18,9 @@
   vars:
     service_name: "biocollect"
     jar_url: '{{ biocollect_artifact_url }}'
+    maven_repo_url: '{{ biocollect_repo_url }}'
+    maven_repo_username: '{{ biocollect_repo_username }}'
+    maven_repo_password: '{{ biocollect_repo_password }}'
   tags:
     - deploy
     - service
