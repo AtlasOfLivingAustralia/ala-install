@@ -19,7 +19,7 @@
     }
   - {
     question: "ala-sensitive-data-service/source",
-    value: "{{ ala_sensitive_data_service_namematching_source | default('https://archives.ala.org.au/archives/nameindexes/latest/namematching-20200214.tgz') }}"
+    value: "{{ ala_sensitive_data_service_namematching_source | default('https://archives.ala.org.au/archives/nameindexes/20210811-3/namematching-20210811-3.tgz') }}"
     }
   - {
     question: "ala-sensitive-data-service/sha1",
