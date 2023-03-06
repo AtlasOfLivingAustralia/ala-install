@@ -105,6 +105,11 @@ imageServiceBaseURL: {{ image_service_url }}
 image:
   baseUrl: {{ image_service_url }}
   thumbnailUrl: {{ image_service_url }}/image/proxyImageThumbnail?imageId=
+ausTraits:
+    baseURL: {{ ausTraits_base_url | default('http://traitdata.austraits.cloud.edu.au') }}
+    homeURL: {{ ausTraits_home_url | default('https://austraits.org/') }}
+    sourceURL: {{ ausTraits_source_url | default('https://zenodo.org/record/7368074') }}
+    definitionsURL: {{ ausTraits_definitions_url | default('https://traitecoevo.github.io/austraits.build/articles/Trait_definitions.html') }}
 
 # External Literature and reference sources
 synonymsTypes: {{ synonym_types }}
@@ -180,3 +185,12 @@ dataquality:
 speciesParent : {{ specieslist_iconic_species_url | default('https://lists.ala.org.au/iconic-species') }}
 
 supportEmail: {{ support_email | default('support@ala.org.au') }}
+
+survey:
+    indexPage: {{ bie_survey_indexPage | default(false) }}
+    searchPage: {{ bie_survey_searchPage | default(false) }}
+    speciesPage: {{ bie_survey_speciesPage | default(false) }}
+    url: {{ bie_survey_url | default('') }}
+    header: {{ bie_survey_header | default('') }}
+    cookieAge: {{ bie_survey_cookieAge | default(30) }}
+    html: {{ bie_survey_html | default('') }}
