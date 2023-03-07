@@ -56,7 +56,7 @@
 - name: copy logback config
   template:
     src: logback.xml
-    dest: "{{collectory_data_dir}}/collectory/config/logback.xml"
+    dest: "{{collectory_data_dir}}/config/logback.xml"
   tags:
     - properties
     - collectory
