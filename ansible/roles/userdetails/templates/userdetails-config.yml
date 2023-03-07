@@ -221,8 +221,3 @@ openapi:
   terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
 
 ala.admin.systemMessage.path: {{  ala_admin_system_message_path | default('/data/userdetails/config') }}
-
-apigateway:
-  region: ap-southeast-2
-  galah:
-    usagePlanId: yuz7fr
