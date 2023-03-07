@@ -30,6 +30,14 @@ security:
     realm: ALA CAS
     path:
       - /status/**
+  apikey:
+    enabled: true
+    auth:
+      serviceUrl: {{ apikey_auth_serviceUrl | default('https://auth.ala.org.au/apikey/ws/check/') }}
+    check:
+      serviceUrl: {{ apikey_check_serviceUrl | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
+    userdetails:
+      serviceUrl: {{ apikey_userdetails_serviceUrl | default('https://auth.ala.org.au/userdetails/userDetails/') }}
 endpoints:
   enabled: {{ endpoints_enabled | default('true') }}
   health:
@@ -211,3 +219,12 @@ termsOfUse: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
 
 openapi:
   terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
+
+ala.admin.systemMessage.path: {{  ala_admin_system_message_path | default('/data/userdetails/config') }}
+
+apigateway:
+  region: ap-southeast-2
+  accessKey: AKIA24XTYIARNI6KH4GS
+  secretKey: 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
+  galah:
+    usagePlanId: yuz7fr

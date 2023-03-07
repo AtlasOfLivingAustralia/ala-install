@@ -237,9 +237,13 @@ termsOfUse: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
 
 openapi:
   terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
+  server-urls:
+    - {{ openapi_server_urls}}
 
 cognito:
   region: {{ cognito_region | default('') }}
   poolId: {{ cognito_poolId | default('') }}
+  accessKey: {{ cognito_accessKey | default('') }}
+  secretKey: {{ cognito_secretKey | default('') }}
 
 ala.admin.systemMessage.path: {{  ala_admin_system_message_path | default('/data/userdetails/config') }}
