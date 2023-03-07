@@ -224,7 +224,5 @@ ala.admin.systemMessage.path: {{  ala_admin_system_message_path | default('/data
 
 apigateway:
   region: ap-southeast-2
-  accessKey: AKIA24XTYIARNI6KH4GS
-  secretKey: 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
   galah:
     usagePlanId: yuz7fr
