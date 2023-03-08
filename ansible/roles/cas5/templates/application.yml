@@ -145,6 +145,26 @@ cas:
       jwks:
         file-system:
           jwks-file: file:/data/cas/keystore.jwks
+      discovery:
+        scopes:
+          - openid
+          - profile
+          - email
+          - offline_access
+          - ala
+          - roles
+          - ala/internal
+          - users/read
+          - users/write
+          - profile-service/write
+          - profile-service/read
+          - doi/write
+          - doi/read
+          - image-service/write
+          - image-service/read
+{% for extra_scope in cas_extra_scopes %}
+          - {{ extra_scope }}
+{% endfor %}
   monitor:
     # endpoints:
     #   enabled: true
