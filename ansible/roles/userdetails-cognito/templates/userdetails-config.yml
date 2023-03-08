@@ -238,7 +238,7 @@ termsOfUse: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
 openapi:
   terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
   server-urls:
-    - {{ openapi_server_urls}}
+    - {{ openapi_server_urls }}
 
 cognito:
   region: {{ cognito_region | default('') }}
@@ -246,4 +246,13 @@ cognito:
   accessKey: {{ cognito_accessKey | default('') }}
   secretKey: {{ cognito_secretKey | default('') }}
 
+apigateway:
+  galah:
+    usagePlanId: {{ gateway_usagePlanId | default('') }}
+
 ala.admin.systemMessage.path: {{  ala_admin_system_message_path | default('/data/userdetails/config') }}
+
+oauth.support.dynamic.client.registration: {{ dynamic_client_registration | default('false') }}
+oauth.support.dynamic.client.scopes: {{ dynamic_client_scopes | default('') }}
+oauth.support.dynamic.client.galah.callbackURLs: {{ dynamic_client_galah_callbackURLs | default('') }}
+tokenApp.tokenGeneration.url: {{ tokenGeneration_url | default('https://tokens.ala.org.au?step=generation') }}
