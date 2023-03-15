@@ -18,6 +18,14 @@
     - dashboard
     - properties
 
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{data_dir}}/dashboard/config/logback.xml"
+  tags:
+    - dashboard
+    - properties
+
 - name: copy data.json
   copy: src=data.json dest={{data_dir}}/dashboard/data.json
   tags:
