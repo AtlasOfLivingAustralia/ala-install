@@ -18,6 +18,7 @@ security:
     loginUrl: {{ auth_cas_url }}/login
     logoutUrl: {{ auth_cas_url }}/logout
   oidc:
+    enabled: {{ security_oidc_enabled | default(false) }}
     clientId: {{ clientId | default('') }}
     secret: {{ secret | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
