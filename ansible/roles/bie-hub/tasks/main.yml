@@ -22,6 +22,15 @@
     - properties
     - bie
 
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{ data_dir }}/{{ bie_hub }}/config/logback.xml"
+  tags:
+    - webapps
+    - properties
+    - bie
+
 - name: copy eolContentToUpdate.properties.jinja2
   template:
     src: eolContentToUpdate.properties.jinja2
