@@ -4,36 +4,36 @@ security:
     authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
   cas:
     enabled: {{ userdetails_use_cas | default('true') }}
-    {% if userdetails_use_cas | default('true') %}
+{% if userdetails_use_cas | default('true') %}
     casServerName: {{ cas_server_name }}
     casServerUrlPrefix: ${security.cas.casServerName}/{{ cas_context_path | default('cas') }}
     loginUrl: ${security.cas.casServerUrlPrefix}/login
     logoutUrl: ${security.cas.casServerUrlPrefix}/logout
     appServerName: {{ userdetails_server_name }}
-    {% endif %}
+{% endif %}
   oidc:
     enabled: {{ userdetails_use_oidc | default('false') }}
-    {% if userdetails_use_oidc | default('false') %}
+{% if userdetails_use_oidc | default('false') %}
     client-id: {{ userdetails_oidc_client_id | default('') }}
     secret: {{ userdetails_oidc_secret| default('') }}
     discovery-uri: {{ oidc_discovery_uri }}
-    {% if userdetails_backend == 'cognito' %}
+{% if userdetails_backend == 'cognito' %}
     logoutUrl: {{ userdetails_oidc_logoutUrl | default('') }}
     logoutAction: cognito
-    {% endif %}
-    {% endif %}
+{% endif %}
+{% endif %}
   jwt:
     enabled: {{ userdetails_jwt_enabled | default('false') }}
     fallback-to-legacy-behaviour: {{ userdetails_jwt_fallback_to_legacy | default('true') }}
     discovery-uri: {{ oidc_discovery_uri }}
     clientId: {{ userdetails_oidc_client_id | default('') }}
     secret: {{ userdetails_oidc_secret| default('') }}
-    {% if userdetails_backend == 'cognito' %}
+{% if userdetails_backend == 'cognito' %}
     roleAttributes: {{ security_jwt_roleAttributes | default('cognito:groups') }}
     rolesFromAccessToken: {{ security_jwt_rolesFromAccessToken | default('true')}}
     userIdClaim: {{ security_jwt_userIdClaim | default('username') }}
     roleClaims: {{ security_jwt_roleClaims | default('cognito:groups') }}
-    {% endif %}
+{% endif %}
   user:
     name: {{ userdetails_endpoint_user | default('admin') }}
     password: {{ userdetails_endpoint_password | default('secret') }}
@@ -247,9 +247,9 @@ termsOfUse: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
 
 openapi:
   terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
-  {% if openapi_server_urls is defined %}
+{% if openapi_server_urls is defined %}
   server-urls:
     - {{ openapi_server_urls }}
-  {% endif %}
+{% endif %}
 
 ala.admin.systemMessage.path: {{  ala_admin_system_message_path | default('/data/userdetails/config') }}
