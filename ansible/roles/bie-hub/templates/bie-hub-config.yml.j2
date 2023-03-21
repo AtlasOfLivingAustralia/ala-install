@@ -88,11 +88,15 @@ spatial:
 collectory:
   baseURL: {{ collectory_url }}
   threatenedSpeciesCodesUrl: {{ collectory_url }}/public/showDataResource
+collectoryService:
+  baseURL: {{ collectory_service_url }}
 speciesList:
   baseURL: {{ species_list_url }}
   preferredSpeciesListDruid: {{ specieslist_preferredDruid }}
   preferredListName: {{ specieslist_preferredListName }}
   apiKey: {{ speciesList_api_key }}
+speciesListService:
+  baseURL: {{ specieslist_service_url }}
 alerts:
   baseUrl: {{ alerts_url }}
 regions:
@@ -101,10 +105,10 @@ sightings:
   url: {{ sightings_url }}
 layersService:
   baseURL: {{ layers_service_url | default(layers_url) }}
-imageServiceBaseURL: {{ image_service_url }}
+imageServiceBaseURL: {{ image_webservice_url | default(image_service_url)}}
 image:
   baseUrl: {{ image_service_url }}
-  thumbnailUrl: {{ image_service_url }}/image/proxyImageThumbnail?imageId=
+  thumbnailUrl: {{ image_webservice_url | default(image_service_url }}/image/
 ausTraits:
     baseURL: {{ ausTraits_base_url | default('http://traitdata.austraits.cloud.edu.au') }}
     homeURL: {{ ausTraits_home_url | default('https://austraits.org/') }}
