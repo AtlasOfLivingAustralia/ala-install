@@ -5,8 +5,8 @@
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
     <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
 
-    <variable name="appName" value="alerts"/>
-    <variable name="LOG_DIR" value="/var/log/tomcat9" />
+    <variable name="appName" value="doi-service"/>
+    <variable name="LOG_DIR" value="/data/doi-service/logs" />
 
     <appender name="TOMCAT_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/${appName}.log</file>
@@ -23,7 +23,17 @@
         </encoder>
     </appender>
 
-    <logger name="au.org.ala.cas.client" level="INFO" />
+    <logger name="au.org.ala.cas" level="WARN" />
+
+    <logger name="asset.pipeline" level="INFO" />
+    <logger name="au.org.ala" level="INFO" />
+    <logger name="grails.app" level="INFO" />
+    <logger name="grails.plugins.mail" level="INFO" />
+    <logger name="org.hibernate" level="INFO" />
+    <logger name="org.quartz" level="INFO" />
+    <logger name="org.springframework" level="INFO" />
+    <logger name="'org.flywaydb" level="INFO" />
+
 
     <root level="WARN">
         <appender-ref ref="TOMCAT_LOG" />

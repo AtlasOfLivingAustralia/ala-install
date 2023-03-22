@@ -38,19 +38,10 @@
         </encoder>
     </appender>
 
-    <logger name="au.org.ala" level="INFO">
-        <appender-ref ref="TOMCAT_LOG" />
-    </logger>
-    <logger name="grails.app.controllers.au.org.ala" level="INFO">
-        <appender-ref ref="TOMCAT_LOG" />
-    </logger>
-    <logger name="grails.app.services.au.org.ala" level="INFO">
-        <appender-ref ref="TOMCAT_LOG" />
-    </logger>
-
-    <logger name="grails.app.services.au.org.ala.bie.ImportService" level="INFO">
-        <appender-ref ref="IMPORT_LOG" />
-    </logger>
+    <logger name="au.org.ala" level="INFO"/>
+    <logger name="grails.app.controllers.au.org.ala" level="INFO"/>
+    <logger name="grails.app.services.au.org.ala" level="INFO"/>
+    <logger name="grails.app.services.au.org.ala.bie.ImportService" level="INFO"/>
 
     <root level="WARN">
         <appender-ref ref="TOMCAT_LOG" />
