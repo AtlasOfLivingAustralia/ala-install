@@ -65,9 +65,9 @@ images:
   base: {{ image_base_url | default('https://images.ala.org.au') }}
   service:
     base: {{ image_base_url | default('https://images.ala.org.au') }}
-    thumbnail: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImageThumbnail?imageId={0}
-    large: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImage?imageId={0}
-    small: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImageThumbnailLarge?imageId={0}
+    thumbnail: {{ image_service_url | default('https://images.ala.org.au') }}/image/{0}/thumbnail
+    large: {{ image_service_url | default('https://images.ala.org.au') }}/image/{0}/large
+    small: {{ image_service_url | default('https://images.ala.org.au') }}/image/{0}/original
     metadata: {{ image_service_url | default('https://images.ala.org.au') }}/ws/image/{0}
   index: {{ index_images | default('false') }}
 knowledgeBase:

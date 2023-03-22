@@ -62,8 +62,8 @@
 
 - name: copy logback config
   template:
-    src: logback.groovy
-    dest: "{{data_dir}}/doi-service/config/logback.groovy"
+    src: logback.xml
+    dest: "{{data_dir}}/doi-service/config/logback.xml"
     owner: doi-service
     group: doi-service
   notify:
