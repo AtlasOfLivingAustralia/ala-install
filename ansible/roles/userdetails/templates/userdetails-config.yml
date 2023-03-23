@@ -34,6 +34,10 @@ security:
     userIdClaim: {{ security_jwt_userIdClaim | default('username') }}
     roleClaims: {{ security_jwt_roleClaims | default('cognito:groups') }}
 {% endif %}
+{% if userdetails_backend == 'cognito' %}
+  core:
+    roleAttribute: {{ security_core_roleAttribute | default('ala:role') }}
+{% endif %}
   user:
     name: {{ userdetails_endpoint_user | default('admin') }}
     password: {{ userdetails_endpoint_password | default('secret') }}
