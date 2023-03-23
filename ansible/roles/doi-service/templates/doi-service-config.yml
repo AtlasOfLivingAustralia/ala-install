@@ -5,6 +5,8 @@ deployment_env: {{ (doi_deployment_env | default(deployment_env)) | default('pro
 # CAS Config
 #
 security:
+core:
+    roleAttribute: {{ roleAttribute | default('') }}
   cas:
     casServerName: {{ auth_base_url }}
     casServerUrlPrefix: {{ auth_cas_url }}
@@ -17,14 +19,31 @@ security:
     clientId: {{ clientId | default('') }}
     secret: {{ secret | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
+    scope: {{ scope | default('openid')}}
+    alaUseridClaim: {{ alaUseridClaim | default('') }}
+    logoutAction: {{ logoutAction | default('') }}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
-  apikey:
-    check:
-      serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
-    ip:
-      whitelist:
-
+    clientId: {{ clientId | default('') }}
+    roleAttribute: {{ roleAttribute | default('') }}
+    rolesFromAccessToken: {{ rolesFromAccessToken | default('true') }}
+    userIdClaim: {{ userIdClaim | default('') }}
+    roleClaims: {{ roleClaims | default('') }}
+  apiKey: 
+    enabled: {{ apikey_check_enabled | default('false') }}
+    auth: 
+      serviceUrl: {{ apikey_auth_url }}
+    check: 
+      serviceUrl: {{ apikey_check_url | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
+    userdetails: 
+      serviceUrl: {{ apikey_userdetails_url }}
+webservice:
+  jwt: {{ webservice_jwt | default('false') }}
+  jwt-scopes: {{ webservice_jwt_scopes | default('') }}
+  client-id: {{ webservice_clientId | default('') }}
+  client-secret: {{ webservice_secert | default('') }}
+userDetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
 logging:
   config: {{ data_dir }}/doi-service/config/logback.groovy
 
@@ -110,9 +129,6 @@ dataSource:
 
 collections:
   baseUrl: {{ (collectory_url | default(collections_url)) | default('https://collections.ala.org.au') }}
-
-userDetails:
-  url: {{ auth_base_url }}/userdetails/
 
 # swagger configuration
 swagger:
