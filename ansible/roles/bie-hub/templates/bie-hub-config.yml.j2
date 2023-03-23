@@ -46,8 +46,6 @@ webservice:
   jwt-scopes: {{ webservice_jwt_scopes | default('') }}
   client-id: {{ webservice_clientId | default('') }}
   client-secret: {{ webservice_secert | default('') }}
-userDetails:
-  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
 disableCAS: {{ bypass_cas }}
 userDetails:
   url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
