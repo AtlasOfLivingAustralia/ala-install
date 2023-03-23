@@ -24,6 +24,11 @@ security:
       serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
     ip:
       whitelist:
+webservice:
+  jwt: {{ webservice_jwt | default('false') }}
+  jwt-scopes: {{ webservice_jwt_scopes | default('') }}
+  client-id: {{ webservice_clientId | default('') }}
+  client-secret: {{ webservice_secert | default('') }}
 
 logging:
   config: {{ data_dir }}/doi-service/config/logback.groovy

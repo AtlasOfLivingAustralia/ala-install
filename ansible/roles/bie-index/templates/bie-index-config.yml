@@ -25,6 +25,11 @@ security:
     discoveryUri: {{ discoveryUri | default('') }}
   apikey:
     serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
+webservice:
+  jwt: {{ webservice_jwt | default('false') }}
+  jwt-scopes: {{ webservice_jwt_scopes | default('') }}
+  client-id: {{ webservice_clientId | default('') }}
+  client-secret: {{ webservice_secert | default('') }}
 userDetails:
   url: {{ auth_base_url }}/userdetails/
 biocache:
