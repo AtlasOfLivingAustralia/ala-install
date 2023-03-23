@@ -2,6 +2,9 @@
 security:
   core:
     authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+{% if userdetails_backend == 'cognito' %}
+    roleAttribute: {{ security_core_roleAttribute | default('ala:role') }}
+{% endif %}
   cas:
     enabled: {{ userdetails_use_cas | default('true') }}
 {% if userdetails_use_cas | default('true') %}
@@ -33,10 +36,6 @@ security:
     rolesFromAccessToken: {{ security_jwt_rolesFromAccessToken | default('true')}}
     userIdClaim: {{ security_jwt_userIdClaim | default('username') }}
     roleClaims: {{ security_jwt_roleClaims | default('cognito:groups') }}
-{% endif %}
-{% if userdetails_backend == 'cognito' %}
-  core:
-    roleAttribute: {{ security_core_roleAttribute | default('ala:role') }}
 {% endif %}
   user:
     name: {{ userdetails_endpoint_user | default('admin') }}
