@@ -27,7 +27,7 @@ security:
     discoveryUri: {{ discoveryUri | default('') }}
 disableCAS: {{ bypass_cas }}
 userDetails:
-  url: {{ auth_base_url }}/userdetails/
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
 
 # BIE index webservices
 bie:
