@@ -250,6 +250,12 @@ termsOfUse: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
 
 openapi:
   terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
+{% if openapi_oauth_url is defined %}
+  components:
+    security:
+      oauth2:
+        baseUrl: {{ openapi_oauth_url }}
+{% endif %}
 {% if openapi_server_urls is defined %}
   server-urls:
     - {{ openapi_server_urls }}
