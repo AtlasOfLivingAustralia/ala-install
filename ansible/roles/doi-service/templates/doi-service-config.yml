@@ -5,8 +5,8 @@ deployment_env: {{ (doi_deployment_env | default(deployment_env)) | default('pro
 # CAS Config
 #
 security:
-core:
-    roleAttribute: {{ roleAttribute | default('') }}
+  core:
+      roleAttribute: {{ roleAttribute | default('') }}
   cas:
     casServerName: {{ auth_base_url }}
     casServerUrlPrefix: {{ auth_cas_url }}
@@ -25,7 +25,7 @@ core:
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
     clientId: {{ clientId | default('') }}
-    roleAttribute: {{ roleAttribute | default('') }}
+    roleAttributes: {{ roleAttribute | default('') }}
     rolesFromAccessToken: {{ rolesFromAccessToken | default('true') }}
     userIdClaim: {{ userIdClaim | default('') }}
     roleClaims: {{ roleClaims | default('') }}

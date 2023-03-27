@@ -6,6 +6,8 @@ serverName: {{ bie_base_url }}
 
 # CAS Config
 security:
+  core: 
+    roleAttribute: {{ roleAttribute | default('') }}
   cas:
     casServerName: {{ auth_base_url }}
     uriFilterPattern: {{ bie_hub_uri_filter_pattern }}
