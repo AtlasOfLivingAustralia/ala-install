@@ -19,13 +19,13 @@ security:
     discoveryUri: {{ discoveryUri | default('') }}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
-  apiKey: 
+  apiKey:
     enabled: {{ apikey_check_enabled | default('false') }}
-    auth: 
+    auth:
       serviceUrl: {{ apikey_auth_url }}
-    check: 
+    check:
       serviceUrl: {{ apikey_check_url | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
-    userdetails: 
+    userdetails:
       serviceUrl: {{ apikey_userdetails_url }}
 webservice:
   jwt: {{ webservice_jwt | default('false') }}
@@ -81,10 +81,10 @@ headerAndFooter:
   version: {{ header_and_footer_version | default('2') }}
 
 doi:
-{% if doi_service_la_provider_name is defined %}  
+{% if doi_service_la_provider_name is defined %}
   service:
     # ANDS or DATACITE
-    provider: 
+    provider:
       mapping: { {{ doi_service_la_provider_name }}: '{{ doi_service_default_provider | default('DATACITE') }}' }
 {% endif %}
   storage:
@@ -121,6 +121,9 @@ collections:
 
 userDetails:
   url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
+
+biocache:
+  wsUrl: {{ biocache_service_url | default('https://biocache-ws.ala.org.au/ws') }}
 
 # swagger configuration
 swagger:

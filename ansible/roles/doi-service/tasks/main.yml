@@ -15,6 +15,7 @@
   vars:
     service_name: "doi-service"
     jar_url: '{{ doi_service_jar_url }}'
+    log_config_filename: logback.xml
   tags:
     - deploy
     - service
