@@ -34,7 +34,7 @@ webservice:
   client-secret: {{ webservice_secert | default('') }}
 
 logging:
-  config: {{ data_dir }}/doi-service/config/logback.groovy
+  config: {{ data_dir }}/doi-service/config/logback.xml
 
 serverURL: https://{{ doi_service_hostname }}
 serverName: https://{{ doi_service_hostname }}
