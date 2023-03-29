@@ -99,6 +99,14 @@
     - hub_config
   when: exec_jar
 
+- name: copy logback XMl config
+  template: src=logback.xml dest={{data_dir}}/{{data_quality_filter_service}}/config/logback.xml
+  tags:
+    - webapps
+    - properties
+    - data_quality_filter_service
+    - hub_config
+
 - name: set data ownership
   file: path={{data_dir}}/{{data_quality_filter_service}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify:
