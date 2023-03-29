@@ -60,9 +60,7 @@
     - regions
 
 - name: copy logback config
-  template:
-    src: logback.xml
-    dest: "dest={{data_dir}}/{{regions}}/config/logback.xml"
+  template: src=logback.xml dest={{data_dir}}/{{regions}}/config/logback.xml
   tags:
     - properties
     - regions
