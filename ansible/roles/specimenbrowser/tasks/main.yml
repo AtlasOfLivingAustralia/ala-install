@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - specimenbrowser
+    - properties
 
 #
 # External configuration properties file
