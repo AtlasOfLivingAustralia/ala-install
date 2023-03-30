@@ -100,7 +100,7 @@
   when: exec_jar
 
 - name: copy logback XMl config
-  template: src=logback.xml dest={{data_dir}}/{{data_quality_filter_service}}/config/logback.xml
+  template: src=config/logback.xml dest={{data_dir}}/{{data_quality_filter_service}}/config/logback.xml
   tags:
     - webapps
     - properties
