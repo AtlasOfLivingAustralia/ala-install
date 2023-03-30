@@ -19,10 +19,15 @@ security:
   cas:
     appServerName:  {{ specimenbrowser_base_url }}
     casServerName:   {{ auth_cas_url }}
+  core:
+      roleAttribute: {{ roleAttribute | default('') }}
   oidc:
     clientId: {{ clientId | default('') }}
     secret: {{ secret | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
+    scope: {{ scope | default('openid')}}
+    alaUseridClaim: {{ alaUseridClaim | default('') }}
+    logoutAction: {{ logoutAction | default('') }}
 skin:
   layout: {{ skin_layout | default('ala-main') }}
   fluidLayout: {{ specimenbrowser_fluid }}
