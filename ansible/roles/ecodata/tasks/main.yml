@@ -51,7 +51,6 @@
   vars:
     service_name: "ecodata"
     jar_url: '{{ ecodata_artifact_url }}'
-
     extra_params:
       - key: "java.io.tmpdir"
         value: "{{data_dir}}/tmp"

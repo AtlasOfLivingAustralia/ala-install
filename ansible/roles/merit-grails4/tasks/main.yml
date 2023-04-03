@@ -44,10 +44,13 @@
 
 - name: copy logback config
   template:
-    src: logback.groovy
-    dest: "{{data_dir}}/fieldcapture/config/logback.groovy"
+    src: "{{item}}"
+    dest: "{{data_dir}}/fieldcapture/config/{{item}}"
     owner: "{{merit_user}}"
     group: "{{merit_user}}"
+  with_items:
+    - logback.groovy
+    - logback.xml
   notify:
     - restart fieldcapture
   tags:
