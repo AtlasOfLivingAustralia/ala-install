@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - alerts
+    - properties
 
 - name: create alerts DB
   mysql_db: name={{ alerts_db_name }} state=present encoding={{ alerts_db_encoding | default('utf8') }} login_user=root login_password='{{mysql_root_password}}'
