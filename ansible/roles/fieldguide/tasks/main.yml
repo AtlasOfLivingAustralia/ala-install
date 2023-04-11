@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - fieldguide
+    - properties
 
 - set_fact: fieldguide_app={{ artifactId }}
   when: fieldguide_app is undefined
@@ -51,6 +52,12 @@
 
 - name: copy all config.properties
   template: src=fieldguide-config.yml dest={{data_dir}}/{{fieldguide_app}}/config/{{fieldguide_app}}-config.yml
+  tags:
+    - fieldguide
+    - properties
+
+- name: copy logback config
+  template: src=logback.xml dest={{data_dir}}/{{fieldguide_app}}/config/logback.xml
   tags:
     - fieldguide
     - properties

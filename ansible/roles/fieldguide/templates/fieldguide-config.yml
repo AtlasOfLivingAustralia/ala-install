@@ -64,6 +64,19 @@ security:
     enabled: true
     discoveryUri: {{auth_cas_url}}/oidc/.well-known
     fallbackToLegacyBehaviour: true
+  apiKey:
+    enabled: {{ apikey_check_enabled | default('false') }}
+    auth:
+      serviceUrl: {{ apikey_auth_url }}
+    check:
+      serviceUrl: {{ apikey_check_url | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
+    userdetails:
+      serviceUrl: {{ apikey_userdetails_url }}
+webservice:
+  jwt: {{ webservice_jwt | default('false') }}
+  jwt-scopes: {{ webservice_jwt_scopes | default('') }}
+  client-id: {{ webservice_clientId | default('') }}
+  client-secret: {{ webservice_secert | default('') }}
 
 openapi:
   title: Fieldguide REST services
