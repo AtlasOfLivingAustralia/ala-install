@@ -36,6 +36,8 @@ userDetails:
 #
 #  NOTE: Some of these will be ignored if default_config exists
 security:
+  core: 
+    roleAttribute: {{ roleAttribute | default('') }}
   cas:
     casServerName: {{auth_base_url}}
     loginUrl: {{auth_cas_url}}/login
@@ -54,16 +56,19 @@ security:
     authCookieName: ALA-Auth
     enabled: false
   oidc:
-    enabled: true
-    discovery-uri: {{auth_cas_url}}/oidc/.well-known
-    clientId: {{oidc_client_id}}
-    secret: {{oidc_secret}}
-    allowUnsignedIdTokens: true
-    scope: 'openid email ala'
+    clientId: {{ clientId | default('') }}
+    secret: {{ (secret | default('') }}
+    discoveryUri: {{ discoveryUri | default('') }}
+    scope: {{ scope | default('openid')}}
+    alaUseridClaim: {{ alaUseridClaim | default('') }}
+    logoutAction: {{ logoutAction | default('') }}
   jwt:
-    enabled: true
-    discoveryUri: {{auth_cas_url}}/oidc/.well-known
-    fallbackToLegacyBehaviour: true
+    discoveryUri: {{ discoveryUri | default('') }}
+    clientId: {{ (clientId | default('') }}
+    roleAttribute: {{ roleAttribute | default('') }}
+    rolesFromAccessToken: {{ rolesFromAccessToken | default('true') }}
+    userIdClaim: {{ userIdClaim | default('') }}
+    roleClaims: {{ roleClaims | default('') }}
   apiKey:
     enabled: {{ apikey_check_enabled | default('false') }}
     auth:
