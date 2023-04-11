@@ -264,3 +264,10 @@ openapi:
 ala.admin.systemMessage.path: {{  ala_admin_system_message_path | default('/data/userdetails/config') }}
 users:
   delegated-group-names: {{ users_delegated_group_names | default('') }}
+
+{% if gateway_usagePlanId is defined %}
+apigateway:
+  region: {{ cognito_region | default('') }}
+  galah:
+    usagePlanId: {{ gateway_usagePlanId | default('') }}
+{% endif %}
