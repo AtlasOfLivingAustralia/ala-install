@@ -235,6 +235,7 @@ ala:
     orgShortName: {{ orgNameShort | default('ALA') }}
     orgLongName: {{ orgNameLong | default('Atlas of Living Australia') }}
     orgNameKey: {{ orgNameKey | default('ala') }}
+    loginLogo: {{ loginLogo | default('https://auth.ala.org.au/cas/images/supporting-graphic-element-flat-medium.png') }}
 
 # Enable these for Spring Boot actuator (required for Spring Boot Admin client)
 

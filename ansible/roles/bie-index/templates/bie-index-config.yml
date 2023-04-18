@@ -15,9 +15,11 @@ security:
     logoutUrl:   {{ auth_cas_url }}/logout
     contextPath:   {{ bie_index_context_path }}
     bypass:   {{ bypass_cas | default(true) }}
+    enabled: {{ security_cas_enabled | default(false) }}
   oidc:
-    clientId: {{ clientId | default('') }}
-    secret: {{ secret | default('') }}
+    enabled: {{ security_oidc_enabled | default(true) }}
+    clientId: {{ (bie_index_clientId | default(clientId)) | default('') }}
+    secret: {{ (bie_index_secret | default(secret)) | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
@@ -64,7 +66,7 @@ wordPress:
   contentOnlyParams: ?content-only=1&categories=1
 lists:
   service: {{ specieslist_service_url | default('https://lists.ala.org.au/ws') }}
-  items: /speciesListItems/{0}?includeKVP=true
+  items: /speciesListItems/{0}?includeKVP=true&max={1}&offset={2}
 naming:
   service: {{ namematching_service_url | default('https://namematching-ws.ala.org.au') }}
 attribution:
@@ -123,3 +125,11 @@ ala:
 bie:
   baseURL: {{ bie_base_url | default('https://bie.ala.org.au') }}
   searchPath: {{ bie_search_path | default('/search') }}
+openapi:
+  components:
+    security:
+      oauth2:
+        baseUrl: {{ auth_cas_url }}/oidc
+        authorizationUrl: {{ auth_cas_url }}/oidc/authorize
+        refreshUrl: {{ auth_cas_url }}/oidc/refresh
+        tokenUrl: {{ auth_cas_url }}/oidc/token

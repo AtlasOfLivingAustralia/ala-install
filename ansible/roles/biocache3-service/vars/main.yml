@@ -15,3 +15,6 @@ biocache_service_war_path: "{{  biocache_service_maven_repo_ws_url | default(mav
 additional_proxy_pass:
   - { src: "/biocache-download", dest: "!" }
 
+# enable large downloads with nginx, > ~1GB
+nginx_extra_http_options: |
+  proxy_max_temp_file_size 0;

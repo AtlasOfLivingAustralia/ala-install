@@ -361,3 +361,14 @@
     - pipelines
     - pipelines-layers
   when: item is defined
+
+- name: Copy additional logging configs
+  copy: src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }}
+  with_items:
+    - { src: "{{ logback_pipelines_conf | default('logback.xml') }}", dest: "{{ data_dir }}/la-pipelines/config/logback.xml", owner: "{{ spark_user }}", group: "{{ spark_user }}" }
+    - { src: "{{ log4j_spark_conf | default('log4j-spark.properties') }}", dest: "{{ data_dir }}/spark/conf/log4j.properties", owner: "{{ spark_user }}", group: "{{ spark_user }}" }
+  tags:
+    - pipelines
+    - properties
+    - la-pipelines-config
+    - la-pipelines-logging-config

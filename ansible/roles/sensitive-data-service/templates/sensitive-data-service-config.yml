@@ -27,11 +27,11 @@ server:
     - type: http
       port: {{ sensitive_data_admin_port }}
 conservation:
-  index: /data/lucene/namematching-nm
+  index: /data/lucene/namematching-{{ nameindex_datestamp }}
   speciesUrl: file://{{ data_dir }}/sds/sensitive-species-data.xml
-  zonesUrl: {{ data_dir }}/sds/sensitivity-zones.xml
-  categoriesUrl: {{ data_dir }}/sds/sensitivity-categories.xml
-  layersUrl: {{ data_dir }}/sds/layers.json
+  zonesUrl: file://{{ data_dir }}/sds/sensitivity-zones.xml
+  categoriesUrl: file://{{ data_dir }}/sds/sensitivity-categories.xml
+  layersUrl: file://{{ data_dir }}/sds/layers.json
   layersServiceUrl: {{ layers_service_url }}
   cache:
     entryCapacity: 10000
@@ -39,12 +39,12 @@ conservation:
   generalisations:
     - action: message
       field: dwc:informationWithheld
-      message: Record is {2} in {1}. Information withheld by {0}.
+      message: Record is {1} in {2}. Information withheld by {0}.
       append: true
       trigger: WITHHOLD
     - action: message
       field: dwc:dataGeneralizations
-      message: Record is {2} in {1}. Generalised to {3} by {0}.
+      message: Record is {1} in {2}. Generalised to {3} by {0}.
       append: true
       trigger: GENERALISE
     - action: latLong
@@ -95,17 +95,17 @@ conservation:
       field: bbox
     - action: clear
       field: dwc:eventID
-    - action: clear
+    - action: retain
       field: dwc:eventDate
-    - action: clear
+    - action: retain
       field: dwc:eventTime
-    - action: clear
+    - action: retain
       field: eventDateEnd
-    - action: clear
+    - action: retain
       field: dwc:verbatimEventDate
-    - action: clear
+    - action: retain
       field: dwc:day
-    - action: clear
+    - action: retain
       field: dwc:month
     - action: retain
       field: dwc:year

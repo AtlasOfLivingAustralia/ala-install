@@ -202,6 +202,19 @@
     ssl: "{{ cas_audit_ssl_enabled | default('false') }}",
     roles: 'readWrite'
   }
+  - {
+    login_host: "{{ cas_spring_session_host | default('localhost') }}",
+    login_port: "{{ cas_spring_session_port | default('27017') }}",
+    login_user: "{{ mongodb_root_username }}",
+    login_password: "{{ mongodb_root_password }}",
+    login_database: "{{ mongodb_root_database | default('admin') }}",
+    user: "{{ cas_spring_session_username | default('cas') }}",
+    password: "{{ cas_spring_session_password | default('password') }}",
+    database: "{{ spring_session_mongo_collection | default('spring-sessions') }}",
+    replica_set: "{{ cas_spring_session_replica_set | default('') }}",
+    ssl: "{{ cas_spring_session_ssl_enabled | default('false') }}",
+    roles: 'readWrite'
+  }
   tags: mongodb-org
   run_once: true
   when: cas_add_mongo_users is defined and cas_add_mongo_users

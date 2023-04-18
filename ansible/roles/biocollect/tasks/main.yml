@@ -12,7 +12,22 @@
     - deploy
     - properties
 
-- name: add jar and service
+- name: add jar and service (authenticated)
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: "biocollect"
+    jar_url: '{{ biocollect_artifact_url }}'
+    maven_repo_url: '{{ biocollect_repo_url }}'
+    maven_repo_username: '{{ biocollect_repo_username }}'
+    maven_repo_password: '{{ biocollect_repo_password }}'
+  tags:
+    - deploy
+    - service
+    - biocollect
+  when: exec_jar and biocollect_repo_password is defined and biocollect_repo_username is defined
+
+- name: add jar and service (unauthenticated)
   include_role:
     name: exec-jar
   vars:
@@ -22,7 +37,7 @@
     - deploy
     - service
     - biocollect
-  when: exec_jar
+  when: exec_jar and biocollect_repo_password is not defined and biocollect_repo_username is not defined
 
 #
 # External configuration properties file
@@ -96,6 +111,15 @@
     - biocollect
   when: not webserver_nginx
 
+- name: ensure target directories exist for nginx proxy file storage
+  file: path={{item}} state=directory owner=www-data group=www-data recurse=true
+  with_items:
+    - "{{data_dir}}/biocollect/www"
+  tags:
+    - nginx_vhost
+    - deploy
+    - biocollect
+
 - name: add nginx vhost if configured (no root rewrite)
   include_role:
     name: nginx_vhost
@@ -103,6 +127,15 @@
     appname: "biocollect"
     hostname: "{{ biocollect_hostname }}"
     context_path: "{{ biocollect_context_path }}"
+    nginx_paths:
+      - path: "{{biocollect_context_path}}"
+        sort_label: "1_root"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{biocollect_context_path}}"
+      - path: "{{biocollect_context_path}}/download/"
+        sort_label: "2_download"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{biocollect_context_path}}/download/;proxy_temp_path {{ data_dir }}/biocollect/www; proxy_max_temp_file_size 10240m; gzip off"
   tags:
     - nginx_vhost
     - deploy
@@ -119,12 +152,16 @@
     nginx_paths:
       - path: "= /"
         is_proxy: false
-        sort_label: "rootrewrite"
+        sort_label: "1_rootrewrite"
         rewrite: "{{ biocollect_rewrite_root_url }}"
       - path: "{{ biocollect_context_path | default('/') }}"
         is_proxy: true
-        sort_label: "tomcatproxy"
+        sort_label: "2_tomcatproxy"
         proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}"
+      - path: "{{biocollect_context_path}}/download/"
+        sort_label: "3_download"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{biocollect_context_path}}/download/; proxy_temp_path {{ data_dir }}/biocollect/www; proxy_max_temp_file_size 10240m; gzip off"
   tags:
     - nginx_vhost
     - deploy

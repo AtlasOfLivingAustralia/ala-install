@@ -17,9 +17,11 @@ security:
     contextPath: {{ bie_hub_context_path }}
     bypass: {{ bypass_cas  }}
     applyUriFiltersToTicketValidation: false
+    enabled: {{ security_cas_enabled | default(false) }}
   oidc:
-    clientId: {{ clientId | default('') }}
-    secret: {{ secret | default('') }}
+    enabled: {{ security_oidc_enabled | default(true) }}
+    clientId: {{ (bie_hub_clientId | default(clientId)) | default('') }}
+    secret: {{ (bie_hub_secret | default(secret)) | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
@@ -53,6 +55,7 @@ ala:
   image:
     service:
       url: {{ image_service_url }}
+imageServiceBaseUrl: {{ image_service_url }}
 allowedImageEditingRoles: {{ allowed_image_editing_roles }}
 
 # Skin and layout
@@ -84,6 +87,7 @@ spatial:
   baseURL: {{ spatial_base_url | default(spatial_url) }}
 collectory:
   baseURL: {{ collectory_url }}
+  threatenedSpeciesCodesUrl: {{ collectory_url }}/public/showDataResource
 speciesList:
   baseURL: {{ species_list_url }}
   preferredSpeciesListDruid: {{ specieslist_preferredDruid }}
@@ -101,6 +105,11 @@ imageServiceBaseURL: {{ image_service_url }}
 image:
   baseUrl: {{ image_service_url }}
   thumbnailUrl: {{ image_service_url }}/image/proxyImageThumbnail?imageId=
+ausTraits:
+    baseURL: {{ ausTraits_base_url | default('http://traitdata.austraits.cloud.edu.au') }}
+    homeURL: {{ ausTraits_home_url | default('https://austraits.org/') }}
+    sourceURL: {{ ausTraits_source_url | default('https://zenodo.org/record/7368074') }}
+    definitionsURL: {{ ausTraits_definitions_url | default('https://traitecoevo.github.io/austraits.build/articles/Trait_definitions.html') }}
 
 # External Literature and reference sources
 synonymsTypes: {{ synonym_types }}
@@ -116,6 +125,8 @@ literature:
     url: {{ genbank_url  }}
   scholar:
     url: {{ scholar_url }}
+  google:
+    url: {{ google_url }}
   trove:
     url: {{ trove_url }}
     api: {{ trove_service_url  }}
@@ -168,3 +179,18 @@ eol:
 namematching:
   serviceURL: {{ namematching_service_url }}
 
+dataquality:
+  baseUrl: {{ data_quality_profiles_url | default('https://dataquality.ala.org.au/data-profiles') }}
+
+speciesParent : {{ specieslist_iconic_species_url | default('https://lists.ala.org.au/iconic-species') }}
+
+supportEmail: {{ support_email | default('support@ala.org.au') }}
+
+survey:
+    indexPage: {{ bie_survey_indexPage | default(false) }}
+    searchPage: {{ bie_survey_searchPage | default(false) }}
+    speciesPage: {{ bie_survey_speciesPage | default(false) }}
+    url: {{ bie_survey_url | default('') }}
+    header: {{ bie_survey_header | default('') }}
+    cookieAge: {{ bie_survey_cookieAge | default(30) }}
+    html: {{ bie_survey_html | default('') }}
