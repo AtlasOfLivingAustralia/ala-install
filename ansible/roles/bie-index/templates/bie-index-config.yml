@@ -37,7 +37,7 @@ webservice:
   client-id: {{ webservice_clientId | default('') }}
   client-secret: {{ webservice_secert | default('') }}
 userDetails:
-  url: {{ auth_base_url }}/userdetails/
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
 biocache:
   base: {{ biocache_base_url | default('https://biocache.ala.org.au') }}
   service: {{ biocache_service_url | default('https://biocache-ws.ala.org.au/ws') }}
