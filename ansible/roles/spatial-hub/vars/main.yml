@@ -1,4 +1,6 @@
 # assets
+#Decide menu, css etc
+spatial_hub_portal: "{{ spatial_portal | default('default') }}"
 version: "{{ spatial_hub_version | default('LATEST') }}"
 artifactId: "{{ spatial_hub_artifact_id | default('spatial-hub') }}"
 classifier: "{{ spatial_hub_classifier | default('') }}"
