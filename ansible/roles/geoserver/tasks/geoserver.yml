@@ -27,7 +27,17 @@
   tags:
   - geoserver
 
-#Changing CATALINA_OPTS does not work on Tomcat9 and Geoserver 2.14
+- name: configure geoserver data dir
+  lineinfile:
+    dest={{tomcat_conf}}
+    line='CATALINA_OPTS="${CATALINA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
+  notify:
+    - restart tomcat
+  when: ansible_os_family == "Debian"
+  tags:
+    - tomcat
+    - geoserver
+
 - name: configure geoserver data dir
   blockinfile:
     path={{tomcat_conf}}
@@ -36,10 +46,11 @@
     backup=yes
   notify:
     - restart tomcat
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and tomcat == "tomcat9"
   tags:
     - tomcat
     - geoserver
+
 - name: "Check if {{data_dir}}/geoserver_data_dir exists"
   stat:
     path: '{{data_dir}}/geoserver_data_dir'
@@ -72,6 +83,67 @@
     - tomcat_vhost
     - geoserver
 
+- name: unzip .war to get data directory
+  command: "unzip {{ tomcat_deploy_dir }}/{{ war_filename }}.war data/* -d /tmp/"
+  tags:
+    - geoserver
+
+- name: remove previous geoserver data dir
+  command: "rm -r /tmp/geoserver_data_dir"
+  ignore_errors: yes
+  when: not geoserver_data_dir_check.stat.exists
+  tags:
+    - geoserver
+
+- name: rename data dir
+  command: "mv /tmp/data /tmp/geoserver_data_dir"
+  when: not geoserver_data_dir_check.stat.exists
+  tags:
+    - geoserver
+
+- name: copy data directory
+  command: "cp -r /tmp/geoserver_data_dir {{data_dir}}"
+  when: not geoserver_data_dir_check.stat.exists
+  tags:
+    - geoserver
+
+- name: set data ownership
+  file: path={{data_dir}}/geoserver_data_dir owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  when: not geoserver_data_dir_check.stat.exists
+  notify:
+    - restart tomcat
+  tags:
+    - geoserver
+
+- name: restart tomcat to bring config effective
+  service:
+    name: "{{tomcat}}"
+    state: restarted
+    enabled: "yes"
+  tags:
+    - geoserver
+  become: true
+
+- name: restart nginx
+  service:
+    name: "{{nginx}}"
+    state: restarted
+    enabled: "yes"
+  tags:
+    - geoserver
+  when: webserver_nginx
+  become: true
+
+- name: restart apache2
+  service:
+    name: "{{apache}}"
+    state: restarted
+    enabled: "yes"
+  tags:
+    - geoserver
+  when: not webserver_nginx
+  become: true
+
 - name: "wait for geoserver to come up (is {{ geoserver_hostname }} in /etc/hosts?)"
   uri:
     url: "{{ geoserver_url }}"
@@ -93,44 +165,6 @@
     remote_src: yes
   with_items: "{{ geoserver_extension_urls }}"
   tags:
-    - geoserver
-
-- name: "{{geoserver_data_dir}} does not exist so copy it from {{ tomcat_deploy_dir }}/{{ war_filename }}/data"
-  command: "cp -r {{ tomcat_deploy_dir }}/{{ war_filename }}/data {{data_dir}}/geoserver_data_dir"
-  tags:
-    - geoserver
-  when: not geoserver_data_dir_check.stat.exists
-
-- name: set data ownership
-  file: path={{data_dir}}/geoserver_data_dir owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify:
-    - restart tomcat
-  tags:
-    - geoserver
-
-
-- name: configure geoserver data dir
-  lineinfile:
-    dest={{tomcat_conf}}
-    line='CATALINA_OPTS="${CATALINA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
-  notify:
-    - restart tomcat
-  when: ansible_os_family == "Debian"
-  tags:
-    - tomcat
-    - geoserver
-
-- name: configure geoserver data dir
-  blockinfile:
-    path={{tomcat_conf}}
-    marker="# {mark} Configure Geoserver/GWC data folder / (Ansible managed)"
-    block='JAVA_OPTS="${JAVA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
-    backup=yes
-  notify:
-    - restart tomcat
-  when: ansible_os_family == "Debian" and tomcat == "tomcat9"
-  tags:
-    - tomcat
     - geoserver
 
 - name: "update defaultVectorCacheFormats in gwc-gs.xml for vectortiles extension"
@@ -171,26 +205,6 @@
     enabled: "yes"
   tags:
     - geoserver
-  become: true
-
-- name: restart nginx
-  service:
-    name: "{{nginx}}"
-    state: restarted
-    enabled: "yes"
-  tags:
-    - geoserver
-  when: webserver_nginx
-  become: true
-
-- name: restart apache2
-  service:
-    name: "{{apache}}"
-    state: restarted
-    enabled: "yes"
-  tags:
-    - geoserver
-  when: not webserver_nginx
   become: true
 
 - name: "wait for geoserver to come up (is {{ geoserver_hostname }} in /etc/hosts?)"
