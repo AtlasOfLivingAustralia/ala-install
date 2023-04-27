@@ -12,7 +12,22 @@
     - deploy
     - properties
 
-- name: add jar and service
+- name: add jar and service (authenticated)
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: "biocollect"
+    jar_url: '{{ biocollect_artifact_url }}'
+    maven_repo_url: '{{ biocollect_repo_url }}'
+    maven_repo_username: '{{ biocollect_repo_username }}'
+    maven_repo_password: '{{ biocollect_repo_password }}'
+  tags:
+    - deploy
+    - service
+    - biocollect
+  when: exec_jar and biocollect_repo_password is defined and biocollect_repo_username is defined
+
+- name: add jar and service (unauthenticated)
   include_role:
     name: exec-jar
   vars:
@@ -22,7 +37,7 @@
     - deploy
     - service
     - biocollect
-  when: exec_jar
+  when: exec_jar and biocollect_repo_password is not defined and biocollect_repo_username is not defined
 
 #
 # External configuration properties file

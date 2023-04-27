@@ -1,31 +1,43 @@
-[{
-  "name": "Add to map",
-  "width": 110,
-  "items": [{
-    "name": "Species",
-    "open": "ToolAddSpeciesService"
+[
+  {
+    "name": "Add to map",
+    "width": 110,
+    "items": [
+      {
+        "name": "Species",
+        "open": "ToolAddSpeciesService"
+      },
+      {
+        "name": "Area",
+        "open": "addArea"
+      },
+      {
+        "name": "Layer",
+        "open": "ToolAddLayerService"
+      },
+      {
+        "name": "Facet",
+        "open": "ToolAddFacetService"
+      },
+      {
+        "name": "History",
+        "open": "log",
+        "params": {
+          "display": {
+            "size": "full"
+          }
+        }
+      }
+    ]
   },
-    {
-      "name": "Area",
-      "open": "addArea"
-    },
-    {
-      "name": "Layer",
-      "open": "ToolAddLayerService"
-    },
-    {
-      "name": "Facet",
-      "open": "ToolAddFacetService"
-    }
-  ]
-},
   {
     "name": "Tools",
     "width": 70,
-    "items": [{
-      "name": "Area Report - interactive",
-      "open": "ToolAreaReportService"
-    },
+    "items": [
+      {
+        "name": "Area Report - interactive",
+        "open": "ToolAreaReportService"
+      },
       {
         "name": "Area Report - PDF",
         "open": "AreaReport"
@@ -39,16 +51,16 @@
         "open": "ScatterplotList"
       },
       {
-        "name": "Taxon Frequency",
-        "open": "TaxonFrequency"
+        "name": "Tabulate - 1D",
+        "open": "SpeciesByLayer"
       },
       {
-        "name": "Tabulate",
+        "name": "Tabulate - 2D",
         "open": "tabulate"
       },
       {
-        "name": "Species by Layer",
-        "open": "SpeciesByLayer"
+        "name": "Taxon Frequency",
+        "open": "TaxonFrequency"
       },
       {
         "name": "Compare Points",
@@ -67,6 +79,10 @@
         "open": "PointsToGrid"
       },
       {
+        "name": "Double Gridding",
+        "open": "DoubleGridding"
+      },
+      {
         "name": "Calculate AOO and EOO",
         "open": "AooEoo"
       },
@@ -77,7 +93,12 @@
       {
         "name": "Classify",
         "open": "Classification"
-      }, {
+      },
+      {
+        "name": "Phylogenetic Diversity",
+        "open": "PhylogeneticDiversity"
+      },
+      {
         "name": "Nearest Locality",
         "open": "nearestLocality"
       },
@@ -94,21 +115,29 @@
   {
     "name": "Import",
     "width": 78,
-    "items": [{
-      "name": "Points",
-      "open": "sandBox",
-      "params": {
-        "display": {
-          "size": "full"
+    "items": [
+      {
+        "name": "Points",
+        "open": "sandBox",
+        "params": {
+          "display": {
+            "size": "full"
+          }
         }
-      }
-    },
+      },
       {
         "name": "Species List",
         "open": "createSpeciesList",
         "params": {
           "speciesOption": "speciesList",
-          "importList": true
+          "importList": true,
+          "importPoints": false,
+          "canAddSpecies": false,
+          "absentOption": false,
+          "dateRangeOption": false,
+          "lifeforms": false,
+          "allSpecies": false,
+          "searchSpecies": false
         }
       },
       {
@@ -130,10 +159,11 @@
   {
     "name": "Export",
     "width": 77,
-    "items": [{
-      "name": "Map",
-      "open": "exportMap"
-    },
+    "items": [
+      {
+        "name": "Map",
+        "open": "exportMap"
+      },
       {
         "name": "Area Checklist",
         "open": "ToolExportChecklistService"
@@ -145,16 +175,25 @@
       {
         "name": "Areas",
         "open": "ToolExportAreaService"
+      },
+      {
+        "name": "DOI",
+        "open": "ToolExportDoiService"
+      },
+      {
+        "name": "Points to BCCVL",
+        "open": "exportBccvl"
       }
     ]
   },
   {
     "name": "Help",
     "width": 69,
-    "items": [{
-      "name": "Getting Started",
-      "open": "https://www.ala.org.au/spatial-portal-help/getting-started"
-    },
+    "items": [
+      {
+        "name": "Getting Started",
+        "open": "https://www.ala.org.au/spatial-portal-help/getting-started"
+      },
       {
         "name": "Add To Map",
         "open": "https://www.ala.org.au/spatial-portal-help/add-to-map"
