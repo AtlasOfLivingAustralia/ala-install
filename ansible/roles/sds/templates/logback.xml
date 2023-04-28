@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <jmxConfigurator />
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+
+    <variable name="appName" value="sds"/>
+    <variable name="LOG_DIR" value="/var/log/tomcat9" />
+
+    <appender name="TOMCAT_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${appName}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/${appName}.%i.log.gz</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>4</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} : %m%n%wex</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="au.org.ala" level="INFO">
+        <appender-ref ref="TOMCAT_LOG" />
+    </logger>
+    
+    <logger name="grails.app.controllers.au.org.ala" level="INFO">
+        <appender-ref ref="TOMCAT_LOG" />
+    </logger>
+
+    <logger name="grails.app.services.au.org.ala" level="INFO">
+        <appender-ref ref="TOMCAT_LOG" />
+    </logger>
+
+    <root level="WARN">
+        <appender-ref ref="TOMCAT_LOG" />
+    </root>
+
+</configuration>

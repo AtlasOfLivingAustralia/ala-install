@@ -1,6 +1,7 @@
 #!/bin/bash
 
 #update geoserver password
+#Password has been updated in Ansible
 curl -v -u admin:geoserver -XPUT -H "Content-type: application/xml" -d "<userPassword><newPassword>{{geoserver_password}}</newPassword></userPassword>" {{geoserver_url}}/rest/security/self/password
 
 mkdir {{tomcat_webapps}}geoserver/data/layout

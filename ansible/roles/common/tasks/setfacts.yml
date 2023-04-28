@@ -89,6 +89,7 @@
     tomcat_webapps: "/var/lib/{{ tomcat }}/webapps/"
     pg_version: "{{ pg_version | default('9.6') }}"
     postgis_version: "{{ postgis_version | default('2.4') }}"
+    postgis_version_folder: "{{ postgis_version_folder | default('2.4') }}"
     postgis_scripts_version: "{{ postgis_scripts_version | default('2.4') }}"
 # openjdk-8 will be removed at some point from Ubuntu-18.04, so we will need to switch to Zulu-8 or similar at that point
 # openjdk-lts on Ubuntu-18.04 is JDK-11, so will not be directly useful by our applications at this point due to lack of testing
@@ -129,6 +130,7 @@
     tomcat_webapps: "/var/lib/{{ tomcat }}/webapps/"
     pg_version: "{{ pg_version | default('10') }}"
     postgis_version: "{{ postgis_version | default('2.5') }}"
+    postgis_version_folder: "{{ postgis_version_folder | default('2.5') }}"
     postgis_scripts_version: "{{ postgis_scripts_version | default('2.5') }}"
 # openjdk-8 will be removed at some point from Ubuntu-18.04, so we will need to switch to Zulu-8 or similar at that point
 #    use_openjdk8: true
@@ -169,6 +171,7 @@
     psycopg2_package: "python3-psycopg2"
     pg_version: "{{ pg_version | default('14') }}"
     postgis_version: "{{ postgis_version | default('3') }}"
+    postgis_version_folder: "{{ postgis_version_folder | default('3') }}"
     postgis_scripts_version: "{{ postgis_scripts_version | default('3.2') }}"
   when: ansible_os_family == "Debian" and ansible_distribution_version == "22.04"
   tags:

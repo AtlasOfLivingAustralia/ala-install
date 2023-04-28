@@ -179,15 +179,6 @@
   tags:
     - nginx_vhost
 
-- name: clear old vhost fragments
-  file:
-    path: "{{ nginx_conf_dir }}/vhost_fragments/{{ item }}"
-    state: absent
-  when: nginx_vhost_fragments_to_clear is defined and nginx_vhost_fragments_to_clear|length > 0
-  with_items: "{{ nginx_vhost_fragments_to_clear }}"
-  tags:
-    - nginx_vhost
-
 # check dir exists for servername fragments
 - name: ensure vhost fragments dir is present
   file: 
@@ -548,5 +539,11 @@
 - name: unset vfragments_suffix
   set_fact:
     vfragments_suffix: ''
+  tags:
+    - nginx_vhost
+
+- name: Add the virtual host to the /etc/hosts file for Vagrant instances
+  lineinfile: dest=/etc/hosts regexp="^127.0.0.1 {{hostname}}$" line="127.0.0.1 {{ hostname }}" state=present
+  when: is_vagrant is defined and is_vagrant
   tags:
     - nginx_vhost

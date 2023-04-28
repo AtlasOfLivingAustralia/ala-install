@@ -1,0 +1,190 @@
+[
+  {
+    "name": "Add to map",
+    "width": 110,
+    "items": [
+      {
+        "name": "Species",
+        "open": "ToolAddSpeciesService"
+      },
+      {
+        "name": "Area",
+        "open": "addArea"
+      },
+      {
+        "name": "Layer",
+        "open": "ToolAddLayerService"
+      },
+      {
+        "name": "Facet",
+        "open": "ToolAddFacetService"
+      }
+    ]
+  },
+  {
+    "name": "Tools",
+    "width": 70,
+    "items": [
+      {
+        "name": "Area Report - interactive",
+        "open": "ToolAreaReportService"
+      },
+      {
+        "name": "Area Report - PDF",
+        "open": "AreaReport"
+      },
+      {
+        "name": "Scatterplot - single",
+        "open": "ScatterplotCreate"
+      },
+      {
+        "name": "Scatterplot - multiple",
+        "open": "ScatterplotList"
+      },
+      {
+        "name": "Tabulate - 1D",
+        "open": "SpeciesByLayer"
+      },
+      {
+        "name": "Tabulate - 2D",
+        "open": "tabulate"
+      },
+      {
+        "name": "Taxon Frequency",
+        "open": "TaxonFrequency"
+      },
+      {
+        "name": "Compare Points",
+        "open": "pointComparison"
+      },
+      {
+        "name": "Compare Areas",
+        "open": "CompareAreas"
+      },
+      {
+        "name": "Generate Points",
+        "open": "GeneratePoints"
+      },
+      {
+        "name": "Points to Grid",
+        "open": "PointsToGrid"
+      },
+      {
+        "name": "Double Gridding",
+        "open": "DoubleGridding"
+      },
+      {
+        "name": "Calculate AOO and EOO",
+        "open": "AooEoo"
+      },
+      {
+        "name": "Predict",
+        "open": "Maxent"
+      },
+      {
+        "name": "Classify",
+        "open": "Classification"
+      },
+      {
+        "name": "Phylogenetic Diversity",
+        "open": "PhylogeneticDiversity"
+      },
+      {
+        "name": "Nearest Locality",
+        "open": "nearestLocality"
+      },
+      {
+        "separator": true
+      },
+      {
+        "name": "Restore Prior Analysis",
+        "open": "analysis"
+      }
+    ]
+  },
+  {
+    "name": "Import",
+    "width": 78,
+    "items": [
+      {
+        "name": "Points",
+        "open": "sandBox",
+        "params": {
+          "display": {
+            "size": "full"
+          }
+        }
+      },
+      {
+        "name": "Species List",
+        "open": "createSpeciesList",
+        "params": {
+          "speciesOption": "speciesList",
+          "importList": true
+        }
+      },
+      {
+        "name": "Areas",
+        "open": "addArea",
+        "params": {
+          "importArea": true
+        }
+      },
+      {
+        "separator": true
+      },
+      {
+        "name": "Restore prior analysis",
+        "open": "analysis"
+      }
+    ]
+  },
+  {
+    "name": "Export",
+    "width": 77,
+    "items": [
+      {
+        "name": "Area Checklist",
+        "open": "ToolExportChecklistService"
+      },
+      {
+        "name": "Points",
+        "open": "ToolExportSampleService"
+      },
+      {
+        "name": "Areas",
+        "open": "ToolExportAreaService"
+      },
+      {
+        "name": "Points to BCCVL",
+        "open": "exportBccvl"
+      }
+    ]
+  },
+  {
+    "name": "Help",
+    "width": 69,
+    "items": [
+      {
+        "name": "Getting Started",
+        "open": "https://www.ala.org.au/spatial-portal-help/getting-started"
+      },
+      {
+        "name": "Add To Map",
+        "open": "https://www.ala.org.au/spatial-portal-help/add-to-map"
+      },
+      {
+        "name": "Tools",
+        "open": "https://www.ala.org.au/spatial-portal-help/tools"
+      },
+      {
+        "name": "Import",
+        "open": "https://www.ala.org.au/spatial-portal-help/import"
+      },
+      {
+        "name": "Export",
+        "open": "https://www.ala.org.au/spatial-portal-help/export"
+      }
+    ]
+  }
+]

@@ -6,6 +6,7 @@
     - common
     - java
     - tomcat
+    - sslcerts
     - webserver
     - postgresql
     - {role: pg_instance, extensions: ['postgis', 'postgis_topology', 'uuid-ossp'], db_name: "{{geonetwork_database}}", db_user: "{{geonetwork_db_username}}", db_password: "{{geonetwork_db_password }}" }
