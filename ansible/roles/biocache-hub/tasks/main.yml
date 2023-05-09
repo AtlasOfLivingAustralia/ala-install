@@ -98,6 +98,14 @@
     - biocache_hub
     - facets_config
 
+- name: copy logback config
+  template: src=config/logback.xml dest={{data_dir}}/{{biocache_hub}}/config/logback.xml force=yes output_encoding=iso-8859-1
+  tags:
+    - webapps
+    - properties
+    - biocache_hub
+    - hub_config
+
 - name: copy all config.properties
   template: src=config/config.properties dest={{data_dir}}/{{biocache_hub}}/config/{{biocache_hub_config}} force=yes output_encoding=iso-8859-1
   tags:
