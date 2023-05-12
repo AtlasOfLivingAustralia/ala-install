@@ -5,6 +5,7 @@ Description=ALA graphql service
 Restart=always
 ExecStart=/usr/bin/graphql-service.sh start
 ExecStop=/usr/bin/graphql-service.sh stop
+RemainAfterExit=yes
 
 [Install]
 WantedBy=multi-user.target

@@ -1,3 +1,4 @@
 {
-  "graph": "{{ docker_dir }}"
+  "data-root": "{{ docker_dir }}",
+  "live-restore": true
 }
