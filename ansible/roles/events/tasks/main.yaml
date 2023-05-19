@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - docker
+    - update-images
     - events
 
 - name: Add Docker GPG apt Key
@@ -54,10 +55,12 @@
     - es2vt.env
     - es-api.env
     - graphql-api.env
+  notify:
+    - restart graphql_service
   tags:
     - docker
     - events
-
+    - update-images
 
 - name: Copy service scripts to /usr/bin
   copy: src={{ item }} dest=/usr/bin/{{ item }} mode=777
