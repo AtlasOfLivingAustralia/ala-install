@@ -1,2 +1,2 @@
 - name: restart graphql_service
-  service: name=graphql-service state=restarted enabled="yes"
+  service: name={{ env }}-graphql state=restarted enabled="yes"
