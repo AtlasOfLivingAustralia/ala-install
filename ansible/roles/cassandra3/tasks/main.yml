@@ -111,9 +111,21 @@
     - packages
     - cassandra
 
-- name: add apt repository (Debian)
+# Clear this too
+- name: remove previous recent apt repository (Debian)
   apt_repository:
     repo: "deb https://downloads.apache.org/cassandra/debian 311x main"
+    state: absent
+    filename: "cassandra.sources"
+    update_cache: no
+  when: ansible_os_family == "Debian"
+  tags:
+    - packages
+    - cassandra
+
+- name: add apt repository (Debian)
+  apt_repository:
+    repo: "deb https://debian.cassandra.apache.org/ 311x main"
     state: present
     filename: "cassandra.sources"
     update_cache: yes
