@@ -67,7 +67,7 @@
   template: src={{ item }} dest={{data_dir}}/image-service/config/
   with_items:
     - "config/image-service-config.yml"
-    - "config/logback.groovy"
+    - "config/{{ image_service_logfile | default('logback.groovy') }}"
   notify:
      - restart image-service
   tags:
@@ -83,6 +83,7 @@
     jar_url: '{{ image_service_jar_url }}'
     use_openjdk11: "{{ image_service_version is version('1.1.7.1', '>') }}"
     use_openjdk8: "{{ image_service_version is version('1.1.7.1', '<=') }}"
+    log_config_filename: "{{ image_service_logfile }}"
     java_headless: True
   tags:
     - deploy
