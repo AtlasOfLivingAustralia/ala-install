@@ -151,4 +151,13 @@
     - packages
     - image-service
 
+- name: add clear old failed_uploads CRON job
+  ansible.builtin.cron:
+    name: "clear old failed_uploads"
+    minute: "0"
+    hour: "5"
+    weekday: "1"
+    user: "postgres"
+    job: psql -c "delete from failed_upload where (current_timestamp - date_created) > '7 days';" images
+
 - debug: msg="For new installs, to finish installation use the admin screen to load the licence information in files/licence_mappings.csv and files/licences.csv."
