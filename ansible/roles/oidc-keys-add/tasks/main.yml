@@ -1,0 +1,53 @@
+- name: "set facts"
+  include_role:
+    name: common
+    tasks_from: setfacts
+  tags:
+    - oidc_keys_add
+
+- name: validate client_id
+  assert:
+    that: client_id is match('[a-f0-9]{36}')
+    fail_msg: "Invalid client_id '{{ client_id }}' for '{{name}}' module."
+  tags:
+    - oidc_keys_add
+
+- name: validate client_secret
+  assert:
+    that: client_secret is match('[a-f0-9]{36}')
+    fail_msg: "Invalid client_secret '{{ client_secret }}' for '{{name}}' module."
+  tags:
+    - oidc_keys_add
+
+- name: ensure target directories exist
+  file: path={{item}} state=directory owner=cas group=cas
+  with_items:
+    - "{{data_dir}}/cas-management/oidc-keys"
+  when: app is defined and apikey is defined 
+  tags:
+    - oidc_keys_add
+
+- name: copy js script to insert clientId/clientSecret
+  template: src={{ item }} dest={{ data_dir }}/cas-management/oidc-keys/
+  with_items:
+    - "sql/add-key.js"
+  tags:
+    - oidc_keys_add
+
+- debug:
+    var: cas_services_db
+  tags:
+    - oidc_keys_add
+
+- name: insert clientId/clientSecret in service mongo db
+  community.mongodb.mongodb_shell:
+    db: "{{ cas_services_db | default('cas-service-registry' ) }}"
+    login_host: "{{ cas_services_host }}"
+    login_port: "{{ cas_services_port | default('27017') }}"
+    login_user: "{{ cas_services_username }}"
+    login_password: "{{ cas_services_password }}"
+    # login_database: "admin"
+    file: "{{data_dir}}/cas-management/oidc-keys/add-key.js"
+    debug: true
+  tags:
+    - oidc_keys_add

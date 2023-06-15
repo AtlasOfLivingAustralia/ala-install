@@ -115,6 +115,38 @@
     - cas-management
     - db
 
+- name: add oidc keys if do not exist
+  include_role:
+    name: oidc-keys-add
+  vars:
+    name: "{{ oitem.name }}"
+    client_id: "{{ oitem.client_id }}"
+    client_secret: "{{ oitem.client_secret }}"
+    url: "{{ oitem.url if oitem.url.endswith('/') else oitem.url + '/' }}.*"
+  with_items:
+    - { name: "collectory", client_id: "{{ collectory_client_id }}", client_secret: "{{ collectory_client_secret }}", url: "{{ collectory_base_url | default('') }}{{collectory_context_path | default('') }}" }
+    - { name: "ala_hub", client_id: "{{ ala_hub_client_id }}", client_secret: "{{ ala_hub_client_secret }}", url: "{{ biocache_hub_base_url | default('') }}{{biocache_hub_context_path | default('') }}" }
+    - { name: "biocache_service", client_id: "{{ biocache_service_client_id }}", client_secret: "{{ biocache_service_client_secret }}", url: "{{ biocache_service_base_url | default('') }}{{biocache_service_context_path | default('') }}" }
+    - { name: "ala_bie", client_id: "{{ ala_bie_client_id }}", client_secret: "{{ ala_bie_client_secret }}", url: "{{ bie_hub_base_url | default('') }}{{bie_hub_context_path | default('') }}" }
+    - { name: "bie_index", client_id: "{{ bie_index_client_id }}", client_secret: "{{ bie_index_client_secret }}", url: "{{ bie_index_base_url | default('') }}{{bie_index_context_path | default('') }}" }
+    - { name: "images", client_id: "{{ images_client_id }}", client_secret: "{{ images_client_secret }}", url: "{{ images_base_url | default('') }}{{images_context_path | default('') }}" }
+    - { name: "logger", client_id: "{{ logger_client_id }}", client_secret: "{{ logger_client_secret }}", url: "{{ logger_base_url | default('') }}{{logger_context_path | default('') }}" }
+    - { name: "lists", client_id: "{{ lists_client_id }}", client_secret: "{{ lists_client_secret }}", url: "{{ lists_base_url | default('') }}{{lists_context_path | default('') }}" }
+    - { name: "regions", client_id: "{{ regions_client_id }}", client_secret: "{{ regions_client_secret }}", url: "{{ regions_base_url | default('') }}{{regions_context_path | default('') }}" }
+    - { name: "alerts", client_id: "{{ alerts_client_id }}", client_secret: "{{ alerts_client_secret }}", url: "{{ alerts_base_url | default('') }}{{alerts_context_path | default('') }}" }
+    - { name: "doi", client_id: "{{ doi_client_id }}", client_secret: "{{ doi_client_secret }}", url: "{{ doi_service_base_url | default('') }}{{doi_service_context_path | default('') }}" }
+    - { name: "dashboard", client_id: "{{ dashboard_client_id }}", client_secret: "{{ dashboard_client_secret }}", url: "{{ dashboard_base_url | default('') }}{{dashboard_context_path | default('') }}" }
+    - { name: "sds", client_id: "{{ sds_client_id }}", client_secret: "{{ sds_client_secret }}", url: "{{ sds_base_url | default('') }}{{sds_context_path | default('') }}" }
+    - { name: "spatial", client_id: "{{ spatial_client_id }}", client_secret: "{{ spatial_client_secret }}", url: "{{ spatial_base_url | default('') }}{{spatial_context_path | default('') }}" }
+    - { name: "data_quality", client_id: "{{ data_quality_client_id }}", client_secret: "{{ data_quality_client_secret }}", url: "{{ data_quality_base_url | default('') }}{{data_quality_context_path | default('') }}" }
+    - { name: "biocollect", client_id: "{{ biocollect_client_id }}", client_secret: "{{ biocollect_client_secret }}", url: "{{ biocollect_base_url | default('') }}{{biocollect_context_path | default('') }}" }
+    - { name: "ecodata", client_id: "{{ ecodata_client_id }}", client_secret: "{{ ecodata_client_secret }}", url: "{{ ecodata_base_url | default('') }}{{ecodata_context_path | default('') }}" }
+  loop_control:
+    loop_var: oitem
+  when: apikey_def_creator_email is defined and apikey_def_creator_userid is defined and oitem.client_id|length > 0
+  tags:
+    - oidc_keys_add
+
 - name: add nginx vhost
   include_role:
     name: nginx_vhost
