@@ -1,3 +1,5 @@
 
 # Option to redirect root requests e.g. https://biocollect.ala.org.au/ to an info page elsewhere
 biocollect_rewrite_root: False
+log_config_filename: logback.xml
+biocollect_repo_url: https://maven.pkg.github.com/atlasoflivingaustralia/biocollect
