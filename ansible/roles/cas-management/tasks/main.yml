@@ -120,6 +120,7 @@
     name: oidc-keys-add
   vars:
     name: "{{ oitem.name }}"
+    desc: "{{ oitem.name }} OIDC Service"
     client_id: "{{ oitem.client_id }}"
     client_secret: "{{ oitem.client_secret }}"
     url: "{{ oitem.url if oitem.url.endswith('/') else oitem.url + '/' }}.*"
@@ -137,13 +138,13 @@
     - { name: "doi", client_id: "{{ doi_client_id }}", client_secret: "{{ doi_client_secret }}", url: "{{ doi_service_base_url | default('') }}{{doi_service_context_path | default('') }}" }
     - { name: "dashboard", client_id: "{{ dashboard_client_id }}", client_secret: "{{ dashboard_client_secret }}", url: "{{ dashboard_base_url | default('') }}{{dashboard_context_path | default('') }}" }
     - { name: "sds", client_id: "{{ sds_client_id }}", client_secret: "{{ sds_client_secret }}", url: "{{ sds_base_url | default('') }}{{sds_context_path | default('') }}" }
-    - { name: "spatial", client_id: "{{ spatial_client_id }}", client_secret: "{{ spatial_client_secret }}", url: "{{ spatial_base_url | default('') }}{{spatial_context_path | default('') }}" }
+    - { name: "spatial", client_id: "{{ spatial_client_id }}", client_secret: "{{ spatial_client_secret }}", url: "{{ spatial_base_url | default('') }}{{spatial_hub_context_path | default('') }}" }
     - { name: "data_quality", client_id: "{{ data_quality_client_id }}", client_secret: "{{ data_quality_client_secret }}", url: "{{ data_quality_base_url | default('') }}{{data_quality_context_path | default('') }}" }
     - { name: "biocollect", client_id: "{{ biocollect_client_id }}", client_secret: "{{ biocollect_client_secret }}", url: "{{ biocollect_base_url | default('') }}{{biocollect_context_path | default('') }}" }
     - { name: "ecodata", client_id: "{{ ecodata_client_id }}", client_secret: "{{ ecodata_client_secret }}", url: "{{ ecodata_base_url | default('') }}{{ecodata_context_path | default('') }}" }
   loop_control:
     loop_var: oitem
-  when: apikey_def_creator_email is defined and apikey_def_creator_userid is defined and oitem.client_id|length > 0
+  when: oitem.client_id|length > 0 and oitem.url|length > 3
   tags:
     - oidc_keys_add
 

@@ -5,14 +5,14 @@
   tags:
     - oidc_keys_add
 
-- name: validate client_id
+- name: validate client_id for {{ name }}
   assert:
     that: client_id is match('[a-f0-9]{36}')
     fail_msg: "Invalid client_id '{{ client_id }}' for '{{name}}' module."
   tags:
     - oidc_keys_add
 
-- name: validate client_secret
+- name: validate client_secret for {{ name }}
   assert:
     that: client_secret is match('[a-f0-9]{36}')
     fail_msg: "Invalid client_secret '{{ client_secret }}' for '{{name}}' module."
@@ -27,7 +27,7 @@
   tags:
     - oidc_keys_add
 
-- name: copy js script to insert clientId/clientSecret
+- name: copy js script to insert clientId/clientSecret for {{ name }}
   template: src={{ item }} dest={{ data_dir }}/cas-management/oidc-keys/
   with_items:
     - "sql/add-key.js"
@@ -39,15 +39,11 @@
   tags:
     - oidc_keys_add
 
-- name: insert clientId/clientSecret in service mongo db
-  community.mongodb.mongodb_shell:
-    db: "{{ cas_services_db | default('cas-service-registry' ) }}"
-    login_host: "{{ cas_services_host }}"
-    login_port: "{{ cas_services_port | default('27017') }}"
-    login_user: "{{ cas_services_username }}"
-    login_password: "{{ cas_services_password }}"
-    # login_database: "admin"
-    file: "{{data_dir}}/cas-management/oidc-keys/add-key.js"
-    debug: true
+- name: insert clientId/clientSecret in service mongo db for {{ name }}
+  shell: >
+    mongo --host "{{ cas_services_host }}" --port "{{ cas_services_port | default('27017') }}"
+    --username "{{ cas_services_username }}" --password "{{ cas_services_password }}"
+    "{{ cas_services_db | default('cas-service-registry' ) }}" --quiet < "{{data_dir}}/cas-management/oidc-keys/add-key.js"
   tags:
     - oidc_keys_add
+
