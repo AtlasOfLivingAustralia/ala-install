@@ -25,7 +25,6 @@ security:
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
     clientId: {{ clientId | default('') }}
-    roleAttributes: {{ roleAttribute | default('') }}
     rolesFromAccessToken: {{ rolesFromAccessToken | default('true') }}
     userIdClaim: {{ userIdClaim | default('') }}
     roleClaims: {{ roleClaims | default('') }}

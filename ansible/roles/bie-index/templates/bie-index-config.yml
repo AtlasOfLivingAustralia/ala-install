@@ -29,7 +29,6 @@ security:
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
     clientId: {{ (bie_index_clientId | default(clientId)) | default('') }}
-    roleAttributes: {{ roleAttribute | default('') }}
     rolesFromAccessToken: {{ rolesFromAccessToken | default('true') }}
     userIdClaim: {{ userIdClaim | default('') }}
     roleClaims: {{ roleClaims | default('') }}
