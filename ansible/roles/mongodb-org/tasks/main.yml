@@ -114,7 +114,8 @@
 - name: Install pip python-pymongo package
   pip:
     name: pymongo
-    version: 3.12.2
+#    version: 3.12.2
+    version: 4.1.1
   tags: mongodb-org
 
 - name: Enable service mongod
