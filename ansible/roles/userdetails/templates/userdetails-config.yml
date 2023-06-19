@@ -271,3 +271,7 @@ apigateway:
   galah:
     usagePlanId: {{ gateway_usagePlanId | default('') }}
 {% endif %}
+{% if userdetails_backend == 'cognito' %}
+tokenApp:
+  url: {{tokenApp_url | default('https://tokens.ala.org.au')}}
+{% endif %}
