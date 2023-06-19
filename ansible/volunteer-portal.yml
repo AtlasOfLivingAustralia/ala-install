@@ -6,7 +6,7 @@
   roles:
     - common
     - {role: db-backup, db: postgres}
-    - {role: postgresql, pg_version: "10"}
+    - {role: postgresql, pg_version: "15"}
     - {role: pg_instance, extensions: ["citext", "pgcrypto"]}
     - webserver
     - volunteer-portal
