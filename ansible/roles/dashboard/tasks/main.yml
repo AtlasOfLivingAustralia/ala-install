@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - dashboard
+    - properties
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}

@@ -36,8 +36,11 @@ userDetails:
 #
 #  NOTE: Some of these will be ignored if default_config exists
 security:
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
   core: 
     roleAttribute: {{ roleAttribute | default('') }}
+{% endif %}
   cas:
     casServerName: {{auth_base_url}}
     loginUrl: {{auth_cas_url}}/login
@@ -59,16 +62,22 @@ security:
     clientId: {{ clientId | default('') }}
     secret: {{ (secret | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
     scope: {{ scope | default('openid')}}
     alaUseridClaim: {{ alaUseridClaim | default('') }}
     logoutAction: {{ logoutAction | default('') }}
+{% endif %}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
     clientId: {{ (clientId | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
     roleAttribute: {{ roleAttribute | default('') }}
     rolesFromAccessToken: {{ rolesFromAccessToken | default('true') }}
     userIdClaim: {{ userIdClaim | default('') }}
     roleClaims: {{ roleClaims | default('') }}
+{% endif %}
   apiKey:
     enabled: {{ apikey_check_enabled | default('false') }}
     auth:

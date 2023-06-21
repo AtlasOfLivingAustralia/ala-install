@@ -5,8 +5,11 @@ grails:
 serverName: {{ bie_index_base_url }}
 # CAS Config
 security:
-  core: 
-    roleAttribute: {{ roleAttribute | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+  core:
+      roleAttribute: {{ roleAttribute | default('') }}
+{% endif %}
   cas:
     casServerName:   {{ auth_base_url }}
     uriFilterPattern:   {{ bie_index_uri_filter_pattern | default('/admin.*,/alaAdmin.*') }}
@@ -23,15 +26,21 @@ security:
     clientId: {{ (bie_index_clientId | default(clientId)) | default('') }}
     secret: {{ (bie_index_secret | default(secret)) | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
     scope: {{ scope | default('openid')}}
     alaUseridClaim: {{ alaUseridClaim | default('') }}
     logoutAction: {{ logoutAction | default('') }}
+{% endif %}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
     clientId: {{ (bie_index_clientId | default(clientId)) | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
     rolesFromAccessToken: {{ rolesFromAccessToken | default('true') }}
     userIdClaim: {{ userIdClaim | default('') }}
     roleClaims: {{ roleClaims | default('') }}
+{% endif %}
   apiKey: 
     enabled: {{ apikey_check_enabled | default('false') }}
     auth: 

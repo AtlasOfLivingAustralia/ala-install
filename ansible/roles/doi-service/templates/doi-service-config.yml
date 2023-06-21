@@ -5,8 +5,11 @@ deployment_env: {{ (doi_deployment_env | default(deployment_env)) | default('pro
 # CAS Config
 #
 security:
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
   core:
       roleAttribute: {{ roleAttribute | default('') }}
+{% endif %}
   cas:
     casServerName: {{ auth_base_url }}
     casServerUrlPrefix: {{ auth_cas_url }}
@@ -19,15 +22,21 @@ security:
     clientId: {{ clientId | default('') }}
     secret: {{ secret | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
     scope: {{ scope | default('openid')}}
     alaUseridClaim: {{ alaUseridClaim | default('') }}
     logoutAction: {{ logoutAction | default('') }}
+{% endif %}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
     clientId: {{ clientId | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
     rolesFromAccessToken: {{ rolesFromAccessToken | default('true') }}
     userIdClaim: {{ userIdClaim | default('') }}
     roleClaims: {{ roleClaims | default('') }}
+{% endif %}
   apiKey: 
     enabled: {{ apikey_check_enabled | default('false') }}
     auth: 
