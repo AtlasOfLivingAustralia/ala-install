@@ -47,7 +47,7 @@
   file: path="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" state=absent
 
 - name: download from maven repo {{ war_url }}
-  get_url: url={{ war_url }} dest="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" force=true timeout=60
+  get_url: url={{ war_url }} dest="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" checksum="{{ war_checksum | default('') }}" force=true timeout=60
   when: war_local_build is not defined
   notify:
     - restart tomcat
