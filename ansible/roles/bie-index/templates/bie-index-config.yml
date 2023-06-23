@@ -23,8 +23,8 @@ security:
     enabled: {{ security_cas_enabled | default(false) }}
   oidc:
     enabled: {{ security_oidc_enabled | default(true) }}
-    clientId: {{ (bie_index_clientId | default(clientId)) | default('') }}
-    secret: {{ (bie_index_secret | default(secret)) | default('') }}
+    clientId: {{ (bie_index_client_id | default(clientId)) | default('') }}
+    secret: {{ (bie_index_client_secret | default(secret)) | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
 # cognito specific configs
 {% if auth_system is defined and auth_system == 'cognito' %}

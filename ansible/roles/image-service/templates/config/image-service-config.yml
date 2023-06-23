@@ -19,8 +19,8 @@ security:
     logoutUrl: {{ auth_cas_url }}/logout
   oidc:
     enabled: {{ security_oidc_enabled | default(false) }}
-    clientId: {{ clientId | default('') }}
-    secret: {{ secret | default('') }}
+    clientId: {{ (images_client_id | default(clientId)) | default('') }}
+    secret: {{ (images_client_secret | default(secret)) | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
