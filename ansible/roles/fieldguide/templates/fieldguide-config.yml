@@ -3,6 +3,7 @@ service:
   biocache.ws.url: {{biocache_service_ws_url}}
 
 collections.url: {{collectory_base_url|default('https://collections.ala.org.au')}}
+collections.ws.url: {{collectory_service_ws_url|default('https://collections.ala.org.au')}}
 image.ws.url: {{images_service_base_url|default('https://images.ala.org.au/ws')}}
 
 fieldguide:
@@ -29,7 +30,7 @@ validateEmail: true
 
 # NOTE: add the server IP to userdetails authorised systems
 userDetails:
-  url: {{auth_base_url}}/userdetails/
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
 
 #
 #  CAS SETTINGS
@@ -38,7 +39,7 @@ userDetails:
 security:
 # cognito specific configs
 {% if auth_system is defined and auth_system == 'cognito' %}
-  core: 
+  core:
     roleAttribute: {{ roleAttribute | default('') }}
 {% endif %}
   cas:
@@ -60,7 +61,7 @@ security:
     enabled: false
   oidc:
     clientId: {{ clientId | default('') }}
-    secret: {{ (secret | default('') }}
+    secret: {{ secret | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
 # cognito specific configs
 {% if auth_system is defined and auth_system == 'cognito' %}
@@ -70,7 +71,7 @@ security:
 {% endif %}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
-    clientId: {{ (clientId | default('') }}
+    clientId: {{ clientId | default('') }}
 # cognito specific configs
 {% if auth_system is defined and auth_system == 'cognito' %}
     roleAttribute: {{ roleAttribute | default('') }}
