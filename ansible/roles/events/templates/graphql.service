@@ -1,0 +1,11 @@
+[Unit]
+Description=ALA {{ env }} graphql service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/{{ env }}-graphql-service.sh start
+ExecStop=/usr/bin/{{ env }}-graphql-service.sh stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
