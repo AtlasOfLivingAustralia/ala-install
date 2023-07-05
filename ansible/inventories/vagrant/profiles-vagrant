@@ -57,9 +57,6 @@ nameindex_datestamp = 20200214
 nameindex_to_use=ala
 
 # Google Analytics account details
-# todo: remove before commit
-analytics_serviceAccountEmail=742444384775-bvi7i0n5uh7a45qu7324td9hh4i733gn@developer.gserviceaccount.com
-analytics_viewId=199859593
 analytics_private_key_local_path=../../ansible-inventories/googleAnalytics/google-analytics-key.p12
 
 # Feature flags
@@ -164,3 +161,8 @@ nameindex_datestamp=20200214
 webserver_nginx=true
 nginx_vhost_fragments_to_clear=["profiles-ws.vagrant1.ala.org.au", "profiles.vagrant1.ala.org.au"]
 ssl=false
+
+
+# Fathom analytics
+fathom_api_key=xyz
+fathom_site_id=abcd
