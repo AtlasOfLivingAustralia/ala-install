@@ -49,17 +49,23 @@ security:
     casServerUrlPrefix: {{auth_base_url}}/cas
     bypass: false # set to true for non-ALA deployment
     gateway: false
-    uriExclusionFilterPattern: []
     uriFilterPattern: []
     #if false, ticket params always proceed
     #true, only processes urls listed in authenticateOnlyIfLoggedInFilterPattern
     applyUriFiltersToTicketValidation: false
-    authenticateOnlyIfCookieFilterPattern: ['/', '/*']
     disableCAS: true
     ignoreCase: true
+    {% if auth_system is defined and auth_system == 'cognito' %}
+    uriExclusionFilterPattern: ['/generate.*', '/download.*']
+    {% else %}
+    uriExclusionFilterPattern: []
+    authenticateOnlyIfCookieFilterPattern: ['/', '/*']
     authCookieName: ALA-Auth
-    enabled: false
+    {% endif %}
+
+    enabled: {{ security_cas_enabled | default(false) }}
   oidc:
+    enabled: {{ security_oidc_enabled | default(true) }}
     clientId: {{ clientId | default('') }}
     secret: {{ secret | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
