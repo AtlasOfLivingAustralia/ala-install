@@ -55,14 +55,13 @@ security:
     applyUriFiltersToTicketValidation: false
     disableCAS: true
     ignoreCase: true
-    {% if auth_system is defined and auth_system == 'cognito' %}
+{% if auth_system is defined and auth_system == 'cognito' %}
     uriExclusionFilterPattern: ['/generate.*', '/download.*']
-    {% else %}
+{% else %}
     uriExclusionFilterPattern: []
     authenticateOnlyIfCookieFilterPattern: ['/', '/*']
     authCookieName: ALA-Auth
-    {% endif %}
-
+{% endif %}
     enabled: {{ security_cas_enabled | default(false) }}
   oidc:
     enabled: {{ security_oidc_enabled | default(true) }}
