@@ -49,6 +49,7 @@
       - { db: "{{ profiles_database }}", role: "readWrite" }
   tags:
     - mongodb-org
+    - mongodb-users
   when: grails_version is version("3", ">=")
 
 - name: set profile_service_user as default value
@@ -107,8 +108,8 @@
   template:
     src: logback.xml
     dest: "{{data_dir}}/profile-service/config/logback.xml"
-    owner: profile-service
-    group: profile-service
+    owner: "{{ profile_service_user }}"
+    group: "{{ profile_service_user }}"
   notify:
     - restart profile-service
   tags:
