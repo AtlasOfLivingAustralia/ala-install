@@ -90,7 +90,9 @@
 - name: Restart mongod
   service: name=mongod state=restarted daemon-reload=true enabled="yes"
   when: ansible_os_family == "Debian"
-  tags: mongodb-org
+  tags: 
+    mongodb-org
+    mongodb-org-restart
 
 - name: Uninstall official python-pymongo package
   apt:
@@ -108,7 +110,10 @@
   service:
     name: mongod
     enabled: yes
-  tags: mongodb-org
+  tags: 
+    mongodb-org
+    mongodb-org-restart
+
 
 
 # https://github.com/ansible/ansible/issues/33832
@@ -152,5 +157,7 @@
         authorization: enabled
   notify:
     - restart mongod
-  tags: mongodb-org
+  tags: 
+    mongodb-org
+    mongodb-org-restart
   when: "{{ ecodata_replica_set_disable_mongo_security | default(true) }}"

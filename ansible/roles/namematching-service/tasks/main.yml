@@ -32,6 +32,9 @@
     mode: 0755
   with_items:
     - "/var/log/atlas/namematching-service"
+  tags:
+    - properties
+    - namematching-service
 
 - name: Customize species group files
   copy:

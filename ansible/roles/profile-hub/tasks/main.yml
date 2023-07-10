@@ -90,8 +90,8 @@
   template:
     src: logback.xml
     dest: "{{data_dir}}/profile-hub/config/logback.xml"
-    owner: profile-hub
-    group: profile-hub
+    owner: "{{profile_hub_user}}"
+    group: "{{profile_hub_user}}"
   notify:
     - restart profile-hub
   tags:

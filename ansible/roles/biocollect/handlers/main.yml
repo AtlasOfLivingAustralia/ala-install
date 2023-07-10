@@ -1,2 +1,4 @@
 - name: restart biocollect
   service: name=biocollect state=restarted enabled="yes"
+  when:
+  - skip_handlers | default("false") | bool == false
