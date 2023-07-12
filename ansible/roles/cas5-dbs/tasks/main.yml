@@ -215,7 +215,7 @@
     ssl: "{{ cas_spring_session_ssl_enabled | default('false') }}",
     roles: 'readWrite'
   }
-  tags
+  tags:
     - mongodb-org
     - mongodb-users
   run_once: true
