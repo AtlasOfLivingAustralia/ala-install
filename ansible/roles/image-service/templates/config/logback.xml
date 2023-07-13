@@ -4,7 +4,7 @@
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
     <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
 
-    <variable name="loggingDir" value="${LOGGING_DIR:-/tmp/}" />
+    <variable name="loggingDir" value="${LOG_DIR:-/tmp/}" />
     <variable name="appName" value="image-service" />
 
     <appender name="APPLICATION_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
