@@ -26,7 +26,7 @@ security:
       auth-cookie-name: {{ auth_cookie_name | default('ALA-Auth') }}
   cookie:
     enabled: {{auth_cookie_enabled | default ('false')}}
-    domain: {{auth_cookie_domain | default '.ala.org.au'}}
+    domain: {{auth_cookie_domain | default('.ala.org.au')}}
 {% endif %}
   oidc:
     clientId: {{ clientId | default('') }}
