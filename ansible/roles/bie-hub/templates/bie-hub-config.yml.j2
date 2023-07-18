@@ -10,6 +10,10 @@ security:
 {% if auth_system is defined and auth_system == 'cognito' %}
   core: 
     roleAttribute: {{ roleAttribute | default('') }}
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+  cookie:
+    enabled: {{auth_cookie_enabled | default ('false')}}
+    domain: {{auth_cookie_domain | default('.ala.org.au')}}
 {% endif %}
   cas:
     casServerName: {{ auth_base_url }}
