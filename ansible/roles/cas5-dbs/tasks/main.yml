@@ -215,6 +215,8 @@
     ssl: "{{ cas_spring_session_ssl_enabled | default('false') }}",
     roles: 'readWrite'
   }
-  tags: mongodb-org
+  tags:
+    - mongodb-org
+    - mongodb-users
   run_once: true
   when: cas_add_mongo_users is defined and cas_add_mongo_users

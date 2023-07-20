@@ -4,6 +4,7 @@
     - docker
     - la-pipelines
     - hadoop_vocab
+    - properties
     - la-pipelines-config
 
 - name: Install aptitude using apt
@@ -13,7 +14,7 @@
 
 - name: Install required system packages
   apt: name={{ item }} state=latest update_cache=yes
-  loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+  loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools', 'unzip']
   tags:
     - pipelines
 
@@ -55,6 +56,7 @@
     - "{{ data_dir }}/dwca-export"
     - "{{ data_dir }}/migration"
   tags:
+    - properties
     - la-pipelines-config
     - pipelines
     - docker
@@ -156,6 +158,7 @@
   with_items:
     - la-pipelines-local.yaml
   tags:
+    - properties
     - la-pipelines-config
     - pipelines
     - la-pipelines
@@ -260,7 +263,7 @@
     - hadoop_dir
 
 - name: Set ownership of HDFS base directories
-  shell: "{{ hadoop_install_dir }}/bin/hdfs dfs -chown spark:spark {{ item }}"
+  shell: "{{ hadoop_install_dir }}/bin/hdfs dfs -chown {{ spark_user }}:{{ spark_user }} {{ item }}"
   with_items:
     - "/dwca-exports"
     - "/dwca-imports"
