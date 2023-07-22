@@ -139,7 +139,7 @@ layersService:
 imageServiceBaseURL: {{ image_webservice_url | default(image_service_url)}}
 image:
   baseUrl: {{ image_service_url }}
-  thumbnailUrl: {{ image_webservice_url | default(image_service_url)}}/image/thumbnail
+  thumbnailUrl: {{ image_webservice_url | default(image_service_url)}}/image/
 ausTraits:
     baseURL: {{ ausTraits_base_url | default('http://traitdata.austraits.cloud.edu.au') }}
     homeURL: {{ ausTraits_home_url | default('https://austraits.org/') }}
