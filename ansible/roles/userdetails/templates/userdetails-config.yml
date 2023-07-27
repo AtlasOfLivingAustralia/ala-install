@@ -277,10 +277,10 @@ tokenApp:
 {% endif %}
 {% if apikey_type is defined %}
 apikey:
-  type: apikey_type
+  type: {{ apikey_type }}
 {% endif %}
 {% if dynamoDBTableName is defined %}
-oauth.support.dynamic.client.dynamoDBTableName: dynamoDBTableName
-oauth.support.dynamic.client.dynamoDBTable.dynamoDBPK: {{ dynamoDBTable_dynamoDBPK || default('userId') }}
-oauth.support.dynamic.client.dynamoDBTable.dynamoDBSK: {{ dynamoDBTable_dynamoDBSK || default('clientId') }}
+oauth.support.dynamic.client.dynamoDBTableName: {{ dynamoDBTableName }}
+oauth.support.dynamic.client.dynamoDBTable.dynamoDBPK: {{ dynamoDBTable_dynamoDBPK | default('userId') }}
+oauth.support.dynamic.client.dynamoDBTable.dynamoDBSK: {{ dynamoDBTable_dynamoDBSK | default('clientId') }}
 {% endif %}
