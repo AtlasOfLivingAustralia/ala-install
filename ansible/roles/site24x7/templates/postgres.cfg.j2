@@ -1,0 +1,16 @@
+[postgres]
+{% if site24x7_postgres_host is defined and site24x7_postgres_host %}
+host={{ site24x7_postgres_host }}
+{% endif %}
+{% if site24x7_postgres_port is defined and site24x7_postgres_port %}
+port={{ site24x7_postgres_port }}
+{% endif %}
+{% if site24x7_postgres_username is defined and site24x7_postgres_username %}
+username={{ site24x7_postgres_username }}
+{% endif %}
+{% if site24x7_postgres_password is defined and site24x7_postgres_password %}
+password={{ site24x7_postgres_password }}
+{% endif %}
+{% if site24x7_postgres_db is defined and site24x7_postgres_db %}
+db={{ site24x7_postgres_db }}
+{% endif %}

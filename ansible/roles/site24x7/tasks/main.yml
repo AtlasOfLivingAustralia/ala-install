@@ -1,0 +1,110 @@
+---
+# install the Elasticsearch plugin
+- block:
+    - name: Create the elasticsearch plugin directory
+      file:
+        path: "{{ plugin_dir }}elasticsearch"
+        state: directory
+
+    - name: Download elasticsearch the plugin
+      get_url:
+        url: https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.py
+        dest: "{{ plugin_dir }}elasticsearch/elasticsearch.py"
+        mode: 0755
+
+    - name: Copy the elasticsearch plugin configuration
+      template:
+        src: elasticsearch.cfg.j2
+        dest: "{{ plugin_dir }}elasticsearch/elasticsearch.cfg"
+        mode: 0644
+
+  when: site24x7_elasticsearch_enabled|default(False)|bool
+
+# install the Postgres plugin
+- block:
+    - name: Postgres - Install required apt packages
+      apt:
+        name:
+          - libpq-dev
+          - python3-dev
+        state: present
+
+    - name: Postgres - Install required psycopg2 package
+      pip:
+        name: psycopg2
+        state: present
+    
+    - name: Create the postgres plugin directory
+      file:
+        path: "{{ plugin_dir }}postgres"
+        state: directory
+
+    - name: Download the postgres plugin
+      get_url:
+        url: https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.py
+        dest: "{{ plugin_dir }}postgres/postgres.py"
+        mode: 0755
+
+    - name: Copy the postgres plugin configuration
+      template:
+        src: postgres.cfg.j2
+        dest: "{{ plugin_dir }}postgres/postgres.cfg"
+        mode: 0644
+
+  when: site24x7_postgres_enabled|default(False)|bool
+
+# install the Java APM monitor
+- block:
+    - name: Create the Java monitor directory
+      file:
+        path: "{{ site24x7_home_dir }}java_apm"
+        state: directory
+
+    - name: Download Java APM monitor
+      get_url:
+        url: https://staticdownloads.site24x7.net.au/apminsight/agents/apminsight-javaagent.zip
+        dest: /tmp/apminsight-javaagent.zip
+        mode: 0755
+
+    - name: Extract the Java APM monitor
+      unarchive:
+        src: /tmp/apminsight-javaagent.zip
+        dest: "{{ site24x7_home_dir }}java_apm"
+        remote_src: yes
+
+    - name: Insert the license key in the conf file
+      lineinfile:
+        path: "{{ site24x7_home_dir }}java_apm/apminsight.conf"
+        regexp: '^license\.key=.*'
+        line: 'license.key={{ device_key }}'
+        backrefs: yes
+
+    - name: Update the application name in the conf file
+      lineinfile:
+        path: "{{ site24x7_home_dir }}java_apm/apminsight.conf"
+        regexp: '^application\.name=.*'
+        line: 'application.name={{ site24x7_java_apm_app_name }}'
+        backrefs: yes
+
+    - name: check if the Java agent is already installed   
+      lineinfile:
+        path: /opt/atlas/image-service/image-service.conf
+        regexp: '^JAVA_OPTS=".*java_apm/apminsight-javaagent.jar"$'
+        state: absent
+      check_mode: yes
+      register: agent_installed
+
+    - name: Install the Java agent
+      lineinfile:
+        path: /opt/atlas/image-service/image-service.conf
+        regexp: '^JAVA_OPTS="(.*)"$'
+        line: 'JAVA_OPTS="\1 -javaagent:{{ site24x7_home_dir }}java_apm/apminsight-javaagent.jar" '
+        backrefs: yes
+      when: not agent_installed.found
+
+    - name: Restart the image service
+      systemd:
+        name: image-service
+        state: restarted
+
+  when: site24x7_java_apm_enabled|default(False)|bool
