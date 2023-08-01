@@ -105,6 +105,7 @@
       - "{{ inventory_dir }}/{{ cas_jwks_file | default('keystore.jwks') }}"
       skip: true
   tags:
+    - properties
     - cas
 
 - name: add jar and service
