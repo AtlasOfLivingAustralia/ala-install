@@ -61,6 +61,7 @@
     - events
     - update-images
     - docker-config
+    - properties
 
 - name: Copy docker YAML files to {{ data_dir }}
   template: src={{ item }} dest={{ data_dir }}/{{ env }}/{{ item }}
@@ -76,6 +77,7 @@
     - events
     - update-images
     - docker-config
+    - properties
 
 - name: Copy service scripts to /usr/bin
   template: src={{ item }} dest=/usr/bin/{{ env }}-{{ item }} mode=777

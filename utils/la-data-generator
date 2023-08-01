@@ -5,6 +5,7 @@ set -e
 
 CMD=$(basename "$0")
 GEN_LOC="$(dirname "$(realpath "$0")")"
+ALA_INSTALL="${GEN_LOC%/*}"
 A_ALA_INSTALL="${GEN_LOC%/*}/ansible"
 #echo $GEN_LOC
 #echo $A_ALA_INSTALL
@@ -20,7 +21,7 @@ eval "$("$GEN_LOC/docopts" -V - -h - : "$@" <<EOF
 $CMD: LA data generator
 
 Usage:
-  $CMD [options] --data=<dir> --inv=<dir> generate [<service>]
+  $CMD [options] --data=<dir> --inv=<dir> generate [<service>...]
   $CMD -h | --help
   $CMD -v | --version
 
@@ -66,30 +67,43 @@ elif [[ ! -d $inv || ! -f $inv/ansiblew ]]; then
 fi
 
 TAGS=common,properties,mongodb-org,namematching-service,pipelines,pipelines-layers
-SKIP_TAGS=restart,image-stored-procedures,db,mongodb-org-restart,mongodb-users,sslcerts,pipelines-services,hadoop_dir,hadoop_vocab,apt_update,apt
-EXTRAS="user_store_db_hostname=auth-mysql ticket_registry_db_hostname=auth-mongo cas_audit_host=auth-mongo cas_spring_session_host=auth-mongo \
+SKIP_TAGS=restart,image-stored-procedures,db,mongodb-org-restart,mongodb-users,sslcerts,pipelines-services,hadoop_dir,hadoop_vocab,apt_update,apt,mongodb-org,docopts,yq
+ EXTRAS="user_store_db_hostname=auth-mysql ticket_registry_db_hostname=auth-mongo cas_audit_host=auth-mongo cas_spring_session_host=auth-mongo \
     user_store_db_hostname=auth-mysql apikey_db_hostname=auth-mysql cas_db_hostname=auth-mysql cas_tickets_host=auth-mongo \
     cas_tickets_host=auth-mongo cas_services_host=auth-mongo cas_services_host=auth-mongo collectory_db_host_address=collectory-mysql \
-    data_dir=/data/docker skip_handlers=true tomcat=$user tomcat_user=$user tomcat_apr=false biocollect_user=$user ecodata_user=$user \
-    merit_user=$user fieldguide_app=fieldguide use_docker_with_pipelines=false spark_user=$user profile_service_user=$user \ 
-    profile_hub_user=$user doi_user=$user cas_user=$user userdetails_user=$user apikey_user=$user image_user=$user"
+    dq_db_url=jdbc:postgresql://dq-postgresql/data-quality specieslist_db_hostname=lists-mysql logger_db_hostname=logger-mysql \
+    alerts_db_hostname=alerts-mysql phylolink_db_hostname=phylolink-mysql geonetwork_database=spatial-postgresql layers_db_host=spatial-postgresql \
+    doi_db_hostname=doi-postgresql image_service_db_host=images-postgresql \
+    mail_smtp_host=biocache-smtp mail_host=biocollect-smtp \
+    ecodata_elasticsearch_host=ecodata-es events_elasticsearch_host=events-es events_elasticsearch_network_host=events-es-network \
+    events_elasticsearch_seed_host=events-es-seed solr_url=FIXME_solr_url biocache_db_host=FIXME_cassandra_host \
+    data_dir=/data/docker skip_handlers=true tomcat_apr=false use_docker_with_pipelines=false install_elasticsearch=false ecodata_url=FIXME_ECODATA_URL \
+    tomcat=$user tomcat_user=$user biocollect_user=$user ecodata_user=$user merit_user=$user fieldguide_app=fieldguide spark_user=$user \
+    profile_service_user=$user profile_hub_user=$user doi_user=$user cas_user=$user userdetails_user=$user apikey_user=$user image_user=$user \
+    geoserver_user=$user"
 
 function gen() {
-    local what="$1"
+    local what
+    what="$1"
     echo "Generating config for '$what'"
     if $verbose; then V="-vvvv" ; else V=""; fi
-    bash -c "cd $inv; ./ansiblew --alainstall=/ansible/ala-install -i "$GEN_LOC/local.ini" $what --tags=$TAGS --skip=$SKIP_TAGS -e '$EXTRAS' --nodryrun $V"
-
+    cp "$GEN_LOC/local.ini" "$inv"
+    bash -c "cd $inv; ./ansiblew --alainstall=$ALA_INSTALL -i local.ini $what --tags=$TAGS --skip=$SKIP_TAGS -e '$EXTRAS' --nodryrun --limit localhost $V"
+    # shellcheck disable=SC2181
     if [ $? -ne 0 ]; then
       >&2 echo "The generation failed, are you inventories and/or your ala-install repo up-to-date?"
     fi
+    rm "$inv/local.ini"
 }
 
 function genCustom() {
     # local dinv="$(dirname "$1")"
-    local cinv="$(basename "$1")"
-    local play="$2"
-    local dinv="$(dirname "$1")"
+    local cinv
+    local play
+    local dinv
+    cinv="$(basename "$1")"
+    play="$2"
+    dinv="$(dirname "$1")"
     echo "Generating config for $dinv/$cinv and '$play' in '$inv'"
 
     if $verbose; then V="-vvvv" ; else V=""; fi
@@ -125,11 +139,6 @@ function run_checks() {
         exit 1
     fi
 
-    if [[ ! -d $inv || ! -f $inv/ansiblew ]]; then
-        >&2 echo "WARN: It seems that '$inv' is not a generated inventory as we expect"
-        # exit 1
-    fi
-
     # shellcheck disable=SC2154
     if [[ -d $ala_install && ! -d $ala_install/ansible ]]; then
         >&2 echo "It seems that '$ala_install' is not the ala-install repository as we expect"
@@ -138,6 +147,10 @@ function run_checks() {
 }
 
 run_checks
+
+if [[ -n $service ]] ; then
+    services=("${service[@]}")
+fi
 
 if $use_an_inventory ; then
       echo "Processing $inv$service"
@@ -165,8 +178,10 @@ if $use_an_inventory ; then
 
 else
     if [[ -n $service ]] ; then
-       gen "$service"
+        for s in "${services[@]}"; do
+            gen "$s"
+        done
     else
-       gen all
+        gen all
     fi
 fi

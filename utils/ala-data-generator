@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Run with:
-#   ./ala-data-generator --inv=/home/youruser/ala/ansible-inventories/ --data=/data/docker generate doi
+#   ./ala-data-generator --inv=/home/youruser/ala/ansible-inventories/ --data=/data/docker generate doi alerts
 # or for all services:
 #   ./ala-data-generator --inv=/home/youruser/ala/ansible-inventories/ --data=/data/docker generate
 
@@ -21,7 +21,7 @@ eval "$("$GEN_LOC/docopts" -V - -h - : "$@" <<EOF
 $CMD: ALA data generator
 
 Usage:
-  $CMD [options] --data=<dir> --inv=<dir> generate [<service>]
+  $CMD [options] --data=<dir> --inv=<dir> generate [<service>...]
   $CMD -h | --help
   $CMD -v | --version
 
@@ -63,6 +63,7 @@ list=(
   "./specieslists/specieslists-prod"
   "./ecodata/ecodata-prod"
   "./fieldguide/fieldguide-prod"
+  # This needs extra role work:
   "./pipelines/databox-pipelines.yml"
   "./namematching/namematching-prod"
   "./sensitive-data-service/sensitive-data-service-prod-2022"
