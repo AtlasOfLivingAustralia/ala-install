@@ -11,12 +11,14 @@
   apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
   tags:
     - pipelines
+    - apt
 
 - name: Install required system packages
   apt: name={{ item }} state=latest update_cache=yes
   loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools', 'unzip']
   tags:
     - pipelines
+    - apt
 
 - name: Add Docker GPG apt Key
   apt_key:
@@ -92,6 +94,7 @@
     - la-pipelines
     - pipelines
     - yq
+    - apt
 
 - name: Add YQ Repository
   apt_repository:
@@ -101,6 +104,7 @@
     - la-pipelines
     - pipelines
     - yq
+    - apt
 
 - name: Add an apt key by id from a keyserver
   apt_key:
@@ -111,6 +115,7 @@
     - la-pipelines
     - pipelines
     - yq
+    - apt
 
 - name: Update apt and install pipelines
   apt: update_cache=yes name=yq={{ yq_version }}
@@ -119,6 +124,7 @@
     - pipelines
     - la-pipelines
     - yq
+    - apt
 
 # docopts is needed by the la-pipelines script
 
@@ -137,6 +143,7 @@
     - la-pipelines
     - pipelines
     - docopts
+    - apt
 
 - name: Make docopts executable
   shell: chmod +x /usr/local/bin/docopts

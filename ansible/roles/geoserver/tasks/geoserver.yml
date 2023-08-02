@@ -254,6 +254,14 @@
     - geoserver
     - properties
 
+# Used for /data local generation
+- name: set ownership of geoserver data
+  shell: "chown -R {{ geoserver_user }}:{{ geoserver_user }} {{data_dir}}/geoserver*"
+  when: geoserver_user is defined
+  tags:
+    - geoserver
+    - properties
+
 - name: Running geoserver.sh
   command: "{{data_dir}}/geoserver.sh"
   args:

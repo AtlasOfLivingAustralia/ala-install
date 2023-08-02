@@ -21,8 +21,8 @@
   file:
     path: "{{item}}"
     state: directory
-    owner: userdetails
-    group: userdetails
+    owner: "{{ userdetails_user | default('userdetails') }}"
+    group: "{{ userdetails_user | default('userdetails') }}"
   with_items:
     - "{{data_dir}}/userdetails"
     - "{{data_dir}}/userdetails/config"
@@ -35,8 +35,8 @@
 - name: set data ownership
   file:
     path: "{{data_dir}}/userdetails"
-    owner: userdetails
-    group: userdetails
+    owner: "{{ userdetails_user | default('userdetails') }}"
+    group: "{{ userdetails_user | default('userdetails') }}"
     recurse: true
   tags:
     - properties
@@ -46,8 +46,8 @@
   template:
     src: userdetails-config.yml
     dest: "{{data_dir}}/userdetails/config/userdetails-config.yml"
-    owner: userdetails
-    group: userdetails
+    owner: "{{ userdetails_user | default('userdetails') }}"
+    group: "{{ userdetails_user | default('userdetails') }}"
   notify:
     - restart userdetails
   when: user_details_version is version('3', '>=')
@@ -59,8 +59,8 @@
   template:
     src: userdetails-config-pre-3.yml
     dest: "{{data_dir}}/userdetails/config/userdetails-config.yml"
-    owner: userdetails
-    group: userdetails
+    owner: "{{ userdetails_user | default('userdetails') }}"
+    group: "{{ userdetails_user | default('userdetails') }}"
   notify:
     - restart userdetails
   when: user_details_version is version('3', '<')
@@ -72,8 +72,8 @@
   template:
     src: logback.xml
     dest: "{{data_dir}}/userdetails/config/logback.xml"
-    owner: userdetails
-    group: userdetails
+    owner: "{{ userdetails_user | default('userdetails') }}"
+    group: "{{ userdetails_user | default('userdetails') }}"
   tags:
     - properties
     - userdetails
