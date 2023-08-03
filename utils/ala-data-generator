@@ -1,12 +1,5 @@
 #!/bin/bash
 
-# Run for production inventories with:
-#   ./ala-data-generator --inv=/home/youruser/ala/ansible-inventories/ --data=/data/docker generate doi alerts
-# or for all services:
-#   ./ala-data-generator --inv=/home/youruser/ala/ansible-inventories/ --data=/data/docker generate
-# or for some specific service:
-#   ./ala-data-generator --data=/data/docker ./collections-test
-
 # Let fail if some service generation fails
 set -e
 
@@ -29,9 +22,20 @@ Usage:
   $CMD -v | --version
 
 Options:
+  --extra-args=<args>  Additional "arg1=values arg2=value" to get preference over defaul extra variables values
   --verbose            Verbose output.
   -h --help            Show this help.
   -v --version         Show version.
+
+For instance, run for production inventories with:
+  ./ala-data-generator --inv=/home/youruser/ala/ansible-inventories/ --data=/data/docker generate doi alerts
+or for all services:
+  ./ala-data-generator --inv=/home/youruser/ala/ansible-inventories/ --data=/data/docker generate
+or for some specific service:
+  ./ala-data-generator --data=/data/docker ./collections-test
+or in other directory and using some extra arg:
+  /home/youruser/ala-install/utils/ala-data-generator --extra-args="solr_url=some_solr_host:2181" --data=/data/docker ./biocache-service-test-databox
+
 ----
 $CMD $VER
 License Apache-2.0
@@ -75,8 +79,16 @@ list=(
   #"./pipelines/nci3-spark-pipelines.yml"
 
 # shellcheck disable=SC2154
+if [[ -n $extra_args ]] ; then
+  E="--extra-args $extra_args"
+else
+  E=""
+fi
+
+# shellcheck disable=SC2154
 if [[ -n $inventory ]]; then
-   "$GEN_LOC/la-data-generator" --inv="$PWD/" --data="$data" generate "$inventory"
+   # shellcheck disable=SC2086
+   "$GEN_LOC/la-data-generator" --inv="$PWD/" --data="$data" $E generate "$inventory"
 else
   if [[ -n $service ]] ; then
     services=("${service[@]}")
@@ -95,7 +107,8 @@ else
 
     if [[ -z "${services[*]}" ]] || $match; then
       # echo -n "$el "
-      "$GEN_LOC/la-data-generator" --inv="$inv" --data="$data" generate "$el"
+      # shellcheck disable=SC2086
+      "$GEN_LOC/la-data-generator" --inv="$inv" --data="$data" $E generate "$el"
     fi
   done
 fi

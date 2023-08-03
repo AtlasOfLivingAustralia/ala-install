@@ -26,10 +26,12 @@ Usage:
   $CMD -v | --version
 
 Options:
+  --extra-args=<args>  Additional "arg1=values arg2=value" to get preference over defaul extra variables values
   --verbose            Verbose output.
   -d --dry-run         Print the commands without actually running them.
   -h --help            Show this help.
   -v --version         Show version.
+
 ----
 $CMD $VER
 License Apache-2.0
@@ -66,9 +68,11 @@ elif [[ ! -d $inv || ! -f $inv/ansiblew ]]; then
       exit 1;
 fi
 
+
 TAGS=common,properties,mongodb-org,namematching-service,pipelines,pipelines-layers
 SKIP_TAGS=restart,image-stored-procedures,db,mongodb-org-restart,mongodb-users,sslcerts,pipelines-services,hadoop_dir,hadoop_vocab,apt_update,apt,mongodb-org,docopts,yq
- EXTRAS="user_store_db_hostname=auth-mysql ticket_registry_db_hostname=auth-mongo cas_audit_host=auth-mongo cas_spring_session_host=auth-mongo \
+# shellcheck disable=SC2154
+EXTRAS="user_store_db_hostname=auth-mysql ticket_registry_db_hostname=auth-mongo cas_audit_host=auth-mongo cas_spring_session_host=auth-mongo \
     user_store_db_hostname=auth-mysql apikey_db_hostname=auth-mysql cas_db_hostname=auth-mysql cas_tickets_host=auth-mongo \
     cas_tickets_host=auth-mongo cas_services_host=auth-mongo cas_services_host=auth-mongo collectory_db_host_address=collectory-mysql \
     dq_db_url=jdbc:postgresql://dq-postgresql/data-quality specieslist_db_hostname=lists-mysql logger_db_hostname=logger-mysql \
@@ -80,7 +84,8 @@ SKIP_TAGS=restart,image-stored-procedures,db,mongodb-org-restart,mongodb-users,s
     data_dir=/data/docker skip_handlers=true tomcat_apr=false use_docker_with_pipelines=false install_elasticsearch=false ecodata_url=FIXME_ECODATA_URL \
     tomcat=$user tomcat_user=$user biocollect_user=$user ecodata_user=$user merit_user=$user fieldguide_app=fieldguide spark_user=$user \
     profile_service_user=$user profile_hub_user=$user doi_user=$user cas_user=$user userdetails_user=$user apikey_user=$user image_user=$user \
-    geoserver_user=$user"
+    geoserver_user=$user \
+    $extra_args"
 
 function gen() {
     local what
