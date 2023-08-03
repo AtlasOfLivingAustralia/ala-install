@@ -1,11 +1,13 @@
 #!/bin/bash
 
-# Run with:
+# Run for production inventories with:
 #   ./ala-data-generator --inv=/home/youruser/ala/ansible-inventories/ --data=/data/docker generate doi alerts
 # or for all services:
 #   ./ala-data-generator --inv=/home/youruser/ala/ansible-inventories/ --data=/data/docker generate
+# or for some specific service:
+#   ./ala-data-generator --data=/data/docker ./collections-test
 
-# It will fail if some playbook fails 
+# Let fail if some service generation fails
 set -e
 
 CMD=$(basename "$0")
@@ -22,6 +24,7 @@ $CMD: ALA data generator
 
 Usage:
   $CMD [options] --data=<dir> --inv=<dir> generate [<service>...]
+  $CMD [options] --data=<dir> <inventory>
   $CMD -h | --help
   $CMD -v | --version
 
@@ -71,24 +74,28 @@ list=(
   #"./pipelines/aws-spark-quoll-pipelines.yml"
   #"./pipelines/nci3-spark-pipelines.yml"
 
-if [[ -n $service ]] ; then
+# shellcheck disable=SC2154
+if [[ -n $inventory ]]; then
+   "$GEN_LOC/la-data-generator" --inv="$PWD/" --data="$data" generate "$inventory"
+else
+  if [[ -n $service ]] ; then
     services=("${service[@]}")
-fi
+  fi
 
-for el in "${list[@]}"
-do
-  match=false
-  for arg in "${services[@]}"
+  for el in "${list[@]}"
   do
-    if [[ $el == *"$arg"* ]]; then
-      match=true
-      break
+    match=false
+    for arg in "${services[@]}"
+    do
+      if [[ $el == *"$arg"* ]]; then
+        match=true
+        break
+      fi
+    done
+
+    if [[ -z "${services[*]}" ]] || $match; then
+      # echo -n "$el "
+      "$GEN_LOC/la-data-generator" --inv="$inv" --data="$data" generate "$el"
     fi
   done
-
-  if [[ -z "${services[*]}" ]] || $match; then
-    # echo -n "$el "
-    "$GEN_LOC/la-data-generator" --inv=$inv --data=$data generate "$el"
-  fi
-done
-
+fi
