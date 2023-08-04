@@ -58,6 +58,10 @@ ala:
 imageServiceBaseUrl: {{ image_service_url }}
 allowedImageEditingRoles: {{ allowed_image_editing_roles }}
 
+wikipedia:
+    url: {{ wikipedia_api_url | default('https://en.wikipedia.org/api/rest_v1/page/html/') }}
+    lang: {{ wikipedia_api_lang | default('en') }}
+
 # Skin and layout
 skin:
   homeUrl: {{ skin_home_url }}

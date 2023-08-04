@@ -8,8 +8,8 @@
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
-    - "{{ data_dir }}/bie-index/config"    
-    - "{{ data_dir }}/bie/import"     
+    - "{{ data_dir }}/bie-index/config"
+    - "{{ data_dir }}/bie/import"
   tags:
     - config
     - properties
@@ -37,9 +37,33 @@
   copy: src={{ item }} dest={{data_dir}}/bie-index/config
   with_items:
     - conservation-lists.json
+    - hidden-image-lists.json
     - image-lists.json
     - vernacular-lists.json
     - favourites.json
+    - wiki-lists.json
+  tags:
+    - config
+    - properties
+    - bie-index
+
+- name: copy hidden-image-lists from inventory
+  copy:
+    src: "{{ inventory_dir }}/{{ hidden_images_file }}"
+    dest: "{{ data_dir }}/bie-index/config/hidden-image-lists.json"
+    force: yes
+  when: hidden_images_file is defined
+  tags:
+    - config
+    - properties
+    - bie-index
+
+- name: copy wiki-lists from inventory
+  copy:
+    src: "{{ inventory_dir }}/{{ wiki_file }}"
+    dest: "{{ data_dir }}/bie-index/config/wiki-lists.json"
+    force: yes
+  when: wiki_file is defined
   tags:
     - config
     - properties

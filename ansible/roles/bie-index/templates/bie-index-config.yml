@@ -82,6 +82,12 @@ conservationListsUrl: file://{{ data_dir }}/bie-index/config/conservation-lists.
 vernacularListsUrl: file://{{ data_dir }}/bie-index/config/vernacular-lists.json
 #nationalSpeciesDatasets: dr2699,dr2700,dr2702,dr2704,dr2703,dr3118
 nationalSpeciesDatasets: ""
+hiddenImages:
+  # URL of hidden images configuration file
+  config: file://{{ data_dir }}/bie-index/config/hidden-images-lists.json
+wiki:
+  # URL of wiki configuration file
+  config: file://{{ data_dir }}/bie-index/config/wiki-lists.json
 solr:
   live:
     connection: {{ index_live_url | default('http://localhost:8983/solr/bie') }}
