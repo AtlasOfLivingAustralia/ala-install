@@ -89,6 +89,11 @@ wiki:
   # URL of wiki configuration file
   config: file://{{ data_dir }}/bie-index/config/wiki-lists.json
 solr:
+  admin:
+    connection: { { index_admin_url | default('http://localhost:8983/solr') } }
+    type: HTTP
+    queueSize: 10
+    threadCount: 4
   live:
     connection: {{ index_live_url | default('http://localhost:8983/solr/bie') }}
     type: HTTP
