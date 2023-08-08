@@ -6,7 +6,7 @@
         path: "{{ plugin_dir }}elasticsearch"
         state: directory
 
-    - name: Download elasticsearch the plugin
+    - name: Download the elasticsearch plugin
       get_url:
         url: https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.py
         dest: "{{ plugin_dir }}elasticsearch/elasticsearch.py"
@@ -108,3 +108,16 @@
         state: restarted
 
   when: site24x7_java_apm_enabled|default(False)|bool
+
+# install the open files plugin
+- block:
+    - name: Create the open files plugin directory
+      file:
+        path: "{{ plugin_dir }}open_files_linux"
+        state: directory
+
+    - name: Download the openfiles plugin
+      get_url:
+        url: https://raw.githubusercontent.com/site24x7/plugins/master/open_files_linux/open_files_linux.py
+        dest: "{{ plugin_dir }}open_files_linux/open_files_linux.py"
+        mode: 0755
