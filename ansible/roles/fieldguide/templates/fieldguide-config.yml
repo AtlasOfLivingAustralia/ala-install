@@ -110,3 +110,6 @@ openapi:
     url: https://www.mozilla.org/en-US/MPL/1.1/
   version: '@info.app.version@'
   cachetimeoutms: 4000
+serverURL: {{fieldguide_base_url}}
+grails:
+  serverURL: {{fieldguide_base_url}}
