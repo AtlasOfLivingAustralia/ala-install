@@ -1,0 +1,73 @@
+---
+version: '3.8'
+
+services:
+
+  web:
+    image: {{ docker_web_image }}
+    ports:
+      - "{{ collectory_docker_web_port }}:80"
+    volumes:
+      - nginx-config:/etc/nginx/
+    networks:
+      - collectory-network
+
+  collectory:
+    # container_name: collectory
+    image: atlasoflivingaustralia/collectory:741e6c3
+    ports:
+      - 8080
+    volumes:
+      - collectory-config:/data/collectory/config
+{% if i18n_package_enabled | bool %}
+      - i18n:/opt/atlas/i18n
+{% endif %}
+    networks:
+      - collectory-network
+
+  mysql:
+    # container_name: collectory-mysql
+    image: mysql:8
+    ports:
+      - 3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: {{mysql_root_password}}
+      MYSQL_USER: {{collectory_db_user}}
+      MYSQL_PASSWORD: {{collectory_db_password}}
+      MYSQL_DATABASE: collectory
+    networks:
+      - collectory-network
+
+networks:
+  collectory-network: {}
+
+volumes:
+  mysql-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: "{{ collectory_docker_db_data_dir }}"
+
+  collectory-config:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ collectory_data_dir }}/config
+
+  nginx-config:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ collectory_data_dir }}/nginx
+
+  i18n:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/atlas/i18n

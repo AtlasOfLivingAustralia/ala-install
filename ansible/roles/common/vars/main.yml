@@ -3,4 +3,9 @@
 groupIdPath: "{{groupId | default('au/org/ala')}}"
 
 ansible_python_interpreter: "auto"
+
+docker_db_data_dir: "/data/dbs"
+
+docker_web_image: "nginx"
+
 # change auto to python for zoatrack

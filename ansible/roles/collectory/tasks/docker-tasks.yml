@@ -1,0 +1,25 @@
+---
+- name: ensure target db directories exist
+  file: path={{item}} state=directory
+  # owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{ collectory_docker_db_data_dir }}"
+    - "{{ collectory_data_dir }}/docker/"
+  tags:
+    - docker
+
+- name: Generate Docker Compose file from template
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ collectory_data_dir }}/docker/docker-compose.yml"
+  tags:
+    - docker
+
+- name: Deploy Docker Swarm stack
+  docker_stack:
+    name: collectory
+    state: present
+    compose:
+      - "{{ collectory_data_dir }}/docker/docker-compose.yml"
+  tags:
+    - docker

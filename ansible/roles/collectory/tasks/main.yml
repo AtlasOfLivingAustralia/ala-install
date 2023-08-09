@@ -1,3 +1,4 @@
+---
 - include: ../../common/tasks/setfacts.yml
   tags:
     - properties
@@ -5,25 +6,6 @@
     - webapps
     - deploy
     - config
-
-- name: ensure mysql is running (this is idempotent so safe)
-  service: name={{ mysql_service }} state=started enabled="yes"
-  tags:
-    - db
-    - collectory
-
-- name: create collectory DB
-  mysql_db: name=collectory state=present encoding=utf8
-  register: dbschema
-  tags:
-    - db
-    - collectory
-
-- name: create collectory DB user
-  mysql_user: name={{collectory_db_user}} password={{collectory_db_password}} priv=collectory.*:ALL state=present
-  tags:
-    - db
-    - collectory
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
@@ -53,14 +35,6 @@
     - properties
     - collectory
 
-- name: set data ownership [all data is owned by tomcat]
-  file: path={{ collectory_data_dir }} owner={{ tomcat_user }}  group={{ tomcat_user }}  recurse=true
-  notify: 
-    - restart tomcat  
-  tags:
-    - properties
-    - collectory
-
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ collectory_context_path }}' hostname='{{ collectory_hostname }}'
   tags:
     - deploy
@@ -68,6 +42,16 @@
     - collectory
     - webapps
   when: not webserver_nginx
+
+- name: ensure nginx directories exist for docker vhost generation
+  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{ nginx_conf_dir }}/conf.d"
+    - "{{ nginx_conf_dir }}/sites-enabled"
+    - "{{ nginx_conf_dir }}/sites-available"
+  tags:
+    - docker
+  when: use_docker is defined and use_docker
 
 - name: add nginx vhost if configured
   include_role:
@@ -82,9 +66,10 @@
     - collectory
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ collectory_war_url }}' context_path='{{ collectory_context_path }}' hostname='{{ collectory_hostname }}'
-  tags:
-    - deploy
-    - tomcat_vhost
-    - collectory
-    - webapps
+- name: Include docker tasks
+  include: docker-tasks.yml
+  when: use_docker is defined and use_docker
+
+- name: Include VM tasks
+  include: vm-tasks.yml
+  when: use_docker is not defined or not use_docker

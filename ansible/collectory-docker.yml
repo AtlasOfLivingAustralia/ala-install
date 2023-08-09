@@ -1,0 +1,13 @@
+---
+- hosts: collectory
+  vars:
+    - use_docker: true
+    - nginx_conf_dir: "{{ collectory_data_dir }}/nginx"
+    - tomcat_user: root
+    - collectory_db_host_address: collectory-mysql
+    - skip_handlers: true
+  roles:
+    - common
+    - i18n
+    - collectory
+  become: true
