@@ -1,1 +1,2 @@
-docker_dir: "/data/docker"
+# To avoid collisions in shared data dirs
+docker_dir: "/data/docker/{{ inventory_hostname }}"

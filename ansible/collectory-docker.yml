@@ -1,13 +1,25 @@
 ---
+# We reuse the inventories for collectory VM deploy, so we use also
+# the same group name to read the [collectory:vars]
 - hosts: collectory
   vars:
+    # This select the docker-tasks.yml
     - use_docker: true
+    # This creates the collectory vhost in a directory that later is
+    # mounted as a volume in a nginx image
     - nginx_conf_dir: "{{ collectory_data_dir }}/nginx"
+    # For now we use root as user for config data but probably we can
+    # use other
     - tomcat_user: root
-    - collectory_db_host_address: collectory-mysql
+    # This is the name the containter receive so we use it for our db
+    # connection
+    - collectory_db_host_address: collectory_mysql
+    # Don't restart nginx or similar as we only need the vhost
     - skip_handlers: true
   roles:
     - common
+    # the i18n translations are installed and mounted in the collectory
+    # image
     - i18n
     - collectory
   become: true

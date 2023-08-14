@@ -3,35 +3,45 @@ version: '3.8'
 
 services:
 
-  web:
+  nginx:
     image: {{ docker_web_image }}
     ports:
       - "{{ collectory_docker_web_port }}:80"
     volumes:
-      - nginx-config:/etc/nginx/
+      - nginx-config:/etc/nginx/conf.d
+      - nginx-available:/etc/nginx/sites-available
+      - nginx-enabled:/etc/nginx/sites-enabled
     networks:
       - collectory-network
 
   collectory:
-    # container_name: collectory
-    image: atlasoflivingaustralia/collectory:741e6c3
-    ports:
-      - 8080
+    image: atlasoflivingaustralia/collectory:9144d68
     volumes:
       - collectory-config:/data/collectory/config
+      - collectory-data:/data/collectory/data
+      - collectory-upload:/data/collectory/upload
 {% if i18n_package_enabled | bool %}
       - i18n:/opt/atlas/i18n
+      - i18n-custom:/var/opt/atlas/i18n
+{% endif %}
+    environment:
+      DOCKERIZE_OPTS: "-wait tcp://collectory_mysql:3306 -timeout 120s"
+      # This does not work, we should improve the Dockerimage
+      # MYSQL_HOST: collectory_mysql
+{% if debug_docker_entrypoint is defined and debug_docker_entrypoint | bool %}
+    entrypoint: ["tail", "-f", "/dev/null"]
+    restart: "no"
 {% endif %}
     networks:
       - collectory-network
 
   mysql:
-    # container_name: collectory-mysql
-    image: mysql:8
-    ports:
-      - 3306
+    image: mysql:8.0-debian
     volumes:
       - mysql-data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    # In the future:
+    # command: --default-authentication-plugin=caching_sha2_password
     environment:
       MYSQL_ROOT_PASSWORD: {{mysql_root_password}}
       MYSQL_USER: {{collectory_db_user}}
@@ -41,7 +51,8 @@ services:
       - collectory-network
 
 networks:
-  collectory-network: {}
+  collectory-network:
+    driver: overlay
 
 volumes:
   mysql-data:
@@ -58,12 +69,40 @@ volumes:
       o: bind
       device: {{ collectory_data_dir }}/config
 
+  collectory-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ collectory_data_dir }}/data
+
+  collectory-upload:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ collectory_data_dir }}/upload
+
   nginx-config:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: {{ collectory_data_dir }}/nginx
+      device: {{ collectory_data_dir }}/nginx/conf.d
+
+  nginx-available:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ collectory_data_dir }}/nginx/sites-available
+
+  nginx-enabled:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ collectory_data_dir }}/nginx/sites-enabled
 
   i18n:
     driver: local
@@ -71,3 +110,10 @@ volumes:
       type: none
       o: bind
       device: /opt/atlas/i18n
+
+  i18n-custom:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/opt/atlas/i18n
