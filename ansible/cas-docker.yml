@@ -1,0 +1,29 @@
+---
+- hosts: cas-servers
+  vars:
+    - use_docker: true
+    - nginx_conf_dir: "{{ data_dir }}/nginx"
+    - cas_db_hostname: auth_mysql
+    - user_store_db_hostname: auth_mysql
+    - user_store_db_hostname: auth_mysql
+    - apikey_db_hostname: auth_mysql
+    - ticket_registry_db_hostname: auth_mongo
+    - cas_audit_host: auth_mongo
+    - cas_spring_session_host: auth_mongo
+    - cas_tickets_host: auth_mongo
+    - cas_tickets_host: auth_mongo
+    - cas_services_host: auth_mongo
+    - cas_services_host: auth_mongo
+    - skip_handlers: true
+    - cas_add_mongo_users: true
+    - bootadmin_client_base_url: 'https://{{ inventory_hostname}}/'
+    - cas_user: "{{ lookup('env', 'USER') }}"
+    - userdetails_user: "{{ lookup('env', 'USER') }}"
+    - apikey_user: "{{ lookup('env', 'USER') }}"
+    - nginx_user: "{{ lookup('env', 'USER') }}"
+  roles:
+    - common
+    - i18n
+    - cas5
+    - cas-management
+    - userdetails

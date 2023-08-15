@@ -43,12 +43,7 @@
     - webapps
   when: not webserver_nginx
 
-- name: ensure nginx directories exist for docker vhost generation
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
-  with_items:
-    - "{{ nginx_conf_dir }}/conf.d"
-    - "{{ nginx_conf_dir }}/sites-enabled"
-    - "{{ nginx_conf_dir }}/sites-available"
+- include: ../../docker-common/tasks/common.yml
   tags:
     - docker
   when: use_docker is defined and use_docker

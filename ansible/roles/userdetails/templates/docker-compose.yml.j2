@@ -1,0 +1,149 @@
+---
+version: '3.8'
+
+services:
+  cas:
+    image: livingatlases/cas:latest
+    ports:
+      - 9000
+    volumes:
+      - cas-data:/data/cas
+      - logs:/var/log/atlas
+{% if i18n_package_enabled | bool %}
+      - i18n:/opt/atlas/i18n
+      - i18n-custom:/var/opt/atlas/i18n
+{% endif %}
+    networks:
+      - auth-network
+
+  userdetails:
+    image: livingatlases/userdetails:latest
+    ports:
+      - 9001
+    volumes:
+      - userdetails-data:/data/userdetails
+      - logs:/var/log/atlas
+{% if i18n_package_enabled | bool %}
+      - i18n:/opt/atlas/i18n
+      - i18n-custom:/var/opt/atlas/i18n
+{% endif %}
+
+  cas-management:
+    image: livingatlases/cas-management:latest
+    ports:
+      - 8070
+    volumes:
+      - cas-management-data:/data/cas-management
+      - logs:/var/log/atlas
+{% if i18n_package_enabled | bool %}
+      - i18n:/opt/atlas/i18n
+      - i18n-custom:/var/opt/atlas/i18n
+{% endif %}
+
+  mongo:
+    image: mongo:5
+    volumes:
+      - mongo-data:/data/db
+      - ./init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh
+    ports:
+      - 27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: {{ mongodb_root_username }}
+      MONGO_INITDB_ROOT_PASSWORD: {{ mongodb_root_password }}
+
+{% if docker_development_mode is defined and docker_development_mode | bool %}
+  mongo-express:
+    container_name: auth-mongo-express
+    image: mongo-express
+    restart: always
+    ports:
+      - 9283:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: auth_mongo
+      ME_CONFIG_MONGODB_ADMINUSERNAME: {{ mongodb_root_username }}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: {{ mongodb_root_password }}
+{% endif %}
+
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init-mysql.sql:/docker-entrypoint-initdb.d/init-mysql.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_ROOT_PASSWORD: {{mysql_root_password}}
+      MYSQL_USER: {{collectory_db_user}}
+      MYSQL_PASSWORD: {{collectory_db_password}}
+      MYSQL_DATABASE: collectory
+      DOCKERIZE_OPTS: "-wait tcp://auth_mysql:3306 -wait tcp://auth_cas:9000 -timeout 120s"
+    networks:
+      - auth-network
+
+networks:
+  auth-network:
+    driver: overlay
+
+volumes:
+
+  mysql-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: "{{ userdetails_docker_db_mysql_data_dir }}"
+
+  mongo-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: "{{ userdetails_docker_db_mongo_data_dir }}"
+
+  userdetails-config:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ userdetails_data_dir }}/config
+
+  i18n:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/atlas/i18n
+
+  i18n-custom:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/opt/atlas/i18n
+
+  logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/log/atlas
+
+  userdetails-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ userdetails_data_dir }}
+
+  cas-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ cas_data_dir }}
+
+  cas-management-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ cas_management_data_dir }}

@@ -1,0 +1,48 @@
+#!/bin/bash
+set -e;
+
+# https://stackoverflow.com/a/53522699
+# https://stackoverflow.com/a/37811764
+mongo -- "$MONGO_INITDB_DATABASE" <<EOF
+  var rootUser = '{{ mongodb_root_username }}';
+  var rootPassword = '{{ mongodb_root_password }}';
+
+  var admin = db.getSiblingDB('admin');
+
+  admin.auth(rootUser, rootPassword);
+  const users = [
+  {
+    user: '{{ cas_tickets_username }}',
+    pwd: '{{ cas_tickets_password }}',
+    database: 'cas-ticket-registry',
+    roles: [ { role: 'readWrite', db: 'cas-ticket-registry' } ]
+  },
+  {
+    user: '{{ cas_services_username }}',
+    pwd: '{{ cas_services_password }}',
+    database: 'cas-service-registry',
+    roles: [ { role: 'readWrite', db: 'cas-service-registry' } ]
+  },
+  {
+    user: '{{ cas_audit_username }}',
+    pwd: '{{ cas_audit_password }}',
+    database: 'cas-audit-repository',
+    roles: [ { role: 'readWrite', db: 'cas-audit-repository' } ]
+  },
+  {
+    user: '{{ cas_spring_session_username }}',
+    pwd: '{{ cas_spring_session_password }}',
+    database: 'spring-sessions',
+    roles: [ { role: 'readWrite', db: 'spring-sessions' } ]
+  }
+];
+
+  users.forEach(user => {
+    var targetDb = db.getSiblingDB(user.database);
+    targetDb.createUser(
+      { user: user.user,
+      pwd: user.pwd,
+      roles: user.roles }
+    );
+  });
+EOF
