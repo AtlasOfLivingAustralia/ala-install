@@ -6,6 +6,8 @@ services:
     image: livingatlases/cas:latest
     ports:
       - 9000
+    environment:
+      DOCKERIZE_OPTS: "-wait tcp://auth_mysql:3306 -wait tcp://auth_mongo:27017 -timeout 60s"
     volumes:
       - cas-data:/data/cas
       - logs:/var/log/atlas
@@ -20,6 +22,8 @@ services:
     image: livingatlases/userdetails:latest
     ports:
       - 9001
+    environment:
+      DOCKERIZE_OPTS: "-wait tcp://auth_mysql:3306 -wait tcp://auth_cas:9000 -timeout 120s"
     volumes:
       - userdetails-data:/data/userdetails
       - logs:/var/log/atlas
@@ -27,11 +31,15 @@ services:
       - i18n:/opt/atlas/i18n
       - i18n-custom:/var/opt/atlas/i18n
 {% endif %}
+    networks:
+      - auth-network
 
   cas-management:
     image: livingatlases/cas-management:latest
     ports:
       - 8070
+    environment:
+      DOCKERIZE_OPTS: "-wait tcp://auth_mysql:3306 -wait tcp://auth_cas:9000 -wait tcp://auth_mongo:27017 -timeout 120s"
     volumes:
       - cas-management-data:/data/cas-management
       - logs:/var/log/atlas
@@ -39,6 +47,8 @@ services:
       - i18n:/opt/atlas/i18n
       - i18n-custom:/var/opt/atlas/i18n
 {% endif %}
+    networks:
+      - auth-network
 
   mongo:
     image: mongo:5
@@ -50,10 +60,11 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: {{ mongodb_root_username }}
       MONGO_INITDB_ROOT_PASSWORD: {{ mongodb_root_password }}
+    networks:
+      - auth-network
 
 {% if docker_development_mode is defined and docker_development_mode | bool %}
   mongo-express:
-    container_name: auth-mongo-express
     image: mongo-express
     restart: always
     ports:
@@ -62,6 +73,8 @@ services:
       ME_CONFIG_MONGODB_SERVER: auth_mongo
       ME_CONFIG_MONGODB_ADMINUSERNAME: {{ mongodb_root_username }}
       ME_CONFIG_MONGODB_ADMINPASSWORD: {{ mongodb_root_password }}
+    networks:
+      - auth-network
 {% endif %}
 
   mysql:
