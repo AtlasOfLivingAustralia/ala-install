@@ -2,6 +2,53 @@
 version: '3.8'
 
 services:
+
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_ROOT_PASSWORD: {{mysql_root_password}}
+      MYSQL_USER: {{collectory_db_user}}
+      MYSQL_PASSWORD: {{collectory_db_password}}
+      MYSQL_DATABASE: collectory
+    networks:
+      - la-internal
+      - auth
+
+  mongo:
+    image: mongo:5
+    volumes:
+      - mongo-data:/data/db
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: {{ mongodb_root_username }}
+      MONGO_INITDB_ROOT_PASSWORD: {{ mongodb_root_password }}
+    networks:
+      - la-internal
+      - auth
+
+{% if docker_development_mode is defined and docker_development_mode | bool %}
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 9283:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: auth-db_mongo
+      ME_CONFIG_MONGODB_ADMINUSERNAME: {{ mongodb_root_username }}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: {{ mongodb_root_password }}
+    networks:
+      - la-internal
+      - auth
+{% endif %}
+
   cas:
     image: livingatlases/cas:latest
     ports:
@@ -11,12 +58,14 @@ services:
     volumes:
       - cas-data:/data/cas
       - logs:/var/log/atlas
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 {% if i18n_package_enabled | bool %}
       - i18n:/opt/atlas/i18n
       - i18n-custom:/var/opt/atlas/i18n
 {% endif %}
     networks:
-      - auth-network
+      - auth
 
   userdetails:
     image: livingatlases/userdetails:latest
@@ -27,12 +76,14 @@ services:
     volumes:
       - userdetails-data:/data/userdetails
       - logs:/var/log/atlas
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 {% if i18n_package_enabled | bool %}
       - i18n:/opt/atlas/i18n
       - i18n-custom:/var/opt/atlas/i18n
 {% endif %}
     networks:
-      - auth-network
+      - auth
 
   cas-management:
     image: livingatlases/cas-management:latest
@@ -43,57 +94,19 @@ services:
     volumes:
       - cas-management-data:/data/cas-management
       - logs:/var/log/atlas
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 {% if i18n_package_enabled | bool %}
       - i18n:/opt/atlas/i18n
       - i18n-custom:/var/opt/atlas/i18n
 {% endif %}
     networks:
-      - auth-network
-
-  mongo:
-    image: mongo:5
-    volumes:
-      - mongo-data:/data/db
-      - ./init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh
-    ports:
-      - 27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: {{ mongodb_root_username }}
-      MONGO_INITDB_ROOT_PASSWORD: {{ mongodb_root_password }}
-    networks:
-      - auth-network
-
-{% if docker_development_mode is defined and docker_development_mode | bool %}
-  mongo-express:
-    image: mongo-express
-    restart: always
-    ports:
-      - 9283:8081
-    environment:
-      ME_CONFIG_MONGODB_SERVER: auth_mongo
-      ME_CONFIG_MONGODB_ADMINUSERNAME: {{ mongodb_root_username }}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: {{ mongodb_root_password }}
-    networks:
-      - auth-network
-{% endif %}
-
-  mysql:
-    image: mysql:5.7
-    volumes:
-      - mysql-data:/var/lib/mysql
-      - ./init-mysql.sql:/docker-entrypoint-initdb.d/init-mysql.sql
-    environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_ROOT_PASSWORD: {{mysql_root_password}}
-      MYSQL_USER: {{collectory_db_user}}
-      MYSQL_PASSWORD: {{collectory_db_password}}
-      MYSQL_DATABASE: collectory
-      DOCKERIZE_OPTS: "-wait tcp://auth_mysql:3306 -wait tcp://auth_cas:9000 -timeout 120s"
-    networks:
-      - auth-network
+      - auth
 
 networks:
-  auth-network:
+  la-internal:
+    external: true
+  auth:
     driver: overlay
 
 volumes:

@@ -1,4 +1,8 @@
+---
 - hosts: docker_swarm
+  vars:
+    - nginx_conf_dir: "{{ data_dir }}/nginx"
+    - nginx_user: "{{ lookup('env', 'USER') }}"
   roles:
     - docker
     - docker-common

@@ -7,4 +7,4 @@
     - "{{ nginx_conf_dir }}/sites-enabled"
     - "{{ nginx_conf_dir }}/sites-available"
   tags:
-    - docker
+    - docker-common

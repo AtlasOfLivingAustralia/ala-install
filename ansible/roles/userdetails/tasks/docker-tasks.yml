@@ -17,28 +17,76 @@
     - docker
     - docker-service
 
-- name: Generate Docker mysql init file from template
-  template:
-    src: init-mysql.sql.j2
-    dest: "{{ userdetails_data_dir }}/docker/init-mysql.sql"
-  tags:
-    - docker
-    - docker-service
-
-- name: Generate Docker mongo init file from template
-  template:
-    src: init-mongo.sh.j2
-    dest: "{{ userdetails_data_dir }}/docker/init-mongo.sh"
-  tags:
-    - docker
-    - docker-service
-
 - name: Deploy Docker Swarm stack
   docker_stack:
     name: auth
     state: present
     compose:
       - "{{ userdetails_data_dir }}/docker/docker-compose.yml"
+  tags:
+    - docker
+    - docker-service
+
+- name: Remove previous socat container for MySQL tunnel
+  command: docker service rm socat-mysql
+  when: use_docker is defined and use_docker
+  tags:
+    - docker
+    - docker-service
+  ignore_errors: true
+
+- name: Remove previous socat container for MongoDB tunnel
+  command: docker service rm socat-mongodb
+  when: use_docker is defined and use_docker
+  tags:
+    - docker
+    - docker-service
+  ignore_errors: true
+
+- name: Run socat container to tunnel MySQL port
+  command: >
+    docker service create --name socat-mysql --network la-internal --publish 3306:3306 alpine/socat tcp-listen:3306,fork,reuseaddr tcp-connect:auth_mysql:3306
+  tags:
+    - docker
+    - docker-service
+
+- name: Run socat container to tunnel MongoDB port
+  command: >
+    docker service create --name socat-mongodb --network la-internal --publish 27017:27017 alpine/socat tcp-listen:27017,fork,reuseaddr tcp-connect:auth_mongo:27017
+  tags:
+    - docker
+    - docker-service
+
+- name: Add mongo/mysql dbs and users
+  include_tasks: ../../cas5-dbs/tasks/main.yml
+  tags:
+    - cas-dbs
+  vars:
+    - cas_db_hostname: 127.0.0.1
+    - user_store_db_hostname: 127.0.0.1
+    - user_store_db_hostname: 127.0.0.1
+    - apikey_db_hostname: 127.0.0.1
+    - ticket_registry_db_hostname: 127.0.0.1
+    - cas_audit_host: 127.0.0.1
+    - cas_spring_session_host: 127.0.0.1
+    - cas_tickets_host: 127.0.0.1
+    - cas_tickets_host: 127.0.0.1
+    - cas_services_host: 127.0.0.1
+    - cas_services_host: 127.0.0.1
+    - cas_mysql_src_host: auth_cas
+    - apikey_mysql_src_host: auth_cas
+  when: use_docker is defined and use_docker
+
+- name: Remove socat container for MySQL tunnel
+  command: docker service rm socat-mysql
+  when: use_docker is defined and use_docker
+  tags:
+    - docker
+    - docker-service
+
+- name: Remove socat container for MongoDB tunnel
+  command: docker service rm socat-mongodb
+  when: use_docker is defined and use_docker
   tags:
     - docker
     - docker-service

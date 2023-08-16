@@ -5,6 +5,7 @@
     state: present
   tags:
     - docker
+    - docker-install
 
 - name: Add Docker Repository
   apt_repository:
@@ -12,6 +13,7 @@
     state: present
   tags:
     - docker
+    - docker-install
 
 - name: Update apt and install docker-ce and related
   apt:
@@ -25,6 +27,7 @@
     autoclean: true
   tags:
     - docker
+    - docker-install
 
 - name: Setup docker daemon
   template: src={{ item }} dest=/etc/docker/{{ item }}
@@ -32,6 +35,7 @@
     - daemon.json
   tags:
     - docker
+    - docker-install
 
 - name: Restart docker
   service:
@@ -40,3 +44,4 @@
   tags:
     - docker
     - docker-restart
+    - docker-install

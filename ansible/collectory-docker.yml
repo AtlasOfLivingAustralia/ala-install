@@ -7,7 +7,7 @@
     - use_docker: true
     # This creates the collectory vhost in a directory that later is
     # mounted as a volume in a nginx image
-    - nginx_conf_dir: "{{ collectory_data_dir }}/nginx"
+    - nginx_conf_dir: "{{ data_dir }}/nginx"
     # For now we use the current user as user for config data but probably we can
     # use other
     - tomcat_user: "{{ lookup('env', 'USER') }}"

@@ -1,0 +1,15 @@
+---
+
+- name: Create la-internal network
+  docker_network:
+    name: la-internal
+    driver: overlay
+    state: present
+  become: true
+  tags:
+    - docker-common
+
+- name: Include common tasks to others roles
+  include_tasks: common.yml
+  tags:
+    - docker-common
