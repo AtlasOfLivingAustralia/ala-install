@@ -73,8 +73,8 @@
     - cas_tickets_host: 127.0.0.1
     - cas_services_host: 127.0.0.1
     - cas_services_host: 127.0.0.1
-    - cas_mysql_src_host: auth_cas
-    - apikey_mysql_src_host: auth_cas
+    - cas_mysql_src_host: '%'
+    - apikey_mysql_src_host: '%'
   when: use_docker is defined and use_docker
 
 - name: Remove socat container for MySQL tunnel
