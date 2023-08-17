@@ -13,7 +13,7 @@ casServerLoginUrl="{{ auth_cas_url }}/login"
 gateway=false
 casServerUrlPrefix="{{ auth_cas_url }}"
 security.cas.logoutUrl="{{ auth_cas_url }}/logout"
-authenticateOnlyIfLoggedInFilterPattern="/species/.*"
+authenticateOnlyIfLoggedInFilterPattern="/species/*"
 auth.admin_role="ROLE_ADMIN"
 uriFilterPattern="/admin, /admin/.*"
 
