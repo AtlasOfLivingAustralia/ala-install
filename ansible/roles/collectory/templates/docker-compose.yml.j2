@@ -13,6 +13,8 @@ services:
       - i18n:/opt/atlas/i18n
       - i18n-custom:/var/opt/atlas/i18n
 {% endif %}
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     environment:
       DOCKERIZE_OPTS: "-wait tcp://collectory_mysql:3306 -timeout 120s"
       # This does not work, we should improve the Dockerimage
@@ -31,6 +33,8 @@ services:
     image: mysql:8.0-debian
     volumes:
       - mysql-data:/var/lib/mysql
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     command: --default-authentication-plugin=mysql_native_password
     # In the future:
     # command: --default-authentication-plugin=caching_sha2_password

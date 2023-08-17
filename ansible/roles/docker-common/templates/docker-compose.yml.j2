@@ -12,6 +12,8 @@ services:
       - nginx-config:/etc/nginx/conf.d
       - nginx-available:/etc/nginx/sites-available
       - nginx-enabled:/etc/nginx/sites-enabled
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 {% if use_letsencrypt is defined and use_letsencrypt | bool %}
       - certs:/etc/letsencrypt
 {% endif %}
@@ -36,6 +38,9 @@ services:
       ALLOWED_SENDER_DOMAINS: {{ email_allowed_domains | default('l-a.site') }}
     networks:
       la-internal:
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 
 networks:
   la-internal:
