@@ -55,6 +55,7 @@
     appname: "collectory"
     hostname: "{{ collectory_hostname }}"
     context_path: "{{ collectory_context_path }}"
+    nginx_upstream_host: "{{ collectory_docker_host | default('127.0.0.1') }}"
   tags:
     - nginx_vhost
     - deploy

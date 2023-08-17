@@ -96,7 +96,7 @@
       - path: "/{{  userdetails_context_path | default('userdetails') }}"
         appname: "userdetails"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ userdetails_port | default('9001') }}/{{  userdetails_context_path | default('userdetails') }}"
+        proxy_pass: "http://{{ userdetails_docker_host | default('127.0.0.1') }}:{{ userdetails_port | default('9001') }}/{{  userdetails_context_path | default('userdetails') }}"
   tags:
     - nginx_vhost
     - deploy

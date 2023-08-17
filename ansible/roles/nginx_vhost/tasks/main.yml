@@ -124,7 +124,7 @@
       - path: "{{context_path | default('/', True)}}"
         is_proxy: true
         use_cache: false
-        proxy_pass: "http://127.0.0.1:{{tomcat_server_port | default('8080', True)}}{{context_path | default('/', True)}}"
+        proxy_pass: "http://{{ nginx_upstream_host | default('127.0.0.1')}}:{{tomcat_server_port | default('8080', True)}}{{context_path | default('/', True)}}"
   when: nginx_paths is not defined or (nginx_paths | trim == '')
   tags:
     - nginx_vhost
@@ -544,6 +544,6 @@
 
 - name: Add the virtual host to the /etc/hosts file for Vagrant instances
   lineinfile: dest=/etc/hosts regexp="^127.0.0.1 {{hostname}}$" line="127.0.0.1 {{ hostname }}" state=present
-  when: is_vagrant is defined and is_vagrant
+  when: is_vagrant is defined and is_vagrant and (use_docker is not defined or not use_docker)
   tags:
     - nginx_vhost

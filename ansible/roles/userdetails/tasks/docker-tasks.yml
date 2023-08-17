@@ -47,15 +47,13 @@
   command: >
     docker service create --name socat-mysql --network la-internal --publish 3306:3306 alpine/socat tcp-listen:3306,fork,reuseaddr tcp-connect:auth_mysql:3306
   tags:
-    - docker
-    - docker-service
+    - cas-dbs
 
 - name: Run socat container to tunnel MongoDB port
   command: >
     docker service create --name socat-mongodb --network la-internal --publish 27017:27017 alpine/socat tcp-listen:27017,fork,reuseaddr tcp-connect:auth_mongo:27017
   tags:
-    - docker
-    - docker-service
+    - cas-dbs
 
 - name: Add mongo/mysql dbs and users
   include_tasks: ../../cas5-dbs/tasks/main.yml
@@ -81,12 +79,10 @@
   command: docker service rm socat-mysql
   when: use_docker is defined and use_docker
   tags:
-    - docker
-    - docker-service
+    - cas-dbs
 
 - name: Remove socat container for MongoDB tunnel
   command: docker service rm socat-mongodb
   when: use_docker is defined and use_docker
   tags:
-    - docker
-    - docker-service
+    - cas-dbs

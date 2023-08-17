@@ -17,6 +17,7 @@
     - collectory_db_host_address: collectory_mysql
     # Don't restart nginx or similar as we only need the vhost
     - skip_handlers: true
+    - collectory_docker_host: collectory
   roles:
     - common
     # the i18n translations are installed and mounted in the collectory

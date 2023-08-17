@@ -16,8 +16,10 @@ services:
       MYSQL_PASSWORD: {{collectory_db_password}}
       MYSQL_DATABASE: collectory
     networks:
-      - la-internal
-      - auth
+      auth: {}
+      la-internal:
+        aliases:
+          - auth_mysql
 
   mongo:
     image: mongo:5
@@ -32,8 +34,10 @@ services:
       MONGO_INITDB_ROOT_USERNAME: {{ mongodb_root_username }}
       MONGO_INITDB_ROOT_PASSWORD: {{ mongodb_root_password }}
     networks:
-      - la-internal
-      - auth
+      auth: {}
+      la-internal:
+        aliases:
+          - auth_mongo
 
 {% if docker_development_mode is defined and docker_development_mode | bool %}
   mongo-express:
@@ -46,8 +50,10 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: {{ mongodb_root_username }}
       ME_CONFIG_MONGODB_ADMINPASSWORD: {{ mongodb_root_password }}
     networks:
-      - la-internal
-      - auth
+      auth: {}
+      la-internal:
+        aliases:
+          - auth_mongo_express
 {% endif %}
 
   cas:
@@ -67,6 +73,9 @@ services:
 {% endif %}
     networks:
       - auth
+      - la-internal
+        aliases:
+          - cas
 
   userdetails:
     image: livingatlases/userdetails:latest
@@ -85,6 +94,9 @@ services:
 {% endif %}
     networks:
       - auth
+      - la-internal
+        aliases:
+          - userdetails
 
   cas-management:
     image: livingatlases/cas-management:latest
@@ -103,6 +115,9 @@ services:
 {% endif %}
     networks:
       - auth
+      - la-internal
+        aliases:
+          - cas-management
 
 networks:
   la-internal:

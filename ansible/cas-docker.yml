@@ -21,6 +21,9 @@
     - userdetails_user: "{{ lookup('env', 'USER') }}"
     - apikey_user: "{{ lookup('env', 'USER') }}"
     - nginx_user: "{{ lookup('env', 'USER') }}"
+    - cas_docker_host: cas
+    - userdetails_docker_host: userdetails
+    - cas_management_docker_host: cas_management
   roles:
     - common
     - i18n

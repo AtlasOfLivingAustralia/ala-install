@@ -3,17 +3,6 @@ version: '3.8'
 
 services:
 
-  nginx:
-    image: {{ docker_web_image }}
-    ports:
-      - "{{ collectory_docker_web_port }}:80"
-    volumes:
-      - nginx-config:/etc/nginx/conf.d
-      - nginx-available:/etc/nginx/sites-available
-      - nginx-enabled:/etc/nginx/sites-enabled
-    networks:
-      - collectory-network
-
   collectory:
     image: atlasoflivingaustralia/collectory:9144d68
     volumes:
@@ -33,7 +22,10 @@ services:
     restart: "no"
 {% endif %}
     networks:
-      - collectory-network
+      collectory: {}
+      la-internal:
+        aliases:
+          - collectory
 
   mysql:
     image: mysql:8.0-debian
@@ -48,10 +40,12 @@ services:
       MYSQL_PASSWORD: {{collectory_db_password}}
       MYSQL_DATABASE: collectory
     networks:
-      - collectory-network
+      collectory: {}
 
 networks:
-  collectory-network:
+  la-internal:
+    external: true
+  collectory:
     driver: overlay
 
 volumes:
