@@ -7,7 +7,7 @@ serverName: {{ bie_index_base_url }}
 security:
   cas:
     casServerName:   {{ auth_base_url }}
-    uriFilterPattern:   {{ bie_index_uri_filter_pattern | default('/admin.*,/alaAdmin.*') }}
+    uriFilterPattern:   {{ bie_index_uri_filter_pattern | default('/admin*,/alaAdmin*') }}
     uriExclusionFilterPattern:   {{ bie_index_uri_exclusion_filter_pattern | default('/admin/indexFields') }}
     appServerName:   {{ bie_index_base_url }}
     casServerUrlPrefix:   {{ auth_cas_url }}
