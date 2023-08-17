@@ -72,10 +72,10 @@ services:
       - i18n-custom:/var/opt/atlas/i18n
 {% endif %}
     networks:
-      - auth
-      - la-internal
+      auth: {}
+      la-internal:
         aliases:
-          - cas
+          - {{ cas_docker_host }}
 
   userdetails:
     image: livingatlases/userdetails:latest
@@ -93,10 +93,10 @@ services:
       - i18n-custom:/var/opt/atlas/i18n
 {% endif %}
     networks:
-      - auth
-      - la-internal
+      auth: {}
+      la-internal:
         aliases:
-          - userdetails
+          - {{ userdetails_docker_host }}
 
   cas-management:
     image: livingatlases/cas-management:latest
@@ -114,10 +114,10 @@ services:
       - i18n-custom:/var/opt/atlas/i18n
 {% endif %}
     networks:
-      - auth
-      - la-internal
+      auth: {}
+      la-internal:
         aliases:
-          - cas-management
+          - {{ cas_management_docker_host }}
 
 networks:
   la-internal:

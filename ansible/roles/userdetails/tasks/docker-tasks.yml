@@ -31,16 +31,14 @@
   command: docker service rm socat-mysql
   when: use_docker is defined and use_docker
   tags:
-    - docker
-    - docker-service
+    - cas-dbs
   ignore_errors: true
 
 - name: Remove previous socat container for MongoDB tunnel
   command: docker service rm socat-mongodb
   when: use_docker is defined and use_docker
   tags:
-    - docker
-    - docker-service
+    - cas-dbs
   ignore_errors: true
 
 - name: Run socat container to tunnel MySQL port

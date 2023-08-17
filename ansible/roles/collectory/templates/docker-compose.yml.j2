@@ -25,7 +25,7 @@ services:
       collectory: {}
       la-internal:
         aliases:
-          - collectory
+          - {{ collectory_docker_host }}
 
   mysql:
     image: mysql:8.0-debian
