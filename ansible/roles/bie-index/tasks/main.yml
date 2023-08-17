@@ -37,7 +37,7 @@
   copy: src={{ item }} dest={{data_dir}}/bie-index/config
   with_items:
     - conservation-lists.json
-    - hidden-image-lists.json
+    - hidden-images-lists.json
     - image-lists.json
     - vernacular-lists.json
     - favourites.json
@@ -47,10 +47,10 @@
     - properties
     - bie-index
 
-- name: copy hidden-image-lists from inventory
+- name: copy hidden-images-lists from inventory
   copy:
     src: "{{ inventory_dir }}/{{ hidden_images_file }}"
-    dest: "{{ data_dir }}/bie-index/config/hidden-image-lists.json"
+    dest: "{{ data_dir }}/bie-index/config/hidden-images-lists.json"
     force: yes
   when: hidden_images_file is defined
   tags:
