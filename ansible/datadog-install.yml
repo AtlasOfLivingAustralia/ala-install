@@ -1,0 +1,106 @@
+---
+- name: Datadog install role
+  hosts: image-service
+  roles:
+    - { role: datadog.datadog, become: yes }
+    #- { role: datadog_apm, become: yes }
+  vars:
+    datadog_api_key: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              36383064633433326631333265636431633061616362336434393366353730376634356130316262
+              3333343233343437313435373863343438663835313831340a623462316437313238303565626238
+              37376565616161386365383538633638666233663465303462316636316636363537323238333361
+              3231343435376331360a373637313438333831323364333339656634636364386563613063663435
+              65353762646636666435643261613862323033363837646562616236383331323165633433656361
+              3361636234336166366438366464663465383434393535663365
+
+    datadog_config:
+      tags:
+        - "product:images"
+        - "environment:testing"
+      log_level: INFO
+      apm_config:
+        enabled: true
+      logs_enabled: true  # available with Agent v6 and v7
+      process_config:
+        process_collection:
+          enabled: "true"
+    datadog_checks:
+      process:
+        init_config:
+        instances:
+          - name: ssh
+            search_string: ['ssh', 'sshd']
+          - name: syslog
+            search_string: ['rsyslog']
+            cpu_check_interval: 0.2
+            exact_match: true
+            ignore_denied_access: true
+      postgres:
+        init_config:
+        instances:
+          - host: "{{ image_service_hostname }}"
+            port: 5432
+            username: "{{ image_service_db_username }}"
+            password: "{{ image_service_db_password }}"
+            dbname: "{{ image_service_db_name }}"
+            disable_generic_tags: false
+      elastic:
+        init_config:
+        instances:
+          - url: http://{{ image_service_hostname }}:9200
+        logs:
+          - type: file
+            path: /var/log/elasticsearch/*.log
+            source: elasticsearch  
+            service: images-service
+      http_check:
+        init_config:
+        instances:
+          - name: image-service
+            url: https://images-test.ala.org.au/
+            collect_response_time: true
+            check_certificate_expiration: true
+            tags:
+              - env:testing
+          - name: home-page
+            url: https://www.ala.org.au/
+            collect_response_time: true
+            check_certificate_expiration: true
+            tags:
+              - env:production
+          - name: api-docs-service
+            url: https://docs.ala.org.au/
+            collect_response_time: true
+            check_certificate_expiration: true
+            tags:
+              - env:production
+          - name: seedbank-old
+            url: https://seedbank.ala.org.au/
+            collect_response_time: true
+            check_certificate_expiration: true
+            tags:
+              - env:production
+          - name: seedbank-new
+            url: https://seedbank.ala.org.au/
+            collect_response_time: true
+            check_certificate_expiration: true
+            tags:
+              - env:production
+          - name: biocollect
+            url: https://biocollect.ala.org.au/acsa/
+            collect_response_time: true
+            check_certificate_expiration: true
+            tags:
+              - env:production
+      java:
+        logs:
+          - type: file
+            path: "/var/log/atlas/image-service/image-service.log"
+            service: java
+            source: java
+            sourcecategory: sourcecode
+            log_processing_rules:
+             - type: multi_line
+               name: new_log_start_with_date
+               pattern: \d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])
