@@ -41,6 +41,18 @@
   tags:
     - cas-dbs
 
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: auth_cas
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: auth_cas-management
+  tags:
+    - cas-dbs
+
 - name: Run socat container to tunnel MySQL port
   import_tasks: ../../docker-common/tasks/socat.yml
   vars:
@@ -76,16 +88,10 @@
     - cas_mysql_src_host: '%'
     - apikey_mysql_src_host: '%'
 
-- import_tasks: ../../docker-common/tasks/socat-rm.yml
-  vars:
-    name: auth_cas
-  tags:
-    - cas-dbs
-
 - import_tasks: ../../docker-common/tasks/socat.yml
   vars:
     name: auth_cas
-    port: 9000
+    port: "{{ cas_port | default('9000') }}"
   tags:
     - cas-dbs
 
@@ -95,9 +101,16 @@
   tags:
     - cas-dbs
 
-- import_tasks: ../../docker-common/tasks/socat-rm.yml
+- import_tasks: ../../docker-common/tasks/socat.yml
   vars:
-    name: auth_cas
+    name: auth_cas-management
+    port: "{{ cas_management_port | default('8070') }}"
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../cas-management/tasks/oidc-tasks.yml
+  vars:
+    - cas_services_host: 127.0.0.1
   tags:
     - cas-dbs
 
@@ -110,5 +123,17 @@
 - import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
     name: auth_mongo
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: auth_cas
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: auth_cas-management
   tags:
     - cas-dbs
