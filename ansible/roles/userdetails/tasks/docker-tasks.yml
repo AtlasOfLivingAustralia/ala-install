@@ -28,28 +28,32 @@
     - docker-service
 
 - name: Remove previous socat container for MySQL tunnel
-  command: docker service rm socat-mysql
-  when: use_docker is defined and use_docker
+  import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: auth_mysql
   tags:
     - cas-dbs
-  ignore_errors: true
 
 - name: Remove previous socat container for MongoDB tunnel
-  command: docker service rm socat-mongodb
-  when: use_docker is defined and use_docker
+  import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: auth_mongo
   tags:
     - cas-dbs
-  ignore_errors: true
 
 - name: Run socat container to tunnel MySQL port
-  command: >
-    docker service create --name socat-mysql --network la-internal --publish 3306:3306 alpine/socat tcp-listen:3306,fork,reuseaddr tcp-connect:auth_mysql:3306
+  import_tasks: ../../docker-common/tasks/socat.yml
+  vars:
+    name: auth_mysql
+    port: 3306
   tags:
     - cas-dbs
 
 - name: Run socat container to tunnel MongoDB port
-  command: >
-    docker service create --name socat-mongodb --network la-internal --publish 27017:27017 alpine/socat tcp-listen:27017,fork,reuseaddr tcp-connect:auth_mongo:27017
+  import_tasks: ../../docker-common/tasks/socat.yml
+  vars:
+    name: auth_mongo
+    port: 27017
   tags:
     - cas-dbs
 
@@ -71,16 +75,40 @@
     - cas_services_host: 127.0.0.1
     - cas_mysql_src_host: '%'
     - apikey_mysql_src_host: '%'
-  when: use_docker is defined and use_docker
 
-- name: Remove socat container for MySQL tunnel
-  command: docker service rm socat-mysql
-  when: use_docker is defined and use_docker
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: auth_cas
   tags:
     - cas-dbs
 
-- name: Remove socat container for MongoDB tunnel
-  command: docker service rm socat-mongodb
-  when: use_docker is defined and use_docker
+- import_tasks: ../../docker-common/tasks/socat.yml
+  vars:
+    name: auth_cas
+    port: 9000
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../cas5/tasks/admin-account.yml
+  vars:
+    - cas_db_hostname: 127.0.0.1
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: auth_cas
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: auth_mysql
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: auth_mongo
   tags:
     - cas-dbs

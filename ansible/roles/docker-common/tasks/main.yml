@@ -14,6 +14,8 @@
     name: la-internal
     driver: overlay
     state: present
+    driver_options:
+      com.docker.network.driver.mtu: 1450
   become: true
   tags:
     - docker-common
