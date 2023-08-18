@@ -59,7 +59,7 @@ services:
   cas:
     image: livingatlases/cas:latest
     ports:
-      - 9000
+      - {{ cas_port | default('9000') }}
     environment:
       DOCKERIZE_OPTS: "-wait tcp://auth_mysql:3306 -wait tcp://auth_mongo:27017 -timeout 60s"
     volumes:
@@ -80,9 +80,9 @@ services:
   userdetails:
     image: livingatlases/userdetails:latest
     ports:
-      - 9001
+      - {{ userdetails_port | default('9001') }}
     environment:
-      DOCKERIZE_OPTS: "-wait tcp://auth_mysql:3306 -wait tcp://auth_cas:9000 -timeout 120s"
+      DOCKERIZE_OPTS: "-wait tcp://auth_mysql:3306 -wait tcp://auth_cas:{{ cas_port | default('9000') }} -timeout 120s"
     volumes:
       - userdetails-data:/data/userdetails
       - logs:/var/log/atlas
@@ -101,9 +101,9 @@ services:
   cas-management:
     image: livingatlases/cas-management:latest
     ports:
-      - 8070
+      - {{ cas_management_port | default('8070') }}
     environment:
-      DOCKERIZE_OPTS: "-wait tcp://auth_mysql:3306 -wait tcp://auth_cas:9000 -wait tcp://auth_mongo:27017 -timeout 120s"
+      DOCKERIZE_OPTS: "-wait tcp://auth_mysql:3306 -wait tcp://auth_cas:{{ cas_port | default('9000') }} -wait tcp://auth_mongo:27017 -timeout 120s"
     volumes:
       - cas-management-data:/data/cas-management
       - logs:/var/log/atlas
