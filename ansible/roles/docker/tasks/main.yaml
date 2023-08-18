@@ -20,7 +20,7 @@
     name:
       - docker-ce
       - docker-ce-cli
-      - docker-compose
+      - docker-compose-plugin
       - containerd.io
     update_cache: true
     state: latest
