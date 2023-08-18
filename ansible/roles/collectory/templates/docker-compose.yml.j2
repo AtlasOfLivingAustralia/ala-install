@@ -16,7 +16,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     environment:
-      DOCKERIZE_OPTS: "-wait tcp://collectory_mysql:3306 -timeout 120s"
+      DOCKERIZE_OPTS: "-wait tcp://collectory_mysql:3306 -wait tcp://auth_cas:{{ cas_port | default('9000') }} -timeout 120s"
       # This does not work, we should improve the Dockerimage
       # MYSQL_HOST: collectory_mysql
 {% if debug_docker_entrypoint is defined and debug_docker_entrypoint | bool %}
