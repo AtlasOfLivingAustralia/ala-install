@@ -25,28 +25,18 @@
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner=digivol group=digivol
   with_items:
+    - "{{data_dir}}/volunteer-portal"
     - "{{data_dir}}/digivol"
     - "{{data_dir}}/digivol/config"
-    - "{{data_dir}}/digivol/media/images"
-    - "{{data_dir}}/digivol/elasticsearch"
+    - "{{data_dir}}/volunteer/elasticsearch"
   tags:
     - volunteer-portal
     - properties
 
-- name: set data ownership
-  file:
-    path: "{{data_dir}}/digivol"
-    owner: digivol
-    group: digivol
-    recurse: true
-  tags:
-    - properties
-    - volunteer-portal
-
-- name: copy all config.properties
+- name: app config
   template:
-    src: config.properties
-    dest: "{{data_dir}}/digivol/config/digivol-config.properties"
+    src: config.yml
+    dest: "{{data_dir}}/digivol/config/digivol.yml"
     owner: digivol
     group: digivol
   notify:
