@@ -15,7 +15,9 @@
     driver: overlay
     state: present
     driver_options:
-      com.docker.network.driver.mtu: 1450
+      # With mtu issues depending on the provider, we should try to adjust this 
+      # to a lower value (Sweden advice):
+      com.docker.network.driver.mtu: {{ docker_network_mtu | default(1500) }}
   become: true
   tags:
     - docker-common
