@@ -111,7 +111,13 @@
         proxy_set_header Connection "";
     {% endif %}
   {% else %}
+      {% if nginx_docker_swarm_resolver is defined and nginx_docker_swarm_resolver | bool == true %} 
+        resolver 127.0.0.11 ipv6=off;
+        set $backend "{{ item.proxy_pass }}";
+        proxy_pass $backend;
+      {% else %}
         proxy_pass {{ item.proxy_pass }};
+      {% endif %}
   {% endif %}
 {% elif item.is_proxy_rewrite is defined and item.is_proxy_rewrite %}
         rewrite ^{{ item.path }}/?(.*) /$1 break;
