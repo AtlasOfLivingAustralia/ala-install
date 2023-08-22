@@ -1,8 +1,8 @@
 ---
-- hosts: docker_swarm
-  vars:
-    - nginx_conf_dir: "{{ data_dir }}/nginx"
-    - nginx_user: "{{ lookup('env', 'USER') }}"
+- hosts: docker_swarm,docker_swarm_dev,docker_swarm_test
   roles:
+    # the i18n translations are installed and mounted as volume in the containers
+    # if i18n_package_enabled = true
+    - i18n
     - docker
     - docker-common

@@ -13,6 +13,7 @@
   template:
     src: docker-compose.yml.j2
     dest: "{{ userdetails_data_dir }}/docker/docker-compose.yml"
+  run_once: true
   tags:
     - docker
     - docker-service
@@ -23,6 +24,7 @@
     state: present
     compose:
       - "{{ userdetails_data_dir }}/docker/docker-compose.yml"
+  run_once: true
   tags:
     - docker
     - docker-service
@@ -31,6 +33,7 @@
   import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
     name: auth_mysql
+  run_once: true
   tags:
     - cas-dbs
 
@@ -38,18 +41,21 @@
   import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
     name: auth_mongo
+  run_once: true
   tags:
     - cas-dbs
 
 - import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
     name: auth_cas
+  run_once: true
   tags:
     - cas-dbs
 
 - import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
     name: auth_cas-management
+  run_once: true
   tags:
     - cas-dbs
 
@@ -58,6 +64,7 @@
   vars:
     name: auth_mysql
     port: 3306
+  run_once: true
   tags:
     - cas-dbs
 
@@ -66,6 +73,7 @@
   vars:
     name: auth_mongo
     port: 27017
+  run_once: true
   tags:
     - cas-dbs
 
@@ -73,6 +81,7 @@
   include_tasks: ../../cas5-dbs/tasks/main.yml
   tags:
     - cas-dbs
+  run_once: true
   vars:
     - cas_db_hostname: 127.0.0.1
     - user_store_db_hostname: 127.0.0.1
@@ -92,12 +101,14 @@
   vars:
     name: auth_cas
     port: "{{ cas_port | default('9000') }}"
+  run_once: true
   tags:
     - cas-dbs
 
 - import_tasks: ../../cas5/tasks/admin-account.yml
   vars:
     - cas_db_hostname: 127.0.0.1
+  run_once: true
   tags:
     - cas-dbs
 
@@ -105,35 +116,41 @@
   vars:
     name: auth_cas-management
     port: "{{ cas_management_port | default('8070') }}"
+  run_once: true
   tags:
     - cas-dbs
 
 - import_tasks: ../../cas-management/tasks/oidc-tasks.yml
   vars:
     - cas_services_host: 127.0.0.1
+  run_once: true
   tags:
     - cas-dbs
 
 - import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
     name: auth_mysql
+  run_once: true
   tags:
     - cas-dbs
 
 - import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
     name: auth_mongo
+  run_once: true
   tags:
     - cas-dbs
 
 - import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
     name: auth_cas
+  run_once: true
   tags:
     - cas-dbs
 
 - import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
     name: auth_cas-management
+  run_once: true
   tags:
     - cas-dbs

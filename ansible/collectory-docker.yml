@@ -8,20 +8,15 @@
     # This creates the collectory vhost in a directory that later is
     # mounted as a volume in a nginx image
     - nginx_conf_dir: "{{ data_dir }}/nginx"
-    # For now we use the current user as user for config data but probably we can
-    # use other
-    - tomcat_user: "{{ lookup('env', 'USER') }}"
-    - nginx_user: "{{ lookup('env', 'USER') }}"
     # This is the name the containter receive so we use it for our db
     # connection
     - collectory_db_host_address: collectory_mysql
     # Don't restart nginx or similar as we only need the vhost
     - skip_handlers: true
     - collectory_docker_host: collectory
+    - tomcat_user: "{{ docker_default_user }}"
+    - nginx_user: "{{ docker_default_user }}"
   roles:
     - common
-    # the i18n translations are installed and mounted in the collectory
-    # image
-    - i18n
     - collectory
   become: true

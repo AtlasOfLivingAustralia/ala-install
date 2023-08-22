@@ -5,6 +5,7 @@
   with_items:
     - "{{ collectory_docker_db_data_dir }}"
     - "{{ collectory_data_dir }}/docker/"
+  run_once: true
   tags:
     - docker
     - docker-service
@@ -13,6 +14,7 @@
   template:
     src: docker-compose.yml.j2
     dest: "{{ collectory_data_dir }}/docker/docker-compose.yml"
+  run_once: true
   tags:
     - docker
     - docker-service
@@ -23,6 +25,7 @@
     state: present
     compose:
       - "{{ collectory_data_dir }}/docker/docker-compose.yml"
+  run_once: true
   tags:
     - docker
     - docker-service

@@ -12,11 +12,11 @@ services:
       - nginx-config:/etc/nginx/conf.d
       - nginx-available:/etc/nginx/sites-available
       - nginx-enabled:/etc/nginx/sites-enabled
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
 {% if use_letsencrypt is defined and use_letsencrypt | bool %}
       - certs:/etc/letsencrypt
 {% endif %}
+    environment:
+      TZ: {{ server_tz }}
     networks:
       la-internal:
         aliases:
@@ -31,6 +31,7 @@ services:
     ports:
       - 25
     environment:
+      TZ: {{ server_tz }}
       HOSTNAME: {{ email_hostname | default('') }}
       RELAYHOST: {{ email_sender_server | default('') }}
       RELAYHOST_USERNAME: {{ email_sender | default('') }}
@@ -38,9 +39,6 @@ services:
       ALLOWED_SENDER_DOMAINS: {{ email_allowed_domains | default('l-a.site') }}
     networks:
       la-internal:
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
 
 networks:
   la-internal:

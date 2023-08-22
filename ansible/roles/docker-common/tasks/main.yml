@@ -19,7 +19,9 @@
       # to a lower value (Sweden advice):
       com.docker.network.driver.mtu: "{{ docker_network_mtu | default(1500) }}"
   become: true
+  run_once: true
   tags:
+    - docker-service
     - docker-common
 
 - name: Include common tasks to others roles
@@ -32,6 +34,7 @@
   template:
     src: docker-compose.yml.j2
     dest: "{{ nginx_data_dir }}/docker/docker-compose.yml"
+  run_once: true
   tags:
     - docker-service
     - docker-common
@@ -42,6 +45,7 @@
     state: present
     compose:
       - "{{ nginx_data_dir }}/docker/docker-compose.yml"
+  run_once: true
   tags:
     - docker-service
     - docker-common

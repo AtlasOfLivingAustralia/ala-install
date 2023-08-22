@@ -17,16 +17,16 @@
     - skip_handlers: true
     - cas_add_mongo_users: true
     - bootadmin_client_base_url: 'https://{{ inventory_hostname}}/'
-    - cas_user: "{{ lookup('env', 'USER') }}"
-    - userdetails_user: "{{ lookup('env', 'USER') }}"
-    - apikey_user: "{{ lookup('env', 'USER') }}"
-    - nginx_user: "{{ lookup('env', 'USER') }}"
+    - tomcat_user: "{{ docker_default_user }}"
+    - nginx_user: "{{ docker_default_user }}"
+    - cas_user: "{{ docker_default_user }}"
+    - userdetails_user: "{{ docker_default_user }}"
+    - apikey_user: "{{ docker_default_user }}"
     - cas_docker_host: cas
     - userdetails_docker_host: userdetails
     - cas_management_docker_host: cas_management
   roles:
     - common
-    - i18n
     - cas5
     - cas-management
     - userdetails

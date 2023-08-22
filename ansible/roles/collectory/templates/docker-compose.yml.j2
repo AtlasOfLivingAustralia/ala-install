@@ -83,27 +83,6 @@ volumes:
       o: bind
       device: {{ collectory_data_dir }}/upload
 
-  nginx-config:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: {{ collectory_data_dir }}/nginx/conf.d
-
-  nginx-available:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: {{ collectory_data_dir }}/nginx/sites-available
-
-  nginx-enabled:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: {{ collectory_data_dir }}/nginx/sites-enabled
-
   i18n:
     driver: local
     driver_opts:
