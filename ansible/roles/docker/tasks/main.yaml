@@ -1,17 +1,23 @@
 ---
 - name: Add Docker GPG apt Key
-  apt_key:
+  get_url:
+    # We use this key from the above repo temporally
     url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
+    dest: /etc/apt/trusted.gpg.d/dowload.docker.com.asc
+    mode: 0644
+  when:
+    - ansible_os_family == "Debian"
   tags:
-    - docker
-    - docker-install
+    - packages
+    - apt
 
 - name: Add Docker Repository
   apt_repository:
     repo: "deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
     state: present
   tags:
+    - packages
+    - apt
     - docker
     - docker-install
 
@@ -26,6 +32,8 @@
     state: latest
     autoclean: true
   tags:
+    - packages
+    - apt
     - docker
     - docker-install
 
@@ -34,6 +42,8 @@
   with_items:
     - daemon.json
   tags:
+    - packages
+    - apt
     - docker
     - docker-install
 
