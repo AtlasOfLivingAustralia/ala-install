@@ -5,6 +5,9 @@ services:
 
   nginx:
     image: {{ docker_web_image }}
+    # Run in all the hosts
+    deploy:
+      mode: global
     ports:
       - "{{ docker_http_port }}:80"
       - "{{ docker_https_port }}:443"
