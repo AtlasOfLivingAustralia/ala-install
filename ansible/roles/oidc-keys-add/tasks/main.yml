@@ -46,4 +46,22 @@
     "{{ cas_services_db | default('cas-service-registry' ) }}" --quiet < "{{data_dir}}/cas-management/oidc-keys/add-key.js"
   tags:
     - oidc_keys_add
+  when: use_docker is not defined or not use_docker
 
+- name: Remove existing mongo-oidc-script service if exists
+  command: docker service rm mongo-oidc-script
+  ignore_errors: yes
+  when: use_docker is defined and use_docker
+
+- name: Create and run mongo-oidc-script service
+  command: >
+    docker service create --name mongo-oidc-script --network auth_auth
+    --mount type=bind,src=/data/cas-management/oidc-keys,dst=/scripts
+    mongo:latest sh -c "cat /scripts/add-key.js | mongo --host \"{{ cas_services_host }}\"
+    --port \"{{ cas_services_port | default('27017') }}\" --username \"{{ cas_services_username }}\"
+    --password \"{{ cas_services_password }}\" \"{{ cas_services_db | default('cas-service-registry') }}\" --quiet"
+  when: use_docker is defined and use_docker
+
+- name: Remove mongo-oidc-script service
+  command: docker service rm mongo-oidc-script
+  when: use_docker is defined and use_docker
