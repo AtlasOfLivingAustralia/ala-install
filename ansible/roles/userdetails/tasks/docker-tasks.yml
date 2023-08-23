@@ -126,6 +126,7 @@
   run_once: true
   tags:
     - cas-dbs
+    - cas-oidc
 
 - import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
