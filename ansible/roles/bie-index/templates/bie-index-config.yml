@@ -130,7 +130,12 @@ headerAndFooter:
 useLegacyAuto: false
 import:
   sequence: {{ bie_index_import_sequence | default('collectory,taxonomy-all,vernacular,denormalise,layers,regions,localities,conservation-lists,wordpress,knowledgebase,favourites,weights,link-identifiers,images,occurrences,suggest-index') }}
+  sequenceDaily: {{ bie_index_import_sequence_daily | default('conservation-lists,images,hidden-images,wiki-urls,wordpress,knowledgebase,favourites,suggest-index,swap') }}
+  sequenceWeekly: {{ bie_index_import_sequence_weekly | default('occurrences,layers,regions,localities,suggest-index,swap') }}
+  dailyRunHour: {{ bie_index_import_daily_run_hour | default('2') }}
+  weeklyRunDay: {{ bie_index_import_weekly_run_day | default('6') }}
   favouritesConfigUrl: file://{{ data_dir }}/bie-index/config/favourites.json
+  enableTasks: {{ bie_import_enable_tasks | default('false') }}
   taxonomy:
     dir: {{ data_dir }}/bie/import
 ala:
