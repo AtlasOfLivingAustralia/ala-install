@@ -59,8 +59,7 @@
   tags:
     - cas-dbs
 
-- name: Run socat container to tunnel MySQL port
-  import_tasks: ../../docker-common/tasks/socat.yml
+- import_tasks: ../../docker-common/tasks/socat.yml
   vars:
     name: la_auth_mysql
     port: 3306
@@ -68,8 +67,7 @@
   tags:
     - cas-dbs
 
-- name: Run socat container to tunnel MongoDB port
-  import_tasks: ../../docker-common/tasks/socat.yml
+- import_tasks: ../../docker-common/tasks/socat.yml
   vars:
     name: la_auth_mongo
     port: 27017
