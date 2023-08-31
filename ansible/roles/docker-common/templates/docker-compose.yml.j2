@@ -21,7 +21,7 @@ services:
     environment:
       TZ: {{ server_tz }}
     networks:
-      la-internal:
+      la_internal:
         aliases:
           - {{ nginx_docker_internal_aliases | join('\n          - ') }}
           # This should generate something like this:
@@ -41,10 +41,10 @@ services:
       RELAYHOST_PASSWORD: {{ email_sender_password | default('') }}
       ALLOWED_SENDER_DOMAINS: {{ email_allowed_domains | default('l-a.site') }}
     networks:
-      la-internal:
+      la_internal:
 
 networks:
-  la-internal:
+  la_internal:
     external: true
 
 volumes:

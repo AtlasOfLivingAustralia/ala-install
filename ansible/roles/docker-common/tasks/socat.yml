@@ -1,4 +1,4 @@
 ---
 - name: Run socat container to tunnel {{ name }} port {{ port }}
   command: >
-    docker service create --name socat-{{ name }} --network la-internal --publish {{ port }}:{{ port }} alpine/socat tcp-listen:{{ port }},fork,reuseaddr tcp-connect:{{ name }}:{{ port }}
+    docker service create --name socat-{{ name }} --network la_internal --publish {{ port }}:{{ port }} alpine/socat tcp-listen:{{ port }},fork,reuseaddr tcp-connect:{{ name }}:{{ port }}

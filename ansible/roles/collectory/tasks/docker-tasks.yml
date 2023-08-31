@@ -21,7 +21,7 @@
 
 - name: Deploy Docker Swarm stack
   docker_stack:
-    name: collectory
+    name: la_collectory
     state: present
     compose:
       - "{{ collectory_data_dir }}/docker/docker-compose.yml"

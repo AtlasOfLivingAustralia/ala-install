@@ -9,9 +9,9 @@
     - docker-common
 
 # This is used to communicate between nginx->tomcat,etc
-- name: Create la-internal network
+- name: Create la_internal network
   docker_network:
-    name: la-internal
+    name: la_internal
     driver: overlay
     state: present
     driver_options:

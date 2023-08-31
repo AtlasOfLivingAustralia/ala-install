@@ -13,7 +13,7 @@
     - collectory_db_host_address: collectory_mysql
     # Don't restart nginx or similar as we only need the vhost
     - skip_handlers: true
-    - collectory_docker_host: collectory
+    - collectory_docker_host: la_collectory_war
     - tomcat_user: "{{ docker_default_user }}"
     - nginx_user: "{{ docker_default_user }}"
   roles:

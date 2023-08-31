@@ -3,21 +3,19 @@ version: '3.8'
 
 services:
 
-  collectory:
+  war:
     image: atlasoflivingaustralia/collectory:9144d68
     volumes:
-      - collectory-config:/data/collectory/config
-      - collectory-data:/data/collectory/data
-      - collectory-upload:/data/collectory/upload
+      - config:/data/collectory/config
+      - data:/data/collectory/data
+      - upload:/data/collectory/upload
 {% if i18n_package_enabled | bool %}
       - i18n:/opt/atlas/i18n
-      - i18n-custom:/var/opt/atlas/i18n
+      - i18n_custom:/var/opt/atlas/i18n
 {% endif %}
     environment:
       TZ: {{ server_tz }}
       DOCKERIZE_OPTS: "-wait tcp://collectory_mysql:3306 -timeout 120s"
-      # This does not work, we should improve the Dockerimage
-      # MYSQL_HOST: collectory_mysql
 {% if debug_docker_entrypoint is defined and debug_docker_entrypoint | bool %}
     entrypoint: ["tail", "-f", "/dev/null"]
     restart: "no"
@@ -25,15 +23,15 @@ services:
     expose:
       - 8080
     networks:
-      collectory: {}
-      la-internal:
+      default: {}
+      la_internal:
         aliases:
           - {{ collectory_docker_host }}
 
   mysql:
     image: mysql:8.0-debian
     volumes:
-      - mysql-data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     command: --default-authentication-plugin=mysql_native_password
     # In the future:
     # command: --default-authentication-plugin=caching_sha2_password
@@ -46,37 +44,37 @@ services:
     expose:
       - 3306
     networks:
-      collectory: {}
+      default: {}
 
 networks:
-  la-internal:
+  la_internal:
     external: true
-  collectory:
+  default:
     driver: overlay
 
 volumes:
-  mysql-data:
+  mysql_data:
     driver: local
     driver_opts:
       type: none
       o: bind
       device: "{{ collectory_docker_db_data_dir }}"
 
-  collectory-config:
+  config:
     driver: local
     driver_opts:
       type: none
       o: bind
       device: {{ collectory_data_dir }}/config
 
-  collectory-data:
+  data:
     driver: local
     driver_opts:
       type: none
       o: bind
       device: {{ collectory_data_dir }}/data
 
-  collectory-upload:
+  upload:
     driver: local
     driver_opts:
       type: none
@@ -90,7 +88,7 @@ volumes:
       o: bind
       device: /opt/atlas/i18n
 
-  i18n-custom:
+  i18n_custom:
     driver: local
     driver_opts:
       type: none

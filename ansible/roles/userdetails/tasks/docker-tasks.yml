@@ -20,7 +20,7 @@
 
 - name: Deploy Docker Swarm stack
   docker_stack:
-    name: auth
+    name: la_auth
     state: present
     compose:
       - "{{ userdetails_data_dir }}/docker/docker-compose.yml"

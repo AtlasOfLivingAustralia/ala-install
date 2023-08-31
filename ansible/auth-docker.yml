@@ -3,17 +3,17 @@
   vars:
     - use_docker: true
     - nginx_conf_dir: "{{ data_dir }}/nginx"
-    - cas_db_hostname: auth_mysql
-    - user_store_db_hostname: auth_mysql
-    - user_store_db_hostname: auth_mysql
-    - apikey_db_hostname: auth_mysql
-    - ticket_registry_db_hostname: auth_mongo
-    - cas_audit_host: auth_mongo
-    - cas_spring_session_host: auth_mongo
-    - cas_tickets_host: auth_mongo
-    - cas_tickets_host: auth_mongo
-    - cas_services_host: auth_mongo
-    - cas_services_host: auth_mongo
+    - cas_db_hostname: la_auth_mysql
+    - user_store_db_hostname: la_auth_mysql
+    - user_store_db_hostname: la_auth_mysql
+    - apikey_db_hostname: la_auth_mysql
+    - ticket_registry_db_hostname: la_auth_mongo
+    - cas_audit_host: la_auth_mongo
+    - cas_spring_session_host: la_auth_mongo
+    - cas_tickets_host: la_auth_mongo
+    - cas_tickets_host: la_auth_mongo
+    - cas_services_host: la_auth_mongo
+    - cas_services_host: la_auth_mongo
     - skip_handlers: true
     - cas_add_mongo_users: true
     - bootadmin_client_base_url: 'https://{{ inventory_hostname}}/'
@@ -22,9 +22,9 @@
     - cas_user: "{{ docker_default_user }}"
     - userdetails_user: "{{ docker_default_user }}"
     - apikey_user: "{{ docker_default_user }}"
-    - cas_docker_host: cas
-    - userdetails_docker_host: userdetails
-    - cas_management_docker_host: cas_management
+    - cas_docker_host: la_auth_cas
+    - userdetails_docker_host: la_auth_userdetails
+    - cas_management_docker_host: la_auth_cas_management
   roles:
     - common
     - cas5
