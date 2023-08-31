@@ -19,6 +19,22 @@
     - docker
     - docker-service
 
+- name: Remove Docker Swarm stack
+  docker_stack:
+    name: la_collectory
+    state: absent
+  run_once: true
+  tags:
+    - docker
+    - docker-service
+  when: docker_stack_rm is defined and docker_stack_rm
+
+- name: Pause for 10 seconds after removing docker stack
+  pause:
+    seconds: 10
+  run_once: true
+  when: docker_stack_rm is defined and docker_stack_rm
+
 - name: Deploy Docker Swarm stack
   docker_stack:
     name: la_collectory

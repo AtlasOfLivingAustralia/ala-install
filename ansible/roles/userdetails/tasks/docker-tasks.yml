@@ -1,6 +1,10 @@
 ---
 - name: ensure target db directories exist
-  file: path={{item}} state=directory owner={{userdetails_user}} group={{userdetails_user}}
+  file:
+    path: "{{item}}"
+    state: directory
+    owner: "{{userdetails_user}}"
+    group: "{{userdetails_user}}"
   with_items:
     - "{{ userdetails_docker_db_mysql_data_dir }}"
     - "{{ userdetails_docker_db_mongo_data_dir }}"
@@ -17,6 +21,22 @@
   tags:
     - docker
     - docker-service
+
+- name: Remove Docker Swarm stack
+  docker_stack:
+    name: la_auth
+    state: absent
+  run_once: true
+  tags:
+    - docker
+    - docker-service
+  when: docker_stack_rm is defined and docker_stack_rm
+
+- name: Pause for 10 seconds after removing docker stack
+  pause:
+    seconds: 10
+  run_once: true
+  when: docker_stack_rm is defined and docker_stack_rm
 
 - name: Deploy Docker Swarm stack
   docker_stack:
@@ -119,8 +139,6 @@
     - cas-dbs
 
 - import_tasks: ../../cas-management/tasks/oidc-tasks.yml
-  vars:
-    - cas_services_host: 127.0.0.1
   run_once: true
   tags:
     - cas-dbs
