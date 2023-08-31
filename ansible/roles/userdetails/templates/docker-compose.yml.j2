@@ -62,7 +62,7 @@ services:
     expose:
       - {{ cas_port | default('9000') }}
     environment:
-      DOCKERIZE_OPTS: "-wait tcp://auth_mysql:3306 -wait tcp://auth_mongo:27017 -timeout 60s"
+      DOCKERIZE_OPTS: "-wait tcp://la_auth_mysql:3306 -wait tcp://la_auth_mongo:27017 -timeout 60s"
       TZ: {{ server_tz }}
     volumes:
       - cas_data:/data/cas
@@ -82,7 +82,7 @@ services:
     expose:
       - {{ userdetails_port | default('9001') }}
     environment:
-      DOCKERIZE_OPTS: "-wait tcp://auth_mysql:3306 -wait tcp://auth_cas:{{ cas_port | default('9000') }} -timeout 120s"
+      DOCKERIZE_OPTS: "-wait tcp://la_auth_mysql:3306 -wait tcp://la_auth_cas:{{ cas_port | default('9000') }} -timeout 120s"
       TZ: {{ server_tz }}
     volumes:
       - userdetails_data:/data/userdetails
@@ -102,7 +102,7 @@ services:
     expose:
       - {{ cas_management_port | default('8070') }}
     environment:
-      DOCKERIZE_OPTS: "-wait tcp://auth_mysql:3306 -wait tcp://auth_cas:{{ cas_port | default('9000') }} -wait tcp://auth_mongo:27017 -timeout 120s"
+      DOCKERIZE_OPTS: "-wait tcp://la_auth_mysql:3306 -wait tcp://auth_cas:{{ cas_port | default('9000') }} -wait tcp://la_auth_mongo:27017 -timeout 120s"
       TZ: {{ server_tz }}
     volumes:
       - cas_management_data:/data/cas-management

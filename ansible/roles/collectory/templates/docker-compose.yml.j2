@@ -15,7 +15,7 @@ services:
 {% endif %}
     environment:
       TZ: {{ server_tz }}
-      DOCKERIZE_OPTS: "-wait tcp://collectory_mysql:3306 -timeout 120s"
+      DOCKERIZE_OPTS: "-wait tcp://la_collectory_mysql:3306 -timeout 120s"
 {% if debug_docker_entrypoint is defined and debug_docker_entrypoint | bool %}
     entrypoint: ["tail", "-f", "/dev/null"]
     restart: "no"
