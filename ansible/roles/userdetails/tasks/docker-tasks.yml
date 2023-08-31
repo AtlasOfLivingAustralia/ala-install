@@ -32,7 +32,7 @@
 - name: Remove previous socat container for MySQL tunnel
   import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
-    name: auth_mysql
+    name: la_auth_mysql
   run_once: true
   tags:
     - cas-dbs
@@ -40,21 +40,21 @@
 - name: Remove previous socat container for MongoDB tunnel
   import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
-    name: auth_mongo
+    name: la_auth_mongo
   run_once: true
   tags:
     - cas-dbs
 
 - import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
-    name: auth_cas
+    name: la_auth_cas
   run_once: true
   tags:
     - cas-dbs
 
 - import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
-    name: auth_cas-management
+    name: la_auth_cas-management
   run_once: true
   tags:
     - cas-dbs
@@ -62,7 +62,7 @@
 - name: Run socat container to tunnel MySQL port
   import_tasks: ../../docker-common/tasks/socat.yml
   vars:
-    name: auth_mysql
+    name: la_auth_mysql
     port: 3306
   run_once: true
   tags:
@@ -71,7 +71,7 @@
 - name: Run socat container to tunnel MongoDB port
   import_tasks: ../../docker-common/tasks/socat.yml
   vars:
-    name: auth_mongo
+    name: la_auth_mongo
     port: 27017
   run_once: true
   tags:
@@ -99,7 +99,7 @@
 
 - import_tasks: ../../docker-common/tasks/socat.yml
   vars:
-    name: auth_cas
+    name: la_auth_cas
     port: "{{ cas_port | default('9000') }}"
   run_once: true
   tags:
@@ -114,7 +114,7 @@
 
 - import_tasks: ../../docker-common/tasks/socat.yml
   vars:
-    name: auth_cas-management
+    name: la_auth_cas-management
     port: "{{ cas_management_port | default('8070') }}"
   run_once: true
   tags:
@@ -130,28 +130,28 @@
 
 - import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
-    name: auth_mysql
+    name: la_auth_mysql
   run_once: true
   tags:
     - cas-dbs
 
 - import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
-    name: auth_mongo
+    name: la_auth_mongo
   run_once: true
   tags:
     - cas-dbs
 
 - import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
-    name: auth_cas
+    name: la_auth_cas
   run_once: true
   tags:
     - cas-dbs
 
 - import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
-    name: auth_cas-management
+    name: la_auth_cas-management
   run_once: true
   tags:
     - cas-dbs

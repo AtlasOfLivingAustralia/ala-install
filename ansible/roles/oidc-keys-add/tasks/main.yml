@@ -55,7 +55,7 @@
 
 - name: Create and run mongo-oidc-script service
   command: >
-    docker service create --name mongo-oidc-script --network auth_auth
+    docker service create --name mongo-oidc-script --network la_auth_default
     --mount type=bind,src=/data/cas-management/oidc-keys,dst=/scripts
     mongo:latest sh -c "cat /scripts/add-key.js | mongo --host \"{{ cas_services_host }}\"
     --port \"{{ cas_services_port | default('27017') }}\" --username \"{{ cas_services_username }}\"
