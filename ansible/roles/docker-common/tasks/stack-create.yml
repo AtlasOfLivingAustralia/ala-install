@@ -1,0 +1,58 @@
+---
+- name: Generate Docker Compose file from template
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ docker_compose_data_dir }}/docker-compose.yml"
+  run_once: true
+  tags:
+    - docker
+    - docker-service
+
+- name: Remove Docker Swarm stack
+  docker_stack:
+    name: "{{ stack }}"
+    state: absent
+  run_once: true
+  tags:
+    - docker
+    - docker-service
+  when: docker_stack_rm is defined and docker_stack_rm
+
+# Following:
+# https://github.com/moby/moby/issues/29293#issuecomment-318852549
+- name: Wait for all {{ stack }} services are removed from docker
+  shell: >
+    docker service ls --filter label=com.docker.stack.namespace={{ stack }} -q
+  register: docker_services
+  until: docker_services.stdout == ""
+  retries: 60
+  delay: 1
+  run_once: true
+  when: docker_stack_rm is defined and docker_stack_rm
+  tags:
+    - docker
+    - docker-service
+
+- name: Wait for all networks of {{ stack }} stack are removed from docker
+  shell: >
+    docker network ls --filter label=com.docker.stack.namespace={{ stack }} -q
+  register: docker_networks
+  until: docker_networks.stdout == ""
+  retries: 60
+  delay: 1
+  run_once: true
+  when: docker_stack_rm is defined and docker_stack_rm
+  tags:
+    - docker
+    - docker-service
+
+- name: Deploy Docker Swarm stack
+  docker_stack:
+    name: "{{ stack }}"
+    state: present
+    compose:
+      - "{{ docker_compose_data_dir }}/docker-compose.yml"
+  run_once: true
+  tags:
+    - docker
+    - docker-service

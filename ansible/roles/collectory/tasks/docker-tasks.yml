@@ -10,38 +10,8 @@
     - docker
     - docker-service
 
-- name: Generate Docker Compose file from template
-  template:
-    src: docker-compose.yml.j2
-    dest: "{{ collectory_data_dir }}/docker/docker-compose.yml"
-  run_once: true
-  tags:
-    - docker
-    - docker-service
-
-- name: Remove Docker Swarm stack
-  docker_stack:
-    name: la_collectory
-    state: absent
-  run_once: true
-  tags:
-    - docker
-    - docker-service
-  when: docker_stack_rm is defined and docker_stack_rm
-
-- name: Pause for 10 seconds after removing docker stack
-  pause:
-    seconds: 10
-  run_once: true
-  when: docker_stack_rm is defined and docker_stack_rm
-
-- name: Deploy Docker Swarm stack
-  docker_stack:
-    name: la_collectory
-    state: present
-    compose:
-      - "{{ collectory_data_dir }}/docker/docker-compose.yml"
-  run_once: true
-  tags:
-    - docker
-    - docker-service
+- name: Deploy collectory stack
+  import_tasks: ../../docker-common/tasks/stack-create.yml
+  vars:
+    stack: la_collectory
+    docker_compose_data_dir: "{{ collectory_data_dir }}/docker/"
