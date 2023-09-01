@@ -10,7 +10,7 @@
     - nginx_conf_dir: "{{ data_dir }}/nginx"
     # This is the name the containter receive so we use it for our db
     # connection
-    - collectory_db_host_address: collectory_mysql
+    - collectory_db_host_address: la_collectory_mysql
     # Don't restart nginx or similar as we only need the vhost
     - skip_handlers: true
     - collectory_docker_host: la_collectory_war
