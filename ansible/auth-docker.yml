@@ -24,7 +24,7 @@
     - apikey_user: "{{ docker_default_user }}"
     - cas_docker_host: la_auth_cas
     - userdetails_docker_host: la_auth_userdetails
-    - cas_management_docker_host: la_auth_cas_management
+    - cas_management_docker_host: la_auth_cas-management
   roles:
     - common
     - cas5
