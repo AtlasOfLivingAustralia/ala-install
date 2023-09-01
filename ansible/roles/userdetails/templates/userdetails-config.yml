@@ -284,3 +284,6 @@ oauth.support.dynamic.client.dynamoDBTableName: {{ dynamoDBTableName }}
 oauth.support.dynamic.client.dynamoDBTable.dynamoDBPK: {{ dynamoDBTable_dynamoDBPK | default('userId') }}
 oauth.support.dynamic.client.dynamoDBTable.dynamoDBSK: {{ dynamoDBTable_dynamoDBSK | default('clientId') }}
 {% endif %}
+{% if dynamic_client_tokens_callbackURLs is defined %}
+oauth.support.dynamic.client.tokens.callbackURLs: {{ dynamic_client_tokens_callbackURLs }}
+{% endif %}
