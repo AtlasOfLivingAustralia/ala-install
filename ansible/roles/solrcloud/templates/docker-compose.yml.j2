@@ -14,6 +14,7 @@ services:
       - {{ solrcloud_docker_zookeeper_data_dir }}/zoo{{ i }}/data:/data
       - {{ solrcloud_docker_zookeeper_data_dir }}/zoo{{ i }}/datalog:/datalog
     environment:
+      TZ: {{ server_tz }}
       ZOO_MY_ID: {{ i }}
       ZOO_SERVERS: {{  docker_zookeeper_servers }}
       ZOO_4LW_COMMANDS_WHITELIST: "mntr,conf,ruok"
@@ -51,6 +52,7 @@ services:
       default: {}
       la_internal: {}
     environment:
+      TZ: {{ server_tz }}
       SOLR_HOST: la_solrcloud_solr_{{ i }}
       ZK_HOST: {{ docker_solr_zk_hosts }}
 {% if docker_solr_hosts is defined %}
