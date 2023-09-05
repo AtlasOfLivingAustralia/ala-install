@@ -1,0 +1,155 @@
+---
+- name: ensure target db directories exist
+  file: path={{item}} state=directory
+  with_items:
+    - "{{ solrcloud_docker_dir }}"
+    - "{{ solrcloud_docker_data_dir }}"
+    - "{{ solrcloud_docker_conf_dir }}"
+    - "{{ solrcloud_docker_zookeeper_conf_dir }}"
+    - "{{ solrcloud_docker_zookeeper_data_dir }}"
+  run_once: true
+  tags:
+    - docker
+    - docker-service
+
+- name: Copy solr.xml config
+  copy: src=solr/solr.xml dest={{ solrcloud_docker_conf_dir }}/solr.xml
+  tags:
+    - solrcloud
+    - solr_config
+    - docker
+    - docker-service
+
+- include_vars: ../../zookeeper/defaults/main.yml
+  tags:
+    - solrcloud
+    - solr_config
+    - docker
+    - docker-service
+
+- name: Create Zookeeper hosts list
+  set_fact:
+    # Should generate in the docker-compose something like:
+    # ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+    zookeeper_servers_s: "{{ zookeeper_servers_s |default([]) +
+          [ 'server.' ~ item ~ '=la_solrcloud_zoo_' ~ item ~ ':2888:3888;2181'] }}"
+    # This is for the zoo.cfg
+    zookeeper_servers_l: >-
+          {{ zookeeper_servers_l |default([]) +
+          [{'id': (item|string),
+          'server_name': 'la_solrcloud_zoo_' + (item|string)}] }}
+  loop: "{{ range(1, zookeeper_hosts + 1) | list }}"
+  tags:
+    - docker
+    - docker-service
+
+- name: Create Sorlcloud zk host list
+  set_fact:
+    solr_zk_hosts: "{{ ['la_solrcloud_zoo_' ~ item ~ ':2181'] }}"
+  loop: "{{ range(1, solr_hosts + 1) | list }}"
+  tags:
+    - docker
+    - docker-service
+
+- name: copy SOLR config template
+  template:
+    src: solr.in.sh
+    dest: "{{ solrcloud_docker_conf_dir }}/solr{{ item }}.in.sh"
+  loop: "{{ range(1, solr_hosts + 1) | list }}"
+  vars:
+    solr_host: "la_solrcloud_solr_{{ item }}"
+    solr_zk_host: "{{ solr_zk_hosts | join(',') }}"
+  tags:
+    - solrcloud
+    - solrcloud_config
+    - docker
+    - docker-service
+
+- name: Zookeeper data dir
+  file:
+    path: "{{ solrcloud_docker_zookeeper_data_dir }}/zoo{{ item }}"
+    state: directory
+    mode: '0755'
+  loop: "{{ range(1, zookeeper_hosts + 1)|list }}"
+  tags:
+    - zookeeper
+    - directories
+    - docker
+    - docker-service
+
+- name: Solrcloud data dir
+  file:
+    path: "{{ solrcloud_docker_data_dir }}/solr{{ item }}"
+    state: directory
+    mode: '0755'
+  loop: "{{ range(1, solr_hosts + 1)|list }}"
+  tags:
+    - solrcloud
+    - directories
+    - docker
+    - docker-service
+
+- name: configure zookeeper zoo.cfg
+  template:
+    src: "../../zookeeper/templates/zoo.cfg.j2"
+    dest: "{{ solrcloud_docker_zookeeper_conf_dir }}/zoo.cfg"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  vars:
+    zookeeper_servers: "{{ zookeeper_servers_l }}"
+  tags:
+    - zookeeper
+    - docker
+    - docker-service
+
+# Not done in the docker-version yet this vm task:
+#
+# We can't easily setup remote JMX if this option is present, so remove it by default
+# - name: "Remove JMXLOCALONLY=true"
+#  lineinfile:
+#    dest="/etc/zookeeper/conf/environment"
+#    regexp="^JMXLOCALONLY=true"
+#    state=absent
+#  notify: restart zookeeper
+#  tags:
+#    - zookeeper
+
+- name: Deploy solrcloud stack
+  import_tasks: ../../docker-common/tasks/stack-create.yml
+  vars:
+    stack: la_solrcloud
+    docker_compose_data_dir: "{{ solrcloud_docker_dir }}"
+    docker_solr_zk_hosts: "{{ solr_zk_hosts | join(',') }}"
+    docker_zookeeper_servers: "{{ zookeeper_servers_s | join(' ') }}"
+
+# In production we open temporally the 8983 port to configure solrcloud
+- name: Remove previous socat container for solr tunnel
+  import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: la_solrcloud_solr_1
+  run_once: true
+  when: docker_development_mode is defined and docker_development_mode == false
+  tags:
+    - solr_config
+
+- import_tasks: ../../docker-common/tasks/socat.yml
+  vars:
+    name: la_solrcloud_solr_1
+    port: 8983
+  run_once: true
+  when: docker_development_mode is defined and docker_development_mode == false
+  tags:
+    - solr_config
+
+- name: "wait for solrcloud to come up"
+  uri:
+    url: "http://localhost:8983"
+    status_code: 200
+    validate_certs: false
+  register: result
+  until: result.status is defined and result.status == 200
+  retries: 60
+  delay: 10
+  tags:
+    - solr_config
