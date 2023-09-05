@@ -42,6 +42,7 @@
   tags:
     - docker
     - docker-service
+    - docker-compose
 
 - name: Create Sorlcloud zk host list
   set_fact:
@@ -51,8 +52,9 @@
   tags:
     - docker
     - docker-service
+    - docker-compose
 
-- name: copy SOLR config template
+- name: Copy SOLR config template
   template:
     src: solr.in.sh
     dest: "{{ solrcloud_docker_conf_dir }}/solr{{ item }}.in.sh"
@@ -66,9 +68,9 @@
     - docker
     - docker-service
 
-- name: Zookeeper data dir
+- name: Zookeeper data directory
   file:
-    path: "{{ solrcloud_docker_zookeeper_data_dir }}/zoo{{ item }}"
+    path: "{{ solrcloud_docker_zookeeper_data_dir }}/zoo{{ item }}/data"
     state: directory
     mode: '0755'
   loop: "{{ range(1, zookeeper_hosts + 1)|list }}"
@@ -78,9 +80,25 @@
     - docker
     - docker-service
 
+- name: Zookeeper datalog directory
+  file:
+    path: "{{ solrcloud_docker_zookeeper_data_dir }}/zoo{{ item }}/datalog"
+    state: directory
+    mode: '0755'
+  loop: "{{ range(1, zookeeper_hosts + 1)|list }}"
+  tags:
+    - zookeeper
+    - directories
+    - docker
+    - docker-service
+
+# For info about data persistence:
+# https://hub.docker.com/r/bitnami/solr/
 - name: Solrcloud data dir
   file:
-    path: "{{ solrcloud_docker_data_dir }}/solr{{ item }}"
+    path: "{{ solrcloud_docker_data_dir }}/solr{{ item }}/data"
+    owner: "1000"
+    group: "1000"
     state: directory
     mode: '0755'
   loop: "{{ range(1, solr_hosts + 1)|list }}"
@@ -90,7 +108,7 @@
     - docker
     - docker-service
 
-- name: configure zookeeper zoo.cfg
+- name: Configure zookeeper zoo.cfg
   template:
     src: "../../zookeeper/templates/zoo.cfg.j2"
     dest: "{{ solrcloud_docker_zookeeper_conf_dir }}/zoo.cfg"
@@ -143,7 +161,7 @@
   tags:
     - solr_config
 
-- name: "wait for solrcloud to come up"
+- name: Wait for solrcloud to come up
   uri:
     url: "http://localhost:8983"
     status_code: 200

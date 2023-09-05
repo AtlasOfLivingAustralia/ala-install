@@ -11,7 +11,8 @@ services:
       - 2181
     volumes:
       - {{ solrcloud_docker_zookeeper_conf_dir }}/zoo.cfg:/etc/zookeeper/conf/zoo.cfg
-      - {{ solrcloud_docker_zookeeper_data_dir }}/zoo{{ i }}:{{ zookeeper_data_dir }}
+      - {{ solrcloud_docker_zookeeper_data_dir }}/zoo{{ i }}/data:/data
+      - {{ solrcloud_docker_zookeeper_data_dir }}/zoo{{ i }}/datalog:/datalog
     environment:
       ZOO_MY_ID: {{ i }}
       ZOO_SERVERS: {{  docker_zookeeper_servers }}
@@ -19,6 +20,13 @@ services:
     networks:
       default: {}
       la_internal: {}
+{% if docker_solr_hosts is defined %}
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == {{ docker_solr_hosts[i-1] }}
+{% endif %}
 {% endfor %}
 
   # https://solr.apache.org/guide/solr/latest/deployment-guide/solr-in-docker.html
@@ -28,7 +36,8 @@ services:
     image: atlasoflivingaustralia/solr8-jts:bitnami-8.11.2
     hostname: la_solrcloud_solr_{{ i }}
     volumes:
-      - {{ solrcloud_docker_data_dir }}/solr{{ i }}:/var/solr
+      # https://hub.docker.com/r/bitnami/solr/
+      - {{ solrcloud_docker_data_dir }}/solr{{ i }}/data:/bitnami/solr
       - {{ solrcloud_docker_conf_dir }}/solr{{ i }}.in.sh:/etc/default/solr.in.sh
       - {{ solrcloud_docker_conf_dir }}/solr.xml:/var/solr/solr.xml
 {% if i == 1 and docker_development_mode is defined and docker_development_mode | bool %}
@@ -42,7 +51,15 @@ services:
       default: {}
       la_internal: {}
     environment:
+      SOLR_HOST: la_solrcloud_solr_{{ i }}
       ZK_HOST: {{ docker_solr_zk_hosts }}
+{% if docker_solr_hosts is defined %}
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == {{ docker_solr_hosts[i-1] }}
+{% endif %}
 {% endfor %}
 
 networks:
