@@ -45,7 +45,8 @@
 
 - name: Create Sorlcloud zk host list
   set_fact:
-    solr_zk_hosts: "{{ ['la_solrcloud_zoo_' ~ item ~ ':2181'] }}"
+    solr_zk_hosts: "{{ solr_zk_hosts |default([]) +
+          ['la_solrcloud_zoo_' ~ item ~ ':2181'] }}"
   loop: "{{ range(1, solr_hosts + 1) | list }}"
   tags:
     - docker
