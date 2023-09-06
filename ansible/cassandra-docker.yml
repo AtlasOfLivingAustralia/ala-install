@@ -1,0 +1,7 @@
+---
+- hosts: cassandra3
+  vars:
+    - use_docker: true
+    - skip_handlers: true
+  roles:
+    - cassandra3
