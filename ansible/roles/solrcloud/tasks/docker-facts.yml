@@ -1,0 +1,35 @@
+---
+- name: Create Zookeeper hosts list
+  set_fact:
+    # Should generate in the docker-compose something like:
+    # ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+    zookeeper_servers_s: "{{ zookeeper_servers_s |default([]) +
+          [ 'server.' ~ item ~ '=la_solrcloud_zoo_' ~ item ~ ':2888:3888;2181'] }}"
+    # This is for the zoo.cfg
+    zookeeper_servers_l: >-
+          {{ zookeeper_servers_l |default([]) +
+          [{'id': (item|string),
+          'server_name': 'la_solrcloud_zoo_' + (item|string)}] }}
+  loop: "{{ range(1, zookeeper_hosts + 1) | list }}"
+  tags:
+    - docker
+    - docker-service
+    - docker-compose
+
+- name: Create Sorlcloud zk host list
+  set_fact:
+    solr_zk_hosts: "{{ solr_zk_hosts |default([]) +
+          ['la_solrcloud_zoo_' ~ item ~ ':2181'] }}"
+  loop: "{{ range(1, solr_hosts + 1) | list }}"
+  tags:
+    - docker
+    - docker-service
+    - docker-compose
+
+- name: Create Sorlcloud solr_url
+  set_fact:
+    solr_url: "{{ solr_zk_hosts | join(',') }}"
+  tags:
+    - docker
+    - docker-service
+    - docker-compose
