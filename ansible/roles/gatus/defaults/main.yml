@@ -1,0 +1,2 @@
+---
+gatus_docker_dir: "{{ data_dir }}/gatus/docker"

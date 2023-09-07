@@ -7,6 +7,7 @@
     - tomcat_user: "{{ docker_default_user }}"
     - biocache_db_host: "la_cassandra_db"
   roles:
+    - common
     - biocache3-properties
     - biocache3-service
     - logger-client

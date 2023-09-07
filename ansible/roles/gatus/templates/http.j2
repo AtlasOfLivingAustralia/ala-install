@@ -1,0 +1,30 @@
+---
+endpoints:
+{% if ssl == true %}
+{% set protocol = 'https' %}
+{% else %}
+{% set protocol = 'http' %}
+{% endif %}
+{% if nginx_paths | length == 0 %}
+  - name: {{protocol}}://{{ hostname }}
+    group: {{ hostname | default('internal') }}
+    url: "{{protocol}}://{{ hostname }}"
+    interval: {{ gatus_interval | default('5m') }}
+    conditions:
+      - "[STATUS] == 200"
+
+{% endif %}
+{% for entry in nginx_paths %}
+{% set suffix_name = entry.path | replace("/", "-") %}
+{% if suffix_name == "-" %}
+{% set suffix_name = "root" %}
+{% else %}
+{% set suffix_name = suffix_name | trim('-') %}
+{% endif %}
+  - name: {{protocol}}://{{ hostname }}/{{ suffix_name }}
+    group: {{ hostname | default('internal') }}
+    url: "{{protocol}}://{{ hostname }}{{ entry.path }}"
+    interval: {{ gatus_interval | default('5m') }}
+    conditions:
+      - "[STATUS] == 200"
+{% endfor %}
