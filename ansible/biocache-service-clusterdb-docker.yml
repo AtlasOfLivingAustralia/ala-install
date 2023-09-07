@@ -1,0 +1,12 @@
+---
+- hosts: biocache-service-clusterdb
+  vars:
+    - use_docker: true
+    - skip_handlers: true
+    - nginx_conf_dir: "{{ data_dir }}/nginx"
+    - tomcat_user: "{{ docker_default_user }}"
+    - biocache_db_host: "la_cassandra_db"
+  roles:
+    - biocache3-properties
+    - biocache3-service
+    - logger-client

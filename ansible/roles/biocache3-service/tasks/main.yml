@@ -1,3 +1,4 @@
+---
 - include: ../../common/tasks/setfacts.yml
   tags:
     - tomcat_vhost
@@ -368,29 +369,6 @@
     - biocache-service
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ biocache_service_war_path }}' context_path='{{ biocache_service_context_path }}' hostname='{{ biocache_service_hostname }}'
-  when: biocache_service_local_build is not defined
-  tags:
-    - biocache-service
-    - deploy
-    - tomcat_vhost
-    - webapps
-
-- include: ../../tomcat_deploy/tasks/main.yml war_local_build='{{ biocache_service_local_build }}' context_path='{{ biocache_service_context_path }}' hostname='{{ biocache_service_hostname }}'
-  when: biocache_service_local_build is defined
-  tags:
-    - biocache-service
-    - deploy
-    - tomcat_vhost
-    - webapps
-
-- name: ensure tomcat context directory exists
-  file: path=/usr/share/{{ tomcat }}/conf/Catalina/localhost/ state=directory owner={{ tomcat_user }} group={{ tomcat_user }}
-  tags:
-    - biocache-service  
-  notify:
-    - restart tomcat
-
 - name: ensure application data directory exists
   file: path={{ data_dir }}/biocache state=directory owner={{ tomcat_user }}  group={{ tomcat_user }}
   tags:
@@ -479,3 +457,11 @@
     - biocache-service
     - symlinks
     - properties
+
+- name: Include docker tasks
+  include: docker-tasks.yml
+  when: use_docker is defined and use_docker
+
+- name: Include VM tasks
+  include: vm-tasks.yml
+  when: use_docker is not defined or not use_docker
