@@ -6,6 +6,7 @@
     - nginx_conf_dir: "{{ data_dir }}/nginx"
     - tomcat_user: "{{ docker_default_user }}"
     - biocache_db_host: "la_cassandra_db"
+    - biocache_service_docker_host: la_biocache_service_war
   roles:
     - common
     - biocache3-properties

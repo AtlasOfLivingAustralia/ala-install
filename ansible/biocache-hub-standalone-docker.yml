@@ -1,0 +1,13 @@
+---
+- hosts: biocache-hub
+  vars:
+    - use_docker: true
+    - skip_handlers: true
+    - nginx_conf_dir: "{{ data_dir }}/nginx"
+    - biocache_hub: ala-hub
+    - biocache_hub_docker_host: la_biocache_hub_war
+    - grouped_facets_json: grouped_facets_ala.json
+    - tomcat_user: "{{ docker_default_user }}"
+  roles:
+    - common
+    - biocache-hub
