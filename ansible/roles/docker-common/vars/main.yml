@@ -1,5 +1,5 @@
 ---
-nginx_user: "{{ docker_default_user | default(lookup('env', 'USER')) }}"
+nginx_user: "{{ docker_default_user }}"
 
 nginx_data_dir: "{{ data_dir }}/nginx"
 
