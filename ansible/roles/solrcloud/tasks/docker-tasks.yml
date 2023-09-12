@@ -7,6 +7,7 @@
     - "{{ solrcloud_docker_conf_dir }}"
     - "{{ solrcloud_docker_zookeeper_conf_dir }}"
     - "{{ solrcloud_docker_zookeeper_data_dir }}"
+    - /data/solr_config/
   run_once: true
   tags:
     - docker

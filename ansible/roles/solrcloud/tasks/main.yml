@@ -6,6 +6,8 @@
 
 - name: Include docker tasks
   include: docker-tasks.yml
+  vars:
+    - solr_temp_disable_shardsWhitelist: true
   when: use_docker is defined and use_docker
 
 - name: Include VM tasks
@@ -131,6 +133,15 @@
     - solr_create_collection
   when: collection.status == 404
 
+- import_role:
+    name: solrcloud_config
+  vars:
+    - solr_config_host: 127.0.0.1
+    - solr_zk_host: la_solrcloud_zoo_1
+    - solr_user: "{{ docker_default_user }}"
+    - solrcloud_num_shards: 1
+  when: use_docker is defined and use_docker
+
 - name: Remove previous socat container for solr tunnel
   import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
@@ -139,3 +150,7 @@
   when: use_docker is defined and use_docker and docker_development_mode is defined and docker_development_mode | bool == false
   tags:
     - solr_config
+
+- name: Redeploy stack without solr_temp_disable_shardsWhitelist
+  include: docker-tasks.yml
+  when: use_docker is defined and use_docker

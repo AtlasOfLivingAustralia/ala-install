@@ -4,6 +4,4 @@
     - use_docker: true
   roles:
     - solrcloud
-    # Pending:
-    # - solrcloud_config
   become: true

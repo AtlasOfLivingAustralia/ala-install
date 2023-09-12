@@ -39,8 +39,11 @@ services:
     volumes:
       # https://hub.docker.com/r/bitnami/solr/
       - {{ solrcloud_docker_data_dir }}/solr{{ i }}/data:/bitnami/solr
-      - {{ solrcloud_docker_conf_dir }}/solr{{ i }}.in.sh:/etc/default/solr.in.sh
+      # solr.in.sh in bitnami image is in /opt/bitnami/, we use env vars
+      # instead:
+      # - {{ solrcloud_docker_conf_dir }}/solr{{ i }}.in.sh:/etc/default/solr.in.sh
       - {{ solrcloud_docker_conf_dir }}/solr.xml:/var/solr/solr.xml
+      - {{ data_dir}}/solr_config/:{{data_dir}}/solr_config/
 {% if i == 1 and docker_development_mode is defined and docker_development_mode | bool %}
     ports:
       - 8983:8983
@@ -55,6 +58,7 @@ services:
       TZ: {{ server_tz }}
       SOLR_HOST: la_solrcloud_solr_{{ i }}
       ZK_HOST: {{ docker_solr_zk_hosts }}
+      SOLR_OPTS: "{% if solr_temp_disable_shardsWhitelist is defined and solr_temp_disable_shardsWhitelist %}-Dsolr.disable.shardsWhitelist=true{% endif %}"
 {% if docker_solr_hosts is defined %}
     deploy:
       replicas: 1
