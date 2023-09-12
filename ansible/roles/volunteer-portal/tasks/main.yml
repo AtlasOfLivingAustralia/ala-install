@@ -65,7 +65,7 @@
   tags:
     - deploy
     - volunteer-portal
-
+  
 - name: add nginx vhost
   include_role:
     name: nginx_vhost
@@ -77,12 +77,41 @@
       - path: "{{ digivol_context_path }}"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:8080/{{ digivol_context_path }}"
+      - path: "/data/volunteer"
+        is_proxy: false
+        try_files: "$uri $uri/ =404"
   tags:
     - nginx_vhost
     - volunteer-portal
   when: webserver_nginx
 
+- name: create data dir under nginx root
+  file: 
+    path: "{{nginx_root}}/data"
+    state: directory
+  tags:
+    - nginx_vhost
+    - volunteer-portal
 
+- name: copy default html pages into nginx root
+  copy:
+    src: "{{item}}"
+    dest: "{{nginx_root}}"
+  with_items:
+    - "403.html"
+    - "503.html"
+  tags:
+    - nginx_vhost
+    - volunteer-portal
+
+- name: create data/volunteer symlink under nginx root
+  file: 
+    path: "{{nginx_root}}/data/volunteer"
+    src: "{{data_dir}}/volunteer-portal"
+    state: link
+  tags:
+    - nginx_vhost
+    - volunteer-portal
 
 
 
