@@ -8,5 +8,6 @@
     - bie_index_upstream_host: la_bie_index_war
     - skip_handlers: true
   roles:
+    - common
     - namedata
     - bie-index

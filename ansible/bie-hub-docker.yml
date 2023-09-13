@@ -8,4 +8,5 @@
     - bie_hub_upstream_host: la_bie_hub_war
     - skip_handlers: true
   roles:
+    - common
     - bie-hub
