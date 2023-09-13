@@ -1,8 +1,30 @@
+---
 - include: ../../common/tasks/setfacts.yml
   tags:
     - sensitive-data-service
     - deploy
     - properties
+    - nginx_vhost
+
+- name: "Create ala-sensitive-data-service directories"
+  file:
+    path: "{{item}}"
+    state: directory
+    owner: "{{ sensitive_data_user }}"
+    group: "{{ sensitive_data_user }}"
+    mode: 0755
+  when: use_docker is defined and use_docker
+  with_items:
+    - "/data/ala-sensitive-data-service/config"
+  tags:
+    - properties
+    - sensitive-data-service
+
+- name: set nginx upstream server for nginx
+  set_fact:
+    upstream_host: "{{ sensitive_data_service_upstream_host | default('127.0.0.1') }}"
+  tags:
+    - deploy
     - nginx_vhost
 
 # Recent versions use the namemaching index so we have to configure too
@@ -12,17 +34,9 @@
     - deploy
     - apt
 
-- include: ../namematching-service/tasks/apt.yml
-  tags:
-    - sensitive-data-service
-    - deploy
-    - apt
-
-- include: ./apt.yml
-  tags:
-    - sensitive-data-service
-    - deploy
-    - apt
+- name: Include VM tasks
+  include: vm-tasks.yml
+  when: use_docker is not defined or not use_docker
 
 - name: Customize configuration already added by apt package
   template:
@@ -36,13 +50,6 @@
     - properties
     - sensitive-data-service
 
-- name: Disable previous sensitive_data service (not packaged war)
-  service:
-    name: sensitive-data-service
-    state: stopped
-    enabled: no
-  ignore_errors: yes
-
 - name: add nginx vhost
   include_role:
     name: nginx_vhost
@@ -53,7 +60,7 @@
     nginx_paths:
       - path: "{{ sensitive_data_service_context_path }}"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ sensitive_data_service_port }}/{{ sensitive_data_service_context_path }}"
+        proxy_pass: "http://{{upstream_host}}:{{ sensitive_data_service_port }}/{{ sensitive_data_service_context_path }}"
   # notify:
   #   - reload nginx
   tags:
@@ -61,3 +68,7 @@
     - sensitive-data-service
     - deploy
   when: webserver_nginx
+
+- name: Include docker tasks
+  include: docker-tasks.yml
+  when: use_docker is defined and use_docker

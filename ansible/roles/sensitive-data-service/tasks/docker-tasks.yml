@@ -1,0 +1,15 @@
+---
+- name: ensure target db directories exist
+  file: path={{item}} state=directory
+  with_items:
+    - "{{ ala_sensitive_data_service_docker_dir }}"
+  run_once: true
+  tags:
+    - docker
+    - docker-service
+
+- name: Deploy sensitive-data service stack
+  import_tasks: ../../docker-common/tasks/stack-create.yml
+  vars:
+    stack: la_sensitive_data_service
+    docker_compose_data_dir: "{{ ala_sensitive_data_service_docker_dir }}"
