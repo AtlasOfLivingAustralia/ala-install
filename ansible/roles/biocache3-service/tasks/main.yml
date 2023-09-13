@@ -35,10 +35,9 @@
     - biocache-service
   when: webserver_nginx and biocache_service_download_target is not defined
 
-- name: set nginx upstream server for docker deploys
+- name: set nginx upstream server for nginx
   set_fact:
-    upstream_host: "{{ biocache_service_docker_host | default('127.0.0.1') }}"
-  when: use_docker is defined and use_docker
+    upstream_host: "{{ biocache_service_upstream_host | default('127.0.0.1') }}"
   tags:
     - deploy
     - nginx_vhost
