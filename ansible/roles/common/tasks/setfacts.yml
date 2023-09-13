@@ -29,6 +29,9 @@
     use_openjdk8: false
     use_zulu8: True
     psycopg2_package: "python-psycopg2"
+    docker_db_data_dir: "/data/dbs"
+    docker_web_image: "nginx"
+    gatus_config_dir: "{{ data_dir }}/gatus/config"
   when: ansible_os_family == "Debian" and ansible_distribution_version == "14.04"
   tags:
     - setfacts
@@ -55,6 +58,9 @@
 #    use_openjdk8: true
 #    use_zulu8: False
     psycopg2_package: "python3-psycopg2"
+    docker_db_data_dir: "/data/dbs"
+    docker_web_image: "nginx"
+    gatus_config_dir: "{{ data_dir }}/gatus/config"
   when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04"
   tags:
     - setfacts
@@ -96,6 +102,9 @@
 #    use_openjdk8: true
 #    use_zulu8: False
     psycopg2_package: "python3-psycopg2"
+    docker_db_data_dir: "/data/dbs"
+    docker_web_image: "nginx"
+    gatus_config_dir: "{{ data_dir }}/gatus/config"
   when: ansible_os_family == "Debian" and ansible_distribution_version == "18.04"
   tags:
     - setfacts
@@ -136,6 +145,9 @@
 #    use_openjdk8: true
 #    use_zulu8: False
     psycopg2_package: "python3-psycopg2"
+    docker_db_data_dir: "/data/dbs"
+    docker_web_image: "nginx"
+    gatus_config_dir: "{{ data_dir }}/gatus/config"
   when: ansible_os_family == "Debian" and ansible_distribution_version == "20.04"
   tags:
     - setfacts
@@ -173,6 +185,9 @@
     postgis_version: "{{ postgis_version | default('3') }}"
     postgis_version_folder: "{{ postgis_version_folder | default('3') }}"
     postgis_scripts_version: "{{ postgis_scripts_version | default('3.2') }}"
+    docker_db_data_dir: "/data/dbs"
+    docker_web_image: "nginx"
+    gatus_config_dir: "{{ data_dir }}/gatus/config"
   when: ansible_os_family == "Debian" and ansible_distribution_version == "22.04"
   tags:
     - setfacts
@@ -286,4 +301,3 @@
   when: packaging is defined and packaging == "jar"
   tags:
     - setfacts
-
