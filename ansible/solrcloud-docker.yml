@@ -3,5 +3,6 @@
   vars:
     - use_docker: true
   roles:
+    - common
     - solrcloud
   become: true
