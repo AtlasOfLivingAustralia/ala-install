@@ -5,6 +5,7 @@
     - config
     - properties
     - bie-index
+    - nginx_vhost
 
 - name: set nginx upstream server for nginx
   set_fact:

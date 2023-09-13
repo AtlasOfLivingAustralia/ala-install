@@ -5,6 +5,7 @@
     - tomcat_user: "{{ docker_default_user }}"
     - nginx_conf_dir: "{{ data_dir }}/nginx"
     - nginx_user: "{{ docker_default_user }}"
+    - bie_index_upstream_host: la_bie_index_war
     - skip_handlers: true
   roles:
     - namedata
