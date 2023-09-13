@@ -14,6 +14,13 @@
     - deploy
     - nginx_vhost
 
+- name: set nginx upstream server for nginx
+  set_fact:
+    upstream_host: "{{ bie_index_upstream_host | default('127.0.0.1') }}"
+  tags:
+    - deploy
+    - nginx_vhost
+
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
