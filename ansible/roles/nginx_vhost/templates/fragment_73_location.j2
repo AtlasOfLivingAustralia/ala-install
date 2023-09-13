@@ -56,8 +56,10 @@
         # proxy_set_header Host $host;
 {% if item.proxy_hostname is defined and item.proxy_hostname | length > 0 %}
         proxy_set_header Host {{ item.proxy_hostname }};
+        proxy_set_header X-Forwarded-Host {{ item.proxy_hostname }};
 {% else %}
         proxy_set_header Host {{ hostname }};
+        proxy_set_header X-Forwarded-Host {{ hostname }};
 {% endif %}
 {% if item.proxy_x_request_id is defined %}
         set $x_request_id {{ item.proxy_x_request_id }};
