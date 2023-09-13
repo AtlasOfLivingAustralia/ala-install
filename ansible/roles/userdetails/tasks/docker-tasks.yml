@@ -85,6 +85,13 @@
     - cas_mysql_src_host: '%'
     - apikey_mysql_src_host: '%'
 
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: la_auth_cas
+  run_once: true
+  tags:
+    - cas-dbs
+
 - import_tasks: ../../docker-common/tasks/socat.yml
   vars:
     name: la_auth_cas
@@ -96,6 +103,13 @@
 - import_tasks: ../../cas5/tasks/admin-account.yml
   vars:
     - cas_db_hostname: 127.0.0.1
+  run_once: true
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: la_auth_cas-management
   run_once: true
   tags:
     - cas-dbs
