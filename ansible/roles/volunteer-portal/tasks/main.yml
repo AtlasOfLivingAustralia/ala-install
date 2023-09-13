@@ -65,25 +65,59 @@
   tags:
     - deploy
     - volunteer-portal
-  
-- name: add nginx vhost
-  include_role:
-    name: nginx_vhost
-  vars:
-    appname: "volunteer-portal"
-    hostname: "{{ digivol_hostname }}"
-    context_path: "{{ digivol_context_path }}"
-    nginx_paths:
-      - path: "{{ digivol_context_path }}"
-        is_proxy: true
-        proxy_pass: "http://127.0.0.1:8080/{{ digivol_context_path }}"
-      - path: "/data/volunteer"
-        is_proxy: false
-        try_files: "$uri $uri/ =404"
+
+# === temporary nginx config: expires
+- name: copy nginx config (expires)
+  copy:
+    src: "expires.conf"
+    dest: "/etc/nginx/snippets/"
   tags:
     - nginx_vhost
     - volunteer-portal
-  when: webserver_nginx
+
+# === temporary nginx config using simple template
+- name: add nginx vhost (using template)
+  template:
+    src: nginx-vhost.j2
+    dest: "/etc/nginx/sites-available/{{digivol_hostname}}.conf"
+  notify:
+    - reload nginx
+  tags:
+    - nginx_vhost
+    - volunteer-portal
+
+# === temporary nginx config: symlink
+- name: add nginx vhost symlink
+  file: 
+    path: "/etc/nginx/sites-enabled/{{digivol_hostname}}.conf"
+    src: "/etc/nginx/sites-available/{{digivol_hostname}}.conf"
+    state: link
+  notify:
+    - reload nginx
+  tags:
+    - nginx_vhost
+    - volunteer-portal
+
+
+# === temporarily not using nginx_vhost, as Digivol needs config values not yet supported in that role
+# - name: add nginx vhost
+#   include_role:
+#     name: nginx_vhost
+#   vars:
+#     appname: "volunteer-portal"
+#     hostname: "{{ digivol_hostname }}"
+#     context_path: "{{ digivol_context_path }}"
+#     nginx_paths:
+#       - path: "{{ digivol_context_path }}"
+#         is_proxy: true
+#         proxy_pass: "http://127.0.0.1:8080/{{ digivol_context_path }}"
+#       - path: "/data/volunteer"
+#         is_proxy: false
+#         try_files: "$uri $uri/ =404"
+#   tags:
+#     - nginx_vhost
+#     - volunteer-portal
+#  when: webserver_nginx
 
 - name: create data dir under nginx root
   file: 
