@@ -5,7 +5,7 @@ security:
 {% if userdetails_backend == 'cognito' %}
     roleAttribute: {{ security_core_roleAttribute | default('ala:role') }}
     affiliation-survey:
-      enabled: {{ affiliation-survey | default('true') }}
+      enabled: {{ affiliation_survey | default('true') }}
 {% endif %}
   cas:
     enabled: {{ userdetails_use_cas | default('true') }}
