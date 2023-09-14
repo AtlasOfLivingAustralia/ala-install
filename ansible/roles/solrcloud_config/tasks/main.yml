@@ -39,6 +39,7 @@
 - name: Make zkcli.sh world-readable-writable-executable using Docker
   shell: "docker exec {{ solr_container_id.stdout }} chmod 777 /opt/bitnami/solr/server/scripts/cloud-scripts/zkcli.sh"
   when: use_docker is defined or use_docker
+  delegate_to: "{{ solr_node.stdout }}"
   tags:
     - solrcloud_config
     - zookeeper_config
