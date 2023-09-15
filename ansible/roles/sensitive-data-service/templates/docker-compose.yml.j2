@@ -13,7 +13,9 @@ services:
     networks:
       la_internal:
     volumes:
-      - conf:{{ data_dir }}/ala-sensitive-data-service
+      - data:{{ data_dir }}/ala-sensitive-data-service
+#      - sds:{{ data_dir }}/sds
+      - lucene:{{ data_dir }}/lucene/data/lucene/namematching-{{ nameindex_datestamp }}
       - i18n:/opt/atlas/i18n
       - i18n_custom:/var/opt/atlas/i18n
 
@@ -23,12 +25,27 @@ networks:
 
 volumes:
 
-  conf:
+  data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: {{ data_dir }}/ala-sensitive-data-service/config"
+      device: {{ data_dir }}/ala-sensitive-data-service
+
+  lucene:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/lucene/namematching-nm/
+
+# We should manage this also in some point, right?
+#  sds:
+#    driver: local
+#    driver_opts:
+#      type: none
+#      o: bind
+#      device: {{ data_dir }}/sds
 
   i18n:
     driver: local

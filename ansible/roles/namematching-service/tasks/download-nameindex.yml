@@ -1,0 +1,70 @@
+---
+
+- name: ensure lucene base directory exists
+  file: path={{item}} state=directory
+  with_items:
+    - "{{ data_dir }}/lucene"
+    - "/tmp/nm"
+  run_once: true
+  tags:
+    - nameindex
+
+- name: Download nameindex {{ url }} into {{ dest }}
+  get_url:
+    url: "{{ url }}"
+    dest: "{{ dest }}"
+    force: "{{ force_nameindex_download | default(false) }}"
+    timeout: 10000
+    checksum: "sha1:{{ sha1 }}"
+  run_once: true
+  tags:
+    - nameindex
+
+- name: Untar nameindex source {{ dest }} to /tmp/nm to verify it
+  unarchive:
+    src: "{{ dest }}"
+    dest: "/tmp/nm"
+    remote_src: true
+    extra_opts: ["--no-same-owner"]
+  run_once: true
+  register: unarchive_result
+  tags:
+    - nameindex
+
+- name: Find the first directory/file in the untarred content
+  find:
+    paths: "/tmp/nm"
+    file_type: directory
+    recurse: false
+  run_once: true
+  register: find_result
+  tags:
+    - nameindex
+
+- set_fact:
+    rootdir: "{{ find_result.files[0].path.split('/')[-1] }}"
+  tags:
+    - nameindex
+
+- name: Rsync from {{rootdir}} to {{ final_dest }}
+  synchronize:
+    src: "/tmp/nm/{{ rootdir }}/"
+    dest: "{{ final_dest }}"
+    delete: true
+    recursive: true
+  run_once: true
+  delegate_to: "{{ inventory_hostname }}"
+  tags:
+    - nameindex
+
+- name: Set permissions on the final destination
+  file:
+    path: "{{ final_dest }}"
+    state: directory
+    owner: "{{ namematching_user }}"
+    group: "{{ namematching_user }}"
+    recurse: true
+  run_once: true
+  tags:
+    - nameindex
+    - debug

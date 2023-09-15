@@ -14,6 +14,7 @@ services:
       la_internal:
     volumes:
       - conf:{{ data_dir }}/ala-namematching-service/config
+      - lucene:{{ data_dir }}/lucene
       - i18n:/opt/atlas/i18n
       - i18n_custom:/var/opt/atlas/i18n
 
@@ -29,6 +30,13 @@ volumes:
       type: none
       o: bind
       device: {{ data_dir }}/ala-namematching-service/config
+
+  lucene:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/lucene
 
   i18n:
     driver: local
