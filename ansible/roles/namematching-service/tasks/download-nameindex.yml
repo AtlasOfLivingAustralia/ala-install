@@ -61,8 +61,8 @@
   file:
     path: "{{ final_dest }}"
     state: directory
-    owner: "{{ namematching_user }}"
-    group: "{{ namematching_user }}"
+    # owner: "{{ namematching_user }}"
+    # group: "{{ namematching_user }}"
     recurse: true
   run_once: true
   tags:
