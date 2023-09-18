@@ -3,6 +3,11 @@
 # directory and its subdirectories are merged, so we can add configurations
 # from different ansible roles
 #
+
+storage:
+  type: sqlite
+  path: /data/data.db
+
 # endpoints:
 #   - name: front-end
 #     group: core
