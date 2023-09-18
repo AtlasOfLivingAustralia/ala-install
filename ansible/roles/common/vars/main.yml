@@ -6,11 +6,7 @@ ansible_python_interpreter: "auto"
 
 docker_db_data_dir: "/data/dbs"
 
-docker_web_image: "nginx"
-
-# Gatus config can be generated from different roles adding config files to
-# this directory. See:
-# https://github.com/TwiN/gatus#usage
+docker_web_image: "{{ docker_nginx_image | default('livingatlases/nginx-sites-enabled:latest') }}"
 
 gatus_config_dir: "{{ data_dir }}/gatus/config"
 
