@@ -1,0 +1,11 @@
+---
+- hosts: portainer
+  vars:
+    - use_docker: true
+    - nginx_conf_dir: "{{ data_dir }}/nginx"
+    - skip_handlers: true
+    - nginx_user: "{{ docker_default_user }}"
+  roles:
+    - common
+    - portainer
+  become: true
