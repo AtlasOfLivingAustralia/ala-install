@@ -12,6 +12,7 @@ services:
       GATUS_CONFIG_PATH: /etc/gatus/genconfig
     volumes:
       - gatus_config:/etc/gatus/genconfig
+      - data:/data
     networks:
       la_internal:
 
@@ -28,3 +29,10 @@ volumes:
       type: none
       o: bind
       device: {{ gatus_config_dir }}
+
+  data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ gatus_data_dir }}

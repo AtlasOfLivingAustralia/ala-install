@@ -22,6 +22,7 @@
   with_items:
     - {path: "{{ gatus_config_dir }}"}
     - {path: "{{ gatus_docker_dir }}"}
+    - {path: "{{ gatus_data_dir }}"}
   run_once: true
   tags:
     - gatus
