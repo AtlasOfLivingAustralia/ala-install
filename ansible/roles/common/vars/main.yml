@@ -4,5 +4,14 @@ groupIdPath: "{{groupId | default('au/org/ala')}}"
 
 ansible_python_interpreter: "auto"
 
+docker_db_data_dir: "/data/dbs"
+
+docker_web_image: "nginx"
+
+# Gatus config can be generated from different roles adding config files to
+# this directory. See:
+# https://github.com/TwiN/gatus#usage
+
+gatus_config_dir: "{{ data_dir }}/gatus/config"
 
 # change auto to python for zoatrack
