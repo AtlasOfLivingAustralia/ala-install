@@ -276,6 +276,7 @@ apigateway:
 {% if userdetails_backend == 'cognito' %}
 tokenApp:
   url: {{tokenApp_url | default('https://tokens.ala.org.au')}}
+docsPortal.url: {{docsPortal_url | default('https://docs.ala.org.au/#introduction')}}
 {% endif %}
 {% if apikey_type is defined %}
 apikey:
