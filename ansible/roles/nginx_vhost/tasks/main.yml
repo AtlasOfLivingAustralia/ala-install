@@ -133,6 +133,17 @@
   pause: prompt="nginx_paths value is {{nginx_paths}}"
   when: nginx_paths_debug_enabled is defined and nginx_paths_debug_enabled | bool == True
 
+- name: add gatus monitor of nginx_paths
+  template:
+    src: ../../gatus/templates/http.j2
+    dest: "{{ gatus_config_dir }}/{{appname}}-http.yaml"
+  with_items:
+    - "{{ nginx_paths}}"
+  when: use_gatus is defined and use_gatus
+  tags:
+    - nginx_vhost
+    - gatus
+
 - name: install libnginx-mod-http-auth-pam
   apt: name="libnginx-mod-http-auth-pam" state=present
   when: nginx_auth_pam_shadow 
@@ -548,13 +559,3 @@
   tags:
     - nginx_vhost
 
-- name: add gatus monitor of nginx_paths
-  template:
-    src: ../../gatus/templates/http.j2
-    dest: "{{ gatus_config_dir }}/{{appname}}-http.yaml"
-  with_items:
-    - "{{ nginx_paths}}"
-  when: use_gatus is defined and use_gatus
-  tags:
-    - nginx_vhost
-    - gatus

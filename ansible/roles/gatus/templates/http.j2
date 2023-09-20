@@ -15,6 +15,7 @@ endpoints:
 
 {% endif %}
 {% for entry in nginx_paths %}
+{% if entry.path not in (nginx_paths_gatus_exclude | default([])) %}
 {% set suffix_name = entry.path | replace("/", "-") %}
 {% if suffix_name == "-" %}
 {% set suffix_name = "root" %}
@@ -27,4 +28,5 @@ endpoints:
     interval: {{ gatus_interval | default('5m') }}
     conditions:
       - "[STATUS] == 200"
+{% endif %}
 {% endfor %}

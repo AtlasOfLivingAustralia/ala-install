@@ -7,6 +7,9 @@
     - nginx_user: "{{ docker_default_user }}"
     - bie_hub_upstream_host: la_bie_hub_war
     - skip_handlers: true
+    - nginx_paths_gatus_exclude:
+        - "{{bie_hub_context_path}}/trove"
+        - "{{bie_hub_context_path}}/externalSite"
   roles:
     - common
     - bie-hub
