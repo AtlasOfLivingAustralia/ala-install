@@ -1,11 +1,23 @@
+---
 - name: "set facts"
   include_role:
     name: common
     tasks_from: setfacts
   tags:
-  - setfacts
-  - cas
-  - properties
+    - setfacts
+    - cas
+    - properties
+
+- name: "Ensure system user for CAS"
+  user:
+    name: cas
+    state: present
+    system: true
+  tags:
+    - service
+    - cas
+    - properties
+  when: deployment_type == 'vm'
 
 - name: ensure target directories exist data subdirectories etc.
   file:

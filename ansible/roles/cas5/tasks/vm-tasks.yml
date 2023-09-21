@@ -1,15 +1,5 @@
 ---
 
-- name: "Ensure system user for CAS"
-  user:
-    name: cas
-    state: present
-    system: yes
-  tags:
-  - service
-  - cas
-  - properties
-
 - name: add jar and service
   include_role:
     name: exec-jar
