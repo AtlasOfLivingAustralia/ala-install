@@ -10,7 +10,7 @@
 
 - name: "Create system user for userdetails"
   user:
-    name: "{{ userdetails_user}}"
+    name: "{{ userdetails_user | default('userdetails') }}"
     state: present
     system: true
   tags:
