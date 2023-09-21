@@ -8,6 +8,7 @@
     - biocache_hub_docker_host: la_biocache_hub_war
     - grouped_facets_json: grouped_facets_ala.json
     - tomcat_user: "{{ docker_default_user }}"
+    - biocache_hub_tomcat_server_address: "0.0.0.0"
   roles:
     - common
     - biocache-hub
