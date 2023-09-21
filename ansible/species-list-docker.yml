@@ -1,7 +1,7 @@
 ---
 - hosts: species-lists
   vars:
-    - use_docker: true
+    - deployment_type: swarm
     - nginx_conf_dir: "{{ data_dir }}/nginx"
     - specieslist_db_hostname: la_species_list_mysql
     - skip_handlers: true

@@ -17,7 +17,7 @@
     - user
     - userdetails
     - properties
-  when: use_docker is not defined or not use_docker
+  when: deployment_type == 'vm'
 
 - name: ensure target directories exist data subdirectories etc.
   file:
@@ -83,7 +83,7 @@
 - include: ../../docker-common/tasks/common.yml
   tags:
     - docker
-  when: use_docker is defined and use_docker
+  when: deployment_type == 'swarm'
 
 - name: add nginx vhost
   include_role:
@@ -105,8 +105,8 @@
 
 - name: Include docker tasks
   include: docker-tasks.yml
-  when: use_docker is defined and use_docker
+  when: deployment_type == 'swarm'
 
 - name: Include VM tasks
   include: vm-tasks.yml
-  when: use_docker is not defined or not use_docker
+  when: deployment_type == 'vm'

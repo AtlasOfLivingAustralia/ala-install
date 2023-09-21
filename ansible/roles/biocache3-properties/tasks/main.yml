@@ -17,7 +17,7 @@
   tags:
     - docker
     - docker-service
-  when: use_docker is defined and use_docker
+  when: deployment_type == 'swarm'
 
 - name: copy biocache config properties template 
   template: src={{item}} dest={{data_dir}}/biocache/config/{{item}} mode=0644 output_encoding=iso-8859-1

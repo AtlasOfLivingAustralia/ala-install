@@ -23,7 +23,7 @@
   shell: "docker service ps la_sorlcloud_solr_1 --format '{{ '{{' }}.Node{{ '}}' }}' | head -1"
   register: solr_node
   run_once: true
-  when: use_docker is defined and use_docker
+  when: deployment_type == 'swarm'
   tags:
     - solrcloud_config
     - zookeeper_config
@@ -32,7 +32,7 @@
   shell: "docker ps -q -f name=la_solrcloud_solr_1"
   register: solr_container_id
   run_once: true
-  when: use_docker is defined and use_docker
+  when: deployment_type == 'swarm'
   delegate_to: "{{ solr_node.stdout }}"
   tags:
     - solrcloud_config
@@ -41,7 +41,7 @@
 - name: Make zkcli.sh world-readable-writable-executable using Docker
   shell: "docker exec {{ solr_container_id.stdout }} chmod 777 /opt/bitnami/solr/server/scripts/cloud-scripts/zkcli.sh"
   run_once: true
-  when: use_docker is defined or use_docker
+  when: deployment_type == 'swarm'
   delegate_to: "{{ solr_node.stdout }}"
   tags:
     - solrcloud_config
@@ -50,7 +50,7 @@
 - name: Upload biocache schema(s) to zookeeper using Docker
   shell: "docker exec {{ solr_container_id.stdout }} /opt/bitnami/solr/server/scripts/cloud-scripts/zkcli.sh -cmd upconfig -zkhost {{ solr_zk_host }} -confname biocache -solrhome /data/solr -confdir /data/solr_config/biocache/conf"
   run_once: true
-  when: use_docker is defined and use_docker
+  when: deployment_type == 'swarm'
   delegate_to: "{{ solr_node.stdout }}"
   tags:
     - solrcloud_config
@@ -59,7 +59,7 @@
 - name: Upload bie schema(s) to zookeeper using Docker
   shell: "docker exec {{ solr_container_id.stdout }} /opt/bitnami/solr/server/scripts/cloud-scripts/zkcli.sh -cmd upconfig -zkhost {{ solr_zk_host }} -confname bie -solrhome /data/solr -confdir /data/solr_config/bie/conf"
   run_once: true
-  when: use_docker is defined and use_docker
+  when: deployment_type == 'swarm'
   delegate_to: "{{ solr_node.stdout }}"
   tags:
     - solrcloud_config
@@ -67,21 +67,21 @@
 
 - name: Make zkcli.sh world-readable-writable-executable
   shell: "chmod 777 /opt/solr/server/scripts/cloud-scripts/zkcli.sh"
-  when: use_docker is not defined or not use_docker
+  when: deployment_type == 'vm'
   tags:
     - solrcloud_config
     - zookeeper_config
 
 - name: Upload biocache schema(s) to zookeeper
   shell: "/opt/solr/server/scripts/cloud-scripts/zkcli.sh -cmd upconfig -zkhost {{ solr_zk_host }} -confname biocache -solrhome /data/solr -confdir /data/solr_config/biocache/conf"
-  when: use_docker is not defined or not use_docker
+  when: deployment_type == 'vm'
   tags:
     - solrcloud_config
     - zookeeper_config
 
 - name: Upload bie schema(s) to zookeeper
   shell: "/opt/solr/server/scripts/cloud-scripts/zkcli.sh -cmd upconfig -zkhost {{ solr_zk_host }} -confname bie -solrhome /data/solr -confdir /data/solr_config/bie/conf"
-  when: use_docker is not defined or not use_docker
+  when: deployment_type == 'vm'
   tags:
     - solrcloud_config
     - zookeeper_config

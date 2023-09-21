@@ -8,11 +8,11 @@
   include: docker-tasks.yml
   vars:
     - solr_temp_disable_shardsWhitelist: true
-  when: use_docker is defined and use_docker
+  when: deployment_type == 'swarm'
 
 - name: Include VM tasks
   include: vm-tasks.yml
-  when: use_docker is not defined or not use_docker
+  when: deployment_type == 'vm'
 
 - name: Check if biocache collection exists
   run_once: true
@@ -140,17 +140,17 @@
     - solr_zk_host: la_solrcloud_zoo_1
     - solr_user: "{{ docker_default_user }}"
     - solrcloud_num_shards: 1
-  when: use_docker is defined and use_docker
+  when: deployment_type == 'swarm'
 
 - name: Remove previous socat container for solr tunnel
   import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
     name: la_solrcloud_solr_1
   run_once: true
-  when: use_docker is defined and use_docker and docker_development_mode is defined and docker_development_mode | bool == false
+  when: deployment_type == 'swarm' and docker_development_mode is defined and docker_development_mode | bool == false
   tags:
     - solr_config
 
 - name: Redeploy stack without solr_temp_disable_shardsWhitelist
   include: docker-tasks.yml
-  when: use_docker is defined and use_docker
+  when: deployment_type == 'swarm'

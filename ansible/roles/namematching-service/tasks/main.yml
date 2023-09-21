@@ -35,14 +35,14 @@
     mode: 0755
   with_items:
     - "/data/ala-namematching-service/config"
-  when: use_docker is defined and use_docker
+  when: deployment_type == 'swarm'
   tags:
     - properties
     - namematching-service
 
 - name: Include VM tasks
   include: vm-tasks.yml
-  when: use_docker is not defined or not use_docker
+  when: deployment_type == 'vm'
 
 - name: Customize configuration already added by apt package
   template:
@@ -92,4 +92,4 @@
 
 - name: Include docker tasks
   include: docker-tasks.yml
-  when: use_docker is defined and use_docker
+  when: deployment_type == 'swarm'

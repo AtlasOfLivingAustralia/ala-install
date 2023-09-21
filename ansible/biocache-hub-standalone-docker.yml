@@ -1,7 +1,7 @@
 ---
 - hosts: biocache-hub
   vars:
-    - use_docker: true
+    - deployment_type: swarm
     - skip_handlers: true
     - nginx_conf_dir: "{{ data_dir }}/nginx"
     - biocache_hub: ala-hub
