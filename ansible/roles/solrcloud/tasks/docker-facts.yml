@@ -10,21 +10,29 @@
           {{ zookeeper_servers_l |default([]) +
           [{'id': (item|string),
           'server_name': 'la_solrcloud_zoo_' + (item|string)}] }}
+    zookeeper_servers_plain_l: >-
+          {{ zookeeper_servers_plain_l |default([]) +
+           [ 'la_solrcloud_zoo_' + (item|string) ] }}
   loop: "{{ range(1, zookeeper_hosts + 1) | list }}"
   tags:
     - docker
     - docker-service
     - docker-compose
+    - gatus
 
 - name: Create Sorlcloud zk host list
   set_fact:
     solr_zk_hosts: "{{ solr_zk_hosts |default([]) +
           ['la_solrcloud_zoo_' ~ item ~ ':2181'] }}"
+    solr_servers_plain_l: >-
+          {{ solr_servers_plain_l |default([]) +
+           [ 'la_solrcloud_solr_' + (item|string) ] }}
   loop: "{{ range(1, solr_hosts + 1) | list }}"
   tags:
     - docker
     - docker-service
     - docker-compose
+    - gatus
 
 - name: Create Sorlcloud solr_url
   set_fact:

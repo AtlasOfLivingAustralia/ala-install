@@ -34,6 +34,7 @@
     - solr_config
     - docker
     - docker-service
+    - gatus
 
 - name: Copy SOLR config template
   template:
@@ -153,3 +154,37 @@
   delay: 10
   tags:
     - solr_config
+
+- include_tasks: ../../gatus/tasks/other-checks.yml
+  vars:
+    name: "{{ item }}"
+    gatus_default_checks:
+      - name: "{{ item }} 2181 port"
+        group: "zookeeper"
+        url: "tcp://{{ item }}:2181"
+        interval: "3m"
+        conditions:
+          - "[CONNECTED] == true"
+  loop: "{{ zookeeper_servers_plain_l }}"
+  run_once: true
+  when: use_gatus is defined and use_gatus
+  tags:
+    - gatus
+    - zookeeper
+
+- include_tasks: ../../gatus/tasks/other-checks.yml
+  vars:
+    name: "{{ item }}"
+    gatus_default_checks:
+      - name: "{{ item }} 8983 port"
+        group: "solrcloud"
+        url: "http://{{ item }}:8983/solr/admin/info/system"
+        interval: "3m"
+        conditions:
+          - "[STATUS] == 200"
+  loop: "{{ solr_servers_plain_l }}"
+  run_once: true
+  when: use_gatus is defined and use_gatus
+  tags:
+    - gatus
+    - solrcloud
