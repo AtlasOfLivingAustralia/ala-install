@@ -33,3 +33,17 @@
   vars:
     stack: la_cassandra
     docker_compose_data_dir: "{{ cassandra_docker_dir }}"
+
+- import_tasks: ../../gatus/tasks/other-checks.yml
+  vars:
+    name: cassandra
+    gatus_default_checks:
+      - name: "cassandra 9042 port"
+        group: "cassandra"
+        url: "tcp://la_cassandra_db:9042"
+        interval: "3m"
+        conditions:
+          - "[CONNECTED] == true"
+  when: use_gatus is defined and use_gatus
+  tags:
+    - gatus
