@@ -1,0 +1,41 @@
+---
+
+- name: add jar and service
+  include_role:
+    name: exec-jar
+  vars:
+    extra_params:
+    - key: cas.standalone.configurationDirectory
+      value: /data/cas/config
+    - key: ala.password.properties
+      value: /data/cas/config/pwe.properties
+    log_config_filename: 'log4j2.xml'
+    service_name: "cas"
+    use_openjdk11: "{{ cas_version is version('6', '>=') }}"
+    use_openjdk8: "{{ cas_version is version('6', '<') }}"
+    java_headless: true
+    java_jre: true
+    jar_url: '{{ cas_jar_url }}'
+  tags:
+    - deploy
+    - service
+    - service-conf
+    - cas
+
+- name: Ensure cas is in a running state
+  service:
+    name: cas
+    state: started
+  register: casService
+  until: casService.status.ActiveState == "active"
+  retries: 15
+  delay: 30
+  tags:
+    - cas
+    - db
+
+- name: Create cas admin user
+  include_tasks: ./admin-account.yml
+  tags:
+    - cas
+    - db

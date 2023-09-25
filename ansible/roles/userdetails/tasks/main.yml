@@ -1,21 +1,23 @@
+---
 - name: "set facts"
   include_role:
     name: common
     tasks_from: setfacts
   tags:
-  - setfacts
-  - userdetails
-  - properties
+    - setfacts
+    - userdetails
+    - properties
 
 - name: "Create system user for userdetails"
   user:
-    name: userdetails
+    name: "{{ userdetails_user | default('userdetails') }}"
     state: present
-    system: yes
+    system: true
   tags:
-  - user
-  - userdetails
-  - properties
+    - user
+    - userdetails
+    - properties
+  when: deployment_type == 'vm'
 
 - name: ensure target directories exist data subdirectories etc.
   file:
@@ -78,55 +80,10 @@
     - properties
     - userdetails
 
-- name: add jar and service
-  include_role:
-    name: exec-jar
-    apply:
-      tags: userdetails
-  vars:
-    service_name: "userdetails"
-    jar_url: '{{ userdetails_jar_url }}'
-    use_openjdk11: "{{ user_details_version is version('3', '>=') }}"
-    use_openjdk8: "{{ user_details_version is version('3', '<') }}"
-    java_headless: true
-    java_jre: true
-    log_config_filename: logback.xml
+- include: ../../docker-common/tasks/common.yml
   tags:
-    - deploy
-    - service
-    - service-conf
-    - userdetails
-
-- name: Ensure userdetails is in a running state
-  service:
-    name: userdetails
-    state: started
-  register: userdetailsService
-  until: userdetailsService.status.ActiveState == "active"
-  retries: 15
-  delay: 30
-  tags:
-    - userdetails
-    - db
-
-- name: copy all SQL auth ip scripts
-  template: src={{ item }} dest={{data_dir}}/userdetails/setup/
-  with_items:
-    - "sql/auth-ip.sql"
-  when: userdetails_authorize_ip_list is defined
-  tags:
-    - userdetails
-    - db
-    - properties
-
-- name: create auth ip in db if does not exists
-  shell: "mysql --host={{ cas_db_hostname | default('localhost') }} --port={{ cas_db_port | default('3306') }}  --user={{ cas_db_username | default('cas') }} --password={{ cas_db_password | default('password') }} {{ cas_db_name | default('emmet')  }} -e \"set @ip='{{ item }}'; set @description=''; source {{data_dir}}/userdetails/setup/auth-ip.sql;\""
-  loop: "{{ (userdetails_authorize_ip_list | regex_replace(' ', '')).split(',') }}"
-  when: userdetails_authorize_ip_list is defined
-  ignore_errors: no
-  tags:
-    - userdetails
-    - db
+    - docker
+  when: deployment_type == 'swarm'
 
 - name: add nginx vhost
   include_role:
@@ -139,9 +96,17 @@
       - path: "/{{  userdetails_context_path | default('userdetails') }}"
         appname: "userdetails"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ userdetails_port | default('9001') }}/{{  userdetails_context_path | default('userdetails') }}"
+        proxy_pass: "http://{{ userdetails_docker_host | default('127.0.0.1') }}:{{ userdetails_port | default('9001') }}/{{  userdetails_context_path | default('userdetails') }}"
   tags:
     - nginx_vhost
     - deploy
     - userdetails
   when: webserver_nginx
+
+- name: Include docker tasks
+  include: docker-tasks.yml
+  when: deployment_type == 'swarm'
+
+- name: Include VM tasks
+  include: vm-tasks.yml
+  when: deployment_type == 'vm'

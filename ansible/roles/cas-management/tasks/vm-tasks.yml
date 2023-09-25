@@ -1,0 +1,40 @@
+---
+- name: add jar and service
+  include_role:
+    name: exec-jar
+  vars:
+    extra_params:
+    - key: cas.standalone.configurationDirectory
+      value: /data/cas-management/config/
+    log_config_filename: 'log4j2.xml'
+    service_name: "cas-management"
+    service_owner: "{{ cas_user | default('cas') }}"
+    service_group: "{{ cas_user | default('cas') }}"
+    use_openjdk11: "{{ cas_management_version is version('6', '>=') }}"
+    use_openjdk8: "{{ cas_management_version is version('6', '<') }}"
+    java_headless: true
+    java_jre: true
+    jar_url: '{{ cas_management_jar_url }}'
+  tags:
+    - deploy
+    - service
+    - service-conf
+    - cas-management
+
+- name: Ensure cas-management is in a running state
+  service:
+    name: cas-management
+    state: started
+  register: casManagementService
+  until: casManagementService.status.ActiveState == "active"
+  retries: 15
+  delay: 30
+  tags:
+    - cas-management
+    - db
+
+- name: add oidc keys if do not exist
+  include_tasks: ./oidc-tasks.yml
+  tags:
+    - cas-management
+    - db

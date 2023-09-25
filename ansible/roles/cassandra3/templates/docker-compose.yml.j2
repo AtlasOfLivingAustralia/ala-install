@@ -1,0 +1,39 @@
+---
+version: '3.8'
+
+services:
+
+  db:
+    image: bitnami/cassandra:3.11-debian-11
+    volumes:
+      - data:/bitnami
+    environment:
+      TZ: {{ server_tz }}
+      CASSANDRA_CLUSTER_NAME: {{ cassandra_cluster_name }}
+      HEAP: {{ cassandra_max_heap_size }}
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 4G
+    expose:
+      - 9042
+    networks:
+      la_internal: {}
+
+networks:
+  la_internal:
+    external: true
+
+volumes:
+
+  data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ cassandra_docker_data_dir }}
