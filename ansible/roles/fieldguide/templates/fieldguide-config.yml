@@ -9,6 +9,7 @@ image.ws.url: {{images_service_base_url|default('https://images.ala.org.au/ws')}
 fieldguide:
   url: {{fieldguide_base_url}}
   store: {{fieldguide_store|default('/data/fieldguide/store')}}
+fieldguide.service.url: {{ fieldguide_service_url | default('https://api.ala.org.au/fieldguide')}}
 
 threadPoolSize: 4
 
