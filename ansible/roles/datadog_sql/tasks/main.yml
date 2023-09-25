@@ -1,0 +1,30 @@
+--- 
+# create a datadog mysql user
+- block:
+   - name: Create Datadog MySQL user for monitoring
+     mysql_user:
+       login_host: "{{ datadog_db_login_host }}"
+       login_password: "{{ datadog_db_login_password }}"
+       login_user: "{{ datadog_db_login_user }}"
+       name: datadog
+       password: "{{ datadog_db_password }}"
+       priv: "*.*:REPLICATION CLIENT,PROCESS/performance_schema.*:SELECT"
+       state: present
+
+  when: datadog_mysql_enabled|default(False)|bool
+
+# create a datadog postgres user
+- block:
+   - name: Create Datadog postgres user for monitoring
+     postgresql_user:
+       db: "{{ datadog_db_name }}"
+       login_host: "{{ datadog_db_login_host | default(omit) }}"
+       login_password: "{{ datadog_db_login_password | default(omit) }}"
+       login_unix_socket: "{{ datadog_db_socket | default(omit) }}"
+       login_user: "{{ datadog_db_login_user | default(omit) }}"
+       name: datadog
+       password: "{{ datadog_db_password }}"
+       priv: "CONNECT/pg_stat_database:SELECT"
+       state: present
+
+  when: datadog_postgress_enabled|default(False)|bool

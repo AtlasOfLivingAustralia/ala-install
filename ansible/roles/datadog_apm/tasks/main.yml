@@ -7,23 +7,13 @@
         dest: "/opt/atlas/image-service/dd-java-agent.jar"
         mode: 0755
 
-    - name: check if the Java agent is already installed   
-      lineinfile:
-        path: /opt/atlas/image-service/image-service.conf
-        regexp: '^JAVA_OPTS=".*/dd-java-agent.jar"$'
-        state: absent
-      check_mode: yes
-      register: agent_installed
-
     - name: Install the Java agent
       lineinfile:
         path: /opt/atlas/image-service/image-service.conf
-        regexp: '^JAVA_OPTS="(.*)"$'
-        line: 'JAVA_OPTS="\1 -javaagent:/opt/atlas/image-service/dd-java-agent.jar'
-        backrefs: yes
-      when: not agent_installed.found
+        regexp: '^JAVA_OPTS=".*/dd-java-agent.jar.*'
+        line: 'JAVA_OPTS="${JAVA_OPTS} -javaagent:/opt/atlas/image-service/dd-java-agent.jar -Ddd.version={{ image_service_version }} -Ddd.service=image-service -Ddd.env=testing -Ddd.logs.injection=true -Ddd.profiling.enabled=true"'
 
-   # - name: Restart the image service
+   # - name: Restart the service
    #   systemd:
    #     name: image-service
    #     state: restarted

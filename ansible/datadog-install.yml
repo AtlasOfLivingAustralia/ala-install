@@ -1,9 +1,19 @@
 ---
 - name: Datadog install role
-  hosts: image-service
+  hosts: species-list
+  pre_tasks: 
+    - set_fact:
+        datadog_mysql_password : "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
   roles:
+    #- { role: datadog_mysql, become: yes }
     - { role: datadog.datadog, become: yes }
     #- { role: datadog_apm, become: yes }
+  tasks:
+    - name: Add datadog to the adm group
+      user:
+        name: dd-agent
+        groups: adm
+        append: yes
   vars:
     datadog_api_key: !vault |
               $ANSIBLE_VAULT;1.1;AES256
@@ -16,12 +26,15 @@
 
     datadog_config:
       tags:
-        - "product:images"
-        - "environment:testing"
+        - "product:specieslist"
+        - "environment:production"
+        - "env:production"
+        - "service:specieslist"
+        - "version:{{ species_list_version }}"
       log_level: INFO
       apm_config:
         enabled: true
-      logs_enabled: true  # available with Agent v6 and v7
+      logs_enabled: true
       process_config:
         process_collection:
           enabled: "true"
@@ -29,78 +42,105 @@
       process:
         init_config:
         instances:
-          - name: ssh
-            search_string: ['ssh', 'sshd']
-          - name: syslog
-            search_string: ['rsyslog']
-            cpu_check_interval: 0.2
-            exact_match: true
-            ignore_denied_access: true
-      postgres:
+          - name: mysql
+            search_string: ['mysqld']
+          - name: java
+            search_string: ['java']
+      mysql:
         init_config:
         instances:
-          - host: "{{ image_service_hostname }}"
-            port: 5432
-            username: "{{ image_service_db_username }}"
-            password: "{{ image_service_db_password }}"
-            dbname: "{{ image_service_db_name }}"
-            disable_generic_tags: false
-      elastic:
-        init_config:
-        instances:
-          - url: http://{{ image_service_hostname }}:9200
-        logs:
-          - type: file
-            path: /var/log/elasticsearch/*.log
-            source: elasticsearch  
-            service: images-service
-      http_check:
-        init_config:
-        instances:
-          - name: image-service
-            url: https://images-test.ala.org.au/
-            collect_response_time: true
-            check_certificate_expiration: true
-            tags:
-              - env:testing
-          - name: home-page
-            url: https://www.ala.org.au/
-            collect_response_time: true
-            check_certificate_expiration: true
-            tags:
-              - env:production
-          - name: api-docs-service
-            url: https://docs.ala.org.au/
-            collect_response_time: true
-            check_certificate_expiration: true
-            tags:
-              - env:production
-          - name: seedbank-old
-            url: https://seedbank.ala.org.au/
-            collect_response_time: true
-            check_certificate_expiration: true
-            tags:
-              - env:production
-          - name: seedbank-new
-            url: https://seedbank.ala.org.au/
-            collect_response_time: true
-            check_certificate_expiration: true
-            tags:
-              - env:production
-          - name: biocollect
-            url: https://biocollect.ala.org.au/acsa/
-            collect_response_time: true
-            check_certificate_expiration: true
-            tags:
-              - env:production
+          - host: "{{ specieslist_db_hostname }}"
+            username: datadog
+            password: "{{ datadog_mysql_password }}"
+            options:
+               replication: false
+               extra_status_metrics: true
+               extra_innodb_metrics: true
+               schema_size_metrics: false
+               table_size_metrics: false
+               disable_innodb_metrics: false
+      #postgres:
+      #  init_config:
+      #  instances:
+      #    - host: "{{ image_service_hostname }}"
+      #      port: 5432
+      #      username: "{{ image_service_db_username }}"
+      #      password: "{{ image_service_db_password }}"
+      #      dbname: "{{ image_service_db_name }}"
+      #      disable_generic_tags: false
+      #elastic:
+      #  init_config:
+      #  instances:
+      #    - url: http://{{ image_service_hostname }}:9200
+      #  logs:
+      #    - type: file
+      #      path: /var/log/elasticsearch/*.log
+      #      source: elasticsearch  
+      #      service: images-service
+      #http_check:
+      #  init_config:
+      #  instances:
+      #    - name: image-service
+      #      url: https://images-test.ala.org.au/
+      #      collect_response_time: true
+      #      check_certificate_expiration: true
+      #      tags:
+      #        - env:testing
+      #    - name: home-page
+      #      url: https://www.ala.org.au/
+      #      collect_response_time: true
+      #      check_certificate_expiration: true
+      #      tags:
+      #        - env:production
+      #    - name: api-docs-service
+      #      url: https://docs.ala.org.au/
+      #      collect_response_time: true
+      #      check_certificate_expiration: true
+      #      tags:
+      #        - env:production
+      #    - name: seedbank-old
+      #      url: https://seedbank.ala.org.au/
+      #      collect_response_time: true
+      #      check_certificate_expiration: true
+      #      tags:
+      #        - env:production
+      #    - name: seedbank-new
+      #      url: https://seedbank.ala.org.au/
+      #      collect_response_time: true
+      #      check_certificate_expiration: true
+      #      tags:
+      #        - env:production
+      #    - name: biocollect
+      #      url: https://biocollect.ala.org.au/acsa/
+      #      collect_response_time: true
+      #      check_certificate_expiration: true
+      #      tags:
+      #        - env:production
       java:
         logs:
           - type: file
-            path: "/var/log/atlas/image-service/image-service.log"
-            service: java
+            path: "/var/log/tomcat9/specieslist-webapp.log"
+            service: specieslist
             source: java
             sourcecategory: sourcecode
             log_processing_rules:
              - type: multi_line
                name: new_log_start_with_date
                pattern: \d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])
+            tags: 
+              - "env:production"
+              - "service:specieslist"
+              - "version:{{ species_list_version }}"
+          - type: file
+            path: "/var/log/tomcat9/catalina.out"
+            service: specieslist
+            source: java
+            sourcecategory: sourcecode
+            log_processing_rules:
+             - type: multi_line
+               name: new_log_start_with_date
+               pattern: \d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])
+            tags: 
+              - "env:production"
+              - "service:specieslist"
+              - "version:{{ species_list_version }}"
