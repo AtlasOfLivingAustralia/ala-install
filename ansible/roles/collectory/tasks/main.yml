@@ -60,7 +60,11 @@
     - nginx_vhost
     - deploy
     - collectory
-  when: webserver_nginx
+  when: webserver_nginx and deployment_type != 'k8s'
+
+- name: Include k8s tasks
+  include: k8s-tasks.yml
+  when: deployment_type == 'k8s'
 
 - name: Include docker tasks
   include: docker-tasks.yml

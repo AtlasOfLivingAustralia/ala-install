@@ -1,0 +1,17 @@
+---
+- name: Define variables
+  set_fact:
+    charts:
+      - name: "mysql"
+        template: "templates/mysql-helm-values.j2"
+        helm_chart: "ala/collectory-mysql"
+        release_name: "collectory-mysql"
+      - name: "mysql"
+        template: "templates/war-helm-values.j2"
+        helm_chart: "ala/collectory"
+        release_name: "collectory-exec"
+  tags: [docker, helm, k8s]
+
+- name: Deploy Helm charts
+  import_tasks: ../../helm/tasks/helm-deploy.yml
+  tags: [docker, helm, k8s]

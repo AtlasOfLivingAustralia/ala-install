@@ -1,0 +1,54 @@
+---
+- name: Check for required helm tools locally
+  command:
+    cmd: "{{ item }}"
+    warn: false
+  with_items:
+    - helm version --short
+    - kubectl version --client
+  register: cmd_result
+  failed_when: cmd_result.rc != 0
+  changed_when: false
+  delegate_to: "{{ helm_deploy_host | default('localhost') }}"
+  loop_control:
+    label: "{{ item }}"
+  tags: [docker, helm, k8s]
+
+- name: Define helm repositories
+  set_fact:
+    helm_repositories:
+      - name: "bitnami"
+        url: "https://charts.bitnami.com/bitnami"
+      - name: "ala"
+        url: "https://helm-charts.ala.org.au"
+    helm_values_dest: "/tmp/helm-values.yml"
+    helm_common_values_dest: "/tmp/common-values.yml"
+  tags: [docker, helm, k8s]
+
+- name: Ensure Helm repos are added
+  command:
+    cmd: "helm repo add {{ item.name }} {{ item.url }}"
+    warn: false
+  loop: "{{ helm_repositories }}"
+  register: repo_result
+  changed_when: "'already exists' not in repo_result.stdout"
+  failed_when: "'already exists' not in repo_result.stdout and repo_result.rc != 0"
+  delegate_to: "{{ helm_deploy_host | default('localhost') }}"
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  tags: [docker, helm, k8s]
+
+- name: Update Helm repositories
+  command:
+    cmd: helm repo update
+    warn: false
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  tags: [docker, helm, k8s]
+
+- name: Deploy charts using Helm
+  include_tasks: helm-deploy-chart.yml
+  loop: "{{ charts }}"
+  loop_control:
+    loop_var: chart
+  tags: [docker, helm, k8s]

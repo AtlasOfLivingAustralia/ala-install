@@ -1,0 +1,12 @@
+---
+- hosts: collectory
+  vars:
+    - deployment_type: k8s
+    - collectory_db_host_address: la_collectory_mysql
+    - skip_handlers: true
+    - tomcat_user: "{{ docker_default_user }}"
+    - nginx_user: "{{ docker_default_user }}"
+  roles:
+    - common
+    - collectory
+  become: true

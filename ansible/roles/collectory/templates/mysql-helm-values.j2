@@ -1,0 +1,47 @@
+mysql:
+  image:
+    registry: {{ collectory_mysql_image_registry | default('docker.io') }}
+    repository: {{ collectory_mysql_image_repository | default('bitnami/mysql') }}
+    tag: {{ collectory_mysql_image_tag | default('8.0.34-debian-11-r13') }}
+    debug: {{ collectory_mysql_image_debug | default(true) }}
+
+  commonLabels:
+    collectory-mysql-network: "{{ collectory_mysql_common_labels_network | default(true) }}"
+
+  auth:
+    createDatabase: {{ collectory_mysql_auth_create_database | default(True) }}
+    database: {{ collectory_mysql_auth_database | default('collectory') }}
+    rootPassword: {{ mysql_root_password }}
+    username: {{ collectory_db_user }}
+    password: {{ collectory_db_password }}
+
+  networkPolicy:
+    enabled: {{ collectory_mysql_network_policy_enabled | default(True) }}
+    allowExternal: {{ collectory_mysql_network_policy_allow_external | default(False) }}
+    explicitNamespacesSelector:
+      matchLabels:
+        collectory-mysql-network: "{{ collectory_mysql_network_policy_match_labels | default(true) }}"
+
+  primary:
+    startupProbe:
+      enabled: {{ collectory_mysql_primary_startup_probe_enabled | default(False) }}
+    readinessProbe:
+      enabled: {{ collectory_mysql_primary_readiness_probe_enabled | default(False) }}
+    livenessProbe:
+      enabled: {{ collectory_mysql_primary_liveness_probe_enabled | default(False) }}
+
+    resources:
+      limits:
+        cpu: "{{ collectory_mysql_primary_resources_limits_cpu | default('1000m') }}"
+        memory: "{{ collectory_mysql_primary_resources_limits_memory | default('4Gi') }}"
+      requests:
+        cpu: "{{ collectory_mysql_primary_resources_requests_cpu | default('500m') }}"
+        memory: "{{ collectory_mysql_primary_resources_requests_memory | default('2Gi') }}"
+
+    persistence:
+      existingClaim: {{ collectory_mysql_primary_persistence_existing_claim | default('collectory-mysql-claim') }}
+      mountPath: {{ collectory_mysql_primary_persistence_mount_path | default('/bitnami/mysql/data') }}
+      subPath: {{ collectory_mysql_primary_persistence_sub_path | default('collectory-mysql') }}
+      enabled: {{ collectory_mysql_primary_persistence_enabled | default(True) }}
+      accessMode: {{ collectory_mysql_primary_persistence_access_mode | default('ReadWriteMany') }}
+      size: {{ collectory_mysql_primary_persistence_size | default('100Gi') }}

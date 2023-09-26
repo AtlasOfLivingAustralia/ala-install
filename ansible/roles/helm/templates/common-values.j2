@@ -1,0 +1,15 @@
+# Storage settings
+storageClassName: "{{ k8s_storage_class_name | default ('TO BE SET') }}"
+fileSystemId: "{{ k8s_file_system_id | default ('TO BE SET') }}"
+provisioner: "{{ k8s_provisioner | default ('TO BE SET') }}"
+provisioningMode: "{{ k8s_provisioning_mode | default ('TO BE SET') }}"
+csi:
+  driver: "{{ k8s_csi_driver | default ('TO BE SET') }}"
+  volumeHandle: "{{ k8s_csi_volume_handle | default ('TO BE SET') }}"  # Create EFS and Access point. For AWS the format is filesystemID::accesspointID"
+
+# Ingress common properties
+ingressClassName: "{{ k8s_ingress_class_name | default ('TO BE SET') }}"
+ingressAnnotations:
+{% for key, value in (ingress_annotations | default({})).items() %}
+  {{ key }}: {{ value }}
+{% endfor %}

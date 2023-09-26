@@ -1,0 +1,37 @@
+---
+- name: Generate common-values.yml file from template
+  template:
+    src: ../templates/common-values.j2
+    dest: "{{ helm_common_values_dest }}"
+  delegate_to: "{{ helm_deploy_host | default('localhost') }}"
+  tags: [docker, helm, k8s]
+
+- name: Generate {{ chart.name }} values file from template
+  template:
+    src: "{{ chart.template }}"
+    dest: "{{ helm_values_dest }}"
+  delegate_to: "{{ helm_deploy_host | default('localhost') }}"
+  tags: [docker, helm, k8s]
+
+- name: Deploy or upgrade {{ chart.name }} chart using Helm
+  command:
+    cmd: "helm upgrade --install {{ chart.release_name }} {{ chart.helm_chart }} -f {{ helm_values_dest }}" # Add in the future -f {{ helm_common_values_dest }}"
+    warn: false
+  delegate_to: "{{ helm_deploy_host | default('localhost') }}"
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  tags: [docker, helm, k8s]
+
+- name: Remove temporary common-values file
+  file:
+    path: "{{ helm_common_values_dest }}"
+    state: absent
+  delegate_to: "{{ helm_deploy_host | default('localhost') }}"
+  tags: [docker, helm, k8s]
+
+- name: Remove temporary {{ chart.name }} values file
+  file:
+    path: "{{ helm_values_dest }}"
+    state: absent
+  delegate_to: "{{ helm_deploy_host | default('localhost') }}"
+  tags: [docker, helm, k8s]
