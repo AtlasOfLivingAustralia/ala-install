@@ -23,7 +23,7 @@ biocache_service_base_url=https://biocache-ws.ala.org.au/ws
 ala_base_url=https://www.ala.org.au
 bie_base_url=https://bie.ala.org.au
 bie_service_base_url=https://bie-ws.ala.org.au/ws
-field_guide_base_url=https://fieldguide.ala.org.au
+field_guide_base_url=https://api.ala.org.au/fieldguide
 
 registry_api_key=
 
