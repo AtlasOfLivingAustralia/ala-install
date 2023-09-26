@@ -10,7 +10,7 @@
     password: "{{ datadog_db_password }}"
     priv: "*.*:REPLICATION CLIENT,PROCESS/performance_schema.*:SELECT"
     state: present
- when: datadog_mysql_enabled | default(False) | bool
+  when: datadog_mysql_enabled | default(False) | bool
 
 # create a datadog postgres user
 - name: Create Datadog postgres user for monitoring
@@ -24,4 +24,4 @@
     password: "{{ datadog_db_password }}"
     priv: "CONNECT/pg_stat_database:SELECT"
     state: present
- when: datadog_postgress_enabled | default(False) | bool
+  when: datadog_postgress_enabled | default(False) | bool
