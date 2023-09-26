@@ -1,8 +1,0 @@
----
-- name: Uninstall Site24x7 Linux Server Monitoring Agent
-  hosts: hostnames          ##Change this value to select desired hosts
-  remote_user: root
-  
-  tasks:
-     - name: Uninstalling Site24x7 Linux Server Monitoring Agent
-       shell: /opt/site24x7/monagent/bin/uninstall

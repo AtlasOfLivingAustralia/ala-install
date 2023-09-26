@@ -1,7 +1,0 @@
----
-- name: Check status of Site24x7 server monitoring agent
-  hosts: hostname
-  remote_user: root
-  tasks:
-     - name: Checking status of Site24x7 monitoring agent
-       shell: /etc/init.d/site24x7monagent status
