@@ -1,21 +1,21 @@
 --- 
-# install the Java APM monitor
+# install the Java APM tracer
 - block:
-    - name: Download Java APM monitor
+    - name: Download Java APM tracer
       get_url:
         url: https://dtdg.co/latest-java-tracer
-        dest: "/opt/atlas/image-service/dd-java-agent.jar"
+        dest: "{{ service_jar_dir }}dd-java-agent.jar"
         mode: 0755
 
-    - name: Install the Java agent
+    - name: Inject tracer and params into the JVM options
       lineinfile:
         path: /opt/atlas/image-service/image-service.conf
         regexp: '^JAVA_OPTS=".*/dd-java-agent.jar.*'
-        line: 'JAVA_OPTS="${JAVA_OPTS} -javaagent:/opt/atlas/image-service/dd-java-agent.jar -Ddd.version={{ image_service_version }} -Ddd.service=image-service -Ddd.env=testing -Ddd.logs.injection=true -Ddd.profiling.enabled=true"'
+        line: 'JAVA_OPTS="${JAVA_OPTS} -javaagent:{{ service_jar_dir }}dd-java-agent.jar -Ddd.version={{ service_version }} -Ddd.service={{ service_name }} -Ddd.env={{ environment }} -Ddd.logs.injection=true -Ddd.profiling.enabled=true"'
 
-   # - name: Restart the service
-   #   systemd:
-   #     name: image-service
-   #     state: restarted
+    - name: Restart the service
+      systemd:
+        name: "{{ service_name }}"
+        state: restarted
 
   when: datadog_java_apm_enabled|default(False)|bool
