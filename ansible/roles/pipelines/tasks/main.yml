@@ -96,9 +96,21 @@
     - yq
     - apt
 
-- name: Add YQ Repository
+- name: Remove YQ apt package (when installed via PPA)
+  apt:
+    name: yq
+    state: absent
+  when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
+  tags:
+    - pipelines
+    - la-pipelines
+    - yq
+    - apt
+
+- name: Remove the YQ PPA
   apt_repository:
     repo: 'ppa:rmescandon/yq'
+    state: absent
   when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
   tags:
     - la-pipelines
@@ -106,10 +118,11 @@
     - yq
     - apt
 
-- name: Add an apt key by id from a keyserver
+- name: Remove the apt key for YQ
   apt_key:
     keyserver: keyserver.ubuntu.com
     id: CC86BB64
+    state: absent
   when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
   tags:
     - la-pipelines
@@ -117,12 +130,38 @@
     - yq
     - apt
 
-- name: Update apt and install pipelines
-  apt: update_cache=yes name=yq={{ yq_version }}
+# Optionally, you might want to update the apt cache after removing the repository
+- name: Update apt cache
+  apt:
+    update_cache: true
   when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
   tags:
     - pipelines
     - la-pipelines
+    - yq
+    - apt
+
+- name: Determine yq binary name based on architecture
+  set_fact:
+    yq_binary: "yq_linux_{{ 'amd64' if is_arm is not defined else 'arm' }}"
+    yq_version: "{{ yq_bin_version | default('v4.16.2') }}"
+  when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
+  tags:
+    - la-pipelines
+    - pipelines
+    - yq
+    - apt
+
+- name: Download yq
+  get_url:
+    url: "https://github.com/mikefarah/yq/releases/download/{{ yq_version }}/{{ yq_binary }}"
+    dest: "/usr/bin/yq"
+    mode: '0755'
+  vars:
+  when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
+  tags:
+    - la-pipelines
+    - pipelines
     - yq
     - apt
 
