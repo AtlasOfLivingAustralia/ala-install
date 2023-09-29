@@ -47,3 +47,8 @@ notifications:
   project.address: {{ digest_address }}
 ala.image.service.url: {{ image_server_url }}
 bvp.users.migrateIds: false
+elasticsearch:
+  cluster.routing.allocation.disk.watermark:
+    high: 5gb
+    low: 10gb
+
