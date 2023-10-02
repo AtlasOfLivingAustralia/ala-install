@@ -6,6 +6,7 @@
     - webapps
     - deploy
     - config
+  when: deployment_type != 'k8s'
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
@@ -16,6 +17,7 @@
   tags:
     - properties
     - collectory
+  when: deployment_type != 'k8s'
 
 - name: copy all data assets
   copy: src={{item}} dest={{ collectory_data_dir }} owner={{tomcat_user}} group={{tomcat_user}}
@@ -25,6 +27,7 @@
   tags:
     - properties
     - collectory
+  when: deployment_type != 'k8s'
 
 - name: copy all template configs
   template: src={{item}} dest={{ collectory_data_dir }}/config/{{ collectory_app | default('generic-collectory') }}-config.properties output_encoding=iso-8859-1
@@ -34,6 +37,7 @@
     - config
     - properties
     - collectory
+  when: deployment_type != 'k8s'
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ collectory_context_path }}' hostname='{{ collectory_hostname }}'
   tags:
@@ -60,7 +64,11 @@
     - nginx_vhost
     - deploy
     - collectory
-  when: webserver_nginx
+  when: webserver_nginx and deployment_type != 'k8s'
+
+- name: Include k8s tasks
+  include: k8s-tasks.yml
+  when: deployment_type == 'k8s'
 
 - name: Include docker tasks
   include: docker-tasks.yml

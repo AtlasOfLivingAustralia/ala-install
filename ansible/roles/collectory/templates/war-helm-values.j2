@@ -1,0 +1,6 @@
+---
+image:
+  repository: "{{ collectory_docker_repository | default('atlasoflivingaustralia/collectory') }}"
+  tag: "{{ collectory_docker_tag | default('9144d68') }}"
+
+dnsName: "{{ collectory_hostname }}"

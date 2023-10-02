@@ -1,0 +1,65 @@
+- name: Install Required Python Libraries
+  pip:
+    name: "{{ item }}"
+    state: present
+    executable: pip3
+  with_items:
+    - kubernetes
+    - pyyaml
+
+- name: Generate Unique Timestamp
+  ansible.builtin.set_fact:
+    timestamp: "{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
+
+- name: Create Temporary Directory
+  file:
+    path: "/tmp/configs/collectory/{{ timestamp }}"
+    state: directory
+
+- name: Copy all template configs to temp directory
+  template: src={{item}} dest="/tmp/configs/collectory/{{ timestamp }}" output_encoding=iso-8859-1
+  with_items:
+    - config/collectory-config.properties
+
+- name: Copy all data assets to temp directory
+  copy: src={{item}} dest="/tmp/configs/collectory/{{ timestamp }}"
+  with_items:
+    - data/config/
+
+- name: Delete existing ConfigMap
+  command: "{{ kubectl_exec_path }} delete configmap collectory-config --ignore-not-found=true --context={{ k8s_context }}"
+  ignore_errors: yes
+  become: false
+
+- name: Apply ConfigMap
+  command: "{{ kubectl_exec_path }} create configmap collectory-config --from-file=/tmp/configs/collectory/{{ timestamp }}  --context={{ k8s_context }}"
+  become: false
+
+- name: Clean up Temporary Directory and Files
+  ansible.builtin.file:
+    path: "/tmp/configs/{{ timestamp }}"
+    state: absent
+
+- name: Add ALA Repository
+  kubernetes.core.helm_repository:
+    name: ala
+    binary_path: /usr/local/bin/helm
+    repo_url: https://helm-charts.ala.org.au
+    state: present
+
+- name: Install Collectory Helm Chart
+  kubernetes.core.helm:
+    host: "{{ k8s_host }}"
+    kubeconfig: "{{ kubeconfig }}"
+    context: "{{ k8s_context }}"
+    force: true
+    binary_path: "{{ helm_exec_path }}"
+    chart_ref: ala/collectory
+    release_name: collectory
+    release_namespace: default
+    values: "{{ lookup('template', 'war-helm-values.j2') | from_yaml }}"
+    values_files:
+      - "{{ common_values_path }}"
+    skip_crds: true
+  become: false
+

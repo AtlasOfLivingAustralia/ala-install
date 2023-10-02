@@ -1,0 +1,9 @@
+---
+- hosts: collectory
+  vars:
+    - deployment_type: k8s
+    - collectory_db_host_address: collectory-mysql
+    - skip_handlers: true
+  roles:
+    - collectory
+  become: true
