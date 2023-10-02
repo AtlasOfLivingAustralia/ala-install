@@ -43,9 +43,26 @@
 - name: Add ALA Repository
   kubernetes.core.helm_repository:
     name: ala
-    binary_path: /usr/local/bin/helm
+    binary_path: "{{ helm_exec_path }}"
     repo_url: https://helm-charts.ala.org.au
     state: present
+
+- name: Install Collectory DB Helm Chart
+  kubernetes.core.helm:
+    host: "{{ k8s_host }}"
+    kubeconfig: "{{ kubeconfig }}"
+    context: "{{ k8s_context }}"
+    binary_path: "{{ helm_exec_path }}"
+    chart_ref: ala/collectory-mysql
+    release_name: collectory-mysql
+    release_namespace: default
+    values: "{{ lookup('template', 'mysql-helm-values.j2') | from_yaml }}"
+    values_files:
+      - "{{ common_values_path }}"
+    skip_crds: true
+  become: false
+  tags:
+    - mysql
 
 - name: Install Collectory Helm Chart
   kubernetes.core.helm:
@@ -62,4 +79,8 @@
       - "{{ common_values_path }}"
     skip_crds: true
   become: false
+  tags:
+    - collectory
+
+
 
