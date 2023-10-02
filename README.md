@@ -16,6 +16,7 @@ For APT:
 $ sudo apt-get install software-properties-common python-dev git python-pip
 $ sudo pip install setuptools
 $ sudo pip install -I ansible==[version]
+$ sudo pip install ansible-base==[version] # if not, and different ansible-base version is installed
 ```
 
 where ```[version]``` is the supported version listed above.
