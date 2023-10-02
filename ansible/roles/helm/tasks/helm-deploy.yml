@@ -1,11 +1,23 @@
 ---
+- name: Find path to helm
+  command: which helm
+  register: helm_path_result
+  changed_when: false
+  delegate_to: "{{ helm_deploy_host | default('localhost') }}"
+
+- name: Find path to kubectl
+  command: which kubectl
+  register: kubectl_path_result
+  changed_when: false
+  delegate_to: "{{ helm_deploy_host | default('localhost') }}"
+
 - name: Check for required helm tools locally
   command:
     cmd: "{{ item }}"
     warn: false
   with_items:
-    - helm version --short
-    - kubectl version --client
+    - "{{ helm_path_result.stdout }} version --short"
+    - "{{ kubectl_path_result.stdout }} version --client"
   register: cmd_result
   failed_when: cmd_result.rc != 0
   changed_when: false
