@@ -253,7 +253,7 @@
             },
             {
                 "sort":"index",
-                "field":"geospatial_kosher"
+                "field":"spatiallyValid"
             },
             {
                 "sort":"index",
