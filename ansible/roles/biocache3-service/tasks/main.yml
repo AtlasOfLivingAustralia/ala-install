@@ -8,6 +8,7 @@
     - nginx_vhost
     - symlinks
     - apache_vhost
+  when: deployment_type != 'k8s'
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ biocache_service_context_path }}' hostname='{{ biocache_service_hostname }}' 
   tags:
@@ -15,7 +16,7 @@
     - deploy
     - apache_vhost
     - webapps
-  when: not webserver_nginx
+  when: not webserver_nginx and deployment_type != 'k8s'
 
 - name: set nginx proxy target if configured
   set_fact: 
@@ -41,6 +42,7 @@
   tags:
     - deploy
     - nginx_vhost
+  when: deployment_type != 'k8s'
 
 - name: add nginx vhost if configured
   include_role:
@@ -375,13 +377,14 @@
     - nginx_vhost
     - deploy
     - biocache-service
-  when: webserver_nginx
+  when: webserver_nginx and deployment_type != 'k8s'
 
 - name: ensure application data directory exists
   file: path={{ data_dir }}/biocache state=directory owner={{ tomcat_user }}  group={{ tomcat_user }}
   tags:
     - biocache-service  
     - properties
+  when: deployment_type != 'k8s'
 
 - name: ensure target directories exist [data subdirectories etc.
   file: path={{ item.path }} state=directory owner={{ tomcat_user }}  group={{ tomcat_user }} mode={{ item.perm | default(775) }}
@@ -396,6 +399,7 @@
   tags:
     - biocache-service
     - properties
+  when: deployment_type != 'k8s'
 
 - name: purge old files from biocache-downloads
   cron:
@@ -406,6 +410,7 @@
   tags:
     - biocache-service
     - properties
+  when: deployment_type != 'k8s'
 
 - name: set data ownership [all data is owned by tomcat]
 # FIXME: The ansible file module fails with a recursion limit issue that "chown" isn't prone to
@@ -421,6 +426,7 @@
   tags:
     - biocache-service
     - properties
+  when: deployment_type != 'k8s'
 
 - name: copy all config.properties
   template:
@@ -440,6 +446,7 @@
   tags:
     - biocache-service
     - properties
+  when: deployment_type != 'k8s'
 
 - name: copy biocache  config files
   copy:
@@ -454,13 +461,14 @@
   tags:
     - biocache-service
     - properties
+  when: deployment_type != 'k8s'
 
 - name: create download and media symlinks
   file:
      src: "{{ download_dir | default('/data/biocache-download') }}"
      dest: "/srv/{{ biocache_service_hostname }}/www/biocache-download"
      state: link
-  when: not webserver_nginx
+  when: not webserver_nginx and deployment_type != 'k8s'
   tags:
     - biocache-service
     - symlinks
@@ -473,3 +481,7 @@
 - name: Include VM tasks
   include: vm-tasks.yml
   when: deployment_type == 'vm'
+
+- name: Include k8s tasks
+  include: k8s-tasks.yml
+  when: deployment_type == 'k8s'

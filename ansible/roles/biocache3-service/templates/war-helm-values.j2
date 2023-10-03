@@ -1,0 +1,6 @@
+---
+image:
+  repository: "{{ biocache_service_docker_repository | default('atlasoflivingaustralia/biocache-service') }}"
+  tag: "{{ biocache_service_docker_tag | default('f3c2069e') }}"
+
+dnsName: "{{ biocache_service_hostname }}"

@@ -1,0 +1,8 @@
+---
+- hosts: biocache3-service
+  vars:
+    - deployment_type: k8s
+    - skip_handlers: true
+  roles:
+    - biocache3-service
+  become: true
