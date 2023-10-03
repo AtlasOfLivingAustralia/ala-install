@@ -558,4 +558,3 @@
   when: is_vagrant is defined and is_vagrant and deployment_type == 'vm'
   tags:
     - nginx_vhost
-
