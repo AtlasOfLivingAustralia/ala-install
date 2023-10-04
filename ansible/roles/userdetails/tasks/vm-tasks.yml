@@ -1,0 +1,51 @@
+---
+
+- name: add jar and service
+  include_role:
+    name: exec-jar
+    apply:
+      tags: userdetails
+  vars:
+    service_name: "userdetails"
+    jar_url: '{{ userdetails_jar_url }}'
+    use_openjdk11: "{{ user_details_version is version('3', '>=') }}"
+    use_openjdk8: "{{ user_details_version is version('3', '<') }}"
+    java_headless: true
+    java_jre: true
+    log_config_filename: logback.xml
+  tags:
+    - deploy
+    - service
+    - service-conf
+    - userdetails
+
+- name: Ensure userdetails is in a running state
+  service:
+    name: userdetails
+    state: started
+  register: userdetailsService
+  until: userdetailsService.status.ActiveState == "active"
+  retries: 15
+  delay: 30
+  tags:
+    - userdetails
+    - db
+
+- name: copy all SQL auth ip scripts
+  template: src={{ item }} dest={{data_dir}}/userdetails/setup/
+  with_items:
+    - "sql/auth-ip.sql"
+  when: userdetails_authorize_ip_list is defined
+  tags:
+    - userdetails
+    - db
+    - properties
+
+- name: create auth ip in db if does not exists
+  shell: "mysql --host={{ cas_db_hostname | default('localhost') }} --port={{ cas_db_port | default('3306') }}  --user={{ cas_db_username | default('cas') }} --password={{ cas_db_password | default('password') }} {{ cas_db_name | default('emmet')  }} -e \"set @ip='{{ item }}'; set @description=''; source {{data_dir}}/userdetails/setup/auth-ip.sql;\""
+  loop: "{{ (userdetails_authorize_ip_list | regex_replace(' ', '')).split(',') }}"
+  when: userdetails_authorize_ip_list is defined
+  ignore_errors: false
+  tags:
+    - userdetails
+    - db

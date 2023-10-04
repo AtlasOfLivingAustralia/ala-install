@@ -1,11 +1,12 @@
+---
 - name: "set facts"
   include_role:
     name: common
     tasks_from: setfacts
   tags:
-  - setfacts
-  - cas-management
-  - properties
+    - setfacts
+    - cas-management
+    - properties
 
 - name: ensure target directories exist data subdirectories etc.
   file:
@@ -31,19 +32,6 @@
   tags:
     - properties
     - cas-management
-
-# TODO Seems to not be used by app and can be removed?
-# - name: copy application.properties
-#   template:
-#     src: application.properties
-#     dest: "{{data_dir}}/cas-management/config/application.properties"
-#     owner: "{{ cas_user | default('cas') }}"
-#     group: "{{ cas_user | default('cas') }}"
-#   notify:
-#     - restart cas-management
-#   tags:
-#     - properties
-#     - cas-management
 
 - name: copy application.yml
   template:
@@ -81,72 +69,10 @@
     - properties
     - cas-management
 
-- name: add jar and service
-  include_role:
-    name: exec-jar
-  vars:
-    extra_params:
-    - key: cas.standalone.configurationDirectory
-      value: /data/cas-management/config/
-    log_config_filename: 'log4j2.xml'
-    service_name: "cas-management"
-    service_owner: "{{ cas_user | default('cas') }}"
-    service_group: "{{ cas_user | default('cas') }}"
-    use_openjdk11: "{{ cas_management_version is version('6', '>=') }}"
-    use_openjdk8: "{{ cas_management_version is version('6', '<') }}"
-    java_headless: True
-    java_jre: True
-    jar_url: '{{ cas_management_jar_url }}'
+- include: ../../docker-common/tasks/common.yml
   tags:
-    - deploy
-    - service
-    - service-conf
-    - cas-management
-
-- name: Ensure cas-management is in a running state
-  service:
-    name: cas-management
-    state: started
-  register: casManagementService
-  until: casManagementService.status.ActiveState == "active"
-  retries: 15
-  delay: 30
-  tags:
-    - cas-management
-    - db
-
-- name: add oidc keys if do not exist
-  include_role:
-    name: oidc-keys-add
-  vars:
-    name: "{{ oitem.name }}"
-    desc: "{{ oitem.name }} OIDC Service"
-    client_id: "{{ oitem.client_id }}"
-    client_secret: "{{ oitem.client_secret }}"
-    url: "{{ oitem.url if oitem.url.endswith('/') else oitem.url + '/' }}.*"
-  with_items:
-    - { name: "collectory", client_id: "{{ collectory_client_id }}", client_secret: "{{ collectory_client_secret }}", url: "{{ collectory_base_url | default('') }}{{collectory_context_path | default('') }}" }
-    - { name: "ala_hub", client_id: "{{ ala_hub_client_id }}", client_secret: "{{ ala_hub_client_secret }}", url: "{{ biocache_hub_base_url | default('') }}{{biocache_hub_context_path | default('') }}" }
-    - { name: "biocache_service", client_id: "{{ biocache_service_client_id }}", client_secret: "{{ biocache_service_client_secret }}", url: "{{ biocache_service_base_url | default('') }}{{biocache_service_context_path | default('') }}" }
-    - { name: "ala_bie", client_id: "{{ ala_bie_client_id }}", client_secret: "{{ ala_bie_client_secret }}", url: "{{ bie_hub_base_url | default('') }}{{bie_hub_context_path | default('') }}" }
-    - { name: "bie_index", client_id: "{{ bie_index_client_id }}", client_secret: "{{ bie_index_client_secret }}", url: "{{ bie_index_base_url | default('') }}{{bie_index_context_path | default('') }}" }
-    - { name: "images", client_id: "{{ images_client_id }}", client_secret: "{{ images_client_secret }}", url: "{{ image_service_base_url | default('') }}{{image_service_context_path | default('') }}" }
-    - { name: "logger", client_id: "{{ logger_client_id }}", client_secret: "{{ logger_client_secret }}", url: "{{ logger_base_url | default('') }}{{logger_context_path | default('') }}" }
-    - { name: "lists", client_id: "{{ lists_client_id }}", client_secret: "{{ lists_client_secret }}", url: "{{ lists_base_url | default('') }}{{lists_context_path | default('') }}" }
-    - { name: "regions", client_id: "{{ regions_client_id }}", client_secret: "{{ regions_client_secret }}", url: "{{ regions_base_url | default('') }}{{regions_context_path | default('') }}" }
-    - { name: "alerts", client_id: "{{ alerts_client_id }}", client_secret: "{{ alerts_client_secret }}", url: "{{ alerts_base_url | default('') }}{{alerts_context_path | default('') }}" }
-    - { name: "doi", client_id: "{{ doi_client_id }}", client_secret: "{{ doi_client_secret }}", url: "{{ doi_service_url | default('') }}{{doi_service_context_path | default('') }}" }
-    - { name: "dashboard", client_id: "{{ dashboard_client_id }}", client_secret: "{{ dashboard_client_secret }}", url: "{{ dashboard_base_url | default('') }}{{dashboard_context_path | default('') }}" }
-    - { name: "sds", client_id: "{{ sds_client_id }}", client_secret: "{{ sds_client_secret }}", url: "{{ sds_url | default('') }}{{sds_context_path | default('') }}" }
-    - { name: "spatial", client_id: "{{ spatial_client_id }}", client_secret: "{{ spatial_client_secret }}", url: "{{ spatial_base_url | default('') }}{{spatial_hub_context_path | default('') }}" }
-    - { name: "data_quality", client_id: "{{ data_quality_client_id }}", client_secret: "{{ data_quality_client_secret }}", url: "{{ data_quality_url | default('') }}{{data_quality_context_path | default('') }}" }
-    - { name: "biocollect", client_id: "{{ biocollect_client_id }}", client_secret: "{{ biocollect_client_secret }}", url: "{{ biocollect_base_url | default('') }}{{biocollect_context_path | default('') }}" }
-    - { name: "ecodata", client_id: "{{ ecodata_client_id }}", client_secret: "{{ ecodata_client_secret }}", url: "{{ ecodata_base_url | default('') }}{{ecodata_context_path | default('') }}" }
-  loop_control:
-    loop_var: oitem
-  when: oitem.client_id|length > 0 and oitem.url|length > 3
-  tags:
-    - oidc_keys_add
+    - docker
+  when: deployment_type == 'swarm'
 
 - name: add nginx vhost
   include_role:
@@ -159,9 +85,17 @@
       - path: "/{{  cas_management_context_path | default('cas-management') }}"
         appname: "cas-management"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ cas_management_port | default('8070') }}/{{  cas_management_context_path | default('cas-management') }}"
+        proxy_pass: "http://{{ cas_management_docker_host | default('127.0.0.1') }}:{{ cas_management_port | default('8070') }}/{{  cas_management_context_path | default('cas-management') }}"
   tags:
     - nginx_vhost
     - deploy
     - cas-management
   when: webserver_nginx
+
+- name: Include docker tasks
+  include: docker-tasks.yml
+  when: deployment_type == 'swarm'
+
+- name: Include VM tasks
+  include: vm-tasks.yml
+  when: deployment_type == 'vm'

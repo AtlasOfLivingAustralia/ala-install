@@ -1,0 +1,14 @@
+---
+- import_playbook: docker-swarm.yml
+- import_playbook: docker-common.yml
+- import_playbook: auth-docker.yml
+- import_playbook: cassandra-docker.yml
+- import_playbook: namematching-service-docker.yml
+- import_playbook: sensitive-data-service-docker.yml
+- import_playbook: solrcloud-docker.yml
+- import_playbook: collectory-docker.yml
+- import_playbook: bie-hub-docker.yml
+- import_playbook: bie-index-docker.yml
+- import_playbook: species-list-docker.yml
+- import_playbook: biocache-hub-standalone-docker.yml
+- import_playbook: biocache-service-clusterdb-docker.yml

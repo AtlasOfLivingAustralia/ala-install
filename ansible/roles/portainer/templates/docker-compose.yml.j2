@@ -1,0 +1,58 @@
+# From https://docs.portainer.io/advanced/reverse-proxy/nginx
+---
+version: '3.8'
+
+services:
+
+  agent:
+    image: portainer/agent:latest
+    environment:
+      # REQUIRED: Should be equal to the service name prefixed by "tasks." when
+      # deployed inside an overlay network
+      AGENT_CLUSTER_ADDR: tasks.agent
+      # AGENT_PORT: 9001
+      # LOG_LEVEL: DEBUG
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+    networks:
+      - portainer_agent_network
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.platform.os == linux]
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    command: -H tcp://tasks.agent:9001 --tlsskipverify
+    volumes:
+      - data:/data
+    environment:
+      - VIRTUAL_HOST={{ portainer_url }}
+      - VIRTUAL_PORT=9000
+    ports:
+      - 8000:8000
+    networks:
+      - la_internal
+      - portainer_agent_network
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+
+  la_internal:
+    external: true
+  portainer_agent_network:
+    external: true
+
+volumes:
+
+  data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ portainer_data_dir }}

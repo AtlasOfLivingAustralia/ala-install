@@ -1,0 +1,183 @@
+---
+version: '3.8'
+
+services:
+
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_ROOT_PASSWORD: {{ mysql_root_password }}
+      MYSQL_USER: {{ collectory_db_user }}
+      MYSQL_PASSWORD: {{ collectory_db_password }}
+      MYSQL_DATABASE: collectory
+      TZ: {{ server_tz }}
+    expose:
+      - 3306
+    networks:
+      default: {}
+      la_internal:
+        aliases:
+          - auth_mysql
+
+  mongo:
+    image: mongo:5
+    volumes:
+      - mongo_data:/data/db
+    expose:
+      - 27017
+    command: ["mongod", "--bind_ip_all"]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: {{ mongodb_root_username }}
+      MONGO_INITDB_ROOT_PASSWORD: {{ mongodb_root_password }}
+      TZ: {{ server_tz }}
+    networks:
+      default: {}
+      la_internal:
+        aliases:
+          - auth_mongo
+
+{% if docker_development_mode is defined and docker_development_mode | bool %}
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: auth_mongo
+      ME_CONFIG_MONGODB_ADMINUSERNAME: {{ mongodb_root_username }}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: {{ mongodb_root_password }}
+      TZ: {{ server_tz }}
+    networks:
+      default: {}
+      la_internal:
+        aliases:
+          - auth_mongo_express
+{% endif %}
+
+  cas:
+    image: livingatlases/cas:latest
+    expose:
+      - {{ cas_port | default('9000') }}
+    environment:
+      DOCKERIZE_OPTS: "-wait tcp://la_auth_mysql:3306 -wait tcp://la_auth_mongo:27017 -timeout 60s"
+      TZ: {{ server_tz }}
+    volumes:
+      - cas_data:/data/cas
+      - logs:/var/log/atlas
+{% if i18n_package_enabled | bool %}
+      - i18n:/opt/atlas/i18n
+      - i18n_custom:/var/opt/atlas/i18n
+{% endif %}
+    networks:
+      default: {}
+      la_internal:
+        aliases:
+          - {{ cas_docker_host }}
+
+  userdetails:
+    image: livingatlases/userdetails:latest
+    expose:
+      - {{ userdetails_port | default('9001') }}
+    environment:
+      DOCKERIZE_OPTS: "-wait tcp://la_auth_mysql:3306 -wait tcp://la_auth_cas:{{ cas_port | default('9000') }} -timeout 120s"
+      TZ: {{ server_tz }}
+    volumes:
+      - userdetails_data:/data/userdetails
+      - logs:/var/log/atlas
+{% if i18n_package_enabled | bool %}
+      - i18n:/opt/atlas/i18n
+      - i18n_custom:/var/opt/atlas/i18n
+{% endif %}
+    networks:
+      default: {}
+      la_internal:
+        aliases:
+          - {{ userdetails_docker_host }}
+
+  cas-management:
+    image: livingatlases/cas-management:latest
+    expose:
+      - {{ cas_management_port | default('8070') }}
+    environment:
+      DOCKERIZE_OPTS: "-wait tcp://la_auth_mysql:3306 -wait tcp://la_auth_cas:{{ cas_port | default('9000') }} -wait tcp://la_auth_mongo:27017 -timeout 120s"
+      TZ: {{ server_tz }}
+    volumes:
+      - cas_management_data:/data/cas-management
+      - logs:/var/log/atlas
+{% if i18n_package_enabled | bool %}
+      - i18n:/opt/atlas/i18n
+      - i18n_custom:/var/opt/atlas/i18n
+{% endif %}
+    networks:
+      default: {}
+      la_internal:
+        aliases:
+          - {{ cas_management_docker_host }}
+
+networks:
+  la_internal:
+    external: true
+  default:
+    driver: overlay
+    attachable: true
+
+volumes:
+
+  mysql_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: "{{ userdetails_docker_db_mysql_data_dir }}"
+
+  mongo_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: "{{ userdetails_docker_db_mongo_data_dir }}"
+
+  i18n:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/atlas/i18n
+
+  i18n_custom:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/opt/atlas/i18n
+
+  logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/log/atlas
+
+  userdetails_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ userdetails_data_dir }}
+
+  cas_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ cas_data_dir }}
+
+  cas_management_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ cas_management_data_dir }}

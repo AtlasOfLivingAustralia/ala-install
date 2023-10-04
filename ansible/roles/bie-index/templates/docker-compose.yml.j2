@@ -1,0 +1,53 @@
+---
+version: '3.8'
+
+services:
+
+  war:
+    image: atlasoflivingaustralia/bie-index:e87c8b2
+    environment:
+      TZ: {{ server_tz }}
+    expose:
+      - 8080
+    networks:
+      la_internal:
+    volumes:
+      - conf:{{ data_dir }}/bie-index
+      - extras:{{ data_dir }}/bie
+      - i18n:/opt/atlas/i18n
+      - i18n_custom:/var/opt/atlas/i18n
+
+networks:
+  la_internal:
+    external: true
+
+volumes:
+
+  conf:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/bie-index
+
+  extras:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/bie
+
+  i18n:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/atlas/i18n
+
+  i18n_custom:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/opt/atlas/i18n
+

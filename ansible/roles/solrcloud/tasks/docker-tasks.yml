@@ -1,0 +1,190 @@
+---
+- name: ensure target db directories exist
+  file: path={{item}} state=directory
+  with_items:
+    - "{{ solrcloud_docker_dir }}"
+    - "{{ solrcloud_docker_data_dir }}"
+    - "{{ solrcloud_docker_conf_dir }}"
+    - "{{ solrcloud_docker_zookeeper_conf_dir }}"
+    - "{{ solrcloud_docker_zookeeper_data_dir }}"
+    - /data/solr_config/
+  run_once: true
+  tags:
+    - docker
+    - docker-service
+
+- name: Copy solr.xml config
+  copy: src=solr/solr.xml dest={{ solrcloud_docker_conf_dir }}/solr.xml
+  tags:
+    - solrcloud
+    - solr_config
+    - docker
+    - docker-service
+
+- include_vars: ../../zookeeper/defaults/main.yml
+  tags:
+    - solrcloud
+    - solr_config
+    - docker
+    - docker-service
+
+- include_tasks: ./docker-facts.yml
+  tags:
+    - solrcloud
+    - solr_config
+    - docker
+    - docker-service
+    - gatus
+
+- name: Copy SOLR config template
+  template:
+    src: solr.in.sh
+    dest: "{{ solrcloud_docker_conf_dir }}/solr{{ item }}.in.sh"
+  loop: "{{ range(1, solr_hosts + 1) | list }}"
+  vars:
+    solr_host: "la_solrcloud_solr_{{ item }}"
+    solr_zk_host: "{{ solr_zk_hosts | join(',') }}"
+  tags:
+    - solrcloud
+    - solrcloud_config
+    - docker
+    - docker-service
+
+- name: Zookeeper data directory
+  file:
+    path: "{{ solrcloud_docker_zookeeper_data_dir }}/zoo{{ item }}/data"
+    state: directory
+    mode: '0755'
+  loop: "{{ range(1, zookeeper_hosts + 1)|list }}"
+  tags:
+    - zookeeper
+    - directories
+    - docker
+    - docker-service
+
+- name: Zookeeper datalog directory
+  file:
+    path: "{{ solrcloud_docker_zookeeper_data_dir }}/zoo{{ item }}/datalog"
+    state: directory
+    mode: '0755'
+  loop: "{{ range(1, zookeeper_hosts + 1)|list }}"
+  tags:
+    - zookeeper
+    - directories
+    - docker
+    - docker-service
+
+# For info about data persistence:
+# https://hub.docker.com/r/bitnami/solr/
+- name: Solrcloud data dir
+  file:
+    path: "{{ solrcloud_docker_data_dir }}/solr{{ item }}/data"
+    owner: "1000"
+    group: "1000"
+    state: directory
+    mode: '0755'
+  loop: "{{ range(1, solr_hosts + 1)|list }}"
+  tags:
+    - solrcloud
+    - directories
+    - docker
+    - docker-service
+
+- name: Configure zookeeper zoo.cfg
+  template:
+    src: "../../zookeeper/templates/zoo.cfg.j2"
+    dest: "{{ solrcloud_docker_zookeeper_conf_dir }}/zoo.cfg"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  vars:
+    zookeeper_servers: "{{ zookeeper_servers_l }}"
+  tags:
+    - zookeeper
+    - docker
+    - docker-service
+
+# Not done in the docker-version yet this vm task:
+#
+# We can't easily setup remote JMX if this option is present, so remove it by default
+# - name: "Remove JMXLOCALONLY=true"
+#  lineinfile:
+#    dest="/etc/zookeeper/conf/environment"
+#    regexp="^JMXLOCALONLY=true"
+#    state=absent
+#  notify: restart zookeeper
+#  tags:
+#    - zookeeper
+
+- name: Deploy solrcloud stack
+  import_tasks: ../../docker-common/tasks/stack-create.yml
+  vars:
+    stack: la_solrcloud
+    docker_compose_data_dir: "{{ solrcloud_docker_dir }}"
+    docker_solr_zk_hosts: "{{ solr_zk_hosts | join(',') }}"
+    docker_zookeeper_servers: "{{ zookeeper_servers_s | join(' ') }}"
+
+# In production we open temporally the 8983 port to configure solrcloud
+- name: Remove previous socat container for solr tunnel
+  import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: la_solrcloud_solr_1
+  run_once: true
+  when: docker_development_mode is defined and docker_development_mode == false
+  tags:
+    - solr_config
+
+- import_tasks: ../../docker-common/tasks/socat.yml
+  vars:
+    name: la_solrcloud_solr_1
+    port: 8983
+  run_once: true
+  when: docker_development_mode is defined and docker_development_mode == false
+  tags:
+    - solr_config
+
+- name: Wait for solrcloud to come up
+  uri:
+    url: "http://localhost:8983"
+    status_code: 200
+    validate_certs: false
+  register: result
+  until: result.status is defined and result.status == 200
+  retries: 60
+  delay: 10
+  tags:
+    - solr_config
+
+- include_tasks: ../../gatus/tasks/other-checks.yml
+  vars:
+    name: "{{ item }}"
+    gatus_default_checks:
+      - name: "{{ item }} 2181 port"
+        group: "zookeeper"
+        url: "tcp://{{ item }}:2181"
+        interval: "3m"
+        conditions:
+          - "[CONNECTED] == true"
+  loop: "{{ zookeeper_servers_plain_l }}"
+  run_once: true
+  when: use_gatus is defined and use_gatus
+  tags:
+    - gatus
+    - zookeeper
+
+- include_tasks: ../../gatus/tasks/other-checks.yml
+  vars:
+    name: "{{ item }}"
+    gatus_default_checks:
+      - name: "{{ item }} 8983 port"
+        group: "solrcloud"
+        url: "http://{{ item }}:8983/solr/admin/info/system"
+        interval: "3m"
+        conditions:
+          - "[STATUS] == 200"
+  loop: "{{ solr_servers_plain_l }}"
+  run_once: true
+  when: use_gatus is defined and use_gatus
+  tags:
+    - gatus
+    - solrcloud

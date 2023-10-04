@@ -2,36 +2,86 @@
   copy: src={{ item }} dest=/data/solr_config
   with_items:
     - "biocache"
-    - "bie"    
-    - "solr.xml"  
+    - "bie"
+    - "solr.xml"
   tags:
     - solrcloud_config
 
 - name: Set up SOLR Biocache schema (non doc values)
-  template: src=biocache_schema.xml dest={{ data_dir }}/solr_config/biocache/conf/schema.xml owner=solr group=solr
+  template: src=biocache_schema.xml dest={{ data_dir }}/solr_config/biocache/conf/schema.xml owner="{{ solr_user | default(solr) }}" group="{{ solr_user | default(solr) }}"
   when: use_docvalues is not defined or use_docvalues == False
   tags:
     - solrcloud_config
 
 - name: Set up SOLR Biocache schema (with doc values)
-  template: src=biocache_schema_docvalues.xml dest={{ data_dir }}/solr_config/biocache/conf/schema.xml owner=solr group=solr
+  template: src=biocache_schema_docvalues.xml dest={{ data_dir }}/solr_config/biocache/conf/schema.xml owner="{{ solr_user | default(solr) }}" group="{{ solr_user | default(solr) }}"
   when: use_docvalues is defined and use_docvalues == True
   tags:
     - solrcloud_config
 
-- name: Make zkcli.sh world-readable-writable-executable
-  shell: "chmod 777 /opt/solr/server/scripts/cloud-scripts/zkcli.sh"
+- name: Get Solr container ID on the specific node if using docker
+  shell: "docker service ps la_sorlcloud_solr_1 --format '{{ '{{' }}.Node{{ '}}' }}' | head -1"
+  register: solr_node
+  run_once: true
+  when: deployment_type == 'swarm'
   tags:
     - solrcloud_config
+    - zookeeper_config
+
+- name: Get Solr container ID on the specific node if using docker
+  shell: "docker ps -q -f name=la_solrcloud_solr_1"
+  register: solr_container_id
+  run_once: true
+  when: deployment_type == 'swarm'
+  delegate_to: "{{ solr_node.stdout }}"
+  tags:
+    - solrcloud_config
+    - zookeeper_config
+
+- name: Make zkcli.sh world-readable-writable-executable using Docker
+  shell: "docker exec {{ solr_container_id.stdout }} chmod 777 /opt/bitnami/solr/server/scripts/cloud-scripts/zkcli.sh"
+  run_once: true
+  when: deployment_type == 'swarm'
+  delegate_to: "{{ solr_node.stdout }}"
+  tags:
+    - solrcloud_config
+    - zookeeper_config
+
+- name: Upload biocache schema(s) to zookeeper using Docker
+  shell: "docker exec {{ solr_container_id.stdout }} /opt/bitnami/solr/server/scripts/cloud-scripts/zkcli.sh -cmd upconfig -zkhost {{ solr_zk_host }} -confname biocache -solrhome /data/solr -confdir /data/solr_config/biocache/conf"
+  run_once: true
+  when: deployment_type == 'swarm'
+  delegate_to: "{{ solr_node.stdout }}"
+  tags:
+    - solrcloud_config
+    - zookeeper_config
+
+- name: Upload bie schema(s) to zookeeper using Docker
+  shell: "docker exec {{ solr_container_id.stdout }} /opt/bitnami/solr/server/scripts/cloud-scripts/zkcli.sh -cmd upconfig -zkhost {{ solr_zk_host }} -confname bie -solrhome /data/solr -confdir /data/solr_config/bie/conf"
+  run_once: true
+  when: deployment_type == 'swarm'
+  delegate_to: "{{ solr_node.stdout }}"
+  tags:
+    - solrcloud_config
+    - zookeeper_config
+
+- name: Make zkcli.sh world-readable-writable-executable
+  shell: "chmod 777 /opt/solr/server/scripts/cloud-scripts/zkcli.sh"
+  when: deployment_type == 'vm'
+  tags:
+    - solrcloud_config
+    - zookeeper_config
 
 - name: Upload biocache schema(s) to zookeeper
   shell: "/opt/solr/server/scripts/cloud-scripts/zkcli.sh -cmd upconfig -zkhost {{ solr_zk_host }} -confname biocache -solrhome /data/solr -confdir /data/solr_config/biocache/conf"
+  when: deployment_type == 'vm'
   tags:
     - solrcloud_config
     - zookeeper_config
 
 - name: Upload bie schema(s) to zookeeper
   shell: "/opt/solr/server/scripts/cloud-scripts/zkcli.sh -cmd upconfig -zkhost {{ solr_zk_host }} -confname bie -solrhome /data/solr -confdir /data/solr_config/bie/conf"
+  when: deployment_type == 'vm'
   tags:
     - solrcloud_config
     - zookeeper_config
@@ -39,12 +89,14 @@
 - name: Delete biocache collection if it exists
   get_url: url="http://{{ solr_config_host }}:{{ solr_port }}/solr/admin/collections?action=DELETE&name=biocache" dest=/tmp/delete-collection.txt force=yes
   tags:
-    - solrcloud_create_collection    
-  ignore_errors: True
+    - solrcloud_create_collection
+  ignore_errors: true
+  run_once: true
   when: solrcloud_config_create_biocache_collection == True
 
 - name: Create biocache collection
-  get_url: url="http://{{ solr_config_host }}:{{ solr_port }}/solr/admin/collections?action=CREATE&name=biocache&maxShardsPerNode=2&numShards=4&replicationFactor=2&collection.configName=biocache" dest=/tmp/create-collection.txt force=yes timeout=30
+  get_url: url="http://{{ solr_config_host }}:{{ solr_port }}/solr/admin/collections?action=CREATE&name=biocache&maxShardsPerNode=2&numShards={{ solrcloud_num_shards | default(4)}}&replicationFactor={{ solr_hosts | default(2) }}&collection.configName=biocache" dest=/tmp/create-collection.txt force=yes timeout=30
   tags:
     - solrcloud_create_collection
+  run_once: true
   when: solrcloud_config_create_biocache_collection == True

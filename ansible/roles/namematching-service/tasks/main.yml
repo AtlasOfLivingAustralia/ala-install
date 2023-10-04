@@ -1,3 +1,4 @@
+---
 - include: ../../common/tasks/setfacts.yml
   tags:
     - namematching-service
@@ -5,23 +6,12 @@
     - properties
     - nginx_vhost
 
-- include: ./apt.yml
+- name: set nginx upstream server for nginx
+  set_fact:
+    upstream_host: "{{ namematching_service_upstream_host | default('127.0.0.1') }}"
   tags:
-    - namematching-service
     - deploy
-    - apt
-
-- name: Customize configuration already added by apt package
-  template:
-    src: namematching-service-config.yml
-    dest: "{{data_dir}}/ala-namematching-service/config/config.yml"
-    owner: "{{ namematching_user }}"
-    group: "{{ namematching_user }}"
-  notify:
-    - restart ala-namematching-service
-  tags:
-    - properties
-    - namematching-service
+    - nginx_vhost
 
 - name: "Create ala-namematching-service directories"
   file:
@@ -32,6 +22,36 @@
     mode: 0755
   with_items:
     - "/var/log/atlas/namematching-service"
+  tags:
+    - properties
+    - namematching-service
+
+- name: "Create ala-namematching-service directories (only docker)"
+  file:
+    path: "{{item}}"
+    state: directory
+    owner: "{{ namematching_user }}"
+    group: "{{ namematching_user }}"
+    mode: 0755
+  with_items:
+    - "/data/ala-namematching-service/config"
+  when: deployment_type == 'swarm'
+  tags:
+    - properties
+    - namematching-service
+
+- name: Include VM tasks
+  include: vm-tasks.yml
+  when: deployment_type == 'vm'
+
+- name: Customize configuration already added by apt package
+  template:
+    src: namematching-service-config.yml
+    dest: "{{data_dir}}/ala-namematching-service/config/config.yml"
+    owner: "{{ namematching_user }}"
+    group: "{{ namematching_user }}"
+  notify:
+    - restart ala-namematching-service
   tags:
     - properties
     - namematching-service
@@ -51,13 +71,6 @@
     - properties
     - namematching-service
 
-- name: Disable previous namematching service (not packaged war)
-  service:
-    name: namematching-service
-    state: stopped
-    enabled: no
-  ignore_errors: yes
-
 - name: add nginx vhost
   include_role:
     name: nginx_vhost
@@ -68,7 +81,7 @@
     nginx_paths:
       - path: "{{ namematching_service_context_path }}"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ namematching_service_port }}/{{ namematching_service_context_path }}"
+        proxy_pass: "http://{{upstream_host}}:{{ namematching_service_port }}/{{ namematching_service_context_path }}"
   # notify:
   #   - reload nginx
   tags:
@@ -76,3 +89,7 @@
     - namematching-service
     - deploy
   when: webserver_nginx
+
+- name: Include docker tasks
+  include: docker-tasks.yml
+  when: deployment_type == 'swarm'
