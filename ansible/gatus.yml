@@ -1,0 +1,11 @@
+---
+- hosts: gatus
+  vars:
+    - deployment_type: swarm
+    - nginx_conf_dir: "{{ data_dir }}/nginx"
+    - skip_handlers: true
+    - nginx_user: "{{ docker_default_user }}"
+  roles:
+    - common
+    - gatus
+  become: true

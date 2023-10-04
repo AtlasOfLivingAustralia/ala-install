@@ -1,4 +1,12 @@
 dataResource:
+  resourceTypeList:
+    - "records"
+    - "website"
+    - "document"
+    - "uploads"
+    - "species-list"
+    - "publications"
+    - "events"
   contentTypesList:
     - "authoritative"
     - "behaviour"

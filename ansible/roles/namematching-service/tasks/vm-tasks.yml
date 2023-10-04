@@ -1,0 +1,14 @@
+---
+
+- include: ./apt.yml
+  tags:
+    - namematching-service
+    - deploy
+    - apt
+
+- name: Disable previous namematching service (not packaged war)
+  service:
+    name: namematching-service
+    state: stopped
+    enabled: false
+  ignore_errors: true

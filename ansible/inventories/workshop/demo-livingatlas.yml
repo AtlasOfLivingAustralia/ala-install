@@ -250,7 +250,8 @@ field_guide_base_url=
 bie_index_base_url = http://demo.livingatlas.org
 bie_index_context_path = /bie-index
 bie_index_hostname = demo.livingatlas.org
-
+  
+index_admin_url = http://localhost:8983/solr
 index_live_url = http://localhost:8983/solr/bie
 index_offline_url = http://localhost:8983/solr/bie-offline
 

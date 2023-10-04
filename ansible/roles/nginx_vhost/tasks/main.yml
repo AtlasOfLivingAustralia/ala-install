@@ -124,7 +124,7 @@
       - path: "{{context_path | default('/', True)}}"
         is_proxy: true
         use_cache: false
-        proxy_pass: "http://127.0.0.1:{{tomcat_server_port | default('8080', True)}}{{context_path | default('/', True)}}"
+        proxy_pass: "http://{{ nginx_upstream_host | default('127.0.0.1')}}:{{tomcat_server_port | default('8080', True)}}{{context_path | default('/', True)}}"
   when: nginx_paths is not defined or (nginx_paths | trim == '')
   tags:
     - nginx_vhost
@@ -132,6 +132,17 @@
 - name: debug - check nginx_paths value
   pause: prompt="nginx_paths value is {{nginx_paths}}"
   when: nginx_paths_debug_enabled is defined and nginx_paths_debug_enabled | bool == True
+
+- name: add gatus monitor of nginx_paths
+  template:
+    src: ../../gatus/templates/http.j2
+    dest: "{{ gatus_config_dir }}/{{appname}}-http.yaml"
+  with_items:
+    - "{{ nginx_paths}}"
+  when: use_gatus is defined and use_gatus
+  tags:
+    - nginx_vhost
+    - gatus
 
 - name: install libnginx-mod-http-auth-pam
   apt: name="libnginx-mod-http-auth-pam" state=present
@@ -508,7 +519,7 @@
 - name: symlink vhost to sites-enabled
   file:
     state: link
-    src: "{{nginx_conf_dir}}/sites-available/{{hostname}}{{vfragments_suffix}}.conf"
+    src: "../sites-available/{{hostname}}{{vfragments_suffix}}.conf"
     dest: "{{nginx_conf_dir}}/sites-enabled/{{hostname}}{{vfragments_suffix}}.conf"
   when: vhost_required | bool == True
   notify:
@@ -544,6 +555,6 @@
 
 - name: Add the virtual host to the /etc/hosts file for Vagrant instances
   lineinfile: dest=/etc/hosts regexp="^127.0.0.1 {{hostname}}$" line="127.0.0.1 {{ hostname }}" state=present
-  when: is_vagrant is defined and is_vagrant
+  when: is_vagrant is defined and is_vagrant and deployment_type == 'vm'
   tags:
     - nginx_vhost

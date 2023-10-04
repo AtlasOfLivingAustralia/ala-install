@@ -1,0 +1,19 @@
+---
+- hosts: bie-index
+  vars:
+    - deployment_type: swarm
+    - tomcat_user: "{{ docker_default_user }}"
+    - nginx_conf_dir: "{{ data_dir }}/nginx"
+    - nginx_user: "{{ docker_default_user }}"
+    - bie_index_upstream_host: la_bie_index_war
+    - skip_handlers: true
+    - nginx_paths_gatus_exclude:
+        - "{{bie_index_context_path}}/childConcepts"
+        - "{{bie_index_context_path}}/classification"
+        - "{{bie_index_context_path}}/guid"
+        - "{{bie_index_context_path}}/species"
+        - "{{bie_index_context_path}}/taxon"
+  roles:
+    - common
+    - namedata
+    - bie-index

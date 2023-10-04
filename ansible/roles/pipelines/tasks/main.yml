@@ -4,18 +4,21 @@
     - docker
     - la-pipelines
     - hadoop_vocab
+    - properties
     - la-pipelines-config
 
 - name: Install aptitude using apt
   apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
   tags:
     - pipelines
+    - apt
 
 - name: Install required system packages
   apt: name={{ item }} state=latest update_cache=yes
-  loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+  loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools', 'unzip']
   tags:
     - pipelines
+    - apt
 
 - name: Add Docker GPG apt Key
   apt_key:
@@ -55,6 +58,7 @@
     - "{{ data_dir }}/dwca-export"
     - "{{ data_dir }}/migration"
   tags:
+    - properties
     - la-pipelines-config
     - pipelines
     - docker
@@ -90,33 +94,76 @@
     - la-pipelines
     - pipelines
     - yq
+    - apt
 
-- name: Add YQ Repository
+- name: Remove YQ apt package (when installed via PPA)
+  apt:
+    name: yq
+    state: absent
+  when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
+  tags:
+    - pipelines
+    - la-pipelines
+    - yq
+    - apt
+
+- name: Remove the YQ PPA
   apt_repository:
     repo: 'ppa:rmescandon/yq'
+    state: absent
   when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
   tags:
     - la-pipelines
     - pipelines
     - yq
+    - apt
 
-- name: Add an apt key by id from a keyserver
+- name: Remove the apt key for YQ
   apt_key:
     keyserver: keyserver.ubuntu.com
     id: CC86BB64
+    state: absent
   when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
   tags:
     - la-pipelines
     - pipelines
     - yq
+    - apt
 
-- name: Update apt and install pipelines
-  apt: update_cache=yes name=yq={{ yq_version }}
+# Optionally, you might want to update the apt cache after removing the repository
+- name: Update apt cache
+  apt:
+    update_cache: true
   when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
   tags:
     - pipelines
     - la-pipelines
     - yq
+    - apt
+
+- name: Determine yq binary name based on architecture
+  set_fact:
+    yq_binary: "yq_linux_{{ 'amd64' if is_arm is not defined else 'arm' }}"
+    yq_version: "{{ yq_bin_version | default('v4.16.2') }}"
+  when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
+  tags:
+    - la-pipelines
+    - pipelines
+    - yq
+    - apt
+
+- name: Download yq
+  get_url:
+    url: "https://github.com/mikefarah/yq/releases/download/{{ yq_version }}/{{ yq_binary }}"
+    dest: "/usr/bin/yq"
+    mode: '0755'
+  vars:
+  when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
+  tags:
+    - la-pipelines
+    - pipelines
+    - yq
+    - apt
 
 # docopts is needed by the la-pipelines script
 
@@ -135,6 +182,7 @@
     - la-pipelines
     - pipelines
     - docopts
+    - apt
 
 - name: Make docopts executable
   shell: chmod +x /usr/local/bin/docopts
@@ -156,6 +204,7 @@
   with_items:
     - la-pipelines-local.yaml
   tags:
+    - properties
     - la-pipelines-config
     - pipelines
     - la-pipelines
@@ -260,7 +309,7 @@
     - hadoop_dir
 
 - name: Set ownership of HDFS base directories
-  shell: "{{ hadoop_install_dir }}/bin/hdfs dfs -chown spark:spark {{ item }}"
+  shell: "{{ hadoop_install_dir }}/bin/hdfs dfs -chown {{ spark_user }}:{{ spark_user }} {{ item }}"
   with_items:
     - "/dwca-exports"
     - "/dwca-imports"

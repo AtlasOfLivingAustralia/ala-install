@@ -22,8 +22,8 @@ security:
     logoutUrl: {{ auth_cas_url }}/logout
   oidc:
     enabled: {{ security_oidc_enabled | default(false) }}
-    clientId: {{ clientId | default('') }}
-    secret: {{ secret | default('') }}
+    clientId: {{ (images_client_id | default(clientId)) | default('') }}
+    secret: {{ (images_client_secret | default(secret)) | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
     scope: {{ oidc_scopes | default('openid profile email ala roles') }}
     alaUseridClaim: {{ security_jwt_userIdClaim | default('userid') }}
@@ -60,7 +60,7 @@ flyway:
   baselineOnMigrate: {{ image_service_baseline_on_migrate | default('true') }}
 
 dataSource:
-  url: "jdbc:postgresql://localhost/{{ image_service_db_name }}?autoReconnect=true&connectTimeout=0&useUnicode=true&characterEncoding=UTF-8"
+  url: "jdbc:postgresql://{{ image_service_db_host | default('localhost') }}/{{ image_service_db_name }}?autoReconnect=true&connectTimeout=0&useUnicode=true&characterEncoding=UTF-8"
   driverClassName: org.postgresql.Driver
   username: {{ image_service_db_username }}
   password: {{ image_service_db_password }}

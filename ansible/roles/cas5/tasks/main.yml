@@ -1,28 +1,30 @@
+---
 - name: "set facts"
   include_role:
     name: common
     tasks_from: setfacts
   tags:
-  - setfacts
-  - cas
-  - properties
+    - setfacts
+    - cas
+    - properties
 
 - name: "Ensure system user for CAS"
   user:
     name: cas
     state: present
-    system: yes
+    system: true
   tags:
-  - service
-  - cas
-  - properties
+    - service
+    - cas
+    - properties
+  when: deployment_type == 'vm'
 
 - name: ensure target directories exist data subdirectories etc.
   file:
     path: "{{item}}"
     state: directory
-    owner: cas
-    group: cas
+    owner: "{{ cas_user | default('cas') }}"
+    group: "{{ cas_user | default('cas') }}"
   with_items:
     - "{{data_dir}}/cas"
     - "{{data_dir}}/cas/config"
@@ -35,8 +37,8 @@
 - name: set data ownership
   file:
     path: "{{data_dir}}/cas"
-    owner: cas
-    group: cas
+    owner: "{{ cas_user | default('cas') }}"
+    group: "{{ cas_user | default('cas') }}"
     recurse: true
   tags:
     - properties
@@ -46,8 +48,8 @@
   template:
     src: application.yml
     dest: "{{data_dir}}/cas/config/application.yml"
-    owner: cas
-    group: cas
+    owner: "{{ cas_user | default('cas') }}"
+    group: "{{ cas_user | default('cas') }}"
   when: cas_version is version('6', '>=')
   notify:
     - restart cas
@@ -59,8 +61,8 @@
   template:
     src: application-pre-6.yml
     dest: "{{data_dir}}/cas/config/application.yml"
-    owner: cas
-    group: cas
+    owner: "{{ cas_user | default('cas') }}"
+    group: "{{ cas_user | default('cas') }}"
   when: cas_version is version('6', '<')
   notify:
     - restart cas
@@ -72,8 +74,8 @@
   template:
     src: log4j2.xml
     dest: "{{data_dir}}/cas/config/log4j2.xml"
-    owner: cas
-    group: cas
+    owner: "{{ cas_user | default('cas') }}"
+    group: "{{ cas_user | default('cas') }}"
   tags:
     - properties
     - cas
@@ -82,8 +84,8 @@
   template:
     src: pwe.properties
     dest: "{{data_dir}}/cas/config/pwe.properties"
-    owner: cas
-    group: cas
+    owner: "{{ cas_user | default('cas') }}"
+    group: "{{ cas_user | default('cas') }}"
   notify:
     - restart cas
   tags:
@@ -95,8 +97,8 @@
   copy:
     src:  "{{ inventory_dir }}/{{ cas_jwks_file | default('keystore.jwks') }}"
     dest: "{{data_dir}}/cas/keystore.jwks"
-    owner: cas
-    group: cas
+    owner: "{{ cas_user | default('cas') }}"
+    group: "{{ cas_user | default('cas') }}"
     mode: u=rw,g=,o=
   notify:
     - restart cas
@@ -105,80 +107,13 @@
       - "{{ inventory_dir }}/{{ cas_jwks_file | default('keystore.jwks') }}"
       skip: true
   tags:
-    - cas
-
-- name: add jar and service
-  include_role:
-    name: exec-jar
-  vars:
-    extra_params:
-    - key: cas.standalone.configurationDirectory
-      value: /data/cas/config
-    - key: ala.password.properties
-      value: /data/cas/config/pwe.properties
-    log_config_filename: 'log4j2.xml'
-    service_name: "cas"
-    use_openjdk11: "{{ cas_version is version('6', '>=') }}"
-    use_openjdk8: "{{ cas_version is version('6', '<') }}"
-    java_headless: true
-    java_jre: true
-    jar_url: '{{ cas_jar_url }}'
-  tags:
-    - deploy
-    - service
-    - service-conf
-    - cas
-
-- name: Ensure cas is in a running state
-  service:
-    name: cas
-    state: started
-  register: casService
-  until: casService.status.ActiveState == "active"
-  retries: 15
-  delay: 30
-  tags:
-    - cas
-    - db
-
-- name: wait for cas is running to create the first admin user
-  wait_for: host=127.0.0.1 port={{ cas_port | default('9000') }} delay=30
-  when: cas_first_admin_email is defined and cas_first_admin_bcrypt_password is defined and cas_first_admin_temp_auth_key is defined
-  tags:
-    - cas
-    - db
-
-- name: ensure target sql directory exist
-  file: path={{item}} state=directory owner=cas group=cas
-  with_items:
-    - "{{data_dir}}/cas/setup"
-  when: cas_first_admin_email is defined and cas_first_admin_bcrypt_password is defined and cas_first_admin_temp_auth_key is defined
-  tags:
-    - cas
-    - db
     - properties
-
-- name: copy all SQL first admin scripts
-  template: src={{ item }} dest={{data_dir}}/cas/setup/
-  with_items:
-    - "sql/role-editor.sql"
-    - "sql/admin-add.sql"
-  when: cas_first_admin_email is defined and cas_first_admin_bcrypt_password is defined and cas_first_admin_temp_auth_key is defined
-  tags:
     - cas
-    - db
-    - properties
 
-- name: create role editor and first admin user if do not exist
-  shell: "mysql --host={{ cas_db_hostname | default('localhost') }} --port={{ cas_db_port | default('3306') }}  --user={{ cas_db_username | default('cas') }} --password={{ cas_db_password | default('password') }} {{ cas_db_name | default('emmet')  }} < {{data_dir}}/cas/setup/{{ item }}"
-  with_items:
-    - "role-editor.sql"
-    - "admin-add.sql"
-  when: cas_first_admin_email is defined and cas_first_admin_bcrypt_password is defined and cas_first_admin_temp_auth_key is defined
-  ignore_errors: no
+- include: ../../docker-common/tasks/common.yml
   tags:
-    - cas
-    - db
+    - docker
+  when: deployment_type == 'swarm'
 
 - name: add nginx vhost
   include_role:
@@ -191,9 +126,17 @@
       - path: "/{{ cas_context_path | default('cas') }}"
         appname: "cas"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ cas_port | default('9000') }}/{{ cas_context_path | default('cas') }}"
+        proxy_pass: "http://{{ cas_docker_host | default('127.0.0.1') }}:{{ cas_port | default('9000') }}/{{ cas_context_path | default('cas') }}"
   tags:
     - nginx_vhost
     - deploy
     - cas
   when: webserver_nginx
+
+- name: Include docker tasks
+  include: docker-tasks.yml
+  when: deployment_type == 'swarm'
+
+- name: Include VM tasks
+  include: vm-tasks.yml
+  when: deployment_type == 'vm'

@@ -1,0 +1,21 @@
+--- 
+# install the Java APM tracer
+- block:
+    - name: Download Java APM tracer
+      get_url:
+        url: https://dtdg.co/latest-java-tracer
+        dest: "{{ datadog_apm_service_jar_dir }}dd-java-agent.jar"
+        mode: 0755
+
+    - name: Inject tracer and params into the JVM options
+      lineinfile:
+        path: "{{ datadog_apm_service_conf}}"
+        regexp: '^JAVA_OPTS=".*/dd-java-agent.jar.*'
+        line: 'JAVA_OPTS="${JAVA_OPTS} -javaagent:{{ datadog_apm_service_jar_dir }}dd-java-agent.jar -Ddd.version={{ datadog_apm_service_version }} -Ddd.service={{ datadog_apm_service_name }} -Ddd.env={{ datadog_apm_environment }} -Ddd.logs.injection=true -Ddd.profiling.enabled=true"'
+
+    - name: Restart the service
+      systemd:
+        name: "{{ datadog_apm_service_name }}"
+        state: restarted
+
+  when: datadog_java_apm_enabled|default(False)|bool

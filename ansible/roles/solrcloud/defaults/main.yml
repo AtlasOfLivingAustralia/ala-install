@@ -8,3 +8,8 @@ solr_bind_jetty_host: true
 jts_use_1_13: false
 jts_use_1_16: false
 jts_use_1_18: false
+solrcloud_docker_dir: "{{ data_dir }}/solr/docker"
+solrcloud_docker_conf_dir: "{{ data_dir }}/solr/config"
+solrcloud_docker_data_dir: "{{ data_dir }}/solr/data"
+solrcloud_docker_zookeeper_conf_dir: "{{ data_dir }}/zookeeper/config"
+solrcloud_docker_zookeeper_data_dir: "{{ data_dir }}/zookeeper/data"

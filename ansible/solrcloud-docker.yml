@@ -1,0 +1,8 @@
+---
+- hosts: solrcloud,zookeeper
+  vars:
+    - deployment_type: swarm
+  roles:
+    - common
+    - solrcloud
+  become: true

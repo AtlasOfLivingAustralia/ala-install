@@ -25,3 +25,5 @@ biocache_service_extra_limit_zones_mapping_bounds: []
 biocache_service_extra_limit_zones_chart: []
 biocache_service_extra_limit_zones_scatterplot: []
 biocache_service_extra_limit_zones_online_downloads: []
+
+biocache_service_docker_dir: "{{ data_dir }}/biocache/docker"

@@ -1,0 +1,25 @@
+version: "2.2"
+
+services:
+
+  es-api:
+    container_name: "{{ env }}-es-api"
+    image: "{{ es_docker_image }}"
+    ports:
+      - "{{ es_port | default('4001') }}:{{ es_port | default('4001') }}"
+    volumes:
+      - /data/{{ env }}/es-api.env:/usr/src/.env
+  graphql-api:
+    container_name: "{{ env }}-graphql-api"
+    image: "{{ graphql_docker_image }}"
+    ports:
+      - "{{ graphql_port | default('4000') }}:{{ graphql_port | default('4000') }}"
+    volumes:
+      - /data/{{ env }}/graphql-api.env:/usr/src/.env
+  es2vt:
+    container_name: "{{ env }}-es2vt"
+    image: "{{ es2vt_docker_image }}"
+    ports:
+      - "{{ es2vt_port | default('4002') }}:{{ es2vt_port | default('4002') }}"
+    volumes:
+      - /data/{{ env }}/es2vt.env:/usr/src/.env

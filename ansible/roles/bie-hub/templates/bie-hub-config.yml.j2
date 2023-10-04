@@ -20,8 +20,8 @@ security:
     enabled: {{ security_cas_enabled | default(false) }}
   oidc:
     enabled: {{ security_oidc_enabled | default(true) }}
-    clientId: {{ (bie_hub_clientId | default(clientId)) | default('') }}
-    secret: {{ (bie_hub_secret | default(secret)) | default('') }}
+    clientId: {{ (ala_bie_client_id | default(clientId)) | default('') }}
+    secret: {{ (ala_bie_client_secret | default(secret)) | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
@@ -57,6 +57,10 @@ ala:
       url: {{ image_service_url }}
 imageServiceBaseUrl: {{ image_service_url }}
 allowedImageEditingRoles: {{ allowed_image_editing_roles }}
+
+wikipedia:
+    url: {{ wikipedia_api_url | default('https://en.wikipedia.org/api/rest_v1/page/html/') }}
+    lang: {{ wikipedia_api_lang | default('en') }}
 
 # Skin and layout
 skin:
@@ -101,7 +105,7 @@ sightings:
   url: {{ sightings_url }}
 layersService:
   baseURL: {{ layers_service_url | default(layers_url) }}
-imageServiceBaseURL: {{ image_service_url }}
+imageServiceBaseUrl: {{ image_service_url }}
 image:
   baseUrl: {{ image_service_url }}
   thumbnailUrl: {{ image_service_url }}/image/proxyImageThumbnail?imageId=

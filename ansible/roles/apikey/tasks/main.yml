@@ -21,8 +21,8 @@
   file:
     path: "{{item}}"
     state: directory
-    owner: apikey
-    group: apikey
+    owner: "{{ apikey_user | default('apikey') }}"
+    group: "{{ apikey_user | default('apikey') }}"
   with_items:
     - "{{data_dir}}/apikey"
     - "{{data_dir}}/apikey/config"
@@ -35,8 +35,8 @@
 - name: set data ownership
   file:
     path: "{{data_dir}}/apikey"
-    owner: apikey
-    group: apikey
+    owner: "{{ apikey_user | default('apikey') }}"
+    group: "{{ apikey_user | default('apikey') }}"
     recurse: true
   tags:
     - properties
@@ -46,8 +46,8 @@
   template:
     src: apikey-config.yml
     dest: "{{data_dir}}/apikey/config/apikey-config.yml"
-    owner: apikey
-    group: apikey
+    owner: "{{ apikey_user | default('apikey') }}"
+    group: "{{ apikey_user | default('apikey') }}"
   notify:
     - restart apikey
   when: apikey_version is version('1.7.0', '>=')
@@ -59,8 +59,8 @@
   template:
     src: apikey-config-pre-1.7.0.yml
     dest: "{{data_dir}}/apikey/config/apikey-config.yml"
-    owner: apikey
-    group: apikey
+    owner: "{{ apikey_user | default('apikey') }}"
+    group: "{{ apikey_user | default('apikey') }}"
   notify:
     - restart apikey
   when: apikey_version is version('1.7.0', '<')
@@ -72,8 +72,8 @@
   template:
     src: logback.xml
     dest: "{{data_dir}}/apikey/config/logback.xml"
-    owner: apikey
-    group: apikey
+    owner: "{{ apikey_user | default('apikey') }}"
+    group: "{{ apikey_user | default('apikey') }}"
   tags:
     - properties
     - apikey

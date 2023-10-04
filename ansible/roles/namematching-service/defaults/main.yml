@@ -7,3 +7,4 @@ namematching_user: namematching
 namematching_service_context_path:
 # * = latest
 ala_namematching_service_version: "*"
+ala_namematching_service_docker_dir: "{{ data_dir }}/ala-namematching-service/docker"

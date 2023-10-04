@@ -1,0 +1,192 @@
+#!/bin/bash
+
+# It will fail if some playbook fails 
+set -e
+
+CMD=$(basename "$0")
+GEN_LOC="$(dirname "$(realpath "$0")")"
+ALA_INSTALL="${GEN_LOC%/*}"
+A_ALA_INSTALL="${GEN_LOC%/*}/ansible"
+#echo $GEN_LOC
+#echo $A_ALA_INSTALL
+
+
+if [[ ! -e $GEN_LOC/docopts ]] ; then
+    curl -s -o "$GEN_LOC/docopts" -LJO https://github.com/docopt/docopts/releases/download/v0.6.3-rc2/docopts_linux_amd64
+    chmod +x "$GEN_LOC/docopts"
+fi
+
+eval "$("$GEN_LOC/docopts" -V - -h - : "$@" <<EOF
+
+$CMD: LA data generator
+
+Usage:
+  $CMD [options] --data=<dir> --inv=<dir> generate [<service>...]
+  $CMD -h | --help
+  $CMD -v | --version
+
+Options:
+  --extra-args=<args>  Additional "arg1=values arg2=value" to get preference over defaul extra variables values
+  --verbose            Verbose output.
+  -d --dry-run         Print the commands without actually running them.
+  -h --help            Show this help.
+  -v --version         Show version.
+
+----
+$CMD $VER
+License Apache-2.0
+EOF
+)"
+
+# shellcheck disable=SC2154
+if ($dry_run); then _D="echo"; else _D=; fi
+if ($dry_run); then echo "Only printing the commands:"; fi
+
+# shellcheck disable=SC2154
+if $verbose; then
+      # shellcheck disable=SC2154
+      echo build: "$build"
+      # shellcheck disable=SC2154
+      echo run: "$run"
+      # shellcheck disable=SC2154
+      echo data: "$data"
+      # shellcheck disable=SC2154
+    echo inv: "$inv"
+fi
+
+use_an_inventory=false
+user=$USER
+
+# shellcheck disable=SC2154
+if [[ -d $inv && -f $inv/ansiblew ]]; then
+      # use_ansiblew=true
+      if $verbose; then echo "It seems a standard generated inventory"; fi
+elif [[ -f $inv/$service ]]; then
+      use_an_inventory=true
+elif [[ ! -d $inv || ! -f $inv/ansiblew ]]; then
+      >&2 echo "ERR: It seems that '$inv' is not a generated inventory as we expect or an ALA inventory directory + service inventory provided"
+      exit 1;
+fi
+
+
+TAGS=common,properties,mongodb-org,namematching-service,pipelines,pipelines-layers
+SKIP_TAGS=restart,image-stored-procedures,db,mongodb-org-restart,mongodb-users,sslcerts,pipelines-services,hadoop_dir,hadoop_vocab,apt_update,apt,mongodb-org,docopts,yq
+# shellcheck disable=SC2154
+EXTRAS="user_store_db_hostname=auth-mysql ticket_registry_db_hostname=auth-mongo cas_audit_host=auth-mongo cas_spring_session_host=auth-mongo \
+    user_store_db_hostname=auth-mysql apikey_db_hostname=auth-mysql cas_db_hostname=auth-mysql cas_tickets_host=auth-mongo \
+    cas_tickets_host=auth-mongo cas_services_host=auth-mongo cas_services_host=auth-mongo collectory_db_host_address=collectory-mysql \
+    dq_db_url=jdbc:postgresql://dq-postgresql/data-quality specieslist_db_hostname=lists-mysql logger_db_hostname=logger-mysql \
+    alerts_db_hostname=alerts-mysql phylolink_db_hostname=phylolink-mysql geonetwork_database=spatial-postgresql layers_db_host=spatial-postgresql \
+    doi_db_hostname=doi-postgresql image_service_db_host=images-postgresql \
+    mail_smtp_host=biocache-smtp mail_host=biocollect-smtp \
+    ecodata_elasticsearch_host=ecodata-es events_elasticsearch_host=events-es events_elasticsearch_network_host=events-es-network \
+    events_elasticsearch_seed_host=events-es-seed solr_url=solr_host:2181 biocache_db_host=cassandra_host \
+    data_dir=/data/docker skip_handlers=true tomcat_apr=false use_docker_with_pipelines=false install_elasticsearch=false ecodata_url=FIXME_ECODATA_URL \
+    tomcat=$user tomcat_user=$user biocollect_user=$user ecodata_user=$user merit_user=$user fieldguide_app=fieldguide spark_user=$user \
+    profile_service_user=$user profile_hub_user=$user doi_user=$user cas_user=$user userdetails_user=$user apikey_user=$user image_user=$user \
+    geoserver_user=$user \
+    $extra_args"
+
+function gen() {
+    local what
+    what="$1"
+    echo "Generating config for '$what'"
+    if $verbose; then V="-vvvv" ; else V=""; fi
+    cp "$GEN_LOC/local.ini" "$inv"
+    bash -c "cd $inv; ./ansiblew --alainstall=$ALA_INSTALL -i local.ini $what --tags=$TAGS --skip=$SKIP_TAGS -e '$EXTRAS' --nodryrun --limit localhost $V"
+    # shellcheck disable=SC2181
+    if [ $? -ne 0 ]; then
+      >&2 echo "The generation failed, are you inventories and/or your ala-install repo up-to-date?"
+    fi
+    rm "$inv/local.ini"
+}
+
+function genCustom() {
+    # local dinv="$(dirname "$1")"
+    local cinv
+    local play
+    local dinv
+    cinv="$(basename "$1")"
+    play="$2"
+    dinv="$(dirname "$1")"
+    echo "Generating config for $dinv/$cinv and '$play' in '$inv'"
+
+    if $verbose; then V="-vvvv" ; else V=""; fi
+
+    cp "$GEN_LOC/local.ini" "$inv/$dinv"
+    bash -c "cd $inv/$dinv; ansible-playbook -u ubuntu --become -i $cinv -i local.ini $A_ALA_INSTALL/$play --tags $TAGS --skip-tags $SKIP_TAGS --extra-vars '$EXTRAS' --limit localhost $V"
+    rm "$inv/$dinv/local.ini"
+exit
+    # shellcheck disable=SC2181
+    if [ $? -ne 0 ]; then
+      >&2 echo "The generation failed, are you inventories and/or your ala-install repo up-to-date?"
+    fi
+}
+
+function run_checks() {
+    if [[ ! -d $data ]]; then
+        >&2 echo "Directory '$data' does not exists"
+        exit 1
+    fi
+
+    if [[ ! $data =~ ^/.* ]]; then
+        >&2 echo "Use an /absolute path for directory '$data' "
+        exit 1
+    fi
+
+    if [[ ! $inv =~ ^/.* ]]; then
+        >&2 echo "Use an /absolute path for directory '$inv' "
+        exit 1
+    fi
+
+    if [ -z "$(find "$inv" -mindepth 1 -print -quit)" ]; then
+        >&2 echo "WARN: It seems that '$inv' is empty"
+        exit 1
+    fi
+
+    # shellcheck disable=SC2154
+    if [[ -d $ala_install && ! -d $ala_install/ansible ]]; then
+        >&2 echo "It seems that '$ala_install' is not the ala-install repository as we expect"
+        exit 1
+    fi
+}
+
+run_checks
+
+if [[ -n $service ]] ; then
+    services=("${service[@]}")
+fi
+
+if $use_an_inventory ; then
+      echo "Processing $inv$service"
+      set +e
+
+      output=$(bash -c "grep 'ansible-playbook -i' $inv$service 2>&1")
+
+      set -e
+
+      playbook_pattern="ala-install/ansible"
+
+      while IFS= read -r line; do
+        if [[ $line == *"ansible-playbook -i"* ]]; then
+          playbook=$(awk -F "$playbook_pattern" '{print $2}' <<< "$line" | awk '{gsub(/--.*$/, ""); print}')
+          playbook=${playbook// /}
+        fi
+      done <<< "$output"
+
+      if [[ -z "$playbook" ]]; then
+        >&2 echo "Playbook not detected in inventory comments"
+        exit 1
+      fi
+
+      genCustom "$service" "$playbook"
+
+else
+    if [[ -n $service ]] ; then
+        for s in "${services[@]}"; do
+            gen "$s"
+        done
+    else
+        gen all
+    fi
+fi

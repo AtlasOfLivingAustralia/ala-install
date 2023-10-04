@@ -60,8 +60,8 @@
   template:
     src: logback.xml
     dest: "{{data_dir}}/biocollect/config/logback.xml"
-    owner: biocollect
-    group: biocollect
+    owner: "{{biocollect_user}}"
+    group: "{{biocollect_user}}"
   notify:
     - restart biocollect
   tags:

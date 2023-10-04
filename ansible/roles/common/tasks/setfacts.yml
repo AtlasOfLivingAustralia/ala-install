@@ -273,17 +273,24 @@
 - name: set whether webserver is apache or nginx
   set_fact:
     webserver_nginx: "{{ webserver_nginx | default(false) }}"
+  tags:
+    - setfacts
 
 - name: set exec_jar as default value
   set_fact:
-      exec_jar: false
+    exec_jar: false
   tags:
     - setfacts
 
 - name: set deployment packaging
   set_fact:
-      exec_jar: true
+    exec_jar: true
   when: packaging is defined and packaging == "jar"
   tags:
     - setfacts
 
+- name: set deployment_type
+  set_fact:
+    deployment_type: "{{ deployment_type | default('vm') }}"
+  tags:
+    - setfacts
