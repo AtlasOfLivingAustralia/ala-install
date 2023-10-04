@@ -6,6 +6,7 @@
     - biocache_hub
     - hub_config
     - facets_config
+  when: deployment_type != 'k8s'
 
 #
 # Apache/Tomcat virtual host configuration
@@ -17,7 +18,7 @@
     - apache_vhost
     - deploy
     - biocache_hub
-  when: not webserver_nginx
+  when: not webserver_nginx and deployment_type != 'k8s'
 
 - name: add nginx vhost if configured
   include_role:
@@ -32,7 +33,7 @@
     - nginx_vhost
     - deploy
     - biocache_hub
-  when: webserver_nginx
+  when: webserver_nginx and deployment_type != 'k8s'
 
 #
 # Properties and data file configuration
@@ -51,7 +52,7 @@
     - properties
     - biocache_hub
     - geolite_db
-  when: exec_jar
+  when: exec_jar and deployment_type != 'k8s'
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
@@ -65,11 +66,11 @@
     - properties
     - biocache_hub
     - geolite_db
-  when: not exec_jar
+  when: not exec_jar and deployment_type != 'k8s'
 
 - name: copy grouped_facets.json
   template: src=config/{{grouped_facets_json}} dest={{data_dir}}/{{biocache_hub}}/config/{{grouped_facets_json}} force=yes
-  when: grouped_facets_json is defined
+  when: grouped_facets_json is defined and deployment_type != 'k8s'
   tags:
     - webapps
     - properties
@@ -84,6 +85,7 @@
     - properties
     - biocache_hub
     - hub_config
+  when: deployment_type != 'k8s'
 
 - name: copy charts.json
   template: src=config/charts.json dest={{data_dir}}/{{biocache_hub}}/config/charts.json force=yes
@@ -92,10 +94,11 @@
     - properties
     - hub_config
     - biocache_hub
+  when: deployment_type != 'k8s'
 
 - name: copy overlays.json
   template: src=config/{{overlays_json}} dest={{data_dir}}/{{biocache_hub}}/config/overlays.json force=yes
-  when: overlays_json is defined
+  when: overlays_json is defined and deployment_type != 'k8s'
   tags:
     - webapps
     - config
@@ -109,6 +112,7 @@
     - properties
     - hub_config
     - biocache_hub
+  when: deployment_type != 'k8s'
 
 - name: copy logback config
   template: src=config/logback.groovy dest={{data_dir}}/{{biocache_hub}}/config/logback.groovy  owner={{biocache_hub}} group={{biocache_hub}}
@@ -116,7 +120,7 @@
     - properties
     - biocache_hub
     - hub_config
-  when: exec_jar
+  when: exec_jar and deployment_type != 'k8s'
 
 - name: Setup GeoLite2 City database (only used by ALA version of the hub)
   include_role:
@@ -129,7 +133,7 @@
     - geoip
     - deploy
     - biocache_hub
-  when: biocache_hub == 'ala-hub'
+  when: biocache_hub == 'ala-hub' and deployment_type != 'k8s'
 
 - name: set data ownership
   file: path={{data_dir}}/{{biocache_hub}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
@@ -139,7 +143,7 @@
     - webapps
     - properties
     - biocache_hub
-  when: not exec_jar
+  when: not exec_jar and deployment_type != 'k8s'
 
 - name: set data ownership
   file:
@@ -152,7 +156,7 @@
   tags:
     - properties
     - biocache_hub
-  when: exec_jar
+  when: exec_jar and deployment_type != 'k8s'
 
 - name: Include docker tasks
   include: docker-tasks.yml
@@ -161,3 +165,7 @@
 - name: Include VM tasks
   include: vm-tasks.yml
   when: deployment_type == 'vm'
+
+- name: Include k8s tasks
+  include: k8s-tasks.yml
+  when: deployment_type == 'k8s'

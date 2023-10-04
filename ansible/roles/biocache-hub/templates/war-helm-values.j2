@@ -1,0 +1,6 @@
+---
+image:
+  repository: "{{ biocache_hub_docker_repository | default('atlasoflivingaustralia/ala-hub') }}"
+  tag: "{{ biocache_hub_docker_tag | default('343a0c9') }}"
+
+dnsName: "{{ biocache_hub_hostname }}"
