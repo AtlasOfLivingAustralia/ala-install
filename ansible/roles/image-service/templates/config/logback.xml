@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+
+    <variable name="loggingDir" value="${LOG_DIR:-/tmp/}" />
+    <variable name="appName" value="image-service" />
+
+    <appender name="APPLICATION_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${loggingDir}/${appName}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${loggingDir}/${appName}.%i.log.gz</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>4</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} : %m%n%wex</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.hibernate.orm.deprecation" level="OFF" />
+
+    <logger name="au.org.ala" level="WARN" />
+    <logger name="au.org.ala.ws" level="WARN" />
+    <logger name="au.org.ala.images" level="WARN" />
+    <logger name="au.org.ala.web.config" level="WARN" />
+    <logger name="au.org.ala.cas" level="WARN" />
+    <logger name="org.springframework" level="WARN" />
+    <logger name="grails.app" level="WARN" />
+    <logger name="grails.plugins.mail" level="WARN" />
+    <logger name="org.hibernate" level="WARN" />
+    <logger name="org.quartz" level="WARN" />
+    <logger name="org.flywaydb" level="WARN" />
+    <logger name="asset.pipeline" level="WARN" />
+
+    <root level="ERROR">
+        <appender-ref ref="APPLICATION_LOG" />
+    </root>
+</configuration>
