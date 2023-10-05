@@ -70,5 +70,5 @@
   when: webserver_nginx
 
 - name: Include docker tasks
-  include: docker-tasks.yml
+  include_tasks: docker-tasks.yml
   when: deployment_type == 'swarm'

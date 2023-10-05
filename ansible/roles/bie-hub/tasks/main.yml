@@ -198,9 +198,9 @@
     - bie
 
 - name: Include docker tasks
-  include: docker-tasks.yml
+  include_tasks: docker-tasks.yml
   when: deployment_type == 'swarm'
 
 - name: Include VM tasks
-  include: vm-tasks.yml
+  include_tasks: vm-tasks.yml
   when: deployment_type == 'vm'
