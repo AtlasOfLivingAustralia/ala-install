@@ -1,0 +1,11 @@
+---
+- hosts: spatial
+  gather_facts: false
+
+- name: Deploy spatial in VM
+  import_playbook: spatial.yml
+  when: (deployment_type | default('vm')) == 'vm'
+
+- name: Deploy spatial in Docker Swarm
+  import_playbook: spatial-docker.yml
+  when: (deployment_type | default('vm')) == 'swarm'

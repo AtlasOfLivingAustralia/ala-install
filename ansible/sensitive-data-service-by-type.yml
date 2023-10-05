@@ -1,0 +1,11 @@
+---
+- hosts: sensitive-data-service
+  gather_facts: false
+
+- name: Deploy sensitive-data-service in VM
+  import_playbook: sensitive-data-service.yml
+  when: (deployment_type | default('vm')) == 'vm'
+
+- name: Deploy sensitive-data-service in Docker Swarm
+  import_playbook: sensitive-data-service-docker.yml
+  when: (deployment_type | default('vm')) == 'swarm'
