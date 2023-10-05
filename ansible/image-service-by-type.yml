@@ -1,0 +1,11 @@
+---
+- hosts: image-service
+  gather_facts: false
+
+- name: Deploy image-service in VM
+  import_playbook: image-service.yml
+  when: (deployment_type | default('vm')) == 'vm'
+
+- name: Deploy image-service in Docker Swarm
+  import_playbook: image-service-docker.yml
+  when: (deployment_type | default('vm')) == 'swarm'

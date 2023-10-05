@@ -1,0 +1,11 @@
+---
+- hosts: biocache-hub
+  gather_facts: false
+
+- name: Deploy biocache-hub in VM
+  import_playbook: biocache-hub-standalone.yml
+  when: (deployment_type | default('vm')) == 'vm'
+
+- name: Deploy biocache-hub in Docker Swarm
+  import_playbook: biocache-hub-standalone-docker.yml
+  when: (deployment_type | default('vm')) == 'swarm'

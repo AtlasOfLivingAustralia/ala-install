@@ -1,0 +1,11 @@
+---
+- hosts: biocache-service-clusterdb
+  gather_facts: false
+  tasks:
+    - name: Deploy biocache-service-clusterdb in VM
+      import_playbook: biocache-service-clusterdb.yml
+      when: (deployment_type | default('vm')) == 'vm'
+
+    - name: Deploy biocache-service-clusterdb in Docker Swarm
+      import_playbook: biocache-service-clusterdb-docker.yml
+      when: (deployment_type | default('vm')) == 'swarm'
