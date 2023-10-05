@@ -20,7 +20,7 @@
     - solrcloud_config
 
 - name: Get Solr container ID on the specific node if using docker
-  shell: "docker service ps la_sorlcloud_solr_1 --format '{{ '{{' }}.Node{{ '}}' }}' | head -1"
+  shell: "docker service ps la_solrcloud_solr_1 --format '{{ '{{' }}.Node{{ '}}' }}' | head -1"
   register: solr_node
   run_once: true
   when: deployment_type == 'swarm'
@@ -86,17 +86,34 @@
     - solrcloud_config
     - zookeeper_config
 
-- name: Delete biocache collection if it exists
-  get_url: url="http://{{ solr_config_host }}:{{ solr_port }}/solr/admin/collections?action=DELETE&name=biocache" dest=/tmp/delete-collection.txt force=yes
+- name: Check if collections exist
+  uri:
+    url: "http://{{ solr_config_host }}:{{ solr_port }}/solr/admin/collections?action=LIST&wt=json"
+    return_content: true
+  register: solr_collections
+  delegate_to: "{{ solr_node.stdout if deployment_type == 'swarm' else inventory_hostname }}"
   tags:
-    - solrcloud_create_collection
-  ignore_errors: true
-  run_once: true
-  when: solrcloud_config_create_biocache_collection == True
+    - solrcloud_config
+    - zookeeper_config
 
-- name: Create biocache collection
-  get_url: url="http://{{ solr_config_host }}:{{ solr_port }}/solr/admin/collections?action=CREATE&name=biocache&maxShardsPerNode=2&numShards={{ solrcloud_num_shards | default(4)}}&replicationFactor={{ solr_hosts | default(2) }}&collection.configName=biocache" dest=/tmp/create-collection.txt force=yes timeout=30
-  tags:
-    - solrcloud_create_collection
+- name: Create SolrCloud collections if they don't exist
+  uri:
+    url: "http://{{ solr_config_host }}:{{ solr_port }}/solr/admin/collections"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      action: CREATE
+      name: "{{ item.collection_name }}"
+      numShards: "{{ solrcloud_num_shards | default(4) }}"
+      replicationFactor: "{{ solr_hosts | default(2) }}"
+      collection.configName: "{{ item.configset_name }}"
+  when: item.collection_name not in solr_collections.content | from_json | json_query("collections")
+  delegate_to: "{{ solr_node.stdout if deployment_type == 'swarm' else inventory_hostname }}"
   run_once: true
-  when: solrcloud_config_create_biocache_collection == True
+  loop:
+    - {collection_name: "biocache", configset_name: "biocache"}
+    - {collection_name: "bie", configset_name: "bie"}
+    - {collection_name: "bie-offline", configset_name: "bie"}
+  tags:
+    - solrcloud_config
+    - zookeeper_config

@@ -142,6 +142,7 @@
     - solrcloud_num_shards: 1
   when: deployment_type == 'swarm'
 
+  # We can let this port open during development
 - name: Remove previous socat container for solr tunnel
   import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
