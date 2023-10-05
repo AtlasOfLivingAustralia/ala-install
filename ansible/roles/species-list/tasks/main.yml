@@ -54,7 +54,7 @@
     hostname: "{{ specieslist_hostname }}"
     context_path: "{{ specieslist_context_path }}"
     nginx_paths:
-      - path: "{{specieslist_context_path}}"
+      - path: "{{ specieslist_context_path }}"
         sort_label: "8_basepath"
         is_proxy: true
         proxy_pass: "http://{{ species_list_docker_host | default('127.0.0.1') }}:8080{{specieslist_proxy_target}}"
