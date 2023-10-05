@@ -357,12 +357,32 @@
   ignore_errors: true
   tags: zoatrack
 
+- name: Install lxml for ansible python 2
+  apt:
+    name: python-lxml
+    state: present
+  when: ansible_python.version.major==2
+
+- name: Install lxml for ansible python 3
+  apt:
+    name: python3-lxml
+    state: present
+  when: ansible_python.version.major==3
 
 - name: download zoatrack war
-  #become_user: "{{ tomcat }}"
-  get_url:
-    url: "{{ zoatrack_war_url }}"
+  maven_artifact:
+    group_id: "{{groupId}}"
+    artifact_id: "{{artifactId}}"
+    version: "{{version|default('latest')}}"
+    extension: "{{packaging|default('jar')}}"
+    classifier: "{{classifier|default('')}}"
+    repository_url: "{{maven_repo_url}}"
+    timeout: 30
     dest: "/var/lib/{{ tomcat }}/webapps/ROOT.war"
+    mode: u=rwx,g=rx,o=rx
+    owner: "{{ tomcat }}"
+    group: "{{ tomcat }}"
+    verify_checksum: always
   tags: zoatrack
 
 - name: set ownership of webapps
