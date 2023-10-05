@@ -5,7 +5,7 @@
     - solr_config
 
 - name: Include docker tasks
-  include: docker-tasks.yml
+  include_tasks: docker-tasks.yml
   vars:
     - solr_temp_disable_shardsWhitelist: true
   when: deployment_type == 'swarm'
