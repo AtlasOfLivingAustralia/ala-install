@@ -5,7 +5,7 @@ security:
 {% if userdetails_backend == 'cognito' %}
     roleAttribute: {{ security_core_roleAttribute | default('ala:role') }}
     affiliation-survey:
-      enabled: {{ affiliation_survey | default('true') }}
+      enabled: {{affiliation_survey_enabled | default ('false')}}
 {% endif %}
   cas:
     enabled: {{ userdetails_use_cas | default('true') }}
@@ -290,3 +290,5 @@ oauth.support.dynamic.client.dynamoDBTable.dynamoDBSK: {{ dynamoDBTable_dynamoDB
 {% if dynamic_client_tokens_callbackURLs is defined %}
 oauth.support.dynamic.client.tokens.callbackURLs: {{ dynamic_client_tokens_callbackURLs }}
 {% endif %}
+userdetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
