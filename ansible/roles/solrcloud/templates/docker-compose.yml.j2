@@ -53,7 +53,9 @@ services:
 {% endif %}
     networks:
       default: {}
-      la_internal: {}
+      la_internal:
+        aliases:
+          - {{ solr_host }}
     environment:
       TZ: {{ server_tz }}
       SOLR_HOST: la_solrcloud_solr_{{ i }}
