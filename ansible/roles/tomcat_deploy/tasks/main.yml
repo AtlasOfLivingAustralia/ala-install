@@ -61,7 +61,7 @@
 - name: download from maven repo {{ war_url }}
   #get_url: url={{ war_url }} dest="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" checksum="{{ war_checksum | default('') }}" force=true timeout=60
   maven_artifact:
-    group_id: "{{groupId}}"
+    group_id: "{{groupId | default('au.org.ala')}}"
     artifact_id: "{{artifactId}}"
     version: "{{version|default('latest')}}"
     extension: "{{packaging|default('jar')}}"
