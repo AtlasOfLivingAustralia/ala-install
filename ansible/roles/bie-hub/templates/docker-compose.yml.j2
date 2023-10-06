@@ -16,6 +16,10 @@ services:
       - conf:{{ data_dir }}/{{ bie_hub }}
       - i18n:/opt/atlas/i18n
       - i18n_custom:/var/opt/atlas/i18n
+{% if debug_docker_entrypoint is defined and debug_docker_entrypoint | bool %}
+    entrypoint: ["tail", "-f", "/dev/null"]
+    restart: "no"
+{% endif %}
 
 networks:
   la_internal:
