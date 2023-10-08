@@ -10,6 +10,8 @@ security:
   core:
     roleAttribute: {{ roleAttribute | default('') }}
     authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+    affiliation-survey:
+      enabled: {{affiliation_survey_enabled | default ('false')}}
   cookie:
     enabled: {{auth_cookie_enabled | default ('false')}}
     domain: {{auth_cookie_domain | default('.ala.org.au')}}
@@ -146,7 +148,7 @@ skin:
   favicon: {{ skin_favicon | default('https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png') }}
   homeUrl: {{ skin_home_url | default('http://www.ala.org.au') }}
 headerAndFooter:
-  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}
+  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3-2019') }}
 useLegacyAuto: false
 import:
   sequence: {{ bie_index_import_sequence | default('collectory,taxonomy-all,vernacular,denormalise,layers,regions,localities,conservation-lists,wordpress,knowledgebase,favourites,weights,link-identifiers,images,occurrences,suggest-index') }}
@@ -166,3 +168,5 @@ openapi:
         authorizationUrl: {{ auth_cas_url }}/oidc/authorize
         refreshUrl: {{ auth_cas_url }}/oidc/refresh
         tokenUrl: {{ auth_cas_url }}/oidc/token
+userdetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}

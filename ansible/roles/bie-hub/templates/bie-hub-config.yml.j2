@@ -11,6 +11,8 @@ security:
   core: 
     roleAttribute: {{ roleAttribute | default('') }}
     authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+    affiliation-survey:
+      enabled: {{affiliation_survey_enabled | default ('false')}}
   cookie:
     enabled: {{auth_cookie_enabled | default ('false')}}
     domain: {{auth_cookie_domain | default('.ala.org.au')}}
@@ -234,3 +236,5 @@ survey:
     header: {{ bie_survey_header | default('') }}
     cookieAge: {{ bie_survey_cookieAge | default(30) }}
     html: {{ bie_survey_html | default('') }}
+userdetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}

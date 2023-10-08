@@ -42,6 +42,8 @@ security:
 {% if auth_system is defined and auth_system == 'cognito' %}
   core:
     roleAttribute: {{ roleAttribute | default('') }}
+    affiliation-survey:
+      enabled: {{affiliation_survey_enabled | default ('false')}}
 {% endif %}
   cas:
     casServerName: {{auth_base_url}}
@@ -114,3 +116,5 @@ openapi:
 serverURL: {{fieldguide_base_url}}
 grails:
   serverURL: {{fieldguide_base_url}}
+userdetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}

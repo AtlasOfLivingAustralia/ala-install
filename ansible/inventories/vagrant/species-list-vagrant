@@ -37,7 +37,7 @@ ssl=false
 
 nameindex_datestamp = 20171012
 nameindex_to_use=ala
-header_and_footer_baseurl=https://www.ala.org.au/commonui-bs3
+header_and_footer_baseurl=https://www.ala.org.au/commonui-bs3-2019
 iconic_species_uid=drt1502348249607
 webserver_nginx=true
 set_sql_mode=true

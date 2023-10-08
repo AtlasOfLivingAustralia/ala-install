@@ -10,6 +10,8 @@ security:
   core:
     roleAttribute: {{ roleAttribute | default('') }}
     authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+    affiliation-survey:
+      enabled: {{affiliation_survey_enabled | default ('false')}}
   cookie:
     enabled: {{auth_cookie_enabled | default ('false')}}
     domain: {{auth_cookie_domain | default('.ala.org.au')}}
@@ -100,7 +102,7 @@ skin:
   favicon: {{ skin_favicon | default('https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png') }}
 
 headerAndFooter:
-  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}
+  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3-2019') }}
   version: {{ header_and_footer_version | default('2') }}
 
 doi:
@@ -162,3 +164,5 @@ openapi:
     security:
       oauth2:
         baseUrl: {{ auth_cas_url }}/oidc
+userdetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}

@@ -24,6 +24,8 @@ security:
   core:
       roleAttribute: {{ roleAttribute | default('') }}
       authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+      affiliation-survey:
+        enabled: {{affiliation_survey_enabled | default ('false')}}
   cookie:
     enabled: {{auth_cookie_enabled | default ('false')}}
     domain: {{auth_cookie_domain | default('.ala.org.au')}}
@@ -48,3 +50,5 @@ specimenbrowser:
 headerAndFooter:
   baseURL: {{ header_and_footer_baseurl }}
   version: {{ header_and_footer_version }}
+userdetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}

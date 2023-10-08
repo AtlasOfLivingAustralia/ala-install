@@ -70,7 +70,7 @@ userDetails:
 
 # Header and footer
 headerAndFooter:
-  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3')}}
+  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3-2019')}}
   version: {{ header_and_footer_version | default('1')}}
 ala.baseURL: {{ ala_base_url | default('https://www.ala.org.au')}}
 bie.baseURL: {{ bie_base_url | default('https://bie.ala.org.au')}}

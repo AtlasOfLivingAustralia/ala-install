@@ -6,6 +6,11 @@ server:
   contextPath: {{ image_service_context_path }}
 
 security:
+  core:
+    roleAttribute: { { roleAttribute | default('') } }
+    authCookieName: { { auth_cookie_name | default('ALA-Auth') } }
+    affiliation-survey:
+      enabled: {{affiliation_survey_enabled | default ('false')}}
   cas:
     enabled: {{ cas_enabled | default(true) }}
     appServerName: "{{image_service_base_url}}"
@@ -77,7 +82,7 @@ biocache:
 # header block
 headerAndFooter:
   version: "{{ header_and_footer_version | default('1')}}"
-  baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3')}}"
+  baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3-2019')}}"
 ala:
   baseURL: "{{ ala_base_url | default('https://www.ala.org.au')}}"
 bie:
@@ -102,3 +107,5 @@ swagger:
     - "{{ swagger_schemes | default('HTTPS') }}"
   consumes:
     - "application/json"
+userdetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
