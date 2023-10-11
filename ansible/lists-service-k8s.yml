@@ -1,5 +1,6 @@
 # Installs lists-service
 - hosts: lists-service
+  gather_facts: no
   vars:
     - deployment_type: k8s
     - skip_handlers: true
