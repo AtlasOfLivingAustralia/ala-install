@@ -1,0 +1,58 @@
+- name: Install Required Python Libraries
+  pip:
+    name: "{{ item }}"
+    state: present
+    executable: pip3
+  with_items:
+    - kubernetes
+    - pyyaml
+
+- name: Generate Unique Timestamp
+  ansible.builtin.set_fact:
+    timestamp: "{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
+
+- name: Create Temporary Directory
+  file:
+    path: "/tmp/configs/lists-service/{{ timestamp }}"
+    state: directory
+
+- name: Copy all template configs to temp directory
+  template: src={{item}} dest="/tmp/configs/lists-service/{{ timestamp }}" output_encoding=iso-8859-1
+  with_items:
+    - lists-service-config.properties
+
+- name: Delete existing ConfigMap
+  command: "{{ kubectl_exec_path }} delete configmap lists-service-config --ignore-not-found=true --context={{ k8s_context }}"
+  ignore_errors: yes
+  become: false
+
+- name: Apply ConfigMap
+  command: "{{ kubectl_exec_path }} create configmap lists-service-config --from-file=/tmp/configs/lists-service/{{ timestamp }}  --context={{ k8s_context }}"
+  become: false
+
+- name: Clean up Temporary Directory and Files
+  ansible.builtin.file:
+    path: "/tmp/configs/{{ timestamp }}"
+    state: absent
+
+- name: Add ALA Repository
+  kubernetes.core.helm_repository:
+    name: ala
+    binary_path: "{{ helm_exec_path }}"
+    repo_url: https://helm-charts.ala.org.au
+    state: present
+
+- name: Install Lists Service Helm Chart
+  kubernetes.core.helm:
+    host: "{{ k8s_host }}"
+    context: "{{ k8s_context }}"
+    kubeconfig: "{{ kubeconfig }}"
+    binary_path: "{{ helm_exec_path }}"
+    chart_ref: ala/lists-service
+    release_name: lists-service
+    release_namespace: default
+    values: "{{ lookup('template', 'war-helm-values.j2') | from_yaml }}"
+    values_files:
+      - "{{ common_values_path }}"
+    skip_crds: true
+  become: false

@@ -5,6 +5,7 @@
     - deploy
     - properties
     - nginx_vhost
+  when: deployment_type != 'k8s'
 
 - name: set nginx upstream server for nginx
   set_fact:
@@ -12,6 +13,7 @@
   tags:
     - deploy
     - nginx_vhost
+  when: deployment_type != 'k8s'
 
 - name: "Create ala-namematching-service directories"
   file:
@@ -25,6 +27,7 @@
   tags:
     - properties
     - namematching-service
+  when: deployment_type != 'k8s'
 
 - name: "Create ala-namematching-service directories (only docker)"
   file:
@@ -55,6 +58,7 @@
   tags:
     - properties
     - namematching-service
+  when: deployment_type != 'k8s'
 
 - name: Customize species group files
   copy:
@@ -70,6 +74,7 @@
   tags:
     - properties
     - namematching-service
+  when: deployment_type != 'k8s'
 
 - name: add nginx vhost
   include_role:
@@ -88,8 +93,12 @@
     - nginx_vhost
     - namematching-service
     - deploy
-  when: webserver_nginx
+  when: webserver_nginx | default(false) and deployment_type != 'k8s'
 
 - name: Include docker tasks
   include: docker-tasks.yml
   when: deployment_type == 'swarm'
+
+- name: Include k8s tasks
+  include: k8s-tasks.yml
+  when: deployment_type == 'k8s'

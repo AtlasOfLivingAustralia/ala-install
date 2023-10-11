@@ -1,0 +1,30 @@
+- name: Install Required Python Libraries
+  pip:
+    name: "{{ item }}"
+    state: present
+    executable: pip3
+  with_items:
+    - kubernetes
+    - pyyaml
+
+- name: Add ALA Repository
+  kubernetes.core.helm_repository:
+    name: ala
+    binary_path: "{{ helm_exec_path }}"
+    repo_url: https://helm-charts.ala.org.au
+    state: present
+
+- name: Install name-matching-service Helm Chart
+  kubernetes.core.helm:
+    host: "{{ k8s_host }}"
+    kubeconfig: "{{ kubeconfig }}"
+    context: "{{ k8s_context }}"
+    binary_path: "{{ helm_exec_path }}"
+    chart_ref: ala/name-matching-service
+    release_name: name-matching-service
+    release_namespace: default
+    values: "{{ lookup('template', 'war-helm-values.j2') | from_yaml }}"
+    values_files:
+      - "{{ common_values_path }}"
+    skip_crds: true
+  become: false

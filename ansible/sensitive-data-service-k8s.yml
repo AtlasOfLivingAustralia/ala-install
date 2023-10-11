@@ -1,0 +1,9 @@
+# Installs sensitive-data-service
+---
+- hosts: sensitive-data-service
+  vars:
+    - deployment_type: k8s
+    - skip_handlers: true
+  roles:
+    - sensitive-data-service
+  become: true

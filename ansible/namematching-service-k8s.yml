@@ -1,0 +1,9 @@
+# Installs namematching-service
+---
+- hosts: namematching-service
+  vars:
+    - deployment_type: k8s
+    - skip_handlers: true
+  roles:
+    - namematching-service
+  become: true

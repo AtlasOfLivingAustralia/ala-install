@@ -1,0 +1,6 @@
+---
+image:
+    repository: "{{ namematching_service_docker_repository | default('atlasoflivingaustralia/ala-namematching-service') }}"
+    tag: "{{ namematching_service_docker_tag | default('v20210811-3') }}"
+
+dnsName: "{{ namematching_service_hostname }}"
