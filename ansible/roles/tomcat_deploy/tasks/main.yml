@@ -58,8 +58,11 @@
 - name: remove existing webapp (to ensure a clean redeployment)
   file: path="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" state=absent
 
+- name: download from url {{ war_url }}
+  get_url: url={{ war_url }} dest="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" checksum="{{ war_checksum | default('') }}" force=true timeout=60
+  when: war_local_build is not defined and tomcat_deploy_from_url | default(false)
+
 - name: download from maven repo {{ war_url }}
-  #get_url: url={{ war_url }} dest="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" checksum="{{ war_checksum | default('') }}" force=true timeout=60
   maven_artifact:
     group_id: "{{groupId | default('au.org.ala')}}"
     artifact_id: "{{artifactId}}"
@@ -73,7 +76,7 @@
     owner: "{{ tomcat_user }}"
     group: "{{ tomcat_user }}"
     verify_checksum: always
-  when: war_local_build is not defined
+  when: war_local_build is not defined and not tomcat_deploy_from_url | default(false)
   notify:
     - restart tomcat
 
