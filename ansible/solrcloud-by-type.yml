@@ -1,0 +1,11 @@
+---
+- hosts: zookeeper,solrcloud
+  gather_facts: false
+
+- name: Deploy solrcloud in VM
+  import_playbook: solrcloud-monit.yml
+  when: (deployment_type | default('vm')) == 'vm'
+
+- name: Deploy solrcloud in Docker Swarm
+  import_playbook: solrcloud-docker.yml
+  when: (deployment_type | default('vm')) == 'swarm'

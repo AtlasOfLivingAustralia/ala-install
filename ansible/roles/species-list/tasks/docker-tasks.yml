@@ -1,0 +1,25 @@
+---
+- name: ensure target db directories exist
+  file: path={{item}} state=directory
+  with_items:
+    - "{{ species_list_docker_db_data_dir }}"
+    - "{{ species_list_docker_conf_dir }}"
+    - "{{ species_list_docker_conf_dir }}/init-db"
+  run_once: true
+  tags:
+    - docker
+    - docker-service
+
+- name: copy SQL fix script for mysql >= 5.7
+  copy:
+    src: ONLY_FULL_GROUP_BY.sql
+    dest: "{{ species_list_docker_conf_dir }}/init-db/init.sql"
+  tags:
+    - docker
+    - docker-service
+
+- name: Deploy species_list stack
+  import_tasks: ../../docker-common/tasks/stack-create.yml
+  vars:
+    stack: la_species_list
+    docker_compose_data_dir: "{{ species_list_docker_conf_dir }}"

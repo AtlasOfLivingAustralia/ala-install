@@ -10,3 +10,4 @@ layers_url: "https://archives.ala.org.au/archives/layers/sds-layers.tgz"
 layers_service_url: "https://spatial.ala.org.au/layers-service"
 # * = latest
 ala_sensitive_data_service_version: "*"
+ala_sensitive_data_service_docker_dir: "{{ data_dir }}/ala-sensitive-data-service/docker"

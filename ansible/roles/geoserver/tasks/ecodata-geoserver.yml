@@ -80,6 +80,13 @@
   tags:
     - geoserver
 
+# Used for /data local generation
+- name: set ownership of geoserver data
+  shell: "chown -R {{ geoserver_user }}:{{ geoserver_user }} {{data_dir}}/geoserver*"
+  when: geoserver_user is defined
+  tags:
+    - geoserver
+
 #
 # Override the default memory settings for Tomcat to increase heap space and change the garbage collector
 #

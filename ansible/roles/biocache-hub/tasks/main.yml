@@ -1,3 +1,4 @@
+---
 - include: ../../common/tasks/setfacts.yml
   tags:
     - webapps
@@ -26,6 +27,7 @@
     hostname: "{{ biocache_hub_hostname }}"
     context_path: "{{ biocache_hub_context_path }}"
     tomcat_server_port: "{{ biocache_server_port }}"
+    nginx_upstream_host: "{{ biocache_hub_docker_host | default('127.0.0.1') }}"
   tags:
     - nginx_vhost
     - deploy
@@ -184,12 +186,10 @@
     - biocache_hub
   when: exec_jar
 
-- name: Restart {{ biocache_hub }} service
-  service:
-    name: "{{ biocache_hub }}"
-    state: restarted
-    enabled: yes
-  tags:
-    - biocache_hub
-    - properties
-  when: exec_jar
+- name: Include docker tasks
+  include_tasks: docker-tasks.yml
+  when: deployment_type == 'swarm'
+
+- name: Include VM tasks
+  import_tasks: vm-tasks.yml
+  when: deployment_type == 'vm'

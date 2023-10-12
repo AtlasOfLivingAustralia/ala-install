@@ -53,3 +53,4 @@ synonym_types: synonym,homotypicSynonym,objectiveSynonym,heterotypicSynonym,subj
 trove_api_key:
 trove_service_url: https://api.trove.nla.gov.au/v2
 trove_url: https://trove.nla.gov.au
+bie_hub_docker_dir: "{{ data_dir }}/{{ bie_hub | default('generic-bie') }}/docker"

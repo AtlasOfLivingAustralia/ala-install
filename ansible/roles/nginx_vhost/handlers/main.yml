@@ -8,6 +8,10 @@
 
 - name: restart nginx
   service: name=nginx state=restarted enabled="yes"
+  when:
+  - skip_handlers | default("false") | bool == false
 
 - name: reload nginx
   service: name=nginx state=reloaded enabled="yes"
+  when:
+  - skip_handlers | default("false") | bool == false

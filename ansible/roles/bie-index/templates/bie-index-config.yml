@@ -18,7 +18,7 @@ security:
 {% endif %}
   cas:
     casServerName:   {{ auth_base_url }}
-    uriFilterPattern:   {{ bie_index_uri_filter_pattern | default('/admin.*,/alaAdmin.*') }}
+    uriFilterPattern:   {{ bie_index_uri_filter_pattern | default('/admin*,/alaAdmin*') }}
     uriExclusionFilterPattern:   {{ bie_index_uri_exclusion_filter_pattern | default('/admin/indexFields') }}
     appServerName:   {{ bie_index_base_url }}
     casServerUrlPrefix:   {{ auth_cas_url }}
@@ -102,6 +102,8 @@ wordPress:
 lists:
   service: {{ specieslist_service_url | default('https://lists.ala.org.au/ws') }}
   items: /speciesListItems/{0}?includeKVP=true&max={1}&offset={2}
+  add: /createItem
+  remove: /deleteItem
 naming:
   service: {{ namematching_service_url | default('https://namematching-ws.ala.org.au') }}
 attribution:
@@ -117,7 +119,18 @@ conservationListsUrl: file://{{ data_dir }}/bie-index/config/conservation-lists.
 vernacularListsUrl: file://{{ data_dir }}/bie-index/config/vernacular-lists.json
 #nationalSpeciesDatasets: dr2699,dr2700,dr2702,dr2704,dr2703,dr3118
 nationalSpeciesDatasets: ""
+hiddenImages:
+  # URL of hidden images configuration file
+  config: file://{{ data_dir }}/bie-index/config/hidden-images-lists.json
+wiki:
+  # URL of wiki configuration file
+  config: file://{{ data_dir }}/bie-index/config/wiki-lists.json
 solr:
+  admin:
+    connection: { { index_admin_url | default('http://localhost:8983/solr') } }
+    type: HTTP
+    queueSize: 10
+    threadCount: 4
   live:
     connection: {{ index_live_url | default('http://localhost:8983/solr/bie') }}
     type: HTTP
@@ -152,7 +165,12 @@ headerAndFooter:
 useLegacyAuto: false
 import:
   sequence: {{ bie_index_import_sequence | default('collectory,taxonomy-all,vernacular,denormalise,layers,regions,localities,conservation-lists,wordpress,knowledgebase,favourites,weights,link-identifiers,images,occurrences,suggest-index') }}
+  sequenceDaily: {{ bie_index_import_sequence_daily | default('conservation-lists,images,hidden-images,wiki-urls,wordpress,knowledgebase,favourites,suggest-index,swap') }}
+  sequenceWeekly: {{ bie_index_import_sequence_weekly | default('occurrences,layers,regions,localities,suggest-index,swap') }}
+  dailyRunHour: {{ bie_index_import_daily_run_hour | default('2') }}
+  weeklyRunDay: {{ bie_index_import_weekly_run_day | default('6') }}
   favouritesConfigUrl: file://{{ data_dir }}/bie-index/config/favourites.json
+  enableTasks: {{ bie_import_enable_tasks | default('false') }}
   taxonomy:
     dir: {{ data_dir }}/bie/import
 ala:

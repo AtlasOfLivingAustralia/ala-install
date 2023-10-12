@@ -15,6 +15,18 @@
 
 - debug: msg="war_filename is {{ war_filename }}; tomcat_deploy_dir is {{ tomcat_deploy_dir }}; log_filename is {{ log_filename }}"
 
+- name: Install lxml for ansible python 2
+  apt:
+    name: python-lxml
+    state: present
+  when: ansible_python.version.major==2
+
+- name: Install lxml for ansible python 3
+  apt:
+    name: python3-lxml
+    state: present
+  when: ansible_python.version.major==3
+
 - name: create tomcat vhost
   tomcat_vhost: name="{{ hostname }}" remote_ip_valve="{{tomcat_enable_remote_ip_valve | default(false)}}" remote_internal_proxies="{{tomcat_remote_internal_proxies | default(None)}}" tomcat_conf_dir="{{ tomcat_conf_dir }}"
   when: vhost
@@ -47,7 +59,20 @@
   file: path="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" state=absent
 
 - name: download from maven repo {{ war_url }}
-  get_url: url={{ war_url }} dest="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" checksum="{{ war_checksum | default('') }}" force=true timeout=60
+  #get_url: url={{ war_url }} dest="{{ tomcat_deploy_dir }}/{{ war_filename }}.war" checksum="{{ war_checksum | default('') }}" force=true timeout=60
+  maven_artifact:
+    group_id: "{{groupId | default('au.org.ala')}}"
+    artifact_id: "{{artifactId}}"
+    version: "{{version|default('latest')}}"
+    extension: "{{packaging|default('jar')}}"
+    classifier: "{{classifier|default('')}}"
+    repository_url: "{{maven_repo_url}}"
+    timeout: 30
+    dest: "{{ tomcat_deploy_dir }}/{{ war_filename }}.war"
+    mode: u=rwx,g=rx,o=rx
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+    verify_checksum: always
   when: war_local_build is not defined
   notify:
     - restart tomcat

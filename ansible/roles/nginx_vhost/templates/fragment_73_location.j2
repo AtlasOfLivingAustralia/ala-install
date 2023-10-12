@@ -56,8 +56,10 @@
         # proxy_set_header Host $host;
 {% if item.proxy_hostname is defined and item.proxy_hostname | length > 0 %}
         proxy_set_header Host {{ item.proxy_hostname }};
+        proxy_set_header X-Forwarded-Host {{ item.proxy_hostname }};
 {% else %}
         proxy_set_header Host {{ hostname }};
+        proxy_set_header X-Forwarded-Host {{ hostname }};
 {% endif %}
 {% if item.proxy_x_request_id is defined %}
         set $x_request_id {{ item.proxy_x_request_id }};
@@ -111,7 +113,21 @@
         proxy_set_header Connection "";
     {% endif %}
   {% else %}
+      {% if nginx_docker_swarm_resolver is defined and nginx_docker_swarm_resolver | bool == true %} 
+        resolver 127.0.0.11 ipv6=off;
+        {% set proto = item.proxy_pass.split('://')[0] %}
+        {% set rest_url = item.proxy_pass.split('://')[1] %}
+        {% set host = rest_url.split(':')[0] %}
+        {% set port_path = rest_url.split(':')[1] %}
+        {% set port = port_path.split('/')[0] %}
+
+        set $backend_proto "{{ proto }}";
+        set $backend_host "{{ host }}";
+        set $backend_port "{{ port }}";
+        proxy_pass $backend_proto://$backend_host:$backend_port;
+      {% else %}
         proxy_pass {{ item.proxy_pass }};
+      {% endif %}
   {% endif %}
 {% elif item.is_proxy_rewrite is defined and item.is_proxy_rewrite %}
         rewrite ^{{ item.path }}/?(.*) /$1 break;

@@ -96,6 +96,10 @@ ala:
       url: {{ image_service_url }}
 allowedImageEditingRoles: {{ allowed_image_editing_roles }}
 
+wikipedia:
+    url: {{ wikipedia_api_url | default('https://en.wikipedia.org/api/rest_v1/page/html/') }}
+    lang: {{ wikipedia_api_lang | default('en') }}
+
 # Skin and layout
 skin:
   homeUrl: {{ skin_home_url }}
@@ -144,6 +148,7 @@ sightings:
 layersService:
   baseURL: {{ layers_service_url | default(layers_url) }}
 imageServiceBaseURL: {{ image_webservice_url | default(image_service_url)}}
+
 image:
   baseUrl: {{ image_service_url }}
   thumbnailUrl: {{ image_webservice_url | default(image_service_url)}}/image/

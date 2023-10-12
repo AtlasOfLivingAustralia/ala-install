@@ -1,0 +1,11 @@
+---
+- hosts: namematching-service
+  gather_facts: false
+
+- name: Deploy namematching-service in VM
+  import_playbook: namematching-service.yml
+  when: (deployment_type | default('vm')) == 'vm'
+
+- name: Deploy namematching-service in Docker Swarm
+  import_playbook: namematching-service-docker.yml
+  when: (deployment_type | default('vm')) == 'swarm'
