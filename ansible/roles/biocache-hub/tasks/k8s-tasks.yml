@@ -52,7 +52,6 @@
 - name: Install ALA hub Helm Chart
   kubernetes.core.helm:
     host: "{{ k8s_host }}"
-    kubeconfig: "{{ kubeconfig }}"
     context: "{{ k8s_context }}"
     force: true
     binary_path: "{{ helm_exec_path }}"

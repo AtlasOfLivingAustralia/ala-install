@@ -28,7 +28,7 @@
   become: false
 
 - name: Apply ConfigMap
-  command: "{{ kubectl_exec_path }} create configmap lists-service-config --from-file=/tmp/configs/lists-service/{{ timestamp }}  --context={{ k8s_context }}"
+  command: "{{ kubectl_exec_path }} create configmap lists-service-config --from-file=/tmp/configs/lists-service/{{ timestamp }} --context={{ k8s_context }}"
   become: false
 
 - name: Clean up Temporary Directory and Files
@@ -47,7 +47,6 @@
   kubernetes.core.helm:
     host: "{{ k8s_host }}"
     context: "{{ k8s_context }}"
-    kubeconfig: "{{ kubeconfig }}"
     binary_path: "{{ helm_exec_path }}"
     chart_ref: ala/lists-service
     release_name: lists-service
