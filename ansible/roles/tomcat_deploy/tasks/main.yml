@@ -66,7 +66,7 @@
   notify:
     - restart tomcat
 
-- name: download from maven repo {{ war_url }}
+- name: "download {{artifactId}} version {{version|default('latest')}} from maven repo {{ maven_repo_url }}"
   maven_artifact:
     group_id: "{{groupId | default('au.org.ala')}}"
     artifact_id: "{{artifactId}}"
