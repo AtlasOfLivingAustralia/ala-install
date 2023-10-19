@@ -137,10 +137,10 @@
         sort_label: "2_download"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{biocollect_context_path}}/download/;proxy_temp_path {{ data_dir }}/biocollect/www; proxy_max_temp_file_size 10240m; gzip off; add_header X-Frame-Options {{ frame_options_header_value }}"
-      - path: "{{biocollect_context_path | default('/') }}pwa"
-        sort_label: "3_pwa"
-        is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}/pwa"
+      - path: "{{biocollect_context_path | default('/') }}pwa-app"
+        sort_label: "3_pwa_app"
+        is_proxy: false
+        rewrite: "{{ biocollect_rewrite_pwa_app_url }}"
   tags:
     - nginx_vhost
     - deploy
@@ -167,10 +167,10 @@
         sort_label: "3_download"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{biocollect_context_path}}/download/; proxy_temp_path {{ data_dir }}/biocollect/www; proxy_max_temp_file_size 10240m; gzip off; add_header X-Frame-Options {{ frame_options_header_value }}"
-      - path: "{{biocollect_context_path | default('/') }}pwa"
-        sort_label: "4_pwa"
-        is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}/pwa"
+      - path: "{{biocollect_context_path | default('/') }}pwa-app"
+        sort_label: "4_pwa_app"
+        is_proxy: false
+        rewrite: "{{ biocollect_rewrite_pwa_app_url }}"
   tags:
     - nginx_vhost
     - deploy
