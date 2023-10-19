@@ -399,6 +399,7 @@
   lineinfile:
     path: /etc/cron.allow
     line: "{{ecodata_backup_user}}"
+    create: yes
   tags:
     - cron
   when: scheduled_database_backup or scheduled_production_data_copy or scheduled_downloads
