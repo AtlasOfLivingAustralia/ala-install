@@ -462,7 +462,7 @@
       - { db: "{{ ecodata_database }}", role: "dbAdmin" }
       - { db: "{{ ecodata_database }}", role: "readWrite" }
   tags:
-    - mongodb-org
+    - mongodb-org-user
 
 - name: Insert replication set name both Server
   blockinfile:
