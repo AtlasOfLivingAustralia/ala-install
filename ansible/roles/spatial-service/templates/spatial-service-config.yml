@@ -178,6 +178,7 @@ logging:
 ## ala-auth-plugin conf
 #userDetails:
 #    url: {{ auth_base_url }}/userdetails/
+#    baseUrl: "{{ spatial_user_details_base_url | default(user_details_base_url) | default('https://auth.ala.org.au/userdetails') }}"
 
 userdetails:
   web:
