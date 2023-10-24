@@ -8,6 +8,7 @@
     - tomcat_user: "{{ docker_default_user }}"
     - nginx_user: "{{ docker_default_user }}"
     - species_list_docker_host: la_species_list_war
+    - set_sql_mode: true
   roles:
     - common
     - species-list

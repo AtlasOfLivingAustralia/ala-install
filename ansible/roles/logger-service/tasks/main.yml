@@ -117,6 +117,7 @@
     appname: "logger-service"
     hostname: "{{ logger_hostname }}"
     context_path: "{{ logger_context_path }}"
+    content_type_options_header: "{{ logger_content_type_options_header | default(content_type_options_header) }}"
     nginx_paths:
       - path: "{{logger_context_path}}/service/logger/reasons"
         sort_label: "1_logger_reasons"
