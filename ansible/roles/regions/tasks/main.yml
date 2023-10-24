@@ -20,6 +20,7 @@
     appname: "regions"
     hostname: "{{ regions_hostname }}"
     context_path: "{{ regions_context_path }}"
+    content_type_options_header: "{{ regions_content_type_options_header | default(content_type_options_header) }}"
   tags:
     - nginx_vhost
     - deploy

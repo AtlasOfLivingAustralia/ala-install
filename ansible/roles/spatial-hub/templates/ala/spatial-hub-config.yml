@@ -48,7 +48,7 @@ bieService:
     baseURL: "{{ bie_service_base_url | default('https://bie-ws.ala.org.au/ws') }}"
 
 userdetails:
-    baseUrl: "{{ user_details_base_url | default('https://auth.ala.org.au/userdetails') }}"
+    baseUrl: "{{ spatial_user_details_base_url | default(user_details_base_url) | default('https://auth.ala.org.au/userdetails') }}"
 
 # ala-auth-plugin conf
 userDetails:
