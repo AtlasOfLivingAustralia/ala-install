@@ -25,28 +25,18 @@
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner=digivol group=digivol
   with_items:
+    - "{{data_dir}}/volunteer-portal"
     - "{{data_dir}}/digivol"
     - "{{data_dir}}/digivol/config"
-    - "{{data_dir}}/digivol/media/images"
-    - "{{data_dir}}/digivol/elasticsearch"
+    - "{{data_dir}}/volunteer/elasticsearch"
   tags:
     - volunteer-portal
     - properties
 
-- name: set data ownership
-  file:
-    path: "{{data_dir}}/digivol"
-    owner: digivol
-    group: digivol
-    recurse: true
-  tags:
-    - properties
-    - volunteer-portal
-
-- name: copy all config.properties
+- name: app config
   template:
-    src: config.properties
-    dest: "{{data_dir}}/digivol/config/digivol-config.properties"
+    src: config.yml
+    dest: "{{data_dir}}/digivol/config/digivol.yml"
     owner: digivol
     group: digivol
   notify:
@@ -76,23 +66,111 @@
     - deploy
     - volunteer-portal
 
-- name: add nginx vhost
-  include_role:
-    name: nginx_vhost
-  vars:
-    appname: "volunteer-portal"
-    hostname: "{{ digivol_hostname }}"
-    context_path: "{{ digivol_context_path }}"
-    nginx_paths:
-      - path: "{{ digivol_context_path }}"
-        is_proxy: true
-        proxy_pass: "http://127.0.0.1:8080/{{ digivol_context_path }}"
+# === nginx config: expires
+- name: copy nginx config (expires)
+  copy:
+    src: "expires.conf"
+    dest: "/etc/nginx/snippets/"
   tags:
     - nginx_vhost
     - volunteer-portal
-  when: webserver_nginx
+
+# === nginx config using simple template
+- name: add nginx vhost (using template)
+  template:
+    src: nginx-vhost.j2
+    dest: "/etc/nginx/sites-available/{{digivol_hostname}}.conf"
+  notify:
+    - reload nginx
+  tags:
+    - nginx_vhost
+    - volunteer-portal
+
+# === nginx config: symlink
+- name: add nginx vhost symlink
+  file: 
+    path: "/etc/nginx/sites-enabled/{{digivol_hostname}}.conf"
+    src: "/etc/nginx/sites-available/{{digivol_hostname}}.conf"
+    state: link
+  notify:
+    - reload nginx
+  tags:
+    - nginx_vhost
+    - volunteer-portal
+
+# === nginx config: extra server name vhost
+- name: add nginx vhost for extra server name vhost (using template)
+  template:
+    src: nginx-vhost-extra.j2
+    dest: "/etc/nginx/sites-available/{{digivol_hostname_extra}}.conf"
+  notify:
+    - reload nginx
+  when: digivol_hostname_extra  | default('false') | bool
+  tags:
+    - nginx_vhost
+    - volunteer-portal
+
+# === nginx config: extra server name vhost symlink
+- name: add nginx extra server name vhost symlink
+  file: 
+    path: "/etc/nginx/sites-enabled/{{digivol_hostname_extra}}.conf"
+    src: "/etc/nginx/sites-available/{{digivol_hostname_extra}}.conf"
+    state: link
+  notify:
+    - reload nginx
+  when: digivol_hostname_extra  | default('false') | bool
+  tags:
+    - nginx_vhost
+    - volunteer-portal
 
 
+# === not using nginx_vhost, as Digivol needs config values not yet supported in that role
+# - name: add nginx vhost
+#   include_role:
+#     name: nginx_vhost
+#   vars:
+#     appname: "volunteer-portal"
+#     hostname: "{{ digivol_hostname }}"
+#     context_path: "{{ digivol_context_path }}"
+#     nginx_paths:
+#       - path: "{{ digivol_context_path }}"
+#         is_proxy: true
+#         proxy_pass: "http://127.0.0.1:8080/{{ digivol_context_path }}"
+#       - path: "/data/volunteer"
+#         is_proxy: false
+#         try_files: "$uri $uri/ =404"
+#   tags:
+#     - nginx_vhost
+#     - volunteer-portal
+#  when: webserver_nginx
+
+- name: create data dir under nginx root
+  file: 
+    path: "{{nginx_root}}/data"
+    state: directory
+  tags:
+    - nginx_vhost
+    - volunteer-portal
+
+- name: copy default html pages into nginx root
+  copy:
+    src: "{{item}}"
+    dest: "{{nginx_root}}"
+  with_items:
+    - "403.html"
+    - "503.html"
+  tags:
+    - nginx_vhost
+    - volunteer-portal
+
+- name: create data/volunteer symlink under nginx root
+  file: 
+    path: "{{nginx_root}}/data/volunteer"
+    src: "{{data_dir}}/volunteer-portal"
+    state: link
+  tags:
+    - nginx_vhost
+    - volunteer-portal
 
 
 
