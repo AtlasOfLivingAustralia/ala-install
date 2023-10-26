@@ -1,9 +1,3 @@
-#groupId: "org.geoserver.web"
-#version: "{{ geoserver_version | default('2.14.1') }}"
-#artifactId: "gs-web-app"
-#packaging: "war"
-#classifier: "war"
-
 geoserver_war_url: "https://repo.osgeo.org/repository/release/org/geoserver/web/gs-web-app/2.19.2/gs-web-app-2.19.2.war"
 geoserver_war_sha1sum: "sha1:db9ce038fb2bea7c67a7012bb338c1447260a2b0"
 

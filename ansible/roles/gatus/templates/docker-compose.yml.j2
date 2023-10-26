@@ -1,0 +1,38 @@
+---
+version: '3.8'
+
+services:
+
+  service:
+    image: twinproduction/gatus
+    expose:
+      - 8080
+    environment:
+      TZ: {{ server_tz }}
+      GATUS_CONFIG_PATH: /etc/gatus/genconfig
+    volumes:
+      - gatus_config:/etc/gatus/genconfig
+      - data:/data
+    networks:
+      la_internal:
+
+networks:
+
+  la_internal:
+    external: true
+
+volumes:
+
+  gatus_config:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ gatus_config_dir }}
+
+  data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ gatus_data_dir }}

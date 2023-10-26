@@ -13,6 +13,12 @@
     - properties
     - biocache-properties
 
+- include_tasks: ../solrcloud/tasks/docker-facts.yml
+  tags:
+    - docker
+    - docker-service
+  when: deployment_type == 'swarm'
+
 - name: copy biocache config properties template 
   template: src={{item}} dest={{data_dir}}/biocache/config/{{item}} mode=0644 output_encoding=iso-8859-1
   with_items:

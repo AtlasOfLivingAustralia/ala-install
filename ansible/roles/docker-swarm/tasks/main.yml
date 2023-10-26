@@ -1,0 +1,47 @@
+---
+- name: Ensure pip is installed
+  apt:
+    name: python3-pip
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Install Docker Python library and other pip dependencies
+  pip:
+    name: "{{ item }}"
+    executable: pip3
+  loop:
+    - docker
+    - jsondiff
+    - pyyaml
+  tags:
+    - docker-swarm
+
+- name: check/init configure swarm
+  docker_swarm:
+    state: present
+    advertise_addr: "{{ ansible_default_ipv4.address }}"
+  register: swarm_output
+  when: inventory_hostname == groups['docker_swarm_managers'][0]
+
+- name: install docker swarm manager
+  docker_swarm:
+    state: join
+    timeout: 60
+    advertise_addr: "{{ ansible_default_ipv4.address }}"
+    join_token: "{{ hostvars[groups['docker_swarm_managers'][0]]['swarm_output']['swarm_facts']['JoinTokens']['Manager']}}"
+    remote_addrs: ["{{ hostvars[groups['docker_swarm_managers'][0]].ansible_default_ipv4.address }}"]
+  when: inventory_hostname in groups['docker_swarm_managers'] and
+    inventory_hostname != groups['docker_swarm_managers'][0]
+  tags:
+    - docker-swarm
+
+- name: install docker swarm worker
+  docker_swarm:
+    state: join
+    timeout: 60
+    advertise_addr: "{{ ansible_default_ipv4.address }}"
+    join_token: "{{ hostvars[groups['docker_swarm_managers'][0]]['swarm_output']['swarm_facts']['JoinTokens']['Worker'] }}"
+    remote_addrs: ["{{ hostvars[groups['docker_swarm_managers'][0]].ansible_default_ipv4.address }}"]
+  when: inventory_hostname in groups['docker_swarm_workers']
+  tags:
+    - docker-swarm

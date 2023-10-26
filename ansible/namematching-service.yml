@@ -1,4 +1,4 @@
-# Installs bie-index
+# Installs namematching-service
 - hosts: namematching-service
   roles:
     - common

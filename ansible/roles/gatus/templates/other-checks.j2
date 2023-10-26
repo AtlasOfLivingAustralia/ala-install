@@ -1,0 +1,11 @@
+endpoints:
+{% for check in (gatus_default_checks | default([])) + (gatus_extra_checks | default([])) %}
+  - name: {{ check.name }}
+    group: {{ check.group }}
+    url: "{{ check.url }}"
+    interval: {{ check.interval }}
+    conditions:
+{% for condition in check.conditions %}
+      - "{{ condition }}"
+{% endfor %}
+{% endfor %}

@@ -3,6 +3,9 @@
 # ansible-playbook -i path/to/inventory volunteer-portal.yml --private-key ~/.ssh/id_rsa --user youruser --become --ask-become-pass --tags "deploy"
 
 - hosts: volunteer-portal
+  vars:
+    use_openjdk11: True
+    use_openjdk8: False
   roles:
     - common
     #- {role: db-backup, db: postgres}

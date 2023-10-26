@@ -1,9 +1,25 @@
+---
 - include: ../../common/tasks/setfacts.yml
   tags:
     - webapps
     - config
     - properties
     - bie-index
+    - nginx_vhost
+
+- name: set nginx upstream server for nginx
+  set_fact:
+    upstream_host: "{{ bie_index_upstream_host | default('127.0.0.1') }}"
+  tags:
+    - deploy
+    - nginx_vhost
+
+- name: set nginx upstream server for nginx
+  set_fact:
+    upstream_host: "{{ bie_index_upstream_host | default('127.0.0.1') }}"
+  tags:
+    - deploy
+    - nginx_vhost
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
@@ -37,7 +53,7 @@
   copy: src={{ item }} dest={{data_dir}}/bie-index/config
   with_items:
     - conservation-lists.json
-    - hidden-image-lists.json
+    - hidden-images-lists.json
     - image-lists.json
     - vernacular-lists.json
     - favourites.json
@@ -47,11 +63,11 @@
     - properties
     - bie-index
 
-- name: copy hidden-image-lists from inventory
+- name: copy hidden-images-lists from inventory
   copy:
     src: "{{ inventory_dir }}/{{ hidden_images_file }}"
-    dest: "{{ data_dir }}/bie-index/config/hidden-image-lists.json"
-    force: yes
+    dest: "{{ data_dir }}/bie-index/config/hidden-images-lists.json"
+    force: true
   when: hidden_images_file is defined
   tags:
     - config
@@ -62,7 +78,7 @@
   copy:
     src: "{{ inventory_dir }}/{{ wiki_file }}"
     dest: "{{ data_dir }}/bie-index/config/wiki-lists.json"
-    force: yes
+    force: true
   when: wiki_file is defined
   tags:
     - config
@@ -98,76 +114,68 @@
         sort_label: "1_admin"
         is_proxy: true
         is_websocket: true
-        proxy_pass: "http://127.0.0.1:8080{{bie_index_proxy_target}}/admin"
+        proxy_pass: "http://{{ upstream_host }}:8080{{bie_index_proxy_target}}/admin"
       - path: "{{bie_index_context_path}}/stomp"
         sort_label: "1_stomp"
         is_proxy: true
         is_websocket: true
-        proxy_pass: "http://127.0.0.1:8080{{bie_index_proxy_target}}/stomp"
+        proxy_pass: "http://{{ upstream_host }}:8080{{bie_index_proxy_target}}/stomp"
       - path: "{{bie_index_context_path}}/search"
         sort_label: "1_search"
         is_proxy: true
         use_cache: true
         force_cache: true
-        proxy_pass: "http://127.0.0.1:8080{{bie_index_proxy_target}}/search"
+        proxy_pass: "http://{{ upstream_host }}:8080{{bie_index_proxy_target}}/search"
       - path: "{{bie_index_context_path}}/taxon"
         sort_label: "2_taxon"
         is_proxy: true
         use_cache: true
         force_cache: true
-        proxy_pass: "http://127.0.0.1:8080{{bie_index_proxy_target}}/taxon"
+        proxy_pass: "http://{{ upstream_host }}:8080{{bie_index_proxy_target}}/taxon"
       - path: "{{bie_index_context_path}}/species"
         sort_label: "2_species"
         is_proxy: true
         use_cache: true
         force_cache: true
-        proxy_pass: "http://127.0.0.1:8080{{bie_index_proxy_target}}/species"
+        proxy_pass: "http://{{ upstream_host }}:8080{{bie_index_proxy_target}}/species"
       - path: "{{bie_index_context_path}}/guid"
         sort_label: "6_guid"
         is_proxy: true
         use_cache: true
         force_cache: true
-        proxy_pass: "http://127.0.0.1:8080{{bie_index_proxy_target}}/guid"
+        proxy_pass: "http://{{ upstream_host }}:8080{{bie_index_proxy_target}}/guid"
       - path: "{{bie_index_context_path}}/childConcepts"
         sort_label: "6_childconcepts"
         is_proxy: true
         use_cache: true
         force_cache: true
-        proxy_pass: "http://127.0.0.1:8080{{bie_index_proxy_target}}/childConcepts"
+        proxy_pass: "http://{{ upstream_host }}:8080{{bie_index_proxy_target}}/childConcepts"
       - path: "{{bie_index_context_path}}/classification"
         sort_label: "6_classification"
         is_proxy: true
         use_cache: true
         force_cache: true
-        proxy_pass: "http://127.0.0.1:8080{{bie_index_proxy_target}}/classification"
+        proxy_pass: "http://{{ upstream_host }}:8080{{bie_index_proxy_target}}/classification"
       - path: "{{bie_index_context_path}}"
         sort_label: "8_ws"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:8080{{bie_index_proxy_target}}"
+        proxy_pass: "http://{{ upstream_host }}:8080{{bie_index_proxy_target}}"
   tags:
     - bie-index
     - nginx_vhost
     - deploy
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ bie_index_war_url }}' context_path='{{ bie_index_context_path }}' hostname='{{ bie_index_hostname }}'
-  when: bie_index_local_build is not defined
-  tags:
-    - webapps
-    - tomcat_vhost
-    - deploy
-    - bie-index
-
-- include: ../../tomcat_deploy/tasks/main.yml war_local_build='{{ bie_index_local_build }}' context_path='{{ bie_index_context_path }}' hostname='{{ bie_index_hostname }}'
-  when: bie_index_local_build is defined
-  tags:
-    - webapps
-    - tomcat_vhost
-    - deploy
-    - bie-index
-
 - name: copy all data assets
   copy: src=subgroups.json dest=/srv/{{bie_index_hostname}}/www/
   tags:
     - bie-index
     - properties
+
+- name: Include docker tasks
+  include_tasks: docker-tasks.yml
+  when: deployment_type == 'swarm'
+
+- name: Include VM tasks
+  import_tasks: vm-tasks.yml
+  when: deployment_type == 'vm'

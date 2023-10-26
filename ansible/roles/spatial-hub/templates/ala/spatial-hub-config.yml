@@ -5,6 +5,8 @@ googleAnalyticsId: "{{google_analytics_id | default('')}}"
 google:
   apikey: "{{ (google_apikey | default(google_api_key)) | default('get-a-google-api-key') }}"
 
+fathomId: "{{fathom_id | default('') }}"
+
 api_key: {{ spatial_service_api_key  | default('') }}
 
 i18n:
