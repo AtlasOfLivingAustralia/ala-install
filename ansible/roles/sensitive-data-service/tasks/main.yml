@@ -35,7 +35,7 @@
     - apt
 
 - name: Include VM tasks
-  include: vm-tasks.yml
+  import_tasks: vm-tasks.yml
   when: deployment_type == 'vm'
 
 - name: Customize the configuration

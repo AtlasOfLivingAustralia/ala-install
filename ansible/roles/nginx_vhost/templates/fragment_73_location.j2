@@ -76,7 +76,11 @@
 {% endif %}
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Port $server_port;
+    {% if item.proxy_read_timeout is defined %}
+        proxy_read_timeout {{ item.proxy_read_timeout }};
+    {% else %}
         proxy_read_timeout 10m;
+    {% endif %}
     {% if nginx_disable_download_disk_buffering | bool == True %}
         proxy_max_temp_file_size 0;
     {% endif %}

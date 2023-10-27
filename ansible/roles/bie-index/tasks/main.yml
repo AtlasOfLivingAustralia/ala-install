@@ -177,5 +177,5 @@
   when: deployment_type == 'swarm'
 
 - name: Include VM tasks
-  include_tasks: vm-tasks.yml
+  import_tasks: vm-tasks.yml
   when: deployment_type == 'vm'

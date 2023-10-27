@@ -1,6 +1,0 @@
-version: "1.0"
-artifactId: "volunteer-portal"
-classifier: ''
-packaging: "war"
-groupId: "au.org.ala"
-volunteer_portal_war_url: "{{maven_repo_ws_url}}"

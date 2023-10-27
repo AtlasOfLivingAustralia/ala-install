@@ -11,7 +11,7 @@
       lineinfile:
         path: "{{ datadog_apm_service_conf}}"
         regexp: '^JAVA_OPTS=".*/dd-java-agent.jar.*'
-        line: 'JAVA_OPTS="${JAVA_OPTS} -javaagent:{{ datadog_apm_service_jar_dir }}dd-java-agent.jar -Ddd.version={{ datadog_apm_service_version }} -Ddd.service={{ datadog_apm_service_name }} -Ddd.env={{ datadog_apm_environment }} -Ddd.logs.injection=true -Ddd.profiling.enabled=true"'
+        line: 'JAVA_OPTS="${JAVA_OPTS} -javaagent:{{ datadog_apm_service_jar_dir }}dd-java-agent.jar -Ddd.version={{ datadog_apm_service_version }} -Ddd.service={{ datadog_apm_service_tag }} -Ddd.env={{ datadog_apm_environment }} -Ddd.logs.injection=true -Ddd.profiling.enabled=true"'
 
     - name: Restart the service
       systemd:

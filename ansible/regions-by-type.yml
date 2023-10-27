@@ -6,6 +6,6 @@
   import_playbook: regions-standalone.yml
   when: (deployment_type | default('vm')) == 'vm'
 
-- name: Deploy regions in Docker Swarm
-  import_playbook: regions-docker.yml
-  when: (deployment_type | default('vm')) == 'swarm'
+#- name: Deploy regions in Docker Swarm
+#  import_playbook: regions-docker.yml
+#  when: (deployment_type | default('vm')) == 'swarm'
