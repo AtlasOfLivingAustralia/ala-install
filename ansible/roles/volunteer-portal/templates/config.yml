@@ -1,0 +1,54 @@
+server.url: {{ digivol_base_url }}
+serverUrl: {{ digivol_base_url }}
+grails:
+  contact.emailAddress: {{ digest_address }}
+  mail:
+    host: localhost
+    port: 25
+    # Do NOT use in prod (i.e. leave property blank)
+    # Environment prefix for emails. Puts '[<prefix>]' at the start of the email subject.
+    subjectPrefix: {{ digivol_mail_subject_prefix }}
+  serverURL: {{ digivol_base_url }}
+security:
+  cas.enabled: false
+  jwt.enabled: true
+  oidc:
+    enabled: true
+    discoveryUri: {{ auth_base_url }}/cas/oidc/.well-known
+    scope: openid,profile,email,ala,roles
+    clientId: {{ digivol_oidc_client_id }}
+    secret: {{ digivol_oidc_secret }}
+userdetails.url: {{ auth_base_url }}/userdetails/
+webservice:
+  client-id: {{ digivol_oidc_client_id }}
+  client-secret: {{ digivol_oidc_secret }}
+  jwt-scopes: users/read
+  jwt: true
+dataSource:
+  driverClassName: org.postgresql.Driver
+  url: jdbc:postgresql://{{ db_hostname }}/{{ db_name }}
+  username: {{ db_user }}
+  password: {{ db_password }}
+  properties:
+    initialSize: 10
+    maxActive: 10
+    maxIdle: 10
+    minIdle: 10
+digest:
+  enabled: true
+  address: {{ digest_address }}
+digivol.trackJsErrors: true
+google.maps.key: {{ google_map_key }}
+images:
+  home: {{ digivol_webserver_document_root }}
+  urlPrefix: {{ digivol_image_urlPrefix }}
+notifications:
+  default.address: {{ digest_address }}
+  project.address: {{ digest_address }}
+ala.image.service.url: {{ image_server_url }}
+bvp.users.migrateIds: false
+elasticsearch:
+  cluster.routing.allocation.disk.watermark:
+    high: 5gb
+    low: 10gb
+
