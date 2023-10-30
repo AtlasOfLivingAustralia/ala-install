@@ -59,6 +59,12 @@
     - properties
     - regions
 
+- name: copy logback config
+  template: src=logback.xml dest={{data_dir}}/{{regions}}/config/logback.xml
+  tags:
+    - properties
+    - regions
+
 - name: copy menu-config.json
   template: src={{menu_config_json}} dest={{data_dir}}/{{regions}}/config/menu-config.json force=yes
   when: menu_config_json is defined

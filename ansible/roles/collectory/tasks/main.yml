@@ -35,6 +35,22 @@
     - properties
     - collectory
 
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{collectory_data_dir}}/config/logback.xml"
+  tags:
+    - properties
+    - collectory
+
+- name: set data ownership [all data is owned by tomcat]
+  file: path={{ collectory_data_dir }} owner={{ tomcat_user }}  group={{ tomcat_user }}  recurse=true
+  notify: 
+    - restart tomcat  
+  tags:
+    - properties
+    - collectory
+
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ collectory_context_path }}' hostname='{{ collectory_hostname }}'
   tags:
     - deploy
