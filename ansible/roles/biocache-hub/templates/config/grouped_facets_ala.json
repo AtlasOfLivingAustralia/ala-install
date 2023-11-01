@@ -235,7 +235,7 @@
             },
             {
                 "sort": "count",
-                "field": "geospatial_kosher"
+                "field": "spatiallyValid"
             },
             {
                 "sort": "index",
