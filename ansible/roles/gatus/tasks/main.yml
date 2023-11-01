@@ -1,0 +1,58 @@
+---
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - properties
+    - gatus
+
+- name: Ensure data directory exists
+  file:
+    path: /srv/{{ gatus_url }}/www/{{ item }}
+    state: directory
+  with_items:
+    - "{{ gatus_path }}"
+  tags:
+    - gatus
+
+- name: ensure config directories exist
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+  with_items:
+    - {path: "{{ gatus_config_dir }}"}
+    - {path: "{{ gatus_docker_dir }}"}
+    - {path: "{{ gatus_data_dir }}"}
+  run_once: true
+  tags:
+    - gatus
+
+- name: create the sample config from template
+  template:
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+    force: true
+  with_items:
+    - {src: config.yaml,
+       dest: "{{ gatus_config_dir }}/sample.yaml"}
+  tags:
+    - gatus
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "gatus"
+    hostname: "{{ gatus_url }}"
+    context_path: "/"
+    nginx_upstream_host: "la_gatus_service"
+  tags:
+    - nginx_vhost
+    - gatus
+  when: webserver_nginx
+
+- name: Deploy gatus stack
+  import_tasks: ../../docker-common/tasks/stack-create.yml
+  vars:
+    stack: la_gatus
+    docker_compose_data_dir: "{{ gatus_docker_dir }}"

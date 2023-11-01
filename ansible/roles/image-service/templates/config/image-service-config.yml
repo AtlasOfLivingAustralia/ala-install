@@ -6,8 +6,13 @@ server:
   contextPath: {{ image_service_context_path }}
 
 security:
+  core:
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+    roleAttribute: {{ security_core_roleAttribute | default('role') }}
+    affiliation-survey:
+      enabled: {{affiliation_survey_enabled | default ('false')}}
   cas:
-    enabled: {{ cas_enabled | default(true) }}
+    enabled: {{ security_cas_enabled | default(true) }}
     appServerName: "{{image_service_base_url}}"
     bypass: {{ bypass_cas | default(false) }}
     disableCAS: {{ bypass_cas | default(false) }}
@@ -22,8 +27,22 @@ security:
     clientId: {{ (images_client_id | default(clientId)) | default('') }}
     secret: {{ (images_client_secret | default(secret)) | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
+    scope: {{ oidc_scopes | default('openid profile email ala roles') }}
+    alaUseridClaim: {{ security_jwt_userIdClaim | default('userid') }}
+{% if logout_action == 'cognito' %}
+    logoutUrl: {{ cognito_logout_url | default('') }}
+    logoutAction: cognito
+{% endif %}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
+{% if jwt_client_id is defined %}
+    client-id: {{ jwt_client_id }}
+    secret: {{ jwt_secret }}
+{% endif %}
+    allowed-scopes: {{ jwt_scopes | default('users/read') }}
+    role-claims: {{ security_jwt_roleClaims | default('role') }}
+    roles-from-access-token: {{ security_jwt_rolesFromAccessToken | default('false')}}
+    user-id-claim: {{ security_jwt_userIdClaim | default('userid') }}
   apikey:
     ip:
       whitelist: {{ image_service_whitelist | default('') }}
@@ -31,13 +50,13 @@ security:
       serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
 
 userDetails:
-  url: {{ auth_base_url }}/userdetails/
+  url: {{ userdetails_base_url | default(auth_base_url + "/userdetails/") }}
 
 info:
   app:
     name: 'image-service'
     version: '{{ image_service_version }}'
-    grailsVersion: '4.1.1'
+    # grailsVersion: '4.1.1'
 
 flyway:
   baselineOnMigrate: {{ image_service_baseline_on_migrate | default('true') }}
@@ -77,7 +96,7 @@ biocache:
 # header block
 headerAndFooter:
   version: "{{ header_and_footer_version | default('1')}}"
-  baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3')}}"
+  baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3-2019')}}"
 ala:
   baseURL: "{{ ala_base_url | default('https://www.ala.org.au')}}"
 bie:
@@ -102,3 +121,5 @@ swagger:
     - "{{ swagger_schemes | default('HTTPS') }}"
   consumes:
     - "application/json"
+userdetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}

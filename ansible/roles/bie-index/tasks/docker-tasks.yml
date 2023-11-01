@@ -1,0 +1,15 @@
+---
+- name: ensure target db directories exist
+  file: path={{item}} state=directory
+  with_items:
+    - "{{ bie_index_docker_dir }}"
+  run_once: true
+  tags:
+    - docker
+    - docker-service
+
+- name: Deploy bie_index stack
+  import_tasks: ../../docker-common/tasks/stack-create.yml
+  vars:
+    stack: la_bie_index
+    docker_compose_data_dir: "{{ bie_index_docker_dir }}"

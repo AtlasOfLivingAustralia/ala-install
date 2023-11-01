@@ -1,0 +1,6 @@
+maven_repo_url: "https://repo.osgeo.org/repository/release/"
+groupId: "org.geoserver.web"
+version: "{{ geoserver_version | default('2.19.2') }}"
+artifactId: "gs-web-app"
+packaging: "war"
+classifier: ""

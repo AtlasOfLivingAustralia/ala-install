@@ -26,6 +26,12 @@
     - properties
     - specimenbrowser
 
+- name: copy logback config
+  template: src=logback.xml dest={{data_dir}}/specimenbrowser/config/logback.xml force=yes
+  tags:
+    - properties
+    - specimenbrowser
+
 - name: set data ownership
   file: path={{data_dir}}/specimenbrowser owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify:

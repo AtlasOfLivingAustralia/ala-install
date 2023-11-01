@@ -14,9 +14,9 @@
     - webserver
     - i18n
     - image-service
-    - { role: datadog_sql_user, become: yes, become_user: postgres }
+    - { role: datadog_sql_user, when: datadog_api_key is defined, become: yes, become_user: postgres }
     - { role: datadog.datadog, when: datadog_api_key is defined }
-    - { role: datadog_apm, become: yes }
+    - { role: datadog_apm, when: datadog_api_key is defined, become: yes }
 
   become: yes
   become_user: root

@@ -1,0 +1,10 @@
+---
+
+- name: ensure nginx directories exist for docker vhost generation
+  file: path={{item}} state=directory owner={{nginx_user}} group={{nginx_user}}
+  with_items:
+    - "{{ nginx_conf_dir }}/conf.d"
+    - "{{ nginx_conf_dir }}/sites-enabled"
+    - "{{ nginx_conf_dir }}/sites-available"
+  tags:
+    - docker-common

@@ -3,6 +3,18 @@
     - "data_archives"  
     - "nameindexer"
 
+- name: Install lxml for ansible python 2
+  apt:
+    name: python-lxml
+    state: present
+  when: ansible_python.version.major==2
+
+- name: Install lxml for ansible python 3
+  apt:
+    name: python3-lxml
+    state: present
+  when: ansible_python.version.major==3
+
 - name: ensure lucene sources directory exists
   file: path={{data_dir}}/lucene/sources state=directory
   tags:  
@@ -73,7 +85,19 @@
 #     - "nameindexer"  
 
 - name: Download name matching distribution zip
-  get_url: url="{{ ala_names_distribution_url }}" dest="/usr/lib/nameindexer/nameindexer.zip" force=yes
+  maven_artifact:
+    group_id: "{{groupId}}"
+    artifact_id: "{{artifactId}}"
+    version: "{{version}}"
+    extension: "{{packaging}}"
+    classifier: "{{classifier}}"
+    repository_url: "{{maven_repo_url}}"
+    timeout: 30
+    dest: "/usr/lib/nameindexer/nameindexer.zip"
+    mode: u=rwx,g=rx,o=rx
+    owner: "{{ service_owner | default('root') }}"
+    group: "{{ service_group | default('root') }}"
+    verify_checksum: always
   tags:  
     - "nameindexer"
 

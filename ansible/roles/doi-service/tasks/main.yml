@@ -15,6 +15,7 @@
   vars:
     service_name: "doi-service"
     jar_url: '{{ doi_service_jar_url }}'
+    log_config_filename: logback.xml
   tags:
     - deploy
     - service
@@ -52,6 +53,18 @@
   template:
     src: doi-service-config.yml
     dest: "{{data_dir}}/doi-service/config/doi-service-config.yml"
+    owner: "{{ doi_user | default('doi-service') }}"
+    group: "{{ doi_user | default('doi-service') }}"
+  notify:
+    - restart doi-service
+  tags:
+    - properties
+    - doi-service
+
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{data_dir}}/doi-service/config/logback.xml"
     owner: "{{ doi_user | default('doi-service') }}"
     group: "{{ doi_user | default('doi-service') }}"
   notify:

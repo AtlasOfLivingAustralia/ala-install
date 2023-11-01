@@ -1,8 +1,24 @@
+---
 - include: ../../common/tasks/setfacts.yml
   tags:
     - webapps
     - properties
     - bie
+    - nginx_vhost
+
+- name: set nginx upstream server for nginx
+  set_fact:
+    upstream_host: "{{ bie_hub_upstream_host | default('127.0.0.1') }}"
+  tags:
+    - deploy
+    - nginx_vhost
+
+- name: set nginx upstream server for nginx
+  set_fact:
+    upstream_host: "{{ bie_hub_upstream_host | default('127.0.0.1') }}"
+  tags:
+    - deploy
+    - nginx_vhost
 
 - name: ensure target directories exist
   file: path={{item}} state=directory mode=0775
@@ -10,13 +26,22 @@
     - "{{ data_dir }}/{{ bie_hub | default('generic-bie') }}/config"
   tags:
     - properties
-    - bie    
+    - bie
 
 - name: copy config.yml
   template:
     src: bie-hub-config.yml.j2
     dest: "{{ data_dir }}/{{ bie_hub }}/config/{{ bie_hub | default('generic-bie') }}-config.yml"
     force: yes
+  tags:
+    - webapps
+    - properties
+    - bie
+
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{ data_dir }}/{{ bie_hub }}/config/logback.xml"
   tags:
     - webapps
     - properties
@@ -67,7 +92,7 @@
     - webapps
     - apache_vhost
     - deploy
-    - bie    
+    - bie
   when: not webserver_nginx
 
 - name: set nginx proxy target if configured
@@ -87,25 +112,25 @@
         is_proxy: true
         use_cache: true
         force_cache: true
-        proxy_pass: "http://127.0.0.1:8080{{bie_hub_proxy_target}}/species"
+        proxy_pass: "http://{{ upstream_host }}:8080{{bie_hub_proxy_target}}/species"
       - path: "{{bie_hub_context_path}}/search"
         sort_label: "3_search"
         is_proxy: true
         use_cache: true
         force_cache: true
-        proxy_pass: "http://127.0.0.1:8080{{bie_hub_proxy_target}}/search"
+        proxy_pass: "http://{{ upstream_host }}:8080{{bie_hub_proxy_target}}/search"
       - path: "{{bie_hub_context_path}}/sound-search"
         sort_label: "4_soundsearch"
         is_proxy: true
         use_cache: true
         force_cache: true
-        proxy_pass: "http://127.0.0.1:8080{{bie_hub_proxy_target}}/sound-search"
+        proxy_pass: "http://{{ upstream_host }}:8080{{bie_hub_proxy_target}}/sound-search"
       - path: "{{bie_hub_context_path}}/image-search"
         sort_label: "4_imagesearch"
         is_proxy: true
         use_cache: true
         force_cache: true
-        proxy_pass: "http://127.0.0.1:8080{{bie_hub_proxy_target}}/image-search"
+        proxy_pass: "http://{{ upstream_host }}:8080{{bie_hub_proxy_target}}/image-search"
       - path: "{{bie_hub_context_path}}/trove"
         sort_label: "6_trove"
         is_proxy: false
@@ -116,17 +141,17 @@
         is_proxy: true
         use_cache: true
         force_cache: true
-        proxy_pass: "http://127.0.0.1:8080{{bie_hub_proxy_target}}/externalSite"
+        proxy_pass: "http://{{ upstream_host }}:8080{{bie_hub_proxy_target}}/externalSite"
       - path: "{{bie_hub_context_path}}/geo"
         sort_label: "8_geo"
         is_proxy: true
         use_cache: true
         force_cache: true
-        proxy_pass: "http://127.0.0.1:8080{{bie_hub_proxy_target}}/geo"
+        proxy_pass: "http://{{ upstream_host }}:8080{{bie_hub_proxy_target}}/geo"
       - path: "{{ bie_hub_context_path }}"
         sort_label: "9_default"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:8080{{bie_hub_proxy_target}}"
+        proxy_pass: "http://{{ upstream_host }}:8080{{bie_hub_proxy_target}}"
   when: webserver_nginx
   tags:
     - nginx_vhost
@@ -170,23 +195,6 @@
     - bie
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ bie_hub_war_url }}' context_path='{{ bie_hub_context_path }}' hostname='{{ bie_hub_hostname }}'
-  when: bie_hub_local_build is not defined
-  tags:
-    - webapps
-    - tomcat_vhost
-    - deploy
-    - bie
-
-- include: ../../tomcat_deploy/tasks/main.yml war_local_build='{{ bie_hub_local_build }}' context_path='{{ bie_hub_context_path }}' hostname='{{ bie_hub_hostname }}'
-  when: bie_hub_local_build is defined
-  tags:
-    - webapps
-    - tomcat_vhost
-    - deploy
-    - bie
-
-
 - name: copy all data assets
   copy: src={{item}} dest={{ data_dir }}/{{ bie_hub | default('generic-bie') }}/config
   with_items:
@@ -197,3 +205,11 @@
     - properties
     - config
     - bie
+
+- name: Include docker tasks
+  include_tasks: docker-tasks.yml
+  when: deployment_type == 'swarm'
+
+- name: Include VM tasks
+  import_tasks: vm-tasks.yml
+  when: deployment_type == 'vm'

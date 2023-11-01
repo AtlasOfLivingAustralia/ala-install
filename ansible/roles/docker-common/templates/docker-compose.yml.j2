@@ -1,0 +1,80 @@
+---
+version: '3.8'
+
+services:
+
+  nginx:
+    image: {{ docker_web_image }}
+    # Run in all the hosts
+    deploy:
+      mode: global
+    ports:
+      - "{{ docker_http_port }}:80"
+      - "{{ docker_https_port }}:443"
+    volumes:
+      - nginx-config:/etc/nginx/conf.d
+      - nginx-available:/etc/nginx/sites-available
+      - nginx-enabled:/etc/nginx/sites-enabled
+{% if use_letsencrypt is defined and use_letsencrypt | bool %}
+      - certs:/etc/letsencrypt
+{% endif %}
+    environment:
+      TZ: {{ server_tz }}
+    networks:
+      la_internal:
+        aliases:
+          - {{ nginx_docker_internal_aliases | join('\n          - ') }}
+          # This should generate something like this:
+          # - collectory.l-a.site
+          # - biocache.l-a.site
+          # so other images will reach these hosts internally
+
+  postfix:
+    image: boky/postfix
+    ports:
+      - 25
+    environment:
+      TZ: {{ server_tz }}
+      HOSTNAME: {{ email_hostname | default('') }}
+      RELAYHOST: {{ email_sender_server | default('') }}
+      RELAYHOST_USERNAME: {{ email_sender | default('') }}
+      RELAYHOST_PASSWORD: {{ email_sender_password | default('') }}
+      ALLOWED_SENDER_DOMAINS: {{ email_allowed_domains | default('l-a.site') }}
+    networks:
+      la_internal:
+
+networks:
+  la_internal:
+    external: true
+
+volumes:
+
+  nginx-config:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/nginx/conf.d
+
+  nginx-available:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/nginx/sites-available
+
+  nginx-enabled:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/nginx/sites-enabled
+
+{% if use_letsencrypt is defined and use_letsencrypt | bool %}
+  certs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /data/letsencrypt
+{% endif %}

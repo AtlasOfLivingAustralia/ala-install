@@ -1,0 +1,11 @@
+---
+- hosts: cas-servers
+  gather_facts: false
+
+- name: Deploy cas-servers in VM
+  import_playbook: cas5-standalone.yml
+  when: (deployment_type | default('vm')) == 'vm'
+
+- name: Deploy cas-servers in Docker Swarm
+  import_playbook: auth-docker.yml
+  when: (deployment_type | default('vm')) == 'swarm'

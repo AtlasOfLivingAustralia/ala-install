@@ -3,4 +3,11 @@
 groupIdPath: "{{groupId | default('au/org/ala')}}"
 
 ansible_python_interpreter: "auto"
+
+docker_db_data_dir: "/data/dbs"
+
+docker_web_image: "{{ docker_nginx_image | default('livingatlases/nginx-sites-enabled:latest') }}"
+
+gatus_config_dir: "{{ data_dir }}/gatus/config"
+
 # change auto to python for zoatrack

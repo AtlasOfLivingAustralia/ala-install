@@ -1,0 +1,11 @@
+---
+- hosts: bie-hub
+  gather_facts: false
+
+- name: Deploy bie-hub in VM
+  import_playbook: bie-hub.yml
+  when: (deployment_type | default('vm')) == 'vm'
+
+- name: Deploy bie-hub in Docker Swarm
+  import_playbook: bie-hub-docker.yml
+  when: (deployment_type | default('vm')) == 'swarm'

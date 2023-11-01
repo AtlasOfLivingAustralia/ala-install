@@ -1,0 +1,49 @@
+---
+- name: ensure target db directories exist
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+  with_items:
+    - {path: "{{ cassandra_docker_dir }}"}
+    - {path: "{{ cassandra_docker_data_dir }}/cassandra/conf"}
+    - {path: "{{ cassandra_docker_data_dir }}/cassandra/data", owner: "1001"}
+  run_once: true
+  tags:
+    - docker
+    - docker-service
+
+- name: create the cassandra yaml from template
+  template:
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+    force: true
+  with_items:
+    - {src: cassandra-bitnami-env.sh,
+       dest: "{{ cassandra_docker_data_dir }}/cassandra/conf/cassandra-env.sh"}
+    - {src: cassandra-bitnami.yaml,
+       dest: "{{ cassandra_docker_data_dir }}/cassandra/conf/cassandra.yaml"}
+  tags:
+    - cassandra
+    - cassandra_yaml
+
+- name: Deploy solrcloud stack
+  import_tasks: ../../docker-common/tasks/stack-create.yml
+  vars:
+    stack: la_cassandra
+    docker_compose_data_dir: "{{ cassandra_docker_dir }}"
+
+- import_tasks: ../../gatus/tasks/other-checks.yml
+  vars:
+    name: cassandra
+    gatus_default_checks:
+      - name: "cassandra 9042 port"
+        group: "cassandra"
+        url: "tcp://la_cassandra_db:9042"
+        interval: "3m"
+        conditions:
+          - "[CONNECTED] == true"
+  when: use_gatus is defined and use_gatus
+  tags:
+    - gatus

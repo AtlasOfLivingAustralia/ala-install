@@ -1,2 +1,5 @@
 ---
 postgres_service: 'postgresql'
+db_remote: false
+db_login_user: 'REMOTE-USER-DEFAULT-PLEASE-SET-IN-INVENTORY'
+db_login_password: 'REMOTE-PASSWORD-DEFAULT-PLEASE-SET-IN-INVENTORY'

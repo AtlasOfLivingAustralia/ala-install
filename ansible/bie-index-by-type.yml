@@ -1,0 +1,11 @@
+---
+- hosts: bie-index
+  gather_facts: false
+
+- name: Deploy bie-index in VM
+  import_playbook: bie-index.yml
+  when: (deployment_type | default('vm')) == 'vm'
+
+- name: Deploy bie-index in Docker Swarm
+  import_playbook: bie-index-docker.yml
+  when: (deployment_type | default('vm')) == 'swarm'

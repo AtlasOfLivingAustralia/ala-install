@@ -1,0 +1,7 @@
+---
+- name: Generate Gatus extra checks for {{ name }}
+  template:
+    src: "../templates/other-checks.j2"
+    dest: "{{data_dir}}/gatus/config/{{name}}-extra-checks.yaml"
+  tags:
+    - gatus
