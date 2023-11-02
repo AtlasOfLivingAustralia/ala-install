@@ -45,3 +45,5 @@
     state: started
   tags:
     - apt
+  when:
+  - skip_handlers | default("false") | bool == false

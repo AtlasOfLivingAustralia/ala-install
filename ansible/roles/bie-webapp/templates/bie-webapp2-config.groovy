@@ -6,16 +6,16 @@ casProperties="casServerLoginUrl,serverName,centralServer,casServerName,uriFilte
 serverName="http://{{ bie_webapp_hostname }}"
 contextPath="{{ bie_webapp_context_path }}"
 grails.serverURL="http://{{ bie_webapp_hostname }}{{ bie_webapp_context_path }}"
-uriFilterPattern="/admin/.*"
+uriFilterPattern="/admin/*"
 casServerName="{{ auth_base_url }}"
 uriExclusionFilterPattern="/images.*,/css.*,/js.*,/less.*"
 casServerLoginUrl="{{ auth_cas_url }}/login"
 gateway=false
 casServerUrlPrefix="{{ auth_cas_url }}"
 security.cas.logoutUrl="{{ auth_cas_url }}/logout"
-authenticateOnlyIfLoggedInFilterPattern="/species/.*"
+authenticateOnlyIfLoggedInFilterPattern="/species/*"
 auth.admin_role="ROLE_ADMIN"
-uriFilterPattern="/admin, /admin/.*"
+uriFilterPattern="/admin, /admin/*"
 
 //
 // Application dependencies

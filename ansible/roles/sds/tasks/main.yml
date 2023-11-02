@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - sds
+    - properties
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ sds_context_path }}' hostname='{{ sds_hostname }}'
   tags:

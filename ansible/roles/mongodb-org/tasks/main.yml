@@ -1,10 +1,22 @@
+- name: Add mongodb.org apt key for version 6.0
+  get_url:
+    url: 'https://pgp.mongodb.com/server-6.0.asc'
+    dest: /etc/apt/trusted.gpg.d/mongodb60.asc
+    mode: 0644
+  when: mongodb_version == 6.0
+  tags: 
+    - mongodb-org
+    - apt
+
 - name: Add mongodb.org apt key for version 5.0
   get_url:
     url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xf5679a222c647c87527c2f8cb00a0bd1e2c63c11'
     dest: /etc/apt/trusted.gpg.d/mongodb50.asc
     mode: 0644
   when: mongodb_version == 5.0
-  tags: mongodb-org
+  tags: 
+    - mongodb-org
+    - apt
 
 - name: Add mongodb.org apt key for version 4.4
   get_url:
@@ -13,7 +25,9 @@
     dest: /etc/apt/trusted.gpg.d/mongodb.asc
     mode: 0644
   when: mongodb_version == 4.4
-  tags: mongodb-org
+  tags: 
+    - mongodb-org
+    - apt
 
 - name: Add mongodb.org apt key for version 4.0
   get_url:
@@ -21,7 +35,9 @@
     dest: /etc/apt/trusted.gpg.d/mongodb.asc
     mode: 0644
   when: mongodb_version == 4.0
-  tags: mongodb-org
+  tags: 
+    - mongodb-org
+    - apt
 
 - name: Add mongodb.org apt key for version 3.6
   get_url:
@@ -29,7 +45,9 @@
     dest: /etc/apt/trusted.gpg.d/mongodb.asc
     mode: 0644
   when: mongodb_version == 3.6
-  tags: mongodb-org
+  tags: 
+    - mongodb-org
+    - apt
 
 - name: Add mongodb.org apt key for version 3.4
   get_url:
@@ -37,22 +55,32 @@
     dest: /etc/apt/trusted.gpg.d/mongodb.asc
     mode: 0644
   when: mongodb_version == 3.4
-  tags: mongodb-org
+  tags: 
+    - mongodb-org
+    - apt
 
 - name: Add mongodb.org repo
   apt_repository:
     repo: deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/{{ mongodb_version }} multiverse
     state: present
-  tags: mongodb-org
   when: mongodb_version != 3.4 or ansible_distribution_release != 'bionic'
+  tags: 
+    - mongodb-org
+    - apt
 
 - name: Use xenial repo for installing mongo 3.4 or 3.6 on bionic
   apt_repository:
     repo: deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/{{ mongodb_version }} multiverse
     state: present
-  tags: mongodb-org
   when: mongodb_version == 3.4 and ansible_distribution_release == 'bionic' or mongodb_version == 3.6 and ansible_distribution_release == 'bionic'
+  tags: 
+    - mongodb-org
+    - apt
 
+- name: Install mongodb.org client package
+  apt:
+    name: ['mongodb-org-shell', 'mongodb-org-tools' ]
+  tags: mongodb-org-client
 
 - name: Install mongodb.org packages and related
   apt:
@@ -90,7 +118,9 @@
 - name: Restart mongod
   service: name=mongod state=restarted daemon-reload=true enabled="yes"
   when: ansible_os_family == "Debian"
-  tags: mongodb-org
+  tags: 
+    mongodb-org
+    mongodb-org-restart
 
 - name: Uninstall official python-pymongo package
   apt:
@@ -101,13 +131,17 @@
 - name: Install pip python-pymongo package
   pip:
     name: pymongo==3.12.2
+#    name: pymongo==4.3.3
   tags: mongodb-org
 
 - name: Enable service mongod
   service:
     name: mongod
     enabled: yes
-  tags: mongodb-org
+  tags: 
+    mongodb-org
+    mongodb-org-restart
+
 
 
 # https://github.com/ansible/ansible/issues/33832
@@ -151,5 +185,7 @@
         authorization: enabled
   notify:
     - restart mongod
-  tags: mongodb-org
+  tags: 
+    mongodb-org
+    mongodb-org-restart
   when: "{{ ecodata_replica_set_disable_mongo_security | default(true) }}"

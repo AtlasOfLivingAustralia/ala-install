@@ -2,15 +2,15 @@
   roles:
     - common
     - java
-    - tomcat
+#    - tomcat
 #    - {role: db-backup, db: mongo}
-    - {role: mongodb-org, mongodb_version: 4.0}
+    - {role: mongodb-org, mongodb_version: 5.0}
 #    - cassandra3
 #    - solr6 # must be installed AFTER biocache & sandbox, or you get errors complaining about not finding 'collection1'
     - webserver
 #    - postfix
     - nameindex
-    - elasticsearch
+    - { role: ansible-elasticsearch, es_templates: false, es_instance_name: 'profiles-elasticsearch', es_data_dirs: ['/data/elasticsearch'], tags: ['elasticsearch'], when: install_elasticsearch | bool }
 #    - biocache-db
 #    - biocache-properties
 #    - biocache-service

@@ -68,7 +68,7 @@
   tags:
   - service
 
-- name: "Download {{service_name}} JAR"
+- name: "Download {{service_name}} JAR (unauthenticated)"
   maven_artifact:
     group_id: "{{groupId}}"
     artifact_id: "{{artifactId}}"
@@ -83,8 +83,30 @@
     group: "{{ service_group | default(service_name) }}"
     verify_checksum: always
   notify: "restart {{service_name}}"
+  when: maven_repo_username is not defined
   tags:
   - service
+
+- name: "Download {{service_name}} JAR (with supplied username and password)"
+  maven_artifact:
+    group_id: "{{groupId}}"
+    artifact_id: "{{artifactId}}"
+    version: "{{version|default('latest')}}"
+    extension: "{{packaging|default('jar')}}"
+    classifier: "{{classifier|default('')}}"
+    repository_url: "{{maven_repo_url}}"
+    username: "{{maven_repo_username}}"
+    password: "{{maven_repo_password}}"
+    timeout: 30
+    dest: "/opt/atlas/{{service_name}}/{{service_name}}.jar"
+    mode: u=rwx,g=rx,o=rx
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_group | default(service_name) }}"
+    verify_checksum: always
+  notify: "restart {{service_name}}"
+  when: maven_repo_username is defined
+  tags:
+    - service
 
 - name: "Set {{service_name}} JAR config"
   template:

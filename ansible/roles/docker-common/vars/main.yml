@@ -1,0 +1,13 @@
+---
+nginx_user: "{{ docker_default_user }}"
+
+nginx_data_dir: "{{ data_dir }}/nginx"
+
+nginx_conf_dir: "{{ data_dir }}/nginx"
+
+docker_web_image: "{{ docker_nginx_image | default('livingatlases/nginx-sites-enabled:latest') }}"
+
+docker_http_port: "{{ docker_nginx_http_port | default(80) }}"
+
+docker_https_port: "{{ docker_nginx_https_port | default(443) }}"
+

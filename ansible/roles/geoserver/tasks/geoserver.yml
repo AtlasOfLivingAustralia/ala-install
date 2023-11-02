@@ -30,13 +30,32 @@
 - name: configure geoserver data dir
   lineinfile:
     dest={{tomcat_conf}}
-    line='JAVA_OPTS="${JAVA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
+    line='CATALINA_OPTS="${CATALINA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
   notify:
     - restart tomcat
   when: ansible_os_family == "Debian"
   tags:
     - tomcat
     - geoserver
+
+- name: configure geoserver data dir
+  blockinfile:
+    path={{tomcat_conf}}
+    marker="# {mark} Configure Geoserver/GWC data folder / (Ansible managed)"
+    block='JAVA_OPTS="${JAVA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
+    backup=yes
+  notify:
+    - restart tomcat
+  when: ansible_os_family == "Debian" and tomcat == "tomcat9"
+  tags:
+    - tomcat
+    - geoserver
+
+- name: "Check if {{data_dir}}/geoserver_data_dir exists"
+  stat:
+    path: '{{data_dir}}/geoserver_data_dir'
+  register: geoserver_data_dir_check
+  check_mode: no
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ geoserver_context_path }}' hostname='{{ geoserver_hostname }}'
   tags:
@@ -72,21 +91,25 @@
 - name: remove previous geoserver data dir
   command: "rm -r /tmp/geoserver_data_dir"
   ignore_errors: yes
+  when: not geoserver_data_dir_check.stat.exists
   tags:
     - geoserver
 
 - name: rename data dir
   command: "mv /tmp/data /tmp/geoserver_data_dir"
+  when: not geoserver_data_dir_check.stat.exists
   tags:
     - geoserver
 
 - name: copy data directory
   command: "cp -r /tmp/geoserver_data_dir {{data_dir}}"
+  when: not geoserver_data_dir_check.stat.exists
   tags:
     - geoserver
 
 - name: set data ownership
   file: path={{data_dir}}/geoserver_data_dir owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  when: not geoserver_data_dir_check.stat.exists
   notify:
     - restart tomcat
   tags:
@@ -133,18 +156,9 @@
   tags:
     - geoserver
 
-- name: "download geoserver extesions"
-  get_url:
-    url: "{{ item }}"
-    dest: "/tmp/"
-    timeout: 30
-  with_items: "{{ geoserver_extension_urls }}"
-  tags:
-    - geoserver
-
 - name: "install geoserver extensions"
   unarchive:
-    src: "/tmp/{{ item | basename }}"
+    src: "{{ item }}"
     dest: "{{ tomcat_deploy_dir }}/{{ war_filename }}/WEB-INF/lib/"
     owner: "{{ tomcat_user }}"
     group: "{{ tomcat_user }}"
@@ -175,7 +189,16 @@
   tags:
     - geoserver
 
-- name: restart tomcat for installed extensions
+- name: geoserver  - change admin password
+  template: src=users.xml dest={{data_dir}}/geoserver_data_dir/security/usergroup/default/users.xml
+  notify:
+    - restart tomcat
+  when: geoserver_password != "geoserver"
+  tags:
+    - password
+    - geoserver
+
+- name: restart tomcat to bring config effective
   service:
     name: "{{tomcat}}"
     state: restarted
@@ -194,36 +217,6 @@
   retries: 200
   delay: 10
   tags:
-    - geoserver
-
-- name: change root password
-  uri:
-    url: "{{ geoserver_url }}/rest/security/masterpw"
-    method: "PUT"
-    user: 'admin'
-    password: 'geoserver'
-    force_basic_auth: yes
-    body: '{ "oldMasterPassword": "geoserver", "newMasterPassword": "{{ geoserver_password }}" }'
-    status_code: 200
-    body_format: json
-  when: geoserver_password != "geoserver"
-  tags:
-    - password
-    - geoserver
-
-- name: change admin password
-  uri:
-    url: "{{ geoserver_url }}/rest/security/self/password"
-    method: "PUT"
-    user: 'admin'
-    password: 'geoserver'
-    force_basic_auth: yes
-    body: '{ "newPassword": "{{ geoserver_password }}" }'
-    status_code: 200
-    body_format: json
-  when: geoserver_password != "geoserver"
-  tags:
-    - password
     - geoserver
 
 - name: copy geoserver script
@@ -257,6 +250,14 @@
 - name: geoserver script permissions
   command: "chmod a+x {{data_dir}}/geoserver.sh"
   when: not skip_geoserver_script
+  tags:
+    - geoserver
+    - properties
+
+# Used for /data local generation
+- name: set ownership of geoserver data
+  shell: "chown -R {{ geoserver_user }}:{{ geoserver_user }} {{data_dir}}/geoserver*"
+  when: geoserver_user is defined
   tags:
     - geoserver
     - properties

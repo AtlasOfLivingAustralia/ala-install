@@ -1,4 +1,4 @@
-version: "{{ image_service_version | default('2.0.0-SNAPSHOT') }}"
+version: "{{ image_service_version | default('3.0.0-SNAPSHOT') }}"
 artifactId: "image-service"
 image_service_url: "{{maven_repo_ws_url}}"
 classifier: 'exec'
