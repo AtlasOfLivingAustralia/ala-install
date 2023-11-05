@@ -3,6 +3,7 @@
     - ecodata
     - deploy
     - properties
+    - cron
 
 - name: set ecodata_user as default value
   set_fact:
@@ -11,6 +12,7 @@
     - ecodata
     - deploy
     - properties
+    - cron
 
 - name: "Create system user for ecodata"
   user:

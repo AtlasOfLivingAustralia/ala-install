@@ -36,3 +36,5 @@ mongo_version3: "{{ mongodb_version_3 | default(false) }}"
 userdetails_url: "{{ auth_base_url }}/userdetails/"
 ecodata_url: "https://{{ ecodata_hostname }}"
 security_serviceUrl: "{{ auth_base_url }}/apikey/ws/check?apikey="
+
+production_server_hostname: "ala-waters.it.csiro.au"
