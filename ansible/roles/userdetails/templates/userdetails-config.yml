@@ -2,23 +2,43 @@
 security:
   core:
     authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+{% if userdetails_backend == 'cognito' %}
+    roleAttribute: {{ security_core_roleAttribute | default('ala:role') }}
+    affiliation-survey:
+      enabled: {{affiliation_survey_enabled | default ('false')}}
+{% endif %}
   cas:
     enabled: {{ userdetails_use_cas | default('true') }}
+{% if userdetails_use_cas | default('true') %}
     casServerName: {{ cas_server_name }}
     casServerUrlPrefix: ${security.cas.casServerName}/{{ cas_context_path | default('cas') }}
     loginUrl: ${security.cas.casServerUrlPrefix}/login
     logoutUrl: ${security.cas.casServerUrlPrefix}/logout
     appServerName: {{ userdetails_server_name }}
-    # authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+{% endif %}
   oidc:
     enabled: {{ userdetails_use_oidc | default('false') }}
+{% if userdetails_use_oidc | default('false') %}
     client-id: {{ userdetails_oidc_client_id | default('') }}
     secret: {{ userdetails_oidc_secret| default('') }}
-    discovery-uri: {{ cas_server_name }}/{{ cas_context_path}}/oidc/.well-known
+    discovery-uri: {{ oidc_discovery_uri }}
+{% if userdetails_backend == 'cognito' %}
+    logoutUrl: {{ userdetails_oidc_logoutUrl | default('') }}
+    logoutAction: cognito
+{% endif %}
+{% endif %}
   jwt:
     enabled: {{ userdetails_jwt_enabled | default('false') }}
     fallback-to-legacy-behaviour: {{ userdetails_jwt_fallback_to_legacy | default('true') }}
-    discovery-uri: {{ cas_server_name }}/{{ cas_context_path}}/oidc/.well-known
+    discovery-uri: {{ oidc_discovery_uri }}
+    clientId: {{ userdetails_oidc_client_id | default('') }}
+    secret: {{ userdetails_oidc_secret| default('') }}
+{% if userdetails_backend == 'cognito' %}
+    roleAttributes: {{ security_jwt_roleAttributes | default('cognito:groups') }}
+    rolesFromAccessToken: {{ security_jwt_rolesFromAccessToken | default('true')}}
+    userIdClaim: {{ security_jwt_userIdClaim | default('username') }}
+    roleClaims: {{ security_jwt_roleClaims | default('cognito:groups') }}
+{% endif %}
   user:
     name: {{ userdetails_endpoint_user | default('admin') }}
     password: {{ userdetails_endpoint_password | default('secret') }}
@@ -30,6 +50,14 @@ security:
     realm: ALA CAS
     path:
       - /status/**
+  apikey:
+    enabled: true
+    auth:
+      serviceUrl: {{ apikey_auth_serviceUrl | default('https://auth.ala.org.au/apikey/ws/check/') }}
+    check:
+      serviceUrl: {{ apikey_check_serviceUrl | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
+    userdetails:
+      serviceUrl: {{ apikey_userdetails_serviceUrl | default('https://auth.ala.org.au/userdetails/userDetails/') }}
 endpoints:
   enabled: {{ endpoints_enabled | default('true') }}
   health:
@@ -62,13 +90,21 @@ server:
 
 redirectAfterFirstLogin: ${grails.serverURL}/myprofile
 
+{% if userdetails_backend == "gorm" %}
 # Data source configuration
 dataSource:
   dbCreate: "none"
   url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&useSSL={{mysql_connection_ssl | default(false)}}
   username: {{ userdetails_db_username | default(cas_db_username) | default('cas') }}
   password: {{ userdetails_db_password | default(cas_db_password) | default('password') }}
-
+{% endif %}
+{% if userdetails_backend == "cognito" %}
+cognito:
+  region: {{ cognito_region | default('') }}
+  poolId: {{ cognito_poolId | default('') }}
+  accessKey: {{ cognito_accessKey | default('') }}
+  secretKey: {{ cognito_secretKey | default('') }}
+{% endif %}
 oauth:
   providers:
 {% if oauth_providers_flickr_enabled | default('true') | bool %}
@@ -89,7 +125,7 @@ inaturalist:
   baseUrl: {{ inaturalist_base_url | default('https://inaturalist.ala.org.au/') }}
 {% endif %}
 password:
-  encoder: {{ user_store_db_encoder | default('bcrypt') }} # or legacy
+  encoder: {{ user_store_db_encoder | default('bcrypt') }}
 bcrypt:
   strength: {{ user_store_db_bcrypt_strength | default('10') }}
 #encoding:
@@ -130,6 +166,11 @@ alerts.url: {{ alerts_base_url }}
 # this property is read/used by ala-auth-plugin (included by userdetails)
 userDetails:
   url: {{ userdetails_base_url }}/{{ userdetails_context_path | default('userdetails') }}/
+userdetails: # TODO Make this the same as above
+  features:
+    authorisedSystems: {{ enabled_authorisedSystems | default('true')}}
+    bulkCreate: {{ enabled_bulkCreate | default('true')}}
+    exportUsers: {{ enabled_exportUsers | default('true')}}
 
 # Header and footer
 headerAndFooter:
@@ -211,3 +252,44 @@ termsOfUse: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
 
 openapi:
   terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
+{% if openapi_oauth_url is defined %}
+  components:
+    security:
+      oauth2:
+        baseUrl: {{ openapi_oauth_url }}
+{% endif %}
+{% if openapi_server_urls is defined %}
+  server-urls:
+    - {{ openapi_server_urls }}
+{% endif %}
+
+ala.admin.systemMessage.path: {{  ala_admin_system_message_path | default('/data/userdetails/config') }}
+users:
+  delegated-group-names: {{ users_delegated_group_names | default('') }}
+
+{% if gateway_usagePlanId is defined %}
+apigateway:
+  region: {{ cognito_region | default('') }}
+  galah:
+    usagePlanId: {{ gateway_usagePlanId | default('') }}
+{% endif %}
+{% if userdetails_backend == 'cognito' %}
+tokenApp:
+  url: {{tokenApp_url | default('https://tokens.ala.org.au')}}
+docsPortal.url: {{docsPortal_url | default('https://docs.ala.org.au/#introduction')}}
+{% endif %}
+{% if apikey_type is defined %}
+apikey:
+  type: {{ apikey_type }}
+{% endif %}
+{% if dynamoDBTableName is defined %}
+oauth.support.dynamic.client.dynamoDBTableName: {{ dynamoDBTableName }}
+oauth.support.dynamic.client.dynamoDBTable.dynamoDBPK: {{ dynamoDBTable_dynamoDBPK | default('userId') }}
+oauth.support.dynamic.client.dynamoDBTable.dynamoDBSK: {{ dynamoDBTable_dynamoDBSK | default('clientId') }}
+{% endif %}
+{% if dynamic_client_tokens_callbackURLs is defined %}
+oauth.support.dynamic.client.tokens.callbackURLs: {{ dynamic_client_tokens_callbackURLs }}
+{% endif %}
+userdetails.url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
+userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
+userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
