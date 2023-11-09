@@ -94,7 +94,7 @@
     context_path: "{{ merit_context_path }}"
     tomcat_server_port: "{{ merit_server_port }}"
     nginx_paths:
-      - path: "/doc"
+      - path: "/doc/"
         sort_label: "1_doc"
         is_proxy: false
         alias: "/data/fieldcapture/doc"
