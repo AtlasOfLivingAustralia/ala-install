@@ -52,3 +52,5 @@ headerAndFooter:
   version: {{ header_and_footer_version }}
 userdetails:
   url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
+userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
+userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}

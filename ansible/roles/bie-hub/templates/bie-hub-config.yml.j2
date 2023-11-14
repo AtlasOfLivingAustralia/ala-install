@@ -244,3 +244,5 @@ survey:
 userdetails:
   url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
 imageFilter: {{ bie_image_filter | default("'&fq=spatiallyValid:true&fq=-user_assertions:50001&fq=-user_assertions:50005&fq=-duplicate_status:ASSOCIATED&fq=-duplicateType:DIFFERENT_DATASET'") }}
+userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
+userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
