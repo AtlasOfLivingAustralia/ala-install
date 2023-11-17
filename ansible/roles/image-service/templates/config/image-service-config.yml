@@ -35,10 +35,8 @@ security:
 {% endif %}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
-{% if jwt_client_id is defined %}
-    client-id: {{ jwt_client_id }}
-    secret: {{ jwt_secret }}
-{% endif %}
+    client-id: {{ (images_client_id | default(jwt_client_id) | default(clientId)) | default('') }}
+    secret: {{ (images_client_secret | default(jwt_secret) | default(secret)) | default('') }}
     allowed-scopes: {{ jwt_scopes | default('users/read') }}
     role-claims: {{ security_jwt_roleClaims | default('role') }}
     roles-from-access-token: {{ security_jwt_rolesFromAccessToken | default('false')}}
