@@ -163,7 +163,7 @@ cas:
           - image-service/write
           - image-service/read
           - digivol/internal
-{% for extra_scope in cas_extra_scopes %}
+{% for extra_scope in cas_extra_scopes | default ([]) %}
           - {{ extra_scope }}
 {% endfor %}
   monitor:
