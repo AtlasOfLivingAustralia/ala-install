@@ -38,6 +38,8 @@
         </encoder>
     </appender>
 
+    <logger name="org.grails.config.NavigableMap" level="ERROR"/>
+
     <logger name="au.org.ala" level="INFO">
         <appender-ref ref="TOMCAT_LOG" />
     </logger>
