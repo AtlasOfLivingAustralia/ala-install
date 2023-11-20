@@ -289,6 +289,7 @@
         is_proxy: true
         proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
         proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/search/downloadProjectDataFile/"
+#        TODO: remove once https://github.com/AtlasOfLivingAustralia/fieldcapture/issues/3004 is deployed to production
       - path: "{{ecodata_context_path}}/ws/managementunit/getReportPeriods/"
         sort_label: "8_ws_mu_periods"
         is_proxy: true
@@ -304,6 +305,11 @@
         is_proxy: true
         proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
         proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/download/"
+      - path: "{{ecodata_context_path}}/ws/report/generateReportsInPeriod/"
+        sort_label: "11_ws_mu_report"
+        is_proxy: true
+        proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
+        proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/report/generateReportsInPeriod/"
 
       - path: "{{ ecodata_context_path }}/ws/geoServer/wms"
         sort_label: "geo_server_wms"
