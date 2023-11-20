@@ -80,11 +80,11 @@ EXTRAS="user_store_db_hostname=auth-mysql ticket_registry_db_hostname=auth-mongo
     doi_db_hostname=doi-postgresql image_service_db_host=images-postgresql \
     mail_smtp_host=biocache-smtp mail_host=biocollect-smtp \
     ecodata_elasticsearch_host=ecodata-es events_elasticsearch_host=events-es events_elasticsearch_network_host=events-es-network \
-    events_elasticsearch_seed_host=events-es-seed solr_url=solr_host:2181 biocache_db_host=cassandra_host \
-    data_dir=/data/docker skip_handlers=true tomcat_apr=false use_docker_with_pipelines=false install_elasticsearch=false ecodata_url=FIXME_ECODATA_URL \
+    events_elasticsearch_seed_host=events-es-seed solr_user=$user solr_url=solr_host:2181 biocache_db_host=cassandra_host \
+    data_dir=$data skip_handlers=true tomcat_apr=false use_docker_with_pipelines=false install_elasticsearch=false ecodata_url=FIXME_ECODATA_URL \
     tomcat=$user tomcat_user=$user biocollect_user=$user ecodata_user=$user merit_user=$user fieldguide_app=fieldguide spark_user=$user \
     profile_service_user=$user profile_hub_user=$user doi_user=$user cas_user=$user userdetails_user=$user apikey_user=$user image_user=$user \
-    geoserver_user=$user \
+    geoserver_user=$user namematching_user=$user sensitive_data_user=$user\
     $extra_args"
 
 function gen() {

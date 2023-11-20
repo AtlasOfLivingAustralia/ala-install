@@ -65,18 +65,16 @@ list=(
   "./profiles/profiles-prod"
   "./regions/regions-prod"
   "./sampling/sampling-prod"
-  "./sandbox/sandbox-prod"
   "./spatial/spatial-prod"
   "./specieslists/specieslists-prod"
   "./ecodata/ecodata-prod"
   "./fieldguide/fieldguide-prod"
-  # This needs extra role work:
   "./pipelines/databox-pipelines.yml"
   "./namematching/namematching-prod"
   "./sensitive-data-service/sensitive-data-service-prod-2022"
+  # This needs extra role work:
+  "./sandbox/sandbox-prod"
 )
-  #"./pipelines/aws-spark-quoll-pipelines.yml"
-  #"./pipelines/nci3-spark-pipelines.yml"
 
 # shellcheck disable=SC2154
 if [[ -n $extra_args ]] ; then
