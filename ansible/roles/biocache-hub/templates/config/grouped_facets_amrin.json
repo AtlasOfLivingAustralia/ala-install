@@ -191,10 +191,6 @@
             },
             {
                 "sort":"count",
-                "field":"cl958"
-            },
-            {
-                "sort":"count",
                 "field":"cl1049"
             },
             {
