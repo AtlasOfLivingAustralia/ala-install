@@ -231,11 +231,6 @@
             },
             {
                 "sort":"index",
-                "label":"Commonwealth Electoral Boundaries",
-                "field":"cl958"
-            },
-            {
-                "sort":"index",
                 "label":"NRM Regions",
                 "field":"cl916"
             },
