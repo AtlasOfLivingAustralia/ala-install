@@ -1,4 +1,4 @@
-- debug: msg = "Backing up MongoDB instance on {{ db_hostname | default('localhost') }}:{{ db_port | default('27017') }} to {{ backup_dir | default('/data') }}"
+- debug: msg="Backing up MongoDB instance on {{ db_hostname | default('localhost') }}:{{ db_port | default('27017') }} to {{ backup_dir | default('/data') }}"
   tags:
     - db
     - backup
