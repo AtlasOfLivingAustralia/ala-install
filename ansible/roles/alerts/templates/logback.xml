@@ -23,6 +23,9 @@
         </encoder>
     </appender>
 
+    <logger name="org.hibernate.orm.deprecation" level="ERROR" />
+    <logger name="org.grails.config.NavigableMap" level="ERROR" />
+
     <logger name="au.org.ala.cas.client" level="INFO" />
 
     <root level="WARN">
