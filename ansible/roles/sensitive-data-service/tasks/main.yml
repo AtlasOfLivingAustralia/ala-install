@@ -38,6 +38,23 @@
   import_tasks: vm-tasks.yml
   when: deployment_type == 'vm'
 
+- name: ensure sds directories exist
+  file: path={{item}} state=directory
+  with_items:
+    - "{{ data_dir }}/sds/config"
+  run_once: true
+  tags:
+    - sds
+    - properties
+    - sensitive-data-service
+
+- name: create config.properties from template
+  template: src="sds-config.properties" dest={{data_dir}}/sds/config/sds-config.properties
+  tags:
+    - sds
+    - properties
+    - sensitive-data-service
+
 - name: Customize the configuration
   template:
     src: sensitive-data-service-config.yml
