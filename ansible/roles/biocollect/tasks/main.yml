@@ -121,6 +121,64 @@
     - deploy
     - biocollect
 
+- name: remove old PWA files (if they exist)
+  file:
+    path: "{{data_dir}}/biocollect/pwa-mobile"
+    state: absent
+  tags:
+    - biocollect
+    - pwa
+
+- name: retrieve PWA files archive
+  get_url:
+    url: "{{ pwa_app_url }}dist.zip"
+    dest: "{{ data_dir }}/biocollect/pwa-dist.zip"
+    force: true
+  tags:
+    - biocollect
+    - pwa
+
+- name: unarchive the PWA files
+  unarchive:
+    src: "{{ data_dir }}/biocollect/pwa-dist.zip"
+    dest: "{{ data_dir }}/biocollect"
+    remote_src: yes
+  tags:
+    - biocollect
+    - pwa
+
+- name: PWA archive cleanup
+  file:
+    path: "{{ data_dir }}/biocollect/pwa-dist.zip"
+    state: absent
+  tags:
+    - biocollect
+    - pwa
+
+- name: rename the dist directory for PWA files to pwa-mobile
+  shell: "mv {{ data_dir }}/biocollect/dist {{ data_dir }}/biocollect/pwa-mobile"
+  tags:
+    - biocollect
+    - pwa
+
+- name: add nginx vhost (pwa)
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "biocollect-pwa"
+    hostname: "{{ biocollect_hostname }}"
+    context_path: "{{ pwa_app_context_path }}"
+    nginx_root: "{{ data_dir }}/biocollect/pwa-mobile"
+    nginx_index: "{{ pwa_app_index_html }}"
+    nginx_paths:
+      - path: ""
+        is_proxy: false
+        try_files: "$uri $uri/ /{{ pwa_app_index_html }}"
+  tags:
+    - nginx_vhost
+    - biocollect
+    - pwa
+
 - name: add nginx vhost if configured (no root rewrite)
   include_role:
     name: nginx_vhost
