@@ -28,7 +28,7 @@ security:
     secret: {{ (images_client_secret | default(secret)) | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
     scope: {{ oidc_scopes | default('openid profile email ala roles') }}
-    alaUseridClaim: {{ security_jwt_userIdClaim | default('userid') }}
+    alaUseridClaim: {{ alaUseridClaim | security_jwt_userIdClaim | default('userid') }}
 {% if logout_action == 'cognito' %}
     logoutUrl: {{ cognito_logout_url | default('') }}
     logoutAction: cognito
@@ -46,6 +46,18 @@ security:
       whitelist: {{ image_service_whitelist | default('') }}
     check:
       serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
+    enabled: { { apikey_check_enabled | default('false') } }
+    auth:
+      serviceUrl: {{apikey_auth_url | default('https://auth.ala.org.au/apikey/')}}
+    userdetails:
+      serviceUrl: { { apikey_userdetails_url | default('https://auth.ala.org.au/userdetails/') } }
+
+#websevice jwt
+webservice:
+  jwt: { { webservice_jwt | default('false') } }
+  jwt-scopes: { { webservice_jwt_scopes | default('') } }
+  client-id: { { webservice_clientId | default('') } }
+  client-secret: { { webservice_secert | default('') } }
 
 userDetails:
   url: {{ userdetails_base_url | default(auth_base_url + "/userdetails/") }}
