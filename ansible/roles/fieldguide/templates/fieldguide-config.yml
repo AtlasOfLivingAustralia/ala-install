@@ -76,6 +76,7 @@ security:
     scope: {{ scope | default('openid')}}
     alaUseridClaim: {{ alaUseridClaim | default('') }}
     logoutAction: {{ logoutAction | default('') }}
+    logoutUrl: {{ logoutUrl | default('') }}
 {% endif %}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
