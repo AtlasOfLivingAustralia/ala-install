@@ -6,6 +6,17 @@ serverName: {{ bie_base_url }}
 
 # CAS Config
 security:
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+  core:
+    roleAttribute: {{ roleAttribute | default('') }}
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+    affiliation-survey:
+      enabled: {{affiliation_survey_enabled | default ('false')}}
+  cookie:
+    enabled: {{auth_cookie_enabled | default ('false')}}
+    domain: {{auth_cookie_domain | default('.ala.org.au')}}
+{% endif %}
   cas:
     casServerName: {{ auth_base_url }}
     uriFilterPattern: {{ bie_hub_uri_filter_pattern }}
@@ -18,16 +29,44 @@ security:
     bypass: {{ bypass_cas  }}
     applyUriFiltersToTicketValidation: false
     enabled: {{ security_cas_enabled | default(false) }}
+    authCookiename: {{ auth_cookie_name | default('ALA-Auth') }}
   oidc:
     enabled: {{ security_oidc_enabled | default(true) }}
     clientId: {{ (ala_bie_client_id | default(clientId)) | default('') }}
     secret: {{ (ala_bie_client_secret | default(secret)) | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+    scope: {{ scope | default('openid')}}
+    alaUseridClaim: {{ alaUseridClaim | default('') }}
+    logoutAction: {{ logoutAction | default('') }}
+{% endif %}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
+    clientId: {{ (bie_hub_clientId | default(clientId)) | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+    roleAttribute: {{ roleAttribute | default('') }}
+    rolesFromAccessToken: {{ rolesFromAccessToken | default('true') }}
+    userIdClaim: {{ userIdClaim | default('') }}
+    roleClaims: {{ roleClaims | default('') }}
+{% endif %}
+  apiKey:
+    enabled: {{ apikey_check_enabled | default('false') }}
+    auth:
+      serviceUrl: {{ apikey_auth_url | default('') }}
+    check:
+      serviceUrl: {{ apikey_check_url | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
+    userdetails:
+      serviceUrl: {{ apikey_userdetails_url | default('') }}
+webservice:
+  jwt: {{ webservice_jwt | default('false') }}
+  jwt-scopes: {{ webservice_jwt_scopes | default('') }}
+  client-id: {{ webservice_clientId | default('') }}
+  client-secret: {{ webservice_secert | default('') }}
 disableCAS: {{ bypass_cas }}
 userDetails:
-  url: {{ auth_base_url }}/userdetails/
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
 
 # BIE index webservices
 bie:
@@ -55,7 +94,6 @@ ala:
   image:
     service:
       url: {{ image_service_url }}
-imageServiceBaseUrl: {{ image_service_url }}
 allowedImageEditingRoles: {{ allowed_image_editing_roles }}
 
 wikipedia:
@@ -92,11 +130,15 @@ spatial:
 collectory:
   baseURL: {{ collectory_url }}
   threatenedSpeciesCodesUrl: {{ collectory_url }}/public/showDataResource
+collectoryService:
+  baseURL: {{ collectory_service_url | default(collectory_url) }}
 speciesList:
   baseURL: {{ species_list_url }}
   preferredSpeciesListDruid: {{ specieslist_preferredDruid }}
   preferredListName: {{ specieslist_preferredListName }}
   apiKey: {{ speciesList_api_key }}
+speciesListService:
+  baseURL: {{ specieslist_service_url }}
 alerts:
   baseUrl: {{ alerts_url }}
 regions:
@@ -105,10 +147,11 @@ sightings:
   url: {{ sightings_url }}
 layersService:
   baseURL: {{ layers_service_url | default(layers_url) }}
-imageServiceBaseUrl: {{ image_service_url }}
+imageServiceBaseURL: {{ image_webservice_url | default(image_service_url)}}
+
 image:
   baseUrl: {{ image_service_url }}
-  thumbnailUrl: {{ image_service_url }}/image/proxyImageThumbnail?imageId=
+  thumbnailUrl: {{ image_webservice_url | default(image_service_url)}}/image/
 ausTraits:
     baseURL: {{ ausTraits_base_url | default('http://traitdata.austraits.cloud.edu.au') }}
     homeURL: {{ ausTraits_home_url | default('https://austraits.org/') }}
@@ -198,3 +241,8 @@ survey:
     header: {{ bie_survey_header | default('') }}
     cookieAge: {{ bie_survey_cookieAge | default(30) }}
     html: {{ bie_survey_html | default('') }}
+userdetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
+imageFilter: {{ bie_image_filter | default("'&fq=spatiallyValid:true&fq=-user_assertions:50001&fq=-user_assertions:50005&fq=-duplicate_status:ASSOCIATED&fq=-duplicateType:DIFFERENT_DATASET'") }}
+userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
+userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}

@@ -5,13 +5,13 @@
     - solr_config
 
 - name: Include docker tasks
-  include: docker-tasks.yml
+  include_tasks: docker-tasks.yml
   vars:
     - solr_temp_disable_shardsWhitelist: true
   when: deployment_type == 'swarm'
 
 - name: Include VM tasks
-  include: vm-tasks.yml
+  import_tasks: vm-tasks.yml
   when: deployment_type == 'vm'
 
 - name: Check if biocache collection exists
@@ -142,6 +142,7 @@
     - solrcloud_num_shards: 1
   when: deployment_type == 'swarm'
 
+  # We can let this port open during development
 - name: Remove previous socat container for solr tunnel
   import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:

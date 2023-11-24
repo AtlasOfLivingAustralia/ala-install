@@ -59,6 +59,14 @@
     - logger-service
     - properties
 
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{data_dir}}/logger/config/logback.xml"
+  tags:
+    - properties
+    - logger-service
+
 - name: set data ownership
   file: path={{data_dir}}/logger owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 

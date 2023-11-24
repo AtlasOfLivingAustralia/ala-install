@@ -19,6 +19,14 @@
     - specieslist
     - properties
 
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{data_dir}}/specieslist-webapp/config/logback.xml"
+  tags:
+    - specieslist
+    - properties
+
 - name: set data ownership
   file: path={{ species_list_data_dir }} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   tags:
@@ -41,7 +49,7 @@
     - bie_index
   when: webserver_nginx and specieslist_proxy_target is not defined
 
-- include: ../../docker-common/tasks/common.yml
+- include_tasks: ../../docker-common/tasks/common.yml
   tags:
     - docker
   when: deployment_type == 'swarm'
@@ -54,7 +62,7 @@
     hostname: "{{ specieslist_hostname }}"
     context_path: "{{ specieslist_context_path }}"
     nginx_paths:
-      - path: "{{specieslist_context_path}}"
+      - path: "{{ specieslist_context_path }}"
         sort_label: "8_basepath"
         is_proxy: true
         proxy_pass: "http://{{ species_list_docker_host | default('127.0.0.1') }}:8080{{specieslist_proxy_target}}"
@@ -65,9 +73,9 @@
   when: webserver_nginx
 
 - name: Include docker tasks
-  include: docker-tasks.yml
+  include_tasks: docker-tasks.yml
   when: deployment_type == 'swarm'
 
 - name: Include VM tasks
-  include: vm-tasks.yml
+  import_tasks: vm-tasks.yml
   when: deployment_type == 'vm'

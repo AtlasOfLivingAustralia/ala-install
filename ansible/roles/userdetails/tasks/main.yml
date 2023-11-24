@@ -90,7 +90,7 @@
     name: nginx_vhost
   vars:
     appname: "userdetails"
-    hostname: "{{ cas_host_name }}"
+    hostname: "{{ userdetails_host_name }}"
     context_path: "{{  userdetails_context_path | default('userdetails') }}"
     nginx_paths:
       - path: "/{{  userdetails_context_path | default('userdetails') }}"
@@ -104,9 +104,9 @@
   when: webserver_nginx
 
 - name: Include docker tasks
-  include: docker-tasks.yml
+  include_tasks: docker-tasks.yml
   when: deployment_type == 'swarm'
 
 - name: Include VM tasks
-  include: vm-tasks.yml
+  import_tasks: vm-tasks.yml
   when: deployment_type == 'vm'

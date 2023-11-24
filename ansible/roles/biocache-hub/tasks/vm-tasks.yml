@@ -8,6 +8,7 @@
   vars:
     service_name: '{{ biocache_hub }}'
     jar_url: '{{ biocache_hub_artifact_url }}'
+    log_config_filename: logback.xml
   tags:
     - deploy
     - service

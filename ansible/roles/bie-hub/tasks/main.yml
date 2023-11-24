@@ -38,6 +38,15 @@
     - properties
     - bie
 
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{ data_dir }}/{{ bie_hub }}/config/logback.xml"
+  tags:
+    - webapps
+    - properties
+    - bie
+
 - name: copy eolContentToUpdate.properties.jinja2
   template:
     src: eolContentToUpdate.properties.jinja2
@@ -198,9 +207,9 @@
     - bie
 
 - name: Include docker tasks
-  include: docker-tasks.yml
+  include_tasks: docker-tasks.yml
   when: deployment_type == 'swarm'
 
 - name: Include VM tasks
-  include: vm-tasks.yml
+  import_tasks: vm-tasks.yml
   when: deployment_type == 'vm'

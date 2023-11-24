@@ -66,6 +66,12 @@
     - sds
     - properties
 
+- name: copy logback config
+  template: src=logback.xml dest={{data_dir}}/sds/config/logback.xml
+  tags:
+    - sds
+    - properties
+
 - name: create config.properties from template
   template: src="sds-config.properties" dest={{data_dir}}/sds/config/sds-config.properties
   tags:

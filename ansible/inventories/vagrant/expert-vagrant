@@ -23,4 +23,4 @@ images_base_url=https://images.ala.org.au
 security_cas_login_url=https://auth.ala.org.au/cas/login
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
-header_and_footer_baseurl=https://www.ala.org.au/commonui-bs3
+header_and_footer_baseurl=https://www.ala.org.au/commonui-bs3-2019

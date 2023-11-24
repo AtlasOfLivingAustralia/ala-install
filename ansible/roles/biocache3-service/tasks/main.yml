@@ -402,7 +402,7 @@
     name: "purge biocache-downloads"
     hour: "3"
     minute: "35"
-    job: "find {{ download_dir | default('/data/biocache-download') }} -type d -mtime +90 -exec rm -rf {} \\;"
+    job: "find {{ download_dir | default('/data/biocache-download') }} -type d -mtime +30 -exec rm -rf {} \\;"
   tags:
     - biocache-service
     - properties
@@ -467,9 +467,9 @@
     - properties
 
 - name: Include docker tasks
-  include: docker-tasks.yml
+  include_tasks: docker-tasks.yml
   when: deployment_type == 'swarm'
 
 - name: Include VM tasks
-  include: vm-tasks.yml
+  import_tasks: vm-tasks.yml
   when: deployment_type == 'vm'

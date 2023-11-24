@@ -5,6 +5,17 @@ grails:
 serverName: {{ bie_index_base_url }}
 # CAS Config
 security:
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+  core:
+    roleAttribute: {{ roleAttribute | default('') }}
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+    affiliation-survey:
+      enabled: {{affiliation_survey_enabled | default ('false')}}
+  cookie:
+    enabled: {{auth_cookie_enabled | default ('false')}}
+    domain: {{auth_cookie_domain | default('.ala.org.au')}}
+{% endif %}
   cas:
     casServerName:   {{ auth_base_url }}
     uriFilterPattern:   {{ bie_index_uri_filter_pattern | default('/admin*,/alaAdmin*') }}
@@ -21,12 +32,36 @@ security:
     clientId: {{ (bie_index_client_id | default(clientId)) | default('') }}
     secret: {{ (bie_index_client_secret | default(secret)) | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+    scope: {{ scope | default('openid')}}
+    alaUseridClaim: {{ alaUseridClaim | default('') }}
+    logoutAction: {{ logoutAction | default('') }}
+{% endif %}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
-  apikey:
-    serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
+    clientId: {{ (bie_index_clientId | default(clientId)) | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+    rolesFromAccessToken: {{ rolesFromAccessToken | default('true') }}
+    userIdClaim: {{ userIdClaim | default('') }}
+    roleClaims: {{ roleClaims | default('') }}
+{% endif %}
+  apiKey:
+    enabled: {{ apikey_check_enabled | default('false') }}
+    auth:
+      serviceUrl: {{ apikey_auth_url }}
+    check:
+      serviceUrl: {{ apikey_check_url | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
+    userdetails:
+      serviceUrl: {{ apikey_userdetails_url }}
+webservice:
+  jwt: {{ webservice_jwt | default('false') }}
+  jwt-scopes: {{ webservice_jwt_scopes | default('') }}
+  client-id: {{ webservice_clientId | default('') }}
+  client-secret: {{ webservice_secert | default('') }}
 userDetails:
-  url: {{ auth_base_url }}/userdetails/
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
 biocache:
   base: {{ biocache_base_url | default('https://biocache.ala.org.au') }}
   service: {{ biocache_service_url | default('https://biocache-ws.ala.org.au/ws') }}
@@ -44,9 +79,9 @@ images:
   base: {{ image_base_url | default('https://images.ala.org.au') }}
   service:
     base: {{ image_base_url | default('https://images.ala.org.au') }}
-    thumbnail: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImageThumbnail?imageId={0}
-    large: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImage?imageId={0}
-    small: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImageThumbnailLarge?imageId={0}
+    thumbnail: {{ image_service_url | default('https://images.ala.org.au') }}/image/{0}/thumbnail
+    large: {{ image_service_url | default('https://images.ala.org.au') }}/image/{0}/large
+    small: {{ image_service_url | default('https://images.ala.org.au') }}/image/{0}/original
     metadata: {{ image_service_url | default('https://images.ala.org.au') }}/ws/image/{0}
   index: {{ index_images | default('false') }}
 knowledgeBase:
@@ -92,7 +127,7 @@ wiki:
   config: file://{{ data_dir }}/bie-index/config/wiki-lists.json
 solr:
   admin:
-    connection: { { index_admin_url | default('http://localhost:8983/solr') } }
+    connection: {{ index_admin_url | default('http://localhost:8983/solr') }}
     type: HTTP
     queueSize: 10
     threadCount: 4
@@ -126,7 +161,7 @@ skin:
   favicon: {{ skin_favicon | default('https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png') }}
   homeUrl: {{ skin_home_url | default('http://www.ala.org.au') }}
 headerAndFooter:
-  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}
+  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3-2019') }}
 useLegacyAuto: false
 import:
   sequence: {{ bie_index_import_sequence | default('collectory,taxonomy-all,vernacular,denormalise,layers,regions,localities,conservation-lists,wordpress,knowledgebase,favourites,weights,link-identifiers,images,occurrences,suggest-index') }}
@@ -151,3 +186,7 @@ openapi:
         authorizationUrl: {{ auth_cas_url }}/oidc/authorize
         refreshUrl: {{ auth_cas_url }}/oidc/refresh
         tokenUrl: {{ auth_cas_url }}/oidc/token
+userdetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
+userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
+userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}

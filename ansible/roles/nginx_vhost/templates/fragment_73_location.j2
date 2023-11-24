@@ -56,8 +56,10 @@
         # proxy_set_header Host $host;
 {% if item.proxy_hostname is defined and item.proxy_hostname | length > 0 %}
         proxy_set_header Host {{ item.proxy_hostname }};
+        proxy_set_header X-Forwarded-Host {{ item.proxy_hostname }};
 {% else %}
         proxy_set_header Host {{ hostname }};
+        proxy_set_header X-Forwarded-Host {{ hostname }};
 {% endif %}
 {% if item.proxy_x_request_id is defined %}
         set $x_request_id {{ item.proxy_x_request_id }};
@@ -74,7 +76,11 @@
 {% endif %}
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Port $server_port;
+    {% if item.proxy_read_timeout is defined %}
+        proxy_read_timeout {{ item.proxy_read_timeout }};
+    {% else %}
         proxy_read_timeout 10m;
+    {% endif %}
     {% if nginx_disable_download_disk_buffering | bool == True %}
         proxy_max_temp_file_size 0;
     {% endif %}

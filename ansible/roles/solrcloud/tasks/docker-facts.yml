@@ -18,6 +18,7 @@
     - docker
     - docker-service
     - docker-compose
+    - solr_config
     - gatus
 
 - name: Create Sorlcloud zk host list
@@ -32,6 +33,7 @@
     - docker
     - docker-service
     - docker-compose
+    - solr_config
     - gatus
 
 - name: Create Sorlcloud solr_url
@@ -41,3 +43,4 @@
     - docker
     - docker-service
     - docker-compose
+    - solr_config

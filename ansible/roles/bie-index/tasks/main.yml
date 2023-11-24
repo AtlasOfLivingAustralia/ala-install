@@ -49,6 +49,16 @@
     - properties
     - bie-index
 
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{data_dir}}/bie-index/config/logback.xml"
+  tags:
+    - webapps
+    - config
+    - properties
+    - bie-index
+
 - name: copy all species list configurations
   copy: src={{ item }} dest={{data_dir}}/bie-index/config
   with_items:
@@ -173,9 +183,9 @@
     - properties
 
 - name: Include docker tasks
-  include: docker-tasks.yml
+  include_tasks: docker-tasks.yml
   when: deployment_type == 'swarm'
 
 - name: Include VM tasks
-  include: vm-tasks.yml
+  import_tasks: vm-tasks.yml
   when: deployment_type == 'vm'

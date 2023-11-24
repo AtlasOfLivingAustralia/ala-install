@@ -60,7 +60,7 @@
     - pg_instance
 
 - name: grant role "{{db_user}}" to "{{ db_login_user }}" - remote
-  community.postgresql.postgresql_membership:
+  postgresql_membership:
     login_host: "{{ db_hostname }}"
     login_user: "{{ db_login_user }}"
     login_password: "{{ db_login_password }}"

@@ -35,6 +35,22 @@
     - properties
     - collectory
 
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{collectory_data_dir}}/config/logback.xml"
+  tags:
+    - properties
+    - collectory
+
+- name: set data ownership [all data is owned by tomcat]
+  file: path={{ collectory_data_dir }} owner={{ tomcat_user }}  group={{ tomcat_user }}  recurse=true
+  notify: 
+    - restart tomcat  
+  tags:
+    - properties
+    - collectory
+
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ collectory_context_path }}' hostname='{{ collectory_hostname }}'
   tags:
     - deploy
@@ -43,7 +59,7 @@
     - webapps
   when: not webserver_nginx
 
-- include: ../../docker-common/tasks/common.yml
+- include_tasks: ../../docker-common/tasks/common.yml
   tags:
     - docker
   when: deployment_type == 'swarm'
@@ -63,9 +79,9 @@
   when: webserver_nginx
 
 - name: Include docker tasks
-  include: docker-tasks.yml
+  include_tasks: docker-tasks.yml
   when: deployment_type == 'swarm'
 
 - name: Include VM tasks
-  include: vm-tasks.yml
+  import_tasks: vm-tasks.yml
   when: deployment_type == 'vm'
