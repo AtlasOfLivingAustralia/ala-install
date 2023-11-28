@@ -13,7 +13,7 @@
   when: datadog_mysql_enabled | default(False) | bool
 
 # create a datadog postgres user
-- name: Create Datadog postgres user for monitoring
+- name: Create Datadog postgres user for monitoring (local db)
   postgresql_user:
     db: "{{ datadog_db_name }}"
     login_host: "{{ datadog_db_login_host | default(omit) }}"
@@ -24,4 +24,18 @@
     password: "{{ datadog_db_password }}"
     priv: "CONNECT/pg_stat_database:SELECT"
     state: present
-  when: datadog_postgress_enabled | default(False) | bool
+  when: datadog_postgress_enabled | default(False) | bool and db_remote | bool == False
+
+- name: Create Datadog postgres user for monitoring (remote db)
+  postgresql_user:
+    db: "{{ datadog_db_name }}"
+    login_host: "{{ datadog_db_login_host | default(omit) }}"
+    login_password: "{{ datadog_db_login_password | default(omit) }}"
+    login_user: "{{ datadog_db_login_user | default(omit) }}"
+    name: datadog
+    password: "{{ datadog_db_password }}"
+    priv: "CONNECT/pg_stat_database:SELECT"
+    state: present
+  vars:
+    ansible_ssh_pipelining: true
+  when: datadog_postgress_enabled | default(False) | bool and db_remote | bool == True
