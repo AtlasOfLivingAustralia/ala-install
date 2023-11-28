@@ -29,7 +29,7 @@ security:
     discoveryUri: {{ discoveryUri | default('') }}
     scope: {{ oidc_scopes | default('openid profile email ala roles') }}
     alaUseridClaim: {{ alaUseridClaim | security_jwt_userIdClaim | default('userid') }}
-{% if logout_action == 'cognito' %}
+{% if logout_action is defined and logout_action == 'cognito' %}
     logoutUrl: {{ cognito_logout_url | default('') }}
     logoutAction: cognito
 {% endif %}
