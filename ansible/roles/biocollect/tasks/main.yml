@@ -113,9 +113,9 @@
   when: not webserver_nginx
 
 - name: ensure target directories exist for nginx proxy file storage
-  file: path={{item}} state=directory owner=www-data group=www-data recurse=true
+  file: path={{ item }} state=directory owner=www-data group=www-data recurse=true
   with_items:
-    - "{{data_dir}}/biocollect/www"
+    - "{{ data_dir }}/biocollect/www"
   tags:
     - nginx_vhost
     - deploy
@@ -129,15 +129,15 @@
     hostname: "{{ biocollect_hostname }}"
     context_path: "{{ biocollect_context_path }}"
     nginx_paths:
-      - path: "{{biocollect_context_path}}"
+      - path: "{{ biocollect_context_path }}"
         sort_label: "1_root"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{biocollect_context_path}}; add_header X-Frame-Options {{ frame_options_header_value }}"
-      - path: "{{biocollect_context_path}}/download/"
+        proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{ biocollect_context_path }}; add_header X-Frame-Options {{ frame_options_header_value }}"
+      - path: "{{ biocollect_context_path }}/download/"
         sort_label: "2_download"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{biocollect_context_path}}/download/;proxy_temp_path {{ data_dir }}/biocollect/www; proxy_max_temp_file_size 10240m; gzip off; add_header X-Frame-Options {{ frame_options_header_value }}"
-      - path: "{{biocollect_context_path | default('/') }}pwa-app"
+        proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{ biocollect_context_path }}/download/;proxy_temp_path {{ data_dir }}/biocollect/www; proxy_max_temp_file_size 10240m; gzip off; add_header X-Frame-Options {{ frame_options_header_value }}"
+      - path: "{{ biocollect_context_path | default('/') }}pwa-app"
         sort_label: "3_pwa_app"
         is_proxy: false
         rewrite: "{{ biocollect_rewrite_pwa_app_url }}"
@@ -163,11 +163,11 @@
         is_proxy: true
         sort_label: "2_tomcatproxy"
         proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}; add_header X-Frame-Options {{ frame_options_header_value }}"
-      - path: "{{biocollect_context_path}}/download/"
+      - path: "{{ biocollect_context_path }}/download/"
         sort_label: "3_download"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{biocollect_context_path}}/download/; proxy_temp_path {{ data_dir }}/biocollect/www; proxy_max_temp_file_size 10240m; gzip off; add_header X-Frame-Options {{ frame_options_header_value }}"
-      - path: "{{biocollect_context_path | default('/') }}pwa-app"
+        proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{ biocollect_context_path }}/download/; proxy_temp_path {{ data_dir }}/biocollect/www; proxy_max_temp_file_size 10240m; gzip off; add_header X-Frame-Options {{ frame_options_header_value }}"
+      - path: "{{ biocollect_context_path | default('/') }}pwa-app"
         sort_label: "4_pwa_app"
         is_proxy: false
         rewrite: "{{ biocollect_rewrite_pwa_app_url }}"
@@ -177,7 +177,7 @@
     - biocollect
   when: webserver_nginx and biocollect_rewrite_root | bool
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ biocollect_war_url }}' context_path='{{biocollect_context_path}}' hostname='{{ biocollect_hostname }}'
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ biocollect_war_url }}' context_path='{{ biocollect_context_path }}' hostname='{{ biocollect_hostname }}'
   tags:
     - deploy
     - biocollect
