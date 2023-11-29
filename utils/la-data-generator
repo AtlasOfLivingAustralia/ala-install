@@ -21,13 +21,14 @@ eval "$("$GEN_LOC/docopts" -V - -h - : "$@" <<EOF
 $CMD: LA data generator
 
 Usage:
-  $CMD [options] --data=<dir> --inv=<dir> generate [<service>...]
+  $CMD [options] [--fast] --data=<dir> --inv=<dir> generate [<service>...]
   $CMD -h | --help
   $CMD -v | --version
 
 Options:
   --extra-args=<args>  Additional "arg1=values arg2=value" to get preference over defaul extra variables values
   --verbose            Verbose output.
+  --fast               Only exec the properties-file tag
   -d --dry-run         Print the commands without actually running them.
   -h --help            Show this help.
   -v --version         Show version.
@@ -69,7 +70,11 @@ elif [[ ! -d $inv || ! -f $inv/ansiblew ]]; then
 fi
 
 
-TAGS=common,properties,mongodb-org,namematching-service,pipelines,pipelines-layers
+if [[ -n $fast ]] ; then
+  TAGS=properties-file
+else
+  TAGS=common,properties,mongodb-org,namematching-service,pipelines,pipelines-layers
+fi
 SKIP_TAGS=restart,image-stored-procedures,db,mongodb-org-restart,mongodb-users,sslcerts,pipelines-services,hadoop_dir,hadoop_vocab,apt_update,apt,mongodb-org,docopts,yq
 # shellcheck disable=SC2154
 EXTRAS="user_store_db_hostname=auth-mysql ticket_registry_db_hostname=auth-mongo cas_audit_host=auth-mongo cas_spring_session_host=auth-mongo \
