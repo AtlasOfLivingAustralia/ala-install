@@ -44,7 +44,7 @@ security:
 {% endif %}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
-    clientId: {{ (bie_hub_clientId | default(clientId)) | default('') }}
+    clientId: {{ (ala_bie_hub_clientId | default(clientId)) | default('') }}
 # cognito specific configs
 {% if auth_system is defined and auth_system == 'cognito' %}
     roleAttribute: {{ roleAttribute | default('') }}
@@ -62,9 +62,9 @@ security:
       serviceUrl: {{ apikey_userdetails_url | default('') }}
 webservice:
   jwt: {{ webservice_jwt | default('false') }}
-  jwt-scopes: {{ webservice_jwt_scopes | default('') }}
-  client-id: {{ webservice_clientId | default('') }}
-  client-secret: {{ webservice_secert | default('') }}
+  jwt-scopes: {{ ala_bie_webservice_jwt_scopes | default(webservice_jwt_scopes) | default('') }}
+  client-id: {{ ala_bie_client_id | default(webservice_clientId) | default('') }}
+  client-secret: {{ ala_bie_client_secret | default(webservice_secert) | default('') }}
 disableCAS: {{ bypass_cas }}
 userDetails:
   url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
