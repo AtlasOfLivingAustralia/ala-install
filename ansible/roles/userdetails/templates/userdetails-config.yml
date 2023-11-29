@@ -7,6 +7,9 @@ security:
     affiliation-survey:
       enabled: {{affiliation_survey_enabled | default ('false')}}
 {% endif %}
+  cookie:
+    enabled: {{ auth_cookie_enabled | default('false') }}
+    domain: {{ auth_cookie_domain | default('.ala.org.au') }}
   cas:
     enabled: {{ userdetails_use_cas | default('true') }}
 {% if userdetails_use_cas | default('true') %}

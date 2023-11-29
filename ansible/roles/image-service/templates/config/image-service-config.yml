@@ -11,6 +11,9 @@ security:
     roleAttribute: {{ security_core_roleAttribute | default('role') }}
     affiliation-survey:
       enabled: {{affiliation_survey_enabled | default ('false')}}
+  cookie:
+    enabled: { { auth_cookie_enabled | default('false') } }
+    domain: { { auth_cookie_domain | default('.ala.org.au') } }
   cas:
     enabled: {{ security_cas_enabled | default(true) }}
     appServerName: "{{image_service_base_url}}"
