@@ -41,10 +41,14 @@ security:
 # cognito specific configs
 {% if auth_system is defined and auth_system == 'cognito' %}
   core:
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
     roleAttribute: {{ roleAttribute | default('') }}
     affiliation-survey:
       enabled: {{affiliation_survey_enabled | default ('false')}}
 {% endif %}
+  cookie:
+    enabled: { { auth_cookie_enabled | default('false') } }
+    domain: { { auth_cookie_domain | default('.ala.org.au') } }
   cas:
     casServerName: {{auth_base_url}}
     loginUrl: {{auth_cas_url}}/login
