@@ -44,7 +44,7 @@ security:
 {% endif %}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
-    clientId: {{ (ala_bie_hub_clientId | default(clientId)) | default('') }}
+    clientId: {{ (ala_bie_client_id | default(clientId)) | default('') }}
 # cognito specific configs
 {% if auth_system is defined and auth_system == 'cognito' %}
     roleAttribute: {{ roleAttribute | default('') }}
