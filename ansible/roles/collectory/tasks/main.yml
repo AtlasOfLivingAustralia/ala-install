@@ -33,6 +33,7 @@
   tags:
     - config
     - properties
+    - properties-file
     - collectory
 
 - name: copy logback config

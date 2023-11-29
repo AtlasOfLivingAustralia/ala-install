@@ -19,6 +19,7 @@
     - biocache-config.properties
   tags:
     - properties
+    - properties-file
     - biocache-properties
 
 - name: Download SDS layers
