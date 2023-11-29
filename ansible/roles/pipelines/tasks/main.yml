@@ -53,6 +53,7 @@
   with_items:
     - "{{ data_dir }}/la-pipelines/config"
     - "{{ data_dir }}/spark-tmp"
+    - "{{ data_dir }}/spark/conf"
     - "{{ data_dir }}/pipelines-shp"
     - "{{ data_dir }}/dwca-tmp"
     - "{{ data_dir }}/dwca-export"
@@ -405,11 +406,23 @@
   with_items:
     - "{{ data_dir }}/pipelines-shp/pipelines-shapefiles.zip"
     - "{{ data_dir }}/pipelines-shp/sds-layers.tgz"
+  tags:
+    - pipelines
+    - pipelines-layers
+
+- name: Unpack SHP extra file
+  unarchive:
+    src: "{{ item }}"
+    dest: "{{ data_dir }}/pipelines-shp"
+    remote_src: yes
+    owner: "{{ spark_user }}"
+    group: "{{ spark_user }}"
+  with_items:
     - "{{ data_dir }}/pipelines-shp/extra-layers.tgz"
   tags:
     - pipelines
     - pipelines-layers
-  when: item is defined
+  when: pipelines_shapefiles_extra_url is defined
 
 - name: Copy additional logging configs
   copy: src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }}
