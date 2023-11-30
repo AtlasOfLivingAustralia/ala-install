@@ -18,6 +18,7 @@
   tags:
     - specieslist
     - properties
+    - properties-file
 
 - name: copy logback config
   template:
