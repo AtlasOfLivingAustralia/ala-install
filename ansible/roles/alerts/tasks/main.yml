@@ -27,6 +27,7 @@
   template: src=alerts-config.properties dest={{data_dir}}/alerts/config/alerts-config.properties output_encoding=iso-8859-1
   tags:
     - properties
+    - properties-file
     - alerts
 
 - name: copy logback config

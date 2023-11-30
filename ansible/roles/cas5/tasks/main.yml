@@ -55,6 +55,7 @@
     - restart cas
   tags:
     - properties
+    - properties-file
     - cas
 
 - name: copy application.yml
@@ -68,6 +69,7 @@
     - restart cas
   tags:
     - properties
+    - properties-file
     - cas
 
 - name: copy logback config

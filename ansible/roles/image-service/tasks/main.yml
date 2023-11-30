@@ -74,6 +74,7 @@
     - deploy
     - image-service
     - properties
+    - properties-file
 
 - name: add image-service jar and setup service
   include_role:
