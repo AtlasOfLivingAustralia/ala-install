@@ -2,6 +2,7 @@
 security:
   core:
     authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+    defaultLogoutRedirectUri: {{ default_logout_redirect_url | default('https://www.ala.org.au') }}
 {% if userdetails_backend == 'cognito' %}
     roleAttribute: {{ security_core_roleAttribute | default('ala:role') }}
     affiliation-survey:
