@@ -44,13 +44,13 @@ security:
     userIdClaim: {{ userIdClaim | default('') }}
     roleClaims: {{ roleClaims | default('') }}
 {% endif %}
-  apiKey: 
+  apiKey:
     enabled: {{ apikey_check_enabled | default('false') }}
-    auth: 
+    auth:
       serviceUrl: {{ apikey_auth_url }}
-    check: 
+    check:
       serviceUrl: {{ apikey_check_url | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
-    userdetails: 
+    userdetails:
       serviceUrl: {{ apikey_userdetails_url }}
 webservice:
   jwt: {{ webservice_jwt | default('false') }}
@@ -120,6 +120,7 @@ doi:
     - "biocache"
     - "phylolink"
     - "csdm"
+  resolverUrl: {{ doi_resolver_url | default('https://doi.org/') }}
 
 grails:
   serverURL: https://{{ doi_service_hostname }}{{ doi_service_context_path }}
