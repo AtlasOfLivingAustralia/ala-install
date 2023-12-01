@@ -7,6 +7,9 @@ security:
     affiliation-survey:
       enabled: {{affiliation_survey_enabled | default ('false')}}
 {% endif %}
+  cookie:
+    enabled: {{ auth_cookie_enabled | default('false') }}
+    domain: {{ auth_cookie_domain | default('.ala.org.au') }}
   cas:
     enabled: {{ userdetails_use_cas | default('true') }}
 {% if userdetails_use_cas | default('true') %}
@@ -197,6 +200,8 @@ webservice:
   apiKey: {{ api_key }}
   jwt: {{ userdetails_jwt_client_enabled | default('true') }}
   scope: {{ userdetails_jwt_scopes | default('openid ala/internal') }}
+  client-id: {{ userdetails_jwt_clientid | default('') }}
+  client-secret: {{ userdetails_jwt_secret | default('') }}
 
 # Default primary fields for Export to CSV functionality
 admin.export.csv.primary.fields: {{ admin_export_csv_primary_fields | default('id,userName,firstName,lastName,email,activated,locked,created')}}
@@ -293,3 +298,5 @@ oauth.support.dynamic.client.tokens.callbackURLs: {{ dynamic_client_tokens_callb
 userdetails.url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
 userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
 userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
+
+userdetails.api.useGatewayAPI: {{ userdetails_api_useGatewayAPI | default('false') }}

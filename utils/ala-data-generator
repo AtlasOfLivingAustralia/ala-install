@@ -45,15 +45,15 @@ EOF
 list=(
   "./alerts/alerts-prod"
   "./auth/aws-auth-prod.yml"
-  "./bie/bie-hub-prod-2022"
-  "./bie/bie-ws-solr-prod-2022"
-  "./biocache/biocache-hub-2021"
-  "./biocache/biocache-service-2021"
+  "./bie/bie-hub-prod-2022-cognito"
+  "./bie/bie-ws-solr-prod-2022-cognito"
+  "./biocache/biocache-hub-2021-cognito"
+  "./biocache/biocache-service-2021-cognito"
   "./biocache/cassandra-cluster-2021"
   "./biocache/solrcloud-2021-1"
   "./biocollect/biocollect-prod"
   "./calendars/calendars-prod"
-  "./collections/collections-prod"
+  "./collections/collections-prod-cognito"
   "./dashboard/dashboard-prod"
   "./data_quality_filter_service/data_quality_filter_service_prod"
   "./doi/doi-prod"
@@ -65,18 +65,16 @@ list=(
   "./profiles/profiles-prod"
   "./regions/regions-prod"
   "./sampling/sampling-prod"
-  "./sandbox/sandbox-prod"
   "./spatial/spatial-prod"
   "./specieslists/specieslists-prod"
   "./ecodata/ecodata-prod"
   "./fieldguide/fieldguide-prod"
-  # This needs extra role work:
   "./pipelines/databox-pipelines.yml"
   "./namematching/namematching-prod"
   "./sensitive-data-service/sensitive-data-service-prod-2022"
+  # This needs extra role work:
+  "./sandbox/sandbox-prod"
 )
-  #"./pipelines/aws-spark-quoll-pipelines.yml"
-  #"./pipelines/nci3-spark-pipelines.yml"
 
 # shellcheck disable=SC2154
 if [[ -n $extra_args ]] ; then

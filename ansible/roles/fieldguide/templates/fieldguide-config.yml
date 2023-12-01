@@ -41,10 +41,14 @@ security:
 # cognito specific configs
 {% if auth_system is defined and auth_system == 'cognito' %}
   core:
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
     roleAttribute: {{ roleAttribute | default('') }}
     affiliation-survey:
       enabled: {{affiliation_survey_enabled | default ('false')}}
 {% endif %}
+  cookie:
+    enabled: { { auth_cookie_enabled | default('false') } }
+    domain: { { auth_cookie_domain | default('.ala.org.au') } }
   cas:
     casServerName: {{auth_base_url}}
     loginUrl: {{auth_cas_url}}/login
@@ -76,6 +80,7 @@ security:
     scope: {{ scope | default('openid')}}
     alaUseridClaim: {{ alaUseridClaim | default('') }}
     logoutAction: {{ logoutAction | default('') }}
+    logoutUrl: {{ logoutUrl | default('') }}
 {% endif %}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
@@ -116,6 +121,16 @@ openapi:
 serverURL: {{fieldguide_base_url}}
 grails:
   serverURL: {{fieldguide_base_url}}
+  plugin:
+    awssdk:
+      region: {{ fieldguide_aws_region | default('') }}
+      s3:
+        accessKey: {{ fieldguide_aws_s3_access_key | default('') }}
+        secretKey: {{ fieldguide_aws_s3_secret_key | default('') }}
+        bucket: {{ fieldguide_aws_s3_bucket | default('') }}
+        region: {{ fieldguide_aws_region | default('') }}
+storage:
+  provider: {{ fieldguide_storage_provider | default('LOCAL') }} # LOCAL or S3
 userdetails:
   url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
 userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
