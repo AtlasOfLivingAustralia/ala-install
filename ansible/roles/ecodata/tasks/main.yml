@@ -154,6 +154,7 @@
     - runProjectDownload.sh
     - reIndexAll.sh
     - runMuDownload.sh
+    - runOrgDownload.sh
     - scheduledDAWEDownloads.sh
   tags:
     - ecodata

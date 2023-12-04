@@ -70,3 +70,10 @@ sleep 2m
 
 export SUMMARY_FLAG=true
 /{{data_dir}}/ecodata/scripts/runMuDownload.sh "$EMAIL" "$SUMMARY_FLAG" "$END_DATE"
+
+export SUMMARY_FLAG=false
+/{{data_dir}}/ecodata/scripts/runOrgDownload.sh "$EMAIL" "$SUMMARY_FLAG" "$END_DATE"
+sleep 2m
+
+export SUMMARY_FLAG=true
+/{{data_dir}}/ecodata/scripts/runOrgDownload.sh "$EMAIL" "$SUMMARY_FLAG" "$END_DATE"
