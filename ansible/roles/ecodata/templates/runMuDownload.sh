@@ -8,4 +8,4 @@ export HUB_FQ=isMERIT%3Atrue
 export API_KEY={{ ecodata_api_key }}
 export ECODATA_BASE_URL={{ecodata_url}}/ws
 
-curl -X GET -H "Authorization: $API_KEY" "$ECODATA_BASE_URL/managementunit/generateReportsInPeriod/?startDate=2018-07-01T00:00:00Z&endDate=$END_DATE&summaryFlag=$SUMMARY_FLAG&email=$EMAIL&senderEmail=$SENDER_EMAIL&systemEmail=$SENDER_EMAIL&reportDownloadBaseUrl=$DOWNLOAD_URL"
+curl -X GET -H "Authorization: $API_KEY" "$ECODATA_BASE_URL/report/generateReportsInPeriod/?startDate=2018-07-01T00:00:00Z&endDate=$END_DATE&summaryFlag=$SUMMARY_FLAG&email=$EMAIL&senderEmail=$SENDER_EMAIL&systemEmail=$SENDER_EMAIL&reportDownloadBaseUrl=$DOWNLOAD_URL&entity=managementUnit"
