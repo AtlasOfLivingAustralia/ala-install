@@ -25,3 +25,12 @@
     priv: "CONNECT/pg_stat_database:SELECT"
     state: present
   when: datadog_postgress_enabled | default(False) | bool
+
+- name: Grant pg_monitor role to the Datadog user
+  postgresql_privs:
+    db: "{{ datadog_db_name }}"
+    role: datadog
+    type: group
+    objs: pg_monitor
+  when: datadog_postgress_enabled | default(False) | bool
+
