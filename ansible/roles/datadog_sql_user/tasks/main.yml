@@ -22,6 +22,6 @@
     login_user: "{{ datadog_db_login_user | default(omit) }}"
     name: datadog
     password: "{{ datadog_db_password }}"
-    priv: "CONNECT/pg_stat_database:SELECT/pg_ls_waldir:EXECUTE"
+    priv: "CONNECT/pg_stat_database:SELECT/pg_monitor"
     state: present
   when: datadog_postgress_enabled | default(False) | bool
