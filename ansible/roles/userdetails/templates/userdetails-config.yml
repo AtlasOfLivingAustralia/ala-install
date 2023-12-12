@@ -200,7 +200,7 @@ attributes:
 webservice:
   apiKey: {{ api_key }}
   jwt: {{ userdetails_jwt_client_enabled | default('true') }}
-  scope: {{ userdetails_jwt_scopes | default('openid ala/internal') }}
+  jwt-scopes: {{ userdetails_jwt_scopes | default('openid ala/internal') }}
   client-id: {{ userdetails_jwt_clientid | default('') }}
   client-secret: {{ userdetails_jwt_secret | default('') }}
 
