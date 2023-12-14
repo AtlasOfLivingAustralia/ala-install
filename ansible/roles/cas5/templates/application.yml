@@ -145,6 +145,26 @@ cas:
       jwks:
         file-system:
           jwks-file: file:/data/cas/keystore.jwks
+      discovery:
+        scopes:
+          - openid
+          - profile
+          - email
+          - offline_access
+          - ala
+          - roles
+          - ala/internal
+          - users/read
+          - users/write
+          - profile-service/write
+          - profile-service/read
+          - doi/write
+          - doi/read
+          - image-service/write
+          - image-service/read
+{% for extra_scope in cas_extra_scopes %}
+          - {{ extra_scope }}
+{% endfor %}
   monitor:
     # endpoints:
     #   enabled: true
@@ -170,7 +190,7 @@ cas:
     tgt:
       primary:
         maxTimeToLiveInSeconds: {{ cas_login_timeout | default('86400') }}
-        timeToKillInSeconds: {{ cas_login_timeout | default('86400') }}
+        timeToKillInSeconds: {{ cas_login_time_to_kill | default('86400') }}
       rememberMe:
         enabled: true
         timeToKillInSeconds: {{ cas_remember_me_timeout | default('7884000') }}
@@ -227,7 +247,7 @@ ala:
     baseUrl: {{ ala_base_url | default('https://www.ala.org.au')}}
     termsUrl: {{ terms_url | default('${ala.skin.baseUrl}/terms-of-use/') }}
     uiVersion: {{ ala_cas_ui_version | default('2') }}
-    headerFooterUrl: {{ header_and_footer_baseurl | default('${ala.skin.baseUrl}/commonui-bs3')}}/
+    headerFooterUrl: {{ header_and_footer_baseurl | default('${ala.skin.baseUrl}/commonui-bs3-2019')}}/
     favIconBaseUrl: {{ skin_favicon_baseurl | default('${ala.skin.baseUrl}/wp-content/themes/ala-wordpress-theme/img/favicon/') }}
     bieBaseUrl: {{ bie_base_url | default('https://bie.ala.org.au')}}
     bieSearchPath: {{ bie_search_path | default('/search') }}
@@ -236,6 +256,7 @@ ala:
     orgLongName: {{ orgNameLong | default('Atlas of Living Australia') }}
     orgNameKey: {{ orgNameKey | default('ala') }}
     loginLogo: {{ loginLogo | default('https://auth.ala.org.au/cas/images/supporting-graphic-element-flat-medium.png') }}
+    supportEmail: {{ support_email | default('support@ala.org.au') }}
 
 # Enable these for Spring Boot actuator (required for Spring Boot Admin client)
 

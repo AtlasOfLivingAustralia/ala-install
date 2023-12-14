@@ -1,0 +1,112 @@
+#!/bin/bash
+
+# Let fail if some service generation fails
+set -e
+
+CMD=$(basename "$0")
+GEN_LOC="$(dirname "$(realpath "$0")")"
+
+if [[ ! -e $GEN_LOC/docopts ]] ; then
+    curl -s -o "$GEN_LOC/docopts" -LJO https://github.com/docopt/docopts/releases/download/v0.6.3-rc2/docopts_linux_amd64
+    chmod +x "$GEN_LOC/docopts"
+fi
+
+eval "$("$GEN_LOC/docopts" -V - -h - : "$@" <<EOF
+
+$CMD: ALA data generator
+
+Usage:
+  $CMD [options] --data=<dir> --inv=<dir> generate [<service>...]
+  $CMD [options] --data=<dir> <inventory>
+  $CMD -h | --help
+  $CMD -v | --version
+
+Options:
+  --extra-args=<args>  Additional "arg1=values arg2=value" to get preference over defaul extra variables values
+  --verbose            Verbose output.
+  -h --help            Show this help.
+  -v --version         Show version.
+
+For instance, run for production inventories with:
+  ./ala-data-generator --inv=/home/youruser/ala/ansible-inventories/ --data=/data/docker generate doi alerts
+or for all services:
+  ./ala-data-generator --inv=/home/youruser/ala/ansible-inventories/ --data=/data/docker generate
+or for some specific service:
+  ./ala-data-generator --data=/data/docker ./collections-test
+or in other directory and using some extra arg:
+  /home/youruser/ala-install/utils/ala-data-generator --extra-args="solr_url=some_solr_host:2181" --data=/data/docker ./biocache-service-test-databox
+
+----
+$CMD $VER
+License Apache-2.0
+EOF
+)"
+
+list=(
+  "./alerts/alerts-prod"
+  "./auth/aws-auth-prod.yml"
+  "./bie/bie-hub-prod-2022-cognito"
+  "./bie/bie-ws-solr-prod-2022-cognito"
+  "./biocache/biocache-hub-2021-cognito"
+  "./biocache/biocache-service-2021-cognito"
+  "./biocache/cassandra-cluster-2021"
+  "./biocache/solrcloud-2021-1"
+  "./biocollect/biocollect-prod"
+  "./calendars/calendars-prod"
+  "./collections/collections-prod-cognito"
+  "./dashboard/dashboard-prod"
+  "./data_quality_filter_service/data_quality_filter_service_prod"
+  "./doi/doi-prod"
+  "./events/events-prod-2023"
+  "./fieldcapture/fieldcapture-prod"
+  "./image-service/image-service-prod"
+  "./logger/logger-prod"
+  "./pdf-service/pdf-service-prod"
+  "./profiles/profiles-prod"
+  "./regions/regions-prod"
+  "./sampling/sampling-prod"
+  "./spatial/spatial-prod"
+  "./specieslists/specieslists-prod"
+  "./ecodata/ecodata-prod"
+  "./fieldguide/fieldguide-prod"
+  "./pipelines/databox-pipelines.yml"
+  "./namematching/namematching-prod"
+  "./sensitive-data-service/sensitive-data-service-prod-2022"
+  # This needs extra role work:
+  "./sandbox/sandbox-prod"
+)
+
+# shellcheck disable=SC2154
+if [[ -n $extra_args ]] ; then
+  E="--extra-args $extra_args"
+else
+  E=""
+fi
+
+# shellcheck disable=SC2154
+if [[ -n $inventory ]]; then
+   # shellcheck disable=SC2086
+   "$GEN_LOC/la-data-generator" --inv="$PWD/" --data="$data" $E generate "$inventory"
+else
+  if [[ -n $service ]] ; then
+    services=("${service[@]}")
+  fi
+
+  for el in "${list[@]}"
+  do
+    match=false
+    for arg in "${services[@]}"
+    do
+      if [[ $el == *"$arg"* ]]; then
+        match=true
+        break
+      fi
+    done
+
+    if [[ -z "${services[*]}" ]] || $match; then
+      # echo -n "$el "
+      # shellcheck disable=SC2086
+      "$GEN_LOC/la-data-generator" --inv="$inv" --data="$data" $E generate "$el"
+    fi
+  done
+fi

@@ -30,6 +30,7 @@ appender(APPLICATION_LOG, RollingFileAppender) {
 
 root(ERROR, [APPLICATION_LOG])
 final error = [
+        'org.hibernate.orm.deprecation'
 ]
 final warn = [
         'au.org.ala',

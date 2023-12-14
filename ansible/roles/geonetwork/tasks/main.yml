@@ -3,10 +3,12 @@
     - geonetwork
 
 - name: packages
-  apt: pkg={{ item }} update_cache=yes state=latest
-  with_items:
-    - curl
-    - unzip
+  apt:
+    name:
+      - curl
+      - unzip
+    update_cache: yes
+    state: latest
   tags:
     - geonetwork
 
@@ -30,7 +32,7 @@
     - geonetwork
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ geonetwork_war_url }}' context_path='{{ geonetwork_context_path }}' hostname='{{ geonetwork_hostname }}'
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ geonetwork_war_url }}' context_path='{{ geonetwork_context_path }}' hostname='{{ geonetwork_hostname }}' tomcat_deploy_from_url=true
   notify:
     - restart tomcat
   tags:

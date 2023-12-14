@@ -11,7 +11,7 @@ geoserver:
 # To use a remote geoserver instance, set geoserver.remote.geoserver_data_dir to the geoserver_data_dir path on the
 # remote server. This will cause layer files to be copied to geoserver_data_dir/data/
 #  remote:
-  geoserver_data_dir: "{{ geoserver_data_dir | default('/data/spatial-data/geoserver_data_dir') }}"
+  geoserver_data_dir: "{{ geoserver_data_dir | default('/data/geoserver_data_dir') }}"
 
 shpResolutions: {{ shp_resolutions | default([0.5, 0.25, 0.1, 0.05]) }}
 grdResolutions: {{ grd_resolutions | default([0.5, 0.25, 0.1, 0.05, 0.01]) }}
@@ -19,12 +19,11 @@ grdResolutions: {{ grd_resolutions | default([0.5, 0.25, 0.1, 0.05, 0.01]) }}
 biocacheServiceUrl: "{{ biocache_service_url | default('https://biocache-ws.ala.org.au/ws') }}"
 biocacheUrl: "{{ biocache_url | default('https://biocache.ala.org.au') }}"
 openstreetmap:
-  url: "{{ openstreetmap_tile_url | default('https://tile.openstreetmap.org') }}"
+  url: "{{ openstreetmap_tile_url | default('') }}"
 
 slave.enable: {{ slave_enable | default(true) }}
 service.enable: {{ service_enable | default(true) }}
 
-serviceKey: {{ spatial_service_service_key  | default('') }}
 batch_sampling_passwords: "{{ batch_sampling_passwords | default('') }}"
 batch_sampling_points_limit: {{ batch_sampling_points_limit | default(1000000) }}
 batch_sampling_fields_limit: {{ batch_sampling_fields_limit | default(1000) }}
@@ -39,19 +38,19 @@ gdal.dir: "{{ gdal_dir | default('/usr/bin/') }}"
 gdm.dir: "{{ gdm_dir | default('/data/spatial-data/modelling/gdm/DoGdm') }}"
 
 aloc.xmx: "{{ aloc_xmx | default('6G') }}"
-aloc.threads: "{{ aloc_threads | default(4) }}"
+aloc.threads: {{ aloc_threads | default(4) }}
 maxent.mx: "{{ maxent_mx | default('1G') }}"
-maxent.threads: "{{ maxent_threads | default(4) }}"
+maxent.threads: {{ maxent_threads | default(4) }}
 
-sampling.threads: "{{ sampling_threads | default(4) }}"
+sampling.threads: {{ sampling_threads | default(4) }}
 
 slaveKey: "{{ spatial_service_slave_key | default('') }}"
 serviceKey: "{{ spatial_service_service_key | default('') }}"
 
 # time between pushing status updates to the master for a task
-statusTime: "{{ status_time | default(3000) }}"
-retryCount: "{{ retry_count | default(10) }}"
-retryTime: "{{ retry_time | default(30000) }}"
+statusTime: {{ status_time | default(3000) }}
+retryCount: {{ retry_count | default(10) }}
+retryTime: {{ retry_time | default(30000) }}
 
 #
 #  CAS SETTINGS
@@ -60,22 +59,24 @@ retryTime: "{{ retry_time | default(30000) }}"
 security:
   cas:
     casServerName: {{ auth_base_url }}
-    uriFilterPattern: {{ uri_filter_pattern | default('/manageLayers,/manageLayers/.*,/admin,/admin/.*,/alaAdmin.*') }}
-    uriExclusionFilterPattern: {{ uri_exclusion_filter_pattern | default('/assets.*,/images.*,/css.*,/js.*,/less.*,/tasks/status/.*') }}
-    authenticateOnlyIfLoggedInFilterPattern: {{ authenticate_only_if_logged_in_filter_pattern | default('/master,/master/.*,/tasks,/tasks/.*') }}
-    appServerName: {{ spatial_service_base_url }}
     casServerUrlPrefix: {{ auth_cas_url }}
     loginUrl: {{ auth_cas_url }}/login
     logoutUrl: {{ auth_cas_url }}/logout
-    contextPath: {{ spatial_service_context_path }}
     bypass: {{ bypass_cas | default(true) }}
     disableCAS: {{ bypass_cas | default(true) }}
     gateway: {{ gateway_cas | default(false) }}
+  apikey:
+    check:
+      serviceUrl:  {{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}
+
 
 auth.admin_role: {{ auth_admin_role | default('ROLE_ADMIN') }}
 app.http.header.userId: {{ app_http_header_userid | default('X-ALA-userId') }}
 
-headerAndFooter.baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}
+headerAndFooter:
+  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3-2019') }}
+  version: "{{ header_and_footer_version | default('2') }}"
+
 ala.baseURL: {{ ala_base_url | default('https://www.ala.org.au') }}
 bie.baseURL: {{ bie_base_url | default('https://bie.ala.org.au') }}
 bie.searchPath: '/search'
@@ -91,10 +92,10 @@ phyloServiceUrl: {{ phylolink_url | default('https://phylolink.ala.org.au') }}
 
 spatialHubUrl: {{ spatial_hub_url }}
 
-gazField: {{ gaz_field | default('cl915') }}
+gazField: {{ gaz_field | default('cl2123') }}
 userObjectsField: {{ user_objects_field | default('cl1083') }}
 
-apiKeyCheckUrlTemplate: "{{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}"
+#apiKeyCheckUrlTemplate: "{{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}"
 spatialService.remote: "{{spatial_service_remote_url}}"
 
 journalmap.api_key: {{ journalmap_api_key | default('') }}
@@ -159,8 +160,8 @@ i18n.override.dir: '{{ data_dir }}/spatial-service/config/i81n/'
 
 layers_store.GEONETWORK_URL: '{{ geonetwork_url | default('') }}'
 
-distributions.cache.dir: "{{ data_dir }}/${appName}/mapCache/"
-distributions.geoserver.image.url: "/ALA/wms?service=WMS&version=1.1.0&request=GetMap&layers=ALA:aus1,ALA:Distributions&styles=&bbox=109,-47,157,-7&srs=EPSG:4326&format=image/png&width=400&height=400&viewparams=s:"
+distributions.cache.dir: "{{ data_dir }}/spatial-service/mapCache/"
+distributions.geoserver.image.url: "/ALA/wms?service=WMS&version=1.1.0&request=GetMap&sld={{ distribution_image_sld_url | default('https://fish.ala.org.au/data/dist.sld')}}&layers=ALA:aus1,ALA:Distributions&styles=&bbox=109,-47,157,-7&srs=EPSG:4326&format=image/png&width=400&height=400&viewparams=s:"
 
 dataSource:
     url: 'jdbc:postgresql://{{layers_db_host}}/{{layers_db_name}}'

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}{{ css_styles | default('/css/ala-styles.css') }}" rel="stylesheet"
+    <link href="{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3-2019') }}{{ css_styles | default('/css/ala-styles.css') }}" rel="stylesheet"
           media="screen,print"/>
     <!--<title>Title</title>-->
 {% if ala_download_css is defined and ala_download_css | bool == True %}
@@ -69,6 +69,6 @@ When using this dataset please use the following citation:<br><br>
 The DOI for this download is available at <a href='[url]'>[url]</a><br><br>
 Data contributed by the following providers:<br>
 [dataProviders]<br>
-More information can be found at <a href="{{ citing_the_atlas | default('https://www.ala.org.au/about-the-atlas/terms-of-use/citing-the-atlas/') }}">citing the {{ orgNameShort | default('ALA') }}</a>.<br><br>
+More information can be found at <a href="{{ citing_the_atlas | default('https://support.ala.org.au/support/solutions/articles/6000261662-citing-the-ala') }}">citing the {{ orgNameShort | default('ALA') }}</a>.<br><br>
 </body>
 </html>

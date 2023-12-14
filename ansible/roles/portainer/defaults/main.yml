@@ -1,0 +1,3 @@
+---
+portainer_docker_dir: "{{ data_dir }}/portainer/docker"
+portainer_data_dir: "{{ data_dir }}/portainer/data"

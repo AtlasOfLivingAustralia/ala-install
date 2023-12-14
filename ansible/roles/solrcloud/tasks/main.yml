@@ -1,149 +1,25 @@
+---
 - include: ../../common/tasks/setfacts.yml
   tags:
-    - solrcloud 
-    - solr_config
-
-- name: Stop monit
-  service:
-    name: monit
-    state: stopped
-    enabled: "yes"
-  ignore_errors: yes
-  tags:
-    - solr_config  
-    - solrcloud
-    - solr_restart    
-
-- name: Stop solr
-  service:
-    name: solr
-    state: stopped
-    enabled: "yes"
-  ignore_errors: yes
-  tags:
-    - solr_config  
-    - solrcloud
-    - solr_restart    
-
-- name: Download SOLR {{ solr_version }}
-  get_url: url="{{ solr_repository }}{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
-#  get_url: url="http://mirrors.ibiblio.org/apache/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
-#  get_url: url="https://archive.apache.org/dist/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
-  tags:
-    - solrcloud
-
-- name: Remove previous solr program files link
-  file: path={{item}} state=absent
-  with_items:
-    - "/opt/solr"
-    - "/opt/solr-{{ solr_version }}"
-  tags:
-    - solrcloud
-
-- name: Extract the install script
-  shell: "tar xzf /tmp/solr-{{ solr_version }}.tgz solr-{{ solr_version }}/bin/install_solr_service.sh --strip-components=2"
-  tags:  
-    - solrcloud
-    - solr_download
-
-- name: ensure target directories exist [data subdirectories etc.
-  file: path={{item}} state=directory
-  with_items:
-    - "{{data_dir}}/solr/"
-  tags:
-    - solr_config
-    - solrcloud
-
-# Note, the install script tries to start the solr service and fails due to the logs directory not existing
-# Need to ignore the errors from here and move on to configuration
-# Will fail when trying to start the solr service after configuration if there is still an issue at that point
-- name: Run install script (allowing errors due to the log directory issue)
-  shell: "./install_solr_service.sh /tmp/solr-{{ solr_version }}.tgz -i /opt -d /data/solr -u solr -s solr -f"
-  ignore_errors: yes
-  tags:  
-    - solrcloud
-
-- name: Create log directory
-  file: path={{item}} state=directory owner=solr group=solr mode=0755
-  with_items:
-    - "/opt/solr/server/logs"
-  tags:
-    - solr_config  
-    - solrcloud
-
-# The version relates to JTS types used in SOLR schema definitions
-- name: Add JTS 1.16
-  copy: src=libs/{{item}} dest=/opt/solr/server/lib/ext
-  with_items:
-    - jts-core-1.16.1.jar
-    - jts-io-common-1.16.1.jar
-  tags:
-    - solrcloud
-  when: jts_use_1_16
-
-- name: Add JTS 1.13
-  copy: src=libs/{{item}} dest=/opt/solr/server/lib/ext
-  with_items:
-    - jts-1.13.jar
-  tags:
-    - solrcloud
-  when: jts_use_1_13
-
-- name: Add JTS 1.18.1
-  copy: src=libs/{{item}} dest=/opt/solr/server/lib/ext
-  with_items:
-    - jts-core-1.18.1.jar
-    - jts-io-common-1.18.1.jar
-  tags:
-    - solrcloud
-  when: jts_use_1_18
-
-- name: add common tomcat jars (for SOLR logging and JTS)
-  copy: src=solr/solr.xml dest=/data/solr
-  tags:
     - solrcloud
     - solr_config
 
-- name: copy SOLR config
-  template: src=solr.in.sh dest=/opt/solr/bin/
-  tags:
-    - solrcloud
-    - solrcloud_config
+- name: Include docker tasks
+  include_tasks: docker-tasks.yml
+  vars:
+    - solr_temp_disable_shardsWhitelist: true
+  when: deployment_type == 'swarm'
 
-- name: copy SOLR config
-  template: src=solr.in.sh dest=/etc/default/
-  tags:
-    - solrcloud
-    - solrcloud_config
-
-- name: Start solr
-  service:
-    name: solr
-    state: restarted
-    enabled: "yes"
-  tags:
-    - solr_config  
-    - solrcloud
-    - solr_restart
-
-# Start monit again if present, and ignore errors otherwise
-- name: Start monit
-  service:
-    name: monit
-    state: restarted
-    enabled: "yes"
-  ignore_errors: yes
-  tags:
-    - solr_config  
-    - solrcloud
-    - solr_restart
+- name: Include VM tasks
+  import_tasks: vm-tasks.yml
+  when: deployment_type == 'vm'
 
 - name: Check if biocache collection exists
   run_once: true
   uri:
     url: "http://localhost:8983/solr/biocache/select?q=*:*"
     method: GET
-    status_code: [200,404]
+    status_code: [200, 404]
   register: collection
   tags:
     - solrcloud
@@ -156,7 +32,7 @@
     url: "http://localhost:8983/solr/admin/configs?action=LIST&name=biocache&omitHeader=true"
     method: GET
     body_format: json
-    return_content: yes
+    return_content: true
     status_code: 200
   register: solr_configsets
   tags:
@@ -224,8 +100,6 @@
 - name: Create a zip archive of the solr configset
   run_once: true
   archive:
-    path:
-    - /tmp/solr-config/
     dest: /tmp/solr-config.zip
     path: /tmp/solr-config/
     format: zip
@@ -251,10 +125,33 @@
 - name: Create biocache collection if not exists
   run_once: true
   uri:
-    url: "http://localhost:8983/solr/admin/collections?action=CREATE&name=biocache&numShards=1&replicationFactor={{ groups['solrcloud'] | length }}&collection.configName=biocache"
+    url: "http://localhost:8983/solr/admin/collections?action=CREATE&name=biocache&numShards=1&replicationFactor={{ solr_hosts | default(groups['solrcloud'] | length) }}&collection.configName=biocache"
     method: GET
     status_code: 200
   tags:
     - solrcloud
     - solr_create_collection
   when: collection.status == 404
+
+- import_role:
+    name: solrcloud_config
+  vars:
+    - solr_config_host: 127.0.0.1
+    - solr_zk_host: la_solrcloud_zoo_1
+    - solr_user: "{{ docker_default_user }}"
+    - solrcloud_num_shards: 1
+  when: deployment_type == 'swarm'
+
+  # We can let this port open during development
+- name: Remove previous socat container for solr tunnel
+  import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: la_solrcloud_solr_1
+  run_once: true
+  when: deployment_type == 'swarm' and docker_development_mode is defined and docker_development_mode | bool == false
+  tags:
+    - solr_config
+
+- name: Redeploy stack without solr_temp_disable_shardsWhitelist
+  include: docker-tasks.yml
+  when: deployment_type == 'swarm'

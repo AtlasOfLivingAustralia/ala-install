@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - sds
+    - properties
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ sds_context_path }}' hostname='{{ sds_hostname }}'
   tags:
@@ -61,6 +62,12 @@
 
 - name: Copy legacy properties file
   copy: src="sds-config.properties" dest="{{data_dir}}/sds/sds-config.properties"
+  tags:
+    - sds
+    - properties
+
+- name: copy logback config
+  template: src=logback.xml dest={{data_dir}}/sds/config/logback.xml
   tags:
     - sds
     - properties

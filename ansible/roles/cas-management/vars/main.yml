@@ -5,3 +5,4 @@ classifier: 'exec'
 groupId: "au.org.ala"
 packaging: "war"
 cas_management_jar_url: "{{maven_repo_ws_url}}"
+cas_management_data_dir: "{{ data_dir }}/cas-management"

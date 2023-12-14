@@ -5,6 +5,7 @@
     <sensitivity-category id="LC" name="Least Concern" type="Conservation"/>
     <sensitivity-category id="NT" name="Near Threatened" type="Conservation"/>
     <sensitivity-category id="CD" name="Conservation Dependent" type="Conservation"/>
+    <sensitivity-category id="CD &amp; MI" name="Conservation Dependent (Migratory)" type="Conservation"/>
     <sensitivity-category id="VU" name="Vulnerable" type="Conservation"/>
     <sensitivity-category id="EN" name="Endangered" type="Conservation"/>
     <sensitivity-category id="CR" name="Critically Endangered" type="Conservation"/>
@@ -20,12 +21,20 @@
     <sensitivity-category id="P5" name="WA Priority 5" type="Conservation"/>
     <sensitivity-category id="PX" name="WA Priority X" type="Conservation"/>
     <sensitivity-category id="SP" name="WA Specially Protected" type="Conservation"/>
+    <sensitivity-category id="MI" name="Migratory" type="Conservation"/>
+    <sensitivity-category id="MI &amp; P1" name="Migratory and WA Priority 1" type="Conservation"/>
+    <sensitivity-category id="MI &amp; P2" name="Migratory and WA Priority 2" type="Conservation"/>
+    <sensitivity-category id="MI &amp; P3" name="Migratory and WA Priority 3" type="Conservation"/>
+    <sensitivity-category id="MI &amp; P4" name="Migratory and WA Priority 4" type="Conservation"/>
+    <sensitivity-category id="OS" name="Other Specially Protected" type="Conservation"/>
     <sensitivity-category id="C2" name="SA Category 2 Conservation Protected" type="Conservation"/>
-    <sensitivity-category id="1"  name="NSW Category 1 Conservation Protected" type="Conservation"/>
-    <sensitivity-category id="2"  name="NSW Category 2 Conservation Protected" type="Conservation"/>
-    <sensitivity-category id="3"  name="NSW Category 3 Conservation Protected" type="Conservation"/>
+    <sensitivity-category id="Category 1"  name="NSW Category 1 Conservation Protected" type="Conservation"/>
+    <sensitivity-category id="Category 2"  name="NSW Category 2 Conservation Protected" type="Conservation"/>
+    <sensitivity-category id="Category 3"  name="NSW Category 3 Conservation Protected" type="Conservation"/>
     <sensitivity-category id="L"  name="Listed under The Flora and Fauna Guarantee Amendment Act 1988 (FFG Act), Victoria" type="Conservation"/>
     <sensitivity-category id="IR"  name="In review for listing under the VFFG Act, Victoria" type="Conservation"/>
+    <sensitivity-category id="SL"  name="Special Least Concern" type="Conservation"/>
+    <sensitivity-category id="UK"  name="Sensitive, category unknown" type="Conservation"/>
 
     <sensitivity-category id="PBC1" name="Plant pest not known in Australia" type="Plant_Pest"/>
     <sensitivity-category id="PBC2" name="Plant pest eradicated" type="Plant_Pest"/>
@@ -40,4 +49,6 @@
     <sensitivity-category id="sensitive species" name="New Zealand sensitive species" type="Conservation"/>
     <sensitivity-category id="High" name="ACT high priority" type="Conservation"/>
     <sensitivity-category id="Very High" name="ACT very high priority" type="Conservation"/>
+    <sensitivity-category id="Sensitive" name="ACT sensitive" type="Conservation"/>
+    <sensitivity-category id="Extreme" name="ACT extremely sensitive" type="Conservation"/>
 </sensitivity-categories>

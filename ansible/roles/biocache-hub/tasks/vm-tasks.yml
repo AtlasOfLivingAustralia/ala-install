@@ -1,0 +1,34 @@
+---
+#
+# WAR/JAR file deployment
+#
+- name: add jar and service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: '{{ biocache_hub }}'
+    jar_url: '{{ biocache_hub_artifact_url }}'
+    log_config_filename: logback.xml
+  tags:
+    - deploy
+    - service
+    - biocache_hub
+  when: exec_jar
+
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ biocache_hub_artifact_url }}' context_path='{{ biocache_hub_context_path }}' hostname='{{ biocache_hub_hostname }}'
+  tags:
+    - webapps
+    - tomcat_vhost
+    - deploy
+    - biocache_hub
+  when: not exec_jar
+
+- name: Restart {{ biocache_hub }} service
+  service:
+    name: "{{ biocache_hub }}"
+    state: restarted
+    enabled: yes
+  tags:
+    - biocache_hub
+    - properties
+  when: exec_jar

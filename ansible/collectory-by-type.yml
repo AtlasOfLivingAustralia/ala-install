@@ -1,0 +1,11 @@
+---
+- hosts: collectory
+  gather_facts: false
+
+- name: Deploy collectory in VM
+  import_playbook: collectory-standalone.yml
+  when: (deployment_type | default('vm')) == 'vm'
+
+- name: Deploy collectory in Docker Swarm
+  import_playbook: collectory-docker.yml
+  when: (deployment_type | default('vm')) == 'swarm'

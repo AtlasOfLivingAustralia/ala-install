@@ -19,10 +19,28 @@ security:
   cas:
     appServerName:  {{ specimenbrowser_base_url }}
     casServerName:   {{ auth_cas_url }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+  core:
+      roleAttribute: {{ roleAttribute | default('') }}
+      authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+      affiliation-survey:
+        enabled: {{affiliation_survey_enabled | default ('false')}}
+  cookie:
+    enabled: {{auth_cookie_enabled | default ('false')}}
+    domain: {{auth_cookie_domain | default('.ala.org.au')}}
+{% endif %}
   oidc:
     clientId: {{ clientId | default('') }}
     secret: {{ secret | default('') }}
     discoveryUri: {{ discoveryUri | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+    scope: {{ scope | default('openid')}}
+    alaUseridClaim: {{ alaUseridClaim | default('') }}
+    logoutAction: {{ logoutAction | default('') }}
+    logoutUrl: {{ logoutUrl | default('') }}
+{% endif %}
 skin:
   layout: {{ skin_layout | default('ala-main') }}
   fluidLayout: {{ specimenbrowser_fluid }}
@@ -33,3 +51,7 @@ specimenbrowser:
 headerAndFooter:
   baseURL: {{ header_and_footer_baseurl }}
   version: {{ header_and_footer_version }}
+userdetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
+userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
+userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}

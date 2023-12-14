@@ -188,7 +188,7 @@ ala:
     baseUrl: {{ ala_base_url | default('https://www.ala.org.au')}}
     termsUrl: {{ terms_url | default('${ala.skin.baseUrl}/terms-of-use/') }}
     uiVersion: {{ ala_cas_ui_version | default('2') }}
-    headerFooterUrl: {{ header_and_footer_baseurl | default('${ala.skin.baseUrl}/commonui-bs3')}}/
+    headerFooterUrl: {{ header_and_footer_baseurl | default('${ala.skin.baseUrl}/commonui-bs3-2019')}}/
     favIconBaseUrl: {{ skin_favicon_baseurl | default('${ala.skin.baseUrl}/wp-content/themes/ala-wordpress-theme/img/favicon/') }}
     bieBaseUrl: {{ bie_base_url | default('https://bie.ala.org.au')}}
     bieSearchPath: {{ bie_search_path | default('/search') }}

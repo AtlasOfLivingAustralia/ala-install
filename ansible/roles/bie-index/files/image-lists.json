@@ -9,7 +9,7 @@
     "-record_type:PreservedSpecimen"
   ],
   "required": [
-    "geospatial_kosher:true",
+    "spatiallyValid:true",
     "-user_assertions:50001",
     "-user_assertions:50005"
   ],

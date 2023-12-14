@@ -1,0 +1,11 @@
+---
+- hosts: logger-service
+  gather_facts: false
+
+- name: Deploy logger-service in VM
+  import_playbook: logger-standalone.yml
+  when: (deployment_type | default('vm')) == 'vm'
+
+#- name: Deploy logger-service in Docker Swarm
+#  import_playbook: logger-docker.yml
+#  when: (deployment_type | default('vm')) == 'swarm'

@@ -20,6 +20,7 @@ auth_cas_url = https://auth.ala.org.au/cas
 disable_cas = false
 bypass_cas = false
 
+index_admin_url = http://localhost:8080/solr
 index_live_url = http://localhost:8080/solr/bie
 index_offline_url = http://localhost:8080/solr/bie-offline
 
