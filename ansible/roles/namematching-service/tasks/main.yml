@@ -44,7 +44,7 @@
     - namematching-service
 
 - name: Include VM tasks
-  include: vm-tasks.yml
+  include_tasks: vm-tasks.yml
   when: deployment_type == 'vm'
 
 - name: Customize configuration already added by apt package
@@ -96,9 +96,9 @@
   when: webserver_nginx | default(false) and deployment_type != 'k8s'
 
 - name: Include docker tasks
-  include: docker-tasks.yml
+  include_tasks: docker-tasks.yml
   when: deployment_type == 'swarm'
 
 - name: Include k8s tasks
-  include: k8s-tasks.yml
+  include_tasks: k8s-tasks.yml
   when: deployment_type == 'k8s'
