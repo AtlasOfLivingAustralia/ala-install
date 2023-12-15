@@ -73,6 +73,17 @@
     - properties
     - bie-index
 
+- name: copy image-lists from inventory
+  copy:
+    src: "{{ inventory_dir }}/{{ image_file }}"
+    dest: "{{ data_dir }}/bie-index/config/image-lists.json"
+    force: true
+  when: image_file is defined
+  tags:
+    - config
+    - properties
+    - bie-index
+
 - name: copy hidden-images-lists from inventory
   copy:
     src: "{{ inventory_dir }}/{{ hidden_images_file }}"
