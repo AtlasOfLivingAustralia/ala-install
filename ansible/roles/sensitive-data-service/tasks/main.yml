@@ -49,6 +49,7 @@
   tags:
     - properties
     - sensitive-data-service
+  when: deployment_type != 'k8s'
 
 - name: add nginx vhost
   include_role:
@@ -67,7 +68,7 @@
     - nginx_vhost
     - sensitive-data-service
     - deploy
-  when: webserver_nginx
+  when: webserver_nginx and deployment_type != 'k8s'
 
 - name: Include docker tasks
   include_tasks: docker-tasks.yml
