@@ -1,5 +1,5 @@
 ---
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - tomcat_vhost
     - biocache-service
@@ -10,7 +10,7 @@
     - apache_vhost
   when: deployment_type != 'k8s'
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ biocache_service_context_path }}' hostname='{{ biocache_service_hostname }}' 
+- include_tasks: ../../apache_vhost/tasks/main.yml context_path='{{ biocache_service_context_path }}' hostname='{{ biocache_service_hostname }}'
   tags:
     - biocache-service
     - deploy
@@ -475,13 +475,13 @@
     - properties
 
 - name: Include docker tasks
-  include: docker-tasks.yml
+  include_tasks: docker-tasks.yml
   when: deployment_type == 'swarm'
 
 - name: Include VM tasks
-  include: vm-tasks.yml
+  include_tasks: vm-tasks.yml
   when: deployment_type == 'vm'
 
 - name: Include k8s tasks
-  include: k8s-tasks.yml
+  include_tasks: k8s-tasks.yml
   when: deployment_type == 'k8s'

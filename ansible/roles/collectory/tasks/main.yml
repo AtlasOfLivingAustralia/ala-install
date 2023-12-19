@@ -1,5 +1,5 @@
 ---
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - properties
     - collectory
@@ -39,7 +39,7 @@
     - collectory
   when: deployment_type != 'k8s'
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ collectory_context_path }}' hostname='{{ collectory_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml context_path='{{ collectory_context_path }}' hostname='{{ collectory_hostname }}'
   tags:
     - deploy
     - apache_vhost
@@ -47,7 +47,7 @@
     - webapps
   when: not webserver_nginx
 
-- include: ../../docker-common/tasks/common.yml
+- include_tasks: ../../docker-common/tasks/common.yml
   tags:
     - docker
   when: deployment_type == 'swarm'
@@ -67,13 +67,13 @@
   when: webserver_nginx and deployment_type != 'k8s'
 
 - name: Include k8s tasks
-  include: k8s-tasks.yml
+  include_tasks: k8s-tasks.yml
   when: deployment_type == 'k8s'
 
 - name: Include docker tasks
-  include: docker-tasks.yml
+  include_tasks: docker-tasks.yml
   when: deployment_type == 'swarm'
 
 - name: Include VM tasks
-  include: vm-tasks.yml
+  include_tasks: vm-tasks.yml
   when: deployment_type == 'vm'

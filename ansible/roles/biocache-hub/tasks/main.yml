@@ -1,5 +1,5 @@
 ---
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - webapps
     - properties
@@ -12,7 +12,7 @@
 # Apache/Tomcat virtual host configuration
 #
 
-- include: ../../apache_vhost/tasks/main.yml context_path='/{{ biocache_hub_context_path }}' hostname='{{ biocache_hub_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml context_path='/{{ biocache_hub_context_path }}' hostname='{{ biocache_hub_hostname }}'
   tags:
     - webapps
     - apache_vhost
@@ -159,13 +159,13 @@
   when: exec_jar and deployment_type != 'k8s'
 
 - name: Include docker tasks
-  include: docker-tasks.yml
+  include_tasks: docker-tasks.yml
   when: deployment_type == 'swarm'
 
 - name: Include VM tasks
-  include: vm-tasks.yml
+  include_tasks: vm-tasks.yml
   when: deployment_type == 'vm'
 
 - name: Include k8s tasks
-  include: k8s-tasks.yml
+  include_tasks: k8s-tasks.yml
   when: deployment_type == 'k8s'
