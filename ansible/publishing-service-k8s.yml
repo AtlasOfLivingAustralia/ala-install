@@ -1,0 +1,9 @@
+# Installs publishing-service
+- hosts: publishing-service
+  gather_facts: no
+  vars:
+    - deployment_type: k8s
+    - skip_handlers: true
+  roles:
+    - publishing-service
+  become: true

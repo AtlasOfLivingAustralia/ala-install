@@ -1,6 +1,6 @@
 ---
 image:
     repository: "{{ lists_service_docker_repository | default('atlasoflivingaustralia/lists-service') }}"
-    tag: "{{ lists_service_docker_tag | default('960ad21') }}"
+    tag: "{{ lists_service_docker_tag | default('latest') }}"
 replicaCount: "{{ lists_service_replica_count | default(1) }}"
 dnsName: "{{ lists_service_hostname }}"

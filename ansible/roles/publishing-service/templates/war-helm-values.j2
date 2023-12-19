@@ -1,0 +1,6 @@
+---
+image:
+    repository: "{{ publishing_service_docker_repository | default('atlasoflivingaustralia/publishing-service') }}"
+    tag: "{{ publishing_service_docker_tag | default('latest') }}"
+replicaCount: "{{ publishing_service_replica_count | default(1) }}"
+dnsName: "{{ publishing_service_hostname }}"
