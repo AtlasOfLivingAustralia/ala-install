@@ -39,7 +39,10 @@
     - collectory
   when: deployment_type != 'k8s'
 
-- include_tasks: ../../apache_vhost/tasks/main.yml context_path='{{ collectory_context_path }}' hostname='{{ collectory_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ collectory_context_path }}'
+    hostname: '{{ collectory_hostname }}'
   tags:
     - deploy
     - apache_vhost

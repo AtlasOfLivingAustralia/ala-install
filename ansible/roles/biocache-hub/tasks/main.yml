@@ -12,7 +12,10 @@
 # Apache/Tomcat virtual host configuration
 #
 
-- include_tasks: ../../apache_vhost/tasks/main.yml context_path='/{{ biocache_hub_context_path }}' hostname='{{ biocache_hub_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ biocache_hub_context_path }}'
+    hostname: '{{ biocache_hub_hostname }}'
   tags:
     - webapps
     - apache_vhost
