@@ -1,5 +1,5 @@
 ---
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - sensitive-data-service
     - deploy
@@ -35,7 +35,7 @@
     - apt
 
 - name: Include VM tasks
-  include: vm-tasks.yml
+  include_tasks: vm-tasks.yml
   when: deployment_type == 'vm'
 
 - name: Customize the configuration
@@ -70,5 +70,9 @@
   when: webserver_nginx
 
 - name: Include docker tasks
-  include: docker-tasks.yml
+  include_tasks: docker-tasks.yml
   when: deployment_type == 'swarm'
+
+- name: Include k8s tasks
+  include_tasks: k8s-tasks.yml
+  when: deployment_type == 'k8s'
