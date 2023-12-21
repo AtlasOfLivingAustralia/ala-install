@@ -1,0 +1,7 @@
+# Installs sensitive data service
+- hosts: sensitive-data-service
+  roles:
+    - common
+    - webserver
+    - la-apt
+    - sensitive-data-service

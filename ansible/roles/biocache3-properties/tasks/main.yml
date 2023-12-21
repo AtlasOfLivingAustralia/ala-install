@@ -1,0 +1,52 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - properties
+    - biocache-properties
+    - biocache-layers
+    - biocache-config-properties
+
+- name: ensure target directories exist
+  file: path={{item}} state=directory
+  with_items:
+    - "{{data_dir}}/biocache/config"
+  tags:
+    - properties
+    - biocache-properties
+
+- include_tasks: ../solrcloud/tasks/docker-facts.yml
+  tags:
+    - docker
+    - docker-service
+  when: deployment_type == 'swarm'
+
+- name: copy biocache config properties template 
+  template: src={{item}} dest={{data_dir}}/biocache/config/{{item}} mode=0644 output_encoding=iso-8859-1
+  with_items:
+    - biocache-config.properties
+  tags:
+    - properties
+    - biocache-properties
+    - biocache-config-properties
+
+- name: copy biocache groups config
+  copy: src=groups.json dest={{data_dir}}/biocache/config/groups.json
+  tags:
+    - properties
+    - biocache-properties
+    -
+- name: copy biocache subgroups config
+  copy: src=subgroups.json dest={{data_dir}}/biocache/config/subgroups.json
+  tags:
+    - properties
+    - biocache-properties
+
+- name: ensure target directories exist [data subdirectories etc.
+  file: path={{ item }} state=directory mode=0775
+  with_items:
+    - "{{data_dir}}/cache"
+    - "{{data_dir}}/biocache/tmp"
+    - "{{data_dir}}/biocache/heatmap"
+    - "{{data_dir}}/offline/exports"    
+  tags:
+    - properties
+    - biocache-properties

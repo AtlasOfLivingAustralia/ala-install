@@ -1,0 +1,22 @@
+---
+# We reuse the inventories for collectory VM deploy, so we use also
+# the same group name to read the [collectory:vars]
+- hosts: collectory
+  vars:
+    # This select the docker-tasks.yml
+    - deployment_type: swarm
+    # This creates the collectory vhost in a directory that later is
+    # mounted as a volume in a nginx image
+    - nginx_conf_dir: "{{ data_dir }}/nginx"
+    # This is the name the containter receive so we use it for our db
+    # connection
+    - collectory_db_host_address: la_collectory_mysql
+    # Don't restart nginx or similar as we only need the vhost
+    - skip_handlers: true
+    - collectory_docker_host: la_collectory_war
+    - tomcat_user: "{{ docker_default_user }}"
+    - nginx_user: "{{ docker_default_user }}"
+  roles:
+    - common
+    - collectory
+  become: true

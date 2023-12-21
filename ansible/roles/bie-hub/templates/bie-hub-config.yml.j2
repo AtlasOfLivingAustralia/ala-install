@@ -1,0 +1,249 @@
+grails:
+  serverURL: {{ bie_base_url }}{{bie_hub_context_path}}
+  cors:
+    enabled: true
+serverName: {{ bie_base_url }}
+
+# CAS Config
+security:
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+  core:
+    roleAttribute: {{ roleAttribute | default('') }}
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+    affiliation-survey:
+      enabled: {{affiliation_survey_enabled | default ('false')}}
+  cookie:
+    enabled: {{auth_cookie_enabled | default ('false')}}
+    domain: {{auth_cookie_domain | default('.ala.org.au')}}
+{% endif %}
+  cas:
+    casServerName: {{ auth_base_url }}
+    uriFilterPattern: {{ bie_hub_uri_filter_pattern }}
+    uriExclusionFilterPattern: {{ bie_hub_uri_exclusion_filter_pattern }}
+    appServerName: {{ bie_base_url }}
+    casServerUrlPrefix: {{ auth_cas_url }}
+    loginUrl: {{ auth_cas_url }}/login
+    logoutUrl: {{ auth_cas_url }}/logout
+    contextPath: {{ bie_hub_context_path }}
+    bypass: {{ bypass_cas  }}
+    applyUriFiltersToTicketValidation: false
+    enabled: {{ security_cas_enabled | default(false) }}
+    authCookiename: {{ auth_cookie_name | default('ALA-Auth') }}
+  oidc:
+    enabled: {{ security_oidc_enabled | default(true) }}
+    clientId: {{ (ala_bie_client_id | default(clientId)) | default('') }}
+    secret: {{ (ala_bie_client_secret | default(secret)) | default('') }}
+    discoveryUri: {{ discoveryUri | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+    scope: {{ scope | default('openid')}}
+    alaUseridClaim: {{ alaUseridClaim | default('') }}
+    logoutAction: {{ logoutAction | default('') }}
+    logoutUrl: {{ logoutUrl | default('') }}
+{% endif %}
+  jwt:
+    discoveryUri: {{ discoveryUri | default('') }}
+    clientId: {{ (bie_hub_clientId | default(clientId)) | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+    roleAttribute: {{ roleAttribute | default('') }}
+    rolesFromAccessToken: {{ rolesFromAccessToken | default('true') }}
+    userIdClaim: {{ userIdClaim | default('') }}
+    roleClaims: {{ roleClaims | default('') }}
+{% endif %}
+  apiKey:
+    enabled: {{ apikey_check_enabled | default('false') }}
+    auth:
+      serviceUrl: {{ apikey_auth_url | default('') }}
+    check:
+      serviceUrl: {{ apikey_check_url | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
+    userdetails:
+      serviceUrl: {{ apikey_userdetails_url | default('') }}
+webservice:
+  jwt: {{ webservice_jwt | default('false') }}
+  jwt-scopes: {{ webservice_jwt_scopes | default('') }}
+  client-id: {{ webservice_clientId | default('') }}
+  client-secret: {{ webservice_secert | default('') }}
+disableCAS: {{ bypass_cas }}
+userDetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
+
+# BIE index webservices
+bie:
+  baseURL: {{ bie_base_url }}
+  searchPath: {{ bie_search_path }}
+  index:
+    url: {{ bie_index_base_url }}{{ bie_index_context_path }}
+
+# Query contexts - used to filter search results
+bieService:
+  baseUrl: {{ bie_index_base_url }}{{ bie_index_context_path }}
+  queryContext: {{ bie_query_context }}
+  apiKey: {{ bie_index_api_key }}
+biocacheService:
+  baseURL: {{ biocache_service_url }}
+  queryContext: {{ biocache_query_context }}
+
+# Header and footer
+headerAndFooter:
+  baseURL: {{ header_and_footer_baseurl }}
+  version: {{ header_and_footer_version }}
+
+ala:
+  baseURL: {{ ala_base_url }}
+  image:
+    service:
+      url: {{ image_service_url }}
+allowedImageEditingRoles: {{ allowed_image_editing_roles }}
+
+wikipedia:
+    url: {{ wikipedia_api_url | default('https://en.wikipedia.org/api/rest_v1/page/html/') }}
+    lang: {{ wikipedia_api_lang | default('en') }}
+
+# Skin and layout
+skin:
+  homeUrl: {{ skin_home_url }}
+  layout: {{ bie_skin_layout }}
+  orgNameLong: {{ orgNameLong  }}
+  fluidLayout: {{ skin_fluid_layout }}
+  orgNameShort: {{ orgNameShort }}
+  favicon: {{ skin_favicon }}
+
+languageCodesUrl: file://{{ data_dir }}/{{ bie_hub  }}/config/languages.json
+
+# Facets displayed on search page
+facets: {{ bie_hub_facets }}
+
+# Tabs displayed on species page
+show:
+  tabs: {{ bie_hub_tabs }}
+
+# ALA services
+biocache:
+  baseURL: {{ biocache_hub_url }}
+
+# Other ALA Services
+profileService:
+  baseURL: {{ profile_service_url  }}
+spatial:
+  baseURL: {{ spatial_base_url | default(spatial_url) }}
+collectory:
+  baseURL: {{ collectory_url }}
+  threatenedSpeciesCodesUrl: {{ collectory_url }}/public/showDataResource
+collectoryService:
+  baseURL: {{ collectory_service_url | default(collectory_url) }}
+speciesList:
+  baseURL: {{ species_list_url }}
+  preferredSpeciesListDruid: {{ specieslist_preferredDruid }}
+  preferredListName: {{ specieslist_preferredListName }}
+  apiKey: {{ speciesList_api_key }}
+speciesListService:
+  baseURL: {{ specieslist_service_url }}
+alerts:
+  baseUrl: {{ alerts_url }}
+regions:
+  baseURL: {{ regions_base_url | default(regions_url) }}
+sightings:
+  url: {{ sightings_url }}
+layersService:
+  baseURL: {{ layers_service_url | default(layers_url) }}
+imageServiceBaseURL: {{ image_webservice_url | default(image_service_url)}}
+
+image:
+  baseUrl: {{ image_service_url }}
+  thumbnailUrl: {{ image_webservice_url | default(image_service_url)}}/image/
+ausTraits:
+    baseURL: {{ ausTraits_base_url | default('http://traitdata.austraits.cloud.edu.au') }}
+    homeURL: {{ ausTraits_home_url | default('https://austraits.org/') }}
+    sourceURL: {{ ausTraits_source_url | default('https://zenodo.org/record/7368074') }}
+    definitionsURL: {{ ausTraits_definitions_url | default('https://traitecoevo.github.io/austraits.build/articles/Trait_definitions.html') }}
+
+# External Literature and reference sources
+synonymsTypes: {{ synonym_types }}
+literature:
+  bhl:
+    url: {{ bhl_url }}
+    api: {{ bhl_service_url  }}
+    apikey: {{ bhl_api_key  }}
+    fulltext: {{ bhl_fulltext }}
+    pageSize: 200
+    extend: {{ bhl_extend }}
+  genbank:
+    url: {{ genbank_url  }}
+  scholar:
+    url: {{ scholar_url }}
+  google:
+    url: {{ google_url }}
+  trove:
+    url: {{ trove_url }}
+    api: {{ trove_service_url  }}
+    apikey: {{ trove_api_key }}
+external:
+  blacklist: file://{{ data_dir }}/{{ bie_hub }}/config/blacklist.json
+
+# Mapping options
+defaultDecimalLatitude: {{ default_map_lat }}
+defaultDecimalLongitude: {{ default_map_lon }}
+defaultZoomLevel: {{ default_map_zoom }}
+map:
+  default:
+    url: {{ default_map_url }}
+  simpleMapButton: {{ map_simpleMapButton }}
+  records:
+    colour: {{ default_map_colour }}
+
+{% if vernacular_pull_categories is defined %}
+# A category of vernacular names pulled out from the standard list and given special display treatment
+vernacularName:
+  pull:
+    categories: {{ vernacular_pull_categories }}
+    active: true
+    label: {{ vernacular_pull_title }}
+    labelDetail: {{ vernacular_pull_detail }}
+    showHeader: true
+    showLanguage: true
+{% endif %}
+
+{% if update_file_location is defined %}
+# Update EOL response, a separate file stores configuration values
+update:
+  file:
+    location: {{ update_file_location }}
+{% endif %}
+
+eol:
+  lang: {{ eol_lang }}
+{% if eol_sanitise is defined %}
+# Sanitise EOL content
+  sanitise: {{ eol_sanitise }}
+# comma-delimited HTML elements
+  html:
+    allowedElements: {{ eol_html_allowedElements }}
+# comma-delimited HTML attributes (attribute;pattern;element)
+    allowAttributes: {{ eol_html_allowAttributes }}
+{% endif %}
+
+namematching:
+  serviceURL: {{ namematching_service_url }}
+
+dataquality:
+  baseUrl: {{ data_quality_profiles_url | default('https://dataquality.ala.org.au/data-profiles') }}
+
+speciesParent : {{ specieslist_iconic_species_url | default('https://lists.ala.org.au/iconic-species') }}
+
+supportEmail: {{ support_email | default('support@ala.org.au') }}
+
+survey:
+    indexPage: {{ bie_survey_indexPage | default(false) }}
+    searchPage: {{ bie_survey_searchPage | default(false) }}
+    speciesPage: {{ bie_survey_speciesPage | default(false) }}
+    url: {{ bie_survey_url | default('') }}
+    header: {{ bie_survey_header | default('') }}
+    cookieAge: {{ bie_survey_cookieAge | default(30) }}
+    html: {{ bie_survey_html | default('') }}
+userdetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
+imageFilter: {{ bie_image_filter | default("'&fq=spatiallyValid:true&fq=-user_assertions:50001&fq=-user_assertions:50005&fq=-duplicate_status:ASSOCIATED&fq=-duplicateType:DIFFERENT_DATASET'") }}
+userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
+userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}

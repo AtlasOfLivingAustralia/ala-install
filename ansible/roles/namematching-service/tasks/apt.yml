@@ -1,0 +1,49 @@
+- name: Setup namematching package
+  ansible.builtin.debconf:
+    name: ala-namematching-service
+    question: "{{ item.question }}"
+    value: "{{ item.value }}"
+    vtype: string
+  with_items:
+  - {
+    question: "ala-namematching-service/source",
+    value: "{{ ala_namemaching_service_source | default('https://archives.ala.org.au/archives/nameindexes/20210811/namematching-20210811.tgz') }}"
+    }
+  - {
+    question: "ala-namematching-service/sha1",
+    value: "{{ ala_namemaching_service_source_sha1 | default('563814a7b5d886b746e10eb40c44f0d9bda62371') }}"
+    }
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
+  tags:
+    - apt
+
+- name: Install ala-namematching-service
+  apt:
+    name:
+      - ala-namematching-service={{ ala_namematching_service_version }}
+    state: present
+    autoclean: yes
+    update_cache: yes
+    force: yes
+  tags:
+    - apt
+
+# See:
+# https://github.com/ansible/ansible/issues/29352
+# https://github.com/ansible/ansible/pull/39794
+# https://github.com/ansible/ansible/pull/74196
+- name: dpkg-reconfigure to get rid of configuration changes
+  shell: "dpkg-reconfigure -f noninteractive {{ item }}"
+  with_items:
+    - ala-namematching-service
+  tags:
+    - apt
+
+- name: Start service ala-namematching-service installed via apt, if not running
+  service:
+    name: ala-namematching-service
+    state: started
+  tags:
+    - apt
+  when:
+  - skip_handlers | default("false") | bool == false

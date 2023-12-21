@@ -1,0 +1,436 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - pipelines
+    - docker
+    - la-pipelines
+    - hadoop_vocab
+    - properties
+    - la-pipelines-config
+
+- name: Install aptitude using apt
+  apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+  tags:
+    - pipelines
+    - apt
+
+- name: Install required system packages
+  apt: name={{ item }} state=latest update_cache=yes
+  loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools', 'unzip']
+  tags:
+    - pipelines
+    - apt
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
+  tags:
+    - pipelines
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu bionic stable
+    state: present
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
+  tags:
+    - pipelines
+
+- name: Update apt and install docker-ce
+  apt: update_cache=yes name={{ item }} state=latest
+  with_items:
+    - docker-ce
+    - docker-ce-cli
+    - docker-compose
+    - containerd.io
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
+  tags:
+    - pipelines
+    - docker
+
+- name: create pipelines working directories
+  file: path={{ item }} state=directory owner={{ spark_user }} group={{ spark_user }} recurse=true
+  with_items:
+    - "{{ data_dir }}/la-pipelines/config"
+    - "{{ data_dir }}/spark-tmp"
+    - "{{ data_dir }}/spark/conf"
+    - "{{ data_dir }}/pipelines-shp"
+    - "{{ data_dir }}/dwca-tmp"
+    - "{{ data_dir }}/dwca-export"
+    - "{{ data_dir }}/migration"
+  tags:
+    - properties
+    - la-pipelines-config
+    - pipelines
+    - docker
+    - la-pipelines
+
+- name: Update docker directory
+  template: src={{ item }} dest=/etc/docker/daemon.json
+  with_items:
+    - daemon.json
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
+  tags:
+    - pipelines
+    - docker
+
+- name: Restart docker
+  service:
+    name: docker
+    state: restarted
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
+  tags:
+    - pipelines
+    - docker
+
+# yq is needed by the la-pipelines script
+
+# yq via snap (as at Sep 2021, ppa:rmescandon version does not work)
+- name: Install yq
+  community.general.snap:
+    name:
+      - yq
+  when: use_yq_via_snap is defined and use_yq_via_snap | bool == True
+  tags:
+    - la-pipelines
+    - pipelines
+    - yq
+    - apt
+
+- name: Remove YQ apt package (when installed via PPA)
+  apt:
+    name: yq
+    state: absent
+  when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
+  tags:
+    - pipelines
+    - la-pipelines
+    - yq
+    - apt
+
+- name: Remove the YQ PPA
+  apt_repository:
+    repo: 'ppa:rmescandon/yq'
+    state: absent
+  when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
+  tags:
+    - la-pipelines
+    - pipelines
+    - yq
+    - apt
+
+- name: Remove the apt key for YQ
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: CC86BB64
+    state: absent
+  when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
+  tags:
+    - la-pipelines
+    - pipelines
+    - yq
+    - apt
+
+# Optionally, you might want to update the apt cache after removing the repository
+- name: Update apt cache
+  apt:
+    update_cache: true
+  when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
+  tags:
+    - pipelines
+    - la-pipelines
+    - yq
+    - apt
+
+- name: Determine yq binary name based on architecture
+  set_fact:
+    yq_binary: "yq_linux_{{ 'amd64' if is_arm is not defined else 'arm' }}"
+    yq_version: "{{ yq_bin_version | default('v4.16.2') }}"
+  when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
+  tags:
+    - la-pipelines
+    - pipelines
+    - yq
+    - apt
+
+- name: Download yq
+  get_url:
+    url: "https://github.com/mikefarah/yq/releases/download/{{ yq_version }}/{{ yq_binary }}"
+    dest: "/usr/bin/yq"
+    mode: '0755'
+  vars:
+  when: use_yq_via_ppa is defined and use_yq_via_ppa | bool == True
+  tags:
+    - la-pipelines
+    - pipelines
+    - yq
+    - apt
+
+# docopts is needed by the la-pipelines script
+
+- name: Get docopts
+  shell: curl -o /usr/local/bin/docopts -LJO https://github.com/docopt/docopts/releases/download/v0.6.3-rc2/docopts_linux_amd64
+  when: is_arm is not defined
+  tags:
+    - la-pipelines
+    - pipelines
+    - docopts
+
+- name: Get docopts
+  shell: curl -o /usr/local/bin/docopts -LJO https://github.com/docopt/docopts/releases/download/v0.6.3-rc2/docopts_linux_arm
+  when: is_arm is defined
+  tags:
+    - la-pipelines
+    - pipelines
+    - docopts
+    - apt
+
+- name: Make docopts executable
+  shell: chmod +x /usr/local/bin/docopts
+  tags:
+    - la-pipelines
+    - pipelines
+    - docopts
+
+- name: Update apt and install pipelines
+  apt: update_cache=yes name=la-pipelines={{ pipelines_version }} force=yes
+  tags:
+    - pipelines
+    - la-pipelines
+    - la-pipelines-apt
+    - apt
+
+- name: Install pipelines config
+  template: src={{ item }} dest={{ data_dir }}/la-pipelines/config/{{ item }} mode=0644 output_encoding=iso-8859-1
+  with_items:
+    - la-pipelines-local.yaml
+  tags:
+    - properties
+    - la-pipelines-config
+    - pipelines
+    - la-pipelines
+    - properties
+
+- name: Copy docker YAML files to {{ data_dir }}
+  copy: src={{ item }} dest={{ data_dir }}/{{ item }}
+  with_items:
+    - ala-name-service.yml
+    - ala-sensitive-data-service.yml
+  tags:
+    - pipelines
+    - docker
+    - properties
+
+- name: Copy service scripts to /usr/bin
+  copy: src={{ item }} dest=/usr/bin/{{ item }} mode=777
+  with_items:
+    - ala-name-service.sh
+    - ala-sensitive-data-service.sh
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
+  tags:
+    - pipelines
+    - pipelines-services
+    - docker
+
+- name: Copy docker service files to /etc/systemd/system
+  copy: src={{ item }} dest=/etc/systemd/system/{{ item }}
+  with_items:
+    - ala-name-service.service
+    - ala-sensitive-data-service.service
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
+  tags:
+    - pipelines
+    - pipelines-services
+    - docker
+
+- name: enable services
+  service: name={{ item }} enabled=yes
+  with_items:
+    - ala-name-service
+    - ala-sensitive-data-service
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
+  tags:
+    - pipelines-services
+    - pipelines
+
+- name: Start service ala-sensitive-data-service, if not running
+  service:
+    name: ala-sensitive-data-service
+    state: started
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
+  tags:
+    - pipelines
+    - pipelines-services
+    - docker
+
+- name: Start service ala-name-service, if not running
+  service:
+    name: ala-name-service
+    state: started
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == True
+  tags:
+    - pipelines
+    - pipelines-services
+    - docker
+
+- include: ../../namematching-service/tasks/apt.yml
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
+  tags:
+    - pipelines
+    - pipelines-services
+    - la-pipelines
+    - apt
+
+- include: ../../sensitive-data-service/tasks/apt.yml
+  when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
+  tags:
+    - pipelines
+    - pipelines-services
+    - la-pipelines
+    - apt
+
+- name: Create HDFS base directories
+  shell: "{{ hadoop_install_dir }}/bin/hdfs dfs -mkdir -p {{ item }}"
+  with_items:
+    - "/dwca-exports"
+    - "/dwca-imports"
+    - "/pipelines-data"
+    - "/pipelines-outlier"
+    - "/pipelines-all-datasets"
+    - "/pipelines-species"
+    - "/pipelines-jackknife"
+    - "/pipelines-clustering"
+    - "/pipelines-vocabularies"
+    - "/migration"
+  become: yes
+  become_user: "{{ hadoop.user }}"
+  tags:
+    - pipelines
+    - hadoop
+    - hadoop_dir
+
+- name: Set ownership of HDFS base directories
+  shell: "{{ hadoop_install_dir }}/bin/hdfs dfs -chown {{ spark_user }}:{{ spark_user }} {{ item }}"
+  with_items:
+    - "/dwca-exports"
+    - "/dwca-imports"
+    - "/pipelines-data"
+    - "/pipelines-outlier"
+    - "/pipelines-all-datasets"
+    - "/pipelines-species"
+    - "/pipelines-jackknife"
+    - "/pipelines-clustering"
+    - "/pipelines-vocabularies"
+    - "/migration"
+  become: yes
+  become_user: "{{ hadoop.user }}"
+  tags:
+    - pipelines
+    - hadoop
+    - hadoop_dir
+
+- name: Get Gbif API vocabularies
+  run_once: true
+  uri:
+    url: "http://api.gbif.org/v1/vocabularies/{{ item }}/releases/latest/export"
+    dest: /tmp/{{ item }}.json
+  with_items:
+    - LifeStage
+    - DegreeOfEstablishment
+    - EstablishmentMeans
+    - Pathway
+  tags:
+    - pipelines
+    - hadoop
+    - hadoop_vocab
+
+- name: Copy Gbif API vocabularies to dfs
+  run_once: true
+  shell: "{{ hadoop_install_dir }}/bin/hdfs dfs -copyFromLocal -f /tmp/{{ item }}.json /pipelines-vocabularies/ "
+  with_items:
+    - LifeStage
+    - DegreeOfEstablishment
+    - EstablishmentMeans
+    - Pathway
+  become_user: "{{ hadoop.user }}"
+  tags:
+    - pipelines
+    - hadoop
+    - hadoop_vocab
+
+- name: Copy state/province vocab
+  copy: src={{ item.src }} dest={{ data_dir }}/la-pipelines/config/{{ item.dest }} mode=0644
+  with_items:
+    - { src: "{{ state_province_centre_points_file }}", dest: stateProvinceCentrePoints.txt }
+  when: state_province_centre_points_file is defined
+  tags:
+    - pipelines
+    - hadoop
+    - hadoop_vocab
+
+- name: Download SHP files (includes global layer and EEZ derived from GBIFs geocode DB)
+  get_url:
+    url: "{{ pipelines_shapefiles_url | default('https://pipelines-shp.s3-ap-southeast-2.amazonaws.com/pipelines-shapefiles.zip') }}"
+    dest: "{{ data_dir }}/pipelines-shp/pipelines-shapefiles.zip"
+    checksum: "{{ pipelines_shapefiles_checksum | default('sha1:d4755425902e109e749c319f8d4ee98fa7ef2c4d') }}"
+  tags:
+    - pipelines
+    - pipelines-layers
+
+- name: Download SDS files with bitmaps
+  get_url:
+    url: "{{ sds_layers_with_bitmaps_url | default('https://archives.ala.org.au/archives/layers/sds-layers_with_bitmaps.tgz') }}"
+    checksum: "{{ sds_layers_with_bitmaps_checksum | default('sha1:edc02525fdc1df0c587887b6df91d0b6ecd63cd7') }}"
+    dest: "{{ data_dir }}/pipelines-shp/sds-layers.tgz"
+  tags:
+    - pipelines
+    - pipelines-layers
+
+- name: Download extra tar with layers
+  get_url:
+    url: "{{ pipelines_shapefiles_extra_url }}"
+    checksum: "{{ pipelines_shapefiles_extra_checksum }}"
+    dest: "{{ data_dir }}/pipelines-shp/extra-layers.tgz"
+  tags:
+    - pipelines
+    - pipelines-layers
+  when: pipelines_shapefiles_extra_url is defined
+
+- name: Unpack SHP files
+  unarchive:
+    src: "{{ item }}"
+    dest: "{{ data_dir }}/pipelines-shp"
+    remote_src: yes
+    owner: "{{ spark_user }}"
+    group: "{{ spark_user }}"
+  with_items:
+    - "{{ data_dir }}/pipelines-shp/pipelines-shapefiles.zip"
+    - "{{ data_dir }}/pipelines-shp/sds-layers.tgz"
+  tags:
+    - pipelines
+    - pipelines-layers
+
+- name: Unpack SHP extra file
+  unarchive:
+    src: "{{ item }}"
+    dest: "{{ data_dir }}/pipelines-shp"
+    remote_src: yes
+    owner: "{{ spark_user }}"
+    group: "{{ spark_user }}"
+  with_items:
+    - "{{ data_dir }}/pipelines-shp/extra-layers.tgz"
+  tags:
+    - pipelines
+    - pipelines-layers
+  when: pipelines_shapefiles_extra_url is defined
+
+- name: Copy additional logging configs
+  copy: src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }}
+  with_items:
+    - { src: "{{ logback_pipelines_conf | default('logback.xml') }}", dest: "{{ data_dir }}/la-pipelines/config/logback.xml", owner: "{{ spark_user }}", group: "{{ spark_user }}" }
+    - { src: "{{ log4j_spark_conf | default('log4j-spark.properties') }}", dest: "{{ data_dir }}/spark/conf/log4j.properties", owner: "{{ spark_user }}", group: "{{ spark_user }}" }
+  tags:
+    - pipelines
+    - properties
+    - la-pipelines-config
+    - la-pipelines-logging-config

@@ -1,0 +1,4 @@
+- hosts: spark
+  roles:
+    - java
+    - spark

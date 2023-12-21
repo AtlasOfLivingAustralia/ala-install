@@ -1,8 +1,15 @@
+- name: "Show postgis version"
+  debug:
+    msg: "postgis version: {{ postgis_version }} and installing postgis: {{ install_postgis }}"
+  tags:
+    - postgresql
+    - postgis
+
 - name: install setfacl support
   become: yes
   apt:
     pkg: acl
-  when: postgis_version
+  when: postgis_version and install_postgis | bool == True
   tags:
     - postgresql
     - postgis
@@ -23,7 +30,7 @@
   postgresql_db:
     db: postgis_template
     state: present
-  when: postgis_version
+  when: postgis_version and install_postgis | bool == True
   become: yes
   become_user: postgres
   tags:
@@ -32,7 +39,7 @@
 
 - name: make postgis_template a template
   action: command psql -d postgis_template -c "UPDATE pg_database SET datistemplate=true WHERE datname='postgis_template';"
-  when: postgis_version
+  when: postgis_version and install_postgis | bool == True
   become: yes
   become_user: postgres
   tags:
@@ -41,13 +48,13 @@
 
 - name: run the postgis SQL scripts
   action: command psql -d postgis_template -f {{ item }}
-  when: postgis_version
+  when: postgis_version and install_postgis | bool == True
   become: yes
   become_user: postgres
   with_items:
-    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version_folder}}/postgis.sql"
-    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version_folder}}/spatial_ref_sys.sql"
-    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_version_folder}}/postgis_comments.sql"
+    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_scripts_version}}/postgis.sql"
+    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_scripts_version}}/spatial_ref_sys.sql"
+    - "/usr/share/postgresql/{{pg_version}}/contrib/postgis-{{postgis_scripts_version}}/postgis_comments.sql"
   tags:
     - postgresql
     - postgis

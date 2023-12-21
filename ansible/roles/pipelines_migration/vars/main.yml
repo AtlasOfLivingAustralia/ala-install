@@ -1,0 +1,9 @@
+use_gbif_nexus: "true"
+maven_release_dir: "snapshots"
+version: "{{ pipelines_migration_version | default('LATEST') }}"
+artifactId: "migration"
+classifier: ''
+groupId: "au.org.ala"
+packaging: "jar"
+migration_jar_url: "{{maven_repo_ws_url}}"
+

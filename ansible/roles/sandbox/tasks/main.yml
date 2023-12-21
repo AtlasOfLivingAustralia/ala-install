@@ -22,6 +22,18 @@
     appname: "sandbox"
     hostname: "{{ sandbox_hostname }}"
     context_path: "{{ sandbox_context_path }}"
+    nginx_paths:
+      - path: "{{ sandbox_download_path | default('/biocache-download') }}"
+        sort_label: "7_download"
+        is_proxy: false
+        alias: "{{ download_dir | default('/data/biocache-download') }}"
+      - path: "{{sandbox_context_path}}"
+        sort_label: "3_root"
+        is_proxy: true
+        use_cache: false
+        force_cache: false
+        unlimited_conns: true
+        proxy_pass: "http://127.0.0.1:8080{{sandbox_context_path}}"
   tags:
     - nginx_vhost
     - deploy

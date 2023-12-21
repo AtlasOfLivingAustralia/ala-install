@@ -3,5 +3,9 @@ version: "{{ doi_service_version | default('LATEST') }}"
 artifactId: "doi-service"
 classifier: 'exec'
 groupId: "au.org.ala"
-packaging: "jar"
+packaging: "{{ (doi_service_version is version('2', '>=')) | ternary('war', 'jar') }}"
 doi_service_jar_url: "{{maven_repo_ws_url}}"
+
+# enable large downloads with nginx, > ~1GB
+nginx_extra_http_options: |
+  proxy_max_temp_file_size 0;

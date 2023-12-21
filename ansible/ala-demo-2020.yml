@@ -12,7 +12,7 @@
     - java
     - tomcat
     - cassandra3
-    - mysql-8.0
+    - mysql
     - postgresql
     - webserver
     - nameindex

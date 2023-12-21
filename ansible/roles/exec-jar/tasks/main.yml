@@ -2,18 +2,29 @@
   tags:
     - service
 
+- import_role:
+    name: java
+
 - name: Update apt
   apt:
     update_cache: yes
   tags:
   - service
 
-- name: Install dependencies
+- name: Install dependencies for ansible python 2
   apt:
-    name: 
-      - python3-lxml
+    name: python-lxml
     state: present
-  tags: 
+  when: ansible_python.version.major==2
+  tags:
+  - service
+
+- name: Install dependencies for ansible python 3
+  apt:
+    name: python3-lxml
+    state: present
+  when: ansible_python.version.major==3
+  tags:
   - service
 
 - name: "Create system user for {{service_name}}"
@@ -57,7 +68,7 @@
   tags:
   - service
 
-- name: "Download {{service_name}} JAR"
+- name: "Download {{service_name}} JAR (unauthenticated)"
   maven_artifact:
     group_id: "{{groupId}}"
     artifact_id: "{{artifactId}}"
@@ -71,17 +82,31 @@
     owner: "{{ service_owner | default(service_name) }}"
     group: "{{ service_group | default(service_name) }}"
     verify_checksum: always
-  # get_url:
-  #   url: "{{jar_url}}"
-  #   timeout: "30"
-  #   dest: "/opt/atlas/{{service_name}}/{{service_name}}.jar"
-  #   mode: u=rwx,g=rx,o=rx
-  #   owner: "{{ service_owner | default(service_name) }}"
-  #   group: "{{ service_group | default(service_name) }}"
-  #   force: yes
   notify: "restart {{service_name}}"
+  when: maven_repo_username is not defined
   tags:
   - service
+
+- name: "Download {{service_name}} JAR (with supplied username and password)"
+  maven_artifact:
+    group_id: "{{groupId}}"
+    artifact_id: "{{artifactId}}"
+    version: "{{version|default('latest')}}"
+    extension: "{{packaging|default('jar')}}"
+    classifier: "{{classifier|default('')}}"
+    repository_url: "{{maven_repo_url}}"
+    username: "{{maven_repo_username}}"
+    password: "{{maven_repo_password}}"
+    timeout: 30
+    dest: "/opt/atlas/{{service_name}}/{{service_name}}.jar"
+    mode: u=rwx,g=rx,o=rx
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_group | default(service_name) }}"
+    verify_checksum: always
+  notify: "restart {{service_name}}"
+  when: maven_repo_username is defined
+  tags:
+    - service
 
 - name: "Set {{service_name}} JAR config"
   template:
@@ -92,6 +117,7 @@
   notify: "restart {{service_name}}"
   tags:
   - service
+  - service-conf
 
 # Don't force start the service, rely on the handlers to do it
 # - name: "Start {{service_name}} service"

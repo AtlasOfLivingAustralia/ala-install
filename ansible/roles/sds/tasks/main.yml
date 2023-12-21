@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - sds
+    - properties
 
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ sds_context_path }}' hostname='{{ sds_hostname }}'
   tags:
@@ -48,19 +49,25 @@
     - properties
 
 - name: Copy sensitivity categories XML
-  copy: src="sensitivity-categories.xml" dest="{{data_dir}}/sds/sensitivity-categories.xml"
+  copy: src="{{ sensitivity_categories_file | default ('sensitivity-categories.xml') }}" dest="{{data_dir}}/sds/sensitivity-categories.xml"
   tags:
     - sds
     - properties
 
 - name: Copy sensitivity zones XML
-  copy: src="sensitivity-zones.xml" dest="{{data_dir}}/sds/sensitivity-zones.xml"
+  copy: src="{{ sensitivity_zones_file | default ('sensitivity-zones.xml') }}" dest="{{data_dir}}/sds/sensitivity-zones.xml"
   tags:
     - sds
     - properties
 
 - name: Copy legacy properties file
   copy: src="sds-config.properties" dest="{{data_dir}}/sds/sds-config.properties"
+  tags:
+    - sds
+    - properties
+
+- name: copy logback config
+  template: src=logback.xml dest={{data_dir}}/sds/config/logback.xml
   tags:
     - sds
     - properties

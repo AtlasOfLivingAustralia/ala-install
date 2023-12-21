@@ -5,6 +5,17 @@ deployment_env: {{ (doi_deployment_env | default(deployment_env)) | default('pro
 # CAS Config
 #
 security:
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+  core:
+    roleAttribute: {{ roleAttribute | default('') }}
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+    affiliation-survey:
+      enabled: {{affiliation_survey_enabled | default ('false')}}
+  cookie:
+    enabled: {{auth_cookie_enabled | default ('false')}}
+    domain: {{auth_cookie_domain | default('.ala.org.au')}}
+{% endif %}
   cas:
     casServerName: {{ auth_base_url }}
     casServerUrlPrefix: {{ auth_cas_url }}
@@ -13,14 +24,43 @@ security:
     appServerName: https://{{ doi_service_hostname }}
     loginUrl: {{ auth_cas_url }}/login
     logoutUrl: {{ auth_cas_url }}/logout
-  apikey:
+  oidc:
+    clientId: {{  (doi_client_id | default(clientId)) | default('') }}
+    secret: {{ (doi_client_secret | default(secret)) | default('') }}
+    discoveryUri: {{ discoveryUri | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+    scope: {{ scope | default('openid')}}
+    alaUseridClaim: {{ alaUseridClaim | default('') }}
+    logoutAction: {{ logoutAction | default('') }}
+    logoutUrl: {{ logoutUrl | default('') }}
+{% endif %}
+  jwt:
+    discoveryUri: {{ discoveryUri | default('') }}
+    clientId: {{ clientId | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+    rolesFromAccessToken: {{ rolesFromAccessToken | default('true') }}
+    userIdClaim: {{ userIdClaim | default('') }}
+    roleClaims: {{ roleClaims | default('') }}
+{% endif %}
+  apiKey:
+    enabled: {{ apikey_check_enabled | default('false') }}
+    auth:
+      serviceUrl: {{ apikey_auth_url }}
     check:
-      serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
-    ip:
-      whitelist:
-
+      serviceUrl: {{ apikey_check_url | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
+    userdetails:
+      serviceUrl: {{ apikey_userdetails_url }}
+webservice:
+  jwt: {{ webservice_jwt | default('false') }}
+  jwt-scopes: {{ webservice_jwt_scopes | default('') }}
+  client-id: {{ webservice_clientId | default('') }}
+  client-secret: {{ webservice_secert | default('') }}
+userDetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
 logging:
-  config: {{ data_dir }}/doi-service/config/logback.groovy
+  config: {{ data_dir }}/doi-service/config/logback.xml
 
 serverURL: https://{{ doi_service_hostname }}
 serverName: https://{{ doi_service_hostname }}
@@ -63,14 +103,14 @@ skin:
   favicon: {{ skin_favicon | default('https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png') }}
 
 headerAndFooter:
-  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}
+  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3-2019') }}
   version: {{ header_and_footer_version | default('2') }}
 
 doi:
-{% if doi_service_la_provider_name is defined %}  
+{% if doi_service_la_provider_name is defined %}
   service:
     # ANDS or DATACITE
-    provider: 
+    provider:
       mapping: { {{ doi_service_la_provider_name }}: '{{ doi_service_default_provider | default('DATACITE') }}' }
 {% endif %}
   storage:
@@ -80,6 +120,7 @@ doi:
     - "biocache"
     - "phylolink"
     - "csdm"
+  resolverUrl: {{ doi_resolver_url | default('https://doi.org/') }}
 
 grails:
   serverURL: https://{{ doi_service_hostname }}{{ doi_service_context_path }}
@@ -105,5 +146,27 @@ dataSource:
 collections:
   baseUrl: {{ (collectory_url | default(collections_url)) | default('https://collections.ala.org.au') }}
 
-userDetails:
-  url: {{ auth_base_url }}/userdetails/
+biocache:
+  wsUrl: {{ biocache_service_url | default('https://biocache-ws.ala.org.au/ws') }}
+
+# swagger configuration
+swagger:
+  info:
+    description: "{{ doi_swagger_info_description | default('Generate DOIs for ALA applications') }}"
+    version: "{{ doi_swagger_info_version | default('1.0') }}"
+    title:  "{{ doi_swagger_info_title | default('ALA DOI service') }}"
+    termsOfServices: "{{ swagger_info_terms_of_services | default('https://www.ala.org.au/who-we-are/terms-of-use/') }}"
+    contact:
+      name:  "{{ swagger_contact_name | default('ALA Support') }}"
+      url: "{{ swagger_contact_url | default('https://www.ala.org.au') }}"
+      email: "{{ swagger_contact_email | default('support@ala.org.au') }}"
+
+openapi:
+  components:
+    security:
+      oauth2:
+        baseUrl: {{ auth_cas_url }}/oidc
+userdetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
+userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
+userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}

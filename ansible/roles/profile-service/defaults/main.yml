@@ -1,0 +1,7 @@
+version: "{{ profile_service_version | default('LATEST') }}"
+artifactId: "profile-service"
+classifier: ''
+packaging: "war"
+groupId: "au.org.ala"
+grails_version: "2"
+profile_service_repo_url: https://maven.pkg.github.com/atlasoflivingaustralia/profile-service

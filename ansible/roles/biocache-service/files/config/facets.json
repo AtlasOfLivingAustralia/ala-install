@@ -153,10 +153,6 @@
             },
             {
                 "sort":"count",
-                "field":"cl958"
-            },
-            {
-                "sort":"count",
                 "field":"cl1048"
             },
             {
@@ -256,7 +252,7 @@
                 "sort":"count",
                 "i18nValues": true,
                 "description": "Spatial validity",
-                "field":"geospatial_kosher"
+                "field":"spatiallyValid"
             },
             {
                 "sort":"index",
@@ -304,7 +300,7 @@
                 "sort":"count",
                 "description": "Date precision",
                 "field":"date_precision"
-            },            
+            },
             {
                 "sort":"index",
                 "field":"occurrence_decade_i"
@@ -398,7 +394,7 @@
             {
                 "sort":"count",
                 "field":"license"
-            },        
+            },
             {
                 "sort":"count",
                 "field":"alau_user_id"

@@ -21,8 +21,8 @@
   file:
     path: "{{item}}"
     state: directory
-    owner: apikey
-    group: apikey
+    owner: "{{ apikey_user | default('apikey') }}"
+    group: "{{ apikey_user | default('apikey') }}"
   with_items:
     - "{{data_dir}}/apikey"
     - "{{data_dir}}/apikey/config"
@@ -35,8 +35,8 @@
 - name: set data ownership
   file:
     path: "{{data_dir}}/apikey"
-    owner: apikey
-    group: apikey
+    owner: "{{ apikey_user | default('apikey') }}"
+    group: "{{ apikey_user | default('apikey') }}"
     recurse: true
   tags:
     - properties
@@ -46,20 +46,34 @@
   template:
     src: apikey-config.yml
     dest: "{{data_dir}}/apikey/config/apikey-config.yml"
-    owner: apikey
-    group: apikey
+    owner: "{{ apikey_user | default('apikey') }}"
+    group: "{{ apikey_user | default('apikey') }}"
   notify:
     - restart apikey
+  when: apikey_version is version('1.7.0', '>=')
+  tags:
+    - properties
+    - apikey
+
+- name: copy apikey-config.yml
+  template:
+    src: apikey-config-pre-1.7.0.yml
+    dest: "{{data_dir}}/apikey/config/apikey-config.yml"
+    owner: "{{ apikey_user | default('apikey') }}"
+    group: "{{ apikey_user | default('apikey') }}"
+  notify:
+    - restart apikey
+  when: apikey_version is version('1.7.0', '<')
   tags:
     - properties
     - apikey
 
 - name: copy logback config
   template:
-    src: logback.groovy
-    dest: "{{data_dir}}/apikey/config/logback.groovy"
-    owner: apikey
-    group: apikey
+    src: logback.xml
+    dest: "{{data_dir}}/apikey/config/logback.xml"
+    owner: "{{ apikey_user | default('apikey') }}"
+    group: "{{ apikey_user | default('apikey') }}"
   tags:
     - properties
     - apikey
@@ -67,12 +81,67 @@
 - name: add jar and service
   include_role:
     name: exec-jar
+    apply:
+      tags: apikey
   vars:
     service_name: "apikey"
     jar_url: '{{ apikey_jar_url }}'
+    use_openjdk11: "{{ apikey_version is version('1.7.0', '>=') }}"
+    use_openjdk8: "{{ apikey_version is version('1.7.0', '<') }}"
+    java_headless: true
+    java_jre: true
+    log_config_filename: logback.xml
   tags:
     - deploy
     - service
+    - service-conf
+    - apikey
+
+- name: Ensure apikey is in a running state
+  service:
+    name: apikey
+    state: started
+  register: apikeyService
+  until: apikeyService.status.ActiveState == "active"
+  retries: 15
+  delay: 30
+  tags:
+    - apikey
+    - db
+
+- name: wait for apikey is running to create the apikeys
+  wait_for: host=127.0.0.1 port={{ apikey_port | default('9002') }} delay=30
+  when: apikey_def_creator_email is defined and apikey_def_creator_userid is defined
+  tags:
+    - apikey
+    - db
+
+- name: add apikeys if do not exist
+  include_role:
+    name: apikey-add
+  vars:
+    app: "{{ oitem.app }}"
+    apikey: "{{ oitem.apikey }}"
+  with_items:
+    - { app: "alerts", apikey: "{{ alerts_apikey }}" }
+    - { app: "bie-index", apikey: "{{ bie_index_api_key }}" }
+    - { app: "biocache", apikey: "{{ biocache_api_key }}" }
+    - { app: "collectory", apikey: "{{ api_key }}" }
+    - { app: "collectory", apikey: "{{ registry_api_key }}" }
+    - { app: "doi-service", apikey: "{{ doi_service_apiKey }}" }
+    - { app: "image-service", apikey: "{{ image_service_apiKey }}" }
+    - { app: "spatialportal", apikey: "{{ spatial_service_api_key }}" }
+    - { app: "spatialportal", apikey: "{{ spatial_service_service_key }}" }
+    - { app: "spatialportal", apikey: "{{ spatial_service_slave_key }}" }
+    - { app: "specieslists", apikey: "{{ speciesList_api_key }}" }
+    - { app: "pipelines", apikey: "{{ pipelines_api_key | default('') }}" }
+    - { app: "data-quality", apikey: "{{ data_quality_api_key | default('') }}" }
+    - { app: "ecodata", apikey: "{{ ecodata_api_key | default('') }}" }
+  loop_control:
+    loop_var: oitem
+  when: apikey_def_creator_email is defined and apikey_def_creator_userid is defined and oitem.apikey|length > 0
+  tags:
+    - apikeys_add
     - apikey
 
 - name: add nginx vhost

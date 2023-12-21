@@ -1,0 +1,4 @@
+- hosts: '{{ target }}'
+  roles:
+    - geoip
+  become: yes

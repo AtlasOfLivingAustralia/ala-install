@@ -1,11 +1,11 @@
 - name: show ansible versions
   debug: msg="You are using Ansible {{ ansible_version.full }} on {{ansible_os_family}}. The current supported version for ala-install is {{ supported_ansible_version.full }}."
 
-- name: check the ansible version
-  pause: prompt="You are not using the supported version of Ansible. The supported version is {{ supported_ansible_version.full }}. You are using {{ ansible_version.full }}. Proceed at your own risk. Press enter to continue"
-  when: supported_ansible_version.major != ansible_version.major or supported_ansible_version.minor != ansible_version.minor
-  tags:
-    - version_check
+# - name: check the ansible version
+#   pause: prompt="You are not using the supported version of Ansible. The supported version is {{ supported_ansible_version.full }}. You are using {{ ansible_version.full }}. Proceed at your own risk. Press enter to continue"
+#   when: supported_ansible_version.major != ansible_version.major or supported_ansible_version.minor != ansible_version.minor
+#   tags:
+#     - version_check
 
 - name: set ubuntu-14.04 variables
   set_fact:
@@ -20,6 +20,7 @@
     nginx: "nginx"
     postfix: "postfix"
     mysql_service: "mysql"
+    mysql: "mysql-server-5.5"
     cassandra_yaml: "/etc/cassandra/cassandra.yaml"
     cassandra_user: "cassandra"
     python_software_properties: "python-software-properties"
@@ -45,6 +46,7 @@
     nginx: "nginx"
     postfix: "postfix"
     mysql_service: "mysql"
+    mysql: "mysql-server-5.7"
     cassandra_yaml: "/etc/cassandra/cassandra.yaml"
     cassandra_user: "cassandra"
     python_software_properties: "python-software-properties"
@@ -79,11 +81,16 @@
     nginx: "nginx"
     postfix: "postfix"
     mysql_service: "mysql"
+    mysql: "mysql-server-5.7"
     cassandra_yaml: "/etc/cassandra/cassandra.yaml"
     cassandra_user: "cassandra"
     python_software_properties: "python3-software-properties"
     tomcat_dir: "/var/lib/{{ tomcat }}"
     tomcat_webapps: "/var/lib/{{ tomcat }}/webapps/"
+    pg_version: "{{ pg_version | default('9.6') }}"
+    postgis_version: "{{ postgis_version | default('2.4') }}"
+    postgis_version_folder: "{{ postgis_version_folder | default('2.4') }}"
+    postgis_scripts_version: "{{ postgis_scripts_version | default('2.4') }}"
 # openjdk-8 will be removed at some point from Ubuntu-18.04, so we will need to switch to Zulu-8 or similar at that point
 # openjdk-lts on Ubuntu-18.04 is JDK-11, so will not be directly useful by our applications at this point due to lack of testing
 #    use_openjdk8: true
@@ -115,11 +122,16 @@
     nginx: "nginx"
     postfix: "postfix"
     mysql_service: "mysql"
+    mysql: "mysql-server-8.0"
     cassandra_yaml: "/etc/cassandra/cassandra.yaml"
     cassandra_user: "cassandra"
     python_software_properties: "python3-software-properties"
     tomcat_dir: "/var/lib/{{ tomcat }}"
     tomcat_webapps: "/var/lib/{{ tomcat }}/webapps/"
+    pg_version: "{{ pg_version | default('10') }}"
+    postgis_version: "{{ postgis_version | default('2.5') }}"
+    postgis_version_folder: "{{ postgis_version_folder | default('2.5') }}"
+    postgis_scripts_version: "{{ postgis_scripts_version | default('2.5') }}"
 # openjdk-8 will be removed at some point from Ubuntu-18.04, so we will need to switch to Zulu-8 or similar at that point
 #    use_openjdk8: true
 #    use_zulu8: False
@@ -128,23 +140,79 @@
   tags:
     - setfacts
 
-- name: set java defaults for openjdk11
+- name: set ubuntu-22.04 variables - overrides
   set_fact:
-    java_home: /usr/lib/jvm/java-11-openjdk-amd64
-  when: use_openjdk11 is defined and use_openjdk11 | bool == True
+    tomcat: "{{ tomcat | default('tomcat9') }}"
+    tomcat_user: "{{ tomcat_user | default('tomcat') }}"
+#    use_openjdk8: "{{ use_openjdk8 | default('True') }}"
+#    use_openjdk11: "{{ use_openjdk11 | default('False') }}"
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "22.04"
+  tags:
+  - setfacts
+
+- name: set ubuntu-22.04 variables
+  set_fact:
+    libtcnative: "libtcnative-1"
+    tomcat_package: "{{ tomcat }}"
+    tomcat_user: "{{ tomcat_user }}"
+    tomcat_conf: "/etc/default/{{ tomcat }}"
+    tomcat_conf_dir: "/etc/{{ tomcat }}"
+    tomcat_log_dir: "/var/log/{{ tomcat }}"
+    apache: "apache2"
+    nginx: "nginx"
+    postfix: "postfix"
+    mysql_service: "mysql"
+    mysql: "mysql-server-8.0"
+    cassandra_yaml: "/etc/cassandra/cassandra.yaml"
+    cassandra_user: "cassandra"
+    python_software_properties: "python3-software-properties"
+    tomcat_dir: "/var/lib/{{ tomcat }}"
+    tomcat_webapps: "/var/lib/{{ tomcat }}/webapps/"
+    psycopg2_package: "python3-psycopg2"
+    pg_version: "{{ pg_version | default('14') }}"
+    postgis_version: "{{ postgis_version | default('3') }}"
+    postgis_version_folder: "{{ postgis_version_folder | default('3') }}"
+    postgis_scripts_version: "{{ postgis_scripts_version | default('3.2') }}"
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "22.04"
   tags:
     - setfacts
 
-- name: set java defaults for openjdk8
+- name: set java defaults for openjdk11 (amd64)
   set_fact:
+    java_security_opts: -Dlog4j2.formatMsgNoLookups=true
+    java_home: /usr/lib/jvm/java-11-openjdk-amd64
+  when: use_openjdk11 is defined and use_openjdk11 | bool == True and ansible_architecture != "aarch64"
+  tags:
+    - setfacts
+
+- name: set java defaults for openjdk11 (arm64)
+  set_fact:
+    java_security_opts: -Dlog4j2.formatMsgNoLookups=true
+    java_home: /usr/lib/jvm/java-11-openjdk-arm64
+  when: use_openjdk11 is defined and use_openjdk11 | bool == True and ansible_architecture == "aarch64"
+  tags:
+    - setfacts
+
+- name: set java defaults for openjdk8 (amd64)
+  set_fact:
+    java_security_opts: -Djava.security.properties=/etc/java-8-openjdk/security/enableLegacyTLS.security -Dlog4j2.formatMsgNoLookups=true
     java_home: /usr/lib/jvm/java-8-openjdk-amd64
-  when: use_openjdk8 is defined and use_openjdk8 | bool == True
+  when: use_openjdk8 is defined and use_openjdk8 | bool == True and ansible_architecture != "aarch64"
+  tags:
+    - setfacts
+
+- name: set java defaults for openjdk8 (arm64)
+  set_fact:
+    java_security_opts: -Djava.security.properties=/etc/java-8-openjdk/security/enableLegacyTLS.security -Dlog4j2.formatMsgNoLookups=true
+    java_home: /usr/lib/jvm/java-8-openjdk-arm64
+  when: use_openjdk8 is defined and use_openjdk8 | bool == True and ansible_architecture == "aarch64"
   tags:
     - setfacts
 
 - name: set java defaults for zulu8
   set_fact:
     java_home: /usr/lib/jvm/zulu-8-amd64/jre
+    java_security_opts:
   when: use_zulu8 is defined and use_zulu8 | bool == True
   tags:
     - setfacts
@@ -205,17 +273,24 @@
 - name: set whether webserver is apache or nginx
   set_fact:
     webserver_nginx: "{{ webserver_nginx | default(false) }}"
+  tags:
+    - setfacts
 
 - name: set exec_jar as default value
   set_fact:
-      exec_jar: false
+    exec_jar: false
   tags:
     - setfacts
 
 - name: set deployment packaging
   set_fact:
-      exec_jar: true
+    exec_jar: true
   when: packaging is defined and packaging == "jar"
   tags:
     - setfacts
 
+- name: set deployment_type
+  set_fact:
+    deployment_type: "{{ deployment_type | default('vm') }}"
+  tags:
+    - setfacts

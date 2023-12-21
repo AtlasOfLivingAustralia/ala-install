@@ -5,3 +5,9 @@ classifier: ''
 packaging: "war"
 groupId: "au.org.ala"
 profile_hub_war_url: "{{maven_repo_ws_url}}"
+# If Apache is using ajp module to talk to tomcat the remoteIpValve should not be required
+# however in the different environments there seems to be a mix of use of ajp and http proxies to talk to tomcat
+# In any case having the valve enabled is not going to hurt
+tomcat_enable_remote_ip_valve: True
+# todo: needed?
+frame_options_header_value: SAMEORIGIN

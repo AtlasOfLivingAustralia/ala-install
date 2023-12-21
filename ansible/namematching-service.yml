@@ -1,8 +1,7 @@
-# Installs bie-index
+# Installs namematching-service
 - hosts: namematching-service
   roles:
     - common
-    - java
     - webserver
-    - nameindex
+    - la-apt
     - namematching-service

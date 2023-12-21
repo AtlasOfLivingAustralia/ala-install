@@ -1,6 +1,7 @@
 - include: ../../common/tasks/setfacts.yml
   tags:
     - specimenbrowser
+    - properties
 
 #
 # External configuration properties file
@@ -19,8 +20,14 @@
     - properties
     - specimenbrowser
 
-- name: copy all config.properties
-  template: src=specimenbrowser-config.properties dest={{data_dir}}/specimenbrowser/config/specimenbrowser-config.properties force=yes
+- name: copy all config
+  template: src=specimenbrowser-config.yml dest={{data_dir}}/specimenbrowser/config/specimenbrowser-config.yml force=yes
+  tags:
+    - properties
+    - specimenbrowser
+
+- name: copy logback config
+  template: src=logback.xml dest={{data_dir}}/specimenbrowser/config/logback.xml force=yes
   tags:
     - properties
     - specimenbrowser

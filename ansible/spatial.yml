@@ -1,5 +1,8 @@
--  hosts: spatial
-   roles:
+- name: spatial
+  hosts: spatial
+  vars:
+    use_postgis: true
+  roles:
     - common
     - java
     - tomcat
@@ -14,4 +17,3 @@
     - spatial-service
     - spatial-hub
     - geonetwork
-

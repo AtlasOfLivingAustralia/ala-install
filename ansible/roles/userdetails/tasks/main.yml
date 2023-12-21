@@ -1,28 +1,30 @@
+---
 - name: "set facts"
   include_role:
     name: common
     tasks_from: setfacts
   tags:
-  - setfacts
-  - userdetails
-  - properties
+    - setfacts
+    - userdetails
+    - properties
 
 - name: "Create system user for userdetails"
   user:
-    name: userdetails
+    name: "{{ userdetails_user | default('userdetails') }}"
     state: present
-    system: yes
+    system: true
   tags:
-  - user
-  - userdetails
-  - properties
+    - user
+    - userdetails
+    - properties
+  when: deployment_type == 'vm'
 
 - name: ensure target directories exist data subdirectories etc.
   file:
     path: "{{item}}"
     state: directory
-    owner: userdetails
-    group: userdetails
+    owner: "{{ userdetails_user | default('userdetails') }}"
+    group: "{{ userdetails_user | default('userdetails') }}"
   with_items:
     - "{{data_dir}}/userdetails"
     - "{{data_dir}}/userdetails/config"
@@ -35,8 +37,8 @@
 - name: set data ownership
   file:
     path: "{{data_dir}}/userdetails"
-    owner: userdetails
-    group: userdetails
+    owner: "{{ userdetails_user | default('userdetails') }}"
+    group: "{{ userdetails_user | default('userdetails') }}"
     recurse: true
   tags:
     - properties
@@ -46,49 +48,65 @@
   template:
     src: userdetails-config.yml
     dest: "{{data_dir}}/userdetails/config/userdetails-config.yml"
-    owner: userdetails
-    group: userdetails
+    owner: "{{ userdetails_user | default('userdetails') }}"
+    group: "{{ userdetails_user | default('userdetails') }}"
   notify:
     - restart userdetails
+  when: user_details_version is version('3', '>=')
+  tags:
+    - properties
+    - userdetails
+
+- name: copy userdetails-config.yml
+  template:
+    src: userdetails-config-pre-3.yml
+    dest: "{{data_dir}}/userdetails/config/userdetails-config.yml"
+    owner: "{{ userdetails_user | default('userdetails') }}"
+    group: "{{ userdetails_user | default('userdetails') }}"
+  notify:
+    - restart userdetails
+  when: user_details_version is version('3', '<')
   tags:
     - properties
     - userdetails
 
 - name: copy logback config
   template:
-    src: logback.groovy
-    dest: "{{data_dir}}/userdetails/config/logback.groovy"
-    owner: userdetails
-    group: userdetails
+    src: logback.xml
+    dest: "{{data_dir}}/userdetails/config/logback.xml"
+    owner: "{{ userdetails_user | default('userdetails') }}"
+    group: "{{ userdetails_user | default('userdetails') }}"
   tags:
     - properties
     - userdetails
 
-- name: add jar and service
-  include_role:
-    name: exec-jar
-  vars:
-    service_name: "userdetails"
-    jar_url: '{{ userdetails_jar_url }}'
+- include: ../../docker-common/tasks/common.yml
   tags:
-    - deploy
-    - service
-    - userdetails
+    - docker
+  when: deployment_type == 'swarm'
 
 - name: add nginx vhost
   include_role:
     name: nginx_vhost
   vars:
     appname: "userdetails"
-    hostname: "{{ cas_host_name }}"
+    hostname: "{{ userdetails_host_name }}"
     context_path: "{{  userdetails_context_path | default('userdetails') }}"
     nginx_paths:
       - path: "/{{  userdetails_context_path | default('userdetails') }}"
         appname: "userdetails"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ userdetails_port | default('9001') }}/{{  userdetails_context_path | default('userdetails') }}"
+        proxy_pass: "http://{{ userdetails_docker_host | default('127.0.0.1') }}:{{ userdetails_port | default('9001') }}/{{  userdetails_context_path | default('userdetails') }}"
   tags:
     - nginx_vhost
     - deploy
     - userdetails
   when: webserver_nginx
+
+- name: Include docker tasks
+  include_tasks: docker-tasks.yml
+  when: deployment_type == 'swarm'
+
+- name: Include VM tasks
+  import_tasks: vm-tasks.yml
+  when: deployment_type == 'vm'

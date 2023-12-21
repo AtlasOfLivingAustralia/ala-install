@@ -1,3 +1,4 @@
+// Outdated as of 29/03/2023 - please refer to logback.xml 
 import ch.qos.logback.core.util.FileSize
 import grails.util.Environment
 import org.springframework.boot.logging.logback.ColorConverter

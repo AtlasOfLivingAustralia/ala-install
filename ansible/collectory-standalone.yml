@@ -3,7 +3,7 @@
     - common
     - java
     - webserver
-    - mysql-5.7
+    - mysql
     - tomcat
     - i18n
     - collectory

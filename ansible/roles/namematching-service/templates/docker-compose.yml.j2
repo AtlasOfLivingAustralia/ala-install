@@ -1,0 +1,54 @@
+---
+version: '3.8'
+
+services:
+
+  war:
+    image: atlasoflivingaustralia/ala-namematching-service:v20210811-3
+    environment:
+      TZ: {{ server_tz }}
+    expose:
+      - {{ namematching_service_port }}
+      - {{ namematching_admin_port }}
+    networks:
+      la_internal:
+    volumes:
+      - conf:{{ data_dir }}/ala-namematching-service/config
+      - lucene:{{ data_dir }}/lucene
+      - i18n:/opt/atlas/i18n
+      - i18n_custom:/var/opt/atlas/i18n
+
+networks:
+  la_internal:
+    external: true
+
+volumes:
+
+  conf:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/ala-namematching-service/config
+
+  lucene:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/lucene
+
+  i18n:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/atlas/i18n
+
+  i18n_custom:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/opt/atlas/i18n
+

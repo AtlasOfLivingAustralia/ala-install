@@ -2,10 +2,10 @@
   roles:
     - common
     - java
-    - {role: db-backup, db: postgres, db_name: "{{ dq_db_name }}", db_user: "{{ dq_db_user }}", db_password: "{{ dq_db_password }}" }
-    - {role: postgresql, pg_version: "13"}
+    - {role: db-backup, db: postgres, db_name: "{{ dq_db_name }}", db_user: "postgres" }
+    - postgresql
     - {role: pg_instance, extensions: [], db_name: "{{ dq_db_name }}", db_user: "{{ dq_db_user }}", db_password: "{{ dq_db_password }}" }
     - tomcat
     - webserver
-    - data_quality_filter_service
+    - { role: data_quality_filter_service, data_quality_filter_service: data-quality-filter-service }
 

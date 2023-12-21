@@ -1,0 +1,48 @@
+- name: "set facts"
+  include_role:
+    name: common
+    tasks_from: setfacts
+  tags:
+    - apikeys_add
+
+- name: set creator email
+  set_fact:
+    def_creator_email: "{{ apikey_def_creator_email }}"
+  tags:
+    - apikeys_add
+
+- name: set creator userid
+  set_fact:
+    def_creator_userid: "{{ apikey_def_creator_userid }}"
+  tags:
+    - apikeys_add
+
+- name: validate apikey
+  assert:
+    that: apikey is match('[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}')
+    fail_msg: "Invalid apikey '{{ apikey }}' for '{{app}}' module."
+  tags:
+    - apikeys_add
+
+- name: ensure target directories exist
+  file: path={{item}} state=directory owner=apikey group=apikey
+  with_items:
+    - "{{data_dir}}/apikey/setup"
+  when: app is defined and apikey is defined and apikey_def_creator_email is defined and apikey_def_creator_userid is defined
+  tags:
+    - apikeys_add
+
+- name: copy SQL script to insert apikey
+  template: src={{ item }} dest={{ data_dir }}/apikey/setup/
+  with_items:
+    - "sql/add-key.sql"
+  tags:
+    - apikeys_add
+
+- name: insert apikey in db if does not exists
+  shell: "mysql --host={{ apikey_db_hostname | default('localhost') }} --port={{ apikey_db_port | default('3306') }} --user={{ apikey_db_username }} --password={{ apikey_db_password }} {{ apikey_db_name | default('apikey') }} < {{data_dir}}/apikey/setup/{{ item }}"
+  with_items:
+    - "add-key.sql"
+  ignore_errors: no
+  tags:
+    - apikeys_add

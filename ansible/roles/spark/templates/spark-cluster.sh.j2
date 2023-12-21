@@ -1,0 +1,90 @@
+#!/bin/bash
+
+MAX_OPEN_FILES=65536
+MAX_MAP_COUNT=262144
+
+clear
+
+function exit_with_usage {
+  cat << EOF
+
+spark-cluster.sh - Manage an Apache Spark cluster and its components
+
+SYNOPSIS
+
+usage: spark-cluster.sh [--start | --stop | --restart | --clean]
+
+EOF
+  exit 1
+}
+
+set -e
+
+if [ $# -eq 0 ]; then
+  exit_with_usage
+fi
+
+
+# Process each provided argument configuration
+while [ "${1+defined}" ]; do
+  IFS="=" read -ra PARTS <<< "$1"
+  case "${PARTS[0]}" in
+    --start)
+      START=true
+      shift
+      ;;
+    --stop)
+      STOP=true
+      shift
+      ;;
+    --restart)
+      START=true
+      STOP=true
+      shift
+      ;;
+    --clean)
+      CLEAN=true
+      shift
+      ;;
+
+    *help* | -h)
+      exit_with_usage
+     exit 0
+     ;;
+    -*)
+     echo "Error: Unknown option: $1" >&2
+     exit 1
+     ;;
+    *)  # No more options
+     break
+     ;;
+  esac
+done
+
+echo " "
+echo " "
+echo "Environment configuration ..."
+{% if spark_installed is defined %} echo "Spark Home..........= $SPARK_HOME" {% endif %}
+echo " "
+echo " "
+
+### Stop
+if [ "$STOP" == "true" ]
+then
+   echo ">>> "
+   echo ">>> Stopping services..."
+   echo ">>> Stopping SPARK services..."
+   cd $SPARK_HOME && ./sbin/stop-all.sh
+   sleep 5s
+
+fi
+## start
+if [ "$START" == "true" ]
+then
+   echo ">>> "
+   echo ">>> Starting services..."
+   echo ">>> Starting Spark services..."
+   cd $SPARK_HOME && ./sbin/start-all.sh
+   sleep 10s
+
+fi

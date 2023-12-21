@@ -33,6 +33,10 @@ options:
       - the port to use for connector
       - will use default port for protocol (8080 for HTTP or 8009 for AJP) if omitted
     required: false
+  max_post_size:
+    description:
+      - max size for a post request
+      - defaults to 2097152 (2MB)
   relaxed_query_chars:
     description:
       - A string containing the chars to relax to avoid requiring URL encoding
@@ -128,7 +132,7 @@ def default_port(name):
     return 8080 if name == "HTTP/1.1" else 8009
 
 
-def add_connector(aug, protocol, service, bind_addr, port, connection_timeout=20000, uri_encoding="UTF-8", redirect_port=443, relaxed_query_chars=""):
+def add_connector(aug, protocol, service, bind_addr, port, max_post_size, connection_timeout=20000, uri_encoding="UTF-8", redirect_port=443, relaxed_query_chars=""):
 
     aug.defvar("service", "/files/server.xml/Server/Service[#attribute/name=\"%(service)s\"]" % locals())
 
@@ -136,6 +140,8 @@ def add_connector(aug, protocol, service, bind_addr, port, connection_timeout=20
     log.debug(locals())
 
     aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/port" % locals(), str(port))
+
+    aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/maxPostSize" % locals(), str(max_post_size))
 
     aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/protocol" % locals(), protocol)
 
@@ -168,6 +174,7 @@ def main():
             bind_addr=dict(default="127.0.0.1"),
             relaxed_query_chars=dict(default=""),
             port=dict(type="int"),
+            max_post_size=dict(default=2097152, type="int"),
             connection_timeout=dict(default=20000, type="int"),
             uri_encoding=dict(default="UTF-8"),
             redirect_port=dict(default=443, type="int"),
@@ -186,6 +193,7 @@ def main():
     bind_addr = module.params["bind_addr"]
     relaxed_query_chars = module.params["relaxed_query_chars"]
     port = module.params["port"]
+    max_post_size = module.params["max_post_size"]
     connection_timeout = module.params["connection_timeout"]
     uri_encoding = module.params["uri_encoding"]
     redirect_port = module.params["redirect_port"]
@@ -210,7 +218,7 @@ def main():
         if state == "absent":
             remove_connector(aug, name, port)
         else:
-            add_connector(aug, name, service, bind_addr, port, connection_timeout, uri_encoding, redirect_port, relaxed_query_chars)
+            add_connector(aug, name, service, bind_addr, port, max_post_size, connection_timeout, uri_encoding, redirect_port, relaxed_query_chars)
 
         try:
             aug.save()

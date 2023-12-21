@@ -1,0 +1,75 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint:
+  name: yamllint
+  enabled: true
+platforms:
+  - name: node1
+    hostname: node1
+    groups:
+      - cluster_master
+    image: geerlingguy/docker-ubuntu1804-ansible:latest
+    privileged: True
+    exposed_ports:
+      - 22/tcp
+      - 5672/tcp
+      - 25672/tcp
+    networks:
+      - name: hadooptestcluster
+        aliases:
+          - node1
+    network_mode: bridge
+    purge_networks: true
+  - name: node2
+    hostname: node2
+    groups:
+      - cluster_nodes
+    image: geerlingguy/docker-ubuntu1804-ansible:latest
+    privileged: True
+    exposed_ports:
+      - 22/tcp
+      - 5672/tcp
+      - 25672/tcp
+    networks:
+      - name: hadooptestcluster
+        aliases:
+          - node2
+    network_mode: bridge
+    purge_networks: true
+  - name: node3
+    hostname: node3
+    groups:
+      - cluster_nodes
+    image: geerlingguy/docker-ubuntu1804-ansible:latest
+    privileged: True
+    networks:
+      - name: hadooptestcluster
+        aliases:
+          - node3
+    network_mode: bridge
+    purge_networks: true
+    exposed_ports:
+      - 22/tcp
+      - 4369/tcp
+      - 5672/tcp
+      - 25672/tcp
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      hash_behavior: merge
+  lint:
+    name: ansible-lint
+    enabled: true
+    options:
+      x:
+        - ANSIBLE0013
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
+  options:
+    s: true

@@ -2,7 +2,7 @@
   "AUSTRALIAN CAPITAL TERRITORY": {
     "bird": {
       "name": "Callocephalon fimbriatum",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:56514a28-86db-4296-be0f-5f96f46e07c4"
+      "guid": "https://biodiversity.org.au/afd/taxa/6c646af8-06fb-40ae-83aa-3dd001cc4ea6"
     },
     "plant": {
       "name": "Wahlenbergia gloriosa",
@@ -12,7 +12,7 @@
   "NEW SOUTH WALES": {
     "bird": {
       "name": "Dacelo novaeguineae",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:7d8ac40a-bf86-43a1-b1cf-0d98fdd6c29b"
+      "guid": "https://biodiversity.org.au/afd/taxa/1fc76c4d-4830-4129-9b86-1c7e944c3c50"
     },
     "plant": {
       "name": "Telopea speciosissima",
@@ -20,17 +20,17 @@
     },
     "animal": {
       "name": "Ornithorhynchus anatinus",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:ac61fd14-4950-4566-b384-304bd99ca75f"
+      "guid": "https://biodiversity.org.au/afd/taxa/ac61fd14-4950-4566-b384-304bd99ca75f"
     },
     "marine": {
-      "name": "Achoerodus viridis ",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:55c3519a-033c-44c2-aa09-763fc56f2337"
+      "name": "Achoerodus viridis",
+      "guid": "https://biodiversity.org.au/afd/taxa/d9b5a99b-768a-4266-9f68-243f24d52ba4"
     }
   },
   "NORTHERN TERRITORY": {
     "bird": {
       "name": "Aquila audax",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:255f7bee-4487-4996-8e48-e7efb1631c2b"
+      "guid": "https://biodiversity.org.au/afd/taxa/ac93f7f0-0686-4589-801a-5832378cb7c1"
     },
     "plant": {
       "name": "Gossypium sturtianum",
@@ -38,31 +38,31 @@
     },
     "animal": {
       "name": "Osphranter rufus",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:e6aff6af-ff36-4ad5-95f2-2dfdcca8caff"
+      "guid": "https://biodiversity.org.au/afd/taxa/e6aff6af-ff36-4ad5-95f2-2dfdcca8caff"
     }
   },
   "QUEENSLAND": {
     "bird": {
       "name": "Grus rubicunda",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:4e1415c7-9e9c-4c63-9256-d637eec3644a"
+      "guid": "ALA_DR650_128"
     },
     "plant": {
       "name": "Vappodes phalaenopsis",
-      "guid": "https://id.biodiversity.org.au/node/apni/2905089"
+      "guid": "ALA_DR656_1873"
     },
     "animal": {
       "name": "Phascolarctos cinereus",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:e9d6fbbd-1505-4073-990a-dc66c930dad6"
+      "guid": "https://biodiversity.org.au/afd/taxa/e9d6fbbd-1505-4073-990a-dc66c930dad6"
     },
     "marine": {
       "name": "Amphiprion akindynos",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:42c4fb98-ac43-459c-9637-864411dd4257"
+      "guid": "https://biodiversity.org.au/afd/taxa/191ab506-892f-4fda-b21e-2029354cce7d"
     }
   },
   "SOUTH AUSTRALIA": {
     "bird": {
       "name": "Cracticus tibicen",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:68d5fd52-71e7-4729-bf20-db7063f47ad5"
+      "guid": "https://biodiversity.org.au/afd/taxa/5291343e-fdeb-4a65-8ba5-928f5b96acf5"
     },
     "plant": {
       "name": "Swainsona formosa",
@@ -70,17 +70,17 @@
     },
     "animal": {
       "name": "Lasiorhinus latifrons",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:24a9ba35-3c1e-4f23-bd3c-47b2ae942355"
+      "guid": "https://biodiversity.org.au/afd/taxa/24a9ba35-3c1e-4f23-bd3c-47b2ae942355"
     },
     "marine": {
       "name": "Phycodurus eques",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:4efa96a6-28c8-4861-ae87-294e6568605f"
+      "guid": "https://biodiversity.org.au/afd/taxa/b2c89995-9152-488c-abaa-45a02ec3d6fb"
     }
   },
   "TASMANIA": {
     "bird": {
       "name": "Anthochaera paradoxa",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:29dda7e3-dabb-4abc-bd90-65ca9301f3c5"
+      "guid": "https://biodiversity.org.au/afd/taxa/2a768ef6-c37f-4735-9ab3-8655adc33948"
     },
     "plant": {
       "name": "Eucalyptus globulus",
@@ -88,13 +88,13 @@
     },
     "animal": {
       "name": "Sarcophilus harrisii",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:dd25b072-9f1e-4f62-a095-f6f118915035"
+      "guid": "https://biodiversity.org.au/afd/taxa/5c2a733c-9f1a-4ec5-8dd6-951118f3fbfc"
     }
   },
   "VICTORIA": {
     "bird": {
       "name": "Lichenostomus melanops cassidix",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:7a5d8a7a-459b-47e6-a315-c52af124e953"
+      "guid": "https://biodiversity.org.au/afd/taxa/c74c3d35-c98c-4ef0-93bf-b9b6ace016b1"
     },
     "plant": {
       "name": "Epacris impressa",
@@ -102,17 +102,17 @@
     },
     "animal": {
       "name": "Gymnobelideus leadbeateri",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:6119c642-08ad-403e-b8c9-215814f63ee3"
+      "guid": "https://biodiversity.org.au/afd/taxa/6119c642-08ad-403e-b8c9-215814f63ee3"
     },
     "marine": {
       "name": "Phyllopteryx taeniolatus",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:97a13b89-66a8-483f-a10f-dd6eda222525"
+      "guid": "https://biodiversity.org.au/afd/taxa/64a63130-12c0-4147-aafa-43f372888f0a"
     }
   },
   "WESTERN AUSTRALIA": {
     "bird": {
       "name": "Cygnus atratus",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:05cef650-bb87-477b-ac7b-ca208e86f742"
+      "guid": "https://biodiversity.org.au/afd/taxa/3f66250c-eec1-4f23-8338-26663c929d66"
     },
     "plant": {
       "name": "Anigozanthos manglesii",
@@ -120,7 +120,7 @@
     },
     "animal": {
       "name": "Myrmecobius fasciatus",
-      "guid": "urn:lsid:biodiversity.org.au:afd.taxon:6c72d199-f0f1-44d3-8197-224a2f7cff5f"
+      "guid": "https://biodiversity.org.au/afd/taxa/6c72d199-f0f1-44d3-8197-224a2f7cff5f"
     }
   }
 }

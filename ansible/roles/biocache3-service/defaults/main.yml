@@ -1,0 +1,29 @@
+---
+# Set this to a list of dictionaries with the key "field" containing the argument field name and the key "value" being the blocking pattern to use
+biocache_service_online_download_argument_blocking: []
+# Eg., use the following in your ansible inventory file to block based on sourceTypeId equal to 0
+# biocache_service_online_download_argument_blocking=[{ "field": "sourceTypeId", "value": "0", "comparison": "=" }]
+# Default value for doi to use in email templates
+doi_service_url: "https://doi.ala.org.au"
+
+# Set this to False to avoid having the ALA specific CSS included for the download email templates
+ala_download_css: True
+
+# Specify a logging format to enable postdata to be logged for some services
+biocache_service_extra_postdata_logging: ""
+
+# Default to no extra limit zones. Specify any that apply in the relevant inventory file.
+biocache_service_extra_limit_zones_wms_tiles: []
+biocache_service_extra_limit_zones_mapping_legend: []
+biocache_service_extra_limit_zones_facets: []
+biocache_service_extra_limit_zones_explore_group: []
+biocache_service_extra_limit_zones_breakdown: []
+biocache_service_extra_limit_zones_explore_endemic: []
+biocache_service_extra_limit_zones_duplicates: []
+biocache_service_extra_limit_zones_mapping_images: []
+biocache_service_extra_limit_zones_mapping_bounds: []
+biocache_service_extra_limit_zones_chart: []
+biocache_service_extra_limit_zones_scatterplot: []
+biocache_service_extra_limit_zones_online_downloads: []
+
+biocache_service_docker_dir: "{{ data_dir }}/biocache/docker"

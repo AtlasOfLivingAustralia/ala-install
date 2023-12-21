@@ -69,7 +69,8 @@ root(WARN, [TOMCAT_LOG])
     (OFF): [],
     (ERROR): [
         'grails.spring.BeanBuilder',
-        'grails.plugin.cache.web.filter'
+        'grails.plugin.cache.web.filter',
+        'org.hibernate.orm.deprecation'
     ],
     (WARN): [
         'au.org.ala.cas.client'

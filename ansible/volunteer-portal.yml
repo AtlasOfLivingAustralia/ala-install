@@ -3,10 +3,14 @@
 # ansible-playbook -i path/to/inventory volunteer-portal.yml --private-key ~/.ssh/id_rsa --user youruser --become --ask-become-pass --tags "deploy"
 
 - hosts: volunteer-portal
+  vars:
+    use_openjdk11: True
+    use_openjdk8: False
   roles:
     - common
-    - {role: db-backup, db: postgres}
-    - {role: postgresql, pg_version: "10"}
-    - {role: pg_instance, extensions: ["citext", "pgcrypto"]}
-    - webserver
+    #- {role: db-backup, db: postgres}
+    - {role: java, use_openjdk11: True}
+    #- {role: postgresql, pg_version: digivol_pg_version | default('15'), when: not db_remote | bool }
+    #- {role: pg_instance, extensions: ["citext", "pgcrypto"]}
+    # - webserver
     - volunteer-portal

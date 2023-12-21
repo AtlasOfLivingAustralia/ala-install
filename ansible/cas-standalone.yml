@@ -3,6 +3,6 @@
     - common
     - java
     - tomcat
-    - mysql
+    - mysql-legacy
     - webserver
     - cas

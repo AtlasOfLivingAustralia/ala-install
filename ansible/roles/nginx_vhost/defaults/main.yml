@@ -28,7 +28,8 @@ robots_disallow_paths: ["/"]
 # Semrush completely ignore robots.txt, so banning them by default from all of our servers
 robots_disallow_useragents: ["Semrush"]
 # Add IPs to this list in your inventory to disallow specific IP addresses in nginx
-robots_disallow_ips: ["46.229.161.131"]
+# Semrush IP addresses based on AS209366
+robots_disallow_ips: ["85.208.96.0/22", "185.191.171.0/24"]
 # Add IPs to this list that are known to send correct x-forwarded-for headers, and can hence be safely relied on
 # https://nginx.org/en/docs/http/ngx_http_realip_module.html
 nginx_set_real_ips: []
@@ -112,3 +113,5 @@ nginx_disable_download_disk_buffering: False
 # nginx_cors_origin_regexp: '^https?:\/\/(localhost|l-a\.site|.*\.l-a\.site)'
 nginx_cors_headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
 nginx_cors_methods: "GET, POST, OPTIONS"
+# by default, Access-Control-Allow-Credentials header is not included; to include it, set this to True
+nginx_cors_allow_credentials: False

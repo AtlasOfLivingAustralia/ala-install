@@ -49,13 +49,24 @@
 {% endif %}
 {% if item.rewrite_path is defined and item.rewrite_path %}
         rewrite ^ {{item.rewrite_path}}$1;
+{% elif item.rewrite_path_alt is defined and item.rewrite_path_alt %}
+        rewrite ^{{item.rewrite_path_alt}};
 {% endif %}
 {% if item.is_proxy is defined and item.is_proxy | bool == True %}
         # proxy_set_header Host $host;
 {% if item.proxy_hostname is defined and item.proxy_hostname | length > 0 %}
         proxy_set_header Host {{ item.proxy_hostname }};
+        proxy_set_header X-Forwarded-Host {{ item.proxy_hostname }};
 {% else %}
         proxy_set_header Host {{ hostname }};
+        proxy_set_header X-Forwarded-Host {{ hostname }};
+{% endif %}
+{% if item.proxy_x_request_id is defined %}
+        set $x_request_id {{ item.proxy_x_request_id }};
+        proxy_set_header X-Request-Id $x_request_id;
+{% endif %}
+{% if allow_x_frame is defined | bool %}
+        add_header X-Frame-Options {{ allow_x_frame }} always;
 {% endif %}
 {% if allow_x_frame is defined | bool %}
         add_header X-Frame-Options {{ allow_x_frame }} always;
@@ -68,7 +79,11 @@
 {% endif %}
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Port $server_port;
+    {% if item.proxy_read_timeout is defined %}
+        proxy_read_timeout {{ item.proxy_read_timeout }};
+    {% else %}
         proxy_read_timeout 10m;
+    {% endif %}
     {% if nginx_disable_download_disk_buffering | bool == True %}
         proxy_max_temp_file_size 0;
     {% endif %}
@@ -105,7 +120,21 @@
         proxy_set_header Connection "";
     {% endif %}
   {% else %}
+      {% if nginx_docker_swarm_resolver is defined and nginx_docker_swarm_resolver | bool == true %} 
+        resolver 127.0.0.11 ipv6=off;
+        {% set proto = item.proxy_pass.split('://')[0] %}
+        {% set rest_url = item.proxy_pass.split('://')[1] %}
+        {% set host = rest_url.split(':')[0] %}
+        {% set port_path = rest_url.split(':')[1] %}
+        {% set port = port_path.split('/')[0] %}
+
+        set $backend_proto "{{ proto }}";
+        set $backend_host "{{ host }}";
+        set $backend_port "{{ port }}";
+        proxy_pass $backend_proto://$backend_host:$backend_port;
+      {% else %}
         proxy_pass {{ item.proxy_pass }};
+      {% endif %}
   {% endif %}
 {% elif item.is_proxy_rewrite is defined and item.is_proxy_rewrite %}
         rewrite ^{{ item.path }}/?(.*) /$1 break;

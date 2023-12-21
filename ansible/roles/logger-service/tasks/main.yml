@@ -4,14 +4,14 @@
     - properties
 
 - name: create logger DB
-  mysql_db: name={{logger_db_name}} state=present encoding=utf8
+  mysql_db: name={{logger_db_name}} state=present encoding=utf8 login_user=root login_password='{{mysql_root_password}}'
   register: dbschema
   tags:
     - logger-service
     - db
 
 - name: create logger DB user
-  mysql_user: name={{logger_db_username}} password={{logger_db_password}} priv=*.*:ALL state=present
+  mysql_user: name='{{logger_db_username}}' password='{{logger_db_password}}' priv=*.*:ALL state=present login_user=root login_password='{{mysql_root_password}}'
   register: dbuser
   tags:
     - logger-service
@@ -27,7 +27,7 @@
     - db
 
 - name: create schema, stored procs and reference data
-  mysql_db: name={{logger_db_name}} state=import target={{item}}
+  mysql_db: name='{{logger_db_name}}' state=import target={{item}} login_user=root login_password='{{mysql_root_password}}'
   with_items:
     - /tmp/schema.sql
     - /tmp/eventLogType.sql
@@ -59,6 +59,14 @@
     - logger-service
     - properties
 
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{data_dir}}/logger/config/logback.xml"
+  tags:
+    - properties
+    - logger-service
+
 - name: set data ownership
   file: path={{data_dir}}/logger owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 
@@ -73,6 +81,25 @@
     - deploy
     - apache_vhost
   when: not webserver_nginx
+
+- name: copy all SQL auth ip scripts
+  template: src={{ item }} dest={{data_dir}}/logger/setup/
+  with_items:
+    - "sql/auth-ip.sql"
+  when: logger_authorize_ip_list is defined
+  tags:
+    - logger-service
+    - db
+    - properties
+
+- name: create auth ip in db if does not exists
+  shell: "mysql --host={{ logger_db_hostname }} --user={{ logger_db_username }} --password={{ logger_db_password }} {{ logger_db_name }} -e \"set @ip='{{ item }}'; set @host_name='{{ item }}'; source {{data_dir}}/logger/setup/auth-ip.sql;\""
+  loop: "{{ (logger_authorize_ip_list | regex_replace(' ', '')).split(',') }}"
+  when: logger_authorize_ip_list is defined
+  ignore_errors: no
+  tags:
+    - logger-service
+    - db
 
 - name: set nginx proxy target if configured
   set_fact:

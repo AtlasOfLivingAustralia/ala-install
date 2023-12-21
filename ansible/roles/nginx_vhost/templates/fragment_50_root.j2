@@ -2,6 +2,9 @@
     index {{nginx_index}};
     client_max_body_size {{ nginx_client_max_body_size | default('64m') }};
 
+    # set a default value so x_request_id can be used as a logging parameter
+    set $x_request_id "";
+
 {% if ssl | bool == True %}
     # If ssl is supported, then push this policy to all users who understand it to trigger HSTS
     add_header Content-Security-Policy upgrade-insecure-requests;

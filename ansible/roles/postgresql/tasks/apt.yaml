@@ -21,9 +21,24 @@
   when: psycopg2_package is defined
   tags: postgresql
 
+- name: Install pip2 when necessary
+  apt:
+    name: python-pip
+  when: ansible_python.version.major==2
+
+- name: Install python3 when necessary
+  apt:
+    name: python3-pip
+  when: ansible_python.version.major==3
+
 - name: pip psycopg2
   command: pip install psycopg2
-  when: psycopg2_package is not defined
+  when: ansible_python.version.major==2
+  tags: postgresql
+
+- name: pip3 psycopg2
+  command: pip3 install psycopg2
+  when: ansible_python.version.major==3
   tags: postgresql
 
 - name: install python-software-properties (Debian)

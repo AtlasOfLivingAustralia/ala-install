@@ -1,0 +1,2 @@
+# To avoid collisions in shared data dirs we use inventory_hostname
+docker_dir: "{{ docker_data_dir | default('/data/docker/' + inventory_hostname) }}"

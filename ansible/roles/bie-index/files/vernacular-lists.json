@@ -1,9 +1,15 @@
 {
   "defaultVernacularNameField": "name",
   "defaultNameIdField": "nameID",
+  "defaultKingdomField": "kingdom",
+  "defaultPhylumField": "phylum",
+  "defaultClassField": "class",
+  "defaultOrderField": "order",
+  "defaultFamilyField": "family",
+  "defaultRankField": "rank",
   "defaultStatusField": "status",
   "defaultLanguageField": "language",
-  "defaultsourceField": "source",
+  "defaultSourceField": "source",
   "defaultTemporalField": "temporal",
   "defaultLocationIdField": "locationID",
   "defaultLocalityField": "locality",
@@ -20,10 +26,16 @@
   "defaultLanguage": "en",
   "lists": [
     {
-      "uid": "dr13266",
-      "vernacularNameField": "vernacular name",
-      "taxonRemarksField": "Notes",
-      "defaultStatus": "traditionalKnowledge"
+      "uid": "dr23462",
+      "vernacularNameField": "raw Vernacular Name",
+      "kingdomField": "raw Kingdom",
+      "phylumField": "raw Phylum",
+      "classField": "raw Class",
+      "orderField": "raw Order",
+      "familyField": "raw Family",
+      "statusField": "raw Status",
+      "defaultStatus": "traditionalKnowledge",
+      "defaultLanguage": "W41"
     }
   ]
 }

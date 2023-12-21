@@ -1,0 +1,34 @@
+# Steps up pipelines migration
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - pipelines_migration
+
+- name: Install lxml for ansible python 2
+  apt:
+    name: python-lxml
+    state: present
+  when: ansible_python.version.major==2
+
+- name: Install lxml for ansible python 3
+  apt:
+    name: python3-lxml
+    state: present
+  when: ansible_python.version.major==3
+
+# copy migration JAR to each node
+- name: download from maven repo 
+  maven_artifact:
+    group_id: "{{groupId}}"
+    artifact_id: "{{artifactId}}"
+    version: "{{version|default('latest')}}"
+    extension: "{{packaging|default('jar')}}"
+    classifier: "{{classifier|default('')}}"
+    repository_url: "{{maven_repo_url}}"
+    timeout: 30
+    dest: "/usr/share/la-pipelines/{{ war_filename }}.jar"
+    mode: u=rwx,g=rx,o=rx
+    owner: "{{ service_owner | default('root') }}"
+    group: "{{ service_group | default('root') }}"
+    verify_checksum: always
+  tags:
+    - pipelines_migration

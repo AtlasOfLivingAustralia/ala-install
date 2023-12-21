@@ -1,0 +1,73 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?><project>
+  <actions/>
+  <description/>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty plugin="naginator@1.18.1">
+      <optOut>false</optOut>
+    </com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>exclude</name>
+          <description>A comma-separated list of data resource ids to exclude. If a DR is in this list then it will not be deleted or over-written when copying to the hdfs</description>
+          <defaultValue/>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>test</name>
+          <description>Test run only. Report what would be done without doing it.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>{{ master_node }}</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+IFS=',' read -ra excludes &lt;&lt;&lt; "$exclude"
+sudo -u spark /data/hadoop/bin/hdfs dfs -mkdir -p /dwca-exports
+for f in `/data/hadoop/bin/hdfs dfs -ls -C /dwca-exports`
+do
+  dr=`echo $f | sed -e "s/\\/dwca-exports\\///"`
+  if [[ " ${excludes[@]} " =~ " ${dr} " ]]; then
+    echo "Skipping $f"
+  else
+    echo "Remove $f from DFS"
+    if [ ! "$test" == true ]; then
+      sudo -u spark /data/hadoop/bin/hdfs dfs -rm -r -f $f
+    fi
+  fi
+done
+for dr in `ls /data/dwca-export`
+do
+  f="/data/dwca-export/$dr"
+  if [[ " ${excludes[@]} " =~ " ${dr} " ]]; then
+    echo "Skipping $f"
+  else
+    echo "Copy $f to DFS"
+    if [ ! "$test" == true ]; then
+      sudo -u spark /data/hadoop/bin/hdfs dfs -copyFromLocal -f $f /dwca-exports/
+    fi
+  fi
+done
+</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <hudson.plugins.ansicolor.AnsiColorBuildWrapper plugin="ansicolor@0.7.5">
+      <colorMapName>xterm</colorMapName>
+    </hudson.plugins.ansicolor.AnsiColorBuildWrapper>
+  </buildWrappers>
+</project>

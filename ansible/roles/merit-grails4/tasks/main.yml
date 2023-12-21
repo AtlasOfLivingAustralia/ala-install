@@ -1,0 +1,104 @@
+- include: ../../common/tasks/setfacts.yml
+  tags:
+    - deploy
+    - merit
+
+- name: set merit user
+  set_fact:
+    merit_user: "{{ (exec_jar) | ternary ('fieldcapture', 'tomcat')}}"
+  tags:
+    - merit
+    - deploy
+
+
+- name: add jar and service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: "fieldcapture"
+    jar_url: '{{ merit_artifact_url }}'
+  tags:
+    - deploy
+    - service
+    - merit
+  when: exec_jar
+
+#
+# External configuration properties file
+#
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner={{merit_user}} group={{merit_user}}
+  with_items:
+    - "{{data_dir}}/fieldcapture/config"
+  tags:
+    - properties
+    - merit
+
+- name: copy all config.properties
+  template: src=fieldcapture-config.properties dest={{data_dir}}/fieldcapture/config/fieldcapture-config.properties
+  tags:
+    - properties
+    - merit
+
+- name: copy logback config
+  template:
+    src: logback.groovy
+    dest: "{{data_dir}}/fieldcapture/config/logback.groovy"
+    owner: "{{merit_user}}"
+    group: "{{merit_user}}"
+  notify:
+    - restart fieldcapture
+  tags:
+    - properties
+    - merit
+
+- name: ensure merit log directory exists
+  file: path={{item}} state=directory owner={{merit_user}} group={{merit_user}}
+  with_items:
+    - "/var/log/atlas/fieldcapture"
+  tags:
+    - properties
+    - merit
+  when: exec_jar
+
+- name: set merit log ownership
+  file: path=/var/log/atlas/fieldcapture owner='{{merit_user}}' group='{{merit_user}}' recurse=true
+  notify:
+    - restart fieldcapture
+  tags:
+    - properties
+    - merit
+  when: exec_jar
+
+- name: set data ownership
+  file: path={{data_dir}}/fieldcapture owner={{merit_user}} group={{merit_user}} recurse=true
+  notify:
+    - restart fieldcapture
+  tags:
+    - properties
+    - merit
+
+# WAR file deployment and virtual host configuration
+#
+- include: ../../apache_vhost/tasks/main.yml
+    context_path='{{ merit_context_path }}'
+    hostname='{{ merit_hostname }}'
+  tags:
+    - deploy
+    - apache_vhost
+    - merit
+  when: not webserver_nginx
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "merit"
+    hostname: "{{ merit_hostname }}"
+    context_path: "{{ merit_context_path }}"
+    tomcat_server_port: "{{ merit_server_port }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - merit
+  when: webserver_nginx

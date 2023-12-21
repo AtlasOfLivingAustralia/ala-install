@@ -1,0 +1,4 @@
+{
+  "data-root": "{{ docker_dir }}",
+  "live-restore": true
+}

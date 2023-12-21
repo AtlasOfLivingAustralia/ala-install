@@ -1,0 +1,22 @@
+---
+hadoop:
+  version: 2.8.2
+  hadoop_archive: hadoop-2.8.2.tar.gz
+  data_dir: /var/hadoop/data
+  name_dir: /var/hadoop/name
+  temp_dir: /tmp/hadoop/hdfs/tmp
+  download_location: https://archive.apache.org/dist/hadoop/common/
+  user: hadoop
+  user_shell: /bin/bash
+  default_hosts:
+    - 0.0.0.0
+    - 127.0.0.1
+hadoop_install_dir: "/opt/hadoop-{{ hadoop.version }}"
+hadoop_master_ip: 127.0.0.1
+master_nodes: "{% if 'cluster_master' in groups %} {{ groups['cluster_master']|length }} {% else  %} 0 {% endif %}"
+data_nodes: "{% if 'cluster_nodes' in groups %} {{ groups['cluster_nodes']|length }} {% else  %} 0 {% endif %}"
+number_of_nodes: "{{ master_nodes + data_nodes }}"
+ssh_key_filename: "test-key"
+install_temp_dir: "/tmp/hadoop-temp"
+is_master: false
+is_node: true

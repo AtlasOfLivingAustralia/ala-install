@@ -13,38 +13,6 @@
     - image-service
     - properties
 
-- name: create images database
-  postgresql_db: name={{ image_service_db_name }}
-  become_user: postgres
-  become: yes
-  tags:
-    - db
-    - image-service
-
-- name: create {{ image_service_db_username }} DB user
-  command: "psql -d {{ image_service_db_name }} -c \"create user {{ image_service_db_username }} with password '{{image_service_db_password}}'\""
-  become_user: postgres
-  ignore_errors: yes
-  tags:
-    - image-service
-    - db
-
-- name: create {{ image_service_db_username }} DB user
-  command: "psql -d {{ image_service_db_username }} -c \"ALTER ROLE {{ image_service_db_username }} WITH SUPERUSER\""
-  become_user: postgres
-  ignore_errors: yes
-  tags:
-    - image-service
-    - db
-
-- name: create database user images 
-  postgresql_user: db={{ image_service_db_name }} name={{ image_service_db_username }} password={{ image_service_db_password }} priv=ALL state=present
-  become_user: postgres
-  become: yes
-  tags:
-    - db
-    - image-service
-
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ image_service_context_path }}' hostname='{{ image_service_hostname }}'
   tags:
     - deploy
@@ -64,10 +32,6 @@
         sort_label: "1_ws"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:{{ image_service_port }}{{ image_service_context_path }}"
-      - path: "/store"
-        sort_label: "2_store"
-        is_proxy: false
-        alias: "{{ data_dir }}/image-service/store"
   tags:
     - nginx_vhost
     - deploy
@@ -84,7 +48,7 @@
     - image-service
 
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner=image-service group=image-service
+  file: path={{item}} state=directory owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}"
   with_items:
     - "{{data_dir}}/image-service/setup"
     - "{{data_dir}}/image-service/config"
@@ -99,47 +63,17 @@
     - image-service
     - properties
 
-# Only create the symlink for apache hosts, as nginx has an inbuilt rule for this
-- name: Create symlink to data/image-service/store from /srv/[hostname]/www/store
-  command: "ln -s {{ data_dir }}/image-service/store /srv/{{ image_service_hostname }}/www/store"
-  ignore_errors: yes
-  when: not webserver_nginx
-  tags: 
-    - image-service
-
 - name: copy all config.properties
   template: src={{ item }} dest={{data_dir}}/image-service/config/
   with_items:
     - "config/image-service-config.yml"
-    - "config/logback.groovy"
+    - "config/{{ image_service_logfile | default('logback.groovy') }}"
   notify:
      - restart image-service
   tags:
     - deploy
     - image-service
     - properties
-
-- name: copy all SQL export script
-  template: src={{ item }} dest={{data_dir}}/image-service/setup/
-  with_items:
-    - "sql/image-service-export.sql"
-  notify:
-     - restart image-service
-  tags:
-    - deploy
-    - image-service
-    - properties
-
-- name: create stored procedures for export functions
-  command: "psql -d {{ image_service_db_username }} -f {{data_dir}}/image-service/setup/image-service-export.sql"
-  become_user: postgres
-  ignore_errors: no
-  notify:
-     - restart image-service
-  tags:
-    - image-service
-    - properties
-    - db
 
 - name: add image-service jar and setup service
   include_role:
@@ -147,13 +81,17 @@
   vars:
     service_name: 'image-service'
     jar_url: '{{ image_service_jar_url }}'
+    use_openjdk11: "{{ image_service_version is version('1.1.7.1', '>') }}"
+    use_openjdk8: "{{ image_service_version is version('1.1.7.1', '<=') }}"
+    log_config_filename: "{{ image_service_logfile }}"
+    java_headless: True
   tags:
     - deploy
     - service
     - image-service
 
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner=image-service group=image-service
+  file: path={{item}} state=directory owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}"
   with_items:
     - "{{data_dir}}/image-service/setup"
     - "{{data_dir}}/image-service/config"
@@ -169,7 +107,7 @@
     - properties
 
 - name: set data ownership for {{data_dir}}/image-service
-  file: path={{data_dir}}/image-service owner="image-service" group="image-service"
+  file: path={{data_dir}}/image-service owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}"
   notify:
      - restart image-service
   tags:
@@ -178,7 +116,7 @@
     - image-service
 
 - name: set data ownership postgres for {{data_dir}}/image-service/exports
-  file: path={{data_dir}}/image-service/exports owner="postgres" group="postgres" recurse=true
+  file: path={{data_dir}}/image-service/exports owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}" recurse=true
   notify:
      - restart image-service
   tags:
@@ -187,7 +125,7 @@
     - image-service
 
 - name: set data ownership for /opt/atlas/image-service
-  file: path=/opt/atlas/image-service owner="image-service" group="image-service" recurse=true
+  file: path=/opt/atlas/image-service owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}" recurse=true
   notify:
      - restart image-service
   tags:
@@ -196,7 +134,7 @@
     - image-service
 
 - name: set data ownership for /var/log/atlas/image-service
-  file: path=/var/log/atlas/image-service owner="image-service" group="image-service" recurse=true
+  file: path=/var/log/atlas/image-service owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}" recurse=true
   notify:
      - restart image-service
   tags:
@@ -212,5 +150,14 @@
   tags:
     - packages
     - image-service
+
+- name: add clear old failed_uploads CRON job
+  ansible.builtin.cron:
+    name: "clear old failed_uploads"
+    minute: "0"
+    hour: "5"
+    weekday: "1"
+    user: "postgres"
+    job: psql -c "delete from failed_upload where (current_timestamp - date_created) > '7 days';" images
 
 - debug: msg="For new installs, to finish installation use the admin screen to load the licence information in files/licence_mappings.csv and files/licences.csv."

@@ -14,3 +14,11 @@ geoserver_cluster_name: elasticsearch
 
 # elasticsearch
 elasticsearch_local: true
+elasticsearch_primary_host: localhost
+elasticsearch_primary_port: 9300
+elasticsearch_primary_server: true
+
+# mongo
+ecodata_local_authentication_keyFile:
+mongo_hosts: localhost:27017
+mongodb_port: 27017
