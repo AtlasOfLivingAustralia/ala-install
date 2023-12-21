@@ -87,7 +87,13 @@
   tags:
     - nginx
 
-- name: Ensure nginx is started and enabled to start at boot.
-  service: name=nginx state=started enabled=yes
-  tags:
-    - nginx
+- name: Check Nginx status
+  systemd:
+    name: nginx
+    state: started
+  register: nginx_status
+
+
+- name: Print Nginx status
+  debug:
+    var: nginx_status

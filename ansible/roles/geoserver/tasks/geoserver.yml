@@ -74,7 +74,12 @@
     - tomcat_vhost
     - geoserver
 
-- name: unzip .war to get data directory
+- name: Clear the /tmp/data before unzip {{ tomcat_deploy_dir }}/{{ war_filename }}.war data/* -d /tmp/
+  file:
+    path: "/tmp/data"
+    state: absent
+
+- name: unzip .war to get data directory - unzip {{ tomcat_deploy_dir }}/{{ war_filename }}.war data/* -d /tmp/
   command: "unzip {{ tomcat_deploy_dir }}/{{ war_filename }}.war data/* -d /tmp/"
   tags:
     - geoserver
@@ -135,7 +140,7 @@
   when: not webserver_nginx
   become: true
 
-- name: "wait for geoserver to come up (is {{ geoserver_hostname }} in /etc/hosts?)"
+- name: "wait for geoserver to come up (Ping {{ geoserver_url }}. Check if is {{ geoserver_hostname }} in /etc/hosts?)"
   uri:
     url: "{{ geoserver_url }}"
     status_code: 200
@@ -198,7 +203,7 @@
     - geoserver
   become: true
 
-- name: "wait for geoserver to come up (is {{ geoserver_hostname }} in /etc/hosts?)"
+- name: "wait for geoserver to come up (Ping {{ geoserver_url }}. Check if {{ geoserver_hostname }} is in /etc/hosts?)"
   uri:
     url: "{{ geoserver_url }}"
     status_code: 200
@@ -216,6 +221,7 @@
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
 
 - name: copy geoserver script
   template: src=geoserver.objects.xml dest={{data_dir}}/geoserver.objects.xml
@@ -223,6 +229,7 @@
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
 
 - name: copy geoserver script
   template: src=geoserver.distributions.xml dest={{data_dir}}/geoserver.distributions.xml
@@ -230,6 +237,7 @@
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
 
 - name: copy points style.xml
   template: src=geoserver.points.xml dest={{data_dir}}/geoserver.points.xml
@@ -237,6 +245,7 @@
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
 
 - name: geoserver script permissions
   command: "chmod a+x {{data_dir}}/geoserver.sh"
@@ -244,6 +253,7 @@
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
 
 # Used for /data local generation
 - name: set ownership of geoserver data
@@ -252,6 +262,7 @@
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
 
 - name: Running geoserver.sh
   command: "{{data_dir}}/geoserver.sh"
@@ -261,6 +272,7 @@
   tags:
     - geoserver
     - geoserver_run_script
+    - init-spatial-geoserver
   become: true
 
 

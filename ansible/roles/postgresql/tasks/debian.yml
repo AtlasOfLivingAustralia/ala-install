@@ -9,12 +9,37 @@
 - include: apt.yaml
 
 - set_fact:
-    postgresql_packages: [ "libpq-dev", "{{ psycopg2_package }}", "postgresql-{{pg_version}}", "postgresql-contrib-{{pg_version}}" ]
+    postgresql_packages: [ "{{ psycopg2_package }}", "postgresql-{{pg_version}}", "postgresql-contrib-{{pg_version}}" ]
 
 - name: Set postgis package names
   set_fact:
-    postgresql_packages: "{{postgresql_packages}} + [ 'postgresql-{{pg_version}}-postgis-{{postgis_version}}', 'postgresql-{{pg_version}}-postgis-{{postgis_version}}-scripts', 'gdal-bin' ]"
+    postgresql_packages: "{{ postgresql_packages + [ 'postgresql-{{pg_version}}-postgis-{{postgis_version}}', 'postgresql-{{pg_version}}-postgis-{{postgis_version}}-scripts', 'gdal-bin' ] }}"
   when: postgis_version is defined and install_postgis | bool == True
+  tags: postgresql
+
+- name: Install PostgreSQL {{pg_version}} packages with PostGIS {{postgis_version}}
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ postgresql_packages }}"
+
+# A later version is already installed
+#- name: Download and install libpq5 with specific version
+#  get_url:
+#    url: "http://security.ubuntu.com/ubuntu/pool/main/p/postgresql-12/libpq5_12.17-0ubuntu0.20.04.1_amd64.deb"
+#    dest: "/tmp/libpq5_12.12-0ubuntu0.20.04.1_amd64.deb"
+#  tags: postgresql
+#
+#- name: Install libpq5 from downloaded package
+#  apt:
+#    deb: "/tmp/libpq5_12.12-0ubuntu0.20.04.1_amd64.deb"
+#    state: present
+#  tags: postgresql
+
+- name: Install libpq-dev
+  apt:
+    name: libpq-dev
+    state: present
   tags: postgresql
 
 - name: Install Postgres

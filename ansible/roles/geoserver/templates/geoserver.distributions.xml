@@ -3,7 +3,9 @@
   <name>Distributions</name>
   <nativeName>Distributions</nativeName>
   <namespace>
-    <id>NamespaceInfoImpl-1d13221b:152efd6efe4:-7ffe</id>
+    <name>ALA</name>
+    <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate"
+               href="http://spatial.ala.org.au/geoserver/rest/namespaces/ALA.xml" type="application/xml"/>
   </namespace>
   <title>Distributions</title>
   <keywords>

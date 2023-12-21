@@ -52,24 +52,6 @@ statusTime: {{ status_time | default(3000) }}
 retryCount: {{ retry_count | default(10) }}
 retryTime: {{ retry_time | default(30000) }}
 
-#
-#  CAS SETTINGS
-#
-#  NOTE: Some of these will be ignored if default_config exists
-security:
-  cas:
-    casServerName: {{ auth_base_url }}
-    casServerUrlPrefix: {{ auth_cas_url }}
-    loginUrl: {{ auth_cas_url }}/login
-    logoutUrl: {{ auth_cas_url }}/logout
-    bypass: {{ bypass_cas | default(true) }}
-    disableCAS: {{ bypass_cas | default(true) }}
-    gateway: {{ gateway_cas | default(false) }}
-  apikey:
-    check:
-      serviceUrl:  {{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}
-
-
 auth.admin_role: {{ auth_admin_role | default('ROLE_ADMIN') }}
 app.http.header.userId: {{ app_http_header_userid | default('X-ALA-userId') }}
 
@@ -186,9 +168,65 @@ logging:
   level:
     root: INFO
 
-userdetails:
-    baseUrl: "{{ user_details_base_url | default('https://auth.ala.org.au/userdetails') }}"
+#userdetails:
+#    baseUrl: "{{ user_details_base_url | default('https://auth.ala.org.au/userdetails') }}"
+#
+## ala-auth-plugin conf
+#userDetails:
+#    url: {{ auth_base_url }}/userdetails/
 
-# ala-auth-plugin conf
-userDetails:
-    url: {{ auth_base_url }}/userdetails/
+userdetails:
+  web:
+    url:{{ userdetails_web_url | default('https://api.test.ala.org.au/userdetails/cognito/') }}
+  api:
+    url:{{ userdetails_api_url | default('https://aws-auth-test-2023.test.ala.org.au/userdetails/') }}
+
+#
+#  CAS SETTINGS
+#
+#  NOTE: Some of these will be ignored if default_config exists
+security:
+  cas:
+    casServerName: {{ auth_base_url }}
+    casServerUrlPrefix: {{ auth_cas_url }}
+    loginUrl: {{ auth_cas_url }}/login
+    logoutUrl: {{ auth_cas_url }}/logout
+    bypass: {{ bypass_cas | default(true) }}
+    disableCAS: {{ bypass_cas | default(true) }}
+    gateway: {{ gateway_cas | default(false) }}
+    enabled: false
+  apikey:
+    check:
+      serviceUrl:  {{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}
+
+  oidc:
+    enabled: {{ oidc_enabled }}
+    discoveryUri: {{oidc_discoveryUri}}
+    clientId: {{ oidc_client_id }}
+    secret: {{ oidc_secret }}
+    allowUnsignedIdTokens: true
+    scope: 'openid profile email ala/attrs ala/roles'
+    roleAttribute: ala:role
+    logoutAction: cognito
+    alaUseridClaim: username
+    logoutUrl: {{ oidc_logoutUrl }}
+  jwt:
+    enabled: {{ jwt_enabled }}
+    discoveryUri: {{ jwt_discoveryUri }}
+    fallbackToLegacyBehaviour: true
+  cors:
+    enable: true
+    authenticated:
+      allowedOrigins:
+        - '.*\.ala\.org\.au(:[0-9]+)?'
+    unauthenticated:
+      allowedOrigins:
+        - '*'
+      allowCredentials: false
+    webservice:
+      jwt: true
+      jwt-scopes: ala/attrs ala/internal users/read
+      clientId: 6h1qa9cs4cqqlf76jbk3ilhg4k
+      secret: 15ng8gjhdk18ejt53ocb0no19u4fm72hkgeo31in02qvbkmklel9
+
+apiKeyCheckUrlTemplate:  https://aws-auth-test-2023.test.ala.org.au/apikey/ws/check?apikey={0}
