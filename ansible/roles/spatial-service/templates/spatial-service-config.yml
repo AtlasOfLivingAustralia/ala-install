@@ -229,4 +229,5 @@ security:
       clientId: 6h1qa9cs4cqqlf76jbk3ilhg4k
       secret: 15ng8gjhdk18ejt53ocb0no19u4fm72hkgeo31in02qvbkmklel9
 
-apiKeyCheckUrlTemplate:  https://aws-auth-test-2023.test.ala.org.au/apikey/ws/check?apikey={0}
+#duplicate with security.apikey.check.serviceUrl
+apiKeyCheckUrlTemplate:  {{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}

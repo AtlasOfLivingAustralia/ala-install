@@ -15,5 +15,5 @@
     - {role: geoserver, skip_geoserver_script: false}
 #    - i18n
     - spatial-service
-#    - spatial-hub
+    - spatial-hub
 #    - geonetwork
