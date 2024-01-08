@@ -81,21 +81,21 @@
     "parent": "Plants"
   },
   {
-    "name": "Gymnosperms",
+    "name": "Conifers, Cycads",
     "rank": "subclass",
     "included": ["Pinidae", "Cycadidae"],
     "excluded": [],
     "parent": "Plants"
   },
   {
-    "name": "FernsAndAllies",
+    "name": "Ferns and allies",
     "rank": "subclass",
     "included": ["Equisetidae", "Lycopodiidae", "Marattiidae", "Ophioglossidae", "Polypodiidae", "Psilotidae"],
     "excluded": [],
     "parent": "Plants"
   },
   {
-    "name": "Angiosperms",
+    "name": "Flowering plants",
     "rank": "subclass",
     "included": ["Magnoliidae"],
     "excluded": [],
