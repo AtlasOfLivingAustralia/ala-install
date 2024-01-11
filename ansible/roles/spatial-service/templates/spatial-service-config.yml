@@ -179,9 +179,9 @@ logging:
 
 userdetails:
   web:
-    url:{{ userdetails_web_url | default('https://api.test.ala.org.au/userdetails/cognito/') }}
+    url:{{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
   api:
-    url:{{ userdetails_api_url | default('https://aws-auth-test-2023.test.ala.org.au/userdetails/') }}
+    url:{{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
 
 #
 #  CAS SETTINGS
