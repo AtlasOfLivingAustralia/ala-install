@@ -10,8 +10,8 @@ geoserver:
   canDeploy: {{ can_deploy_to_geoserver | default('true') }}
 # To use a remote geoserver instance, set geoserver.remote.geoserver_data_dir to the geoserver_data_dir path on the
 # remote server. This will cause layer files to be copied to geoserver_data_dir/data/
-#  remote:
-  geoserver_data_dir: "{{ geoserver_data_dir | default('/data/geoserver_data_dir') }}"
+  remote:
+    geoserver_data_dir: "{{ geoserver_data_dir | default('/data/geoserver_data_dir') }}"
 
 shpResolutions: {{ shp_resolutions | default([0.5, 0.25, 0.1, 0.05]) }}
 grdResolutions: {{ grd_resolutions | default([0.5, 0.25, 0.1, 0.05, 0.01]) }}
@@ -23,6 +23,7 @@ openstreetmap:
 
 slave.enable: {{ slave_enable | default(true) }}
 service.enable: {{ service_enable | default(true) }}
+
 
 batch_sampling_passwords: "{{ batch_sampling_passwords | default('') }}"
 batch_sampling_points_limit: {{ batch_sampling_points_limit | default(1000000) }}
@@ -47,6 +48,8 @@ sampling.threads: {{ sampling_threads | default(4) }}
 slaveKey: "{{ spatial_service_slave_key | default('') }}"
 serviceKey: "{{ spatial_service_service_key | default('') }}"
 
+api_key: {{ spatial_service_api_key  | default('') }}
+
 # time between pushing status updates to the master for a task
 statusTime: {{ status_time | default(3000) }}
 retryCount: {{ retry_count | default(10) }}
@@ -65,14 +68,13 @@ bie.searchPath: '/search'
 
 records.url: {{ records_url | default('https://archives.ala.org.au/archives/exports/lat_lon_taxon.zip') }}
 
-api_key: {{ spatial_service_api_key  | default('') }}
 lists.url: {{ lists_url | default('https://lists.ala.org.au') }}
 collections.url: {{ collections_url | default('https://collections.ala.org.au') }}
 sandboxHubUrl: {{ sandbox_url | default('https://sandbox.ala.org.au/ala-hub') }}
 sandboxBiocacheServiceUrl: {{sandbox_biocache_service_url | default('https://sandbox.ala.org.au/biocache-service') }}
 phyloServiceUrl: {{ phylolink_url | default('https://phylolink.ala.org.au') }}
 
-spatialHubUrl: {{ spatial_hub_url }}
+spatialHubUrl: {{spatial_hub_base_url}}{{spatial_hub_context_path | default('')}}
 
 gazField: {{ gaz_field | default('cl2123') }}
 userObjectsField: {{ user_objects_field | default('cl1083') }}
@@ -194,7 +196,7 @@ security:
     bypass: {{ bypass_cas | default(true) }}
     disableCAS: {{ bypass_cas | default(true) }}
     gateway: {{ gateway_cas | default(false) }}
-    enabled: false
+    enabled: {{ cas_enabled | default(false) }}
   apikey:
     check:
       serviceUrl:  {{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}
@@ -202,8 +204,8 @@ security:
   oidc:
     enabled: {{ oidc_enabled }}
     discoveryUri: {{oidc_discoveryUri}}
-    clientId: {{ oidc_client_id }}
-    secret: {{ oidc_secret }}
+    clientId: {{ spatial_service_oidc_client_id }}
+    secret: {{ spatial_service_oidc_secret }}
     allowUnsignedIdTokens: true
     scope: 'openid profile email ala/attrs ala/roles'
     roleAttribute: ala:role
@@ -214,6 +216,11 @@ security:
     enabled: {{ jwt_enabled }}
     discoveryUri: {{ jwt_discoveryUri }}
     fallbackToLegacyBehaviour: true
+    clientId: {{ spatial_service_oidc_client_id }}
+    roleAttributes: cognito:groups
+    rolesFromAccessToken: true
+    userIdClaim: username
+    roleClaims: cognito:groups
   cors:
     enable: true
     authenticated:
@@ -223,11 +230,17 @@ security:
       allowedOrigins:
         - '*'
       allowCredentials: false
-    webservice:
-      jwt: true
-      jwt-scopes: ala/attrs ala/internal users/read
-      clientId: 6h1qa9cs4cqqlf76jbk3ilhg4k
-      secret: 15ng8gjhdk18ejt53ocb0no19u4fm72hkgeo31in02qvbkmklel9
+  core:
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+  cookie:
+    enabled: {{ auth_cookie_enabled | default('false') }}
+    domain: {{ auth_cookie_domain | default('.ala.org.au') }}
+
+webservice:
+  jwt: true
+  jwt-scopes: ala/attrs ala/internal users/read
+  clientId: {{ spatial_service_webservice_client_id }}
+  secret: {{ spatial_service_webservice_client_secret }}
 
 #duplicate with security.apikey.check.serviceUrl
 apiKeyCheckUrlTemplate:  {{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}

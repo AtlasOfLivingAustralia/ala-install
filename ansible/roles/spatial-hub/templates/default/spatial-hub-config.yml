@@ -14,6 +14,7 @@ i18n:
 
 security:
   cas:
+    enabled: {{ cas_enabled | default(false) }}
     casServerName: "{{ auth_base_url }}"
     casServerUrlPrefix: "{{ auth_cas_url }}"
     loginUrl: "{{ auth_cas_url }}/login"

@@ -1,4 +1,4 @@
-grails.serverURL: "{{spatial_hub_base_url}}{{spatial_hub_context_path}}"
+grails.serverURL: "{{spatial_hub_base_url}}{{spatial_hub_context_path | default('')}}"
 grails.app.context: "{{spatial_hub_context_path}}"
 
 googleAnalyticsId: "{{google_analytics_id | default('')}}"
@@ -15,7 +15,7 @@ i18n:
 security:
   # CAS disabled
   cas:
-    enabled: false
+    enabled: {{ cas_enabled | default(false) }}
     casServerName: "{{ auth_base_url }}"
     casServerUrlPrefix: "{{ auth_cas_url }}"
     loginUrl: "{{ auth_cas_url }}/login"
@@ -30,8 +30,8 @@ security:
   oidc:
     enabled: {{ oidc_enabled }}
     discoveryUri: {{oidc_discoveryUri}}
-    clientId: {{ oidc_client_id }}
-    secret: {{ oidc_secret }}
+    clientId: {{ spatial_hub_oidc_client_id }}
+    secret: {{ spatial_hub_oidc_secret }}
     allowUnsignedIdTokens: true
     scope: 'openid profile email ala/attrs ala/roles'
     roleAttribute: ala:role
@@ -42,6 +42,11 @@ security:
     enabled: {{ jwt_enabled }}
     discoveryUri: {{ jwt_discoveryUri }}
     fallbackToLegacyBehaviour: true
+    clientId: {{ spatial_hub_oidc_client_id }}
+    roleAttributes: cognito:groups
+    rolesFromAccessToken: true
+    userIdClaim: username
+    roleClaims: cognito:groups
   cors:
     enable: true
     authenticated:
@@ -51,11 +56,17 @@ security:
       allowedOrigins:
         - '*'
       allowCredentials: false
-    webservice:
-      jwt: true
-      jwt-scopes: ala/attrs ala/internal users/read
-      clientId: 6h1qa9cs4cqqlf76jbk3ilhg4k
-      secret: 15ng8gjhdk18ejt53ocb0no19u4fm72hkgeo31in02qvbkmklel9
+  core:
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+  cookie:
+    enabled: {{ auth_cookie_enabled | default('false') }}
+    domain: {{ auth_cookie_domain | default('.ala.org.au') }}
+
+webservice:
+  jwt: true
+  jwt-scopes: ala/attrs ala/internal users/read
+  clientId: {{ spatial_service_webservice_client_id }}
+  secret: {{ spatial_service_webservice_client_secret }}
 
 apiKeyCheckUrlTemplate: "{{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}"
 autocompleteUrl: "{{ bie_service_base_url | default('https://bie-ws.ala.org.au/ws') }}/search/auto.jsonp"
