@@ -12,8 +12,8 @@ security:
     affiliation-survey:
       enabled: {{affiliation_survey_enabled | default ('false')}}
   cookie:
-    enabled: { { auth_cookie_enabled | default('false') } }
-    domain: { { auth_cookie_domain | default('.ala.org.au') } }
+    enabled: {{ auth_cookie_enabled | default('false') }}
+    domain: {{ auth_cookie_domain | default('.ala.org.au') }}
   cas:
     enabled: {{ security_cas_enabled | default(true) }}
     appServerName: "{{image_service_base_url}}"
@@ -49,18 +49,18 @@ security:
       whitelist: {{ image_service_whitelist | default('') }}
     check:
       serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
-    enabled: { { apikey_check_enabled | default('false') } }
+    enabled: {{ apikey_check_enabled | default('false') }}
     auth:
       serviceUrl: {{apikey_auth_url | default('https://auth.ala.org.au/apikey/')}}
     userdetails:
-      serviceUrl: { { apikey_userdetails_url | default('https://auth.ala.org.au/userdetails/') } }
+      serviceUrl: {{ apikey_userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
 
 #websevice jwt
 webservice:
-  jwt: { { webservice_jwt | default('false') } }
-  jwt-scopes: { { webservice_jwt_scopes | default('') } }
-  client-id: { { webservice_clientId | default('') } }
-  client-secret: { { webservice_secert | default('') } }
+  jwt: {{ webservice_jwt | default('false') }}
+  jwt-scopes: {{ webservice_jwt_scopes | default('') }}
+  client-id: {{ webservice_clientId | default('') }}
+  client-secret: {{ webservice_secert | default('') }}
 
 userDetails:
   url: {{ userdetails_base_url | default(auth_base_url + "/userdetails/") }}

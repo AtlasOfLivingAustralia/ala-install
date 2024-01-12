@@ -101,8 +101,15 @@ wordPress:
   contentOnlyParams: ?content-only=1&categories=1
 lists:
   service: {{ specieslist_service_url | default('https://lists.ala.org.au/ws') }}
+  ui: {{ specieslist_url | default('https://lists.ala.org.au') }}
+  conservation: /speciesList?isAuthoritative=eq:true&isThreatened=eq:true&max={0}&offset={1}
+  search: /speciesList/?isAuthoritative=eq:true&max={0}&offset={1}
+  show: /speciesListItem/list/{0}
   add: /createItem
   remove: /deleteItem
+biocollect:
+  service: {{ biocollect_url }}
+  search: /ws/project/search?initiator=ala&facets=status
 naming:
   service: {{ namematching_service_url | default('https://namematching-ws.ala.org.au') }}
 attribution:
@@ -163,8 +170,8 @@ headerAndFooter:
   baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3-2019') }}
 useLegacyAuto: false
 import:
-  sequence: {{ bie_index_import_sequence | default('collectory,taxonomy-all,vernacular,denormalise,layers,regions,localities,conservation-lists,wordpress,knowledgebase,favourites,weights,link-identifiers,images,occurrences,suggest-index') }}
-  sequenceDaily: {{ bie_index_import_sequence_daily | default('conservation-lists,images,hidden-images,wiki-urls,wordpress,knowledgebase,favourites,suggest-index,swap') }}
+  sequence: {{ bie_index_import_sequence | default('collectory,taxonomy-all,vernacular,denormalise,layers,regions,localities,conservation-lists,wordpress,knowledgebase,biocollect,species-lists,favourites,weights,link-identifiers,images,occurrences,hidden-images,wiki-urls,suggest-index,sitemap,swap') }}
+  sequenceDaily: {{ bie_index_import_sequence_daily | default('conservation-lists,wordpress,knowledgebase,biocollect,species-lists,favourites,suggest-index,images,hidden-images,wiki-urls,sitemap,swap') }}
   sequenceWeekly: {{ bie_index_import_sequence_weekly | default('occurrences,layers,regions,localities,suggest-index,swap') }}
   dailyRunHour: {{ bie_index_import_daily_run_hour | default('2') }}
   weeklyRunDay: {{ bie_index_import_weekly_run_day | default('6') }}
@@ -198,3 +205,14 @@ userdetails:
   url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
 userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
 userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
+
+# all available rk_ and rkid_ fields in SOLR are added to defaultDownloadFields when no rk_ field is defined in defaultDownloadFields
+defaultDownloadFields: guid,rank,scientificName,scientificNameAuthorship,taxonomicStatus,establishmentMeans,datasetName,parentGuid,acceptedConceptName,acceptedConceptID,idxtype,name,additionalNames_m_s
+downloadMaxRows: 100000
+
+# override the taxon ranks taxonRanksFile with an external file
+taxonRanksFile:
+
+sitemap:
+  dir: /data/bie-index
+  enabled: true

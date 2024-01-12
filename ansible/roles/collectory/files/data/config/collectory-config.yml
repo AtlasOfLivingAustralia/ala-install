@@ -10,6 +10,7 @@ dataResource:
   contentTypesList:
     - "authoritative"
     - "behaviour"
+    - "citizen science"
     - "commercial uses"
     - "common names"
     - "conservation management"
