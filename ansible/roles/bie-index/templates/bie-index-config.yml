@@ -102,7 +102,6 @@ wordPress:
 lists:
   service: {{ specieslist_service_url | default('https://lists.ala.org.au/ws') }}
   ui: {{ specieslist_url | default('https://lists.ala.org.au') }}
-  items: /speciesListItems/{0}?includeKVP=true&max={1}&offset={2}
   conservation: /speciesList?isAuthoritative=eq:true&isThreatened=eq:true&max={0}&offset={1}
   search: /speciesList/?isAuthoritative=eq:true&max={0}&offset={1}
   show: /speciesListItem/list/{0}
@@ -185,14 +184,23 @@ ala:
 bie:
   baseURL: {{ bie_base_url | default('https://bie.ala.org.au') }}
   searchPath: {{ bie_search_path | default('/search') }}
+
 openapi:
+  terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
+  contact:
+    email: {{ support_email | default('support@ala.org.au') }}
   components:
     security:
       oauth2:
+{% if openapi_oauth_url is defined %}
+        baseUrl: {{ openapi_oauth_url }}
+{% else %}
         baseUrl: {{ auth_cas_url }}/oidc
         authorizationUrl: {{ auth_cas_url }}/oidc/authorize
         refreshUrl: {{ auth_cas_url }}/oidc/refresh
         tokenUrl: {{ auth_cas_url }}/oidc/token
+{% endif %}
+
 userdetails:
   url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
 userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
