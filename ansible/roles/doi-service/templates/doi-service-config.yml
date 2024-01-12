@@ -162,10 +162,14 @@ swagger:
       email: "{{ swagger_contact_email | default('support@ala.org.au') }}"
 
 openapi:
+  terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
+  contact:
+    email: {{ support_email | default('support@ala.org.au') }}
   components:
     security:
       oauth2:
-        baseUrl: {{ auth_cas_url }}/oidc
+        baseUrl: {{ openapi_oauth_url }}
+
 userdetails:
   url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
 userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
