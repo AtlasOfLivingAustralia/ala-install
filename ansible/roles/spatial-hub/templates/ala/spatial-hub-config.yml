@@ -1,4 +1,5 @@
-grails.serverURL: "{{spatial_hub_base_url}}{{spatial_hub_context_path | default('')}}"
+grails:
+  serverURL: "{{ spatial_hub_base_url }}"
 grails.app.context: "{{spatial_hub_context_path}}"
 
 googleAnalyticsId: "{{google_analytics_id | default('')}}"
@@ -7,7 +8,7 @@ google:
 
 fathomId: "{{fathom_id | default('') }}"
 
-api_key: {{ spatial_service_api_key  | default('') }}
+api_key: "{{ spatial_service_api_key  | default('') }}"
 
 i18n:
   region: "{{ spatial_hub_locale | default('default') }}"
@@ -26,7 +27,7 @@ security:
   #Duplicated with: apiKeyCheckUrlTemplate
   apikey:
     check:
-      serviceUrl:  {{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}
+      serviceUrl:  "{{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}"
   oidc:
     enabled: {{ oidc_enabled }}
     discoveryUri: {{oidc_discoveryUri}}
@@ -79,9 +80,9 @@ app:
         header:
             userId: {{ app_http_header_userid | default('X-ALA-userId') }}
 
-headerAndFooter:
-  baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}"
-  version: "{{ header_and_footer_version | default('2') }}"
+#headerAndFooter:
+#  baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}"
+#  version: "{{ header_and_footer_version | default('2') }}"
 
 ala.baseURL: "{{ ala_base_url | default('https://www.ala.org.au') }}"
 bie.baseURL: "{{ bie_base_url | default('https://bie.ala.org.au') }}"
@@ -92,9 +93,9 @@ bieService:
 
 userdetails:
   web:
-    url:{{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
+    url: "{{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}"
   api:
-    url:{{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
+    url: "{{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}"
 
 favicon:
   url: "{{ favicon_url | default('https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico') }}"
@@ -181,6 +182,7 @@ speciesDotOpacity: {{ species_dot_opacity | default(60) }}
 logger:
   baseUrl: "{{ logger_base_url | default('https://logger.ala.org.au/service') }}"
 
+#TBC : decommisioned
 phylolink:
   url: "{{ phylolink_url | default('https://phylolink.ala.org.au') }}"
 
