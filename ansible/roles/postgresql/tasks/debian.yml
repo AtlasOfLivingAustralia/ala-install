@@ -17,24 +17,11 @@
   when: postgis_version is defined and install_postgis | bool == True
   tags: postgresql
 
-- name: Install PostgreSQL {{pg_version}} packages with PostGIS {{postgis_version}}
-  apt:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ postgresql_packages }}"
-
-# A later version is already installed
-#- name: Download and install libpq5 with specific version
-#  get_url:
-#    url: "http://security.ubuntu.com/ubuntu/pool/main/p/postgresql-12/libpq5_12.17-0ubuntu0.20.04.1_amd64.deb"
-#    dest: "/tmp/libpq5_12.12-0ubuntu0.20.04.1_amd64.deb"
-#  tags: postgresql
-#
-#- name: Install libpq5 from downloaded package
+#- name: Install PostgreSQL {{pg_version}} packages with PostGIS {{postgis_version}}
 #  apt:
-#    deb: "/tmp/libpq5_12.12-0ubuntu0.20.04.1_amd64.deb"
+#    name: "{{ item }}"
 #    state: present
-#  tags: postgresql
+#  loop: "{{ postgresql_packages }}"
 
 
 - name: Install Postgres
