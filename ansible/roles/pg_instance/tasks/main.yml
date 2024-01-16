@@ -82,17 +82,6 @@
   tags:
     - pg_instance
 
-
-#- name: Install PostGIS extension for {{ db_name }} - local
-#  command: "sudo -u postgres psql -d {{ db_name }} -c 'CREATE EXTENSION IF NOT EXISTS postgis;'"
-#  become_user: postgres
-#
-#
-#- name: Install PostGIS Topology extension {{ db_name }} - local
-#  command: "sudo -u postgres psql -d {{ db_name }} -c 'CREATE EXTENSION IF NOT EXISTS postgis_topology;'"
-#  become_user: postgres
-
-
 - name: enable extensions for "{{ db_name }}" - local
   postgresql_ext:
     name: "{{ item }}"

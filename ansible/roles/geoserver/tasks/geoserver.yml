@@ -42,12 +42,6 @@
   register: geoserver_data_dir_check
   check_mode: no
 
-- name: "Check if {{data_dir}}/geoserver_data_dir exists"
-  stat:
-    path: '{{data_dir}}/geoserver_data_dir'
-  register: geoserver_data_dir_check
-  check_mode: no
-
 - include: ../../apache_vhost/tasks/main.yml context_path='{{ geoserver_context_path }}' hostname='{{ geoserver_hostname }}'
   tags:
     - deploy

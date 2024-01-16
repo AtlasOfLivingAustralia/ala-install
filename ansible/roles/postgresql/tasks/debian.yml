@@ -9,7 +9,7 @@
 - include: apt.yaml
 
 - set_fact:
-    postgresql_packages: [ "{{ psycopg2_package }}", "postgresql-{{pg_version}}", "postgresql-contrib-{{pg_version}}" ]
+    postgresql_packages: [ "{{ psycopg2_package }}", "postgresql-{{pg_version}}", "postgresql-contrib-{{pg_version}}", "libpq-dev" ]
 
 - name: Set postgis package names
   set_fact:
@@ -36,11 +36,6 @@
 #    state: present
 #  tags: postgresql
 
-- name: Install libpq-dev
-  apt:
-    name: libpq-dev
-    state: present
-  tags: postgresql
 
 - name: Install Postgres
   apt:
