@@ -11,18 +11,6 @@
     - spatial-hub-config
     - properties
 
-#- name: copy all config.yml
-#  template: src={{spatial_hub_portal|lower}}/{{item}} dest={{data_dir}}/spatial-hub/config/{{item}} owner={{tomcat_user}} group={{tomcat_user}}
-#  with_items:
-#    - "spatial-hub-config.yml"
-#    - "menu-config.json"
-#    - "view-config.json"
-#  tags:
-#    - config
-#    - spatial-hub
-#    - spatial-hub-config
-#    - properties
-
 - name: copy all config.yml
   template:
     src: "{{spatial_hub_portal|lower}}/{{item}}"
@@ -33,6 +21,7 @@
     - "spatial-hub-config.yml"
     - "menu-config.json"
     - "view-config.json"
+    - "logback.xml"
   tags:
     - config
     - spatial-hub
@@ -41,13 +30,6 @@
 
 - name: copy system message
   template: src=system-message.json dest={{data_dir}}/spatial-hub/config/system-message.json owner={{tomcat_user}} group={{tomcat_user}}
-  tags:
-    - spatial-hub
-    - spatial-hub-config
-    - properties
-
-- name: copy log4j.properties
-  template: src=log4j.properties dest={{data_dir}}/spatial-hub/config/log4j.properties owner={{tomcat_user}} group={{tomcat_user}}
   tags:
     - spatial-hub
     - spatial-hub-config
