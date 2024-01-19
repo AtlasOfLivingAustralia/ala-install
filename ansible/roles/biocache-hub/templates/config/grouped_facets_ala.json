@@ -87,6 +87,10 @@
             {
                 "sort": "index",
                 "field": "original_name_usage"
+            },
+            {
+                "sort": "index",
+                "field": "identificationVerificationStatus"
             }
         ]
     },
