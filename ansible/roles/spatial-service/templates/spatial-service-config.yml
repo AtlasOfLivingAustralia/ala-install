@@ -245,3 +245,12 @@ security:
 
 #used for spatial-service only
 apiKeyCheckUrlTemplate:  {{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}
+
+openapi:
+  terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
+  contact:
+    email: {{ support_email | default('support@ala.org.au') }}
+  components:
+    security:
+      oauth2:
+        baseUrl: {{ openapi_oauth_url }}
