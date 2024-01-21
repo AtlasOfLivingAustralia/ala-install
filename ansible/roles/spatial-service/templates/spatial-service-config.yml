@@ -199,7 +199,7 @@ security:
     enabled: {{ cas_enabled | default(false) }}
   apikey:
     check:
-      serviceUrl:  {{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}
+      serviceUrl:  {{api_key_service_url | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
 
   oidc:
     enabled: {{ oidc_enabled }}
@@ -236,11 +236,12 @@ security:
     enabled: {{ auth_cookie_enabled | default('false') }}
     domain: {{ auth_cookie_domain | default('.ala.org.au') }}
 
-webservice:
-  jwt: true
-  jwt-scopes: ala/attrs ala/internal users/read
-  clientId: {{ spatial_service_webservice_client_id }}
-  secret: {{ spatial_service_webservice_client_secret }}
+# ApiKey Authoenticator failed while webservice.jwt is supplied
+#webservice:
+#  jwt: true
+#  jwt-scopes: ala/attrs ala/internal users/read
+#  clientId: {{ spatial_service_webservice_client_id }}
+#  secret: {{ spatial_service_webservice_client_secret }}
 
-#duplicate with security.apikey.check.serviceUrl
+#used for spatial-service only
 apiKeyCheckUrlTemplate:  {{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}

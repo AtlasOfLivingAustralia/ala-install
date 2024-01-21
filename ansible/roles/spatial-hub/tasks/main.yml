@@ -21,7 +21,6 @@
     - "spatial-hub-config.yml"
     - "menu-config.json"
     - "view-config.json"
-    - "logback.xml"
   tags:
     - config
     - spatial-hub
