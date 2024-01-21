@@ -526,7 +526,7 @@
 - name: symlink vhost to sites-enabled
   file:
     state: link
-    src: "../sites-available/{{hostname}}{{vfragments_suffix}}.conf"
+    src: "{{nginx_conf_dir}}/sites-available/{{hostname}}{{vfragments_suffix}}.conf"
     dest: "{{nginx_conf_dir}}/sites-enabled/{{hostname}}{{vfragments_suffix}}.conf"
   when: vhost_required | bool == True
   notify:
@@ -559,6 +559,7 @@
     vfragments_suffix: ''
   tags:
     - nginx_vhost
+
 
 - name: Add the virtual host to the /etc/hosts file for Vagrant instances
   lineinfile: dest=/etc/hosts regexp="^127.0.0.1 {{hostname}}$" line="127.0.0.1 {{ hostname }}" state=present

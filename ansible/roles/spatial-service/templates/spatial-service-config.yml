@@ -10,8 +10,8 @@ geoserver:
   canDeploy: {{ can_deploy_to_geoserver | default('true') }}
 # To use a remote geoserver instance, set geoserver.remote.geoserver_data_dir to the geoserver_data_dir path on the
 # remote server. This will cause layer files to be copied to geoserver_data_dir/data/
-#  remote:
-  geoserver_data_dir: "{{ geoserver_data_dir | default('/data/geoserver_data_dir') }}"
+  remote:
+    geoserver_data_dir: "{{ geoserver_data_dir | default('/data/geoserver_data_dir') }}"
 
 shpResolutions: {{ shp_resolutions | default([0.5, 0.25, 0.1, 0.05]) }}
 grdResolutions: {{ grd_resolutions | default([0.5, 0.25, 0.1, 0.05, 0.01]) }}
@@ -23,6 +23,7 @@ openstreetmap:
 
 slave.enable: {{ slave_enable | default(true) }}
 service.enable: {{ service_enable | default(true) }}
+
 
 batch_sampling_passwords: "{{ batch_sampling_passwords | default('') }}"
 batch_sampling_points_limit: {{ batch_sampling_points_limit | default(1000000) }}
@@ -47,28 +48,12 @@ sampling.threads: {{ sampling_threads | default(4) }}
 slaveKey: "{{ spatial_service_slave_key | default('') }}"
 serviceKey: "{{ spatial_service_service_key | default('') }}"
 
+api_key: {{ spatial_service_api_key  | default('') }}
+
 # time between pushing status updates to the master for a task
 statusTime: {{ status_time | default(3000) }}
 retryCount: {{ retry_count | default(10) }}
 retryTime: {{ retry_time | default(30000) }}
-
-#
-#  CAS SETTINGS
-#
-#  NOTE: Some of these will be ignored if default_config exists
-security:
-  cas:
-    casServerName: {{ auth_base_url }}
-    casServerUrlPrefix: {{ auth_cas_url }}
-    loginUrl: {{ auth_cas_url }}/login
-    logoutUrl: {{ auth_cas_url }}/logout
-    bypass: {{ bypass_cas | default(true) }}
-    disableCAS: {{ bypass_cas | default(true) }}
-    gateway: {{ gateway_cas | default(false) }}
-  apikey:
-    check:
-      serviceUrl:  {{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}
-
 
 auth.admin_role: {{ auth_admin_role | default('ROLE_ADMIN') }}
 app.http.header.userId: {{ app_http_header_userid | default('X-ALA-userId') }}
@@ -83,14 +68,13 @@ bie.searchPath: '/search'
 
 records.url: {{ records_url | default('https://archives.ala.org.au/archives/exports/lat_lon_taxon.zip') }}
 
-api_key: {{ spatial_service_api_key  | default('') }}
 lists.url: {{ lists_url | default('https://lists.ala.org.au') }}
 collections.url: {{ collections_url | default('https://collections.ala.org.au') }}
 sandboxHubUrl: {{ sandbox_url | default('https://sandbox.ala.org.au/ala-hub') }}
 sandboxBiocacheServiceUrl: {{sandbox_biocache_service_url | default('https://sandbox.ala.org.au/biocache-service') }}
 phyloServiceUrl: {{ phylolink_url | default('https://phylolink.ala.org.au') }}
 
-spatialHubUrl: {{ spatial_hub_url }}
+spatialHubUrl: {{spatial_hub_base_url}}{{spatial_hub_context_path | default('')}}
 
 gazField: {{ gaz_field | default('cl2123') }}
 userObjectsField: {{ user_objects_field | default('cl1083') }}
@@ -186,9 +170,78 @@ logging:
   level:
     root: INFO
 
-userdetails:
-    baseUrl: "{{ user_details_base_url | default('https://auth.ala.org.au/userdetails') }}"
+#userdetails:
+#    baseUrl: "{{ user_details_base_url | default('https://auth.ala.org.au/userdetails') }}"
+#
+## ala-auth-plugin conf
+#userDetails:
+#    url: {{ auth_base_url }}/userdetails/
 
-# ala-auth-plugin conf
-userDetails:
-    url: {{ auth_base_url }}/userdetails/
+userdetails:
+  web:
+    url:{{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
+  api:
+    url:{{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
+
+#
+#  CAS SETTINGS
+#
+#  NOTE: Some of these will be ignored if default_config exists
+security:
+  cas:
+    casServerName: {{ auth_base_url }}
+    casServerUrlPrefix: {{ auth_cas_url }}
+    loginUrl: {{ auth_cas_url }}/login
+    logoutUrl: {{ auth_cas_url }}/logout
+    bypass: {{ bypass_cas | default(true) }}
+    disableCAS: {{ bypass_cas | default(true) }}
+    gateway: {{ gateway_cas | default(false) }}
+    enabled: {{ cas_enabled | default(false) }}
+  apikey:
+    check:
+      serviceUrl:  {{api_key_service_url | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
+
+  oidc:
+    enabled: {{ oidc_enabled }}
+    discoveryUri: {{oidc_discoveryUri}}
+    clientId: {{ spatial_service_oidc_client_id }}
+    secret: {{ spatial_service_oidc_secret }}
+    allowUnsignedIdTokens: true
+    scope: 'openid profile email ala/attrs ala/roles'
+    roleAttribute: ala:role
+    logoutAction: cognito
+    alaUseridClaim: username
+    logoutUrl: {{ oidc_logoutUrl }}
+  jwt:
+    enabled: {{ jwt_enabled }}
+    discoveryUri: {{ jwt_discoveryUri }}
+    fallbackToLegacyBehaviour: true
+    clientId: {{ spatial_service_oidc_client_id }}
+    roleAttributes: cognito:groups
+    rolesFromAccessToken: true
+    userIdClaim: username
+    roleClaims: cognito:groups
+  cors:
+    enable: true
+    authenticated:
+      allowedOrigins:
+        - '.*\.ala\.org\.au(:[0-9]+)?'
+    unauthenticated:
+      allowedOrigins:
+        - '*'
+      allowCredentials: false
+  core:
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+  cookie:
+    enabled: {{ auth_cookie_enabled | default('false') }}
+    domain: {{ auth_cookie_domain | default('.ala.org.au') }}
+
+# ApiKey Authoenticator failed while webservice.jwt is supplied
+#webservice:
+#  jwt: true
+#  jwt-scopes: ala/attrs ala/internal users/read
+#  clientId: {{ spatial_service_webservice_client_id }}
+#  secret: {{ spatial_service_webservice_client_secret }}
+
+#used for spatial-service only
+apiKeyCheckUrlTemplate:  {{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}

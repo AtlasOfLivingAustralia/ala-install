@@ -14,18 +14,17 @@
     - postgresql
     - postgis
 
-# TODO Seems redundant given this occurs in debian.yml
-# - name: Install PostGIS if required
-#   apt:
-#     pkg: "{{ item }}"
-#     state: present
-#     update_cache: yes
-#   when: postgis_version is defined
-#   with_items:
-#     - "postgresql-{{pg_version}}-postgis-{{postgis_version}}"
-#   tags:
-#     - postgresql
-#     - postgis
+- name: Install PostGIS if required
+  apt:
+    pkg: "{{ item }}"
+    state: present
+    update_cache: yes
+  when: postgis_version
+  with_items:
+    - "postgresql-{{pg_version}}-postgis-{{postgis_version}}"
+  tags:
+    - postgresql
+    - postgis
 
 - name: ensure postgis_template database exists
   postgresql_db:

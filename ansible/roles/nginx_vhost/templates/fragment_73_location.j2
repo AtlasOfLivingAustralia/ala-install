@@ -68,6 +68,9 @@
 {% if allow_x_frame is defined | bool %}
         add_header X-Frame-Options {{ allow_x_frame }} always;
 {% endif %}
+{% if allow_x_frame is defined | bool %}
+        add_header X-Frame-Options {{ allow_x_frame }} always;
+{% endif %}
 {% if nginx_proxy_protocol_enabled | bool %}
         proxy_set_header X-Forwarded-For $proxy_protocol_addr;
         proxy_set_header X-Real-IP $proxy_protocol_addr;

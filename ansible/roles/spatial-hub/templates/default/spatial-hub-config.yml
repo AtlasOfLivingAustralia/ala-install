@@ -14,6 +14,7 @@ i18n:
 
 security:
   cas:
+    enabled: {{ cas_enabled | default(false) }}
     casServerName: "{{ auth_base_url }}"
     casServerUrlPrefix: "{{ auth_cas_url }}"
     loginUrl: "{{ auth_cas_url }}/login"
@@ -33,7 +34,7 @@ app:
             userId: {{ app_http_header_userid | default('X-ALA-userId') }}
 
 headerAndFooter:
-  baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3-2019') }}"
+  baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}"
   version: "{{ header_and_footer_version | default('2') }}"
 
 ala.baseURL: "{{ ala_base_url | default('https://www.ala.org.au') }}"
