@@ -12,3 +12,29 @@
     state: stopped
     enabled: false
   ignore_errors: true
+
+- name: delete the current names index /data/lucene/namematching-nm.tgz
+  ansible.builtin.file:
+    path: /data/lucene/namematching-nm.tgz
+    state: absent
+  tags:
+    - nameindex
+
+- name: delete the current names index unpacked /data/lucene/namematching-nm
+  ansible.builtin.file:
+    path: /data/lucene/namematching-nm
+    state: absent
+  tags:
+    - nameindex
+
+- name: install the names index {{ ala_namemaching_service_source | default('https://archives.ala.org.au/archives/nameindexes/20210811/namematching-20210811.tgz') }}
+  import_tasks: ./download-nameindex.yml
+  vars:
+    dest: "/data/lucene/namematching-nm.tgz"
+    final_dest: "/data/lucene/namematching-nm/"
+    url: "{{ ala_namemaching_service_source | default('https://archives.ala.org.au/archives/nameindexes/20210811/namematching-20210811.tgz') }}"
+    sha1: "{{ ala_namemaching_service_source_sha1 | default('563814a7b5d886b746e10eb40c44f0d9bda62371') }}"
+  notify:
+    - restart ala-namematching-service
+  tags:
+    - nameindex
