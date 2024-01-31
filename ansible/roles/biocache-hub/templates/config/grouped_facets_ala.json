@@ -118,10 +118,6 @@
             },
             {
                 "sort": "count",
-                "field": "raw_state_conservation"
-            },
-            {
-                "sort": "count",
                 "field": "country_conservation"
             }
         ]
