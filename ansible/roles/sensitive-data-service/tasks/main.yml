@@ -34,6 +34,12 @@
     - deploy
     - apt
 
+# Allow the use of a specified namematching-service version for the sds
+- set_fact:
+    ala_namematching_service_version: "{{ sds_ala_namematching_service_version }}"
+  when:
+    - sds_ala_namematching_service_version is defined
+
 - name: Include VM tasks
   import_tasks: vm-tasks.yml
   when: deployment_type == 'vm'
