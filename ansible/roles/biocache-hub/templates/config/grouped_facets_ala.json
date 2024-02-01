@@ -87,6 +87,10 @@
             {
                 "sort": "index",
                 "field": "original_name_usage"
+            },
+            {
+                "sort": "index",
+                "field": "identificationVerificationStatus"
             }
         ]
     },
@@ -111,10 +115,6 @@
             {
                 "sort": "count",
                 "field": "state_conservation"
-            },
-            {
-                "sort": "count",
-                "field": "raw_state_conservation"
             },
             {
                 "sort": "count",

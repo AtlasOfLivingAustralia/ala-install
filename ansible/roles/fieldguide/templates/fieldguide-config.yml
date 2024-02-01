@@ -41,10 +41,14 @@ security:
 # cognito specific configs
 {% if auth_system is defined and auth_system == 'cognito' %}
   core:
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
     roleAttribute: {{ roleAttribute | default('') }}
     affiliation-survey:
       enabled: {{affiliation_survey_enabled | default ('false')}}
 {% endif %}
+  cookie:
+    enabled: {{ auth_cookie_enabled | default('false') }}
+    domain: {{ auth_cookie_domain | default('.ala.org.au') }}
   cas:
     casServerName: {{auth_base_url}}
     loginUrl: {{auth_cas_url}}/login
@@ -76,6 +80,7 @@ security:
     scope: {{ scope | default('openid')}}
     alaUseridClaim: {{ alaUseridClaim | default('') }}
     logoutAction: {{ logoutAction | default('') }}
+    logoutUrl: {{ logoutUrl | default('') }}
 {% endif %}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
@@ -104,15 +109,19 @@ webservice:
 openapi:
   title: Fieldguide REST services
   description: REST services for interacting with the fieldguide webapp
-  terms: https://www.ala.org.au/terms
+  terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
   contact:
     name: Support
-    email: support@ala.org.au
+    email: {{ support_email | default('support@ala.org.au') }}
   license:
     name: Mozilla Public License 1.1
     url: https://www.mozilla.org/en-US/MPL/1.1/
-  version: '@info.app.version@'
   cachetimeoutms: 4000
+  components:
+    security:
+      oauth2:
+        baseUrl: {{ openapi_oauth_url }}
+
 serverURL: {{fieldguide_base_url}}
 grails:
   serverURL: {{fieldguide_base_url}}

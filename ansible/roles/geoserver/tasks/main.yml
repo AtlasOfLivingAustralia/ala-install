@@ -1,3 +1,10 @@
+- name: Use which geoserver
+  debug:
+    msg: "Using {{geoserver_task}}"
+  tags:
+    - geoserver
+    - which-geoserver
+
 - include: ./geoserver.yml
   when: geoserver_task == "geoserver"
   tags:

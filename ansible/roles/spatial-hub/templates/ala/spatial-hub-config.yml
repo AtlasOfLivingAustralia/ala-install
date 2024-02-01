@@ -1,4 +1,5 @@
-grails.serverURL: "{{spatial_hub_base_url}}{{spatial_hub_context_path}}"
+grails:
+  serverURL: "{{ spatial_hub_base_url }}"
 grails.app.context: "{{spatial_hub_context_path}}"
 
 googleAnalyticsId: "{{google_analytics_id | default('')}}"
@@ -7,25 +8,68 @@ google:
 
 fathomId: "{{fathom_id | default('') }}"
 
-api_key: {{ spatial_service_api_key  | default('') }}
+api_key: "{{ spatial_service_api_key  | default('') }}"
 
 i18n:
   region: "{{ spatial_hub_locale | default('default') }}"
 
 security:
+  # CAS disabled
   cas:
+    enabled: {{ cas_enabled | default(false) }}
     casServerName: "{{ auth_base_url }}"
     casServerUrlPrefix: "{{ auth_cas_url }}"
     loginUrl: "{{ auth_cas_url }}/login"
     logoutUrl: "{{ auth_cas_url }}/logout"
-{% if spatial_hub_context_path != '/' %}
-    # if contextPath: "/" we have a too many redirects with CAS
-    contextPath: "{{ spatial_hub_context_path }}"
-{% endif %}
     bypass: {{ bypass_cas | default(true) }}
     disableCAS: {{ bypass_cas | default(true) }}
     gateway: {{ gateway_cas | default(false) }}
+  #Used for auth plugin
+  apikey:
+    check:
+      serviceUrl:  {{api_key_service_url | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
+  oidc:
+    enabled: {{ oidc_enabled }}
+    discoveryUri: {{oidc_discoveryUri}}
+    clientId: {{ spatial_hub_oidc_client_id }}
+    secret: {{ spatial_hub_oidc_secret }}
+    allowUnsignedIdTokens: true
+    scope: 'openid profile email ala/attrs ala/roles'
+    roleAttribute: ala:role
+    logoutAction: cognito
+    alaUseridClaim: username
+    logoutUrl: {{ oidc_logoutUrl }}
+  jwt:
+    enabled: {{ jwt_enabled }}
+    discoveryUri: {{ jwt_discoveryUri }}
+    fallbackToLegacyBehaviour: true
+    clientId: {{ spatial_hub_oidc_client_id }}
+    roleAttributes: cognito:groups
+    rolesFromAccessToken: true
+    userIdClaim: username
+    roleClaims: cognito:groups
+  cors:
+    enable: true
+    authenticated:
+      allowedOrigins:
+        - '.*\.ala\.org\.au(:[0-9]+)?'
+    unauthenticated:
+      allowedOrigins:
+        - '*'
+      allowCredentials: false
+  core:
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+  cookie:
+    enabled: {{ auth_cookie_enabled | default('false') }}
+    domain: {{ auth_cookie_domain | default('.ala.org.au') }}
 
+webservice:
+  jwt: true
+  jwt-scopes: ala/attrs ala/internal users/read
+  clientId: {{ spatial_service_webservice_client_id }}
+  secret: {{ spatial_service_webservice_client_secret }}
+
+apiKeyCheckUrlTemplate: "{{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}"
 autocompleteUrl: "{{ bie_service_base_url | default('https://bie-ws.ala.org.au/ws') }}/search/auto.jsonp"
 
 auth:
@@ -36,9 +80,9 @@ app:
         header:
             userId: {{ app_http_header_userid | default('X-ALA-userId') }}
 
-headerAndFooter:
-  baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3-2019') }}"
-  version: "{{ header_and_footer_version | default('2') }}"
+#headerAndFooter:
+#  baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}"
+#  version: "{{ header_and_footer_version | default('2') }}"
 
 ala.baseURL: "{{ ala_base_url | default('https://www.ala.org.au') }}"
 bie.baseURL: "{{ bie_base_url | default('https://bie.ala.org.au') }}"
@@ -48,11 +92,10 @@ bieService:
     baseURL: "{{ bie_service_base_url | default('https://bie-ws.ala.org.au/ws') }}"
 
 userdetails:
-    baseUrl: "{{ user_details_base_url | default('https://auth.ala.org.au/userdetails') }}"
-
-# ala-auth-plugin conf
-userDetails:
-    url: {{ auth_base_url }}/userdetails/
+  web:
+    url: "{{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}"
+  api:
+    url: "{{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}"
 
 favicon:
   url: "{{ favicon_url | default('https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico') }}"
@@ -139,10 +182,9 @@ speciesDotOpacity: {{ species_dot_opacity | default(60) }}
 logger:
   baseUrl: "{{ logger_base_url | default('https://logger.ala.org.au/service') }}"
 
+#TBC : decommisioned
 phylolink:
   url: "{{ phylolink_url | default('https://phylolink.ala.org.au') }}"
-
-apiKeyCheckUrlTemplate: "{{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}"
 
 biocollect:
   url: "{{ biocollect_url | default('https://biocollect.ala.org.au') }}"

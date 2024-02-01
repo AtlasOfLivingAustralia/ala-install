@@ -3,7 +3,9 @@
   <name>Objects</name>
   <nativeName>Objects</nativeName>
   <namespace>
-    <id>NamespaceInfoImpl-5edf2cdf:152ef41160e:-7ffe</id>
+    <name>ALA</name>
+    <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate"
+               href="{{geoserver_url}}/rest/namespaces/ALA.xml" type="application/xml"/>
   </namespace>
   <title>Objects</title>
   <keywords>

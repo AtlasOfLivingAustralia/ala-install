@@ -9,13 +9,20 @@
 - include: apt.yaml
 
 - set_fact:
-    postgresql_packages: [ "libpq-dev", "{{ psycopg2_package }}", "postgresql-{{pg_version}}", "postgresql-contrib-{{pg_version}}" ]
+    postgresql_packages: [ "{{ psycopg2_package }}", "postgresql-{{pg_version}}", "postgresql-contrib-{{pg_version}}", "libpq-dev" ]
 
 - name: Set postgis package names
   set_fact:
-    postgresql_packages: "{{postgresql_packages}} + [ 'postgresql-{{pg_version}}-postgis-{{postgis_version}}', 'postgresql-{{pg_version}}-postgis-{{postgis_version}}-scripts', 'gdal-bin' ]"
+    postgresql_packages: "{{ postgresql_packages + [ 'postgresql-{{pg_version}}-postgis-{{postgis_version}}', 'postgresql-{{pg_version}}-postgis-{{postgis_version}}-scripts', 'gdal-bin' ] }}"
   when: postgis_version is defined and install_postgis | bool == True
   tags: postgresql
+
+#- name: Install PostgreSQL {{pg_version}} packages with PostGIS {{postgis_version}}
+#  apt:
+#    name: "{{ item }}"
+#    state: present
+#  loop: "{{ postgresql_packages }}"
+
 
 - name: Install Postgres
   apt:

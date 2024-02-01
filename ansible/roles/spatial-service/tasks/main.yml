@@ -79,14 +79,6 @@
     - spatial-service-config
     - properties
 
-- name: copy all log4j.properties
-  template: src=log4j.properties dest={{data_dir}}/spatial-service/config/log4j.properties
-  tags:
-    - config
-    - spatial-service
-    - spatial-service-config
-    - properties
-
 - name: set data ownership
   file: path={{data_dir}}/ala/data/ owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 

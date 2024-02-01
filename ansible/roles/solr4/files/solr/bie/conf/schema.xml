@@ -95,10 +95,10 @@
     <fieldType name="concat_name" class="solr.TextField" sortMissingLast="true">
         <analyzer type="index">
             <tokenizer class="solr.KeywordTokenizerFactory"/>
-      <filter class="solr.LowerCaseFilterFactory" />      
-      <filter class="solr.TrimFilterFactory" /> 
+      <filter class="solr.LowerCaseFilterFactory" />
+      <filter class="solr.TrimFilterFactory" />
       <filter class="solr.PatternReplaceFilterFactory" pattern="([^a-zA-Z])" replacement="" replace="all" />
-      <filter class="solr.NGramFilterFactory" minGramSize="3" maxGramSize="30" /> 
+      <filter class="solr.NGramFilterFactory" minGramSize="3" maxGramSize="30" />
         </analyzer>
     <analyzer type="query">
             <tokenizer class="solr.KeywordTokenizerFactory"/>
@@ -112,14 +112,14 @@
         <filter class="solr.TrimFilterFactory" />
     <filter class="solr.StopFilterFactory"
                 ignoreCase="true"
-                words="bie_stopwords.txt"/> 
+                words="bie_stopwords.txt"/>
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
       <analyzer type="query">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
     <filter class="solr.StopFilterFactory"
                 ignoreCase="true"
-                words="bie_stopwords.txt"/> 
+                words="bie_stopwords.txt"/>
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
     </fieldType>
@@ -127,14 +127,14 @@
     <fieldType name="name_complete" class="solr.TextField" sortMissingLast="true">
         <analyzer type="index">
             <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-      <filter class="solr.LowerCaseFilterFactory" />      
-      <filter class="solr.TrimFilterFactory" />     
+      <filter class="solr.LowerCaseFilterFactory" />
+      <filter class="solr.TrimFilterFactory" />
       <filter class="solr.PatternReplaceFilterFactory" pattern="([().])" replacement="" replace="all" />
         </analyzer>
     <analyzer type="query">
             <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-      <filter class="solr.LowerCaseFilterFactory" />      
-      <filter class="solr.TrimFilterFactory" />     
+      <filter class="solr.LowerCaseFilterFactory" />
+      <filter class="solr.TrimFilterFactory" />
       <filter class="solr.PatternReplaceFilterFactory" pattern="([().])" replacement="" replace="all" />
         </analyzer>
     </fieldType>
@@ -142,13 +142,13 @@
     <fieldType name="auto_name_exact" class="solr.TextField">
         <analyzer type="index">
             <tokenizer class="solr.KeywordTokenizerFactory"/>
-      <filter class="solr.LowerCaseFilterFactory" />      
-      <filter class="solr.TrimFilterFactory" />     
+      <filter class="solr.LowerCaseFilterFactory" />
+      <filter class="solr.TrimFilterFactory" />
         </analyzer>
     <analyzer type="query">
             <tokenizer class="solr.KeywordTokenizerFactory"/>
-      <filter class="solr.LowerCaseFilterFactory" />      
-      <filter class="solr.TrimFilterFactory" />     
+      <filter class="solr.LowerCaseFilterFactory" />
+      <filter class="solr.TrimFilterFactory" />
         </analyzer>
     </fieldType>
 
@@ -460,7 +460,7 @@
        when adding a document.
    -->
    <!-- start of BIE Lucene Fields -->
-   
+
    <!-- Common fields to all -->
    <field name="id" type="string" indexed="true" stored="true" required="true" />
    <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
@@ -545,7 +545,7 @@
    <!-- higher taxonomy -->
    <field name="speciesGroup" type="lowercase" indexed="true" stored="true" multiValued="true" omitNorms="true" />
    <field name="speciesSubgroup" type="lowercase" indexed="true" stored="true" multiValued="true" omitNorms="true" />
-  
+
    <!-- WordPress fields -->
    <field name="categories" type="lowercase" indexed="true" stored="true" multiValued="true" omitNorms="false" />
 
@@ -574,7 +574,7 @@
 
    <field name="scientificName_suggest_ngram" type="text_suggest_ngram" indexed="true" stored="true" multiValued="true"/>
    <field name="commonNameSingle_suggest_ngram" type="text_suggest_ngram" indexed="true" stored="true" multiValued="true"/>
-   <field name="commonName_suggest_ngram" type="text_suggest_ngram" indexed="true" stored="true" multiValued="true"/> 
+   <field name="commonName_suggest_ngram" type="text_suggest_ngram" indexed="true" stored="true" multiValued="true"/>
 
    <field name="scientificName_s" type="string" indexed="true" stored="true" multiValued="false"/>
    <!-- End of: Fields used by autocomplete /suggest service -->
@@ -587,7 +587,7 @@
 
    <!-- Fields used to rank exact matches higher -->
    <field name="exact_text" type="lowercase" indexed="true" stored="false" omitNorms="true" multiValued="true"/>
-   
+
    <!-- catchall text field that indexes tokens both normally and in reverse for efficient
         leading wildcard queries. -->
    <field name="text_rev" type="text_rev" indexed="true" stored="false" multiValued="true"/>
@@ -599,10 +599,10 @@
           EXAMPLE:  name="*_i" will match any field ending in _i (like myid_i, z_i)
           Longer patterns will be matched first.  if equal size patterns
           both match, the first appearing in the schema will be used.  -->
-   <dynamicField name="*Count"  type="int"    indexed="true"  stored="true"/>     
+   <dynamicField name="*Count"  type="int"    indexed="true"  stored="true"/>
    <dynamicField name="*_i"  type="int"    indexed="true"  stored="true"/>
    <dynamicField name="*_m_s"  type="string" multiValued="true"  indexed="true"  stored="true"/>
-   <dynamicField name="*_s"  type="string"  indexed="true"  stored="true"/>   
+   <dynamicField name="*_s"  type="string"  indexed="true"  stored="true"/>
    <dynamicField name="*_l"  type="long"   indexed="true"  stored="true"/>
    <dynamicField name="*_t"  type="text"    indexed="true"  stored="true"/>
    <dynamicField name="*_b"  type="boolean" indexed="true"  stored="true"/>
@@ -668,8 +668,12 @@
    <!-- copy fields required for the auto complete -->
    <copyField source="scientificName" dest="auto_text"/>
    <copyField source="commonName" dest="auto_text"/>
+   <copyField source="name" dest="auto_text"/>
+
+    <!-- copy fields required for the spellchecker -->
    <copyField source="scientificName" dest="auto_text_edge"/>
    <copyField source="commonName" dest="auto_text_edge"/>
+
 
    <copyField source="name" dest="exact_text"/>
    <copyField source="acronym" dest="exact_text"/>

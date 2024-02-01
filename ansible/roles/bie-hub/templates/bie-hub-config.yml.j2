@@ -40,6 +40,7 @@ security:
     scope: {{ scope | default('openid')}}
     alaUseridClaim: {{ alaUseridClaim | default('') }}
     logoutAction: {{ logoutAction | default('') }}
+    logoutUrl: {{ logoutUrl | default('') }}
 {% endif %}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
@@ -156,7 +157,7 @@ ausTraits:
     baseURL: {{ ausTraits_base_url | default('http://traitdata.austraits.cloud.edu.au') }}
     homeURL: {{ ausTraits_home_url | default('https://austraits.org/') }}
     sourceURL: {{ ausTraits_source_url | default('https://zenodo.org/record/7368074') }}
-    definitionsURL: {{ ausTraits_definitions_url | default('https://traitecoevo.github.io/austraits.build/articles/Trait_definitions.html') }}
+    definitionsURL: {{ ausTraits_definitions_url | default('https://w3id.org/APD') }}
 
 # External Literature and reference sources
 synonymsTypes: {{ synonym_types }}

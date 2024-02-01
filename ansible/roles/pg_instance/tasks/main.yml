@@ -101,7 +101,6 @@
     db: "{{ db_name }}"
   with_items: "{{ extensions }}"
   become_user: postgres
-  become: yes
   vars:
     ansible_ssh_pipelining: true
   when: db_remote | bool == False

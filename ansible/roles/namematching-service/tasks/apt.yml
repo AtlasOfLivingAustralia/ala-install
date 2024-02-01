@@ -17,7 +17,7 @@
   tags:
     - apt
 
-- name: Install ala-namematching-service
+- name: Install ala-namematching-service version {{ ala_namematching_service_version }}
   apt:
     name:
       - ala-namematching-service={{ ala_namematching_service_version }}

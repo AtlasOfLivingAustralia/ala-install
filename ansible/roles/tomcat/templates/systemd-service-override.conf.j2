@@ -1,7 +1,9 @@
 [Service]
-
 ReadWritePaths={{ tomcat_dir }}
 ReadWritePaths={{ data_dir }}
 UMask={{ tomcat_umask }}
 Environment='UMASK={{ tomcat_umask }}'
+
+Restart=on-failure
+RestartSec=5
 

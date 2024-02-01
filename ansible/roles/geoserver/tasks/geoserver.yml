@@ -4,36 +4,21 @@
     - geoserver_run_script
 
 - name: packages
-  apt: pkg={{ item }} update_cache=yes state=latest
-  with_items:
-    - curl
-    - unzip
+  apt:
+    name:
+      - 'curl'
+      - 'unzip'
+    update_cache: yes
+    state: latest
   tags:
     - geoserver
 
-- name: Install dependencies for ansible python 2
+- name: packages (python3-lxml)
   apt:
-    name: python-lxml
+    name:
+      - 'python3-lxml'
+    update_cache: yes
     state: present
-  when: ansible_python.version.major==2
-  tags:
-  - geoserver
-
-- name: Install dependencies for ansible python 3
-  apt:
-    name: python3-lxml
-    state: present
-  when: ansible_python.version.major==3
-  tags:
-  - geoserver
-
-- name: configure geoserver data dir
-  lineinfile:
-    dest={{tomcat_conf}}
-    line='CATALINA_OPTS="${CATALINA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
-  notify:
-    - restart tomcat
-  when: ansible_os_family == "Debian"
   tags:
     - tomcat
     - geoserver
@@ -83,7 +68,12 @@
     - tomcat_vhost
     - geoserver
 
-- name: unzip .war to get data directory
+- name: Clear the /tmp/data before unzip {{ tomcat_deploy_dir }}/{{ war_filename }}.war data/* -d /tmp/
+  file:
+    path: "/tmp/data"
+    state: absent
+
+- name: unzip .war to get data directory - unzip {{ tomcat_deploy_dir }}/{{ war_filename }}.war data/* -d /tmp/
   command: "unzip {{ tomcat_deploy_dir }}/{{ war_filename }}.war data/* -d /tmp/"
   tags:
     - geoserver
@@ -144,7 +134,7 @@
   when: not webserver_nginx
   become: true
 
-- name: "wait for geoserver to come up (is {{ geoserver_hostname }} in /etc/hosts?)"
+- name: "wait for geoserver to come up (Ping {{ geoserver_url }}. Check if is {{ geoserver_hostname }} in /etc/hosts?)"
   uri:
     url: "{{ geoserver_url }}"
     status_code: 200
@@ -207,7 +197,7 @@
     - geoserver
   become: true
 
-- name: "wait for geoserver to come up (is {{ geoserver_hostname }} in /etc/hosts?)"
+- name: "wait for geoserver to come up (Ping {{ geoserver_url }}. Check if {{ geoserver_hostname }} is in /etc/hosts?)"
   uri:
     url: "{{ geoserver_url }}"
     status_code: 200
@@ -225,6 +215,7 @@
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
 
 - name: copy geoserver script
   template: src=geoserver.objects.xml dest={{data_dir}}/geoserver.objects.xml
@@ -232,6 +223,7 @@
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
 
 - name: copy geoserver script
   template: src=geoserver.distributions.xml dest={{data_dir}}/geoserver.distributions.xml
@@ -239,6 +231,7 @@
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
 
 - name: copy points style.xml
   template: src=geoserver.points.xml dest={{data_dir}}/geoserver.points.xml
@@ -246,6 +239,7 @@
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
 
 - name: geoserver script permissions
   command: "chmod a+x {{data_dir}}/geoserver.sh"
@@ -253,6 +247,7 @@
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
 
 # Used for /data local generation
 - name: set ownership of geoserver data
@@ -261,6 +256,7 @@
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
 
 - name: Running geoserver.sh
   command: "{{data_dir}}/geoserver.sh"
@@ -270,6 +266,7 @@
   tags:
     - geoserver
     - geoserver_run_script
+    - init-spatial-geoserver
   become: true
 
 
