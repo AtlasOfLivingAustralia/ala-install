@@ -26,11 +26,11 @@
     - postgresql
     - postgis
 
-- name: ensure postgis_template database exists
+- name: ensure postgis_template database exists (local db)
   postgresql_db:
     db: postgis_template
     state: present
-  when: postgis_version and install_postgis | bool == True
+  when: postgis_version and install_postgis | bool == True and db_remote | bool == False
   become: yes
   become_user: postgres
   tags:

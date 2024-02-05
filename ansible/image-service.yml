@@ -4,19 +4,20 @@
   pre_tasks:
     - set_fact:
         datadog_db_password : "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
+      when: datadog_monitoring is defined
   roles:
-    # - java
+    - java
     - common
     - { role: ansible-elasticsearch, es_templates: false, es_instance_name: 'images', tags: ['elasticsearch'] }
     - { role: db-backup, db: postgres, db_name: "images", db_user: "postgres" }
-    - postgresql
+    - { role: postgresql, when: db_remote | bool == False }
     - { role: pg_instance, extensions: ["citext", "pgcrypto"], db_name: "{{ image_service_db_name }}", db_user: "{{ image_service_db_username }}", db_password: "{{ image_service_db_password }}", db_role_attr_flags: "NOSUPERUSER" }
     - webserver
     - i18n
     - image-service
-    - { role: datadog_sql_user, when: datadog_api_key is defined, become: yes, become_user: postgres }
-    - { role: datadog.datadog, when: datadog_api_key is defined }
-    - { role: datadog_apm, when: datadog_api_key is defined, become: yes }
+    - { role: datadog_sql_user, become: yes, become_user: postgres, when: datadog_monitoring is defined }
+    - { role: datadog.datadog, when: datadog_monitoring is defined }
+    - { role: datadog_apm, become: yes, when: datadog_monitoring is defined }
 
   become: yes
   become_user: root
