@@ -3,7 +3,6 @@
   file: path={{item}} state=directory
   with_items:
     - "{{ ala_sensitive_data_service_docker_dir }}"
-    - "{{ data_dir }}/sds"
     - "{{ data_dir }}/biocache/layers"
   run_once: true
   tags:
@@ -17,12 +16,6 @@
     final_dest: "{{ data_dir }}/lucene/namematching-nm/"
     url: "{{ ala_namemaching_service_source | default('https://archives.ala.org.au/archives/nameindexes/20210811/namematching-20210811.tgz') }}"
     sha1: "{{ ala_namemaching_service_source_sha1 | default('563814a7b5d886b746e10eb40c44f0d9bda62371') }}"
-
-- name: create config.properties from template
-  template: src="sds-config.properties" dest={{data_dir}}/sds/config/sds-config.properties
-  tags:
-    - sds
-    - properties
 
 - block:
     - name: Downloading SDS configs using configured URL
