@@ -118,6 +118,9 @@
     {% if item.try_files is defined and item.try_files %}
 try_files {{ item.try_files }};
     {% endif %}
+    {% if item.index is defined and item.index %}
+    index {{ item.index }};
+    {% endif %}
 {% elif item.rewrite is defined %}
         return 301 {{ item.rewrite }};
 {% elif item.fastcgi is defined and item.fastcgi %}
