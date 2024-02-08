@@ -37,6 +37,8 @@ security:
     logoutAction: cognito
 {% endif %}
   jwt:
+    enabled: {{ jwt_enabled | default('false') }}
+    fallback-to-legacy-behaviour: {{ jwt_fallback_to_legacy | default('true') }}
     discoveryUri: {{ discoveryUri | default('') }}
     client-id: {{ (images_client_id | default(jwt_client_id) | default(clientId)) | default('') }}
     secret: {{ (images_client_secret | default(jwt_secret) | default(secret)) | default('') }}
@@ -138,3 +140,6 @@ userdetails:
   url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
 userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
 userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
+
+aws:
+  region: ap-southeast-2
