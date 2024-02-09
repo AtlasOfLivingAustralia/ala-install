@@ -49,3 +49,5 @@ oidc_client_secret:
 
 download_header: "X-ALA-hostname"
 use_reporting_server: False
+
+paratoo_core_base_url: "https://dev.core-api.paratoo.tern.org.au/api"
