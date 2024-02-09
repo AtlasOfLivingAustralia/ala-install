@@ -94,8 +94,8 @@ bieService:
     baseURL: "{{ bie_service_base_url | default('https://bie-ws.ala.org.au/ws') }}"
 
 userdetails:
-    # backward compatibility
-    url: {{ auth_base_url }}/userdetails/
+    # backward compatibility?
+    # url: {{ auth_base_url }}/userdetails/
   web:
     url: "{{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}"
   api:
