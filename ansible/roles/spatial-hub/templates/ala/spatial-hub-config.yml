@@ -92,8 +92,8 @@ bieService:
     baseURL: "{{ bie_service_base_url | default('https://bie-ws.ala.org.au/ws') }}"
 
 userdetails:
-    # backward compatibility
-    url: {{ auth_base_url }}/userdetails/
+    # backward compatibility?
+    # url: {{ auth_base_url }}/userdetails/
   web:
     url: "{{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}"
   api:
@@ -182,7 +182,7 @@ speciesDotSize: {{ species_dot_size | default(5) }}
 speciesDotOpacity: {{ species_dot_opacity | default(60) }}
 
 logger:
-    baseUrl: "{{ spatial_logger_base_url | default(logger_base_url) | default('https://logger.ala.org.au/service') }}"
+  baseUrl: "{{ spatial_logger_base_url | default(logger_base_url) | default('https://logger.ala.org.au/service') }}"
 
 #TBC : decommisioned
 phylolink:
