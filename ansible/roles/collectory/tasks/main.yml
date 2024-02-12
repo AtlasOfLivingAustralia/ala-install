@@ -76,7 +76,6 @@
     hostname: "{{ collectory_hostname }}"
     context_path: "{{ collectory_context_path }}"
     nginx_upstream_host: "{{ collectory_docker_host | default('127.0.0.1') }}"
-    content_type_options_header: "{{ collectory_content_type_options_header | default(content_type_options_header) }}"
   tags:
     - nginx_vhost
     - deploy
