@@ -41,7 +41,6 @@
    appname: "biocache-service"
    hostname: "{{ biocache_service_hostname }}"
    context_path: "{{ biocache_service_context_path }}"
-   content_type_options_header: "{{ biocache_service_content_type_options_header | default(content_type_options_header) }}"
    nginx_paths:
       - path: "{{biocache_service_context_path}}/webportal/wms/reflect"
         sort_label: "1_wms_webportal"
