@@ -145,7 +145,7 @@ i18n.override.dir: '{{ data_dir }}/spatial-service/config/i81n/'
 layers_store.GEONETWORK_URL: '{{ geonetwork_url | default('') }}'
 
 distributions.cache.dir: "{{ data_dir }}/spatial-service/mapCache/"
-distributions.geoserver.image.url: "/ALA/wms?service=WMS&version=1.1.0&request=GetMap&sld={{ distribution_image_sld_url | default('https://fish.ala.org.au/data/dist.sld')}}&layers=ALA:aus1,ALA:Distributions&styles=&bbox=109,-47,157,-7&srs=EPSG:4326&format=image/png&width=400&height=400&viewparams=s:"
+distributions.geoserver.image.url: "/ALA/wms?service=WMS&version=1.1.0&request=GetMap&layers=ALA:aus1,ALA:Distributions&styles=&bbox=109,-47,157,-7&srs=EPSG:4326&format=image/png&width=400&height=400&viewparams=s:"
 
 dataSource:
     url: 'jdbc:postgresql://{{layers_db_host}}/{{layers_db_name}}'
@@ -254,3 +254,5 @@ openapi:
     security:
       oauth2:
         baseUrl: {{ openapi_oauth_url }}
+
+namematching.url: {{ namematching_url | default('https://namematching-ws.ala.org.au') }}
