@@ -65,7 +65,6 @@
     appname: "spatial-hub"
     hostname: "{{ spatial_hub_hostname }}"
     context_path: "{{ spatial_hub_context_path }}"
-    nginx_client_max_body_size: "{{ spatial_nginx_client_max_body_size | default(nginx_client_max_body_size) }}"
     nginx_paths:
       - path: "{{ spatial_hub_context_path }}webportal"
         is_proxy: false
