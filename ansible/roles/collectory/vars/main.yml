@@ -18,3 +18,5 @@ collectory_data_dir: "{{ data_dir }}/{{ collectory_app | default('generic-collec
 collectory_docker_db_data_dir: "{{ docker_db_data_dir }}/collectory-mysql-data"
 
 content_type_options_header: "{{ collectory_content_type_options_header | default(false) }}"
+
+nginx_client_max_body_size: "{{ collectory_nginx_client_max_body_size | default('1024m') }}"
