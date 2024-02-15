@@ -23,6 +23,8 @@
         </encoder>
     </appender>
 
+    <logger name="org.hibernate.orm.deprecation" level="ERROR"/>
+    <logger name="org.grails.config.NavigableMap" level="ERROR"/>
 
     <root level="WARN">
         <appender-ref ref="TOMCAT_LOG" />
