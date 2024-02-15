@@ -17,6 +17,16 @@
     appname: "sds"
     hostname: "{{ sds_hostname }}"
     context_path: "{{ sds_context_path }}"
+    nginx_paths:
+      - path: "~* /location/"
+        sort_label: "1"
+        disable: "{{ disable_location_service | default('False') }}"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080{{ sds_context_path }}"
+      - path: "{{ sds_context_path }}"
+        sort_label: "2"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080{{ sds_context_path }}"
   tags:
     - nginx_vhost
     - deploy
@@ -80,7 +90,7 @@
 
 - name: set data ownership
   file: path={{data_dir}}/sds owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify: 
+  notify:
     - restart tomcat
   tags:
     - sds

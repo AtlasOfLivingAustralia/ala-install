@@ -8,6 +8,9 @@
             return 444;
         }
 {% endif %}
+{% if item.disable is defined and item.disable | bool == True %}
+        return 404;
+{% endif %}
 {% if item.extra_logs is defined and item.extra_logs|length > 0 %}
         access_log {{ nginx_access_log }};
 {% for next_extra_log in item.extra_logs %}
@@ -96,7 +99,7 @@
         proxy_cache_lock_timeout {{ nginx_cache_lock_timeout | default('5s') }};
     {% endif %}
     {% if item.force_cache is defined and item.force_cache %}
-        proxy_cache_valid 200 {{ nginx_cache_valid_time }}; 
+        proxy_cache_valid 200 {{ nginx_cache_valid_time }};
     {% endif %}
     {% if nginx_proxy_ignore_client_abort is defined and nginx_proxy_ignore_client_abort %}
         # Enable the cache to be populated even if the client aborts the request if it eventually succeeds
@@ -120,7 +123,7 @@
         proxy_set_header Connection "";
     {% endif %}
   {% else %}
-      {% if nginx_docker_swarm_resolver is defined and nginx_docker_swarm_resolver | bool == true %} 
+      {% if nginx_docker_swarm_resolver is defined and nginx_docker_swarm_resolver | bool == true %}
         resolver 127.0.0.11 ipv6=off;
         {% set proto = item.proxy_pass.split('://')[0] %}
         {% set rest_url = item.proxy_pass.split('://')[1] %}
