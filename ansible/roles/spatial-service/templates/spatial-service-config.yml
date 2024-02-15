@@ -260,5 +260,6 @@ openapi:
     security:
       oauth2:
         baseUrl: {{ openapi_oauth_url }}
+{% endif %}
 
 namematching.url: {{ namematching_url | default('https://namematching-ws.ala.org.au') }}
