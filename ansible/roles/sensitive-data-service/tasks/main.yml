@@ -81,6 +81,15 @@
     hostname: "{{ sensitive_data_service_hostname }}"
     context_path: "{{ sensitive_data_service_context_path }}"
     nginx_paths:
+      - path: "sensitive-species-data.xml"
+        is_proxy: false
+        alias: "{{ data_dir }}/sds/sensitive-species-data.xml"
+      - path: "sensitivity-zones.xml"
+        is_proxy: false
+        alias: "{{ data_dir }}/sds/sensitivity-zones.xml"
+      - path: "sensitivity-categories.xml"
+        is_proxy: false
+        alias: "{{ data_dir }}/sds/sensitivity-categories.xml"
       - path: "{{ sensitive_data_service_context_path }}"
         is_proxy: true
         proxy_pass: "http://{{upstream_host}}:{{ sensitive_data_service_port }}/{{ sensitive_data_service_context_path }}"
