@@ -13,6 +13,10 @@
     - deploy
     - nginx_vhost
 
+- name: Include VM tasks
+  import_tasks: vm-tasks.yml
+  when: deployment_type == 'vm'
+
 - name: "Create ala-namematching-service directories"
   file:
     path: "{{item}}"
@@ -39,10 +43,6 @@
   tags:
     - properties
     - namematching-service
-
-- name: Include VM tasks
-  import_tasks: vm-tasks.yml
-  when: deployment_type == 'vm'
 
 - name: Customize configuration already added by apt package
   template:
