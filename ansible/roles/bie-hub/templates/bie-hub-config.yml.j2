@@ -138,6 +138,8 @@ speciesList:
   preferredSpeciesListDruid: {{ specieslist_preferredDruid }}
   preferredListName: {{ specieslist_preferredListName }}
   apiKey: {{ speciesList_api_key }}
+  useListWs: {{ use_lists_ws | default(false) }}
+  wsURL: {{ species_list_ws_url }}
 speciesListService:
   baseURL: {{ specieslist_service_url }}
 alerts:
