@@ -230,7 +230,7 @@ security:
     enable: true
     authenticated:
       allowedOrigins:
-        - '.*\.ala\.org\.au(:[0-9]+)?'
+        - {{ spatial_cors_allowed_origins | default('.*\.ala\.org\.au(:[0-9]+)?') }}
     unauthenticated:
       allowedOrigins:
         - '*'
