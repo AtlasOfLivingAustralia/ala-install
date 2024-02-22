@@ -54,12 +54,21 @@ layersService:
     url: "{{layers_service_url}}"
 
 lists:
-    url: "{{ lists_url | default('https://lists.ala.org.au') }}"
-    threatenedSpeciesUrl: '/ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true'
-    invasiveSpeciesUrl: '/ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true'
-    facets: {{ lists_facets | default(true) }}
-    migratoryDR: {{ lists_migratory_data_resource_uid | default('dr1005') }}
-    iconicSpeciesDR: {{ lists_iconic_species_data_resource_uid | default('dr781') }}
+{% if lists_use_new_species_lists is defined and lists_use_new_species_lists | bool %}
+  useListWs: true
+  url: "{{ lists_service_url | default('https://lists-ws.ala.org.au') }}"
+  urlUi:  "{{ lists_url | default('https://lists.ala.org.au') }}"
+  threatenedSpeciesUrl: '/speciesList/?isThreatened=true&isAuthoritative=true&pageSize=1000'
+  invasiveSpeciesUrl: '/speciesList/?isInvasive=true&isAuthoritative=true&pageSize=1000'
+{% else %}
+  useListWs: false
+  url: "{{ lists_url | default('https://lists.ala.org.au') }}"
+  threatenedSpeciesUrl: '/ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true'
+  invasiveSpeciesUrl: '/ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true'
+{% endif %}
+  facets: {{ lists_facets | default(true) }}
+  migratoryDR: {{ lists_migratory_data_resource_uid | default('dr1005') }}
+  iconicSpeciesDR: {{ lists_iconic_species_data_resource_uid | default('dr781') }}
 
 journalmap:
     url: "{{ journalmap_url | default('https://www.journalmap.org/') }}"

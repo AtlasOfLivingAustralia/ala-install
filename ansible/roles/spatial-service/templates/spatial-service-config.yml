@@ -69,6 +69,8 @@ bie.searchPath: '/search'
 records.url: {{ records_url | default('https://archives.ala.org.au/archives/exports/lat_lon_taxon.zip') }}
 
 lists.url: {{ lists_url | default('https://lists.ala.org.au') }}
+lists.useListWs: {{ lists_use_new_species_lists | default('false') }}
+
 collections.url: {{ collections_url | default('https://collections.ala.org.au') }}
 sandboxHubUrl: {{ sandbox_url | default('https://sandbox.ala.org.au/ala-hub') }}
 sandboxBiocacheServiceUrl: {{sandbox_biocache_service_url | default('https://sandbox.ala.org.au/biocache-service') }}
