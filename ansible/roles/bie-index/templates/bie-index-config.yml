@@ -100,6 +100,16 @@ wordPress:
   - button
   contentOnlyParams: ?content-only=1&categories=1
 lists:
+{% if lists_use_new_species_lists is defined and lists_use_new_species_lists | bool %}
+  useListWs: true
+  service: {{ specieslist_service_url | default('https://lists-ws.ala.org.au') }}
+  ui: {{ specieslist_url | default('https://lists.ala.org.au') }}
+  items: /speciesListItems/{0}?pageSize={1}&page={2}
+  search: /speciesList/?isAuthoritative=true&pageSize={0}&page={1}
+  conservation: /speciesList/?isAuthoritative=true&isThreatened=true&pageSize={0}&page={1}
+  show: /#/list/{0}
+{% else %}
+  useListWs: false
   service: {{ specieslist_service_url | default('https://lists.ala.org.au/ws') }}
   ui: {{ specieslist_url | default('https://lists.ala.org.au') }}
   conservation: /speciesList?isAuthoritative=eq:true&isThreatened=eq:true&max={0}&offset={1}
@@ -107,6 +117,7 @@ lists:
   show: /speciesListItem/list/{0}
   add: /createItem
   remove: /deleteItem
+{% endif %}
 biocollect:
   service: {{ biocollect_url }}
   search: /ws/project/search?initiator=ala&facets=status
