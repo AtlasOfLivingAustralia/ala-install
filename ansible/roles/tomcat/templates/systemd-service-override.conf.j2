@@ -7,3 +7,5 @@ Environment='UMASK={{ tomcat_umask }}'
 Restart=on-failure
 RestartSec=5
 
+StandardOutput=append:{{ catalina_log_file | default('/var/log/tomcat9/catalina.out') }}
+StandardError=append:{{ catalina_log_file | default('/var/log/tomcat9/catalina.out') }}
