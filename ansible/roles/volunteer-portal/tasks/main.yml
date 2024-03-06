@@ -36,7 +36,7 @@
 - name: app config
   template:
     src: config.yml
-    dest: "{{data_dir}}/digivol/config/digivol.yml"
+    dest: "{{data_dir}}/volunteer-portal/config/volunteer-portal-config.yml"
     owner: digivol
     group: digivol
   notify:
@@ -48,7 +48,7 @@
 - name: copy logback config
   template:
     src: logback.groovy
-    dest: "{{data_dir}}/digivol/config/logback.groovy"
+    dest: "{{data_dir}}/volunteer-portal/config/logback.groovy"
     owner: digivol
     group: digivol
   notify:
