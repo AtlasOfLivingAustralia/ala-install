@@ -9,6 +9,11 @@ grails:
     # Environment prefix for emails. Puts '[<prefix>]' at the start of the email subject.
     subjectPrefix: {{ digivol_mail_subject_prefix }}
   serverURL: {{ digivol_base_url }}
+spring:
+  flyway:
+    default-schema: 'public'
+    outOfOrder: false
+    table: 'schema_version'
 security:
   cas.enabled: false
   jwt.enabled: true
