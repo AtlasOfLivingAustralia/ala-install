@@ -3,3 +3,4 @@
   roles:
     - docker
     - docker-swarm
+    - docker-common

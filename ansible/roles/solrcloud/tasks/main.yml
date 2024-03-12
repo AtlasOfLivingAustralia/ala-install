@@ -9,6 +9,7 @@
   vars:
     - solr_temp_disable_shardsWhitelist: true
   when: deployment_type == 'swarm'
+  tags: [docker, docker-service]
 
 - name: Include VM tasks
   import_tasks: vm-tasks.yml
@@ -153,5 +154,5 @@
     - solr_config
 
 - name: Redeploy stack without solr_temp_disable_shardsWhitelist
-  include: docker-tasks.yml
-  when: deployment_type == 'swarm'
+  include_tasks: docker-tasks.yml
+  when: deployment_type == 'swarm' and solr_enable_shards_white_list is defined and solr_enable_shards_white_list | bool == true

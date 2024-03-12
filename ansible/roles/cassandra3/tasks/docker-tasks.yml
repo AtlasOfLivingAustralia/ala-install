@@ -28,7 +28,7 @@
     - cassandra
     - cassandra_yaml
 
-- name: Deploy solrcloud stack
+- name: Deploy cassandra stack
   import_tasks: ../../docker-common/tasks/stack-create.yml
   vars:
     stack: la_cassandra
