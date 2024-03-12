@@ -23,7 +23,11 @@
 sudo -u hdfs /data/hadoop/bin/hdfs dfs -mkdir /pipelines-vocabularies
 sudo -u hdfs /data/hadoop/bin/hdfs dfs -chown spark:spark /pipelines-vocabularies
 wget -O /tmp/LifeStage.json http://api.gbif.org/v1/vocabularies/LifeStage/releases/latest/export
-sudo -u spark /data/hadoop/bin/hdfs dfs -copyFromLocal -f /tmp/LifeStage.json /pipelines-vocabularies/</command>
+sudo -u spark /data/hadoop/bin/hdfs dfs -copyFromLocal -f /tmp/LifeStage.json /pipelines-vocabularies/
+wget -O /tmp/OccurrenceStatus.json https://api.gbif.org/v1/vocabularies/OccurrenceStatus/export
+sudo -u spark /data/hadoop/bin/hdfs dfs -copyFromLocal -f /tmp/OccurrenceStatus.json /pipelines-vocabularies/
+wget -O /tmp/EventType.json https://api.gbif-uat.org/v1/vocabularies/EventType/export
+sudo -u spark /data/hadoop/bin/hdfs dfs -copyFromLocal -f /tmp/EventType.json /pipelines-vocabularies/</command>
       <configuredLocalRules/>
     </hudson.tasks.Shell>
   </builders>
