@@ -301,3 +301,15 @@ userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/u
 userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
 
 userdetails.api.useGatewayAPI: {{ userdetails_api_useGatewayAPI | default('false') }}
+
+{% if userdetails_backend == 'gorm' %}
+applications:
+  mongo:
+    uri: {{ cas_services_uri | default('') }}
+    auth-db: {{ cas_services_auth_db | default('') }}
+    username: {{ cas_services_username | default('cas') }}
+    password: {{ cas_services_password | default('password') }}
+    database: {{ cas_services_db | default('cas-service-registry') }}
+    collection: {{ cas_services_collection | default('services') }}
+
+{% endif %}
