@@ -151,7 +151,9 @@ sightings:
   url: {{ sightings_url }}
 layersService:
   baseURL: {{ layers_service_url | default(layers_url) }}
+# Both are currently used
 imageServiceBaseURL: {{ image_webservice_url | default(image_service_url)}}
+imageServiceBaseUrl: {{ image_webservice_url | default(image_service_url)}}
 
 image:
   baseUrl: {{ image_service_url }}
