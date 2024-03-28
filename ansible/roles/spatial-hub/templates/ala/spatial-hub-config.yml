@@ -28,12 +28,12 @@ security:
   apikey:
     check:
       serviceUrl:  {{api_key_service_url | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
-{% if auth_system is defined and auth_system == 'cognito' %}
   oidc:
     enabled: {{ oidc_enabled }}
     discoveryUri: {{oidc_discoveryUri}}
     clientId: {{ spatial_client_id | default(spatial_hub_oidc_client_id) }}
     secret: {{ spatial_client_secret | default(spatial_hub_oidc_secret) }}
+{% if auth_system is defined and auth_system == 'cognito' %}
     allowUnsignedIdTokens: true
     scope: 'openid profile email ala/attrs ala/roles'
     roleAttribute: ala:role
