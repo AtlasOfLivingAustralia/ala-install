@@ -38,6 +38,7 @@
     - webapps
     - config
     - properties
+    - properties-file
     - bie-index
 
 - name: copy all Properties config (old version)

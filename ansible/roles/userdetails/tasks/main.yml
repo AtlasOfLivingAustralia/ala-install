@@ -55,6 +55,7 @@
   when: user_details_version is version('3', '>=')
   tags:
     - properties
+    - properties-file
     - userdetails
 
 - name: copy userdetails-config.yml

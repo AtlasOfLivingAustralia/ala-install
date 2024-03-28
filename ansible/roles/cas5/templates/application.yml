@@ -162,7 +162,7 @@ cas:
           - doi/read
           - image-service/write
           - image-service/read
-{% for extra_scope in cas_extra_scopes %}
+{% for extra_scope in cas_extra_scopes | default ([]) %}
           - {{ extra_scope }}
 {% endfor %}
   monitor:

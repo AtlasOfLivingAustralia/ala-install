@@ -31,19 +31,21 @@ security:
   oidc:
     enabled: {{ oidc_enabled }}
     discoveryUri: {{oidc_discoveryUri}}
-    clientId: {{ spatial_hub_oidc_client_id }}
-    secret: {{ spatial_hub_oidc_secret }}
+    clientId: {{ spatial_client_id | default(spatial_hub_oidc_client_id) }}
+    secret: {{ spatial_client_secret | default(spatial_hub_oidc_secret) }}
+{% if auth_system is defined and auth_system == 'cognito' %}
     allowUnsignedIdTokens: true
     scope: 'openid profile email ala/attrs ala/roles'
     roleAttribute: ala:role
     logoutAction: cognito
     alaUseridClaim: username
     logoutUrl: {{ oidc_logoutUrl }}
+{% endif %}
   jwt:
-    enabled: {{ jwt_enabled }}
-    discoveryUri: {{ jwt_discoveryUri }}
+    enabled: {{ jwt_enabled | default('false') }}
+    discoveryUri: {{ jwt_discoveryUri | default('') }}
     fallbackToLegacyBehaviour: true
-    clientId: {{ spatial_hub_oidc_client_id }}
+    clientId: {{ spatial_client_id | default(spatial_hub_oidc_client_id) }}
     roleAttributes: cognito:groups
     rolesFromAccessToken: true
     userIdClaim: username
@@ -52,7 +54,7 @@ security:
     enable: true
     authenticated:
       allowedOrigins:
-        - '.*\.ala\.org\.au(:[0-9]+)?'
+        - {{ spatial_cors_allowed_origins | default('.*\.ala\.org\.au(:[0-9]+)?') }}
     unauthenticated:
       allowedOrigins:
         - '*'
@@ -66,8 +68,8 @@ security:
 webservice:
   jwt: true
   jwt-scopes: ala/attrs ala/internal users/read
-  clientId: {{ spatial_service_webservice_client_id }}
-  secret: {{ spatial_service_webservice_client_secret }}
+  clientId: {{ spatial_client_id | default(spatial_service_webservice_client_id) }}
+  secret: {{ spatial_client_secret | default(spatial_service_webservice_client_secret) }}
 
 apiKeyCheckUrlTemplate: "{{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}"
 autocompleteUrl: "{{ bie_service_base_url | default('https://bie-ws.ala.org.au/ws') }}/search/auto.jsonp"
@@ -180,7 +182,7 @@ speciesDotSize: {{ species_dot_size | default(5) }}
 speciesDotOpacity: {{ species_dot_opacity | default(60) }}
 
 logger:
-  baseUrl: "{{ logger_base_url | default('https://logger.ala.org.au/service') }}"
+  baseUrl: "{{ spatial_logger_base_url | default(logger_base_url) | default('https://logger.ala.org.au/service') }}"
 
 #TBC : decommisioned
 phylolink:
