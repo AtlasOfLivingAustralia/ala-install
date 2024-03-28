@@ -95,10 +95,14 @@
   tags:
     - pg_instance
 
-- name: enable extensions for "{{ db_name }}" - local
-  postgresql_ext:
-    name: "{{ item }}"
-    db: "{{ db_name }}"
+- name: enable extensions "{{ extensions }}" for "{{ db_name }}" - local
+  # postgresql_ext:
+  #  name: "{{ item }}"
+  #  db: "{{ db_name }}"
+  # Workaround for:
+  # https://github.com/AtlasOfLivingAustralia/ala-install/issues/794
+  # Revert when we update ansible
+  shell: psql -d "{{ db_name }}" -c 'CREATE EXTENSION IF NOT EXISTS "{{ item }}"'
   with_items: "{{ extensions }}"
   become_user: postgres
   vars:
