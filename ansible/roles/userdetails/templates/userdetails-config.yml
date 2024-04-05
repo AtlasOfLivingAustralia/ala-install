@@ -13,6 +13,7 @@ security:
     domain: {{ auth_cookie_domain | default('.ala.org.au') }}
   cas:
     enabled: {{ userdetails_use_cas | default('true') }}
+    authenticateOnlyIfLoggedInFilterPattern : {{ userdetails_authenticate_only_if_logged_in_filter_pattern | default('') }}
 {% if userdetails_use_cas | default('true') %}
     casServerName: {{ cas_server_name }}
     casServerUrlPrefix: ${security.cas.casServerName}/{{ cas_context_path | default('cas') }}
