@@ -25,6 +25,7 @@ security:
     casServerLogoutUrl: {{ auth_cas_url }}/logout
     loginUrl: {{ auth_cas_url }}/login
     logoutUrl: {{ auth_cas_url }}/logout
+    authenticateOnlyIfLoggedInFilterPattern : {{ images_authenticate_only_if_logged_in_filter_pattern | default('') }}
   oidc:
     enabled: {{ security_oidc_enabled | default(false) }}
     clientId: {{ (images_client_id | default(clientId)) | default('') }}
