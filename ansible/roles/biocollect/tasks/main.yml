@@ -51,7 +51,7 @@
     - biocollect
 
 - name: copy all config.properties
-  template: src=biocollect-config-oidc.properties dest={{data_dir}}/biocollect/config/biocollect-config.properties
+  template: src=biocollect-config.properties dest={{data_dir}}/biocollect/config/biocollect-config.properties
   tags:
     - properties
     - biocollect
