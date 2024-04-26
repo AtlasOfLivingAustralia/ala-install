@@ -1,5 +1,5 @@
 - name: setup sandbox
-  include: ../../common/tasks/setfacts.yml
+  include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - sandbox
 
@@ -8,7 +8,11 @@
 #
 
 - name: setup apache for sandbox
-  include: ../../apache_vhost/tasks/main.yml context_path='{{ sandbox_context_path }}' hostname='{{ sandbox_hostname }}' additional_proxy_pass='{{ additional_proxy_pass_values }}'
+  include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ sandbox_context_path }}'
+    hostname: '{{ sandbox_hostname }}'
+    additional_proxy_pass: '{{ additional_proxy_pass_values }}'
   tags:
     - sandbox
     - deploy
@@ -45,7 +49,11 @@
      - sandbox
 
 - name: setup tomcat for sandbox
-  include: ../../tomcat_deploy/tasks/main.yml war_url='{{ sandbox_war_url }}' context_path='{{ sandbox_context_path }}' hostname='{{ sandbox_hostname }}'
+  include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_url: '{{ sandbox_war_url }}'
+    context_path: '{{ sandbox_context_path }}'
+    hostname: '{{ sandbox_hostname }}'
   tags:
     - sandbox
     - deploy

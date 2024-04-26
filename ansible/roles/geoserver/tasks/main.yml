@@ -5,12 +5,12 @@
     - geoserver
     - which-geoserver
 
-- include: ./geoserver.yml
+- include_tasks: ./geoserver.yml
   when: geoserver_task == "geoserver"
   tags:
     - geoserver
 
-- include: ./ecodata-geoserver.yml
+- include_tasks: ./ecodata-geoserver.yml
   when: geoserver_task == "ecodata"
   tags:
     - geoserver

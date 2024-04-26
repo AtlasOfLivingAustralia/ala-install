@@ -11,7 +11,7 @@
     msg: "WARNING YOU ARE USING THE DEPRECATED LEGACY POSTGRES SUPPORT ROLE, PLEASE UPDATE INVENTORY TO USE NEW ROLE + pg_instance BY PROVIDING pg_version AND OPTIONALLY postgis_version VARIABLES AND ADDING pg_instance ROLES AS APPROPRIATE"
 
 - name: Setup apt repositories
-  include: apt.yaml
+  include_tasks: apt.yaml
   tags: postgresql
 
 - name: install setfacl support

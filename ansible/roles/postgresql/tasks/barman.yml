@@ -1,5 +1,5 @@
 - name: setup apt
-  include: apt.yml
+  include_tasks: apt.yml
 
 - name: Barman | Install Barman
   apt:

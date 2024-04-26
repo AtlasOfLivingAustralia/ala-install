@@ -1,4 +1,4 @@
-- include: setfacts.yml
+- include_tasks: setfacts.yml
   tags:
     - web2py
 

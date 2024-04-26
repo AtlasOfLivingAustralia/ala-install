@@ -6,7 +6,7 @@
     - "../vars/{{ ansible_os_family }}.yml"
   tags: postgresql
 
-- include: apt.yaml
+- include_tasks: apt.yaml
 
 - set_fact:
     postgresql_packages: [ "{{ psycopg2_package }}", "postgresql-{{pg_version}}", "postgresql-contrib-{{pg_version}}", "libpq-dev" ]

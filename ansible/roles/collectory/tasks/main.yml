@@ -1,5 +1,5 @@
 ---
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - properties
     - collectory
@@ -51,7 +51,10 @@
     - properties
     - collectory
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ collectory_context_path }}' hostname='{{ collectory_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ collectory_context_path }}'
+    hostname: '{{ collectory_hostname }}'
   tags:
     - deploy
     - apache_vhost
