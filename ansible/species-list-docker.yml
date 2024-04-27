@@ -1,5 +1,5 @@
 ---
-- hosts: species-lists
+- hosts: species-list
   vars:
     - deployment_type: swarm
     - nginx_conf_dir: "{{ data_dir }}/nginx"
