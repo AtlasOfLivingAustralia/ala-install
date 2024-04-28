@@ -47,7 +47,7 @@
 - name: Install pymongo for Python 3 using pip
   pip:
     name: pymongo
-    version: ">=4.0"
+    version: "3.12.2"
   when: ansible_python.version.major==3
   tags:
     - cas-dbs
