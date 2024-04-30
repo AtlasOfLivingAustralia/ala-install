@@ -78,7 +78,7 @@
     - ecodata
 
 - name: copy all config.properties
-  template: src={{ecodata_properties_file | default('ecodata-config-oidc.properties')}} dest={{data_dir}}/ecodata/config/ecodata-config.properties
+  template: src={{ecodata_properties_file | default('ecodata-config.properties')}} dest={{data_dir}}/ecodata/config/ecodata-config.properties
   tags:
     - properties
     - ecodata
