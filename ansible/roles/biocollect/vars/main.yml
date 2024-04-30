@@ -14,7 +14,13 @@ tomcat_enable_remote_ip_valve: True
 # The rewrite is controlled by the biocollect_rewrite_root value
 biocollect_rewrite_root_url: "{{ biocollect_homepage_url | default('') }}"
 
+# Rewrite /pwa-app requests to an external URL
+biocollect_rewrite_pwa_app_url: "{{ biocollect_rewrite_pwa_app_url | default(biocollect_homepage_url) }}"
+
 biocollect_artifact_url: "{{ biocollect_maven_repo_ws_url | default(maven_repo_ws_url) }}"
 biocollect_server_port: "{{ biocollect_tomcat_server_port | default('8080') }}"
 
+# Do not set default x-frame-options header since pwa app depends on not setting it to work.
+# Solution is to set x-frame-options header for different nginx paths.
+frame_options_header: False
 frame_options_header_value: SAMEORIGIN
