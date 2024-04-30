@@ -37,7 +37,7 @@ then you have an older version of Ansible.
 
 ### Operating System
 
-These playbooks and roles are currently well tested on Ubuntu `18.04`. We are also starting to use Ubuntu `20.04` but it's a work in progress. We have less tested other distributions like Redhat or even Debian as the big majority of our production deployments run over Ubuntu.
+These playbooks and roles are currently well tested on Ubuntu `20.04`. We are also starting to use Ubuntu `20.04` but it's a work in progress. We have less tested other distributions like Redhat or even Debian as the big majority of our production deployments run over Ubuntu.
 
 ## Setup a Living Atlas
 
