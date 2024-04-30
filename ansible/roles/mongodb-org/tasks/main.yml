@@ -39,12 +39,25 @@
   when: mongodb_version == 5.0
   tags: mongodb-org
 
+- name: Add mongodb.org apt key for version 6.0
+  become: true
+  shell: rm /usr/share/keyrings/mongodb-server-6.0.gpg | curl -fsSL https://pgp.mongodb.com/server-6.0.asc | gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg --dearmor
+  when: mongodb_version == 6.0
+  tags: mongodb-org
+
 - name: Add mongodb.org repo
   apt_repository:
     repo: deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/{{ mongodb_version }} multiverse
     state: present
   tags: mongodb-org
-  when: (mongodb_version != 3.4 or ansible_distribution_release != 'bionic') and (mongodb_version != 4.0 or ansible_distribution_release != 'focal')
+  when: (mongodb_version != 3.4 or ansible_distribution_release != 'bionic') and (mongodb_version != 4.0 or ansible_distribution_release != 'focal') and ( mongodb_version != 6.0 )
+
+- name: Add mongodb.org repo mongo 6.0
+  apt_repository:
+    repo: deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/{{ mongodb_version }} multiverse
+    state: present
+  tags: mongodb-org
+  when: (mongodb_version == 6.0)
 
 - name: Use xenial repo for installing mongo 3.4 or 3.6 on bionic
   apt_repository:
@@ -65,10 +78,10 @@
     name: ['mongodb-org-shell', 'mongodb-org-server', 'mongodb-org-tools' ]
   tags: mongodb-org
 
-- name: Install mongosh with mongo 5.0
+- name: Install mongosh with mongo 5.0 and 6.0
   apt:
     name: ['mongodb-mongosh']
-  when: mongodb_version == 5.0
+  when: (mongodb_version == 5.0) or (mongodb_version == 6.0)
   tags: mongodb-org
 
 - name: Install pip2 when necessary
@@ -115,6 +128,7 @@
   pip:
     name: pymongo
 #    version: 3.12.2
+    version: 4.1.1
   tags: mongodb-org
 
 - name: Enable service mongod
@@ -129,6 +143,15 @@
   shell: /usr/bin/mongo --eval 'db.getUsers()' admin
   ignore_errors: true
   register: get_mongo_admin_users
+  when: mongodb_version != 5.0 and mongodb_version != 6.0
+  changed_when: false
+  tags: mongodb-org
+
+- name: Check if some admin user is already configured (if admin already exists this fails and can be ignored)
+  shell: /usr/bin/mongosh --quiet --eval 'db.getUsers()' admin
+  ignore_errors: true
+  register: get_mongo_admin_users
+  when: mongodb_version == 5.0 or mongodb_version == 6.0
   changed_when: false
   tags: mongodb-org
 

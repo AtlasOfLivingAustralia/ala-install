@@ -32,6 +32,7 @@
   file: path={{item}} state=directory owner={{merit_user}} group={{merit_user}}
   with_items:
     - "{{data_dir}}/fieldcapture/config"
+    - "{{data_dir}}/fieldcapture/doc"
   tags:
     - properties
     - merit
@@ -92,6 +93,15 @@
     hostname: "{{ merit_hostname }}"
     context_path: "{{ merit_context_path }}"
     tomcat_server_port: "{{ merit_server_port }}"
+    nginx_paths:
+      - path: "/doc/"
+        sort_label: "1_doc"
+        is_proxy: false
+        alias: "/data/fieldcapture/doc"
+      - path: "{{merit_context_path}}"
+        sort_label: "2_ws"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:{{ merit_server_port }}"
   tags:
     - nginx_vhost
   when: webserver_nginx

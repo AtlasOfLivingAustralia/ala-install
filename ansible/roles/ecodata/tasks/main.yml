@@ -2,6 +2,8 @@
   tags:
     - ecodata
     - deploy
+    - properties
+    - cron
 
 - name: set ecodata_user as default value
   set_fact:
@@ -9,6 +11,8 @@
   tags:
     - ecodata
     - deploy
+    - properties
+    - cron
 
 - name: "Create system user for ecodata"
   user:
@@ -150,6 +154,7 @@
     - runProjectDownload.sh
     - reIndexAll.sh
     - runMuDownload.sh
+    - runOrgDownload.sh
     - scheduledDAWEDownloads.sh
   tags:
     - ecodata
@@ -285,6 +290,7 @@
         is_proxy: true
         proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
         proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/search/downloadProjectDataFile/"
+#        TODO: remove once https://github.com/AtlasOfLivingAustralia/fieldcapture/issues/3004 is deployed to production
       - path: "{{ecodata_context_path}}/ws/managementunit/getReportPeriods/"
         sort_label: "8_ws_mu_periods"
         is_proxy: true
@@ -300,6 +306,11 @@
         is_proxy: true
         proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
         proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/download/"
+      - path: "{{ecodata_context_path}}/ws/report/generateReportsInPeriod/"
+        sort_label: "11_ws_mu_report"
+        is_proxy: true
+        proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
+        proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/report/generateReportsInPeriod/"
 
       - path: "{{ ecodata_context_path }}/ws/geoServer/wms"
         sort_label: "geo_server_wms"
@@ -356,7 +367,7 @@
       allow 127.0.0.1;
       allow {{ merit_ip }};
       allow {{ biocollect_ip }};
-      allow {{ mongo_secondary_ip }};
+      allow {{ mongo_secondary_ip | default('127.0.0.1') }};
       deny all;
       expires 1y;
     marker_begin: "BEGIN_{{item.mark}}"
@@ -397,6 +408,7 @@
   lineinfile:
     path: /etc/cron.allow
     line: "{{ecodata_backup_user}}"
+    create: yes
   tags:
     - cron
   when: scheduled_database_backup or scheduled_production_data_copy or scheduled_downloads
@@ -459,7 +471,7 @@
       - { db: "{{ ecodata_database }}", role: "dbAdmin" }
       - { db: "{{ ecodata_database }}", role: "readWrite" }
   tags:
-    - mongodb-org
+    - mongodb-org-user
 
 - name: Insert replication set name both Server
   blockinfile:

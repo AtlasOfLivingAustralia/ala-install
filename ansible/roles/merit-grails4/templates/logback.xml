@@ -27,4 +27,5 @@
   <logger name="grails.plugins.mail" level="INFO"/>
   <logger name="org.springframework" level="INFO"/>
   <logger name="au.org.ala.fieldcapture" level="INFO"/>
+  <logger name="grails.plugin.cookie" level="WARN"/>
 </configuration>
