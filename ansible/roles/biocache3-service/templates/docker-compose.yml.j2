@@ -4,7 +4,7 @@ version: '3.8'
 services:
 
   war:
-    image: atlasoflivingaustralia/biocache-service:f3c2069e
+    image: atlasoflivingaustralia/biocache-service:{{ biocache_service_version }}
     environment:
       TZ: {{ server_tz }}
     expose:

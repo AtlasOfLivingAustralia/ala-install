@@ -4,7 +4,7 @@ version: '3.8'
 services:
 
   war:
-    image: atlasoflivingaustralia/ala-namematching-service:v20210811-3
+    image: atlasoflivingaustralia/ala-namematching-service:{{ namematching_service_version }}
     environment:
       TZ: {{ server_tz }}
     expose:

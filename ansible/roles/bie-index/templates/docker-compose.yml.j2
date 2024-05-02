@@ -4,7 +4,7 @@ version: '3.8'
 services:
 
   war:
-    image: atlasoflivingaustralia/bie-index:e87c8b2
+    image: atlasoflivingaustralia/bie-index:{{ bie_index_version }}
     environment:
       TZ: {{ server_tz }}
     expose:

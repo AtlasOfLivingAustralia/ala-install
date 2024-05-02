@@ -4,7 +4,7 @@ version: '3.8'
 services:
 
   war:
-    image: atlasoflivingaustralia/ala-sensitive-data-service:1.1.1-20210811-3
+    image: atlasoflivingaustralia/ala-sensitive-data-service:{{ ala_sensitive_data_service_version }}
     environment:
       TZ: {{ server_tz }}
     expose:

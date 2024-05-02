@@ -4,7 +4,7 @@ version: '3.8'
 services:
 
   war:
-    image: atlasoflivingaustralia/collectory:9144d68
+    image: atlasoflivingaustralia/collectory:{{ collectory_version }}
     volumes:
       - config:/data/collectory/config
       - data:/data/collectory/data

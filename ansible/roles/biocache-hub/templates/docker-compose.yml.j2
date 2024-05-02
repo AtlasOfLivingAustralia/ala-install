@@ -4,7 +4,7 @@ version: '3.8'
 services:
 
   war:
-    image: atlasoflivingaustralia/ala-hub:343a0c9
+    image: atlasoflivingaustralia/ala-hub:{{ biocache_hub_version }}
     environment:
       TZ: {{ server_tz }}
     expose:
