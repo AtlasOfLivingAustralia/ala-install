@@ -58,7 +58,7 @@ services:
 {% endif %}
 
   cas:
-    image: livingatlases/cas:latest
+    image: atlasoflivingaustralia/cas:{{ cas_version }}
     expose:
       - {{ cas_port | default('9000') }}
     environment:
@@ -78,7 +78,7 @@ services:
           - {{ cas_docker_host }}
 
   userdetails:
-    image: livingatlases/userdetails:latest
+    image: atlasoflivingaustralia/userdetails:{{ user_details_version }}
     expose:
       - {{ userdetails_port | default('9001') }}
     environment:
@@ -98,7 +98,7 @@ services:
           - {{ userdetails_docker_host }}
 
   cas-management:
-    image: livingatlases/cas-management:latest
+    image: atlasoflivingaustralia/cas-management:{{cas_management_version }}
     expose:
       - {{ cas_management_port | default('8070') }}
     environment:

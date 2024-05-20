@@ -4,7 +4,7 @@ version: '3.8'
 services:
 
   war:
-    image: atlasoflivingaustralia/species-list:30cf3320
+    image: atlasoflivingaustralia/species-list:{{ species_list_version }}
     volumes:
       - config:/data/specieslist-webapp/config
 {% if i18n_package_enabled | bool %}
