@@ -229,7 +229,7 @@ cas:
 ala:
   userDetailsBaseUrl: {{ userdetails_base_url }}/{{ userdetails_context_path | default('userdetails') }}/
   cookie:
-    domain: {{ auth_cookie_domain | default('ala.org.au') }}
+    domain: {{ cas_auth_cookie_domain | default(auth_cookie_domain) | default('ala.org.au') }}
     secure: {{ auth_cookie_secure | default('true') }}
     httpOnly: {{ auth_cookie_httpOnly | default('true') }}
     maxAge: {{ auth_cookie_maxAge | default('-1') }}
