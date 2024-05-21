@@ -24,8 +24,8 @@ security:
   oidc:
     enabled: {{ userdetails_use_oidc | default('false') }}
 {% if userdetails_use_oidc | default('false') %}
-    client-id: {{ userdetails_oidc_client_id | default('') }}
-    secret: {{ userdetails_oidc_secret| default('') }}
+    client-id: {{ userdetails_client_id | default(userdetails_oidc_client_id) | default('') }}
+    secret: {{ userdetails_client_secret | default(userdetails_oidc_secret) | default('') }}
     discovery-uri: {{ oidc_discovery_uri }}
 {% if userdetails_backend == 'cognito' %}
     logoutUrl: {{ userdetails_oidc_logoutUrl | default('') }}
@@ -36,8 +36,8 @@ security:
     enabled: {{ userdetails_jwt_enabled | default('false') }}
     fallback-to-legacy-behaviour: {{ userdetails_jwt_fallback_to_legacy | default('true') }}
     discovery-uri: {{ oidc_discovery_uri }}
-    clientId: {{ userdetails_oidc_client_id | default('') }}
-    secret: {{ userdetails_oidc_secret| default('') }}
+    clientId: {{ userdetails_client_id | default(userdetails_oidc_client_id) | default('') }}
+    secret: {{ userdetails_client_secret | default(userdetails_oidc_secret) | default('') }}
 {% if userdetails_backend == 'cognito' %}
     roleAttributes: {{ security_jwt_roleAttributes | default('cognito:groups') }}
     rolesFromAccessToken: {{ security_jwt_rolesFromAccessToken | default('true')}}
@@ -187,7 +187,7 @@ bie.searchPath: {{ bie_search_path | default('/search') }}
 
 # Skin options
 skin.layout: {{ (userdetails_skin_layout | default(skin_layout)) | default('ala-main') }}
-skin.fluidLayout: {{ skin_fluid_layout | default('false') }}
+skin.fluidLayout: {{ userdetails_skin_fluid_layout | default(skin_fluid_layout) | default('false') }}
 skin.orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}
 skin.orgNameShort: {{ orgNameShort | default('ALA') }}
 skin.favicon: {{ skin_favicon | default('https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/favicon/favicon-16x16.png') }}
@@ -202,8 +202,8 @@ webservice:
   apiKey: {{ api_key }}
   jwt: {{ userdetails_jwt_client_enabled | default('true') }}
   jwt-scopes: {{ userdetails_jwt_scopes | default('openid ala/internal') }}
-  client-id: {{ userdetails_jwt_clientid | default('') }}
-  client-secret: {{ userdetails_jwt_secret | default('') }}
+  client-id: {{ userdetails_client_id | default(userdetails_jwt_clientid) | default('') }}
+  client-secret: {{ userdetails_client_secret | default(userdetails_jwt_secret) | default('') }}
 
 # Default primary fields for Export to CSV functionality
 admin.export.csv.primary.fields: {{ admin_export_csv_primary_fields | default('id,userName,firstName,lastName,email,activated,locked,created')}}
