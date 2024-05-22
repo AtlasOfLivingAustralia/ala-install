@@ -162,6 +162,7 @@ cas:
           - doi/read
           - image-service/write
           - image-service/read
+          - digivol/internal
 {% for extra_scope in cas_extra_scopes %}
           - {{ extra_scope }}
 {% endfor %}
