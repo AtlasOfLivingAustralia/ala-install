@@ -68,6 +68,29 @@
   tags:
   - service
 
+- name: "Download datadog JAR"
+  ansible.builtin.get_url:
+    url: https://github.com/DataDog/dd-trace-java/releases/{{datadog_version | default('latest')}}/download/dd-java-agent.jar
+    force: true
+    dest: "/opt/atlas/{{service_name}}/dd-java-agent.jar"
+    mode: '0550'
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_group | default(service_name) }}"
+  notify: "restart {{service_name}}"
+  when: datadog_java_apm_enabled is defined and datadog_java_apm_enabled
+  tags:
+  - datadog
+  - service
+
+- name: "Check datadog agent JAR state"
+  ansible.builtin.file:
+    path: "/opt/atlas/{{service_name}}/dd-java-agent.jar"
+    state: absent
+  when: datadog_java_apm_enabled is not defined or not datadog_java_apm_enabled
+  tags:
+  - datadog
+  - service
+
 - name: "Download {{service_name}} JAR (unauthenticated)"
   maven_artifact:
     group_id: "{{groupId}}"

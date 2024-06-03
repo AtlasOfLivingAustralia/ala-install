@@ -17,7 +17,6 @@
     - image-service
     - { role: datadog_sql_user, become: yes, become_user: postgres, when: datadog_monitoring is defined }
     - { role: datadog.datadog, when: datadog_monitoring is defined }
-    - { role: datadog_apm, become: yes, when: datadog_monitoring is defined }
 
   become: yes
   become_user: root
