@@ -45,6 +45,7 @@ if ($cors = COPTIONS) {
   add_header 'Content-Type' 'text/plain; charset=utf-8';
   add_header 'Content-Length' 0;
   add_header 'Access-Control-Allow-Origin' $http_origin;
+  add_header 'Vary' "Origin"; 
   {% if nginx_cors_allow_credentials == True %}
     add_header 'Access-Control-Allow-Credentials' 'true';
   {% endif %}
@@ -55,6 +56,7 @@ if ($cors = CPOST) {
   add_header 'Access-Control-Allow-Headers' '{{ nginx_cors_headers }}';
   add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
   add_header 'Access-Control-Allow-Origin' $http_origin;
+  add_header 'Vary' "Origin"; 
   {% if nginx_cors_allow_credentials == True %}
     add_header 'Access-Control-Allow-Credentials' 'true';
   {% endif %}
@@ -64,6 +66,7 @@ if ($cors = CGET) {
   add_header 'Access-Control-Allow-Headers' '{{ nginx_cors_headers }}';
   add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
   add_header 'Access-Control-Allow-Origin' $http_origin;
+  add_header 'Vary' "Origin"; 
   {% if nginx_cors_allow_credentials == True %}
     add_header 'Access-Control-Allow-Credentials' 'true';
   {% endif %}
