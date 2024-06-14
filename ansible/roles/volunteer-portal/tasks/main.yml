@@ -26,6 +26,7 @@
   file: path={{item}} state=directory owner=digivol group=digivol
   with_items:
     - "{{data_dir}}/volunteer-portal"
+    - "{{data_dir}}/volunteer-portal/config"
     - "{{data_dir}}/digivol"
     - "{{data_dir}}/digivol/config"
     - "{{data_dir}}/volunteer/elasticsearch"
