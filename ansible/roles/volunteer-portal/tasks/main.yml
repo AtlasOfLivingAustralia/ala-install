@@ -48,8 +48,8 @@
 
 - name: copy logback config
   template:
-    src: logback.groovy
-    dest: "{{data_dir}}/volunteer-portal/config/logback.groovy"
+    src: logback.xml
+    dest: "{{data_dir}}/volunteer-portal/config/logback.xml"
     owner: digivol
     group: digivol
   notify:
