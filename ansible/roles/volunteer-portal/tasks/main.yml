@@ -14,6 +14,7 @@
   vars:
     service_name: "digivol"
     jar_url: '{{ digivol_jar_url }}'
+    log_config_filename: logback.xml
   tags:
     - deploy
     - volunteer-portal
