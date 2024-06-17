@@ -104,7 +104,7 @@ journalmap.url: {{ journalmap_url | default('https://www.journalmap.org/') }}
 
 grails.plugin.elfinder.rootDir: '{{ data_dir }}/spatial-service'
 
-i18n.override.dir: '{{ data_dir }}/spatial-service/config/i81n/'
+i18n.override.dir: '{{ data_dir }}/spatial-service/config/i18n/'
 
 
 #layers-store config
@@ -203,22 +203,25 @@ security:
     check:
       serviceUrl:  {{api_key_service_url | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
 
+# oidc related
   oidc:
     enabled: {{ oidc_enabled }}
+    clientId: {{ spatial_client_id | default(spatial_service_oidc_client_id) }}
+    secret: {{ spatial_client_secret | default(spatial_service_oidc_secret) }}
     discoveryUri: {{oidc_discoveryUri}}
-    clientId: {{ spatial_service_oidc_client_id }}
-    secret: {{ spatial_service_oidc_secret }}
+{% if auth_system is defined and auth_system == 'cognito' %}
     allowUnsignedIdTokens: true
     scope: 'openid profile email ala/attrs ala/roles'
     roleAttribute: ala:role
     logoutAction: cognito
     alaUseridClaim: username
     logoutUrl: {{ oidc_logoutUrl }}
+{% endif %}
   jwt:
-    enabled: {{ jwt_enabled }}
-    discoveryUri: {{ jwt_discoveryUri }}
+    enabled: {{ jwt_enabled | default('false')  }}
+    discoveryUri: {{ jwt_discoveryUri | default('') }}
     fallbackToLegacyBehaviour: true
-    clientId: {{ spatial_service_oidc_client_id }}
+    clientId: {{ spatial_client_id | default(spatial_service_oidc_client_id) }}
     roleAttributes: cognito:groups
     rolesFromAccessToken: true
     userIdClaim: username
@@ -227,7 +230,7 @@ security:
     enable: true
     authenticated:
       allowedOrigins:
-        - '.*\.ala\.org\.au(:[0-9]+)?'
+        - {{ spatial_cors_allowed_origins | default('.*\.ala\.org\.au(:[0-9]+)?') }}
     unauthenticated:
       allowedOrigins:
         - '*'
@@ -242,8 +245,8 @@ security:
 #webservice:
 #  jwt: true
 #  jwt-scopes: ala/attrs ala/internal users/read
-#  clientId: {{ spatial_service_webservice_client_id }}
-#  secret: {{ spatial_service_webservice_client_secret }}
+#  clientId: {{ spatial_client_id | default(spatial_service_webservice_client_id) }}
+#  secret: {{ spatial_client_secret | default(spatial_service_webservice_client_secret) }}
 
 #used for spatial-service only
 apiKeyCheckUrlTemplate:  {{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}
@@ -252,9 +255,11 @@ openapi:
   terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
   contact:
     email: {{ support_email | default('support@ala.org.au') }}
+{% if openapi_oauth_url is defined %}
   components:
     security:
       oauth2:
         baseUrl: {{ openapi_oauth_url }}
+{% endif %}
 
 namematching.url: {{ namematching_url | default('https://namematching-ws.ala.org.au') }}

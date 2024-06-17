@@ -54,6 +54,7 @@
   template: src=biocollect-config.properties dest={{data_dir}}/biocollect/config/biocollect-config.properties
   tags:
     - properties
+    - properties-file
     - biocollect
 
 - name: copy logback config

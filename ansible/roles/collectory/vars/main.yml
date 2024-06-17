@@ -16,3 +16,7 @@ collectory_war_url: "{{ collectory_maven_repo_ws_url | default(maven_repo_ws_url
 collectory_data_dir: "{{ data_dir }}/{{ collectory_app | default('generic-collectory') }}"
 
 collectory_docker_db_data_dir: "{{ docker_db_data_dir }}/collectory-mysql-data"
+
+content_type_options_header: "{{ collectory_content_type_options_header | default(false) }}"
+
+nginx_client_max_body_size: "{{ collectory_nginx_client_max_body_size | default('1024m') }}"

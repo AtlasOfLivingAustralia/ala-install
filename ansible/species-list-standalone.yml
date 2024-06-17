@@ -2,6 +2,8 @@
   pre_tasks:
     - set_fact:
         datadog_db_password : "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
+  vars:
+    set_sql_mode: true
   roles:
     - common
     - java
