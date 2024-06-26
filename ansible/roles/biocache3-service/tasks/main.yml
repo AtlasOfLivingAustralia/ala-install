@@ -1,5 +1,5 @@
 ---
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - tomcat_vhost
     - biocache-service
@@ -9,7 +9,10 @@
     - symlinks
     - apache_vhost
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ biocache_service_context_path }}' hostname='{{ biocache_service_hostname }}' 
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ biocache_service_context_path }}'
+    hostname: '{{ biocache_service_hostname }}' 
   tags:
     - biocache-service
     - deploy

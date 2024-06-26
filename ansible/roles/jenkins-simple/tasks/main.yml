@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
 
 - apt_key: url="https://pkg.jenkins.io//{{ jenkins_channel }}/jenkins.io-2023.key" state=present id=5BA31D57EF5975CA
   when: ansible_os_family == "Debian"

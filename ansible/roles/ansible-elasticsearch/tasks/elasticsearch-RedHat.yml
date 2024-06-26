@@ -26,7 +26,7 @@
   when: es_use_repository
 
 - name: RedHat - include versionlock
-  include: elasticsearch-RedHat-version-lock.yml
+  include_tasks: elasticsearch-RedHat-version-lock.yml
 
 - name: RedHat - Remove the other elasticsearch package if switching between OSS and standard
   become: yes
@@ -36,7 +36,7 @@
 
 - name: Include optional user and group creation.
   when: (es_user_id is defined) and (es_group_id is defined)
-  include: elasticsearch-optional-user.yml
+  include_tasks: elasticsearch-optional-user.yml
 
 - name: RedHat - Install Elasticsearch
   become: yes

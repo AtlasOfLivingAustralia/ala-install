@@ -4,7 +4,7 @@ This project includes a playbook for setting up an ALA demo.
 
 ## Prerequisites
 
-### Ansible: The current supported version is: **2.10.3**
+### Ansible: The current supported version is: **2.16.6** (core) and **9.5.1** (community)
 
 The playbooks and roles in this repository have been developed and tested against the above version. Typically you need to install ansible in your computer or in the computer you'll use to deploy from.
 
@@ -15,7 +15,7 @@ For APT:
 ```
 $ sudo apt-get install software-properties-common python-dev git python-pip
 $ sudo pip install setuptools
-$ sudo pip install -I ansible==[version]
+$ sudo pip install -I ansible==[community-version] ansible-core==[core-version]
 ```
 
 where ```[version]``` is the supported version listed above.
@@ -24,10 +24,10 @@ For OSX:
 
 ```
 $ sudo easy_install pip
-$ sudo pip install -I ansible==[version]
+$ sudo pip install -I ansible==[community-version] ansible-core==[core-version]
 ```
 
-where ```[version]``` is the supported version listed above.
+where ```[version]``` is the supported version listed above. You'll need also python >= `3.10`.
 
 If you see this error:
 ```

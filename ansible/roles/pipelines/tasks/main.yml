@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - pipelines
     - docker
@@ -273,7 +273,7 @@
     - pipelines-services
     - docker
 
-- include: ../../namematching-service/tasks/apt.yml
+- include_tasks: ../../namematching-service/tasks/apt.yml
   when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
   tags:
     - pipelines
@@ -281,7 +281,7 @@
     - la-pipelines
     - apt
 
-- include: ../../sensitive-data-service/tasks/apt.yml
+- include_tasks: ../../sensitive-data-service/tasks/apt.yml
   when: use_docker_with_pipelines is defined and use_docker_with_pipelines | bool == False
   tags:
     - pipelines

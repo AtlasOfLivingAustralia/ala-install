@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - image-service
     - properties
@@ -13,7 +13,10 @@
     - image-service
     - properties
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ image_service_context_path }}' hostname='{{ image_service_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ image_service_context_path }}'
+    hostname: '{{ image_service_hostname }}'
   tags:
     - deploy
     - apache_vhost

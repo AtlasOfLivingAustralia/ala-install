@@ -2,7 +2,9 @@ __author__ = 'dale mcdiarmid'
 
 import re
 import os.path
-from six import string_types
+# Workaround for:
+# https://github.com/elastic/ansible-elasticsearch/issues/819
+from ansible.module_utils.six import string_types
 
 def modify_list(values=[], pattern='', replacement='', ignorecase=False):
     ''' Perform a `re.sub` on every item in the list'''

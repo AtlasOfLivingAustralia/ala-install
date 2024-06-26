@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
 
 - name: Copy proxy config to sites-available (Debian)
   template: src=sampling-service.conf dest=/etc/apache2/sites-available/ owner=root group=root
