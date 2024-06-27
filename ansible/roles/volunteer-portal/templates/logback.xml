@@ -79,7 +79,6 @@
     </appender>
 
     <appender name="REPORT_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-
         <file>${loggingDir}/${appName}-reports.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <fileNamePattern>${loggingDir}/${appName}-reports.%i.log.gz</fileNamePattern>
@@ -92,9 +91,9 @@
         <encoder>
             <charset>UTF-8</charset>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} : %m%n%wex</pattern>
-            <!--            <pattern>%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(-&#45;&#45;){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wex</pattern>-->
         </encoder>
     </appender>
+
 
     <!-- Ancilliary logs -->
 
@@ -102,40 +101,12 @@
     <logger name="au.org.ala.volunteer.BVPServletFilter" level="INFO" additivity="false">
         <appender-ref ref="ACCESS"/>
     </logger>
-    <logger name="au.org.ala.volunteer.BVPSessionListener" level="DEBUG" additivity="false">
-        <appender-ref ref="ACCESS"/>
-    </logger>
 
     <!-- Debug Logs -->
-    <!-- Domains -->
-    <logger name="au.org.ala.volunteer.Task" level="DEBUG" additivity="false">
+    <logger name="au.org.ala.volunteer.TaskLoadService" level="DEBUG" additivity="false">
         <appender-ref ref="DEBUG_LOG"/>
     </logger>
-    <logger name="au.org.ala.volunteer.User" level="DEBUG" additivity="false">
-        <appender-ref ref="DEBUG_LOG"/>
-    </logger>
-
-    <!-- Controllers -->
-    <logger name="au.org.ala.volunteer.TranscribeController" level="DEBUG" additivity="false">
-        <appender-ref ref="DEBUG_LOG"/>
-    </logger>
-    <logger name="au.org.ala.volunteer.ValidateController" level="DEBUG" additivity="false">
-        <appender-ref ref="DEBUG_LOG"/>
-    </logger>
-    <logger name="au.org.ala.volunteer.AjaxController" level="DEBUG" additivity="false">
-        <appender-ref ref="DEBUG_LOG"/>
-    </logger>
-
-    <!-- Services -->
-    <logger name="au.org.ala.volunteer.TaskService" level="DEBUG" additivity="false">
-        <appender-ref ref="DEBUG_LOG"/>
-    </logger>
-
-    <!-- Other -->
     <logger name="au.org.ala.volunteer.TaskIngestJob" level="INFO" additivity="false">
-        <appender-ref ref="DEBUG_LOG"/>
-    </logger>
-    <logger name="org.flywaydb" level="DEBUG" additivity="false">
         <appender-ref ref="DEBUG_LOG"/>
     </logger>
 
@@ -143,16 +114,15 @@
     <logger name="au.org.ala.volunteer.ReportRequestService" level="INFO" additivity="false">
         <appender-ref ref="REPORT_LOG"/>
     </logger>
-    <logger name="au.org.ala.volunteer.DeleteOldReportsJob" level="INFO" additivity="false">
+        <logger name="au.org.ala.volunteer.DeleteOldReportsJob" level="INFO" additivity="false">
         <appender-ref ref="REPORT_LOG"/>
     </logger>
-    <logger name="au.org.ala.volunteer.ProcessReportRequestJob" level="INFO" additivity="false">
+        <logger name="au.org.ala.volunteer.ProcessReportRequestJob" level="INFO" additivity="false">
         <appender-ref ref="REPORT_LOG"/>
     </logger>
-    <logger name="au.org.ala.volunteer.ReportController" level="INFO" additivity="false">
+        <logger name="au.org.ala.volunteer.ReportController" level="INFO" additivity="false">
         <appender-ref ref="REPORT_LOG"/>
     </logger>
-
 
     <!-- Slow queries -->
     <logger name="org.apache.tomcat.jdbc.pool.interceptor.SlowQueryReport" level="INFO" additivity="false">
