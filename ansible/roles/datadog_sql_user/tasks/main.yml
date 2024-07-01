@@ -29,7 +29,11 @@
 - name: Grant pg_monitor role to the Datadog user
   postgresql_privs:
     db: "{{ datadog_db_name }}"
-    role: datadog
+    login_host: "{{ datadog_db_login_host | default(omit) }}"
+    login_password: "{{ datadog_db_login_password | default(omit) }}"
+    login_unix_socket: "{{ datadog_db_socket | default(omit) }}"
+    login_user: "{{ datadog_db_login_user | default(omit) }}"
+    roles: datadog
     type: group
     objs: pg_monitor
   when: datadog_postgress_enabled | default(False) | bool
