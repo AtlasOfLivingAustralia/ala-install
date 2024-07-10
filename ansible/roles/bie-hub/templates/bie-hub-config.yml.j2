@@ -89,6 +89,7 @@ biocacheService:
 headerAndFooter:
   baseURL: {{ header_and_footer_baseurl }}
   version: {{ header_and_footer_version }}
+  challengeJsUrl: {{ header_and_footer_challenge_js_url | default('') }}
 
 ala:
   baseURL: {{ ala_base_url }}
