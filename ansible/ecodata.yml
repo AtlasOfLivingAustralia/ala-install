@@ -2,10 +2,12 @@
   vars:
     tomcat: "tomcat7"
     tomcat_user: "tomcat7"
-    es_version: "7.17.18"
+    es_version: "7.17.22"
     es_heap_dump_path: "/data/elasticsearch"
     es_tmp_dir: "/data/elasticsearch"
     es_api_host: "{{ elasticsearch_primary_host | default('localhost') }}"
+    es_gc_filecount: 16
+    es_gc_filesize: "16m"
     es_config:
       network.host: "{{ elasticsearch_primary_host | default('localhost') }}"
       discovery.type: "single-node"
@@ -15,6 +17,7 @@
       cluster.routing.allocation.disk.watermark.low: 90%
       cluster.routing.allocation.disk.watermark.high: 95%
       cluster.routing.allocation.disk.watermark.flood_stage: 99%
+
     nginx_remove_default_vhost: True
     nginx_client_body_timeout: "10"
     nginx_client_header_timeout: "10"
