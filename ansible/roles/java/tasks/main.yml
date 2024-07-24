@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml 
+- include_tasks: ../../common/tasks/setfacts.yml
 
 
 - name: "Show java version"
@@ -7,11 +7,11 @@
   tags:
     - java
 
-- include: openjdk-java-8.yml
+- include_tasks: openjdk-java-8.yml
   when: use_openjdk8 is defined and use_openjdk8 | bool == True
 
-- include: zulu-8.yml
+- include_tasks: zulu-8.yml
   when: use_zulu8 is defined and use_zulu8 | bool == True
 
-- include: openjdk-java-11.yml
+- include_tasks: openjdk-java-11.yml
   when: use_openjdk11 is defined and use_openjdk11 | bool == True

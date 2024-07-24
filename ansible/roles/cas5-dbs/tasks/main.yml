@@ -26,7 +26,6 @@
     packages:
       - mysql-client
       - python3-mysqldb
-      - python3-pymongo
   when: ansible_python.version.major==3
   tags:
     - cas-dbs
@@ -41,6 +40,14 @@
 - name: Install pip3 when necessary
   apt:
     name: python3-pip
+  when: ansible_python.version.major==3
+  tags:
+    - cas-dbs
+
+- name: Install pymongo for Python 3 using pip
+  pip:
+    name: pymongo
+    version: "3.12.2"
   when: ansible_python.version.major==3
   tags:
     - cas-dbs
@@ -179,7 +186,7 @@
     password: "{{ item.password }}"
     database: "{{ item.database }}"
     roles: "{{ item.roles }}"
-    replica_set: "{{ item.replica_set }}"
+    replica_set: "{{ item.replica_set | default(omit) if item.replica_set != '' else omit }}"
     ssl: "{{ item.ssl }}"
     state: present
     login_host: "{{ item.login_host }}"

@@ -1,12 +1,12 @@
 ---
 
-- include: ../namematching-service/tasks/apt.yml
+- include_tasks: ../namematching-service/tasks/apt.yml
   tags:
     - sensitive-data-service
     - deploy
     - apt
 
-- include: ./apt.yml
+- include_tasks: ./apt.yml
   tags:
     - sensitive-data-service
     - deploy

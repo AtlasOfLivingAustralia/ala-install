@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags: 
     - pdf-service
     - nginx_vhost
@@ -168,7 +168,7 @@
 #
 # webserver virtual host configuration
 #
-- include: ../../apache_vhost/tasks/main.yml 
+- include_tasks: ../../apache_vhost/tasks/main.yml
     context_path='{{ profile_service_context_path }}' 
     hostname='{{ profile_service_hostname }}'
   tags:

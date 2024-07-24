@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - tviewer
 
@@ -30,7 +30,10 @@
 #
 # WAR file deployment and virtual host configuration
 #
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ tviewer_context_path }}' hostname='{{ tviewer_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ tviewer_context_path }}'
+    hostname: '{{ tviewer_hostname }}'
   tags:
     - deploy
     - apache_vhost
@@ -50,7 +53,11 @@
     - tviewer
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ tviewer_war_url }}' context_path='{{tviewer_context_path}}' hostname='{{ tviewer_hostname }}'
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_url: '{{ tviewer_war_url }}'
+    context_path: '{{tviewer_context_path}}'
+    hostname: '{{ tviewer_hostname }}'
   tags:
     - deploy
     - tomcat_vhost

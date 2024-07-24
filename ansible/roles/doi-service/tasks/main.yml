@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - doi-service
     - deploy
@@ -8,7 +8,10 @@
 #
 # JAR file deployment
 #
-#- include: ../../exec_jar/tasks/main.yml jar_url='{{ doi_service_jar_url }}' service_name='doi-service'
+#- include_tasks: ../../exec_jar/tasks/main.yml
+  vars:
+    jar_url: '{{ doi_service_jar_url }}'
+    service_name: 'doi-service'
 - name: add jar and service
   include_role:
     name: exec-jar
