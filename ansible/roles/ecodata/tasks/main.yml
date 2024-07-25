@@ -473,12 +473,43 @@
   tags:
     - mongodb-org-user
 
+
+- name: Setup mongo logging to support logrotate
+  blockinfile:
+    path: /etc/mongod.conf
+    insertafter: "systemLog:"
+    marker_begin: "BEGIN_logrorate"
+    marker_end: "END_logrotate"
+    block: |2
+        logRotate: reopen
+  tags:
+    - mongodb-org
+    -
+- name: Setup mongod pid location to support logrotate
+  blockinfile:
+    path: /etc/mongod.conf
+    insertafter: "processManagement:"
+    marker_begin: "BEGIN_processManagement"
+    marker_end: "END_processManagement"
+    block: |2
+        pidFilePath: /var/run/mongodb/mongod.pid
+  tags:
+    - mongodb-org
+
+
+- name: Add mongo logrotate config
+  template:
+    src: logRotate
+    dest: /etc/logrotate.d/mongodb
+  tags:
+    - mongodb-org
+
 - name: Insert replication set name both Server
   blockinfile:
     path: /etc/mongod.conf
-    block: |
-      replication:
-        replSetName: rs0
+    block: |2
+      pidFilePath: /var/run/mongodb/mongod.pid
+
   notify:
     - restart mongod
   tags: mongodb-org
@@ -562,8 +593,10 @@
   service:
     name: mongod
     state: stopped
+  tags: mongodb-org
 
 - name: Start mongod server
   service:
     name: mongod
     state: started
+  tags: mongodb-org
