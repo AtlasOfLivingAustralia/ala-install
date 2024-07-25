@@ -485,16 +485,7 @@
   tags:
     - mongodb-org
     -
-- name: Setup mongod pid location to support logrotate
-  blockinfile:
-    path: /etc/mongod.conf
-    insertafter: "processManagement:"
-    marker_begin: "BEGIN_processManagement"
-    marker_end: "END_processManagement"
-    block: |2
-        pidFilePath: /var/run/mongodb/mongod.pid
-  tags:
-    - mongodb-org
+
 
 
 - name: Add mongo logrotate config
@@ -507,11 +498,11 @@
 - name: Insert replication set name both Server
   blockinfile:
     path: /etc/mongod.conf
-    block: |2
-      pidFilePath: /var/run/mongodb/mongod.pid
-
+    block: |
+      replication:
+        replSetName: rs0
   notify:
-    - restart mongod
+  - restart mongod
   tags: mongodb-org
   when: mongo_replica_enabled
 

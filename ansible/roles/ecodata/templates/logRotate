@@ -10,6 +10,6 @@
         create 644 mongodb mongodb
         sharedscripts
         postrotate
-          /bin/kill -SIGUSR1 `cat /var/run/mongodb/mongod.pid 2>/dev/null` >/dev/null 2>&1
+          /bin/kill -SIGUSR1 `cat /data/mongodb/mongod.lock 2>/dev/null` >/dev/null 2>&1
         endscript
 }
