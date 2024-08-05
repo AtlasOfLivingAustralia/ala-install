@@ -104,7 +104,6 @@
     appname: "doi-service"
     hostname: "{{ doi_service_hostname }}"
     context_path: "{{ doi_service_context_path }}"
-    nginx_client_max_body_size: "{{ doi_nginx_client_max_body_size | default(nginx_client_max_body_size) }}"
     nginx_paths:
       - path: "{{ doi_service_context_path }}"
         is_proxy: true
