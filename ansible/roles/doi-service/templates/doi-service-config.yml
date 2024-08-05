@@ -54,9 +54,9 @@ security:
       serviceUrl: {{ apikey_userdetails_url }}
 webservice:
   jwt: {{ webservice_jwt | default('false') }}
-  jwt-scopes: {{ webservice_jwt_scopes | default('') }}
-  client-id: {{ webservice_clientId | default('') }}
-  client-secret: {{ webservice_secert | default('') }}
+  jwt-scopes: {{ doi_webservice_jwt_scopes | default(webservice_jwt_scopes) | default('') }}
+  client-id: {{ doi_client_id | default(webservice_clientId) | default('') }}
+  client-secret: {{ doi_client_secret | default(webservice_secert) | default('') }}
 userDetails:
   url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
 logging:
@@ -97,7 +97,7 @@ ala:
 
 skin:
   layout: {{ (doi_skin_layout | default(skin_layout)) | default('main') }}
-  fluidLayout: {{ skin_fluid_layout | default('') }}
+  fluidLayout: {{ doi_skin_fluid_layout | default(skin_fluid_layout) | default('') }}
   orgNameLong: {{ orgNameLong | default('Atlas of Living Australia') }}
   orgNameShort: {{ orgNameShort | default('ALA') }}
   favicon: {{ skin_favicon | default('https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png') }}

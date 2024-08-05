@@ -58,6 +58,7 @@
   tags:
     - logger-service
     - properties
+    - properties-file
 
 - name: copy logback config
   template:

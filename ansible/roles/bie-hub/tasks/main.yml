@@ -36,6 +36,7 @@
   tags:
     - webapps
     - properties
+    - properties-file
     - bie
 
 - name: copy logback config

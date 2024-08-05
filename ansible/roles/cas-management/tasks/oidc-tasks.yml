@@ -26,6 +26,7 @@
     - { name: "data_quality", client_id: "{{ data_quality_client_id | default('') }}", client_secret: "{{ data_quality_client_secret | default('') }}", url: "{{ data_quality_url | default('') }}{{data_quality_context_path | default('') }}" }
     - { name: "biocollect", client_id: "{{ biocollect_client_id | default('') }}", client_secret: "{{ biocollect_client_secret | default('') }}", url: "{{ biocollect_base_url | default('') }}{{biocollect_context_path | default('') }}" }
     - { name: "ecodata", client_id: "{{ ecodata_client_id | default('') }}", client_secret: "{{ ecodata_client_secret | default('') }}", url: "{{ ecodata_base_url | default('') }}{{ecodata_context_path | default('') }}" }
+    - { name: "userdetails", client_id: "{{ userdetails_client_id | default('') }}", client_secret: "{{ userdetails_client_secret | default('') }}", url: "{{ userdetails_base_url | default('') }}/{{ userdetails_context_path | default('') }}" }
   loop_control:
     loop_var: oitem
   when: oitem.client_id|length > 0 and oitem.url|length > 3

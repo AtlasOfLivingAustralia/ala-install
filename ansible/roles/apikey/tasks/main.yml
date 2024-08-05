@@ -53,6 +53,7 @@
   when: apikey_version is version('1.7.0', '>=')
   tags:
     - properties
+    - properties-file
     - apikey
 
 - name: copy apikey-config.yml

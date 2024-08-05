@@ -44,7 +44,7 @@ security:
     client-id: {{ (images_client_id | default(jwt_client_id) | default(clientId)) | default('') }}
     secret: {{ (images_client_secret | default(jwt_secret) | default(secret)) | default('') }}
     allowed-scopes: {{ jwt_scopes | default('users/read') }}
-    role-claims: {{ security_jwt_roleClaims | default('role') }}
+    role-claims: {{ images_security_jwt_roleClaims | default(security_jwt_roleClaims) | default('role') }}
     roles-from-access-token: {{ security_jwt_rolesFromAccessToken | default('false')}}
     user-id-claim: {{ security_jwt_userIdClaim | default('userid') }}
   apikey:
@@ -66,7 +66,7 @@ webservice:
   client-secret: {{ webservice_secert | default('') }}
 
 userDetails:
-  url: {{ userdetails_base_url | default(auth_base_url + "/userdetails/") }}
+  url: {{ images_userdetails_url | default(userdetails_base_url) | default(auth_base_url + "/userdetails/") }}
 
 info:
   app:

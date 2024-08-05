@@ -24,7 +24,7 @@ sds:
   wsUrl: {{ sensitive_data_service_url | default('http://localhost:9189') }}
 
 collectory:
-  wsUrl: {{ collectory_url }}
+  wsUrl: {{ collectory_service_slash_url | default(collectory_url) }}
   httpHeaders:
     Authorization: {{ pipelines_api_key | default(ala_api_key) }}
 

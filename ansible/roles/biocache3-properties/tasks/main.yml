@@ -25,6 +25,7 @@
     - biocache-config.properties
   tags:
     - properties
+    - properties-file
     - biocache-properties
     - biocache-config-properties
 

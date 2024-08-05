@@ -71,6 +71,7 @@
     - restart ala-sensitive-data-service
   tags:
     - properties
+    - properties-file
     - sensitive-data-service
 
 - name: add nginx vhost
