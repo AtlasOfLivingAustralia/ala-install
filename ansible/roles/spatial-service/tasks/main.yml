@@ -88,3 +88,27 @@
     - spatial-service
     - spatial-service-config
     - properties
+
+- name: Create directory for aloc.jar
+  file: path={{data_dir}}/spatial-data/modelling/aloc owner={{tomcat_user}} group={{tomcat_user}} recurse=true state=directory mode='0755'
+  tags:
+    - spatial-service
+    - spatial-deps
+
+- name: "Download aloc.jar"
+  maven_artifact:
+    group_id: au.org.ala.spatial
+    artifact_id: ala-aloc
+    version: "{{ ala_aloc_version | default(1.0) }}"
+    extension: jar
+    classifier: "distribution"
+    repository_url: "{{maven_repo_url}}"
+    timeout: 30
+    dest: "{{data_dir}}/spatial-data/modelling/aloc/aloc.jar"
+    mode: u=rwx,g=rx,o=rx
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+    verify_checksum: always
+  tags:
+    - spatial-service
+    - spatial-deps
