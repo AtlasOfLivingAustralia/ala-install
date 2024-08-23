@@ -156,6 +156,7 @@
     group: "{{ecodata_user}}"
     mode: "u+rx,g+r,o-rxw"
   with_items:
+    - accessToken.sh
     - replicaSetConfig.sh
     - replicaSetStatus.sh
     - runProjectDownload.sh
