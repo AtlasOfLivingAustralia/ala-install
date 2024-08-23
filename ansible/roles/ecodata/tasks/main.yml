@@ -141,6 +141,13 @@
   tags:
     - cron
 
+- name: Install jq command line json processor
+  apt: pkg="jq" state=present
+  tags:
+    - ecodata
+    - properties
+    - jq
+
 - name: Copy scripts to scripts directory
   template:
     src: "{{ item }}"
