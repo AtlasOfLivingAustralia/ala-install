@@ -1,5 +1,5 @@
 #!/bin/bash
-source accessToken.sh
+source {{data_dir}}/ecodata/scripts/accessToken.sh
 export EMAIL=$1
 export SUMMARY_FLAG=$2
 export END_DATE=$3
