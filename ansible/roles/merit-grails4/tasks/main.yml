@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - deploy
     - merit
@@ -80,7 +80,7 @@
 
 # WAR file deployment and virtual host configuration
 #
-- include: ../../apache_vhost/tasks/main.yml
+- include_tasks: ../../apache_vhost/tasks/main.yml
     context_path='{{ merit_context_path }}'
     hostname='{{ merit_hostname }}'
   tags:

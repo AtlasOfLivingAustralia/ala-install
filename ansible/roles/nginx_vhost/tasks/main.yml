@@ -547,11 +547,9 @@
     - nginx_vhost
 
 - name: "Default host"
-  include: "defaulthost.yml"
+  include_tasks: "defaulthost.yml"
   when:
     - ( aws_elb_healthcheck_default | bool == True or nginx_default_vhost_required | bool == True ) and vhost_required | bool == True
-  notify:
-   - reload nginx
   tags:
     - nginx_vhost
 

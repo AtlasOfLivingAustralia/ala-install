@@ -1,5 +1,5 @@
 ---
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - webapps
     - config
@@ -106,7 +106,10 @@
     - properties
     - bie-index
 
-- include: ../../apache_vhost/tasks/main.yml context_path='/{{ bie_index_context_path }}' hostname='{{ bie_index_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '/{{ bie_index_context_path }}'
+    hostname: '{{ bie_index_hostname }}'
   tags:
     - webapps
     - apache_vhost

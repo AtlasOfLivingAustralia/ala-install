@@ -1,6 +1,6 @@
 ---
 
-- include: ./apt.yml
+- include_tasks: ./apt.yml
   tags:
     - namematching-service
     - deploy

@@ -1,5 +1,5 @@
 ---
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - specieslist
     - properties
@@ -33,7 +33,10 @@
     - specieslist
     - properties
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ specieslist_context_path }}' hostname='{{ specieslist_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ specieslist_context_path }}'
+    hostname: '{{ specieslist_hostname }}'
   tags:
     - specieslist
     - apache_vhost

@@ -2,7 +2,7 @@
 # to enable master/slave setup through the Jenkins admin UI
 #
 
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - pipelines_jenkins
     - pipelines_jenkins_jobs

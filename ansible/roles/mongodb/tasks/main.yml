@@ -7,13 +7,13 @@
     - mongodb
     - packages
 
-- include: ./install_2_x.yml
+- include_tasks: ./install_2_x.yml
   when: ansible_os_family == "Debian" and mongo_version.find('2.') == 0
   tags:
     - mongo
     - pagackes
 
-- include: ./install_3_x.yml
+- include_tasks: ./install_3_x.yml
   when: ansible_os_family == "Debian" and mongo_version.find('3.') == 0
   tags:
     - mongo

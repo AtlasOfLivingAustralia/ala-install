@@ -1,5 +1,9 @@
 ---
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ bie_hub_war_url }}' context_path='{{ bie_hub_context_path }}' hostname='{{ bie_hub_hostname }}'
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_url: '{{ bie_hub_war_url }}'
+    context_path: '{{ bie_hub_context_path }}'
+    hostname: '{{ bie_hub_hostname }}'
   when: bie_hub_local_build is not defined
   tags:
     - webapps
@@ -7,7 +11,11 @@
     - deploy
     - bie
 
-- include: ../../tomcat_deploy/tasks/main.yml war_local_build='{{ bie_hub_local_build }}' context_path='{{ bie_hub_context_path }}' hostname='{{ bie_hub_hostname }}'
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_local_build: '{{ bie_hub_local_build }}'
+    context_path: '{{ bie_hub_context_path }}'
+    hostname: '{{ bie_hub_hostname }}'
   when: bie_hub_local_build is defined
   tags:
     - webapps
