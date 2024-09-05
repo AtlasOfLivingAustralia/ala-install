@@ -5,10 +5,20 @@
   hosts: '{{ target }}'
   gather_facts: false
   pre_tasks:
+  - name: Get the distribution version
+      raw: lsb_release -r | awk '{print $2}'
+      register: os_version
+      changed_when: false
   - name: Install python2 and python3 for Ansible
     raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt-get install -qqy python3-minimal 'python2.*-minimal')"
-    register: output
-    changed_when: output.stdout != ""
+    when: os_version.stdout is version('24.04', '<')
+    register: output_python2_and_3
+    changed_when: output_python2_and_3.stdout != ""
+  - name: Install only python3 for Ansible (>= u24)
+    raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt-get install -qqy python3-minimal)"
+    when: os_version.stdout is version('24.04', '>=')
+    register: output_python3
+    changed_when: output_python3.stdout != ""
   - name: Gathering Facts
     setup:
   become: yes
