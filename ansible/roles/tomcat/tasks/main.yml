@@ -1,7 +1,7 @@
 # set up tomcat consistently whenever needed.  Used as:
-# - include: ../common/tasks/tomcat.yml 
+# - include_tasks: ../common/tasks/tomcat.yml
 # "tomcat" variable controls version (@see common/vars)
-- include: ../../common/tasks/setfacts.yml 
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - packages
     - tomcat

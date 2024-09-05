@@ -80,7 +80,7 @@
     - properties
     - userdetails
 
-- include: ../../docker-common/tasks/common.yml
+- include_tasks: ../../docker-common/tasks/common.yml
   tags:
     - docker
   when: deployment_type == 'swarm'

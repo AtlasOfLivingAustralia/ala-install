@@ -15,32 +15,32 @@
     - nginx
 
 # Setup/install tasks.
-- include: setup-redhat.yml
+- include_tasks: setup-redhat.yml
   when: ansible_os_family | lower == 'redhat'
   tags:
     - nginx
 
-- include: setup-ubuntu.yml
+- include_tasks: setup-ubuntu.yml
   when: ansible_distribution | lower == 'ubuntu'
   tags:
     - nginx
 
-- include: setup-debian.yml
+- include_tasks: setup-debian.yml
   when: ansible_os_family | lower == 'debian'
   tags:
     - nginx
 
-- include: setup-freebsd.yml
+- include_tasks: setup-freebsd.yml
   when: ansible_os_family | lower == 'freebsd'
   tags:
     - nginx
 
-- include: setup-openbsd.yml
+- include_tasks: setup-openbsd.yml
   when: ansible_os_family | lower == 'openbsd'
   tags:
     - nginx
 
-- include: setup-archlinux.yml
+- include_tasks: setup-archlinux.yml
   when: ansible_os_family | lower == 'archlinux'
   tags:
     - nginx
@@ -55,7 +55,7 @@
     - nginx
 
 # Vhost configuration.
-- include: vhosts.yml
+- include_tasks: vhosts.yml
   tags:
     - nginx
 

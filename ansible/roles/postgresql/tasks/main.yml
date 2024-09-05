@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags: postgresql
 
 # tasks file for ntp
@@ -10,27 +10,27 @@
     - "../vars/{{ ansible_os_family }}.yml"
   tags: postgresql
 
-- include: ./old.yml
+- include_tasks: ./old.yml
   when: ansible_os_family == "RedHat" or pg_version is not defined
   tags:
     - postgresql
     - packages
     - info
 
-- include: ./debian.yml
+- include_tasks: ./debian.yml
   when: ansible_os_family == "Debian" and pg_version is defined
   tags:
     - postgresql
     - packages
     - info
 
-- include: ./postgis.yml
+- include_tasks: ./postgis.yml
   when: postgis_version is defined
   tags:
     - postgresql
     - postgis
 
-- include: ./gdal.yml
+- include_tasks: ./gdal.yml
   when: postgis_version is defined
   tags:
     - postgresql

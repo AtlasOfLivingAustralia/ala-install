@@ -2,7 +2,7 @@
 - name: Elasticsearch Xpack tests initial
   hosts: localhost
   post_tasks:
-    - include: elasticsearch/test/integration/debug.yml
+    - include_tasks: elasticsearch/test/integration/debug.yml
   roles:
     - elasticsearch
   vars:
@@ -110,7 +110,7 @@
 - name: Elasticsearch Xpack modify
   hosts: localhost
   post_tasks:
-    - include: elasticsearch/test/integration/debug.yml
+    - include_tasks: elasticsearch/test/integration/debug.yml
   roles:
     - elasticsearch
   vars:

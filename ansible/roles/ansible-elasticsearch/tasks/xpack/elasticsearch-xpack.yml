@@ -2,7 +2,7 @@
 
 #Security configuration
 - name: include security/elasticsearch-security.yml
-  include: security/elasticsearch-security.yml
+  include_tasks: security/elasticsearch-security.yml
   when: es_enable_xpack
 
 #Make sure elasticsearch.keystore has correct Permissions

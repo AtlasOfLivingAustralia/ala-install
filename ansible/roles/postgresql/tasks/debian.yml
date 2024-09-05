@@ -6,7 +6,7 @@
     - "../vars/{{ ansible_os_family }}.yml"
   tags: postgresql
 
-- include: apt.yaml
+- include_tasks: apt.yaml
 
 - set_fact:
     postgresql_packages: [ "{{ psycopg2_package }}", "postgresql-{{pg_version}}", "postgresql-contrib-{{pg_version}}", "libpq-dev" ]
@@ -49,11 +49,11 @@
     - restart postgresql
 
 - name: Set database directory
-  ini_file:
-    dest: "/etc/postgresql/{{pg_version}}/main/postgresql.conf"
-    section:
-    option: "data_directory"
-    value: "'{{ postgresql_data_directory }}'"
+  lineinfile:
+    path: "/etc/postgresql/{{ pg_version }}/main/postgresql.conf"
+    regexp: '^data_directory ='
+    line: "data_directory = '{{ postgresql_data_directory }}'"
+    backrefs: yes
   tags: postgresql
   notify:
     - restart postgresql
