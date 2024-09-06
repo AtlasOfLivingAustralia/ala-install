@@ -37,17 +37,11 @@
     - biocache_hub
   when: webserver_nginx
 
-- include_tasks: ../../tomcat_deploy/tasks/main.yml
-  vars:
-    war_url: '{{ biocache_hub_artifact_url }}'
-    context_path: '{{ biocache_hub_context_path }}'
-    hostname: '{{ biocache_hub_hostname }}'
-  tags:
-    - webapps
-    - tomcat_vhost
-    - deploy
-    - biocache_hub
-  when: not exec_jar
+# include this here, to create the system user for ownership of directories in the following tasks
+
+- name: Include VM tasks
+  import_tasks: vm-tasks.yml
+  when: deployment_type == 'vm'
 
 #
 # Properties and data file configuration
@@ -181,6 +175,4 @@
   include_tasks: docker-tasks.yml
   when: deployment_type == 'swarm'
 
-- name: Include VM tasks
-  import_tasks: vm-tasks.yml
-  when: deployment_type == 'vm'
+# vm tasks moved further up this tasks file
