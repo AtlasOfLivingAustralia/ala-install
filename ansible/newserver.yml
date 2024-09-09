@@ -6,9 +6,9 @@
   gather_facts: false
   pre_tasks:
   - name: Get the distribution version
-      raw: lsb_release -r | awk '{print $2}'
-      register: os_version
-      changed_when: false
+    raw: lsb_release -r | awk '{print $2}'
+    register: os_version
+    changed_when: false
   - name: Install python2 and python3 for Ansible
     raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt-get install -qqy python3-minimal 'python2.*-minimal')"
     when: os_version.stdout is version('24.04', '<')
