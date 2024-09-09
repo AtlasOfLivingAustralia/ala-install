@@ -33,6 +33,13 @@
   tags:
     - nginx_vhost
 
+- name: set ubuntu-24.04 variables
+  set_fact:
+    nginx_tls_v1_3_enabled: True
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "24.04"
+  tags:
+    - nginx_vhost
+
 #- name: determine if a virtual host is required (vhost not required for localhost, 127.0.0.1 or any hostname with a colon in it)
 #  set_fact: vhost_required={{ hostname.find(':') == -1 and hostname.find('localhost') == -1 and hostname.find('127.0.0.1') == -1 }}
 #  tags:

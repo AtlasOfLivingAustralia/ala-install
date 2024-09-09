@@ -5,7 +5,8 @@
     state: present
   when:
     - nginx_ppa_use is defined and nginx_ppa_use | bool == True
-    - ansible_os_family == "Debian" and (ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04")
+    - ansible_os_family == "Debian" and ansible_distribution_version|int >= 16
+
 
 - name: Add PPA key for Nginx repository
   apt_key:
@@ -34,7 +35,7 @@
   register: nginx_ppa_added_mainline
   when:
     - nginx_ppa_use is defined and nginx_ppa_use | bool == True
-    - ansible_os_family == "Debian" and (ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04")
+    - ansible_os_family == "Debian" and ansible_distribution_version|int >= 16
 
 - name: Ensure nginx will reinstall if the PPA was just added.
   apt:

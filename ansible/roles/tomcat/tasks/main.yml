@@ -161,7 +161,7 @@
     - tomcat
     - tomcat-security
 
-- name: configure tomcat (Debian) in 18.04
+- name: configure tomcat (Debian) in >= 18.04
   blockinfile:
     path={{tomcat_conf}}
     marker="# {mark} Configure Tomcat Memory (Ansible managed)"
@@ -169,7 +169,7 @@
     backup=yes
   notify:
     - restart tomcat
-  when: ansible_os_family == "Debian" and ansible_distribution_version == "18.04" and tomcat == "tomcat9"
+  when: ansible_os_family == "Debian" and ansible_distribution_version|int >= 18 and tomcat == "tomcat9"
   tags:
     - tomcat
     - tomcat-security
