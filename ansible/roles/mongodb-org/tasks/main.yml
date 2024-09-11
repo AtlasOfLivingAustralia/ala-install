@@ -1,60 +1,20 @@
-- name: Add mongodb.org apt key for version 6.0
-  get_url:
-    url: 'https://pgp.mongodb.com/server-6.0.asc'
-    dest: /etc/apt/trusted.gpg.d/mongodb60.asc
-    mode: 0644
-  when: mongodb_version == 6.0
-  tags: 
+- name: Add MongoDB apt key based on version
+  ansible.builtin.apt_key:
+    url: "{{ item.url }}"
+    state: present
+  when: mongodb_version == item.version
+  tags:
     - mongodb-org
     - apt
-
-- name: Add mongodb.org apt key for version 5.0
-  get_url:
-    url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xf5679a222c647c87527c2f8cb00a0bd1e2c63c11'
-    dest: /etc/apt/trusted.gpg.d/mongodb50.asc
-    mode: 0644
-  when: mongodb_version == 5.0
-  tags: 
-    - mongodb-org
-    - apt
-
-- name: Add mongodb.org apt key for version 4.4
-  get_url:
-    url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x20691eec35216c63caf66ce1656408e390cfb1f5'
-#    'https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x0c49f3730359a14518585931bc711f9ba15703c6'
-    dest: /etc/apt/trusted.gpg.d/mongodb.asc
-    mode: 0644
-  when: mongodb_version == 4.4
-  tags: 
-    - mongodb-org
-    - apt
-
-- name: Add mongodb.org apt key for version 4.0
-  get_url:
-    url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x9DA31620334BD75D9DCB49F368818C72E52529D4'
-    dest: /etc/apt/trusted.gpg.d/mongodb.asc
-    mode: 0644
-  when: mongodb_version == 4.0
-  tags: 
-    - mongodb-org
-    - apt
-
-- name: Add mongodb.org apt key for version 3.6
-  get_url:
-    url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5'
-    dest: /etc/apt/trusted.gpg.d/mongodb.asc
-    mode: 0644
-  when: mongodb_version == 3.6
-  tags: 
-    - mongodb-org
-    - apt
-
-- name: Add mongodb.org apt key for version 3.4
-  get_url:
-    url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x0c49f3730359a14518585931bc711f9ba15703c6'
-    dest: /etc/apt/trusted.gpg.d/mongodb.asc
-    mode: 0644
-  when: mongodb_version == 3.4
+  loop:
+    - { version: 8.0, url: 'https://pgp.mongodb.com/server-8.0.asc' }
+    - { version: 7.0, url: 'https://pgp.mongodb.com/server-7.0.asc' }
+    - { version: 6.0, url: 'https://pgp.mongodb.com/server-6.0.asc' }
+    - { version: 5.0, url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xf5679a222c647c87527c2f8cb00a0bd1e2c63c11' }
+    - { version: 4.4, url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x20691eec35216c63caf66ce1656408e390cfb1f5' }
+    - { version: 4.0, url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x9DA31620334BD75D9DCB49F368818C72E52529D4' }
+    - { version: 3.6, url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5' }
+    - { version: 3.4, url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x0c49f3730359a14518585931bc711f9ba15703c6' }
   tags: 
     - mongodb-org
     - apt
