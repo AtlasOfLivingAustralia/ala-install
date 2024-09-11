@@ -98,6 +98,7 @@
   tags:
     - sds
     - properties
+    - properties-file
 
 - name: set data ownership
   file: path={{data_dir}}/sds owner={{tomcat_user}} group={{tomcat_user}} recurse=true

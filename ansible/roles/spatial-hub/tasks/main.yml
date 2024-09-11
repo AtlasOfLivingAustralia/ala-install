@@ -26,6 +26,7 @@
     - spatial-hub
     - spatial-hub-config
     - properties
+    - properties-file
 
 - name: copy system message
   template: src=system-message.json dest={{data_dir}}/spatial-hub/config/system-message.json owner={{tomcat_user}} group={{tomcat_user}}

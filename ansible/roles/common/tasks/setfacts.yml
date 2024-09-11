@@ -329,3 +329,4 @@
     deployment_type: "{{ deployment_type | default('vm') }}"
   tags:
     - setfacts
+    - properties-file

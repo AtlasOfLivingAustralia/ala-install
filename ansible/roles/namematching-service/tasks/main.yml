@@ -54,6 +54,7 @@
     - restart ala-namematching-service
   tags:
     - properties
+    - properties-file
     - namematching-service
 
 - name: Customize species group files

@@ -107,6 +107,7 @@
     - properties
     - biocache_hub
     - hub_config
+    - properties-file
 
 - name: copy charts.json
   template: src=config/charts.json dest={{data_dir}}/{{biocache_hub}}/config/charts.json force=yes

@@ -54,6 +54,7 @@
   template: src=regions-config.properties dest={{data_dir}}/{{regions}}/config/{{regions_config}} force=yes output_encoding=iso-8859-1
   tags:
     - properties
+    - properties-file
     - regions
 
 - name: copy configuration files

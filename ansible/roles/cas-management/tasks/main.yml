@@ -44,6 +44,7 @@
     - restart cas-management
   tags:
     - properties
+    - properties-file
     - cas-management
 
 - name: copy application.yml

@@ -95,6 +95,7 @@
   tags:
     - webapps
     - properties
+    - properties-file
     - data_quality_filter_service
     - hub_config
 

@@ -85,6 +85,7 @@
     - spatial-service
     - spatial-service-config
     - properties
+    - properties-file
 
 - name: set data ownership
   file: path={{data_dir}}/ala/data/ owner={{tomcat_user}} group={{tomcat_user}} recurse=true

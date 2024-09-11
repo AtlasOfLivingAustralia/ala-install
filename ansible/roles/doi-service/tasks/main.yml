@@ -62,6 +62,7 @@
     - restart doi-service
   tags:
     - properties
+    - properties-file
     - doi-service
 
 - name: copy logback config
