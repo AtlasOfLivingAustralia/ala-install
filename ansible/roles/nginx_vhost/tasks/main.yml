@@ -533,7 +533,7 @@
 - name: symlink vhost to sites-enabled
   file:
     state: link
-    src: "{{nginx_conf_dir}}/sites-available/{{hostname}}{{vfragments_suffix}}.conf"
+    src: "../sites-available/{{hostname}}{{vfragments_suffix}}.conf"
     dest: "{{nginx_conf_dir}}/sites-enabled/{{hostname}}{{vfragments_suffix}}.conf"
   when: vhost_required | bool == True
   notify:
