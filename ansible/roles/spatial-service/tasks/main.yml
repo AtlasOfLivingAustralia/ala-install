@@ -165,7 +165,6 @@
   file:
     path: /tmp/maxent
     state: absent
->>>>>>> 61b27b8d (Fix for #383)
   tags:
     - spatial-service
     - spatial-deps
