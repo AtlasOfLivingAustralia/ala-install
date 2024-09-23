@@ -117,6 +117,9 @@
     owner: "{{ tomcat_user }}"
     group: "{{ tomcat_user }}"
     verify_checksum: always
+  tags:
+    - spatial-service
+    - spatial-deps
 
 - name: Download maxent.zip
   get_url:
