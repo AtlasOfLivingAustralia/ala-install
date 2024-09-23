@@ -120,3 +120,51 @@
   tags:
     - spatial-service
     - spatial-deps
+
+- name: Download maxent.zip
+  get_url:
+    url: 'https://biodiversityinformatics.amnh.org/open_source/maxent/maxent.php?op=download'
+    dest: /tmp/maxent.zip
+  tags:
+    - spatial-service
+    - spatial-deps
+
+- name: Create directory for maxent
+  file: path={{data_dir}}/spatial-data/modelling/maxent owner={{tomcat_user}} group={{tomcat_user}} recurse=true state=directory mode='0755'
+  tags:
+    - spatial-service
+    - spatial-deps
+
+- name: Extract maxent.zip
+  unarchive:
+    src: /tmp/maxent.zip
+    dest: /tmp/
+    remote_src: true
+  tags:
+    - spatial-service
+    - spatial-deps
+
+- name: Copy maxent.jar to the destination directory
+  copy:
+    src: /tmp/maxent/maxent.jar
+    dest: "{{data_dir}}/spatial-data/modelling/maxent/maxent.jar"
+    remote_src: true
+  tags:
+    - spatial-service
+    - spatial-deps
+
+- name: Remove temporary maxent.zip file
+  file:
+    path: /tmp/maxent.zip
+    state: absent
+  tags:
+    - spatial-service
+    - spatial-deps
+
+- name: Remove extracted maxent directory
+  file:
+    path: /tmp/maxent
+    state: absent
+  tags:
+    - spatial-service
+    - spatial-deps
