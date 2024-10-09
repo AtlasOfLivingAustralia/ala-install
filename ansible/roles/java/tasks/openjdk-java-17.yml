@@ -1,0 +1,18 @@
+- include_tasks: ../../common/tasks/setfacts.yml
+  tags:
+    - java
+
+- set_fact:
+    java_package: "{{ 'openjdk-17-' + java_package_suffix[java_headless | bool][java_jre | bool] }}"
+  tags:
+    - java
+
+- name: install openjdk 17 java (Debian)
+  apt: 
+    pkg:
+    - ca-certificates
+    - "{{ java_package }}"
+    state: latest
+  when: ansible_os_family == "Debian"
+  tags:
+    - java
