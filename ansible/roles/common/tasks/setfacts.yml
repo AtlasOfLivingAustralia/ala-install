@@ -212,6 +212,22 @@
   tags:
     - setfacts
 
+- name: set java defaults for openjdk17 (amd64)
+  set_fact:
+    java_security_opts: -Dlog4j2.formatMsgNoLookups=true
+    java_home: /usr/lib/jvm/java-17-openjdk-amd64
+  when: use_openjdk17 is defined and use_openjdk17 | bool == True and ansible_architecture != "aarch64"
+  tags:
+    - setfacts
+
+- name: set java defaults for openjdk17 (arm64)
+  set_fact:
+    java_security_opts: -Dlog4j2.formatMsgNoLookups=true
+    java_home: /usr/lib/jvm/java-17-openjdk-arm64
+  when: use_openjdk17 is defined and use_openjdk17 | bool == True and ansible_architecture == "aarch64"
+  tags:
+    - setfacts
+
 - name: set java defaults for openjdk11 (amd64)
   set_fact:
     java_security_opts: -Dlog4j2.formatMsgNoLookups=true
