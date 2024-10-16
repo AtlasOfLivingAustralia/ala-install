@@ -1,0 +1,168 @@
+- include_tasks: ../../common/tasks/setfacts.yml
+  tags:
+    - arga-service
+    - nginx_vhost
+
+- name: Ensure group exists
+  group:
+    name: "{{ arga_user }}"
+    state: present
+
+- name: Add the user 'arga'
+  user:
+    name: "{{ arga_user }}"
+    comment: arga-service user
+    group: "{{ arga_user }}"
+    system: true
+
+- name: Install aptitude using apt
+  apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+  tags:
+    - arga-service
+
+- name: Install required system packages
+  apt: name={{ item }} state=latest update_cache=yes
+  loop:
+    [
+      "apt-transport-https",
+      "ca-certificates",
+      "curl",
+      "software-properties-common",
+      "python3-pip",
+      "virtualenv",
+      "python3-setuptools",
+      "zip",
+      "maven",
+    ]
+  tags:
+    - arga-service
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  #when: use_docker
+  tags:
+    - arga-service
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu bionic stable
+    state: present
+  #when: use_docker
+  tags:
+    - arga-service
+
+- name: Update apt and install docker-ce
+  apt: update_cache=yes name={{ item }} state=latest
+  with_items:
+    - docker-ce
+    - docker-ce-cli
+    - docker-compose
+    - containerd.io
+  #when: use_docker
+  tags:
+    - arga-service
+
+- name: Restart docker
+  service:
+    name: docker
+    state: restarted
+  #when: use_docker
+  tags:
+    - arga-service
+
+- name: Create /data/* directories for service
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - /data/www
+  tags:
+    - arga-service
+
+- name: Create /data/* directories for Pipelines
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - /data/biocache-load
+    - /data/pipelines-shp
+    - /data/pipelines-data
+    - /data/dwca-tmp
+    - /data/spark-tmp
+    - /data/pipelines-vocabularies
+    - /data/pipelines-species
+    - /data/pipelines-all-datasets
+  tags:
+    - pipelines
+
+- name: Download GBIF vocabulary files for Pipelines
+  get_url:
+    url: "https://api.gbif.org/v1/vocabularies/{{ item }}/releases/LATEST/export"
+    dest: /data/pipelines-vocabularies/{{ item }}.json
+  loop:
+    - DegreeOfEstablishment
+    - EstablishmentMeans
+    - LifeStage
+    - Pathway
+  tags:
+    - pipelines
+
+- name: Install java
+  include_role:
+    name: java
+  tags:
+    - arga-service
+  when: use_docker
+
+- name: add nginx vhost if configured
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "arga-service"
+    hostname: "{{ arga_service_hostname }}"
+    nginx_paths:
+      - path: "{{ solr_nginx_proxy_regex }}"
+        rewrite_path_alt: "{{ solr_nginx_rewrite_regex }}"
+        is_proxy: true
+        is_proxy_rewrite: true
+        proxy_pass: "http://localhost:{{ service_port }}"
+        # add_header: "Access-Control-Allow-Origin $http_origin;"
+        # path: "{{solr_service_context_path}}/api"
+        # sort_label: "1_ws"
+  tags:
+    - nginx_vhost
+    - deploy
+    - arga-service
+  when: webserver_nginx
+
+- name: Create solr8 docker directory
+  file:
+    path: "{{ solr_docker_dir }}"
+    state: directory
+
+- name: copy Docker Compose files
+  copy:
+    src: files/{{ item }}
+    dest: "{{ solr_docker_dir }}/{{ item }}"
+  loop:
+    - docker-compose.yml
+    # - docker-compose.prod.yml
+
+# use files parameter to use multiple docker-compose.yml files
+- name: deploy Docker Compose stack
+  community.docker.docker_compose:
+    project_src: "{{ solr_docker_dir }}"
+    files:
+      - docker-compose.yml
+      # - docker-compose.prod.yml
+
+- name: Clone Pipelines github repository
+  git:
+    repo: "{{ pipelines_repo_url }}"
+    dest: /data/pipelines/
+    clone: yes
+    update: no
+  tags:
+    - pipelines

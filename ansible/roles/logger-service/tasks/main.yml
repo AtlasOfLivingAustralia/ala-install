@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - logger-service
     - properties
@@ -58,6 +58,15 @@
   tags:
     - logger-service
     - properties
+    - properties-file
+
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{data_dir}}/logger/config/logback.xml"
+  tags:
+    - properties
+    - logger-service
 
 - name: set data ownership
   file: path={{data_dir}}/logger owner={{tomcat_user}} group={{tomcat_user}} recurse=true
@@ -67,7 +76,10 @@
     - logger-service
     - properties
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ logger_context_path }}' hostname='{{ logger_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ logger_context_path }}'
+    hostname: '{{ logger_hostname }}'
   tags:
     - logger-service
     - deploy
@@ -155,7 +167,11 @@
     - logger-service
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ logger_war_url }}' context_path='{{ logger_context_path }}' hostname='{{ logger_hostname }}'
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_url: '{{ logger_war_url }}'
+    context_path: '{{ logger_context_path }}'
+    hostname: '{{ logger_hostname }}'
   tags:
     - logger-service
     - deploy

@@ -1,0 +1,16 @@
+# assets
+version: "{{ arga_service_version | default('LATEST') }}"
+solr_service_hostname: "{{ solr_service_host | default('localhost:8983') }}"
+service_port: 8983
+solr_service_context_path: "{{ solr_service_context | default('') }}"
+use_docker: "{{ docker | default(false) }}"
+solr_docker_dir: "/data/solr8-docker"
+service_name: "arga-solr8"
+# service_port: 8080
+arga_user: "arga"
+data_dir: "/data"
+logging_dir: "/var/log/atlas/{{service_name}}"
+nginx_cors_origin_regexp: '^https?:\/\/.+\.ala\.org\.au\/?'
+solr_nginx_proxy_regex: "~ ^/api/(get|select|query)$"
+solr_nginx_rewrite_regex: "/api/(get|select|query)$ /solr/biocache/$1 break"
+nginx_root: "/data/www"

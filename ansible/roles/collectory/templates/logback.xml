@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <jmxConfigurator />
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+
+    <variable name="appName" value="collectory"/>
+    <variable name="LOG_DIR" value="/var/log/tomcat9" />
+
+    <appender name="TOMCAT_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${appName}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/${appName}.%i.log.gz</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>4</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} : %m%n%wex</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.hibernate.orm.deprecation" level="ERROR"/>
+    <logger name="org.grails.config.NavigableMap" level="ERROR"/>
+
+    <logger name="org.springframework" level="ERROR" />
+    <logger name="grails.app" level="ERROR" />
+    <logger name="grails.plugins.mail" level="ERROR" />
+    <logger name="org.hibernate" level="ERROR" />
+    <logger name="org.quartz" level="ERROR" />
+    <logger name="asset.pipeline" level="ERROR" />
+
+    <logger name="au.org.ala.cas" level="WARN" />
+
+    <logger name="au.org.ala.collectory" level="INFO" />
+    <logger name="org.liquibase" level="INFO" />
+    <logger name="liquibase" level="INFO" />
+
+
+    <root level="INFO">
+        <appender-ref ref="TOMCAT_LOG" />
+    </root>
+
+</configuration>

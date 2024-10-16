@@ -1,0 +1,86 @@
+---
+version: '3.8'
+
+services:
+
+  war:
+    image: atlasoflivingaustralia/species-list:{{ species_list_version }}
+    volumes:
+      - config:/data/specieslist-webapp/config
+{% if i18n_package_enabled | bool %}
+      - i18n:/opt/atlas/i18n
+      - i18n_custom:/var/opt/atlas/i18n
+{% endif %}
+    environment:
+      TZ: {{ server_tz }}
+      DOCKERIZE_OPTS: "-wait tcp://la_species_list_mysql:3306 -timeout 120s"
+{% if debug_docker_entrypoint is defined and debug_docker_entrypoint | bool %}
+    entrypoint: ["tail", "-f", "/dev/null"]
+    restart: "no"
+{% endif %}
+    expose:
+      - 8080
+    networks:
+      default: {}
+      la_internal: {}
+
+  mysql:
+    image: mysql:8.0-debian
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - mysql_init:/docker-entrypoint-initdb.d/
+    command: --default-authentication-plugin=mysql_native_password
+    # In the future:
+    # command: --default-authentication-plugin=caching_sha2_password
+    environment:
+      TZ: {{ server_tz }}
+      MYSQL_ROOT_PASSWORD: {{ mysql_root_password }}
+      MYSQL_USER: {{ specieslist_db_username }}
+      MYSQL_PASSWORD: {{ specieslist_db_password }}
+      MYSQL_DATABASE: {{ specieslist_db_name }}
+    expose:
+      - 3306
+    networks:
+      default: {}
+
+networks:
+  la_internal:
+    external: true
+  default:
+    driver: overlay
+
+volumes:
+  mysql_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: "{{ species_list_docker_db_data_dir }}"
+
+  mysql_init:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: "{{ species_list_docker_conf_dir }}/init-db"
+
+  config:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: "{{ species_list_data_dir }}/config"
+
+  i18n:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/atlas/i18n
+
+  i18n_custom:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/opt/atlas/i18n

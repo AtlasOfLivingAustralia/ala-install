@@ -1,2 +1,4 @@
-- name: restart namematching-service
-  service: name=namematching-service state=restarted enabled=yes
+- name: restart ala-namematching-service
+  service: name=ala-namematching-service state=restarted enabled=yes
+  when:
+  - skip_handlers | default("false") | bool == false

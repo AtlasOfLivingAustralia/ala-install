@@ -1,0 +1,9 @@
+[Unit]
+Description=ALA sensitive data service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/ala-sensitive-data-service.sh start
+
+[Install]
+WantedBy=multi-user.target

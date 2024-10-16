@@ -1,44 +1,51 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - geoserver
     - geoserver_run_script
 
 - name: packages
-  apt: pkg={{ item }} update_cache=yes state=latest
-  with_items:
-    - curl
-    - unzip
+  apt:
+    name:
+      - 'curl'
+      - 'unzip'
+    update_cache: yes
+    state: latest
   tags:
     - geoserver
 
-- name: Install dependencies for ansible python 2
+- name: packages (python3-lxml)
   apt:
-    name: python-lxml
+    name:
+      - 'python3-lxml'
+    update_cache: yes
     state: present
-  when: ansible_python.version.major==2
-  tags:
-  - geoserver
-
-- name: Install dependencies for ansible python 3
-  apt:
-    name: python3-lxml
-    state: present
-  when: ansible_python.version.major==3
-  tags:
-  - geoserver
-
-- name: configure geoserver data dir
-  lineinfile:
-    dest={{tomcat_conf}}
-    line='CATALINA_OPTS="${CATALINA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
-  notify:
-    - restart tomcat
-  when: ansible_os_family == "Debian"
   tags:
     - tomcat
     - geoserver
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ geoserver_context_path }}' hostname='{{ geoserver_hostname }}'
+- name: configure geoserver data dir
+  blockinfile:
+    path={{tomcat_conf}}
+    marker="# {mark} Configure Geoserver/GWC data folder / (Ansible managed)"
+    block='JAVA_OPTS="${JAVA_OPTS} -DGEOSERVER_CSRF_WHITELIST={{ geoserver_hostname }} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
+    backup=yes
+  notify:
+    - restart tomcat
+  when: ansible_os_family == "Debian" and tomcat == "tomcat9"
+  tags:
+    - tomcat
+    - geoserver
+
+- name: "Check if {{data_dir}}/geoserver_data_dir exists"
+  stat:
+    path: '{{data_dir}}/geoserver_data_dir'
+  register: geoserver_data_dir_check
+  check_mode: no
+
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ geoserver_context_path }}'
+    hostname: '{{ geoserver_hostname }}'
   tags:
     - deploy
     - apache_vhost
@@ -58,13 +65,22 @@
     - geoserver
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ geoserver_war_url }}' context_path='{{ geoserver_context_path }}' hostname='{{ geoserver_hostname }}'
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_url: '{{ geoserver_war_url }}'
+    context_path: '{{ geoserver_context_path }}'
+    hostname: '{{ geoserver_hostname }}'
   tags:
     - deploy
     - tomcat_vhost
     - geoserver
 
-- name: unzip .war to get data directory
+- name: Clear the /tmp/data before unzip {{ tomcat_deploy_dir }}/{{ war_filename }}.war data/* -d /tmp/
+  file:
+    path: "/tmp/data"
+    state: absent
+
+- name: unzip .war to get data directory - unzip {{ tomcat_deploy_dir }}/{{ war_filename }}.war data/* -d /tmp/
   command: "unzip {{ tomcat_deploy_dir }}/{{ war_filename }}.war data/* -d /tmp/"
   tags:
     - geoserver
@@ -72,21 +88,25 @@
 - name: remove previous geoserver data dir
   command: "rm -r /tmp/geoserver_data_dir"
   ignore_errors: yes
+  when: not geoserver_data_dir_check.stat.exists
   tags:
     - geoserver
 
 - name: rename data dir
   command: "mv /tmp/data /tmp/geoserver_data_dir"
+  when: not geoserver_data_dir_check.stat.exists
   tags:
     - geoserver
 
 - name: copy data directory
   command: "cp -r /tmp/geoserver_data_dir {{data_dir}}"
+  when: not geoserver_data_dir_check.stat.exists
   tags:
     - geoserver
 
 - name: set data ownership
   file: path={{data_dir}}/geoserver_data_dir owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  when: not geoserver_data_dir_check.stat.exists
   notify:
     - restart tomcat
   tags:
@@ -121,7 +141,7 @@
   when: not webserver_nginx
   become: true
 
-- name: "wait for geoserver to come up (is {{ geoserver_hostname }} in /etc/hosts?)"
+- name: "wait for geoserver to come up (Ping {{ geoserver_url }}. Check if is {{ geoserver_hostname }} in /etc/hosts?)"
   uri:
     url: "{{ geoserver_url }}"
     status_code: 200
@@ -166,7 +186,16 @@
   tags:
     - geoserver
 
-- name: restart tomcat for installed extensions
+- name: geoserver  - change admin password
+  template: src=users.xml dest={{data_dir}}/geoserver_data_dir/security/usergroup/default/users.xml
+  notify:
+    - restart tomcat
+  when: geoserver_password != "geoserver"
+  tags:
+    - password
+    - geoserver
+
+- name: restart tomcat to bring config effective
   service:
     name: "{{tomcat}}"
     state: restarted
@@ -175,7 +204,7 @@
     - geoserver
   become: true
 
-- name: "wait for geoserver to come up (is {{ geoserver_hostname }} in /etc/hosts?)"
+- name: "wait for geoserver to come up (Ping {{ geoserver_url }}. Check if {{ geoserver_hostname }} is in /etc/hosts?)"
   uri:
     url: "{{ geoserver_url }}"
     status_code: 200
@@ -187,42 +216,13 @@
   tags:
     - geoserver
 
-- name: change root password
-  uri:
-    url: "{{ geoserver_url }}/rest/security/masterpw"
-    method: "PUT"
-    user: 'admin'
-    password: 'geoserver'
-    force_basic_auth: yes
-    body: '{ "oldMasterPassword": "geoserver", "newMasterPassword": "{{ geoserver_password }}" }'
-    status_code: 200
-    body_format: json
-  when: geoserver_password != "geoserver"
-  tags:
-    - password
-    - geoserver
-
-- name: change admin password
-  uri:
-    url: "{{ geoserver_url }}/rest/security/self/password"
-    method: "PUT"
-    user: 'admin'
-    password: 'geoserver'
-    force_basic_auth: yes
-    body: '{ "newPassword": "{{ geoserver_password }}" }'
-    status_code: 200
-    body_format: json
-  when: geoserver_password != "geoserver"
-  tags:
-    - password
-    - geoserver
-
 - name: copy geoserver script
   template: src=geoserver.sh dest={{data_dir}}/geoserver.sh
   when: not skip_geoserver_script
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
 
 - name: copy geoserver script
   template: src=geoserver.objects.xml dest={{data_dir}}/geoserver.objects.xml
@@ -230,6 +230,7 @@
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
 
 - name: copy geoserver script
   template: src=geoserver.distributions.xml dest={{data_dir}}/geoserver.distributions.xml
@@ -237,6 +238,7 @@
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
 
 - name: copy points style.xml
   template: src=geoserver.points.xml dest={{data_dir}}/geoserver.points.xml
@@ -244,6 +246,7 @@
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
 
 - name: geoserver script permissions
   command: "chmod a+x {{data_dir}}/geoserver.sh"
@@ -251,6 +254,16 @@
   tags:
     - geoserver
     - properties
+    - init-spatial-geoserver
+
+# Used for /data local generation
+- name: set ownership of geoserver data
+  shell: "chown -R {{ geoserver_user }}:{{ geoserver_user }} {{data_dir}}/geoserver*"
+  when: geoserver_user is defined
+  tags:
+    - geoserver
+    - properties
+    - init-spatial-geoserver
 
 - name: Running geoserver.sh
   command: "{{data_dir}}/geoserver.sh"
@@ -260,6 +273,7 @@
   tags:
     - geoserver
     - geoserver_run_script
+    - init-spatial-geoserver
   become: true
 
 

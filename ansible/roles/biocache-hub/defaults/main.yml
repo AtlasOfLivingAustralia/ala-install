@@ -1,0 +1,2 @@
+---
+biocache_hub_docker_dir: "{{ data_dir }}/{{ biocache_hub }}/docker"

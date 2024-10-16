@@ -6,11 +6,24 @@
     "created": "{{ ansible_date_time.date }}"
   },
   "blacklist": [
+{% if blacklist_source is not none %}
 {% for pattern in blacklist_source.split('|') %}
+{% set elements = pattern.split('$') %}
     {
-      "source": "{{ pattern }}"
+{% if elements[0] is defined and elements[0] | length %}
+      "source": "{{ elements[0] }}"{% if elements | length > 1 %},{% endif %}
+
+{% endif %}
+{% if elements[1] is defined and elements[1] | length %}
+      "title": "{{ elements[1] }}"{% if elements | length > 2 %},{% endif %}
+
+{% endif %}
+{% if elements[2] is defined and elements[2] | length %}
+      "name": "{{ elements[2] }}"
+{% endif %}
     }{% if not loop.last %},{% endif %}
 
 {% endfor %}
+{% endif %}
   ]
 }

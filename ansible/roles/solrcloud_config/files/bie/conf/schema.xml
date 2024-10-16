@@ -30,7 +30,7 @@
         <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
-    </fieldType>    
+    </fieldType>
 
       <!-- A text field that has been "n-gramed" to allow partial term matching
         for use in auto completion
@@ -68,10 +68,10 @@
     <fieldType name="concat_name" class="solr.TextField">
         <analyzer type="index">
             <tokenizer class="solr.KeywordTokenizerFactory"/>
-            <filter class="solr.LowerCaseFilterFactory" />      
-            <filter class="solr.TrimFilterFactory" /> 
+            <filter class="solr.LowerCaseFilterFactory" />
+            <filter class="solr.TrimFilterFactory" />
             <filter class="solr.PatternReplaceFilterFactory" pattern="([^a-zA-Z])" replacement="" replace="all" />
-            <filter class="solr.NGramFilterFactory" minGramSize="3" maxGramSize="30" /> 
+            <filter class="solr.NGramFilterFactory" minGramSize="3" maxGramSize="30" />
         </analyzer>
     <analyzer type="query">
             <tokenizer class="solr.KeywordTokenizerFactory"/>
@@ -83,12 +83,12 @@
       <analyzer type="index">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
         <filter class="solr.TrimFilterFactory" />
-        <filter class="solr.StopFilterFactory" ignoreCase="true" words="bie_stopwords.txt"/> 
+        <filter class="solr.StopFilterFactory" ignoreCase="true" words="bie_stopwords.txt"/>
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
       <analyzer type="query">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-        <filter class="solr.StopFilterFactory" ignoreCase="true" words="bie_stopwords.txt"/> 
+        <filter class="solr.StopFilterFactory" ignoreCase="true" words="bie_stopwords.txt"/>
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
     </fieldType>
@@ -96,14 +96,14 @@
     <fieldType name="name_complete" class="solr.TextField">
         <analyzer type="index">
             <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-            <filter class="solr.LowerCaseFilterFactory" />      
-            <filter class="solr.TrimFilterFactory" />     
+            <filter class="solr.LowerCaseFilterFactory" />
+            <filter class="solr.TrimFilterFactory" />
             <filter class="solr.PatternReplaceFilterFactory" pattern="([().])" replacement="" replace="all" />
         </analyzer>
         <analyzer type="query">
             <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-            <filter class="solr.LowerCaseFilterFactory" />      
-            <filter class="solr.TrimFilterFactory" />     
+            <filter class="solr.LowerCaseFilterFactory" />
+            <filter class="solr.TrimFilterFactory" />
             <filter class="solr.PatternReplaceFilterFactory" pattern="([().])" replacement="" replace="all" />
         </analyzer>
     </fieldType>
@@ -111,13 +111,13 @@
     <fieldType name="auto_name_exact" class="solr.TextField">
         <analyzer type="index">
             <tokenizer class="solr.KeywordTokenizerFactory"/>
-            <filter class="solr.LowerCaseFilterFactory" />      
-            <filter class="solr.TrimFilterFactory" />     
+            <filter class="solr.LowerCaseFilterFactory" />
+            <filter class="solr.TrimFilterFactory" />
         </analyzer>
         <analyzer type="query">
             <tokenizer class="solr.KeywordTokenizerFactory"/>
-            <filter class="solr.LowerCaseFilterFactory" />      
-            <filter class="solr.TrimFilterFactory" />     
+            <filter class="solr.LowerCaseFilterFactory" />
+            <filter class="solr.TrimFilterFactory" />
         </analyzer>
     </fieldType>
 
@@ -164,8 +164,8 @@
       <analyzer type="index">
         <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
         <tokenizer class="solr.StandardTokenizerFactory"/>
-        <filter class="solr.WordDelimiterFilterFactory" 
-              generateWordParts="1" 
+        <filter class="solr.WordDelimiterFilterFactory"
+              generateWordParts="1"
               generateNumberParts="1"
               catenateWords="1"
               catenateNumbers="1"
@@ -180,8 +180,8 @@
       <analyzer type="query">
         <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
         <tokenizer class="solr.StandardTokenizerFactory"/>
-        <filter class="solr.WordDelimiterFilterFactory" 
-              generateWordParts="0" 
+        <filter class="solr.WordDelimiterFilterFactory"
+              generateWordParts="0"
               generateNumberParts="0"
               catenateWords="0"
               catenateNumbers="0"
@@ -192,7 +192,7 @@
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replacement=" " replace="all"/>
       </analyzer>
-    </fieldType>    
+    </fieldType>
 
     <!-- Less flexible matching, but less false matches.  Probably not ideal for product names,
          but may be good for SKUs.  Can insert dashes in the wrong place and still match. -->
@@ -318,7 +318,7 @@
        when adding a document.
    -->
    <!-- start of BIE Lucene Fields -->
-   
+
    <!-- Common fields to all -->
    <field name="id" type="string" indexed="true" stored="true" required="true" />
    <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
@@ -409,7 +409,7 @@
    <field name="url" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="acronym" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
    <field name="institutionType" type="string" indexed="true" stored="true" multiValued="false" omitNorms="false" />
-   
+
    <!-- WordPress fields -->
    <field name="categories" type="string" indexed="true" stored="true" multiValued="true" omitNorms="false" />
 
@@ -431,14 +431,14 @@
    <field name="concat_name" type="concat_name" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
    <field name="doc_name" type="text" indexed="true" stored="true" multiValued="true" omitNorms="false" omitTermFreqAndPositions="false"/>
 
-  
+
    <!--  NC:2013-02-08 remove the omitTermFreqAndPositions because this setting will cause an exception when searching for a phrase -->
    <field name="stopped_common_name" type="stopped_common_name" indexed="true" stored="false" multiValued="true" omitNorms="true" />
    <field name="name_complete" type="name_complete" indexed="true" stored="false" multiValued="true" omitNorms="true" omitTermFreqAndPositions="true"/>
-   
+
    <!-- Fields used to rank exact matches higher -->
    <field name="exact_text" type="lowercase" indexed="true" stored="false" omitNorms="true" multiValued="true"/>
-   
+
    <dynamicField name="rk_*"  type="string"  indexed="true"  stored="true"/>
    <dynamicField name="rkid_*"  type="string"  indexed="true"  stored="true"/>
 
@@ -450,10 +450,10 @@
           EXAMPLE:  name="*_i" will match any field ending in _i (like myid_i, z_i)
           Longer patterns will be matched first.  if equal size patterns
           both match, the first appearing in the schema will be used.  -->
-   <dynamicField name="*Count"  type="int"    indexed="true"  stored="true"/>     
+   <dynamicField name="*Count"  type="int"    indexed="true"  stored="true"/>
    <dynamicField name="*_i"  type="int"    indexed="true"  stored="true"/>
    <dynamicField name="*_m_s"  type="string" multiValued="true"  indexed="true"  stored="true"/>
-   <dynamicField name="*_s"  type="string"  indexed="true"  stored="true"/>   
+   <dynamicField name="*_s"  type="string"  indexed="true"  stored="true"/>
    <dynamicField name="*_l"  type="long"   indexed="true"  stored="true"/>
    <dynamicField name="*_t"  type="text"    indexed="true"  stored="true"/>
    <dynamicField name="*_b"  type="boolean" indexed="true"  stored="true"/>
@@ -520,15 +520,16 @@
    <!-- copy fields required for the auto complete -->
    <copyField source="scientificName" dest="auto_text"/>
    <copyField source="commonName" dest="auto_text"/>
+   <copyField source="name" dest="auto_text"/>
 
    <copyField source="name" dest="exact_text"/>
    <copyField source="acronym" dest="exact_text"/>
    <copyField source="scientificName" dest="exact_text"/>
    <copyField source="commonNameExact" dest="exact_text"/>
-   
+
    <copyField source="scientificName" dest="concat_name"/>
-   
+
    <copyField source="commonName" dest="concat_name"/>
-   
+
    <copyField source="commonName" dest="stopped_common_name"/>
 </schema>

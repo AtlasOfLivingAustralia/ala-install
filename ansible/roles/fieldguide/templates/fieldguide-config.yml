@@ -1,0 +1,141 @@
+service:
+  bie.ws.url: {{bie_service_ws_url}}
+  biocache.ws.url: {{biocache_service_ws_url}}
+
+collections.url: {{collectory_base_url|default('https://collections.ala.org.au')}}
+collections.ws.url: {{collectory_service_ws_url|default('https://collections.ala.org.au')}}
+image.ws.url: {{images_service_base_url|default('https://images.ala.org.au/ws')}}
+
+fieldguide:
+  url: {{fieldguide_base_url}}
+  store: {{fieldguide_store|default('/data/fieldguide/store')}}
+fieldguide.service.url: {{ fieldguide_service_url | default('https://api.ala.org.au/fieldguide')}}
+
+threadPoolSize: 4
+
+email:
+  enabled: true
+  from: "support@ala.org.au"
+  text:
+    success: "Your download is available on the URL:
+               <br><br>[url]<br><br>When using this field guide please use the following citation:
+               <br><br><cite>Atlas of Living Australia field guide generated from [query] accessed on [date].
+               </cite><br><br>More information can be found at 
+               <a href='https://support.ala.org.au/support/solutions/articles/6000261662-citing-the-ala'>citing the ALA</a>.<br><br>"
+  subject:
+    success: "ALA Field Guide Download Complete - [filename]"
+
+
+# validate email addresses against registered users
+validateEmail: true
+
+# NOTE: add the server IP to userdetails authorised systems
+userDetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
+
+#
+#  CAS SETTINGS
+#
+#  NOTE: Some of these will be ignored if default_config exists
+security:
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+  core:
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+    roleAttribute: {{ roleAttribute | default('') }}
+    affiliation-survey:
+      enabled: {{affiliation_survey_enabled | default ('false')}}
+{% endif %}
+  cookie:
+    enabled: {{ auth_cookie_enabled | default('false') }}
+    domain: {{ auth_cookie_domain | default('.ala.org.au') }}
+  cas:
+    casServerName: {{auth_base_url}}
+    loginUrl: {{auth_cas_url}}/login
+    logoutUrl: {{auth_cas_url}}/logout
+    casServerUrlPrefix: {{auth_base_url}}/cas
+    bypass: false # set to true for non-ALA deployment
+    gateway: false
+    uriFilterPattern: []
+    #if false, ticket params always proceed
+    #true, only processes urls listed in authenticateOnlyIfLoggedInFilterPattern
+    applyUriFiltersToTicketValidation: false
+    disableCAS: true
+    ignoreCase: true
+{% if auth_system is defined and auth_system == 'cognito' %}
+    uriExclusionFilterPattern: ['/generate.*', '/download.*']
+{% else %}
+    uriExclusionFilterPattern: []
+    authenticateOnlyIfCookieFilterPattern: ['/', '/*']
+    authCookieName: ALA-Auth
+{% endif %}
+    enabled: {{ security_cas_enabled | default(false) }}
+  oidc:
+    enabled: {{ security_oidc_enabled | default(true) }}
+    clientId: {{ clientId | default('') }}
+    secret: {{ secret | default('') }}
+    discoveryUri: {{ discoveryUri | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+    scope: {{ scope | default('openid')}}
+    alaUseridClaim: {{ alaUseridClaim | default('') }}
+    logoutAction: {{ logoutAction | default('') }}
+    logoutUrl: {{ logoutUrl | default('') }}
+{% endif %}
+  jwt:
+    discoveryUri: {{ discoveryUri | default('') }}
+    clientId: {{ clientId | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+    roleAttribute: {{ roleAttribute | default('') }}
+    rolesFromAccessToken: {{ rolesFromAccessToken | default('true') }}
+    userIdClaim: {{ userIdClaim | default('') }}
+    roleClaims: {{ roleClaims | default('') }}
+{% endif %}
+  apiKey:
+    enabled: {{ apikey_check_enabled | default('false') }}
+    auth:
+      serviceUrl: {{ apikey_auth_url }}
+    check:
+      serviceUrl: {{ apikey_check_url | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
+    userdetails:
+      serviceUrl: {{ apikey_userdetails_url }}
+webservice:
+  jwt: {{ webservice_jwt | default('false') }}
+  jwt-scopes: {{ webservice_jwt_scopes | default('') }}
+  client-id: {{ webservice_clientId | default('') }}
+  client-secret: {{ webservice_secert | default('') }}
+
+openapi:
+  title: Fieldguide REST services
+  description: REST services for interacting with the fieldguide webapp
+  terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
+  contact:
+    name: Support
+    email: {{ support_email | default('support@ala.org.au') }}
+  license:
+    name: Mozilla Public License 1.1
+    url: https://www.mozilla.org/en-US/MPL/1.1/
+  cachetimeoutms: 4000
+  components:
+    security:
+      oauth2:
+        baseUrl: {{ openapi_oauth_url }}
+
+serverURL: {{fieldguide_base_url}}
+grails:
+  serverURL: {{fieldguide_base_url}}
+  plugin:
+    awssdk:
+      region: {{ fieldguide_aws_region | default('') }}
+      s3:
+        accessKey: {{ fieldguide_aws_s3_access_key | default('') }}
+        secretKey: {{ fieldguide_aws_s3_secret_key | default('') }}
+        bucket: {{ fieldguide_aws_s3_bucket | default('') }}
+        region: {{ fieldguide_aws_region | default('') }}
+storage:
+  provider: {{ fieldguide_storage_provider | default('LOCAL') }} # LOCAL or S3
+userdetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
+userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
+userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}

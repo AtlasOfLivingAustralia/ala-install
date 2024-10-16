@@ -26,17 +26,14 @@ SOLR_HEAP="{{ solr_heap | default('512m') }}"
 #SOLR_JAVA_MEM="-Xms512m -Xmx512m"
 
 # Enable verbose GC logging
-GC_LOG_OPTS="-verbose:gc -XX:+PrintHeapAtGC -XX:+PrintGCDetails \
--XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationStoppedTime"
+GC_LOG_OPTS='-Xlog:gc*'
 
 # These GC settings have shown to work well for a number of common Solr workloads
-GC_TUNE="-XX:NewRatio=3 \
--XX:SurvivorRatio=4 \
+GC_TUNE="-XX:SurvivorRatio=4 \
 -XX:TargetSurvivorRatio=90 \
 -XX:MaxTenuringThreshold=8 \
--XX:+UseConcMarkSweepGC \
--XX:+UseParNewGC \
--XX:ConcGCThreads=4 -XX:ParallelGCThreads=4 \
+-XX:ConcGCThreads=4 \
+-XX:ParallelGCThreads=4 \
 -XX:+CMSScavengeBeforeRemark \
 -XX:PretenureSizeThreshold=64m \
 -XX:+UseCMSInitiatingOccupancyOnly \
@@ -59,6 +56,9 @@ SOLR_HOST="{{ solr_host }}"
 
 # By default the start script uses UTC; override the timezone if needed
 #SOLR_TIMEZONE="UTC"
+
+# CVE-2021-44228 mitigation
+SOLR_OPTS="$SOLR_OPTS -Dlog4j2.formatMsgNoLookups=true"
 
 # Set to true to activate the JMX RMI connector to allow remote JMX client applications
 # to monitor the JVM hosting Solr; set to "false" to disable that behavior
@@ -84,7 +84,7 @@ ENABLE_REMOTE_JMX_OPTS="false"
 {% endif %}
 
 # Set the thread stack size
-SOLR_OPTS="$SOLR_OPTS -Xss256k"
+#SOLR_OPTS="$SOLR_OPTS -Xss256k"
 
 # Anything you add to the SOLR_OPTS variable will be included in the java
 # start command line as-is, in ADDITION to other options. If you specify the
@@ -101,6 +101,8 @@ SOLR_OPTS="$SOLR_OPTS -Djetty.host=${SOLR_HOST}"
 
 # turn off config editing for security
 SOLR_OPTS="$SOLR_OPTS -Ddisable.configEdit=true"
+
+SOLR_OPTS="$SOLR_OPTS -Dsolr.environment={{ solr_environment | default('prod,label=Production+Cluster,color=orange') }}"
 
 # Location where the bin/solr script will save PID files for running instances
 # If not set, the script will create PID files in $SOLR_TIP/bin

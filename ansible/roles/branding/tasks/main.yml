@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - branding
 
@@ -14,8 +14,9 @@
     name: nginx_vhost
   vars:
     appname: "branding"
-    hostname: "{{ branding_hostname }}"
+    hostname: "{{ branding_url }}"
     context_path: "/"
+    nginx_cors_origin_regexp: "{{ branding_nginx_cors_origin_regexp if branding_nginx_cors_origin_regexp is defined }}"
     nginx_paths:
       - path: "/"
         sort_label: "1"

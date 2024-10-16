@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:    
     - layers-db
 
@@ -61,4 +61,11 @@
   tags:
     - layers-db
 
-- debug: "deploy testdata in layers-db and geoserver by running {{data_dir}}/deploy_layersdb_testdata.sh"
+# Example: /usr/share/postgresql/12/contrib/postgis-3.0/legacy.sql
+- name: run legacy.sql to add the deprecated methods.
+  action: command psql layersdb -f /usr/share/postgresql/{{ pg_version }}/contrib/postgis-{{ postgis_scripts_version }}/legacy.sql
+  become: yes
+  become_user: postgres
+  tags:
+    - postgresql
+    - layers-db

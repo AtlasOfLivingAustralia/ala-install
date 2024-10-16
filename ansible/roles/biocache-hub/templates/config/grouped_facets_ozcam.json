@@ -195,10 +195,6 @@
             },
             {
                 "sort":"count",
-                "field":"cl958"
-            },
-            {
-                "sort":"count",
                 "field":"cl1049"
             },
             {
@@ -219,7 +215,7 @@
             },
             {
                 "sort":"count",
-                "field":"geospatial_kosher"
+                "field":"spatiallyValid"
             },
             {
                 "sort":"index",

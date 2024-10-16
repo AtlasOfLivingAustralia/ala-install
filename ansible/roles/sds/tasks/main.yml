@@ -1,8 +1,12 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - sds
+    - properties
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ sds_context_path }}' hostname='{{ sds_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ sds_context_path }}'
+    hostname: '{{ sds_hostname }}'
   tags:
     - sds
     - apache_vhost
@@ -16,20 +20,38 @@
     appname: "sds"
     hostname: "{{ sds_hostname }}"
     context_path: "{{ sds_context_path }}"
+    nginx_paths:
+      - path: "~* /location/"
+        sort_label: "1"
+        disable: "{{ disable_location_service | default('False') }}"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080{{ sds_context_path }}"
+      - path: "{{ sds_context_path }}"
+        sort_label: "2"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:8080{{ sds_context_path }}"
   tags:
     - nginx_vhost
     - deploy
     - sds
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ sds_webapp_url }}' context_path='{{ sds_context_path }}' hostname='{{ sds_hostname }}'
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_url: '{{ sds_webapp_url }}'
+    context_path: '{{ sds_context_path }}'
+    hostname: '{{ sds_hostname }}'
   when: sds_webapp_local_build is not defined
   tags:
     - sds
     - tomcat_vhost
     - deploy
 
-- include: ../../tomcat_deploy/tasks/main.yml war_local_build='{{ sds_webapp_local_build }}' context_path='{{ sds_context_path }}' hostname='{{ sds_hostname }}'
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_local_build: '{{ sds_webapp_local_build }}'
+    context_path: '{{ sds_context_path }}'
+    hostname: '{{ sds_hostname }}'
   when: sds_webapp_local_build is defined
   tags:
     - sds
@@ -48,13 +70,13 @@
     - properties
 
 - name: Copy sensitivity categories XML
-  copy: src="sensitivity-categories.xml" dest="{{data_dir}}/sds/sensitivity-categories.xml"
+  copy: src="{{ sensitivity_categories_file | default ('sensitivity-categories.xml') }}" dest="{{data_dir}}/sds/sensitivity-categories.xml"
   tags:
     - sds
     - properties
 
 - name: Copy sensitivity zones XML
-  copy: src="sensitivity-zones.xml" dest="{{data_dir}}/sds/sensitivity-zones.xml"
+  copy: src="{{ sensitivity_zones_file | default ('sensitivity-zones.xml') }}" dest="{{data_dir}}/sds/sensitivity-zones.xml"
   tags:
     - sds
     - properties
@@ -65,15 +87,22 @@
     - sds
     - properties
 
+- name: copy logback config
+  template: src=logback.xml dest={{data_dir}}/sds/config/logback.xml
+  tags:
+    - sds
+    - properties
+
 - name: create config.properties from template
   template: src="sds-config.properties" dest={{data_dir}}/sds/config/sds-config.properties
   tags:
     - sds
     - properties
+    - properties-file
 
 - name: set data ownership
   file: path={{data_dir}}/sds owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify: 
+  notify:
     - restart tomcat
   tags:
     - sds

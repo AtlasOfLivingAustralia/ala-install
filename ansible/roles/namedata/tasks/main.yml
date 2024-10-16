@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - namedata
     - deploy
@@ -28,6 +28,31 @@
   when: namedata_variant == "ala"
   unarchive: src={{data_dir}}/bie/import/{{item}}-{{name_data_date}}.zip dest={{data_dir}}/bie/import/{{item}} owner={{tomcat_user}} group={{tomcat_user}} copy=no
   with_items: "{{ala_name_sources}}"
+  tags:
+    - config
+    - namedata
+
+- name: ensure target directories exist [data subdirectories etc.]
+  when: namedata_variant == "custom"
+  file: path={{ data_dir }}/bie/import/{{item.name}}-{{item.datestamp}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  with_items: "{{custom_name_sources}}"
+  tags:
+    - config
+    - namedata
+
+# https://stackoverflow.com/questions/68163812/ansible-get-url-download-file-only-if-changed
+- name: get custom source name data
+  when: namedata_variant == "custom"
+  get_url: url={{custom_namedata_repo}}/{{item.name}}-{{item.datestamp}}.zip dest={{data_dir}}/bie/import/{{item.name}}-{{item.datestamp}}.zip checksum={{item.checksum}}
+  with_items: "{{custom_name_sources}}"
+  tags:
+    - config
+    - namedata
+
+- name: unpackage custom source name data
+  when: namedata_variant == "custom"
+  unarchive: src={{data_dir}}/bie/import/{{item.name}}-{{item.datestamp}}.zip dest={{data_dir}}/bie/import/{{item.name}}-{{item.datestamp}} owner={{tomcat_user}} group={{tomcat_user}} copy=no
+  with_items: "{{custom_name_sources}}"
   tags:
     - config
     - namedata

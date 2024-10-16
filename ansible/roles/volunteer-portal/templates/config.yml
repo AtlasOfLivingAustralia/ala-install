@@ -1,0 +1,87 @@
+server.url: {{ digivol_base_url }}
+serverUrl: {{ digivol_base_url }}
+grails:
+  contact.emailAddress: {{ digest_address }}
+  mail:
+    host: localhost
+    port: 25
+    # Do NOT use in prod (i.e. leave property blank)
+    # Environment prefix for emails. Puts '[<prefix>]' at the start of the email subject.
+    subjectPrefix: {{ digivol_mail_subject_prefix }}
+  serverURL: {{ digivol_base_url }}
+spring:
+  flyway:
+    default-schema: 'public'
+    outOfOrder: false
+    table: 'schema_version'
+security:
+  cas.enabled: false
+  core:
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+    defaultLogoutRedirectUri: {{ digivol_base_url | default('https://www.ala.org.au') }}
+{% if digivol_backend == 'cognito' %}
+    roleAttribute: {{ security_core_roleAttribute | default('ala:role') }}
+    affiliation-survey:
+    enabled: {{affiliation_survey_enabled | default ('false')}}
+{% endif %}
+  cookie:
+    enabled: {{ auth_cookie_enabled | default('false') }}
+    domain: {{ auth_cookie_domain | default('.ala.org.au') }}
+  jwt:
+    enabled: {{security_jwt_client_enabled | default('true')}}
+    fallback-to-legacy-behaviour: {{ jwt_fallback_to_legacy | default('true') }}
+    discovery-uri: {{ oidc_discovery_uri }}
+    clientId: {{ digivol_oidc_client_id | default('') }}
+    secret: {{ digivol_oidc_secret| default('') }}
+{% if digivol_backend == 'cognito' %}
+    roleAttributes: {{ security_jwt_roleAttributes | default('cognito:groups') }}
+    rolesFromAccessToken: {{ security_jwt_rolesFromAccessToken | default('true') }}
+    userIdClaim: {{ security_jwt_userIdClaim | default('username') }}
+    roleClaims: {{ security_jwt_roleClaims | default('cognito:groups') }}
+{% endif %}
+  oidc:
+    enabled: true
+    discoveryUri: {{ oidc_discovery_uri | default(auth_base_url) }}{{ oidc_discovery_uri_context_path | default('/cas/oidc/.well-known')}}
+    scope: {{ scopes | default('openid,profile,email,ala,roles') }}
+    clientId: {{ digivol_oidc_client_id }}
+    secret: {{ digivol_oidc_secret }}
+{% if digivol_backend == 'cognito' %}
+    logoutUrl: {{ oidc_logoutUrl | default('') }}
+    logoutAction: {{ security_oidc_logoutAction | default('cognito') }}
+{% endif %}
+userdetails.url: {{ auth_base_url }}/userdetails/
+userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
+userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
+webservice:
+  client-id: {{ digivol_web_client_id | default('digivol_oidc_client_id') }}
+  client-secret: {{ digivol_web_secret | default('digivol_oidc_secret') }}
+  jwt-scopes: {{ security_jwt_scopes | default('users/read') }}
+  jwt: true
+dataSource:
+  driverClassName: org.postgresql.Driver
+  url: jdbc:postgresql://{{ db_hostname }}/{{ db_name }}
+  username: {{ db_user }}
+  password: {{ db_password }}
+  properties:
+    initialSize: 10
+    maxActive: 10
+    maxIdle: 10
+    minIdle: 10
+digest:
+  enabled: true
+  address: {{ digest_address }}
+digivol.trackJsErrors: true
+google.maps.key: {{ google_map_key }}
+images:
+  home: {{ digivol_webserver_document_root }}
+  urlPrefix: {{ digivol_image_urlPrefix }}
+notifications:
+  default.address: {{ digest_address }}
+  project.address: {{ digest_address }}
+ala.image.service.url: {{ image_server_url }}
+bvp.users.migrateIds: false
+elasticsearch:
+  cluster.routing.allocation.disk.watermark:
+    high: 5gb
+    low: 10gb
+

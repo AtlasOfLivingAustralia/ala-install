@@ -1,0 +1,10 @@
+- name: restart tomcat
+  service: name={{tomcat}} state=restarted enabled="yes"
+  when:
+  - skip_handlers | default("false") | bool == false
+
+- name: restart httpd
+  service: name={{apache}} state=restarted enabled="yes"
+
+- name: restart apache
+  service: name={{apache}} state=restarted enabled="yes"

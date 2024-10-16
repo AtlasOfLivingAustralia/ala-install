@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - properties
     - biocache-properties
@@ -19,6 +19,7 @@
     - biocache-config.properties
   tags:
     - properties
+    - properties-file
     - biocache-properties
 
 - name: Download SDS layers

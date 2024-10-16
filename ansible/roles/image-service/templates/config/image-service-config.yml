@@ -6,7 +6,16 @@ server:
   contextPath: {{ image_service_context_path }}
 
 security:
+  core:
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+    roleAttribute: {{ security_core_roleAttribute | default('role') }}
+    affiliation-survey:
+      enabled: {{affiliation_survey_enabled | default ('false')}}
+  cookie:
+    enabled: {{ auth_cookie_enabled | default('false') }}
+    domain: {{ auth_cookie_domain | default('.ala.org.au') }}
   cas:
+    enabled: {{ security_cas_enabled | default(true) }}
     appServerName: "{{image_service_base_url}}"
     bypass: {{ bypass_cas | default(false) }}
     disableCAS: {{ bypass_cas | default(false) }}
@@ -16,26 +25,60 @@ security:
     casServerLogoutUrl: {{ auth_cas_url }}/logout
     loginUrl: {{ auth_cas_url }}/login
     logoutUrl: {{ auth_cas_url }}/logout
+    authenticateOnlyIfLoggedInFilterPattern : {{ images_authenticate_only_if_logged_in_filter_pattern | default('') }}
+  oidc:
+    enabled: {{ security_oidc_enabled | default(false) }}
+    clientId: {{ (images_client_id | default(clientId)) | default('') }}
+    secret: {{ (images_client_secret | default(secret)) | default('') }}
+    discoveryUri: {{ discoveryUri | default('') }}
+    scope: {{ oidc_scopes | default('openid profile email ala roles') }}
+    alaUseridClaim: {{ (alaUseridClaim | default(security_jwt_userIdClaim)) | default('userid') }}
+{% if logout_action is defined and logout_action == 'cognito' %}
+    logoutUrl: {{ cognito_logout_url | default('') }}
+    logoutAction: cognito
+{% endif %}
+  jwt:
+    enabled: {{ jwt_enabled | default('false') }}
+    fallback-to-legacy-behaviour: {{ jwt_fallback_to_legacy | default('true') }}
+    discoveryUri: {{ discoveryUri | default('') }}
+    client-id: {{ (images_client_id | default(jwt_client_id) | default(clientId)) | default('') }}
+    secret: {{ (images_client_secret | default(jwt_secret) | default(secret)) | default('') }}
+    allowed-scopes: {{ jwt_scopes | default('users/read') }}
+    role-claims: {{ images_security_jwt_roleClaims | default(security_jwt_roleClaims) | default('role') }}
+    roles-from-access-token: {{ security_jwt_rolesFromAccessToken | default('false')}}
+    user-id-claim: {{ security_jwt_userIdClaim | default('userid') }}
   apikey:
     ip:
       whitelist: {{ image_service_whitelist | default('') }}
     check:
       serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
+    enabled: {{ apikey_check_enabled | default('false') }}
+    auth:
+      serviceUrl: {{apikey_auth_url | default('https://auth.ala.org.au/apikey/')}}
+    userdetails:
+      serviceUrl: {{ apikey_userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
+
+#websevice jwt
+webservice:
+  jwt: {{ webservice_jwt | default('false') }}
+  jwt-scopes: {{ webservice_jwt_scopes | default('') }}
+  client-id: {{ webservice_clientId | default('') }}
+  client-secret: {{ webservice_secert | default('') }}
 
 userDetails:
-  url: {{ auth_base_url }}/userdetails/
+  url: {{ images_userdetails_url | default(userdetails_base_url) | default(auth_base_url + "/userdetails/") }}
 
 info:
   app:
     name: 'image-service'
     version: '{{ image_service_version }}'
-    grailsVersion: '3.3.12'
+    # grailsVersion: '4.1.1'
 
 flyway:
   baselineOnMigrate: {{ image_service_baseline_on_migrate | default('true') }}
 
 dataSource:
-  url: "jdbc:postgresql://localhost/{{ image_service_db_name }}?autoReconnect=true&connectTimeout=0&useUnicode=true&characterEncoding=UTF-8"
+  url: "jdbc:postgresql://{{ image_service_db_host | default('localhost') }}/{{ image_service_db_name }}?autoReconnect=true&connectTimeout=0&useUnicode=true&characterEncoding=UTF-8"
   driverClassName: org.postgresql.Driver
   username: {{ image_service_db_username }}
   password: {{ image_service_db_password }}
@@ -58,15 +101,18 @@ skin:
   orgNameLong: {{ orgNameLong | default('Atlas') }}
   homeUrl: {{ skin_home_url | default('http://www.ala.org.au') }}
 
+# external links
 collectory:
   baseURL: "{{ collectory_url | default('https://collections.ala.org.au')}}"
 biocache:
   baseURL: "{{ biocache_url | default('https://biocache.ala.org.au')}}"
-
+  service:
+    baseURL: "{{ biocache_service_url | default('https://biocache.ala.org.au/ws')}}"
+  
 # header block
 headerAndFooter:
   version: "{{ header_and_footer_version | default('1')}}"
-  baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3')}}"
+  baseURL: "{{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3-2019')}}"
 ala:
   baseURL: "{{ ala_base_url | default('https://www.ala.org.au')}}"
 bie:
@@ -76,9 +122,9 @@ bie:
 # swagger configuration
 swagger:
   info:
-    description: "{{ swagger_info_description | default('API Documentation for Image Services') }}"
-    version: "{{ swagger_info_version | default('2.0') }}"
-    title:  "{{ swagger_info_title | default('Image Service API') }}"
+    description: "{{ images_swagger_info_description | default('API Documentation for Image Services') }}"
+    version: "{{ images_swagger_info_version | default('2.0') }}"
+    title:  "{{ images_swagger_info_title | default('Image Service API') }}"
     termsOfServices: "{{ swagger_info_terms_of_services | default('https://www.ala.org.au/who-we-are/terms-of-use/') }}"
     contact:
       name:  "{{ swagger_contact_name | default('ALA Support') }}"
@@ -91,3 +137,10 @@ swagger:
     - "{{ swagger_schemes | default('HTTPS') }}"
   consumes:
     - "application/json"
+userdetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
+userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
+userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
+
+aws:
+  region: ap-southeast-2

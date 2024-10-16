@@ -3,8 +3,9 @@ regions_config: "{{regions}}-config.properties"
 
 # assets
 version: "{{ regions_version | default('LATEST') }}"
-artifactId: "{{ regions | default('regions')}}"
+artifactId: "{{ (regions_artifact | default(regions)) | default('regions')}}"
 classifier: ''
 packaging: "war"
 groupId: "{{ regions_group_id | default('au.org.ala') }}"
 regions_war_url: "{{maven_repo_ws_url}}"
+content_type_options_header: "{{ regions_content_type_options_header | default(false) }}"

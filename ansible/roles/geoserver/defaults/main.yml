@@ -1,24 +1,21 @@
-#groupId: "org.geoserver.web"
-#version: "{{ geoserver_version | default('2.14.1') }}"
-#artifactId: "gs-web-app"
-#packaging: "war"
-#classifier: "war"
+geoserver_version: "2.25.2"
 
-geoserver_war_url: "https://repo.osgeo.org/repository/release/org/geoserver/web/gs-web-app/2.14.1/gs-web-app-2.14.1.war"
+geoserver_war_url: "https://repo.osgeo.org/repository/release/org/geoserver/web/gs-web-app/{{ geoserver_version }}/gs-web-app-{{ geoserver_version }}.war"
+geoserver_war_sha1sum: "sha1:2da0b585e4b892107c9731bc4dcd60d46dc726ed"
 
 # URLs to extensions as .zip
 # Must be compatible with the geoserver version
 # geoserver/tasks/main.yml changes gwc defaults for vectortiles extension
 geoserver_extension_urls:
-  - "https://download.sourceforge.net/project/geoserver/GeoServer/2.14.1/extensions/geoserver-2.14.1-pyramid-plugin.zip"
-  - "https://download.sourceforge.net/project/geoserver/GeoServer/2.14.1/extensions/geoserver-2.14.1-vectortiles-plugin.zip"
+  - "https://download.sourceforge.net/project/geoserver/GeoServer/{{ geoserver_version }}/extensions/geoserver-{{ geoserver_version }}-pyramid-plugin.zip"
+  - "https://download.sourceforge.net/project/geoserver/GeoServer/{{ geoserver_version }}/extensions/geoserver-{{ geoserver_version }}-vectortiles-plugin.zip"
 
 geoserver_task: "geoserver"
 
 # ecodata-geoserver.yml configs
 # uncomment to add zip extensions
 geoserver_zip_extension_urls:
-  - "https://sourceforge.net/projects/geoserver/files/GeoServer/2.7.4/extensions/geoserver-2.7.4-wps-plugin.zip"
+  - "https://sourceforge.net/projects/geoserver/files/GeoServer/{{ geoserver_version }}/extensions/geoserver-{{ geoserver_version }}-wps-plugin.zip"
 
 geoserver_jar_extension_urls:
   - "https://raw.githubusercontent.com/temi/elasticgeo/v2.7.4/gs-web-elasticsearch/target/elasticgeo2.7.4-gs2.7.4-es1.7.3.jar"

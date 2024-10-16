@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - geoserver
     - geoserver_run_script
@@ -16,7 +16,7 @@
 - name: geoserver for ecodata - configure geoserver data dir
   lineinfile:
     dest={{tomcat_conf}}
-    line='CATALINA_OPTS="${CATALINA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
+    line='JAVA_OPTS="${JAVA_OPTS} -DGEOSERVER_DATA_DIR={{data_dir}}/geoserver_data_dir -DGEOWEBCACHE_CACHE_DIR={{data_dir}}/geoserver_data_dir/gwc"'
   notify:
     - restart tomcat
   when: ansible_os_family == "Debian"
@@ -27,7 +27,10 @@
 - debug:
     msg: "geoserver_context_path is {{geoserver_context_path}} hostname {{ geoserver_hostname }}"
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ geoserver_context_path }}' hostname='{{ geoserver_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ geoserver_context_path }}'
+    hostname: '{{ geoserver_hostname }}'
   tags:
     - deploy
     - apache_vhost
@@ -47,7 +50,11 @@
     - geoserver
   when: webserver_nginx and (geoserver_private == True)
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ geoserver_war_url }}' context_path='{{ geoserver_context_path }}' hostname='{{ geoserver_hostname }}'
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_url: '{{ geoserver_war_url }}'
+    context_path: '{{ geoserver_context_path }}'
+    hostname: '{{ geoserver_hostname }}'
   tags:
     - deploy
     - tomcat_vhost
@@ -77,6 +84,13 @@
 
 - name: geoserver for ecodata - copy data directory
   command: "cp -r /tmp/geoserver_data_dir {{data_dir}}"
+  tags:
+    - geoserver
+
+# Used for /data local generation
+- name: set ownership of geoserver data
+  shell: "chown -R {{ geoserver_user }}:{{ geoserver_user }} {{data_dir}}/geoserver*"
+  when: geoserver_user is defined
   tags:
     - geoserver
 

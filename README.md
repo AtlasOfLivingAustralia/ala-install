@@ -4,7 +4,7 @@ This project includes a playbook for setting up an ALA demo.
 
 ## Prerequisites
 
-### Ansible: The current supported version is: **2.10.3**
+### Ansible: The current supported version is: **2.16.6** (core) and **9.5.1** (community)
 
 The playbooks and roles in this repository have been developed and tested against the above version. Typically you need to install ansible in your computer or in the computer you'll use to deploy from.
 
@@ -15,7 +15,7 @@ For APT:
 ```
 $ sudo apt-get install software-properties-common python-dev git python-pip
 $ sudo pip install setuptools
-$ sudo pip install -I ansible==[version]
+$ sudo pip install -I ansible==[community-version] ansible-core==[core-version]
 ```
 
 where ```[version]``` is the supported version listed above.
@@ -24,10 +24,10 @@ For OSX:
 
 ```
 $ sudo easy_install pip
-$ sudo pip install -I ansible==[version]
+$ sudo pip install -I ansible==[community-version] ansible-core==[core-version]
 ```
 
-where ```[version]``` is the supported version listed above.
+where ```[version]``` is the supported version listed above. You'll need also python >= `3.10`.
 
 If you see this error:
 ```
@@ -37,22 +37,29 @@ then you have an older version of Ansible.
 
 ### Operating System
 
-These playbooks and roles are currently well tested on Ubuntu `18.04`. We are testing also Ubuntu `20.04` but it's a work in progress. We have less tested other distributions like Redhat or even Debian as the big majority of our production deployments run over Ubuntu.
+These playbooks and roles are currently well tested on Ubuntu `20.04`. We are also starting to use Ubuntu `20.04` but it's a work in progress. We have less tested other distributions like Redhat or even Debian as the big majority of our production deployments run over Ubuntu.
 
 ## Setup a Living Atlas
 
 A Living Atlas (LA) can be typically deployed using these [ALA ansible playbooks](https://github.com/AtlasOfLivingAustralia/ala-install/tree/master/ansible) with some custom ansible inventories with information about your LA site (like your domain, organization name, name of the servers to use, contact email, and a big etcetera).
 
-There are some helping tools to generate these inventories from scratch:
+There are some helping tools to generate these inventories from scratch and maintain a LA portal:
 
-* The [Living Atlas Generator](https://generator.l-a.site/), a web tool assistant to help you in these initial steps,
-* Or if you prefer the command line, the [yeoman living-atlas generator.](https://www.npmjs.com/package/generator-living-atlas)
+* The new [Living Atlases Toolkit](https://github.com/living-atlases/la-toolkit), a toolkit that facilitates the installation, maintenance and monitor of Living Atlases portals. You can test a non-functional demo [here](https://toolkit-demo.l-a.site/).
+* The [Living Atlas Generator](https://generator.l-a.site/), a web tool assistant to help you in these initial steps (now superseded by the previous LA Toolkit).
+* Or if you prefer the command line, the [yeoman living-atlas generator.](https://www.npmjs.com/package/generator-living-atlas), that is used by the previous one tools too.
 
 These tools also generate some [ansible-playbook wrapper](https://github.com/living-atlases/generator-living-atlas#ansible-wrapper) to deploy our main playbooks without too much pain.
 
 The [LA Quick Start Guide](https://github.com/AtlasOfLivingAustralia/documentation/wiki/LA-Quick-Start-Guide) gives you a broad view of the [prerequisites](https://github.com/AtlasOfLivingAustralia/documentation/wiki/LA-Quick-Start-Guide#before-install) and [post-intall](https://github.com/AtlasOfLivingAustralia/documentation/wiki/LA-Quick-Start-Guide#post-install) steps you need in order to setup a production LA portal.
 
-## Setup the Living Atlas demo with Vagrant
+## Setup the Living Atlas demo using microstack
+
+Follow [this howto](https://github.com/AtlasOfLivingAustralia/documentation/wiki/Setup-a-LA-demo-using-microstack) to setup a LA demo using `microstack` and the `la-toolkit`.
+
+## Setup the Living Atlas demo with Vagrant 
+
+**Deprecated:** we used this method more in the past.
 
 Below are some instructions for setting up the Living Atlas demo with Ansible & Vagrant on your local machine or laptop using a demo simple inventory.
 

@@ -1,6 +1,7 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - fieldguide
+    - properties
 
 - set_fact: fieldguide_app={{ artifactId }}
   when: fieldguide_app is undefined
@@ -9,7 +10,10 @@
 # WAR file deployment and virtual host configuration
 #
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ fieldguide_context_path }}' hostname='{{ fieldguide_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ fieldguide_context_path }}'
+    hostname: '{{ fieldguide_hostname }}'
   tags:
     - fieldguide
     - deploy
@@ -29,7 +33,11 @@
     - fieldguide
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ fieldguide_war_url }}' context_path='{{ fieldguide_context_path }}' hostname='{{ fieldguide_hostname }}'
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_url: '{{ fieldguide_war_url }}'
+    context_path: '{{ fieldguide_context_path }}'
+    hostname: '{{ fieldguide_hostname }}'
   tags:
     - fieldguide
     - deploy
@@ -50,14 +58,20 @@
     - properties
 
 - name: copy all config.properties
-  template: src=fieldguide-config.properties dest={{data_dir}}/{{fieldguide_app}}/config/{{fieldguide_app}}-config.properties
+  template: src=fieldguide-config.yml dest={{data_dir}}/{{fieldguide_app}}/config/{{fieldguide_app}}-config.yml
+  tags:
+    - fieldguide
+    - properties
+
+- name: copy logback config
+  template: src=logback.xml dest={{data_dir}}/{{fieldguide_app}}/config/logback.xml
   tags:
     - fieldguide
     - properties
 
 - name: set data ownership
   file: path={{data_dir}}/{{fieldguide_app}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify: 
+  notify:
     - restart tomcat
   tags:
     - fieldguide

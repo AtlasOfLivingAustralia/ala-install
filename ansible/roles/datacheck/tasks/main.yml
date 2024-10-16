@@ -1,7 +1,31 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
+
+- name: Install lxml for ansible python 2
+  apt:
+    name: python-lxml
+    state: present
+  when: ansible_python.version.major==2
+
+- name: Install lxml for ansible python 3
+  apt:
+    name: python3-lxml
+    state: present
+  when: ansible_python.version.major==3
 
 - name: copy datacheck webapps
-  get_url: url={{datacheck_war_url}} dest=/var/lib/{{tomcat}}/webapps/datacheck.war force=yes
+  maven_artifact:
+    group_id: "{{groupId}}"
+    artifact_id: "{{artifactId}}"
+    version: "{{version|default('latest')}}"
+    extension: "{{packaging|default('jar')}}"
+    classifier: "{{classifier|default('')}}"
+    repository_url: "{{maven_repo_url}}"
+    timeout: 30
+    dest: "/var/lib/{{tomcat}}/webapps/datacheck.war"
+    mode: u=rwx,g=rx,o=rx
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+    verify_checksum: always
 
 - name: ensure data directory exists
   file: path={{data_dir}}/sandbox/config state=directory owner={{tomcat_user}} group={{tomcat_user}}

@@ -3,8 +3,9 @@
     name: common
     tasks_from: setfacts
   tags:
-  - setfacts
-  - cas
+    - setfacts
+    - cas
+    - cas-dbs
 
 - name: Install cas db dependencies for python 2
   apt:
@@ -15,6 +16,8 @@
     - python-mysqldb
     - python-pymongo
   when: ansible_python.version.major==2
+  tags:
+    - cas-dbs
 
 - name: Install cas db dependencies for python 3
   apt:
@@ -23,30 +26,47 @@
     packages:
       - mysql-client
       - python3-mysqldb
-      - python3-pymongo
   when: ansible_python.version.major==3
+  tags:
+    - cas-dbs
 
 - name: Install pip when necessary
   apt:
     name: python-pip
   when: ansible_python.version.major==2
+  tags:
+    - cas-dbs
 
 - name: Install pip3 when necessary
   apt:
     name: python3-pip
   when: ansible_python.version.major==3
+  tags:
+    - cas-dbs
+
+- name: Install pymongo for Python 3 using pip
+  pip:
+    name: pymongo
+    version: "4.8.0"
+  when: ansible_python.version.major==3
+  tags:
+    - cas-dbs
 
 - name: Copy cas db dump
   copy:
     src: "{{ cas_db_dump }}"
     dest: /tmp/cas.sql
   when: cas_db_dump is defined
+  tags:
+    - cas-dbs
 
 - name: Copy apikey db dump
   copy:
     src: "{{ apikey_db_dump }}"
     dest: /tmp/apikey.sql
   when: apikey_db_dump is defined
+  tags:
+    - cas-dbs
 
 - name: Drop cas db if cas_db_dump is present
   mysql_db:
@@ -58,6 +78,8 @@
     login_password: "{{ mysql_root_password }}"
   when: cas_db_dump is defined
   run_once: true
+  tags:
+    - cas-dbs
 
 - name: Import cas db if cas_db_dump is present
   mysql_db:
@@ -70,6 +92,8 @@
     login_password: "{{ mysql_root_password }}"
   when: cas_db_dump is defined
   run_once: true
+  tags:
+    - cas-dbs
 
 - name: Import apikey db if apikey_db_dump is present
   mysql_db:
@@ -82,6 +106,8 @@
     login_password: "{{ mysql_root_password }}"
   when: apikey_db_dump is defined
   run_once: true
+  tags:
+    - cas-dbs
 
 - name: Create cas and apikey db
   mysql_db:
@@ -96,6 +122,8 @@
   with_items:
   - { name: "{{ cas_db_name | default('emmet') }}", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
   - { name: "{{ apikey_db_name | default('apikey') }}", login_host: "{{ apikey_db_hostname }}", login_port: "{{ apikey_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
+  tags:
+    - cas-dbs
 
 - name: Need the external ipv4 address for mysql cas user when using external database
   set_fact:
@@ -133,12 +161,24 @@
     host: "{{ item.host }}"
   with_items:
     - { user: "{{ cas_flyway_username }}", password: "{{ cas_flyway_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:ALL", host: "{{ cas_mysql_src_host }}", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
-    - { user: "{{ cas_db_username }}", password: "{{ cas_db_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:INSERT,SELECT,UPDATE,DELETE,EXECUTE,TRIGGER", host: "{{ cas_mysql_src_host }}", login_host: "{{ cas_db_hostname }}", login_port: "{{ cas_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
+    - { 
+      user: "{{ cas_db_username }}", 
+      password: "{{ cas_db_password }}", 
+      priv: "{{ cas_db_name | default('emmet') }}.*:INSERT,SELECT,UPDATE,DELETE,EXECUTE,TRIGGER", 
+      host: "{{ cas_mysql_src_host }}", 
+      login_host: "{{ cas_db_hostname }}", 
+      login_port: "{{ cas_db_port | default('3306') }}", 
+      login_user: "{{ mysql_root_username }}", 
+      login_password: "{{ mysql_root_password }}" }
     - { user: "{{ apikey_db_username }}", password: "{{ apikey_db_password }}", priv: "{{ apikey_db_name | default('apikey') }}.*:ALL", host: "{{ apikey_mysql_src_host }}", login_host: "{{ apikey_db_hostname }}", login_port: "{{ apikey_db_port | default('3306') }}", login_user: "{{ mysql_root_username }}", login_password: "{{ mysql_root_password }}" }
+  tags:
+    - cas-dbs
 
 - name: "Check if mongo cas users should be created"
   debug:
     msg: "Should be the mongo users created? {{ cas_add_mongo_users | default(False) }}"
+  tags:
+    - cas-dbs
 
 - name: Create mongo cas users
   mongodb_user:
@@ -146,7 +186,7 @@
     password: "{{ item.password }}"
     database: "{{ item.database }}"
     roles: "{{ item.roles }}"
-    replica_set: "{{ item.replica_set }}"
+    replica_set: "{{ item.replica_set | default(omit) if item.replica_set != '' else omit }}"
     ssl: "{{ item.ssl }}"
     state: present
     login_host: "{{ item.login_host }}"
@@ -194,6 +234,22 @@
     ssl: "{{ cas_audit_ssl_enabled | default('false') }}",
     roles: 'readWrite'
   }
-  tags: mongodb-org
+  - {
+    login_host: "{{ cas_spring_session_host | default('localhost') }}",
+    login_port: "{{ cas_spring_session_port | default('27017') }}",
+    login_user: "{{ mongodb_root_username }}",
+    login_password: "{{ mongodb_root_password }}",
+    login_database: "{{ mongodb_root_database | default('admin') }}",
+    user: "{{ cas_spring_session_username | default('cas') }}",
+    password: "{{ cas_spring_session_password | default('password') }}",
+    database: "{{ spring_session_mongo_collection | default('spring-sessions') }}",
+    replica_set: "{{ cas_spring_session_replica_set | default('') }}",
+    ssl: "{{ cas_spring_session_ssl_enabled | default('false') }}",
+    roles: 'readWrite'
+  }
+  tags:
+    - mongodb-org
+    - mongodb-users
+    - cas-dbs
   run_once: true
   when: cas_add_mongo_users is defined and cas_add_mongo_users

@@ -1,0 +1,96 @@
+---
+version: '3.8'
+
+services:
+
+  war:
+    image: atlasoflivingaustralia/collectory:{{ collectory_version }}
+    volumes:
+      - config:/data/collectory/config
+      - data:/data/collectory/data
+      - upload:/data/collectory/upload
+{% if i18n_package_enabled | bool %}
+      - i18n:/opt/atlas/i18n
+      - i18n_custom:/var/opt/atlas/i18n
+{% endif %}
+    environment:
+      TZ: {{ server_tz }}
+      DOCKERIZE_OPTS: "-wait tcp://la_collectory_mysql:3306 -timeout 120s"
+{% if debug_docker_entrypoint is defined and debug_docker_entrypoint | bool %}
+    entrypoint: ["tail", "-f", "/dev/null"]
+    restart: "no"
+{% endif %}
+    expose:
+      - 8080
+    networks:
+      default: {}
+      la_internal:
+        aliases:
+          - {{ collectory_docker_host }}
+
+  mysql:
+    image: mysql:8.0-debian
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    # In the future:
+    # command: --default-authentication-plugin=caching_sha2_password
+    environment:
+      TZ: {{ server_tz }}
+      MYSQL_ROOT_PASSWORD: {{ mysql_root_password }}
+      MYSQL_USER: {{ collectory_db_user }}
+      MYSQL_PASSWORD: {{ collectory_db_password }}
+      MYSQL_DATABASE: collectory
+    expose:
+      - 3306
+    networks:
+      default: {}
+
+networks:
+  la_internal:
+    external: true
+  default:
+    driver: overlay
+
+volumes:
+  mysql_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: "{{ collectory_docker_db_data_dir }}"
+
+  config:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ collectory_data_dir }}/config
+
+  data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ collectory_data_dir }}/data
+
+  upload:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ collectory_data_dir }}/upload
+
+  i18n:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/atlas/i18n
+
+  i18n_custom:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/opt/atlas/i18n

@@ -1,0 +1,87 @@
+---
+- name: ensure target db directories exist
+  file: path={{item}} state=directory
+  with_items:
+    - "{{ ala_sensitive_data_service_docker_dir }}"
+    - "{{ data_dir }}/biocache/layers"
+  run_once: true
+  tags:
+    - docker
+    - docker-service
+
+- name: Download configured nameindex
+  import_tasks: ../../namematching-service/tasks/download-nameindex.yml
+  vars:
+    dest: "{{ data_dir }}/lucene/namematching-nm.tgz"
+    final_dest: "{{ data_dir }}/lucene/namematching-nm/"
+    url: "{{ ala_namemaching_service_source | default('https://archives.ala.org.au/archives/nameindexes/20210811/namematching-20210811.tgz') }}"
+    sha1: "{{ ala_namemaching_service_source_sha1 | default('563814a7b5d886b746e10eb40c44f0d9bda62371') }}"
+
+- block:
+    - name: Downloading SDS configs using configured URL
+      get_url:
+        url: "{{ sds_url }}/{{ item }}"
+        dest: "{{ data_dir }}/sds/{{ item }}"
+        timeout: 60
+      loop:
+        - sensitive-species-data.xml
+        - sensitivity-zones.xml
+        - sensitivity-categories.xml
+      register: download_results_configured
+
+    - debug:
+        msg: "Downloaded file {{ item.dest }} with status {{ item.status_code }}"
+      loop: "{{ download_results_configured.results }}"
+
+    - name: Downloading layers.json from SDS using configured URL
+      get_url:
+        url: "{{ sds_url }}/ws/layers"
+        dest: "{{ data_dir }}/sds/layers.json"
+        timeout: 60
+
+    - name: Downloading SDS layers using configured URL
+      get_url:
+        url: "{{ sds_layers_url }}"
+        dest: "{{ data_dir }}/biocache/layers/sds-layers.tgz"
+  rescue:
+    - name: Downloading SDS configs using default URL
+      get_url:
+        url: "https://sds.ala.org.au/{{ item }}"
+        dest: "{{ data_dir }}/sds/{{ item }}"
+        timeout: 60
+      loop:
+        - sensitive-species-data.xml
+        - sensitivity-zones.xml
+        - sensitivity-categories.xml
+      register: download_results_default
+
+    - debug:
+        msg: "Downloaded file {{ item.dest }} with status {{ item.status_code }}"
+      loop: "{{ download_results_default.results }}"
+
+    - name: Downloading layers.json from SDS using default URL
+      get_url:
+        url: "https://sds.ala.org.au/ws/layers"
+        dest: "{{ data_dir }}/sds/layers.json"
+        timeout: 60
+
+    - name: Downloading SDS layers using default URL
+      get_url:
+        url: "https://archives.ala.org.au/archives/layers/sds-layers.tgz"
+        dest: "{{ data_dir}}/biocache/layers/sds-layers.tgz"
+
+# SDS def ALA tgz is created with a MacOS tar
+# https://github.com/yarnpkg/yarn/issues/770
+- name: Extracting SDS layers
+  unarchive:
+    src: "{{ data_dir }}/biocache/layers/sds-layers.tgz"
+    dest: "{{ data_dir }}/biocache/layers/"
+    remote_src: true
+    extra_opts:
+      - "--warning=no-unknown-keyword"
+
+- name: Deploy sensitive-data service stack
+  import_tasks: ../../docker-common/tasks/stack-create.yml
+  vars:
+    stack: la_sensitive_data_service
+    docker_compose_data_dir: "{{ ala_sensitive_data_service_docker_dir }}"

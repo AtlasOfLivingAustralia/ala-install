@@ -1,18 +1,19 @@
+---
 - name: "set facts"
   include_role:
     name: common
     tasks_from: setfacts
   tags:
-  - setfacts
-  - cas-management
-  - properties
+    - setfacts
+    - cas-management
+    - properties
 
 - name: ensure target directories exist data subdirectories etc.
   file:
     path: "{{item}}"
     state: directory
-    owner: cas
-    group: cas
+    owner: "{{ cas_user | default('cas') }}"
+    group: "{{ cas_user | default('cas') }}"
   with_items:
     - "{{data_dir}}/cas-management"
     - "{{data_dir}}/cas-management/config"
@@ -25,19 +26,34 @@
 - name: set data ownership
   file:
     path: "{{data_dir}}/cas-management"
-    owner: cas
-    group: cas
+    owner: "{{ cas_user | default('cas') }}"
+    group: "{{ cas_user | default('cas') }}"
     recurse: true
   tags:
     - properties
     - cas-management
 
-- name: copy application.properties
+- name: copy application.yml
+  template:
+    src: application.yml
+    dest: "{{data_dir}}/cas-management/config/application.yml"
+    owner: "{{ cas_user | default('cas') }}"
+    group: "{{ cas_user | default('cas') }}"
+  when: cas_management_version is version('6', '>=')
+  notify:
+    - restart cas-management
+  tags:
+    - properties
+    - properties-file
+    - cas-management
+
+- name: copy application.yml
   template:
     src: application.properties
     dest: "{{data_dir}}/cas-management/config/application.properties"
-    owner: cas
-    group: cas
+    owner: "{{ cas_user | default('cas') }}"
+    group: "{{ cas_user | default('cas') }}"
+  when: cas_management_version is version('6', '<')
   notify:
     - restart cas-management
   tags:
@@ -48,42 +64,16 @@
   template:
     src: log4j2-management.xml
     dest: "{{data_dir}}/cas-management/config/log4j2.xml"
-    owner: cas
-    group: cas
+    owner: "{{ cas_user | default('cas') }}"
+    group: "{{ cas_user | default('cas') }}"
   tags:
     - properties
     - cas-management
 
-- name: add jar and service
-  include_role:
-    name: exec-jar
-  vars:
-    extra_params:
-    - key: cas.standalone.configurationFile
-      value: /data/cas-management/config/application.properties
-    - key: cas.standalone.configurationDirectory
-      value: /data/cas-management/config
-    log_config_filename: 'log4j2.xml'
-    service_name: "cas-management"
-    service_owner: 'cas'
-    service_group: 'cas'
-    jar_url: '{{ cas_management_jar_url }}'
+- include_tasks: ../../docker-common/tasks/common.yml
   tags:
-    - deploy
-    - service
-    - cas-management
-
-- name: Ensure cas-management is in a running state
-  service:
-    name: cas-management
-    state: started
-  register: casManagementService
-  until: casManagementService.status.ActiveState == "active"
-  retries: 15
-  delay: 30
-  tags:
-    - cas-management
-    - db
+    - docker
+  when: deployment_type == 'swarm'
 
 - name: add nginx vhost
   include_role:
@@ -96,9 +86,17 @@
       - path: "/{{  cas_management_context_path | default('cas-management') }}"
         appname: "cas-management"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ cas_management_port | default('8070') }}/{{  cas_management_context_path | default('cas-management') }}"
+        proxy_pass: "http://{{ cas_management_docker_host | default('127.0.0.1') }}:{{ cas_management_port | default('8070') }}/{{  cas_management_context_path | default('cas-management') }}"
   tags:
     - nginx_vhost
     - deploy
     - cas-management
   when: webserver_nginx
+
+- name: Include docker tasks
+  include_tasks: docker-tasks.yml
+  when: deployment_type == 'swarm'
+
+- name: Include VM tasks
+  import_tasks: vm-tasks.yml
+  when: deployment_type == 'vm'

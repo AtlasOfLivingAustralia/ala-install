@@ -1,0 +1,23 @@
+---
+- name: Converge
+  hosts: cluster_master,cluster_nodes
+  gather_facts: true
+  vars:
+    enable_cluster: true
+    java_home: /usr/lib/jvm/java-11-openjdk-amd64/
+  pre_tasks:
+    - debug: var=inventory_hostname
+    - debug: var=groups
+    - name: Set is_master
+      set_fact:
+        is_master: true
+        is_node: false
+      when: (  'cluster_master' in groups ) and (inventory_hostname in groups['cluster_master'])
+    - debug: var=is_master
+    - debug: var=is_node
+    - debug: var=groups|map(attribute="cluster_master")
+    - debug: var=groups|map(attribute="cluster_master")|sort
+    - debug: msg="{{ (groups|selectattr('cluster_master','defined'))|list }}"
+    - debug: var=(groups|selectattr('cluster_master','defined')|list)
+  roles:
+    - role: ansible-role-hadoop

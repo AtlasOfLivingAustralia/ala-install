@@ -1,24 +1,29 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
 
-- apt_key: url="http://pkg.jenkins-ci.org/{{ jenkins_channel }}/jenkins-ci.org.key" state=present
+- apt_key: url="https://pkg.jenkins.io//{{ jenkins_channel }}/jenkins.io-2023.key" state=present id=5BA31D57EF5975CA
   when: ansible_os_family == "Debian"
-  tags: jenkins
+  tags:
+    - jenkins
+    - jenkins-apt
 
-- apt_key: url="http://pkg.jenkins-ci.org/{{ jenkins_channel }}/jenkins.io.key" state=present
+- apt_repository: repo="deb https://pkg.jenkins.io/{{ jenkins_channel }} binary/" state=present update-cache=yes
   when: ansible_os_family == "Debian"
-  tags: jenkins
+  tags:
+    - jenkins
+    - jenkins-apt
 
-- apt_repository: repo="deb http://pkg.jenkins-ci.org/{{ jenkins_channel }} binary/" state=present update-cache=yes
+- name: install packages and deps
+  apt:
+    name: ['jenkins', 'git']
+    state: present
+    autoclean: yes
+    update_cache: yes
   when: ansible_os_family == "Debian"
-  tags: jenkins
-
-- name: install packages
-  apt: name={{ item }} state=present
-  with_items:
-   - jenkins
-   - git
-  when: ansible_os_family == "Debian"
-  tags: jenkins
+  # this can fail if the port 8080 is in use (for instance by spark) and we want to use a different one
+  ignore_errors: yes
+  tags:
+    - jenkins
+    - jenkins-apt
 
 - name: create JENKINS_HOME
   file: name=/data/jenkins state=directory owner=jenkins group=jenkins
@@ -41,6 +46,24 @@
   when: ansible_os_family == "Debian"
   tags: jenkins
 
+- lineinfile: dest=/etc/default/jenkins backrefs=yes regexp=^HTTP_PORT=-1 line=HTTP_PORT={{ jenkins_http_port | default('-1') }}
+  notify: restart jenkins
+  when: ansible_os_family == "Debian"
+  tags: jenkins
+
 - service: name=jenkins enabled=yes state=started
   when: ansible_os_family == "Debian"
+  tags: jenkins
+
+  # Retry to reinstall deps, specially jenkins
+  # Useful if we use a different port than 8080 and 8080 is in use (so the first install fails)
+- name: retrying to install packages and deps
+  apt:
+    name: ['jenkins', 'git']
+    state: present
+    autoclean: yes
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+  # with correct ports
+  ignore_errors: no
   tags: jenkins

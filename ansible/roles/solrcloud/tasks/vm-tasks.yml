@@ -1,0 +1,140 @@
+---
+- include_tasks: ../../common/tasks/setfacts.yml
+  tags:
+    - solrcloud
+    - solr_config
+
+- name: Stop monit
+  service:
+    name: monit
+    state: stopped
+    enabled: "yes"
+  ignore_errors: true
+  tags:
+    - solr_config
+    - solrcloud
+    - solr_restart
+
+- name: Stop solr
+  service:
+    name: solr
+    state: stopped
+    enabled: "yes"
+  ignore_errors: true
+  tags:
+    - solr_config
+    - solrcloud
+    - solr_restart
+
+- name: Download SOLR {{ solr_version }}
+  get_url: url="{{ solr_repository }}{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
+  #  get_url: url="http://mirrors.ibiblio.org/apache/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
+  #  get_url: url="https://archive.apache.org/dist/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
+  tags:
+    - solrcloud
+
+- name: Remove previous solr program files link
+  file: path={{item}} state=absent
+  with_items:
+    - "/opt/solr"
+    - "/opt/solr-{{ solr_version }}"
+  tags:
+    - solrcloud
+
+- name: Extract the install script
+  shell: "tar xzf /tmp/solr-{{ solr_version }}.tgz solr-{{ solr_version }}/bin/install_solr_service.sh --strip-components=2"
+  tags:
+    - solrcloud
+    - solr_download
+
+- name: ensure target directories exist [data subdirectories etc.
+  file: path={{item}} state=directory
+  with_items:
+    - "{{data_dir}}/solr/"
+  tags:
+    - solr_config
+    - solrcloud
+
+# Note, the install script tries to start the solr service and fails due to the logs directory not existing
+# Need to ignore the errors from here and move on to configuration
+# Will fail when trying to start the solr service after configuration if there is still an issue at that point
+- name: Run install script (allowing errors due to the log directory issue)
+  shell: "./install_solr_service.sh /tmp/solr-{{ solr_version }}.tgz -i /opt -d /data/solr -u solr -s solr -f"
+  ignore_errors: true
+  tags:
+    - solrcloud
+
+- name: Create log directory
+  file: path={{item}} state=directory owner=solr group=solr mode=0755
+  with_items:
+    - "/opt/solr/server/logs"
+  tags:
+    - solr_config
+    - solrcloud
+
+# The version relates to JTS types used in SOLR schema definitions
+- name: Add JTS 1.16
+  copy: src=libs/{{item}} dest=/opt/solr/server/lib/ext
+  with_items:
+    - jts-core-1.16.1.jar
+    - jts-io-common-1.16.1.jar
+  tags:
+    - solrcloud
+  when: jts_use_1_16
+
+- name: Add JTS 1.13
+  copy: src=libs/{{item}} dest=/opt/solr/server/lib/ext
+  with_items:
+    - jts-1.13.jar
+  tags:
+    - solrcloud
+  when: jts_use_1_13
+
+- name: Add JTS 1.18.1
+  copy: src=libs/{{item}} dest=/opt/solr/server/lib/ext
+  with_items:
+    - jts-core-1.18.1.jar
+    - jts-io-common-1.18.1.jar
+  tags:
+    - solrcloud
+  when: jts_use_1_18
+
+- name: add common tomcat jars (for SOLR logging and JTS)
+  copy: src=solr/solr.xml dest=/data/solr
+  tags:
+    - solrcloud
+    - solr_config
+
+- name: copy SOLR config
+  template: src=solr.in.sh dest=/opt/solr/bin/
+  tags:
+    - solrcloud
+    - solrcloud_config
+
+- name: copy SOLR config
+  template: src=solr.in.sh dest=/etc/default/
+  tags:
+    - solrcloud
+    - solrcloud_config
+
+- name: Start solr
+  service:
+    name: solr
+    state: restarted
+    enabled: "yes"
+  tags:
+    - solr_config
+    - solrcloud
+    - solr_restart
+
+# Start monit again if present, and ignore errors otherwise
+- name: Start monit
+  service:
+    name: monit
+    state: restarted
+    enabled: "yes"
+  ignore_errors: true
+  tags:
+    - solr_config
+    - solrcloud
+    - solr_restart

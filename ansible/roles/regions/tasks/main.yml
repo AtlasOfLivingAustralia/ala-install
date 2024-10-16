@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - properties
     - regions
@@ -6,7 +6,10 @@
 #
 # WAR file deployment and virtual host configuration
 #
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ regions_context_path }}' hostname='{{ regions_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ regions_context_path }}'
+    hostname: '{{ regions_hostname }}'
   tags:
     - deploy
     - apache_vhost
@@ -26,7 +29,11 @@
     - regions
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ regions_war_url }}' context_path='{{regions_context_path}}' hostname='{{ regions_hostname }}'
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_url: '{{ regions_war_url }}'
+    context_path: '{{regions_context_path}}'
+    hostname: '{{ regions_hostname }}'
   tags:
     - deploy
     - tomcat_vhost
@@ -47,6 +54,7 @@
   template: src=regions-config.properties dest={{data_dir}}/{{regions}}/config/{{regions_config}} force=yes output_encoding=iso-8859-1
   tags:
     - properties
+    - properties-file
     - regions
 
 - name: copy configuration files
@@ -55,6 +63,12 @@
     - menu-config.json
     - state-emblems.json
     - stateEmblems.txt
+  tags:
+    - properties
+    - regions
+
+- name: copy logback config
+  template: src=logback.xml dest={{data_dir}}/{{regions}}/config/logback.xml
   tags:
     - properties
     - regions

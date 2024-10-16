@@ -5,3 +5,4 @@ groupId: "au.org.ala"
 classifier: ''
 packaging: "war"
 logger_war_url: "{{maven_repo_ws_url}}"
+content_type_options_header: "{{ logger_content_type_options_header | default(false) }}"

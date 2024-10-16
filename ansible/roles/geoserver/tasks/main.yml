@@ -1,9 +1,16 @@
-- include: ./geoserver.yml
+- name: Use which geoserver
+  debug:
+    msg: "Using {{geoserver_task}}"
+  tags:
+    - geoserver
+    - which-geoserver
+
+- include_tasks: ./geoserver.yml
   when: geoserver_task == "geoserver"
   tags:
     - geoserver
 
-- include: ./ecodata-geoserver.yml
+- include_tasks: ./ecodata-geoserver.yml
   when: geoserver_task == "ecodata"
   tags:
     - geoserver

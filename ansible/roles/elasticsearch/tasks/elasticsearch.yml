@@ -1,20 +1,20 @@
 ---
 
-- include: install.deb.yml
+- include_tasks: install.deb.yml
   when: ansible_os_family == 'Debian'
   tags: [elasticsearch, elasticsearch-install]
 
-- include: install.yum.yml
+- include_tasks: install.yum.yml
   when: ansible_os_family == 'RedHat'
   tags: [elasticsearch, elasticsearch-install]
 
-- include: configure.yml
+- include_tasks: configure.yml
   tags: [elasticsearch, elasticsearch-configure]
 
-- include: plugins.yml
+- include_tasks: plugins.yml
   tags: [elasticsearch, elasticsearch-plugins]
 
-- include: proxy.yml
+- include_tasks: proxy.yml
   when: elasticsearch_proxy | bool == True
   tags: [elasticsearch, elasticsearch-proxy]
 

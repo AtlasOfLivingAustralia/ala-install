@@ -1,9 +1,12 @@
 - hosts: auth
+  vars:
+    webserver_nginx: true
   roles:
     - common
     - java
     - postfix
     - tomcat
-    - mysql-legacy
+    - role: mysql-legacy
+      when: userdetails_backend == "gorm"
     - webserver
     - userdetails

@@ -1,0 +1,77 @@
+---
+version: '3.8'
+
+services:
+
+{% for i in range(1, zookeeper_hosts + 1) %}
+  zoo_{{ i }}:
+    image: zookeeper:3.9
+    hostname: la_solrcloud_zoo_{{ i }}
+    expose:
+      - 2181
+    volumes:
+      - {{ solrcloud_docker_zookeeper_conf_dir }}/zoo.cfg:/etc/zookeeper/conf/zoo.cfg
+      - {{ solrcloud_docker_zookeeper_data_dir }}/zoo{{ i }}/data:/data
+      - {{ solrcloud_docker_zookeeper_data_dir }}/zoo{{ i }}/datalog:/datalog
+    environment:
+      TZ: {{ server_tz }}
+      ZOO_MY_ID: {{ i }}
+      ZOO_SERVERS: {{  docker_zookeeper_servers }}
+      ZOO_4LW_COMMANDS_WHITELIST: "mntr,conf,ruok"
+    networks:
+      default: {}
+      la_internal: {}
+{% if docker_solr_hosts is defined %}
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == {{ docker_solr_hosts[i-1] }}
+{% endif %}
+{% endfor %}
+
+  # https://solr.apache.org/guide/solr/latest/deployment-guide/solr-in-docker.html
+{% for i in range(1, solr_hosts + 1) %}
+  solr_{{ i }}:
+    # Use solrcloud_version in some point as in vm tasks?
+    image: atlasoflivingaustralia/solr8-jts:bitnami-8.11.2
+    hostname: la_solrcloud_solr_{{ i }}
+    volumes:
+      # https://hub.docker.com/r/bitnami/solr/
+      - {{ solrcloud_docker_data_dir }}/solr{{ i }}/data:/bitnami/solr
+      # solr.in.sh in bitnami image is in /opt/bitnami/, we use env vars
+      # instead:
+      # - {{ solrcloud_docker_conf_dir }}/solr{{ i }}.in.sh:/etc/default/solr.in.sh
+      - {{ solrcloud_docker_conf_dir }}/solr.xml:/var/solr/solr.xml
+      - {{ data_dir}}/solr_config/:{{data_dir}}/solr_config/
+{% if i == 1 and docker_development_mode is defined and docker_development_mode | bool %}
+    ports:
+      - 8983:8983
+{% else %}
+    expose:
+      - 8983
+{% endif %}
+    networks:
+      default: {}
+      la_internal:
+        aliases:
+          - {{ solr_host }}
+    environment:
+      TZ: {{ server_tz }}
+      SOLR_HOST: la_solrcloud_solr_{{ i }}
+      ZK_HOST: {{ docker_solr_zk_hosts }}
+      SOLR_OPTS: "{% if solr_temp_disable_shardsWhitelist is defined and solr_temp_disable_shardsWhitelist %}-Dsolr.disable.shardsWhitelist=true{% endif %}"
+{% if docker_solr_hosts is defined %}
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == {{ docker_solr_hosts[i-1] }}
+{% endif %}
+{% endfor %}
+
+networks:
+  la_internal:
+    external: true
+  default:
+    driver: overlay

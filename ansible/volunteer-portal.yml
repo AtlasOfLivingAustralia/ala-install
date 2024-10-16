@@ -1,12 +1,16 @@
 # Warning: At this point of time running without the --tags "deploy" wipes out all the existing nginx config. It is advisable to run this on an empty server.
 # After the script creates the db, the db needs to be restored to create some records which is expected by the app
-# ansible-playbook -i path/to/inventory volunteer-portal.yml --private-key ~/.ssh/id_rsa --user youruser --become --ask-become-pass --tags "deploy"
+# ansible-playbook -i path/to/inventory volunteer-portal.yml --private-key ~/.ssh/id_rsa --user youruser --become --ask-become-pass --tags "deploy,service"
 
 - hosts: volunteer-portal
+  vars:
+    use_openjdk11: True
+    use_openjdk8: False
   roles:
     - common
-    - {role: db-backup, db: postgres}
-    - {role: postgresql, pg_version: "10"}
-    - {role: pg_instance, extensions: ["citext", "pgcrypto"]}
-    - webserver
+    #- {role: db-backup, db: postgres}
+    - {role: java, use_openjdk11: True}
+    #- {role: postgresql, pg_version: digivol_pg_version | default('15'), when: not db_remote | bool }
+    #- {role: pg_instance, extensions: ["citext", "pgcrypto"]}
+    # - webserver
     - volunteer-portal

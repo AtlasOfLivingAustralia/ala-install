@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - image-service
     - properties
@@ -13,7 +13,10 @@
     - image-service
     - properties
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ image_service_context_path }}' hostname='{{ image_service_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ image_service_context_path }}'
+    hostname: '{{ image_service_hostname }}'
   tags:
     - deploy
     - apache_vhost
@@ -48,7 +51,7 @@
     - image-service
 
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner=image-service group=image-service
+  file: path={{item}} state=directory owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}"
   with_items:
     - "{{data_dir}}/image-service/setup"
     - "{{data_dir}}/image-service/config"
@@ -67,13 +70,14 @@
   template: src={{ item }} dest={{data_dir}}/image-service/config/
   with_items:
     - "config/image-service-config.yml"
-    - "config/logback.groovy"
+    - "config/{{ image_service_logfile | default('logback.groovy') }}"
   notify:
      - restart image-service
   tags:
     - deploy
     - image-service
     - properties
+    - properties-file
 
 - name: add image-service jar and setup service
   include_role:
@@ -81,13 +85,17 @@
   vars:
     service_name: 'image-service'
     jar_url: '{{ image_service_jar_url }}'
+    use_openjdk11: "{{ image_service_version is version('1.1.7.1', '>') }}"
+    use_openjdk8: "{{ image_service_version is version('1.1.7.1', '<=') }}"
+    log_config_filename: "{{ image_service_logfile }}"
+    java_headless: True
   tags:
     - deploy
     - service
     - image-service
 
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner=image-service group=image-service
+  file: path={{item}} state=directory owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}"
   with_items:
     - "{{data_dir}}/image-service/setup"
     - "{{data_dir}}/image-service/config"
@@ -103,7 +111,7 @@
     - properties
 
 - name: set data ownership for {{data_dir}}/image-service
-  file: path={{data_dir}}/image-service owner="image-service" group="image-service"
+  file: path={{data_dir}}/image-service owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}"
   notify:
      - restart image-service
   tags:
@@ -112,7 +120,7 @@
     - image-service
 
 - name: set data ownership postgres for {{data_dir}}/image-service/exports
-  file: path={{data_dir}}/image-service/exports owner="image-service" group="image-service" recurse=true
+  file: path={{data_dir}}/image-service/exports owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}" recurse=true
   notify:
      - restart image-service
   tags:
@@ -121,7 +129,7 @@
     - image-service
 
 - name: set data ownership for /opt/atlas/image-service
-  file: path=/opt/atlas/image-service owner="image-service" group="image-service" recurse=true
+  file: path=/opt/atlas/image-service owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}" recurse=true
   notify:
      - restart image-service
   tags:
@@ -130,7 +138,7 @@
     - image-service
 
 - name: set data ownership for /var/log/atlas/image-service
-  file: path=/var/log/atlas/image-service owner="image-service" group="image-service" recurse=true
+  file: path=/var/log/atlas/image-service owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}" recurse=true
   notify:
      - restart image-service
   tags:
@@ -146,5 +154,14 @@
   tags:
     - packages
     - image-service
+
+- name: add clear old failed_uploads CRON job
+  ansible.builtin.cron:
+    name: "clear old failed_uploads"
+    minute: "0"
+    hour: "5"
+    weekday: "1"
+    user: "postgres"
+    job: psql -c "delete from failed_upload where (current_timestamp - date_created) > '7 days';" images
 
 - debug: msg="For new installs, to finish installation use the admin screen to load the licence information in files/licence_mappings.csv and files/licences.csv."

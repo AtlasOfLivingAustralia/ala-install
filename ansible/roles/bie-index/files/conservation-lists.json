@@ -55,6 +55,30 @@
       "field": "conservationStatusNT_s",
       "term": "conservationStatusNT",
       "label": "NT"
+    },
+    {
+      "uid": "dr18987",
+      "field": "conservationStatusBonn_s",
+      "term": "conservationStatusBonn",
+      "label": "Bonn"
+    },
+    {
+      "uid": "dr18989",
+      "field": "conservationStatusCAMBA_s",
+      "term": "conservationStatusCAMBA",
+      "label": "CAMBA"
+    },
+    {
+      "uid": "dr18988",
+      "field": "conservationStatusJAMBA_s",
+      "term": "conservationStatusJAMBA",
+      "label": "JAMBA"
+    },
+    {
+      "uid": "dr18990",
+      "field": "conservationStatusROKAMBA_s",
+      "term": "conservationStatusROKAMBA",
+      "label": "ROKAMBA"
     }
   ]
 }

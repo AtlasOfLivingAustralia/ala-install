@@ -1,38 +1,11 @@
-- name: Add apt.gbif.es key
-  get_url:
-    # We use this key from the above repo temporally
-    url: 'https://keyserver.ubuntu.com/pks/lookup?op=hget&search=7524d3b383016eab0ee47bfe253a51f7'
-    dest: /etc/apt/trusted.gpg.d/apt-gbif-es-demo.asc
-    mode: 0644
+- name: Add apt.gbif.es key and repo
+  include_role: name=la-apt
   when:
     - ansible_os_family == "Debian"
     - i18n_package_enabled | bool == True
   tags:
     - packages
     - i18n
-
-- name: Install ala-i18n apt repository
-  apt_repository:
-    # We use this repo temporally
-    repo: deb [arch=amd64] https://apt.gbif.es/ bionic main
-    filename: apt_gbif_es
-    state: present
-  when:
-    - ansible_os_family == "Debian"
-    - i18n_package_enabled | bool == True
-  tags:
-    - packages
-    - i18n
-
-- name: Uninstall demo.gbif.es apt repository
-  apt_repository:
-    repo: deb [arch=amd64] https://demo.gbif.es/repo bionic main
-    filename: demo_gbif_es_repo
-    state: absent
-  tags:
-    - packages
-    - i18n
-  when: ansible_os_family == "Debian"
 
 - name: Install ala-i18n package
   apt:

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>{{ hdfs_replication_factor }}</value>
+    </property>
+    <!-- Enable dynamic created containers to register as datanodes -->
+    <property>
+      <name>dfs.namenode.datanode.registration.ip-hostname-check</name>
+      <value>false</value>
+    </property>
+    <property>
+         <name>dfs.datanode.data.dir</name>
+         <value>{{ hadoop.data_dir }}</value>
+         <final>true</final>
+      </property>
+      <property>
+         <name>dfs.namenode.name.dir</name>
+         <value>{{ hadoop.name_dir }}</value>
+         <final>true</final>
+      </property>
+      <property>
+        <name>dfs.secondary.http.address</name>
+        <value>{{ hadoop.secondary_name_node }}:50090</value>
+        <description>SecondaryNameNodeHostname</description>
+      </property>
+</configuration>

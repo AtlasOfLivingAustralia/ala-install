@@ -1,29 +1,11 @@
-- include: ../../common/tasks/setfacts.yml
+---
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - properties
     - collectory
     - webapps
     - deploy
     - config
-
-- name: ensure mysql is running (this is idempotent so safe)
-  service: name={{ mysql_service }} state=started enabled="yes"
-  tags:
-    - db
-    - collectory
-
-- name: create collectory DB
-  mysql_db: name=collectory state=present encoding=utf8
-  register: dbschema
-  tags:
-    - db
-    - collectory
-
-- name: create collectory DB user
-  mysql_user: name={{collectory_db_user}} password={{collectory_db_password}} priv=collectory.*:ALL state=present
-  tags:
-    - db
-    - collectory
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
@@ -51,6 +33,15 @@
   tags:
     - config
     - properties
+    - properties-file
+    - collectory
+
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{collectory_data_dir}}/config/logback.xml"
+  tags:
+    - properties
     - collectory
 
 - name: set data ownership [all data is owned by tomcat]
@@ -61,13 +52,21 @@
     - properties
     - collectory
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ collectory_context_path }}' hostname='{{ collectory_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ collectory_context_path }}'
+    hostname: '{{ collectory_hostname }}'
   tags:
     - deploy
     - apache_vhost
     - collectory
     - webapps
   when: not webserver_nginx
+
+- include_tasks: ../../docker-common/tasks/common.yml
+  tags:
+    - docker
+  when: deployment_type == 'swarm'
 
 - name: add nginx vhost if configured
   include_role:
@@ -76,15 +75,17 @@
     appname: "collectory"
     hostname: "{{ collectory_hostname }}"
     context_path: "{{ collectory_context_path }}"
+    nginx_upstream_host: "{{ collectory_docker_host | default('127.0.0.1') }}"
   tags:
     - nginx_vhost
     - deploy
     - collectory
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ collectory_war_url }}' context_path='{{ collectory_context_path }}' hostname='{{ collectory_hostname }}'
-  tags:
-    - deploy
-    - tomcat_vhost
-    - collectory
-    - webapps
+- name: Include docker tasks
+  include_tasks: docker-tasks.yml
+  when: deployment_type == 'swarm'
+
+- name: Include VM tasks
+  import_tasks: vm-tasks.yml
+  when: deployment_type == 'vm'

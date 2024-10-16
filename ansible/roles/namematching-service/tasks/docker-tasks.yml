@@ -1,0 +1,23 @@
+---
+- name: ensure target db directories exist
+  file: path={{item}} state=directory
+  with_items:
+    - "{{ ala_namematching_service_docker_dir }}"
+  run_once: true
+  tags:
+    - docker
+    - docker-service
+
+- name: Download configured nameindex
+  import_tasks: ./download-nameindex.yml
+  vars:
+    dest: "/data/lucene/namematching-nm.tgz"
+    final_dest: "/data/lucene/namematching-nm/"
+    url: "{{ ala_namemaching_service_source | default('https://archives.ala.org.au/archives/nameindexes/20210811/namematching-20210811.tgz') }}"
+    sha1: "{{ ala_namemaching_service_source_sha1 | default('563814a7b5d886b746e10eb40c44f0d9bda62371') }}"
+
+- name: Deploy namematching service stack
+  import_tasks: ../../docker-common/tasks/stack-create.yml
+  vars:
+    stack: la_namematching_service
+    docker_compose_data_dir: "{{ ala_namematching_service_docker_dir }}"

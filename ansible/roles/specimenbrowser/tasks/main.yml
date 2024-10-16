@@ -1,6 +1,7 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - specimenbrowser
+    - properties
 
 #
 # External configuration properties file
@@ -25,6 +26,12 @@
     - properties
     - specimenbrowser
 
+- name: copy logback config
+  template: src=logback.xml dest={{data_dir}}/specimenbrowser/config/logback.xml force=yes
+  tags:
+    - properties
+    - specimenbrowser
+
 - name: set data ownership
   file: path={{data_dir}}/specimenbrowser owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify:
@@ -36,7 +43,10 @@
 #
 # WAR file deployment and virtual host configuration
 #
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ specimenbrowser_context_path }}' hostname='{{ specimenbrowser_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ specimenbrowser_context_path }}'
+    hostname: '{{ specimenbrowser_hostname }}'
   tags:
     - deploy
     - apache_vhost
@@ -56,7 +66,11 @@
     - specimenbrowser
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ specimenbrowser_war_url }}' context_path='{{specimenbrowser_context_path}}' hostname='{{ specimenbrowser_hostname }}'
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_url: '{{ specimenbrowser_war_url }}'
+    context_path: '{{specimenbrowser_context_path}}'
+    hostname: '{{ specimenbrowser_hostname }}'
   tags:
     - deploy
     - tomcat_vhost

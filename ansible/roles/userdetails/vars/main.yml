@@ -1,9 +1,15 @@
 # assets
 version: "{{ user_details_version | default('LATEST') }}"
-artifactId: "userdetails"
+artifactId: "{{ (user_details_version is version('4', '>=')) | ternary('userdetails-' + userdetails_backend, 'userdetails') }}"
 classifier: 'exec'
-packaging: "jar"
+packaging: "{{ (user_details_version is version('3', '>=')) | ternary('war', 'jar') }}"
 groupId: "au.org.ala"
 userdetails_jar_url: "{{maven_repo_ws_url}}"
 
 tomcat_java_opts_override: "{{ tomcat_java_opts_override_value | default('-Xmx4g -Xms2g -Xss256k -XX:+UseG1GC') }} {{java_security_opts}}"
+
+userdetails_data_dir: "{{ data_dir }}/userdetails"
+
+userdetails_docker_db_mysql_data_dir: "{{ docker_db_data_dir }}/userdetails-mysql-data"
+
+userdetails_docker_db_mongo_data_dir: "{{ docker_db_data_dir }}/userdetails-mongo-data"

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+
+    <variable name="loggingDir" value="${catalina.base:-./logs}" />
+    <variable name="appName" value="digivol" />
+
+    <appender name="TOMCAT_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator> <!-- defaults to type ch.qos.logback.classic.boolex.JaninoEventEvaluator -->
+                <expression>return logger.equals("org.grails.plugins.rx.web.RxResultSubscriber") &amp;&amp; message.contains("Async Dispatch Error: Broken pipe");</expression>
+            </evaluator>
+            <OnMismatch>NEUTRAL</OnMismatch>
+            <OnMatch>DENY</OnMatch>
+        </filter>
+
+        <file>${loggingDir}/${appName}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${loggingDir}/${appName}.%i.log.gz</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>4</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} : %m%n%wex</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ACCESS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${loggingDir}/${appName}-session-access.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${loggingDir}/${appName}-session-access.%i.log.gz</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>4</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} : %m%n%wex</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="DEBUG_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${loggingDir}/${appName}-debug.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${loggingDir}/${appName}-debug.%i.log.gz</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>4</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} : %m%n%wex</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="QUERY_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${loggingDir}/${appName}-slow-queries.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${loggingDir}/${appName}-slow-queries.%i.log.gz</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>4</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} : %m%n%wex</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="REPORT_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${loggingDir}/${appName}-reports.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${loggingDir}/${appName}-reports.%i.log.gz</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>4</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} : %m%n%wex</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- Ancilliary logs -->
+
+    <!-- Web Access Logs -->
+    <logger name="au.org.ala.volunteer.BVPServletFilter" level="INFO" additivity="false">
+        <appender-ref ref="ACCESS"/>
+    </logger>
+
+    <!-- Debug Logs -->
+    <logger name="au.org.ala.volunteer.TaskLoadService" level="DEBUG" additivity="false">
+        <appender-ref ref="DEBUG_LOG"/>
+    </logger>
+    <logger name="au.org.ala.volunteer.TaskIngestJob" level="INFO" additivity="false">
+        <appender-ref ref="DEBUG_LOG"/>
+    </logger>
+
+    <!-- Report logging -->
+    <logger name="au.org.ala.volunteer.ReportRequestService" level="INFO" additivity="false">
+        <appender-ref ref="REPORT_LOG"/>
+    </logger>
+        <logger name="au.org.ala.volunteer.DeleteOldReportsJob" level="INFO" additivity="false">
+        <appender-ref ref="REPORT_LOG"/>
+    </logger>
+        <logger name="au.org.ala.volunteer.ProcessReportRequestJob" level="INFO" additivity="false">
+        <appender-ref ref="REPORT_LOG"/>
+    </logger>
+        <logger name="au.org.ala.volunteer.ReportController" level="INFO" additivity="false">
+        <appender-ref ref="REPORT_LOG"/>
+    </logger>
+
+    <!-- Slow queries -->
+    <logger name="org.apache.tomcat.jdbc.pool.interceptor.SlowQueryReport" level="INFO" additivity="false">
+        <appender-ref ref="QUERY_LOG"/>
+    </logger>
+
+    <logger name="org.hibernate.orm.deprecation" level="ERROR" />
+    <logger name="au.org.ala.cas.client" level="WARN" />
+    <logger name="au.org.ala.cas.util" level="WARN" />
+    <logger name="org.apache.coyote.http11.Http11Processor" level="WARN" />
+    <logger name="asset.pipeline" level="INFO" />
+    <logger name="grails.app" level="INFO" />
+    <logger name="grails.plugins.mail" level="INFO" />
+    <logger name="grails.plugins.quartz" level="INFO" />
+    <logger name="org.hibernate" level="INFO" />
+    <logger name="org.hibernate.SQL" level="INFO" />
+    <logger name="org.quartz" level="INFO" />
+    <logger name="org.springframework" level="INFO" />
+    <logger name="org.flywaydb" level="TRACE" />
+    <logger name="au.org.ala.volunteer.DomainUpdateService" level="INFO" />
+    <logger name="au.org.ala" level="INFO" />
+    <logger name="au.org.ala.volunteer" level="INFO" />
+
+    <root level="INFO">
+        <appender-ref ref="TOMCAT_LOG" />
+    </root>
+</configuration>

@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
 
 - name: install mysql (RedHat)
   yum:
@@ -20,6 +20,7 @@
     - "{{ mysql }}"
     - python-mysqldb
     state: present
+  register: mysql_installed
   tags:
     - packages
     - mysql
@@ -36,24 +37,6 @@
     - packages
     - mysql
   when: ansible_os_family == "Debian" and ansible_python.version.major==3
-
-- name: set mysql variable - sql-mode for mysql-5.7
-  mysql_variables:
-    variable: sql_mode
-    value: "{{ mysql_variable_sql_mode | default('STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION')}}"
-    login_user: "root"
-    login_password: "{{ mysql_root_password | default('password') }}"
-  tags:
-    - mysql
-  when: set_sql_mode is defined and mysql == "mysql-server-5.7"
-
-- name: set mysql variable - sql-mode form mysql-8.0
-  mysql_variables:
-    variable: sql_mode
-    value: "{{ mysql_variable_sql_mode | default('STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION')}}"
-  tags:
-    - mysql
-  when: set_sql_mode is defined and mysql == "mysql-server-8.0"
 
 - name: warn about using the default root user password
   debug: msg="You are installing MySQL with a default root password of 'password'. Are you sure you want to do that? Specify a real password in your inventory file using the variable mysql_root_password."
@@ -95,3 +78,23 @@
   tags:
     - mysql
   when: mysql_installed.changed
+
+- name: set mysql variable - sql-mode for mysql-5.7
+  mysql_variables:
+    variable: sql_mode
+    value: "{{ mysql_variable_sql_mode | default('STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION')}}"
+    login_user: "root"
+    login_password: "{{ mysql_root_password | default('password') }}"
+  tags:
+    - mysql
+  when: set_sql_mode is defined and mysql == "mysql-server-5.7"
+
+- name: set mysql variable - sql-mode form mysql-8.0
+  mysql_variables:
+    variable: sql_mode
+    value: "{{ mysql_variable_sql_mode | default('STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION')}}"
+    login_user: "{{ mysql_root_username | default('root') }}"
+    login_password: "{{ mysql_root_password | default('password') }}"
+  tags:
+    - mysql
+  when: set_sql_mode is defined and mysql == "mysql-server-8.0"

@@ -1,10 +1,11 @@
 - name: install augeas (RedHat)
-  yum: pkg={{item}} state=present
-  with_items:
+  yum:
+    pkg:
     - augeas-libs
     - augeas
     - python-augeas
     - libxml2-python
+    state: present
   when: ansible_os_family == "RedHat"
   tags:
     - packages
@@ -18,22 +19,23 @@
     - augeas
 
 - name: install augeas (Ubuntu 14.04)
-  apt: pkg={{item}} state=latest
-  with_items:
+  apt:
+    pkg:
     - libaugeas0
     - augeas-lenses
     - augeas-tools
     - python-augeas
     - python-libxml2
     - libpython2.7
+    state: latest
   when: ansible_os_family == "Debian" and (ansible_distribution_version == "14.04")
   tags:
     - packages
     - augeas
 
 - name: install augeas (Ubuntu 16.04)
-  apt: pkg={{item}} state=latest
-  with_items:
+  apt:
+    pkg:
     - libaugeas0
     - augeas-lenses
     - augeas-tools
@@ -42,14 +44,15 @@
     - libpython2.7
     - python3-augeas
     - libpython3.5
+    state: latest
   when: ansible_os_family == "Debian" and (ansible_distribution_version == "16.04")
   tags:
     - packages
     - augeas
 
 - name: install augeas (Ubuntu 18.04)
-  apt: pkg={{item}} state=latest
-  with_items:
+  apt:
+    pkg:
     - libaugeas0
     - augeas-lenses
     - augeas-tools
@@ -59,21 +62,54 @@
     - python3-augeas
     - python3-libxml2
     - libpython3.8
+    state: latest
   when: ansible_os_family == "Debian" and (ansible_distribution_version == "18.04")
   tags:
     - packages
     - augeas
 
 - name: install augeas (Ubuntu 20.04)
-  apt: pkg={{item}} state=latest
-  with_items:
+  apt:
+    pkg:
     - libaugeas0
     - augeas-lenses
     - augeas-tools
     - python3-augeas
     - python3-libxml2
     - libpython3.8
+    state: latest
   when: ansible_os_family == "Debian" and ansible_distribution_version == "20.04"
+  tags:
+    - packages
+    - augeas
+    
+
+- name: install augeas (Ubuntu 22.04)
+  apt: 
+    pkg: 
+    - libaugeas0
+    - augeas-lenses
+    - augeas-tools
+    - python3-augeas
+    - python3-libxml2
+    - libpython3.10
+    state: latest
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "22.04"
+  tags:
+    - packages
+    - augeas
+
+- name: install augeas (Ubuntu 24.04)
+  apt: 
+    pkg: 
+    - libaugeas0
+    - augeas-lenses
+    - augeas-tools
+    - python3-augeas
+    - python3-libxml2
+    - libpython3.12
+    state: latest
+  when: ansible_os_family == "Debian" and ansible_distribution_version == "24.04"
   tags:
     - packages
     - augeas

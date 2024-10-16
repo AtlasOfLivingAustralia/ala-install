@@ -2,3 +2,5 @@
   service:
     name: mongod
     state: restarted
+  when:
+  - skip_handlers | default("false") | bool == false

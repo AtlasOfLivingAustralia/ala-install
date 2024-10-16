@@ -1,0 +1,74 @@
+---
+version: '3.8'
+
+services:
+
+  war:
+    image: atlasoflivingaustralia/ala-sensitive-data-service:{{ ala_sensitive_data_service_version }}
+    environment:
+      TZ: {{ server_tz }}
+    expose:
+      - {{sensitive_data_service_port}}
+      - {{sensitive_data_admin_port}}
+    networks:
+      la_internal:
+    volumes:
+      - data:{{ data_dir }}/ala-sensitive-data-service
+      - sds:{{ data_dir }}/sds
+      - biocache:{{ data_dir }}/biocache
+      - lucene:{{ data_dir }}/lucene/namematching-{{ nameindex_datestamp }}
+      - i18n:/opt/atlas/i18n
+      - i18n_custom:/var/opt/atlas/i18n
+{% if debug_docker_entrypoint is defined and debug_docker_entrypoint | bool %}
+    entrypoint: ["tail", "-f", "/dev/null"]
+    restart: "no"
+{% endif %}
+
+networks:
+  la_internal:
+    external: true
+
+volumes:
+
+  data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/ala-sensitive-data-service
+
+  lucene:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/lucene/namematching-nm/
+
+  sds:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/sds
+
+  biocache:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/biocache
+
+  i18n:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/atlas/i18n
+
+  i18n_custom:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/opt/atlas/i18n
+

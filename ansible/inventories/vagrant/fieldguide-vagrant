@@ -6,12 +6,14 @@ is_vagrant=true
 local_repo_dir=~/.ala
 data_dir=/data
 
+use_openjdk8=False
+use_openjdk11=True
+
 fieldguide_hostname=fieldguide.vagrant1.ala.org.au
 fieldguide_url=http://fieldguide.vagrant1.ala.org.au
 fieldguide_base_url=http://fieldguide.vagrant1.ala.org.au
 fieldguide_context_path=
 
-wkhtmltopdf_path=/usr/local/bin/wkhtmltopdf
 fieldguide_url={{fieldguide_base_url}}
 fieldguide_store=/data/fieldguide/store
 biocache_service_ws_url=http://biocache.vagrant1.ala.org.au/ws
@@ -19,3 +21,6 @@ bie_service_ws_url=http://bie.vagrant1.ala.org.au/ws
 
 auth_base_url=https://auth.ala.org.au
 auth_cas_url=https://auth.ala.org.au/cas
+
+oidc_client_id=change me
+oidc_secret=change me

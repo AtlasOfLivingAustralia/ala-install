@@ -1,12 +1,16 @@
 
 - name: restart apache
   service: name=apache2 state=restarted enabled="yes"
+  when: not webserver_nginx
 
 - name: reload apache
   service: name=apache2 state=reloaded enabled="yes"
+  when: not webserver_nginx
 
 - name: reload nginx
   service: name=nginx state=reloaded enabled="yes"
+  when: webserver_nginx
 
 - name: restart nginx
   service: name=nginx state=restarted enabled="yes"
+  when: webserver_nginx

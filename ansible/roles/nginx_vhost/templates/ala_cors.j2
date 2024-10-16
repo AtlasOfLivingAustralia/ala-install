@@ -11,6 +11,10 @@ if ($http_origin ~* '{{ nginx_cors_origin_regexp }}') {
   set $cors 'C';
 }
 
+if ($http_origin = '') {
+  set $http_origin "*";
+}
+
 # As multiple ifs are not allowed we follow this option
 # http://rosslawley.co.uk/archive/old/2010/01/04/nginx-how-to-multiple-if-statements/
 
@@ -29,7 +33,6 @@ if ($request_method = OPTIONS) {
 # This is modified version of: https://enable-cors.org/server_nginx.html restricting to previous regexp
 
 if ($cors = COPTIONS) {
-  add_header 'Access-Control-Allow-Origin' '*';
   add_header 'Access-Control-Allow-Methods' '{{ nginx_cors_methods }}';
   #
   # Custom headers and headers various browsers *should* be OK with but aren't
@@ -41,17 +44,30 @@ if ($cors = COPTIONS) {
   add_header 'Access-Control-Max-Age' 1728000;
   add_header 'Content-Type' 'text/plain; charset=utf-8';
   add_header 'Content-Length' 0;
+  add_header 'Access-Control-Allow-Origin' $http_origin;
+  add_header 'Vary' "Origin"; 
+  {% if nginx_cors_allow_credentials == True %}
+    add_header 'Access-Control-Allow-Credentials' 'true';
+  {% endif %}
   return 204;
 }
 if ($cors = CPOST) {
-  add_header 'Access-Control-Allow-Origin' '*';
   add_header 'Access-Control-Allow-Methods' '{{ nginx_cors_methods }}';
   add_header 'Access-Control-Allow-Headers' '{{ nginx_cors_headers }}';
   add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+  add_header 'Access-Control-Allow-Origin' $http_origin;
+  add_header 'Vary' "Origin"; 
+  {% if nginx_cors_allow_credentials == True %}
+    add_header 'Access-Control-Allow-Credentials' 'true';
+  {% endif %}
 }
 if ($cors = CGET) {
-  add_header 'Access-Control-Allow-Origin' '*' always;
   add_header 'Access-Control-Allow-Methods' '{{ nginx_cors_methods }}';
   add_header 'Access-Control-Allow-Headers' '{{ nginx_cors_headers }}';
   add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+  add_header 'Access-Control-Allow-Origin' $http_origin;
+  add_header 'Vary' "Origin"; 
+  {% if nginx_cors_allow_credentials == True %}
+    add_header 'Access-Control-Allow-Credentials' 'true';
+  {% endif %}
 }

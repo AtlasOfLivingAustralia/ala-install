@@ -1,0 +1,27 @@
+- hosts: hadoop, spark, pipelines, jenkins, pipelines_jenkins
+  vars:
+    use_openjdk11: false
+    use_openjdk8: true
+  roles:
+    - java
+    - la-apt
+
+- hosts: hadoop
+  roles:
+    - hadoop
+
+- hosts: spark
+  roles:
+    - spark
+
+- hosts: jenkins
+  roles:
+    - jenkins-simple
+
+- hosts: pipelines
+  roles:
+    - pipelines
+
+- hosts: pipelines_jenkins
+  roles:
+    - pipelines_jenkins

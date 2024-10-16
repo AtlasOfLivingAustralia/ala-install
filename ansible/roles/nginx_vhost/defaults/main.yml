@@ -16,7 +16,7 @@ nginx_tls_v1_1_enabled: false
 # IMPORTANT: Only activate TLS-1.0 if you know that a critical user doesn't support newer safe TLS versions
 nginx_tls_v1_0_enabled: false
 # Default to a modern set of TLS ciphers
-nginx_tls_ciphers: "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256"
+nginx_tls_ciphers: "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256"
 force_https: true
 # Add strings to this list containing the vhost fragment directory names to clear
 nginx_vhost_fragments_to_clear: []
@@ -113,6 +113,5 @@ nginx_disable_download_disk_buffering: False
 # nginx_cors_origin_regexp: '^https?:\/\/(localhost|l-a\.site|.*\.l-a\.site)'
 nginx_cors_headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
 nginx_cors_methods: "GET, POST, OPTIONS"
-
-# Include path fragments in the ala_default.conf vhost - True for backwards compatibility
-ala_default_vhost_include_paths: True
+# by default, Access-Control-Allow-Credentials header is not included; to include it, set this to True
+nginx_cors_allow_credentials: False

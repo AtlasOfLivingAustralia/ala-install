@@ -1,0 +1,107 @@
+---
+- include_tasks: ../../common/tasks/setfacts.yml
+  tags:
+    - sensitive-data-service
+    - deploy
+    - properties
+    - nginx_vhost
+
+- name: "Create ala-sensitive-data-service directories"
+  file:
+    path: "{{item}}"
+    state: directory
+    owner: "{{ sensitive_data_user }}"
+    group: "{{ sensitive_data_user }}"
+    mode: 0755
+  when: deployment_type == 'swarm'
+  with_items:
+    - "/data/ala-sensitive-data-service/config"
+  tags:
+    - properties
+    - sensitive-data-service
+
+- name: set nginx upstream server for nginx
+  set_fact:
+    upstream_host: "{{ sensitive_data_service_upstream_host | default('127.0.0.1') }}"
+  tags:
+    - deploy
+    - nginx_vhost
+
+# Recent versions use the namemaching index so we have to configure too
+- include_vars: ../namematching-service/defaults/main.yml
+  tags:
+    - sensitive-data-service
+    - deploy
+    - apt
+
+# Allow the use of a specified namematching-service version for the sds
+- set_fact:
+    ala_namematching_service_version: "{{ sds_ala_namematching_service_version }}"
+  when:
+    - sds_ala_namematching_service_version is defined
+
+- name: Include VM tasks
+  import_tasks: vm-tasks.yml
+  when: deployment_type == 'vm'
+
+- name: ensure sds directories exist
+  file: path={{item}} state=directory
+  with_items:
+    - "{{ data_dir }}/sds/config"
+  run_once: true
+  tags:
+    - sds
+    - properties
+    - sensitive-data-service
+
+- name: create config.properties from template
+  template: src="sds-config.properties" dest={{data_dir}}/sds/config/sds-config.properties
+  tags:
+    - sds
+    - properties
+    - sensitive-data-service
+
+- name: Customize the configuration
+  template:
+    src: sensitive-data-service-config.yml
+    dest: "{{data_dir}}/ala-sensitive-data-service/config/config.yml"
+    owner: "{{ sensitive_data_user }}"
+    group: "{{ sensitive_data_user }}"
+  notify:
+    - restart ala-sensitive-data-service
+  tags:
+    - properties
+    - properties-file
+    - sensitive-data-service
+
+- name: add nginx vhost
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "sensitive-data-service"
+    hostname: "{{ sensitive_data_service_hostname }}"
+    context_path: "{{ sensitive_data_service_context_path }}"
+    nginx_paths:
+      - path: "sensitive-species-data.xml"
+        is_proxy: false
+        alias: "{{ data_dir }}/sds/sensitive-species-data.xml"
+      - path: "sensitivity-zones.xml"
+        is_proxy: false
+        alias: "{{ data_dir }}/sds/sensitivity-zones.xml"
+      - path: "sensitivity-categories.xml"
+        is_proxy: false
+        alias: "{{ data_dir }}/sds/sensitivity-categories.xml"
+      - path: "{{ sensitive_data_service_context_path }}"
+        is_proxy: true
+        proxy_pass: "http://{{upstream_host}}:{{ sensitive_data_service_port }}/{{ sensitive_data_service_context_path }}"
+  # notify:
+  #   - reload nginx
+  tags:
+    - nginx_vhost
+    - sensitive-data-service
+    - deploy
+  when: webserver_nginx
+
+- name: Include docker tasks
+  include_tasks: docker-tasks.yml
+  when: deployment_type == 'swarm'

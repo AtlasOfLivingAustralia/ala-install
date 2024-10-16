@@ -1,0 +1,13 @@
+---
+
+# The port that sensitive_data-service will run on
+sensitive_data_service_port: 9189
+sensitive_data_admin_port: 9190
+sensitive_data_user: sds-data
+sensitive_data_service_context_path:
+sds_url: "https://sds.ala.org.au"
+layers_url: "https://archives.ala.org.au/archives/layers/sds-layers.tgz"
+layers_service_url: "https://spatial.ala.org.au/layers-service"
+# * = latest
+ala_sensitive_data_service_version: "*"
+ala_sensitive_data_service_docker_dir: "{{ data_dir }}/ala-sensitive-data-service/docker"

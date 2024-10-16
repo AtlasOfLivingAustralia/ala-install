@@ -6,16 +6,23 @@
     - "../vars/{{ ansible_os_family }}.yml"
   tags: postgresql
 
-- include: apt.yaml
+- include_tasks: apt.yaml
 
 - set_fact:
-    postgresql_packages: [ "libpq-dev", "{{ psycopg2_package }}", "postgresql-{{pg_version}}", "postgresql-contrib-{{pg_version}}" ]
+    postgresql_packages: [ "{{ psycopg2_package }}", "postgresql-{{pg_version}}", "postgresql-contrib-{{pg_version}}", "libpq-dev" ]
 
 - name: Set postgis package names
   set_fact:
-    postgresql_packages: "{{postgresql_packages}} + [ 'postgresql-{{pg_version}}-postgis-{{postgis_version}}', 'postgresql-{{pg_version}}-postgis-{{postgis_version}}-scripts', 'gdal-bin' ]"
-  when: postgis_version
+    postgresql_packages: "{{ postgresql_packages + [ 'postgresql-{{pg_version}}-postgis-{{postgis_version}}', 'postgresql-{{pg_version}}-postgis-{{postgis_version}}-scripts', 'gdal-bin' ] }}"
+  when: postgis_version is defined and install_postgis | bool == True
   tags: postgresql
+
+#- name: Install PostgreSQL {{pg_version}} packages with PostGIS {{postgis_version}}
+#  apt:
+#    name: "{{ item }}"
+#    state: present
+#  loop: "{{ postgresql_packages }}"
+
 
 - name: Install Postgres
   apt:
@@ -42,11 +49,11 @@
     - restart postgresql
 
 - name: Set database directory
-  ini_file:
-    dest: "/etc/postgresql/{{pg_version}}/main/postgresql.conf"
-    section:
-    option: "data_directory"
-    value: "'{{ postgresql_data_directory }}'"
+  lineinfile:
+    path: "/etc/postgresql/{{ pg_version }}/main/postgresql.conf"
+    regexp: '^data_directory ='
+    line: "data_directory = '{{ postgresql_data_directory }}'"
+    backrefs: yes
   tags: postgresql
   notify:
     - restart postgresql
@@ -55,7 +62,7 @@
 # Not pulling in recommended packages as that would pull in postgres-10
 - name: Install separate postgis package to get shp2pgsql binary
   apt: pkg="postgis" state="present" update_cache="yes" install_recommends="no"
-  when: postgis_version is defined
+  when: postgis_version is defined and install_postgis | bool == True
   tags:
     - postgresql
   register: postgresql_installed
@@ -65,7 +72,7 @@
 # PostGIS 2.2+ only needs CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology; etc on the target DB
 - debug:
     msg: "PostGIS-enabled databases also need a corresponding pg_instance role with postgis in the extensions list"
-  when: postgis_version is defined
+  when: postgis_version is defined and install_postgis | bool == True
 
 - name: start postgresql and configure to startup automatically
   service:

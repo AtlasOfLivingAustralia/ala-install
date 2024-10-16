@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: Matt Margolin
+  description: An Ansible role that installs and configures spark
+  company: 
+  license: BSD2
+  min_ansible_version: 2.0
+  role_name: spark
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+  - name: Debian
+    versions:
+    - all
+  galaxy_tags:
+    - system
+    - cloud

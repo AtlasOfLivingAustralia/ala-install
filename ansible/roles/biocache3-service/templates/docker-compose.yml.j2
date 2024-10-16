@@ -1,0 +1,77 @@
+---
+version: '3.8'
+
+services:
+
+  war:
+    image: atlasoflivingaustralia/biocache-service:{{ biocache_service_version }}
+    environment:
+      TZ: {{ server_tz }}
+    expose:
+      - 8080
+    networks:
+      la_internal:
+    volumes:
+      - conf:{{ data_dir }}/biocache
+      - download:{{data_dir}}/biocache-download
+      - cache:{{data_dir}}/cache
+      - offline:{{data_dir}}/offline
+      - output:{{data_dir}}/output
+      - i18n:/opt/atlas/i18n
+      - i18n_custom:/var/opt/atlas/i18n
+
+networks:
+  la_internal:
+    external: true
+
+volumes:
+
+  conf:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/biocache
+
+  download:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/biocache-download
+
+  cache:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/cache
+
+  offline:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/offline
+
+  output:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: {{ data_dir }}/output
+
+  i18n:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/atlas/i18n
+
+  i18n_custom:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/opt/atlas/i18n
+

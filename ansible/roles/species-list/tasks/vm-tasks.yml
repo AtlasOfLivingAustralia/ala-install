@@ -1,0 +1,51 @@
+---
+- name: create DB
+  mysql_db: name={{specieslist_db_name}} state=present encoding=utf8
+  tags:
+    - specieslist
+    - db
+
+- name: create DB user
+  mysql_user: name={{specieslist_db_username}} password={{ specieslist_db_password}} priv=*.*:ALL state=present
+  tags:
+    - specieslist
+    - db
+
+- name: copy SQL fix script for mysql >= 5.7
+  copy: src=ONLY_FULL_GROUP_BY.sql dest=/tmp/
+  tags:
+    - specieslist
+    - db
+    - dbfix
+
+- name: Run SQL fix for mysql 5.7
+  mysql_db:
+    state: import
+    name: all
+    target: /tmp/ONLY_FULL_GROUP_BY.sql
+  tags:
+    - specieslist
+    - db
+    - dbfix
+
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_url: '{{ specieslist_war_url }}'
+    context_path: '{{ specieslist_context_path }}'
+    hostname: '{{ specieslist_hostname }}'
+  when: specieslist_local_build is not defined
+  tags:
+    - specieslist
+    - tomcat_vhost
+    - deploy
+
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_local_build: '{{ specieslist_local_build }}'
+    context_path: '{{ specieslist_context_path }}'
+    hostname: '{{ specieslist_hostname }}'
+  when: specieslist_local_build is defined
+  tags:
+    - specieslist
+    - tomcat_vhost
+    - deploy

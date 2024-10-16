@@ -1,6 +1,9 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ spatial_service_context_path }}' hostname='{{ spatial_service_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ spatial_service_context_path }}'
+    hostname: '{{ spatial_service_hostname }}'
   tags:
     - deploy
     - apache_vhost
@@ -14,6 +17,7 @@
     appname: "spatial-service"
     hostname: "{{ spatial_service_hostname }}"
     context_path: "{{ spatial_service_context_path }}"
+    allow_x_frame: "SAMEORIGIN"
   tags:
     - nginx_vhost
     - deploy
@@ -49,7 +53,11 @@
     - spatial-service
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ spatial_service_war_url }}' context_path='{{ spatial_service_context_path }}' hostname='{{ spatial_service_hostname }}'
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_url: '{{ spatial_service_war_url }}'
+    context_path: '{{ spatial_service_context_path }}'
+    hostname: '{{ spatial_service_hostname }}'
   tags:
     - deploy
     - tomcat_vhost
@@ -77,14 +85,7 @@
     - spatial-service
     - spatial-service-config
     - properties
-
-- name: copy all log4j.properties
-  template: src=log4j.properties dest={{data_dir}}/spatial-service/config/log4j.properties
-  tags:
-    - config
-    - spatial-service
-    - spatial-service-config
-    - properties
+    - properties-file
 
 - name: set data ownership
   file: path={{data_dir}}/ala/data/ owner={{tomcat_user}} group={{tomcat_user}} recurse=true
@@ -95,3 +96,75 @@
     - spatial-service
     - spatial-service-config
     - properties
+
+- name: Create directory for aloc.jar
+  file: path={{data_dir}}/spatial-data/modelling/aloc owner={{tomcat_user}} group={{tomcat_user}} recurse=true state=directory mode='0755'
+  tags:
+    - spatial-service
+    - spatial-deps
+
+- name: "Download aloc.jar"
+  maven_artifact:
+    group_id: au.org.ala.spatial
+    artifact_id: ala-aloc
+    version: "{{ ala_aloc_version | default(1.0) }}"
+    extension: jar
+    classifier: "distribution"
+    repository_url: "{{maven_repo_url}}"
+    timeout: 30
+    dest: "{{data_dir}}/spatial-data/modelling/aloc/aloc.jar"
+    mode: u=rwx,g=rx,o=rx
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+    verify_checksum: always
+  tags:
+    - spatial-service
+    - spatial-deps
+
+- name: Download maxent.zip
+  get_url:
+    url: 'https://biodiversityinformatics.amnh.org/open_source/maxent/maxent.php?op=download'
+    dest: /tmp/maxent.zip
+  tags:
+    - spatial-service
+    - spatial-deps
+
+- name: Create directory for maxent
+  file: path={{data_dir}}/spatial-data/modelling/maxent owner={{tomcat_user}} group={{tomcat_user}} recurse=true state=directory mode='0755'
+  tags:
+    - spatial-service
+    - spatial-deps
+
+- name: Extract maxent.zip
+  unarchive:
+    src: /tmp/maxent.zip
+    dest: /tmp/
+    remote_src: true
+  tags:
+    - spatial-service
+    - spatial-deps
+
+- name: Copy maxent.jar to the destination directory
+  copy:
+    src: /tmp/maxent/maxent.jar
+    dest: "{{data_dir}}/spatial-data/modelling/maxent/maxent.jar"
+    remote_src: true
+  tags:
+    - spatial-service
+    - spatial-deps
+
+- name: Remove temporary maxent.zip file
+  file:
+    path: /tmp/maxent.zip
+    state: absent
+  tags:
+    - spatial-service
+    - spatial-deps
+
+- name: Remove extracted maxent directory
+  file:
+    path: /tmp/maxent
+    state: absent
+  tags:
+    - spatial-service
+    - spatial-deps

@@ -1,10 +1,18 @@
 - hosts: species-list
+  pre_tasks:
+    - set_fact:
+        datadog_db_password : "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
+  vars:
+    set_sql_mode: true
   roles:
     - common
     - java
     - tomcat
     - webserver
     - mysql
-    - nameindex
+    - { role: nameindex, when: "species_list_version is version('4', '<')" }
     - i18n
     - species-list
+    - { role: datadog_sql_user, when: datadog_api_key is defined,  become: yes }
+    - { role: datadog.datadog, when: datadog_api_key is defined }
+    - { role: datadog_apm, when: datadog_api_key is defined, become: yes }

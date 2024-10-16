@@ -1,0 +1,2 @@
+---
+bie_index_docker_dir: "{{ data_dir }}/bie-index/docker"

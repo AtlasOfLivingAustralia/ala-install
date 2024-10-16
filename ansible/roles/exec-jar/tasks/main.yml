@@ -1,6 +1,9 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - service
+
+- import_role:
+    name: java
 
 - name: Update apt
   apt:
@@ -65,6 +68,29 @@
   tags:
   - service
 
+- name: "Download datadog JAR"
+  ansible.builtin.get_url:
+    url: https://github.com/DataDog/dd-trace-java/releases/{{datadog_version | default('latest')}}/download/dd-java-agent.jar
+    force: true
+    dest: "/opt/atlas/{{service_name}}/dd-java-agent.jar"
+    mode: '0550'
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_group | default(service_name) }}"
+  notify: "restart {{service_name}}"
+  when: datadog_java_apm_enabled is defined and datadog_java_apm_enabled
+  tags:
+  - datadog
+  - service
+
+- name: "Check datadog agent JAR state"
+  ansible.builtin.file:
+    path: "/opt/atlas/{{service_name}}/dd-java-agent.jar"
+    state: absent
+  when: datadog_java_apm_enabled is not defined or not datadog_java_apm_enabled
+  tags:
+  - datadog
+  - service
+
 - name: "Download {{service_name}} JAR (unauthenticated)"
   maven_artifact:
     group_id: "{{groupId}}"
@@ -79,14 +105,6 @@
     owner: "{{ service_owner | default(service_name) }}"
     group: "{{ service_group | default(service_name) }}"
     verify_checksum: always
-  # get_url:
-  #   url: "{{jar_url}}"
-  #   timeout: "30"
-  #   dest: "/opt/atlas/{{service_name}}/{{service_name}}.jar"
-  #   mode: u=rwx,g=rx,o=rx
-  #   owner: "{{ service_owner | default(service_name) }}"
-  #   group: "{{ service_group | default(service_name) }}"
-  #   force: yes
   notify: "restart {{service_name}}"
   when: maven_repo_username is not defined
   tags:
@@ -122,6 +140,7 @@
   notify: "restart {{service_name}}"
   tags:
   - service
+  - service-conf
 
 # Don't force start the service, rely on the handlers to do it
 # - name: "Start {{service_name}} service"

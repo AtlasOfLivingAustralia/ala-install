@@ -5,9 +5,20 @@ grails:
 serverName: {{ bie_index_base_url }}
 # CAS Config
 security:
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+  core:
+    roleAttribute: {{ roleAttribute | default('') }}
+    authCookieName: {{ auth_cookie_name | default('ALA-Auth') }}
+    affiliation-survey:
+      enabled: {{affiliation_survey_enabled | default ('false')}}
+  cookie:
+    enabled: {{auth_cookie_enabled | default ('false')}}
+    domain: {{auth_cookie_domain | default('.ala.org.au')}}
+{% endif %}
   cas:
     casServerName:   {{ auth_base_url }}
-    uriFilterPattern:   {{ bie_index_uri_filter_pattern | default('/admin.*,/alaAdmin.*') }}
+    uriFilterPattern:   {{ bie_index_uri_filter_pattern | default('/admin*,/alaAdmin*') }}
     uriExclusionFilterPattern:   {{ bie_index_uri_exclusion_filter_pattern | default('/admin/indexFields') }}
     appServerName:   {{ bie_index_base_url }}
     casServerUrlPrefix:   {{ auth_cas_url }}
@@ -15,8 +26,42 @@ security:
     logoutUrl:   {{ auth_cas_url }}/logout
     contextPath:   {{ bie_index_context_path }}
     bypass:   {{ bypass_cas | default(true) }}
-  apikey:
-    serviceUrl: {{ auth_base_url }}/apikey/ws/check?apikey=
+    enabled: {{ security_cas_enabled | default(false) }}
+  oidc:
+    enabled: {{ security_oidc_enabled | default(true) }}
+    clientId: {{ (bie_index_client_id | default(clientId)) | default('') }}
+    secret: {{ (bie_index_client_secret | default(secret)) | default('') }}
+    discoveryUri: {{ discoveryUri | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+    scope: {{ scope | default('openid')}}
+    alaUseridClaim: {{ alaUseridClaim | default('') }}
+    logoutAction: {{ logoutAction | default('') }}
+{% endif %}
+  jwt:
+    discoveryUri: {{ discoveryUri | default('') }}
+    clientId: {{ (bie_index_client_id | default(clientId)) | default('') }}
+# cognito specific configs
+{% if auth_system is defined and auth_system == 'cognito' %}
+    rolesFromAccessToken: {{ rolesFromAccessToken | default('true') }}
+    userIdClaim: {{ userIdClaim | default('') }}
+    roleClaims: {{ roleClaims | default('') }}
+{% endif %}
+  apiKey:
+    enabled: {{ apikey_check_enabled | default('false') }}
+    auth:
+      serviceUrl: {{ apikey_auth_url }}
+    check:
+      serviceUrl: {{ apikey_check_url | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
+    userdetails:
+      serviceUrl: {{ apikey_userdetails_url }}
+webservice:
+  jwt: {{ webservice_jwt | default('false') }}
+  jwt-scopes: {{ bie_index_webservice_jwt_scopes | default(webservice_jwt_scopes) | default('') }}
+  client-id: {{ bie_index_client_id | default(webservice_clientId) | default('') }}
+  client-secret: {{ bie_index_client_secret | default(webservice_secert) | default('') }}
+userDetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
 biocache:
   base: {{ biocache_base_url | default('https://biocache.ala.org.au') }}
   service: {{ biocache_service_url | default('https://biocache-ws.ala.org.au/ws') }}
@@ -34,9 +79,9 @@ images:
   base: {{ image_base_url | default('https://images.ala.org.au') }}
   service:
     base: {{ image_base_url | default('https://images.ala.org.au') }}
-    thumbnail: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImageThumbnail?imageId={0}
-    large: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImage?imageId={0}
-    small: {{ image_service_url | default('https://images.ala.org.au') }}/image/proxyImageThumbnailLarge?imageId={0}
+    thumbnail: {{ image_service_url | default('https://images.ala.org.au') }}/image/{0}/thumbnail
+    large: {{ image_service_url | default('https://images.ala.org.au') }}/image/{0}/large
+    small: {{ image_service_url | default('https://images.ala.org.au') }}/image/{0}/original
     metadata: {{ image_service_url | default('https://images.ala.org.au') }}/ws/image/{0}
   index: {{ index_images | default('false') }}
 knowledgeBase:
@@ -55,8 +100,29 @@ wordPress:
   - button
   contentOnlyParams: ?content-only=1&categories=1
 lists:
+{% if lists_use_new_species_lists is defined and lists_use_new_species_lists | bool %}
+  useListWs: true
+  service: {{ specieslist_service_url | default('https://lists-ws.ala.org.au') }}
+  ui: {{ specieslist_url | default('https://lists.ala.org.au') }}
+  items: /speciesListItems/{0}?pageSize={1}&page={2}
+  search: /speciesList/?isAuthoritative=true&pageSize={0}&page={1}
+  conservation: /speciesList/?isAuthoritative=true&isThreatened=true&pageSize={0}&page={1}
+  show: /#/list/{0}
+{% else %}
+  useListWs: false
   service: {{ specieslist_service_url | default('https://lists.ala.org.au/ws') }}
-  items: /speciesListItems/{0}?includeKVP=true
+  ui: {{ specieslist_url | default('https://lists.ala.org.au') }}
+  conservation: /speciesList?isAuthoritative=eq:true&isThreatened=eq:true&max={0}&offset={1}
+  search: /speciesList/?isAuthoritative=eq:true&max={0}&offset={1}
+  show: /speciesListItem/list/{0}
+  add: /createItem
+  remove: /deleteItem
+{% endif %}
+biocollect:
+  service: {{ biocollect_url }}
+  search: /ws/project/search?initiator=ala&facets=status
+naming:
+  service: {{ namematching_service_url | default('https://namematching-ws.ala.org.au') }}
 attribution:
   default: {{ default_name_source | default('National Species Lists') }}
   common: {{ default_common_name_source | default('National Species Lists') }}
@@ -70,7 +136,18 @@ conservationListsUrl: file://{{ data_dir }}/bie-index/config/conservation-lists.
 vernacularListsUrl: file://{{ data_dir }}/bie-index/config/vernacular-lists.json
 #nationalSpeciesDatasets: dr2699,dr2700,dr2702,dr2704,dr2703,dr3118
 nationalSpeciesDatasets: ""
+hiddenImages:
+  # URL of hidden images configuration file
+  config: file://{{ data_dir }}/bie-index/config/hidden-images-lists.json
+wiki:
+  # URL of wiki configuration file
+  config: file://{{ data_dir }}/bie-index/config/wiki-lists.json
 solr:
+  admin:
+    connection: {{ index_admin_url | default('http://localhost:8983/solr') }}
+    type: HTTP
+    queueSize: 10
+    threadCount: 4
   live:
     connection: {{ index_live_url | default('http://localhost:8983/solr/bie') }}
     type: HTTP
@@ -101,11 +178,16 @@ skin:
   favicon: {{ skin_favicon | default('https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png') }}
   homeUrl: {{ skin_home_url | default('http://www.ala.org.au') }}
 headerAndFooter:
-  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3') }}
+  baseURL: {{ header_and_footer_baseurl | default('https://www.ala.org.au/commonui-bs3-2019') }}
 useLegacyAuto: false
 import:
-  sequence: {{ bie_index_import_sequence | default('collectory,taxonomy-all,vernacular,denormalise,layers,regions,localities,conservation-lists,wordpress,knowledgebase,favourites,weights,link-identifiers,images,occurrences,suggest-index') }}
+  sequence: {{ bie_index_import_sequence | default('collectory,taxonomy-all,vernacular,denormalise,layers,regions,localities,conservation-lists,wordpress,knowledgebase,biocollect,species-lists,favourites,weights,link-identifiers,images,occurrences,hidden-images,wiki-urls,suggest-index,sitemap,swap') }}
+  sequenceDaily: {{ bie_index_import_sequence_daily | default('conservation-lists,wordpress,knowledgebase,biocollect,species-lists,favourites,suggest-index,images,hidden-images,wiki-urls,sitemap,swap') }}
+  sequenceWeekly: {{ bie_index_import_sequence_weekly | default('occurrences,layers,regions,localities,suggest-index,swap') }}
+  dailyRunHour: {{ bie_index_import_daily_run_hour | default('2') }}
+  weeklyRunDay: {{ bie_index_import_weekly_run_day | default('6') }}
   favouritesConfigUrl: file://{{ data_dir }}/bie-index/config/favourites.json
+  enableTasks: {{ bie_import_enable_tasks | default('false') }}
   taxonomy:
     dir: {{ data_dir }}/bie/import
 ala:
@@ -113,3 +195,35 @@ ala:
 bie:
   baseURL: {{ bie_base_url | default('https://bie.ala.org.au') }}
   searchPath: {{ bie_search_path | default('/search') }}
+
+openapi:
+  terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
+  contact:
+    email: {{ support_email | default('support@ala.org.au') }}
+  components:
+    security:
+      oauth2:
+{% if openapi_oauth_url is defined %}
+        baseUrl: {{ openapi_oauth_url }}
+{% else %}
+        baseUrl: {{ auth_cas_url }}/oidc
+        authorizationUrl: {{ auth_cas_url }}/oidc/authorize
+        refreshUrl: {{ auth_cas_url }}/oidc/refresh
+        tokenUrl: {{ auth_cas_url }}/oidc/token
+{% endif %}
+
+userdetails:
+  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
+userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
+userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
+
+# all available rk_ and rkid_ fields in SOLR are added to defaultDownloadFields when no rk_ field is defined in defaultDownloadFields
+defaultDownloadFields: guid,rank,scientificName,scientificNameAuthorship,taxonomicStatus,establishmentMeans,datasetName,parentGuid,acceptedConceptName,acceptedConceptID,idxtype,name,additionalNames_m_s
+downloadMaxRows: 100000
+
+# override the taxon ranks taxonRanksFile with an external file
+taxonRanksFile:
+
+sitemap:
+  dir: /data/bie-index
+  enabled: true

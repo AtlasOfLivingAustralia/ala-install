@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - doi-service
     - deploy
@@ -8,17 +8,22 @@
 #
 # JAR file deployment
 #
-#- include: ../../exec_jar/tasks/main.yml jar_url='{{ doi_service_jar_url }}' service_name='doi-service'
+#- include_tasks: ../../exec_jar/tasks/main.yml
+  vars:
+    jar_url: '{{ doi_service_jar_url }}'
+    service_name: 'doi-service'
 - name: add jar and service
   include_role:
     name: exec-jar
   vars:
     service_name: "doi-service"
     jar_url: '{{ doi_service_jar_url }}'
+    log_config_filename: logback.xml
   tags:
     - deploy
     - service
     - doi-service
+    - service-conf
 
 #
 # External configuration properties file
@@ -27,8 +32,8 @@
   file:
     path: "{{item}}"
     state: directory
-    owner: doi-service
-    group: doi-service
+    owner: "{{ doi_user | default('doi-service') }}"
+    group: "{{ doi_user | default('doi-service') }}"
   with_items:
     - "{{data_dir}}/doi-service"
     - "{{data_dir}}/doi-service/config"
@@ -40,8 +45,8 @@
 - name: set data ownership
   file:
     path: "{{data_dir}}/doi-service"
-    owner: doi-service
-    group: doi-service
+    owner: "{{ doi_user | default('doi-service') }}"
+    group: "{{ doi_user | default('doi-service') }}"
     recurse: true
   tags:
     - properties
@@ -51,8 +56,21 @@
   template:
     src: doi-service-config.yml
     dest: "{{data_dir}}/doi-service/config/doi-service-config.yml"
-    owner: doi-service
-    group: doi-service
+    owner: "{{ doi_user | default('doi-service') }}"
+    group: "{{ doi_user | default('doi-service') }}"
+  notify:
+    - restart doi-service
+  tags:
+    - properties
+    - properties-file
+    - doi-service
+
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{data_dir}}/doi-service/config/logback.xml"
+    owner: "{{ doi_user | default('doi-service') }}"
+    group: "{{ doi_user | default('doi-service') }}"
   notify:
     - restart doi-service
   tags:
@@ -63,8 +81,8 @@
   template:
     src: logback.groovy
     dest: "{{data_dir}}/doi-service/config/logback.groovy"
-    owner: doi-service
-    group: doi-service
+    owner: "{{ doi_user | default('doi-service') }}"
+    group: "{{ doi_user | default('doi-service') }}"
   notify:
     - restart doi-service
   tags:

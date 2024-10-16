@@ -7,38 +7,120 @@
   tags:
     - pg_instance
 
+- name: ensure psycopg2 is present
+  apt: 
+    pkg: python3-psycopg2
+    state: latest
+  tags:
+    - pg_instance
+
+- name: ensure pg client is present - remote
+  apt: 
+    pkg: postgresql-client
+    state: latest
+  when: db_remote | bool == True
+  tags:
+    - pg_instance
+
 - name: ensure pg running
   service:
     name: "{{postgres_service}}"
     state: started
     enabled: yes
+  when: db_remote | bool == False
+  tags:
+    - pg_instance
 
-- name: create pg DB user "{{db_user}}"
+- name: create pg DB user "{{db_user}}" - local
   postgresql_user: name={{ db_user }} password={{ db_password }} role_attr_flags={{ db_role_attr_flags | default('') }} state=present encrypted=True
   become_user: postgres
   become: yes
   vars:
     ansible_ssh_pipelining: true
+  when: db_remote | bool == False
   tags:
     - pg_instance
 
-- name: create pg DB "{{ db_name }}"
+# NOTE because there is a problem/bug with how AWS RDS permissions interact with the postgresql_user module,
+# causing a 
+# this block does NOT run if the var pg_aws_rds_user_already_created is present and true.
+# If using AWS RDS, after the db user is created, please set this var in your inventory 
+# with a value of true, for use on subsequent ansible-playbook runs.
+
+- name: create pg DB user "{{db_user}}" - remote
+  postgresql_user: 
+    login_host: "{{ db_hostname }}"
+    login_user: "{{ db_login_user }}"
+    login_password: "{{ db_login_password }}"
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    state: present
+    encrypted: True
+  vars:
+    ansible_ssh_pipelining: true
+  when: db_remote | bool == True and (pg_aws_rds_user_already_created is defined and pg_aws_rds_user_already_created | bool == True)
+  tags:
+    - pg_instance
+
+- name: create pg DB "{{ db_name }}" - local
   postgresql_db: name={{ db_name }} owner={{ db_user }} state=present
   become_user: postgres
   become: yes
   vars:
     ansible_ssh_pipelining: true
+  when: db_remote | bool == False
   tags:
     - pg_instance
 
-- name: enable extensions for "{{ db_name }}"
+- name: grant role "{{db_user}}" to "{{ db_login_user }}" - remote
+  postgresql_membership:
+    login_host: "{{ db_hostname }}"
+    login_user: "{{ db_login_user }}"
+    login_password: "{{ db_login_password }}"
+    group: "{{ db_user }}"
+    target_roles:
+     - "{{ db_login_user }}"
+    state: present
+  vars:
+    ansible_ssh_pipelining: true
+  when: db_remote | bool == True
+  tags:
+    - pg_instance
+
+- name: create pg DB "{{ db_name }}" - remote
+  postgresql_db: login_host={{ db_hostname }} login_user={{ db_login_user }} login_password={{ db_login_password }} name={{ db_name }} owner={{ db_user }} state=present
+  vars:
+    ansible_ssh_pipelining: true
+  when: db_remote | bool == True
+  tags:
+    - pg_instance
+
+- name: enable extensions "{{ extensions }}" for "{{ db_name }}" - local
+  # postgresql_ext:
+  #  name: "{{ item }}"
+  #  db: "{{ db_name }}"
+  # Workaround for:
+  # https://github.com/AtlasOfLivingAustralia/ala-install/issues/794
+  # Revert when we update ansible
+  shell: psql -d "{{ db_name }}" -c 'CREATE EXTENSION IF NOT EXISTS "{{ item }}"'
+  with_items: "{{ extensions }}"
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  when: db_remote | bool == False
+  tags:
+    - pg_instance
+
+- name: enable extensions for "{{ db_name }}" - remote
   postgresql_ext:
+    login_host: "{{ db_hostname }}"
+    login_user: "{{ db_login_user }}"
+    login_password: "{{ db_login_password }}"
     name: "{{ item }}"
     db: "{{ db_name }}"
   with_items: "{{ extensions }}"
-  become_user: postgres
-  become: yes
   vars:
     ansible_ssh_pipelining: true
+  when: db_remote | bool == True
   tags:
     - pg_instance

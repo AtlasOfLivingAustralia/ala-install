@@ -1,62 +1,75 @@
-- include: ../../common/tasks/setfacts.yml
+---
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - namematching-service
     - deploy
     - properties
     - nginx_vhost
 
-#
-# JAR file deployment
-#
-# Also creates config directories
-- name: add jar and service
-  include_role:
-    name: exec-jar-generic
-  vars:
-    service_name: "namematching-service"
-    jar_url: '{{ namematching_service_jar_url }}'
-    service_owner: "{{ namematching_user }}"
-    args:
-      - server
-      - "{{data_dir}}/namematching-service/config/namematching-service-config.yml"
+- name: set nginx upstream server for nginx
+  set_fact:
+    upstream_host: "{{ namematching_service_upstream_host | default('127.0.0.1') }}"
   tags:
     - deploy
-    - service
-    - namematching-service
+    - nginx_vhost
 
-- name: Create configuration
-  template:
-    src: namematching-service-config.yml
-    dest: "{{data_dir}}/namematching-service/config/namematching-service-config.yml"
+- name: Include VM tasks
+  import_tasks: vm-tasks.yml
+  when: deployment_type == 'vm'
+
+- name: "Create ala-namematching-service directories"
+  file:
+    path: "{{item}}"
+    state: directory
     owner: "{{ namematching_user }}"
     group: "{{ namematching_user }}"
-  notify:
-    - restart namematching-service
+    mode: 0755
+  with_items:
+    - "/var/log/atlas/namematching-service"
   tags:
     - properties
     - namematching-service
 
-- name: Create species group files
+- name: "Create ala-namematching-service directories (only docker)"
+  file:
+    path: "{{item}}"
+    state: directory
+    owner: "{{ namematching_user }}"
+    group: "{{ namematching_user }}"
+    mode: 0755
+  with_items:
+    - "/data/ala-namematching-service/config"
+  when: deployment_type == 'swarm'
+  tags:
+    - properties
+    - namematching-service
+
+- name: Customize configuration already added by apt package
+  template:
+    src: namematching-service-config.yml
+    dest: "{{data_dir}}/ala-namematching-service/config/config.yml"
+    owner: "{{ namematching_user }}"
+    group: "{{ namematching_user }}"
+  notify:
+    - restart ala-namematching-service
+  tags:
+    - properties
+    - properties-file
+    - namematching-service
+
+- name: Customize species group files
   copy:
     src: "{{item}}"
-    dest: "{{data_dir}}/namematching-service/config/{{item}}"
+    dest: "{{data_dir}}/ala-namematching-service/config/{{item}}"
     owner: "{{ namematching_user }}"
     group: "{{ namematching_user }}"
   with_items:
     - "groups.json"
     - "subgroups.json"
   notify:
-    - restart namematching-service
+    - restart ala-namematching-service
   tags:
     - properties
-    - namematching-service
-
-- name: Restart namematching service
-  service:
-    name: namematching-service
-    state: restarted
-    enabled: yes
-  tags:
     - namematching-service
 
 - name: add nginx vhost
@@ -69,7 +82,7 @@
     nginx_paths:
       - path: "{{ namematching_service_context_path }}"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ namematching_service_port }}/{{ namematching_service_context_path }}"
+        proxy_pass: "http://{{upstream_host}}:{{ namematching_service_port }}/{{ namematching_service_context_path }}"
   # notify:
   #   - reload nginx
   tags:
@@ -77,3 +90,7 @@
     - namematching-service
     - deploy
   when: webserver_nginx
+
+- name: Include docker tasks
+  include_tasks: docker-tasks.yml
+  when: deployment_type == 'swarm'

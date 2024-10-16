@@ -1,0 +1,6 @@
+# assets
+version: "{{ sensitive_data_service_version | default('LATEST') }}"
+artifactId: "ala-sensitive-data-server"
+groupId: "au.org.ala.sds"
+packaging: "jar"
+sensitive_data_service_jar_url: "{{maven_repo_ws_url}}"

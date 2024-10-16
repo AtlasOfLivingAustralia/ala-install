@@ -7,22 +7,24 @@ server:
   ssl:
     enabled: false
     key-store: 
+  forward-headers-strategy: native
+  tomcat:
+    remoteip:
+      protocol-header: x-forwarded-proto
+      port-header: x-forwarded-port
+      remote-ip-header: x-forwarded-for
+      protocol-header-https-value: https
 jndi:
   hikari:
     jdbccas:
       driverClass: com.mysql.jdbc.Driver
-      url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&logger=Slf4JLogger&gatherPerfMetrics=true&logSlowQueries=true&characterEncoding=UTF-8&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true&useSSL={{mysql_connection_ssl | default(false)}}
+      url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&logger=Slf4JLogger&gatherPerfMetrics=true&logSlowQueries=true&characterEncoding=UTF-8&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true&noAccessToProcedureBodies=true&useSSL={{mysql_connection_ssl | default(false)}}
       user: {{ cas_db_username | default('cas') }}
       password: {{ cas_db_password | default('password') }}
       dataSourceProperties:
         cachePrepStmts: true
         prepStmtCacheSize: 250
         prepStmtCacheSqlLimit: 2048
-flyway:
-  baselineOnMigrate: {{ cas_db_migration_baseline | default('true') }}
-  url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true&useSSL={{mysql_connection_ssl | default(false)}}
-  user: {{ cas_flyway_username | default('root') }}
-  password: {{ cas_flyway_password | default('password') }}
 
 logging:
   config: "{{ log4j2_config_location | default('file:/data/cas/config/log4j2.xml') }}"
@@ -33,43 +35,48 @@ cas:
     prefix: ${cas.server.name}/{{ cas_context_path | default('cas') }}
   host:
     name: {{ cas_host_name }}
-  adminPagesSecurity:
-    ip: {{ cas_admin_pages_ip | default('.*') }}
-    actuatorEndpointsEnabled: true
   http-web-request:
     cors:
       enabled: {{ cas_cors_enabled | default('true')}}
+      allow-origin-patterns:
+{% for allowed_origin_pattern in cas_cors_allowed_origin_patternss | default(["'*'"]) %}
+      - {{allowed_origin_pattern}}
+{% endfor %}
       allow-origins:
-{% for allowed_origin in cas_cors_allowed_origins | default(["'*'"]) %}
+{% for allowed_origin in cas_cors_allowed_origins | default([]) %}
       - {{allowed_origin}}
 {% endfor %}
   jdbc:
     showSql: false
   audit:
     mongo:
-      sslEnabled: {{ cas_audit_ssl_enabled | default('false') }}
+#      sslEnabled: {{ cas_audit_ssl_enabled | default('false') }}
       clientUri: {{ cas_audit_uri | default('') }}
-      host: {{ cas_audit_host | default('localhost') }}
-      port: {{ cas_audit_port | default('27017') }}
-      replicaSet: {{ cas_audit_replica_set | default('') }}
-      databaseName: {{ cas_audit_db | default('cas-audit-repository') }}
-      authenticationDatabaseName: {{ cas_audit_auth_db | default('') }}
-      userId: {{ cas_audit_username | default('cas') }}
-      password: {{ cas_audit_password | default('password') }}
+#      host: {{ cas_audit_host | default('localhost') }}
+#      port: {{ cas_audit_port | default('27017') }}
+#      replicaSet: {{ cas_audit_replica_set | default('') }}
+#      databaseName: {{ cas_audit_db | default('cas-audit-repository') }}
+#      authenticationDatabaseName: {{ cas_audit_auth_db | default('') }}
+#      userId: {{ cas_audit_username | default('cas') }}
+#      password: {{ cas_audit_password | default('password') }}
       timeout: {{ cas_audit_timeout | default('PT5S') }}
   authn:
+    attribute-repository:
+      core:
+        default-attributes-to-release: {{ cas_default_attributes_to_release | default('[]') }}
     throttle:
       failure:
-        range-seconds: {{ cas_throttle_range | default('30') }}
-        threshold: {{ cas_throttle_threshold | default('3') }}
+        range-seconds: {{ cas_throttle_range | default('10') }}
+        threshold: {{ cas_throttle_threshold | default('5') }}
     pac4j:
-      typedIdUsed: true
-      cookie:
-        crypto:
-          signing:
-            key: {{ pac4j_cookie_signing_key }}
-          encryption:
-            key: {{ pac4j_cookie_encryption_key }}
+      core:
+        typedIdUsed: true
+      # cookie:
+      #   crypto:
+      #     signing:
+      #       key: {{ pac4j_cookie_signing_key }}
+      #     encryption:
+      #       key: {{ pac4j_cookie_encryption_key }}
 {% if pac4j_facebook_consumer_key is defined %}
       facebook:
         # fields:
@@ -110,54 +117,106 @@ cas:
 {% endif %}
 {% if pac4j_aaf_consumer_key is defined %}
       oidc:
-      - client-name: aaf
-        discovery-uri: {{ pac4j_aaf_discovery_uri | default('https://central.test.aaf.edu.au/.well-known/openid-configuration') }}
-        id: {{ pac4j_aaf_consumer_key }}
-        secret: {{ pac4j_aaf_consumer_secret }}
-        scope: openid profile email
+      - generic:
+          client-name: aaf
+          discovery-uri: {{ pac4j_aaf_discovery_uri | default('https://central.test.aaf.edu.au/.well-known/openid-configuration') }}
+          id: {{ pac4j_aaf_consumer_key }}
+          secret: {{ pac4j_aaf_consumer_secret }}
+          scope: openid profile email
+          cssClass: aaf-logo
 {% endif %}
+    oauth:
+      core:
+        userProfileViewType: {{ cas_oauth_profile_view_type | default('FLAT') }}
+      crypto:
+        encryption:
+          key: {{ cas_oauth_encryption_key }}
+        signing:
+          key: {{ cas_oauth_signing_key }}
+      access-token:
+        crypto:
+          encryption:
+            key: {{ cas_oauth_access_token_encryption_key }}
+          signing:
+            key: {{ cas_oauth_access_token_signing_key }}
     oidc:
-      issuer: ${cas.server.name}/cas/oidc
-      jwksFile: file:/data/cas/keystore.jwks
+      core:
+        issuer: ${cas.server.name}/cas/oidc
+      jwks:
+        file-system:
+          jwks-file: file:/data/cas/keystore.jwks
+      discovery:
+        scopes:
+          - openid
+          - profile
+          - email
+          - offline_access
+          - ala
+          - roles
+          - ala/internal
+          - users/read
+          - users/write
+          - profile-service/write
+          - profile-service/read
+          - doi/write
+          - doi/read
+          - image-service/write
+          - image-service/read
+          - digivol/internal
+{% for extra_scope in cas_extra_scopes | default ([]) %}
+          - {{ extra_scope }}
+{% endfor %}
   monitor:
-    endpoints:
-      enabled: true
+    # endpoints:
+    #   enabled: true
     jdbc:
       validationQuery: /* ping */ SELECT 1
       dataSourceName: java:comp/env/jdbccas
-  serviceRegistry:
-    initFromJson: {{ serviceRegistryInitFromJson | default('true') }}
+  service-registry:
+    core:
+      init-from-json: {{ serviceRegistryInitFromJson | default('true') }}
     mongo:
-      sslEnabled: {{ cas_services_ssl_enabled | default('false') }}
+#      sslEnabled: {{ cas_services_ssl_enabled | default('false') }}
       clientUri: {{ cas_services_uri | default('') }}
-      host: {{ cas_services_host | default('localhost') }}
-      port: {{ cas_services_port | default('27017') }}
-      replicaSet: {{ cas_services_replica_set | default('') }}
+#      host: {{ cas_services_host | default('localhost') }}
+#      port: {{ cas_services_port | default('27017') }}
+#      replicaSet: {{ cas_services_replica_set | default('') }}
       collection: {{ cas_services_collection | default('services') }}
-      databaseName: {{ cas_services_db | default('cas-service-registry') }}
-      authenticationDatabaseName: {{ cas_services_auth_db | default('') }}
-      userId: {{ cas_services_username | default('cas') }}
-      password: {{ cas_services_password | default('password') }}
+#      databaseName: {{ cas_services_db | default('cas-service-registry') }}
+#      authenticationDatabaseName: {{ cas_services_auth_db | default('') }}
+#      userId: {{ cas_services_username | default('cas') }}
+#      password: {{ cas_services_password | default('password') }}
       timeout: {{ cas_services_timeout | default('PT5S') }}
   ticket:
+    tgt:
+      primary:
+        maxTimeToLiveInSeconds: {{ cas_login_timeout | default('86400') }}
+        timeToKillInSeconds: {{ cas_login_time_to_kill | default('86400') }}
+      rememberMe:
+        enabled: true
+        timeToKillInSeconds: {{ cas_remember_me_timeout | default('7884000') }}
     registry:
       cleaner:
         schedule:
           enabled: {{ cas_ticket_registry_cleaner_enabled | default('true') }}
       mongo:
-        sslEnabled: {{ cas_tickets_ssl_enabled | default('false') }}
+        update-indexes: {{ cas_tickets_update_indexes | default('true') }}
+        drop-indexes: {{ cas_tickets_drop_indexes | default('false') }}
+#        sslEnabled: {{ cas_tickets_ssl_enabled | default('false') }}
         clientUri: {{ cas_tickets_uri | default('') }}
-        host: {{ cas_tickets_host | default('localhost') }}
-        port: {{ cas_tickets_port | default('27017') }}
-        replicaSet: {{ cas_tickets_replica_set | default('') }}
-        databaseName: {{ cas_tickets_db | default('cas-ticket-registry') }}
-        authenticationDatabaseName: {{ cas_tickets_auth_db | default('') }}
-        userId: {{ cas_tickets_username | default('cas') }}
-        password: {{ cas_tickets_password | default('password') }}
+#        host: {{ cas_tickets_host | default('localhost') }}
+#        port: {{ cas_tickets_port | default('27017') }}
+#        replicaSet: {{ cas_tickets_replica_set | default('') }}
+#        databaseName: {{ cas_tickets_db | default('cas-ticket-registry') }}
+#        authenticationDatabaseName: {{ cas_tickets_auth_db | default('') }}
+#        userId: {{ cas_tickets_username | default('cas') }}
+#        password: {{ cas_tickets_password | default('password') }}
         timeout: {{ cas_tickets_timeout | default('PT15S') }}
     st:
       timeToKillInSeconds: {{ cas_service_ticket_timeout | default('10') }}
   tgc:
+    maxAge: {{ cas_login_timeout | default('86400') }} # Same as TGT expiry
+    rememberMeMaxAge: PT{{ cas_remember_me_timeout | default('7884000') }}S
     crypto:
       enabled: false
   webflow:
@@ -170,14 +229,16 @@ cas:
 ala:
   userDetailsBaseUrl: {{ userdetails_base_url }}/{{ userdetails_context_path | default('userdetails') }}/
   cookie:
-    domain: {{ auth_cookie_domain | default('ala.org.au') }}
-    secure: {{ auth_cookie_secure | default('false') }}
+    domain: {{ cas_auth_cookie_domain | default(auth_cookie_domain) | default('ala.org.au') }}
+    secure: {{ auth_cookie_secure | default('true') }}
     httpOnly: {{ auth_cookie_httpOnly | default('true') }}
     maxAge: {{ auth_cookie_maxAge | default('-1') }}
     name: {{ auth_cookie_name | default('ALA-Auth') }}
     path: {{ auth_cookie_path | default('/') }}
+    sameSitePolicy: {{ auth_cookie_sameSitePolicy | default('Lax') }}
   userCreator:
     userCreatePassword: {{ user_create_password }}
+    enableUserSurvey: {{ show_ala_survey | default('false') }}
     jdbc:
       dataSourceName: java:comp/env/jdbccas
       enableUpdateLastLoginTime: {{ cas_update_last_login | default('true') }}
@@ -187,7 +248,7 @@ ala:
     baseUrl: {{ ala_base_url | default('https://www.ala.org.au')}}
     termsUrl: {{ terms_url | default('${ala.skin.baseUrl}/terms-of-use/') }}
     uiVersion: {{ ala_cas_ui_version | default('2') }}
-    headerFooterUrl: {{ header_and_footer_baseurl | default('${ala.skin.baseUrl}/commonui-bs3')}}/
+    headerFooterUrl: {{ header_and_footer_baseurl | default('${ala.skin.baseUrl}/commonui-bs3-2019')}}/
     favIconBaseUrl: {{ skin_favicon_baseurl | default('${ala.skin.baseUrl}/wp-content/themes/ala-wordpress-theme/img/favicon/') }}
     bieBaseUrl: {{ bie_base_url | default('https://bie.ala.org.au')}}
     bieSearchPath: {{ bie_search_path | default('/search') }}
@@ -195,6 +256,8 @@ ala:
     orgShortName: {{ orgNameShort | default('ALA') }}
     orgLongName: {{ orgNameLong | default('Atlas of Living Australia') }}
     orgNameKey: {{ orgNameKey | default('ala') }}
+    loginLogo: {{ loginLogo | default('https://auth.ala.org.au/cas/images/supporting-graphic-element-flat-medium.png') }}
+    supportEmail: {{ support_email | default('support@ala.org.au') }}
 
 # Enable these for Spring Boot actuator (required for Spring Boot Admin client)
 
@@ -218,6 +281,11 @@ management:
     roles: ACTUATOR
 
 spring:
+  flyway:
+    baselineOnMigrate: {{ cas_db_migration_baseline | default('true') }}
+    url: jdbc:mysql://{{ cas_db_hostname | default('localhost') }}:{{ cas_db_port | default('3306') }}/{{ cas_db_name | default('emmet') }}?serverTimezone={{ server_tz | default('Australia/Sydney') }}&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true&noAccessToProcedureBodies=true&useSSL={{mysql_connection_ssl | default(false)}}
+    user: {{ cas_flyway_username | default('root') }}
+    password: {{ cas_flyway_password | default('password') }}
 {% if bootadmin_enabled | bool %}
   boot:
     admin:
@@ -235,16 +303,12 @@ spring:
             password: ${security.user.password}
 {% endif %}
   session:
+    enabled: {{ spring_session_enabled | default('false') }}
     store-type: {{ spring_session_store_type | default('none') }}
-    {% if spring_session_store_type == 'redis' %}disable-redis-config-action: {{ is_secured_redis | default('false') | bool }}
-    redis:
-      namespace: {{ cas_redis_namespace | default('cas') }}
-  redis:
-    host: {{ spring_session_redis_host }}
-    password: {{ spring_session_redis_password }}
-    port: {{ spring_session_redis_port | default('6379') }}
-{% if spring_session_redis_clustered | bool %}
-    cluster:
-      nodes: {{ spring_session_redis_host }}:{{ spring_session_redis_port | default('6379') }}
-{% endif %}
+{% if spring_session_store_type == 'mongodb' %}
+    mongodb:
+      collectionName: {{ spring_session_mongo_collection | default('cas-sessions') }}
+  data:
+    mongodb:
+      uri: {{ spring_session_mongo_uri }}
 {% endif %}

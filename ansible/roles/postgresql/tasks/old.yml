@@ -11,15 +11,24 @@
     msg: "WARNING YOU ARE USING THE DEPRECATED LEGACY POSTGRES SUPPORT ROLE, PLEASE UPDATE INVENTORY TO USE NEW ROLE + pg_instance BY PROVIDING pg_version AND OPTIONALLY postgis_version VARIABLES AND ADDING pg_instance ROLES AS APPROPRIATE"
 
 - name: Setup apt repositories
-  include: apt.yaml
+  include_tasks: apt.yaml
   tags: postgresql
 
-- name: Install Postgres with PostGIS
-  apt: pkg="{{ item }}" state="present" update_cache="yes"
-  with_items:
-    - postgresql-9.6-postgis-2.4
-    - postgresql-contrib-9.6
-    - gdal-bin
+- name: install setfacl support
+  apt:
+    name: "acl"
+    state: present
+  become: yes
+  tags: postgresql
+
+- name: Install Postgres with PostGIS (Ubuntu 20.0)
+  apt:
+    name:
+      - postgresql-12-postgis-3
+      - postgresql-12
+      - gdal-bin
+    state: present
+    update_cache: yes
   tags:
     - postgresql
   register: postgresql_installed
@@ -80,17 +89,15 @@
 
 - name: enable connect from external if db is on Vagrant
   lineinfile: dest="/etc/postgresql/9.6/main/pg_hba.conf" backrefs="yes" regexp="" line="host    all             all             127.0.0.1/32            ident" line="host    all             all             0.0.0.0/0                 trust"
-  when: is_vagrant
+  when: is_vagrant == true
   notify: restart postgresql
   tags: postgresql
 
 - name: enable connect from external if db is on Vagrant
   lineinfile: dest="/etc/postgresql/9.6/main/postgresql.conf" regexp="listen_addresses = 'localhost'" line="listen_addresses = '*'"
-  when: is_vagrant
+  when: is_vagrant == true
   notify: restart postgresql
   tags: postgresql
-
-
 
 - name: Restart postgresql server
   service: name="{{ postgresql_service }}" state="started" enabled="yes"
@@ -129,10 +136,6 @@
   become: yes
   tags: postgresql
 
-- name: install setfacl support
-  apt: pkg="acl"
-  become: yes
-  tags: postgresql
 
 - name: ensure postgis_template database exists
   postgresql_db:

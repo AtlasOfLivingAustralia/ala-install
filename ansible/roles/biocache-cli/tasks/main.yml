@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - biocache-cli
     - vocabs
@@ -46,8 +46,32 @@
     - download-zip
     - biocache-cli-update
 
+- name: Install lxml for ansible python 2
+  apt:
+    name: python-lxml
+    state: present
+  when: ansible_python.version.major==2
+
+- name: Install lxml for ansible python 3
+  apt:
+    name: python3-lxml
+    state: present
+  when: ansible_python.version.major==3
+
 - name: download biocache store jar
-  get_url: url="{{ biocache_store_url }}" dest="/usr/lib/biocache/biocache.zip" force=yes timeout=240
+  maven_artifact:
+    group_id: "{{groupId}}"
+    artifact_id: "{{artifactId}}"
+    version: "{{version|default('latest')}}"
+    extension: "{{packaging|default('jar')}}"
+    classifier: "{{classifier|default('')}}"
+    repository_url: "{{maven_repo_url}}"
+    timeout: 30
+    dest: "/usr/lib/biocache/biocache.zip"
+    mode: u=rwx,g=rx,o=rx
+    owner: "{{ service_owner | default('root') }}"
+    group: "{{ service_group | default('root') }}"
+    verify_checksum: always
   when: biocache_local_build is not defined
   become: yes
   tags:

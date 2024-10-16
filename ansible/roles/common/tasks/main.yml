@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags: common
 # We need to: 
 #
@@ -36,4 +36,19 @@
   when: ansible_os_family == "Debian"
   tags:
     - common
-    - apt_update  
+    - apt_update
+
+- name: Check if deployment_type is valid
+  fail:
+    msg: "'deployment_type' must be one of 'vm', 'swarm', 'k8s'. Current value is '{{ deployment_type }}'."
+  when: deployment_type not in ['vm', 'swarm', 'k8s']
+  tags:
+    - common
+
+- name: copy .gitignore to optionally use git in {{ data_dir }}
+  copy:
+    src: data-gitignore
+    dest: "{{ data_dir }}/.gitignore"
+  tags:
+    - common
+    - gitignore

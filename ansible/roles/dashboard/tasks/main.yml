@@ -1,6 +1,7 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - dashboard
+    - properties
 
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
@@ -17,6 +18,15 @@
   tags:
     - dashboard
     - properties
+    - properties-file
+
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{data_dir}}/dashboard/config/logback.xml"
+  tags:
+    - dashboard
+    - properties
 
 - name: copy data.json
   copy: src=data.json dest={{data_dir}}/dashboard/data.json
@@ -30,7 +40,10 @@
     - dashboard
     - properties
 
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ dashboard_context_path }}' hostname='{{ dashboard_hostname }}'
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
+    context_path: '{{ dashboard_context_path }}'
+    hostname: '{{ dashboard_hostname }}'
   tags:
     - dashboard
     - apache_vhost
@@ -50,7 +63,11 @@
     - dashboard
   when: webserver_nginx
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ dashboard_war_url }}' context_path='{{ dashboard_context_path }}' hostname='{{ dashboard_hostname }}'
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_url: '{{ dashboard_war_url }}'
+    context_path: '{{ dashboard_context_path }}'
+    hostname: '{{ dashboard_hostname }}'
   tags:
     - dashboard
     - tomcat_vhost

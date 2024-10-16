@@ -1,0 +1,6 @@
+---
+- hosts: docker_swarm,docker_swarm_dev,docker_swarm_test
+  roles:
+    - docker
+    - docker-swarm
+    - docker-common
