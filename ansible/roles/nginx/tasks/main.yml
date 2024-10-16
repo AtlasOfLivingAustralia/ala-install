@@ -103,7 +103,7 @@
     var: nginx_status
 
 - name: Set directory permissions for everything in the nginx config directory
-command: find {{ nginx_conf_directory }} -type d ! -perm 0750 -exec chmod 0750 {} \;
+  command: find {{ nginx_conf_directory }} -type d ! -perm 0750 -exec chmod 0750 {} \;
 
 - name: Set file permissions for everything in the nginx config directory
   command: find {{ nginx_conf_directory }} -type f ! -perm 0640 -exec chmod 0640 {} \;
