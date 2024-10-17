@@ -37,7 +37,7 @@ security:
 {% endif %}
   jwt:
     discoveryUri: {{ discoveryUri | default('') }}
-    clientId: {{ clientId | default('') }}
+    clientId: {{ doi_client_id | default(clientId) | default('') }}
 # cognito specific configs
 {% if auth_system is defined and auth_system == 'cognito' %}
     rolesFromAccessToken: {{ rolesFromAccessToken | default('true') }}
@@ -45,7 +45,7 @@ security:
     roleClaims: {{ roleClaims | default('') }}
 {% endif %}
   apiKey:
-    enabled: {{ apikey_check_enabled | default('false') }}
+    enabled: {{ doi_apikey_check_enabled | default(apikey_check_enabled) | default('false') }}
     auth:
       serviceUrl: {{ apikey_auth_url }}
     check:

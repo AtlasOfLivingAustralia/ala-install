@@ -55,6 +55,8 @@ security:
       serviceUrl: {{ apikey_check_url | default('https://auth.ala.org.au/apikey/ws/check?apikey=') }}
     userdetails:
       serviceUrl: {{ apikey_userdetails_url }}
+    # still present in alaAdmin/viewConfig so let's configure properly
+    serviceUrl: {{ apikey_auth_url }}
 webservice:
   jwt: {{ webservice_jwt | default('false') }}
   jwt-scopes: {{ bie_index_webservice_jwt_scopes | default(webservice_jwt_scopes) | default('') }}
