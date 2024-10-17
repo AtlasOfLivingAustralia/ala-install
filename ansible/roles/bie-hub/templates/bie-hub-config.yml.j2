@@ -133,7 +133,7 @@ collectory:
   baseURL: {{ collectory_url }}
   threatenedSpeciesCodesUrl: {{ collectory_url }}/public/showDataResource
 collectoryService:
-  baseURL: {{ collectory_service_url | default(collectory_url) }}
+  baseURL: {{ bie_hub_collectory_service_url | defaul(collectory_service_url) | default(collectory_url) }}
 speciesList:
   baseURL: {{ species_list_url }}
   preferredSpeciesListDruid: {{ specieslist_preferredDruid }}
