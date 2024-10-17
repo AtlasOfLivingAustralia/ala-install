@@ -6,8 +6,10 @@
 # Where and how to store data.
 storage:
   dbPath: {{ dbPath }} #/var/lib/mongodb
+{% if mongodb_version <= 6 %}
   journal:
     enabled: true
+{% endif %}
 #  engine:
 #  mmapv1:
 #  wiredTiger:

@@ -3,9 +3,6 @@
     url: "{{ item.url }}"
     state: present
   when: mongodb_version == item.version
-  tags:
-    - mongodb-org
-    - apt
   loop:
     - { version: 8.0, url: 'https://pgp.mongodb.com/server-8.0.asc' }
     - { version: 7.0, url: 'https://pgp.mongodb.com/server-7.0.asc' }
@@ -39,12 +36,12 @@
 
 - name: Install mongodb.org client package
   apt:
-    name: ['mongodb-org-shell', 'mongodb-org-tools' ]
+    name: ['mongodb-org-shell', 'mongodb-org-tools', 'mongodb-mongosh' ]
   tags: mongodb-org-client
 
 - name: Install mongodb.org packages and related
   apt:
-    name: ['mongodb-org-shell', 'mongodb-org-server', 'mongodb-org-tools' ]
+    name: ['mongodb-org-shell', 'mongodb-org-server', 'mongodb-org-tools', 'mongodb-mongosh' ]
   tags: mongodb-org
 
 - name: Install pip2 when necessary
@@ -88,11 +85,15 @@
     state: absent
   tags: mongodb-org
 
+
+# The recommended way to install python packages is a virtualenv but it's complex to setup
+# so we install the package system-wide and use --break-system-packages to allow this
 - name: Install pip python-pymongo package
   pip:
-    name: pymongo==3.12.2
-#    name: pymongo==4.3.3
+    name: pymongo=={{pymongo_version}}
+    extra_args: "--break-system-packages"
   tags: mongodb-org
+  when: not externally_managed_pymongo | default(true)
 
 - name: Enable service mongod
   service:
@@ -106,7 +107,7 @@
 
 # https://github.com/ansible/ansible/issues/33832
 - name: Check if some admin user is already configured (if admin already exists this fails and can be ignored)
-  shell: /usr/bin/mongo --eval 'db.getUsers()' admin
+  shell: /usr/bin/mongosh --eval 'db.getUsers()' admin
   ignore_errors: true
   register: get_mongo_admin_users
   changed_when: false

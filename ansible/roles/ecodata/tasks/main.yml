@@ -1,4 +1,4 @@
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - ecodata
     - deploy
@@ -230,7 +230,11 @@
 #
 # WAR file deployment and virtual host configuration
 #
-- include: ../../apache_vhost/tasks/main.yml context_path='{{ ecodata_context_path }}' hostname='{{ ecodata_hostname }}'
+- include_role:
+    name: apache_vhost
+  vars:
+    context_path: "{{ ecodata_context_path }}"
+    hostname: "{{ ecodata_hostname }}"
   tags:
     - deploy
     - apache_vhost
@@ -386,7 +390,12 @@
   tags:
     - nginx_vhost_block
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ ecodata_war_url }}' context_path='{{ecodata_context_path}}' hostname='{{ ecodata_hostname }}'
+- include_role:
+    name: tomcat_deploy
+  vars:
+    war_url: "{{ ecodata_war_url }}"
+    context_path: "{{ecodata_context_path}}"
+    hostname: "{{ ecodata_hostname }}"
   tags:
     - deploy
     - tomcat_vhost
@@ -557,7 +566,7 @@
   notify:
     - restart mongod
   tags: mongodb-org
-  when: "{% if mongo_replication and mongo_version3 %} True {% else %} False {% endif %}"
+  when: "{% if mongo_replication %} True {% else %} False {% endif %}"
 
 - name: Stop mongod db server
   service:
@@ -574,12 +583,12 @@
   template:
     src: initRS.j2
     dest: ./initRS.j2
-  when: "{% if mongo_replication and mongo_version3 %} True {% else %} False {% endif %}"
+  when: "{% if mongo_replication %} True {% else %} False {% endif %}"
 
 ## Initialize the replica set in mongo version 3.4
 - name: Initialize the replica set in primary node for mongo version 3.4
   command: mongo --host "{{ mongo_primary_ip }}" --authenticationDatabase "{{ mongodb_root_database | default('admin') }}" -u "{{ mongodb_root_username }}" -p "{{ mongodb_root_password }}" ./initRS.j2
-  when: "{% if mongo_replication and mongo_version3 %} True {% else %} False {% endif %}"
+  when: "{% if mongo_replication %} True {% else %} False {% endif %}"
 
 # Copy the mongorc to the secondary node. do connect between primary and secondary node without complication
 - name: copying mongorc to secondary mongo replica set
