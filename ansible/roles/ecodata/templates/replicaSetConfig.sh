@@ -1,1 +1,1 @@
-mongo -u {{ mongodb_root_username }} -p {{ mongodb_root_password }} admin --eval "db.adminCommand({replSetGetConfig:1})";
+mongosh -u {{ mongodb_root_username }} -p {{ mongodb_root_password }} admin --eval "db.adminCommand({replSetGetConfig:1})";

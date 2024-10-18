@@ -8,7 +8,7 @@ tar -xf $FILE
 cp ./audit/auditMessage.* ./data/backups/dump/ecodata/
 mongorestore --drop -d ecodata -u {{ ecodata_username }} -p {{ ecodata_password }} ./data/backups/dump/ecodata
 
-mongo -u {{ ecodata_username }} -p {{ ecodata_password }} ecodata --eval 'db.setting.update({key:"meritfielddata.announcement.text"},{$set:{value:"This is the MERIT staging environment"}})';
+mongosh -u {{ ecodata_username }} -p {{ ecodata_password }} ecodata --eval 'db.setting.update({key:"meritfielddata.announcement.text"},{$set:{value:"This is the MERIT staging environment"}})';
 ECODATA_VERSION={{ ecodata_version }}
 ECODATA_NUMERIC_VERSION=${ECODATA_VERSION%%'-SNAPSHOT'*}
 
