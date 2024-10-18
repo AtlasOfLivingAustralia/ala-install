@@ -566,7 +566,7 @@
   notify:
     - restart mongod
   tags: mongodb-org
-  when: "{% if mongo_replication %} True {% else %} False {% endif %}"
+  when: mongo_replication
 
 - name: Stop mongod db server
   service:
@@ -583,12 +583,12 @@
   template:
     src: initRS.j2
     dest: ./initRS.j2
-  when: "{% if mongo_replication %} True {% else %} False {% endif %}"
+  when: mongo_replication
 
 ## Initialize the replica set in mongo version 3.4
 - name: Initialize the replica set in primary node for mongo version 3.4
   command: mongo --host "{{ mongo_primary_ip }}" --authenticationDatabase "{{ mongodb_root_database | default('admin') }}" -u "{{ mongodb_root_username }}" -p "{{ mongodb_root_password }}" ./initRS.j2
-  when: "{% if mongo_replication %} True {% else %} False {% endif %}"
+  when: mongo_replication
 
 # Copy the mongorc to the secondary node. do connect between primary and secondary node without complication
 - name: copying mongorc to secondary mongo replica set
