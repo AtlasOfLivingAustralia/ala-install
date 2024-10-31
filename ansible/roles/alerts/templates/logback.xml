@@ -19,13 +19,15 @@
             <maxFileSize>10MB</maxFileSize>
         </triggeringPolicy>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} : %m%n%wex</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- %-40.40logger{39} : %m%n%wex</pattern>
         </encoder>
     </appender>
 
     <logger name="org.hibernate.orm.deprecation" level="ERROR" />
     <logger name="org.grails.config.NavigableMap" level="ERROR" />
 
+    <logger name="au.org.ala.alerts" level="INFO" />
+    <logger name="ala.postie" level="INFO" />
     <logger name="au.org.ala.cas.client" level="INFO" />
 
     <root level="WARN">
