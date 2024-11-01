@@ -1,9 +1,8 @@
-- include_tasks: ../../common/tasks/setfacts.yml
-  tags:
-    - ecodata
-    - deploy
-    - properties
-    - cron
+- include_tasks:
+    file: ../../common/tasks/setfacts.yml
+    apply:
+      tags: setfacts
+  tags: always
 
 - name: set ecodata_user as default value
   set_fact:
