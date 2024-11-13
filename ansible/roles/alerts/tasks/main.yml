@@ -15,6 +15,25 @@
     - db
     - alerts
 
+#- name: Copy 4.3.1 database records update SQL script
+#  ansible.builtin.copy:
+#    src: files/4.3.1_update_records.sql
+#    dest: /tmp
+#  tags:
+#    - 4.3.1
+#
+#- name: Update queries records for 4.3.1
+#  community.mysql.mysql_db:
+#    name: "{{ alerts_db_name }}"         # Database name to apply the SQL script to
+#    state: import
+#    target: "{{ item }}"                 # SQL script file
+#    login_user: "{{ alerts_db_username }}" # Database username
+#    login_password: "{{ alerts_db_password }}" # Database password
+#  with_items:
+#    - /tmp/4.3.1_update_records.sql
+#  tags:
+#    - 4.3.1
+
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{ tomcat_user }} group={{ tomcat_user }}
   with_items:
