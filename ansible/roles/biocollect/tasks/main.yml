@@ -228,7 +228,7 @@
  # We have to use wget instead of get_url as the latter is broken for some mysterious reason
 - name: Download PWA files (artifact)
   ansible.builtin.command:
-    cmd: "curl -X GET https://api.github.com/repos/AtlasOfLivingAustralia/biocollect-pwa/actions/artifacts/{{ pwa_artifact_id }}/zip -H 'Authorization: Bearer {{ pwa_gh_token }}' -o /data/biocollect/pwa-mobile.zip"
+    cmd: "curl -X GET https://api.github.com/repos/AtlasOfLivingAustralia/biocollect-pwa/actions/artifacts/{{ pwa_artifact_id }}/zip -H 'Authorization: Bearer {{ pwa_gh_token }}' -o /data/biocollect/pwa-mobile.zip -v -L"
   tags:
    - deploy
    - biocollect
