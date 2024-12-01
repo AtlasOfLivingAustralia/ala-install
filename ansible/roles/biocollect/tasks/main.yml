@@ -196,3 +196,59 @@
     - biocollect
   when: not exec_jar
 
+- name: PWA Token
+  ansible.builtin.debug:
+    msg: 'Bearer {{ pwa_gh_token }}'
+  tags:
+    - deploy
+    - biocollect
+    - pwa
+
+- name: PWA URL
+  ansible.builtin.debug:
+    msg: 'https://api.github.com/repos/AtlasOfLivingAustralia/biocollect-pwa/actions/artifacts/{{ pwa_artifact_id }}/zip'
+  tags:
+    - deploy
+    - biocollect
+    - pwa
+
+- name: Download PWA files (artifact)
+  ansible.builtin.get_url:
+    url: 'https://api.github.com/repos/AtlasOfLivingAustralia/biocollect-pwa/actions/artifacts/{{ pwa_artifact_id }}/zip'
+    dest: /data/biocollect/pwa-mobile.zip
+    use_netrc: false
+    headers:
+      Authorization: 'Bearer {{ pwa_gh_token }}'
+      X-GitHub-Api-Version: '2022-11-28'
+  tags:
+    - deploy
+    - biocollect
+    - pwa
+
+# # We have to use wget instead of get_url as the latter is broken for some mysterious reason
+# - name: Download PWA files (artifact)
+#   shell: "wget --header='Authorization: Bearer {{ pwa_gh_token }}' 'https://api.github.com/repos/AtlasOfLivingAustralia/biocollect-pwa/actions/artifacts/{{ pwa_artifact_id }}/zip' -P /data/biocollect/pwa-mobile.zip"
+#   tags:
+#     - deploy
+#     - biocollect
+#     - pwa
+
+- name: Clear existing PWA files (if they exists)
+  file:
+    path: '/data/biocollect/pwa-mobile'
+    state: absent
+  tags:
+    - deploy
+    - biocollect
+    - pwa
+
+- name: Extract new PWA build
+  ansible.builtin.unarchive:
+    src: /data/biocollect/pwa-mobile.zip
+    dest: /data/biocollect/pwa-mobile
+  with_fileglob:
+    - '{{ temp_dir.path }}/*.zip'
+  tags:
+    - deploy
+    - biocollect
+    - pwa
