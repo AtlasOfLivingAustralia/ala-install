@@ -142,9 +142,9 @@
         is_proxy: true
         proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{ biocollect_context_path }}/download/"
         add_header: "X-Frame-Options {{ frame_options_header_value }}"
-      - path: "{{ biocollect_context_path | default('/') }}pwa-mobile"
+      - path: "{{ biocollect_context_path | default('/') }}mobile-app"
         sort_label: "3_pwa_app"
-        alias: "{{ biocollect_pwa_app_path | default('/data/biocollect/pwa-mobile') }}"
+        alias: "{{ biocollect_pwa_app_path | default('/data/biocollect/mobile-app') }}"
         index: "index.html"
   tags:
     - nginx_vhost
@@ -174,9 +174,9 @@
         is_proxy: true
         proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{ biocollect_context_path }}/download/"
         add_header: "X-Frame-Options {{ frame_options_header_value }}"
-      - path: "{{ biocollect_context_path | default('/') }}pwa-mobile"
+      - path: "{{ biocollect_context_path | default('/') }}mobile-app"
         sort_label: "4_pwa_app"
-        alias: "{{ biocollect_pwa_app_path | default('/data/biocollect/pwa-mobile') }}"
+        alias: "{{ biocollect_pwa_app_path | default('/data/biocollect/mobile-app') }}"
         index: "index.html"
   tags:
     - nginx_vhost
@@ -215,7 +215,7 @@
 
 - name: Remove current PWA deployment
   file:
-    path: /data/biocollect/pwa-mobile
+    path: /data/biocollect/mobile-app
     state: absent
   tags:
     - pwa
@@ -228,7 +228,7 @@
     - pwa
 
 - name: Extract new PWA build
-  ansible.builtin.shell: "sudo unzip {{ pwa_artifact_name }}.zip -d /data/biocollect/pwa-mobile"
+  ansible.builtin.shell: "sudo unzip {{ pwa_artifact_name }}.zip -d /data/biocollect/mobile-app"
   args:
     chdir: /data/biocollect
   tags:
