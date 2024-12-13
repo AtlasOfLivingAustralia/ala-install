@@ -1,4 +1,6 @@
 - hosts: biocollect
+  vars:
+    ala_default_vhost_include_paths: False
   roles:
     - common
     - java

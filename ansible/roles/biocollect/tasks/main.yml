@@ -142,9 +142,9 @@
         is_proxy: true
         proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{ biocollect_context_path }}/download/"
         add_header: "X-Frame-Options {{ frame_options_header_value }}"
-      - path: "{{ biocollect_context_path | default('/') }}pwa-mobile"
+      - path: "{{ biocollect_context_path | default('/') }}mobile-app"
         sort_label: "3_pwa_app"
-        alias: "{{ biocollect_pwa_app_path | default('/data/biocollect/pwa-mobile') }}"
+        alias: "{{ biocollect_pwa_app_path | default('/data/biocollect/mobile-app') }}"
         index: "index.html"
   tags:
     - nginx_vhost
@@ -174,9 +174,9 @@
         is_proxy: true
         proxy_pass: "http://127.0.0.1:{{ biocollect_server_port }}{{ biocollect_context_path }}/download/"
         add_header: "X-Frame-Options {{ frame_options_header_value }}"
-      - path: "{{ biocollect_context_path | default('/') }}pwa-mobile"
+      - path: "{{ biocollect_context_path | default('/') }}mobile-app"
         sort_label: "4_pwa_app"
-        alias: "{{ biocollect_pwa_app_path | default('/data/biocollect/pwa-mobile') }}"
+        alias: "{{ biocollect_pwa_app_path | default('/data/biocollect/mobile-app') }}"
         index: "index.html"
   tags:
     - nginx_vhost
@@ -196,3 +196,50 @@
     - biocollect
   when: not exec_jar
 
+- name: Clear existing PWA files (if they exist)
+  file:
+    path: '{{ item }}'
+    state: absent
+  with_items:
+    - /data/biocollect/pwa.zip
+    - "/data/biocollect/{{ pwa_artifact_name }}.zip"
+  tags:
+    - pwa
+
+ # We have to use curl instead of get_url as the latter is broken for some mysterious reason
+- name: Download PWA artifact
+  ansible.builtin.command:
+    cmd: "curl -X GET https://api.github.com/repos/AtlasOfLivingAustralia/biocollect-pwa/actions/artifacts/{{ pwa_artifact_id }}/zip -H 'Authorization: Bearer {{ pwa_gh_token }}' -o /data/biocollect/pwa.zip -v -L"
+  tags:
+   - pwa
+
+- name: Remove current PWA deployment
+  file:
+    path: /data/biocollect/mobile-app
+    state: absent
+  tags:
+    - pwa
+
+- name: Extract new PWA archives
+  ansible.builtin.shell: sudo unzip pwa.zip
+  args:
+    chdir: /data/biocollect
+  tags:
+    - pwa
+
+- name: Extract new PWA build
+  ansible.builtin.shell: "sudo unzip {{ pwa_artifact_name }}.zip -d /data/biocollect/mobile-app"
+  args:
+    chdir: /data/biocollect
+  tags:
+    - pwa
+
+- name: Clear temporary PWA archives
+  file:
+    path: '{{ item }}'
+    state: absent
+  with_items:
+    - /data/biocollect/pwa.zip
+    - "/data/biocollect/{{ pwa_artifact_name }}.zip"
+  tags:
+    - pwa
