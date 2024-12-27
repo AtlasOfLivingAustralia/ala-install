@@ -137,7 +137,7 @@
   when: ala_default_vhost  | bool == True and vhost_required | bool == True
 =======
     src: "nginx_vhost_default.j2"
-    dest: "{{ nginx_conf_dir }}/sites-available/{{ hostname }}{{ vfragments_suffix }}.conf"
+    dest: "{{ nginx_conf_dir }}/sites-available/ala_default.conf"
   when: vhost_required | bool == True
 >>>>>>> b941f6e5 (Optimize nginx vhost generation)
   notify:
@@ -162,4 +162,3 @@
     ala_default_vhost: False
   tags:
     - nginx_vhost
-
