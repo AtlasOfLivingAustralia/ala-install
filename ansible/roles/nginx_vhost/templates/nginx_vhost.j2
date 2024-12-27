@@ -6,13 +6,13 @@
 {{ m.fragment_06_connection() }}
 {%- endif %}
 {# Fragment-specific for HTTP #}
-{% if vhost_required | bool == True %}
+{% if (vhost_required | bool == True) %}
 {{ m.fragment_10_start_http() }}
 {{ m.fragment_20_servername() -}}
 {% if (ssl | bool == True and force_https | bool == True and vhost_required | bool == True) -%}
 {{ m.fragment_30_force_https() -}}
 {% else %}
-{% if (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True -%}
+{% if ((ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True) -%}
 {{ m.fragment_50_root() }}
 {{ m.fragment_55_include() -}}
 {{ m.fragment_60_robots() }}
