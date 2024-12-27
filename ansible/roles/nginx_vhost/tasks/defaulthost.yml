@@ -22,6 +22,7 @@
   tags:
     - nginx_vhost
 
+<<<<<<< HEAD
 - name: remove previous fragments dir for aws_elb_default
   file:
     path: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default"
@@ -66,7 +67,7 @@
   tags:
     - nginx_vhost
 
-- name: add start of default vhost for ala
+- name: Create Nginx default config from template
   template:
     src: "ala_default_start.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/10_ala_default_start"
@@ -134,8 +135,13 @@
     dest: "{{nginx_conf_dir}}/sites-available/ala_default.conf"
     mode: "{{nginx_config_file_mode}}"
   when: ala_default_vhost  | bool == True and vhost_required | bool == True
+=======
+    src: "nginx_vhost_default.j2"
+    dest: "{{ nginx_conf_dir }}/sites-available/{{ hostname }}{{ vfragments_suffix }}.conf"
+  when: vhost_required | bool == True
+>>>>>>> b941f6e5 (Optimize nginx vhost generation)
   notify:
-   - reload nginx
+    - reload nginx
   tags:
     - nginx_vhost
 
