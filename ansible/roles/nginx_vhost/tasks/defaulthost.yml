@@ -49,7 +49,7 @@
 - name: Create Nginx default config from template
   template:
     src: "nginx_vhost_default.j2"
-    dest: "{{ nginx_conf_dir }}/sites-available/{{ hostname }}{{ vfragments_suffix }}.conf"
+    dest: "{{ nginx_conf_dir }}/sites-available/ala_default.conf"
   when: vhost_required | bool == True
   notify:
     - reload nginx
@@ -72,4 +72,3 @@
     ala_default_vhost: False
   tags:
     - nginx_vhost
-
