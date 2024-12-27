@@ -1,0 +1,48 @@
+{% import 'nginx_vhost_macros.j2' as m with context %}
+{% if (vhost_required | bool == True and nginx_rate_limit_enabled | bool == True) -%}
+{{ m.fragment_04_ratelimit() }}
+{%- endif %}
+{% if (vhost_required | bool == True and nginx_load_balancing | bool == false and item.is_websocket is defined and item.is_websocket | bool == true) -%}
+{{ m.fragment_06_connection() }}
+{%- endif %}
+{# Fragment-specific for HTTP #}
+{% if vhost_required | bool == True %}
+{{ m.fragment_10_start_http() }}
+{{ m.fragment_20_servername() -}}
+{% if (ssl | bool == True and force_https | bool == True and vhost_required | bool == True) -%}
+{{ m.fragment_30_force_https() -}}
+{% else %}
+{% if (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True -%}
+{{ m.fragment_50_root() }}
+{{ m.fragment_55_include() -}}
+{{ m.fragment_60_robots() }}
+{% for item in nginx_paths | sort(attribute='sort_label') %}
+{{ m.fragment_70_location_start(item) -}}
+{{ m.fragment_73_location(item) -}}
+{% if (nginx_cors_origin_regexp is defined) -%}
+{{ m.fragment_74_location_cors() }}
+{%- endif %}
+{{ m.fragment_75_location_end() }}
+{% endfor %}
+{%- endif %}
+{%- endif %}
+{# Close the HTTP server block #}
+{{ m.fragment_90_end() }}
+{% endif %}
+{# Fragment-specific for HTTPS #}
+{% if (ssl | bool == True and vhost_required | bool == True) -%}
+{{ m.fragment_10_start_https() }}
+{{ m.fragment_20_servername() -}}
+{{ m.fragment_40_ssl() -}}
+{{ m.fragment_50_root() }}
+{{ m.fragment_55_include() -}}
+{{ m.fragment_60_robots() }}
+{% for item in nginx_paths | sort(attribute='sort_label') %}
+{{ m.fragment_70_location_start(item) -}}
+{{ m.fragment_73_location(item) -}}
+{{ m.fragment_74_location_cors() }}
+{{ m.fragment_75_location_end() }}
+{% endfor %}
+{# Close the HTTPS server block #}
+{{ m.fragment_90_end() }}
+{%- endif %}

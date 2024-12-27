@@ -22,25 +22,6 @@
   tags:
     - nginx_vhost
 
-- name: remove previous fragments dir for aws_elb_default
-  file:
-    path: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default"
-    state: absent
-  when: ala_default_vhost and vhost_required
-  tags:
-    - nginx_vhost
-
-- name: ensure fragments dir for default vhost for ala is present
-  file:
-    path: "{{nginx_conf_dir}}/vhost_fragments/ala_default"
-    state: directory
-    mode: 0755
-    owner: root
-    group: root
-  when: ala_default_vhost and vhost_required
-  tags:
-    - nginx_vhost
-
 - name: add upstream fragment
   template:
     src: "fragment_02_upstream.j2"
@@ -65,69 +46,13 @@
   tags:
     - nginx_vhost
 
-- name: add start of default vhost for ala
+- name: Create Nginx default config from template
   template:
-    src: "ala_default_start.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/10_ala_default_start"
-  when: ala_default_vhost and vhost_required
-  tags:
-    - nginx_vhost
-
-- name: add start location fragment for default vhost for Amazon load balancer health checks
-  template:
-    src: "fragment_70_location_start.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/70_location_{{ item.sort_label | default(item.path | basename) }}_70_start"
-  with_items:
-    - "{{ nginx_paths }}"
-  when: ala_default_vhost and vhost_required
-  tags:
-    - nginx_vhost
-
-- name: add default contents location fragment for default vhost for Amazon load balancer health checks
-  template:
-    src: "fragment_71_location_default.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/70_location_{{ item.sort_label | default(item.path | basename) }}_71_default"
-  with_items:
-    - "{{ nginx_paths }}"
-  when: ala_default_vhost and vhost_required
-  tags:
-    - nginx_vhost
-
-- name: add usual contents location fragment for default vhost for Amazon load balancer health checks
-  template:
-    src: "fragment_73_location.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/70_location_{{ item.sort_label | default(item.path | basename) }}_73_content"
-  with_items:
-    - "{{ nginx_paths }}"
-  when: ala_default_vhost and vhost_required
-  tags:
-    - nginx_vhost
-
-- name: add end location fragment for default vhost for Amazon load balancer health checks
-  template:
-    src: "fragment_75_location_end.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/70_location_{{ item.sort_label | default(item.path | basename) }}_75_end"
-  with_items:
-    - "{{ nginx_paths }}"
-  when: ala_default_vhost and vhost_required
-  tags:
-    - nginx_vhost
-
-- name: add end of default vhost for ala
-  template:
-    src: "ala_default_end.j2"
-    dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/90_ala_default_end"
-  when: ala_default_vhost and vhost_required
-  tags:
-    - nginx_vhost
-
-- name: assemble fragments into default vhost for Amazon load balancer health checks
-  assemble:
-    src: "{{nginx_conf_dir}}/vhost_fragments/ala_default"
-    dest: "{{nginx_conf_dir}}/sites-available/ala_default.conf"
-  when: ala_default_vhost and vhost_required
+    src: "nginx_vhost_default.j2"
+    dest: "{{ nginx_conf_dir }}/sites-available/{{ hostname }}{{ vfragments_suffix }}.conf"
+  when: vhost_required | bool == True
   notify:
-   - reload nginx
+    - reload nginx
   tags:
     - nginx_vhost
 
