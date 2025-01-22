@@ -30,6 +30,8 @@ security:
 {% if userdetails_backend == 'cognito' %}
     logoutUrl: {{ userdetails_oidc_logoutUrl | default('') }}
     logoutAction: cognito
+    alaUseridClaim: {{ security_oidc_alaUseridClaim | default('') }}
+    userNameClaim: {{ security_oidc_userNameClaim | default('') }}
 {% endif %}
 {% endif %}
   jwt:
