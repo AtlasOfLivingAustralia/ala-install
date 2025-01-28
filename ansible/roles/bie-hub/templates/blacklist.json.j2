@@ -1,29 +1,27 @@
 {
   "metadata": {
     "title": "Blacklist for external websites",
-    "description": "A list sources that should not have articles fetched from an external site. This is usually because the article is subject to controversy or is not correct for Australia.",
+    "description": "A list sources that should not have articles fetched from an external site. This is usually because the article is subject to controversy or is not correct for {{ orgCountry | default('Australia') }}.",
     "version": "1.0",
     "created": "{{ ansible_date_time.date }}"
   },
   "blacklist": [
-{% if blacklist_source is not none %}
+{% if blacklist_source is defined and blacklist_source | length > 0 %}
 {% for pattern in blacklist_source.split('|') %}
 {% set elements = pattern.split('$') %}
     {
 {% if elements[0] is defined and elements[0] | length %}
       "source": "{{ elements[0] }}"{% if elements | length > 1 %},{% endif %}
-
 {% endif %}
 {% if elements[1] is defined and elements[1] | length %}
       "title": "{{ elements[1] }}"{% if elements | length > 2 %},{% endif %}
-
 {% endif %}
 {% if elements[2] is defined and elements[2] | length %}
       "name": "{{ elements[2] }}"
 {% endif %}
     }{% if not loop.last %},{% endif %}
-
 {% endfor %}
-{% endif %}
+{% else %}
   ]
+{% endif %}
 }
