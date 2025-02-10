@@ -1,0 +1,13 @@
+---
+- include_tasks: ../../common/tasks/setfacts.yml
+  tags:
+    - cassandra
+
+- name: Include docker tasks
+  fail:
+    msg: "ERROR: Not implemented"
+  when: deployment_type == 'swarm'
+
+- name: Include VM tasks
+  import_tasks: vm-tasks.yml
+  when: deployment_type == 'vm'

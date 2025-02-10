@@ -1,0 +1,5 @@
+- hosts: cassandra5
+  roles:
+    - common
+    - java
+    - cassandra5
