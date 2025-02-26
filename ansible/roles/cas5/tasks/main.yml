@@ -117,7 +117,7 @@
     - docker
   when: deployment_type == 'swarm'
 
-- name: add nginx vhost
+- name: add nginx vhost (.well-known not static)
   include_role:
     name: nginx_vhost
   vars:
@@ -133,7 +133,51 @@
     - nginx_vhost
     - deploy
     - cas
-  when: webserver_nginx
+  when: webserver_nginx and cas_oidc_well_known_static | bool == False
+
+- name: add nginx vhost (.well-known static)
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "cas"
+    hostname: "{{ cas_host_name }}"
+    context_path: "{{ cas_context_path | default('cas') }}"
+    nginx_paths:
+      - path: "/{{ cas_context_path | default('cas') }}/oidc/.well-known"
+        sort_label: "cas_1_well_known"
+        is_proxy: false
+        try_files: "$uri $uri/"
+        default_type: "application/json"
+      - path: "/{{ cas_context_path | default('cas') }}"
+        sort_label: "cas_2_app"
+        appname: "cas"
+        is_proxy: true
+        proxy_pass: "http://{{ cas_docker_host | default('127.0.0.1') }}:{{ cas_port | default('9000') }}/{{ cas_context_path | default('cas') }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - cas
+  when: webserver_nginx and cas_oidc_well_known_static | bool == True
+
+- name: create directory for .well-known static file
+  file: path="{{ nginx_root }}/{{ cas_context_path | default('cas') }}/oidc" state=directory mode=0755 force=yes follow=yes
+  tags:
+    - nginx_vhost
+    - deploy
+    - cas
+  when: webserver_nginx and cas_oidc_well_known_static | bool == True
+
+- name: copy .well-known static file
+  template:
+    src: well-known
+    dest: "{{ nginx_root }}/{{ cas_context_path | default('cas') }}/oidc/.well-known"
+    owner: www-data
+    group: www-data
+  tags:
+    - nginx_vhost
+    - deploy
+    - cas
+  when: webserver_nginx and cas_oidc_well_known_static | bool == True
 
 - name: Include docker tasks
   include_tasks: docker-tasks.yml
