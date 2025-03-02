@@ -8,3 +8,4 @@ oidc_client_secret:
 
 fathom_tracking_id:
 enable_google_analytics: True
+bdr_api_readTimeout: 60000
