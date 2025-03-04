@@ -128,30 +128,6 @@
       }
     ]
   },
-  "PhylogeneticDiversity": {
-    "download": false,
-    "view": [
-      {
-        "name": "Apply to an area",
-        "inputs": [
-          "area"
-        ]
-      },
-      {
-        "name": "Select Phylogenetic trees",
-        "inputs": [
-          "phylo"
-        ]
-      }
-    ],
-    "input": {
-      "species": {
-        "constraints": {
-          "speciesOption": "allSpecies"
-        }
-      }
-    }
-  },
   "Classification": {
     "download": true,
     "view": [
