@@ -93,6 +93,9 @@ bie.searchPath: '/search'
 bieService:
     baseURL: "{{ bie_service_base_url | default('https://bie-ws.ala.org.au/ws') }}"
 
+namematching:
+    baseURL: "{{ namematching_url | default('https://namematching-ws.ala.org.au') }}"
+
 userdetails:
   web:
     url: "{{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}"
@@ -125,6 +128,15 @@ sandbox:
 
 sandboxService:
   url: "{{ sandbox_biocache_service_url | default('https://sandbox.ala.org.au/biocache-service') }}"
+
+# Config to use spatial-service/pipelines instead of sandbox/biocache-store for uploading points.
+# - Read access to sandbox/biocache-store data is enabled when sandbox.url and sandboxService.url are set.
+# - Update menu-config.json to use `open: addPoints` instead of `open: sandBox`
+{% if use_spatial_sandbox is defined and use_spatial_sandbox %}
+sandboxSpatial:
+  hubUrl: {{ spatial_sandbox_hub_url | default('https://sandbox.test.ala.org.au/ala-hub') }}
+  serviceUrl: {{ spatial_sandbox_service_url | default('https://sandbox.test.ala.org.au/biocache-service') }}
+{% endif %}
 
 gazField: {{ gaz_field | default('cl2123') }}
 

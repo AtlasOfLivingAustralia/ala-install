@@ -73,6 +73,10 @@
     - "{{data_dir}}/spatial-data/uploads"
     - "{{data_dir}}/spatial-data/public"
     - "{{data_dir}}/spatial-data/private"
+    - "{{data_dir}}/spatial-data/modelling"
+    - "{{data_dir}}/spatial-data/modelling/la-pipelines"
+    - "{{data_dir}}/pipelines-shp"
+    - "{{data_dir}}/pipelines-vocabularies"
   tags:
     - spatial-service
     - spatial-service-config
@@ -89,7 +93,7 @@
 
 - name: set data ownership
   file: path={{data_dir}}/ala/data/ owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify: 
+  notify:
     - restart tomcat
   tags:
     - config
@@ -122,6 +126,7 @@
     - spatial-deps
 
 - name: Download maxent.zip
+  ignore_errors: yes # This is currently returning 403
   get_url:
     url: 'https://biodiversityinformatics.amnh.org/open_source/maxent/maxent.php?op=download'
     dest: /tmp/maxent.zip
@@ -136,6 +141,7 @@
     - spatial-deps
 
 - name: Extract maxent.zip
+  ignore_errors: yes # currently failing to download maxent.zip
   unarchive:
     src: /tmp/maxent.zip
     dest: /tmp/
@@ -145,6 +151,7 @@
     - spatial-deps
 
 - name: Copy maxent.jar to the destination directory
+  ignore_errors: yes # currently failing to download maxent.zip
   copy:
     src: /tmp/maxent/maxent.jar
     dest: "{{data_dir}}/spatial-data/modelling/maxent/maxent.jar"
@@ -154,6 +161,7 @@
     - spatial-deps
 
 - name: Remove temporary maxent.zip file
+  ignore_errors: yes # currently failing to download maxent.zip
   file:
     path: /tmp/maxent.zip
     state: absent
@@ -162,9 +170,100 @@
     - spatial-deps
 
 - name: Remove extracted maxent directory
+  ignore_errors: yes # currently failing to download maxent.zip
   file:
     path: /tmp/maxent
     state: absent
   tags:
     - spatial-service
     - spatial-deps
+
+- name: spatial sandbox, download SHP files (includes global layer and EEZ derived from GBIFs geocode DB)
+  get_url:
+    url: "{{ pipelines_shapefiles_url | default('https://pipelines-shp.s3-ap-southeast-2.amazonaws.com/pipelines-shapefiles.zip') }}"
+    dest: "{{ data_dir }}/pipelines-shp/pipelines-shapefiles.zip"
+    checksum: "{{ pipelines_shapefiles_checksum | default('sha1:d4755425902e109e749c319f8d4ee98fa7ef2c4d') }}"
+  when: spatial_sandbox_enable is defined and spatial_sandbox_enable
+  tags:
+    - spatial-service
+    - spatial-deps
+    - spatial-sandbox
+
+- name: spatial sandbox, download SDS files with bitmaps
+  get_url:
+    url: "{{ sds_layers_with_bitmaps_url | default('https://archives.ala.org.au/archives/layers/sds-layers_with_bitmaps.tgz') }}"
+    checksum: "{{ sds_layers_with_bitmaps_checksum | default('sha1:edc02525fdc1df0c587887b6df91d0b6ecd63cd7') }}"
+    dest: "{{ data_dir }}/pipelines-shp/sds-layers.tgz"
+  when: spatial_sandbox_enable is defined and spatial_sandbox_enable
+  tags:
+    - spatial-service
+    - spatial-deps
+    - spatial-sandbox
+
+- name: spatial sandbox, download extra tar with layers
+  get_url:
+    url: "{{ pipelines_shapefiles_extra_url }}"
+    checksum: "{{ pipelines_shapefiles_extra_checksum }}"
+    dest: "{{ data_dir }}/pipelines-shp/extra-layers.tgz"
+  tags:
+    - spatial-service
+    - spatial-deps
+    - spatial-sandbox
+  when: pipelines_shapefiles_extra_url is defined and spatial_sandbox_enable
+
+- name: spatial sandbox, unpack SHP files
+  unarchive:
+    src: "{{ item }}"
+    dest: "{{ data_dir }}/pipelines-shp"
+    remote_src: yes
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+  with_items:
+    - "{{ data_dir }}/pipelines-shp/pipelines-shapefiles.zip"
+    - "{{ data_dir }}/pipelines-shp/sds-layers.tgz"
+  when: spatial_sandbox_enable is defined and spatial_sandbox_enable
+  tags:
+    - spatial-service
+    - spatial-deps
+    - spatial-sandbox
+
+- name: spatial sandbox, unpack SHP extra file
+  unarchive:
+    src: "{{ item }}"
+    dest: "{{ data_dir }}/pipelines-shp"
+    remote_src: yes
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+  with_items:
+    - "{{ data_dir }}/pipelines-shp/extra-layers.tgz"
+  tags:
+    - spatial-service
+    - spatial-deps
+    - spatial-sandbox
+  when: pipelines_shapefiles_extra_url is defined and spatial_sandbox_enable
+
+- name: spatial sandbox, copy pipelines-vocabularies
+  template: src={{ item }} dest={{data_dir}}/pipelines-vocabularies
+  with_items:
+    - "pipelines-vocabularies/DegreeOfEstablishment.json"
+    - "pipelines-vocabularies/EstablishmentMeans.json"
+    - "pipelines-vocabularies/EventType.json"
+    - "pipelines-vocabularies/LifeStage.json"
+    - "pipelines-vocabularies/OccurrenceStatus.json"
+    - "pipelines-vocabularies/Pathway.json"
+  when: spatial_sandbox_enable is defined and spatial_sandbox_enable
+  tags:
+    - spatial-service
+    - spatial-deps
+    - spatial-sandbox
+
+- name: spatial sandbox, copy la-pipelines config
+  template: src={{ item }} dest={{data_dir}}/spatial-data/modelling/{{ item }}
+  with_items:
+    - "la-pipelines/la-pipelines.yaml"
+    - "la-pipelines/log4j.properties"
+  when: spatial_sandbox_enable is defined and spatial_sandbox_enable
+  tags:
+    - spatial-service
+    - spatial-deps
+    - spatial-sandbox
