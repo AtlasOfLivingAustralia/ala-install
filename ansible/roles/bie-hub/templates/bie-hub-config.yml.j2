@@ -30,6 +30,7 @@ security:
     applyUriFiltersToTicketValidation: false
     enabled: {{ security_cas_enabled | default(false) }}
     authCookiename: {{ auth_cookie_name | default('ALA-Auth') }}
+    authenticateOnlyIfLoggedInFilterPattern: {{ bie_authenticate_only_if_logged_in_filter_pattern | default('') }}
   oidc:
     enabled: {{ security_oidc_enabled | default(true) }}
     clientId: {{ (ala_bie_client_id | default(clientId)) | default('') }}
