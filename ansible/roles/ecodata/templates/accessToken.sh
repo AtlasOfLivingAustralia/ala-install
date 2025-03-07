@@ -1,7 +1,7 @@
 #!/bin/bash
 
-CLIENT_ID="{{ ecodata_read_staging_client_id | default ('') }}"
-CLIENT_SECRET="{{ ecodata_read_staging_client_secret | default ('') }}"
+CLIENT_ID="{{ ecodata_application_client_id | default ('') }}"
+CLIENT_SECRET="{{ ecodata_application_client_secret | default ('') }}"
 TOKEN_URL="{{ token_endpoint | default ('') }}"
 SCOPE="ecodata/read_staging ecodata/write_staging" # ecodata staging read and write scope
 
