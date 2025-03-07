@@ -226,18 +226,6 @@
     - properties
     - ecodata
 
-- name: Add ecodata servers to the hosts file
-  blockinfile:
-    state: present
-    dest: /etc/hosts
-    marker: "ecodata hosts"
-    block: |
-      {{ ecodata_server_ip }} {{ internal_primary_hostname }}
-      {{ ecodata_reporting_server_ip }} {{ internal_reporting_hostname }}
-  when: mongo_cluster_enabled
-  tags:
-    - hosts
-
 #
 # WAR file deployment and virtual host configuration
 #

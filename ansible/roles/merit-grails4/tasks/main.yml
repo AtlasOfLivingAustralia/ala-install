@@ -3,6 +3,17 @@
     - deploy
     - merit
 
+- name: Add ecodata server to the hosts file so we can connect internally
+  blockinfile:
+    state: present
+    dest: /etc/hosts
+    block: |
+      {{ ecodata_server_ip }} {{ ecodata_hostname }}
+    marker_begin: "# BEGIN_Use internal IP for ecodata"
+    marker_end: "# END_Use internal IP for ecodata"
+  tags:
+    - hosts
+
 - name: set merit user
   set_fact:
     merit_user: "{{ (exec_jar) | ternary ('fieldcapture', 'tomcat')}}"

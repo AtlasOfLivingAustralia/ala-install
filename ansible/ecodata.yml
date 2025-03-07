@@ -5,11 +5,11 @@
     es_version: "7.17.28"
     es_heap_dump_path: "/data/elasticsearch"
     es_tmp_dir: "/data/elasticsearch"
-    es_api_host: "{{ elasticsearch_primary_host | default('localhost') }}"
+    es_api_host: "{{ internal_primary_hostname | default('localhost') }}"
     es_gc_filecount: 16
     es_gc_filesize: "16m"
     es_config:
-      network.host: "{{ elasticsearch_primary_host | default('localhost') }}"
+      network.host: "{{ internal_primary_hostname | default('localhost') }}"
       discovery.type: "single-node"
 # This is needed for the biocollect all sites query.
       indices.query.bool.max_clause_count: 8192
