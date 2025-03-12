@@ -196,6 +196,11 @@
     - biocollect
   when: not exec_jar
 
+- name: Install zip command
+  apt: pkg="zip" state=present
+  tags:
+    - pwa
+
 - name: Clear existing PWA files (if they exist)
   file:
     path: '{{ item }}'
