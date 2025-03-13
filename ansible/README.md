@@ -28,7 +28,7 @@ The easiest way to use these roles is to use parameterised includes in your main
     - deploy
 }}'
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ logger_war_url }}' context_path='{{ logger_context_path }}' hostname='{{ logger_hostname }}'
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ logger_artifact_url }}' context_path='{{ logger_context_path }}' hostname='{{ logger_hostname }}'
   tags:
     - logger
     - apache_vhost

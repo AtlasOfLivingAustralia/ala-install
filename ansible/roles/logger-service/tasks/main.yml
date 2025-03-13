@@ -169,10 +169,74 @@
 
 - include_tasks: ../../tomcat_deploy/tasks/main.yml
   vars:
-    war_url: '{{ logger_war_url }}'
+    war_url: '{{ logger_artifact_url }}'
     context_path: '{{ logger_context_path }}'
     hostname: '{{ logger_hostname }}'
   tags:
     - logger-service
     - deploy
     - tomcat_vhost
+  when: not exec_jar
+
+- name: add logger-service jar and setup service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: 'logger-service'
+    jar_url: '{{ logger_artifact_url }}'
+    log_config_filename: "logback.xml"
+    java_headless: True
+  tags:
+    - deploy
+    - service
+    - logger-service
+  when: exec_jar
+
+#- name: Restart logger service
+#  service:
+#    name: 'logger-service'
+#    state: restarted
+#    enabled: yes
+#  tags:
+#    - logger-service
+#    - properties
+#  when: exec_jar
+
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner="logger-service" group="logger-service"
+  with_items:
+    - "{{data_dir}}/logger-service/config"
+    - "/var/log/atlas/logger-service"
+  notify:
+    - restart logger-service
+  tags:
+    - logger-service
+    - properties
+  when: exec_jar
+
+- name: set data ownership for {{data_dir}}/logger
+  file: path={{data_dir}}/logger owner="logger-service" group="logger-service"
+  notify:
+    - restart logger-service
+  tags:
+    - logger-service
+    - properties
+  when: exec_jar
+
+- name: set data ownership for /opt/atlas/logger-service
+  file: path=/opt/atlas/logger-service owner="logger-service" group="logger-service" recurse=true
+  notify:
+    - restart logger-service
+  tags:
+    - logger-service
+    - properties
+  when: exec_jar
+
+- name: set data ownership for /var/log/atlas/logger-service
+  file: path=/var/log/atlas/logger-service owner="logger-service" group="logger-service" recurse=true
+  notify:
+    - restart logger-service
+  tags:
+    - logger-service
+    - properties
+  when: exec_jar
