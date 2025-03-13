@@ -11,7 +11,7 @@ if (!result.ok) {
 }
 
 if (result.ok) {
-    if (result.members.length == 1) {
+    if (!result.members || result.members.length == 1) {
 
         rs.add({ host: "{{ ecodata_reporting_server_ip }}:27017", votes: 0, hidden: false, priority: 0});
         printjson(rs.status());
