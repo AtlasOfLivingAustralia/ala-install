@@ -13,6 +13,19 @@
     - properties
     - cron
 
+- name: Add ecodata reporting server internal IP to the hosts file
+  blockinfile:
+    state: present
+    dest: /etc/hosts
+    block: |
+      {{ ecodata_reporting_server_ip }} {{ ecodata_reporting_hostname }}
+    marker_begin: "# BEGIN_Use internal IP for ecodata reporting"
+    marker_end: "# END_Use internal IP for ecodata reporting"
+  tags:
+    - hosts
+  when:
+    - use_reporting_server and is_primary
+
 - name: "Create system user for ecodata"
   user:
     name: "{{ ecodata_user }}"
