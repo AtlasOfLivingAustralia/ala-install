@@ -13,7 +13,7 @@ mv {{data_dir}}/backups/dump/ecodata/auditMessage.* {{data_dir}}/backups/audit/
 tar zcvf {{data_dir}}/backups/daily/ecodata-$(date +%y%m%d).tgz {{data_dir}}/backups/dump {{data_dir}}/ecodata/models
 
 # copy a backup to the weekly dir every sunday
-if [ $(date +%u) -eq 0 ]; then
+if [ $(date +%u) -eq 1 ]; then
   cp {{data_dir}}/backups/daily/ecodata-$(date +%y%m%d).tgz {{data_dir}}/backups/weekly
 fi
 
