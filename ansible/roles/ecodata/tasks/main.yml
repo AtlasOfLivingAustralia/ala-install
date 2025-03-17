@@ -234,7 +234,7 @@
 - name: set uploads ownership so they can be served by nginx
   file: path={{data_dir}}/ecodata/{{item}} owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true mode='u=rwX,g=rX,o=rX'
   with_items:
-    - uploads
+    - uploads/
   tags:
     - properties
     - ecodata
