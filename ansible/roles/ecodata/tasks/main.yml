@@ -13,6 +13,19 @@
     - properties
     - cron
 
+- name: Add ecodata reporting server internal IP to the hosts file
+  blockinfile:
+    state: present
+    dest: /etc/hosts
+    block: |
+      {{ ecodata_reporting_server_ip }} {{ ecodata_reporting_hostname }}
+    marker_begin: "# BEGIN_Use internal IP for ecodata reporting"
+    marker_end: "# END_Use internal IP for ecodata reporting"
+  tags:
+    - hosts
+  when:
+    - use_reporting_server and is_primary
+
 - name: "Create system user for ecodata"
   user:
     name: "{{ ecodata_user }}"
@@ -378,7 +391,7 @@
       allow 127.0.0.1;
       allow {{ merit_ip }};
       allow {{ biocollect_ip }};
-      allow {{ mongo_secondary_ip | default('127.0.0.1') }};
+      allow {{ ecodata_reporting_server_ip | default('127.0.0.1') }};
       deny all;
       expires 1y;
     marker_begin: "BEGIN_{{item.mark}}"
@@ -520,18 +533,18 @@
   notify:
   - restart mongod
   tags: mongodb-org
-  when: mongo_replica_enabled
+  when: mongo_cluster_enabled
 
   # Copy the keyfile for authentication
 - name: copy security key file to nodes
   copy: src={{ ecodata_local_authentication_keyFile }} dest=/etc/mongodb-keyFile mode=0400
   tags: mongodb-org
-  when:  mongo_replica_enabled
+  when:  mongo_cluster_enabled
 
 # changes access right of the key file for mongo,
 - name: change access right of key file
   file: path=/etc/mongodb-keyFile state=file owner=mongodb group=mongodb mode=0400
-  when: mongo_replica_enabled
+  when: mongo_cluster_enabled
 
 - name: Enable security
   blockinfile:
@@ -545,7 +558,7 @@
   notify:
     - restart mongod
   tags: mongodb-org
-  when: mongo_replica_enabled
+  when: mongo_cluster_enabled
 
 - name: Stop mongo Service
   service:
@@ -565,7 +578,7 @@
   notify:
     - restart mongod
   tags: mongodb-org
-  when: mongo_replication
+  when: mongo_cluster_enabled
 
 - name: Stop mongod db server
   service:
@@ -578,23 +591,16 @@
     state: started
 
 # copying script to create a replica set
-- name: copy initrs script only for mongo version 3.4
+- name: copy initrs script
   template:
     src: initRS.j2
     dest: ./initRS.j2
-  when: mongo_replication
+  when: mongo_cluster_enabled and is_primary
 
-## Initialize the replica set in mongo version 3.4
-- name: Initialize the replica set in primary node for mongo version 3.4
-  command: mongo --host "{{ mongo_primary_ip }}" --authenticationDatabase "{{ mongodb_root_database | default('admin') }}" -u "{{ mongodb_root_username }}" -p "{{ mongodb_root_password }}" ./initRS.j2
-  when: mongo_replication
-
-# Copy the mongorc to the secondary node. do connect between primary and secondary node without complication
-- name: copying mongorc to secondary mongo replica set
-  template:
-    src: mongorc.js
-    dest: /etc/mongorc.js
-  when: copy_mongorc_to_secondary_node
+## Initialize the replica set
+- name: Initialize the replica set in primary node
+  command: mongosh --host "{{ internal_primary_hostname }}" --authenticationDatabase "{{ mongodb_root_database | default('admin') }}" -u "{{ mongodb_root_username }}" -p "{{ mongodb_root_password }}" "{{ mongodb_root_database | default('admin') }}" initRS.j2
+  when: mongo_cluster_enabled and is_primary
 
 - name: Stop mongod db server
   service:

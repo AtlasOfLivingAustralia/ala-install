@@ -1,7 +1,20 @@
-var result = rs.initiate(); {
-    printjson(result);
-    if (result.ok) {
-        rs.add({ host: "{{ mongo_secondary_ip }}:27017", votes: 0, hidden: false, priority: 0});
-            printjson(rs.status());
+var result = {ok:false};
+try {
+    result = rs.status();
+}
+catch (e) {
+ // rs.status can throw an error.
+}
+
+if (!result.ok) {
+    result = rs.initiate();
+}
+
+if (result.ok) {
+    if (!result.members || result.members.length == 1) {
+
+        rs.add({ host: "{{ ecodata_reporting_server_ip }}:27017", votes: 0, hidden: false, priority: 0});
+        printjson(rs.status());
     }
 }
+
