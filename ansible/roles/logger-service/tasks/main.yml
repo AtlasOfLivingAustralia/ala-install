@@ -48,13 +48,13 @@
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
-    - "{{data_dir}}/{{config_directory | default('logger')}}/config"
+    - "{{data_dir}}/logger/config"
   tags:
     - logger-service
     - properties
 
 - name: copy all config.properties
-  template: src=logger-config.properties dest={{data_dir}}/{{config_directory | default('logger')}}/config/logger-config.properties output_encoding=iso-8859-1
+  template: src=logger-config.properties dest={{data_dir}}/logger/config/logger-config.properties output_encoding=iso-8859-1
   tags:
     - logger-service
     - properties
@@ -63,13 +63,13 @@
 - name: copy logback config
   template:
     src: logback.xml
-    dest: "{{data_dir}}/{{config_directory | default('logger')}}/config/logback.xml"
+    dest: "{{data_dir}}/logger/config/logback.xml"
   tags:
     - properties
     - logger-service
 
 - name: set data ownership
-  file: path={{data_dir}}/{{config_directory | default('logger')}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  file: path={{data_dir}}/logger owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify: 
     - restart tomcat
   tags:
@@ -87,7 +87,7 @@
   when: not webserver_nginx
 
 - name: copy all SQL auth ip scripts
-  template: src={{ item }} dest={{data_dir}}/{{config_directory | default('logger')}}/setup/
+  template: src={{ item }} dest={{data_dir}}/logger/setup/
   with_items:
     - "sql/auth-ip.sql"
   when: logger_authorize_ip_list is defined
@@ -182,7 +182,7 @@
   include_role:
     name: exec-jar
   vars:
-    service_name: 'logger-service'
+    service_name: 'logger'
     jar_url: '{{ logger_artifact_url }}'
     log_config_filename: "logback.xml"
     java_headless: True
@@ -195,46 +195,28 @@
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
   with_items:
-    - "{{data_dir}}/logger-service/config"
-    - "/var/log/atlas/logger-service"
+    - "{{data_dir}}/logger/config"
+    - "/var/log/atlas/logger"
   notify:
-    - restart logger-service
+    - restart logger
   tags:
     - logger-service
     - properties
   when: exec_jar
 
-- name: set data ownership for /opt/atlas/logger-service
-  file: path=/opt/atlas/logger-service owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+- name: set data ownership for /opt/atlas/logger
+  file: path=/opt/atlas/logger owner=logger group=logger recurse=true
   notify:
-    - restart logger-service
+    - restart logger
   tags:
     - logger-service
     - properties
   when: exec_jar
 
-- name: set data ownership for /var/log/atlas/logger-service
-  file: path=/var/log/atlas/logger-service owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+- name: set data ownership for /var/log/atlas/logger
+  file: path=/var/log/atlas/logger owner={{tomcat_user}} group={{tomcat_user}} recurse=true
   notify:
-    - restart logger-service
-  tags:
-    - logger-service
-    - properties
-  when: exec_jar
-
-- name: set data ownership for /var/log/{{tomcat}}
-  file: path=/var/log/{{tomcat}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify:
-    - restart logger-service
-  tags:
-    - logger-service
-    - properties
-  when: exec_jar
-
-- name: set data ownership for /var/lib/{{tomcat}}/logs
-  file: path=/var/ib/{{tomcat}}/logs owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  notify:
-    - restart logger-service
+    - restart logger
   tags:
     - logger-service
     - properties

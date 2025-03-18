@@ -6,7 +6,9 @@
     <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
 
     <variable name="appName" value="logger-service"/>
-    <variable name="LOG_DIR" value="/var/log/{{ tomcat | default('tomcat9')}}" />
+<!--    <variable name="LOG_DIR" value="/var/log/{{ tomcat | default('tomcat9')}}" />-->
+    TODO: support both paths for war and jar set up
+    <variable name="LOG_DIR" value="/var/log/atlas/logger" />
 
     <appender name="TOMCAT_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/${appName}.log</file>
