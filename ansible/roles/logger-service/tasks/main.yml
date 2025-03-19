@@ -193,7 +193,7 @@
   when: exec_jar
 
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{item}} state=directory owner=logger group=logger
   with_items:
     - "{{data_dir}}/logger/config"
     - "/var/log/atlas/logger"
@@ -214,7 +214,7 @@
   when: exec_jar
 
 - name: set data ownership for /var/log/atlas/logger
-  file: path=/var/log/atlas/logger owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  file: path=/var/log/atlas/logger owner=logger group=logger recurse=true
   notify:
     - restart logger
   tags:
