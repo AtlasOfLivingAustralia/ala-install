@@ -15,6 +15,7 @@
 
 # Tomcat and Apache configuration
 If your application requires a WAR file deployment then you use the common ```tomcat_deploy``` and ```apache_vhost``` roles. This will ensure a consistent approach to Tomcat and Apache configuration.
+If your application requires a JAR deployment then use the ```exec_jar``` role.
 
 ## How to use them
 
