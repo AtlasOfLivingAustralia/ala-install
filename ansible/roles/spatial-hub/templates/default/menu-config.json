@@ -95,10 +95,6 @@
         "open": "Classification"
       },
       {
-        "name": "Phylogenetic Diversity",
-        "open": "PhylogeneticDiversity"
-      },
-      {
         "name": "Nearest Locality",
         "open": "nearestLocality"
       },

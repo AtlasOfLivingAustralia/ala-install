@@ -170,7 +170,7 @@ google:
 
 logging:
   level:
-    root: INFO
+    root: WARN
 
 #userdetails:
 #    baseUrl: "{{ user_details_base_url | default('https://auth.ala.org.au/userdetails') }}"
@@ -249,7 +249,7 @@ security:
 #  secret: {{ spatial_client_secret | default(spatial_service_webservice_client_secret) }}
 
 #used for spatial-service only
-apiKeyCheckUrlTemplate:  {{api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}
+apiKeyCheckUrlTemplate:  {{ api_key_check_url_template | default('https://auth.ala.org.au/apikey/ws/check?apikey={0}') }}
 
 openapi:
   terms: {{ terms_url | default('https://www.ala.org.au/terms-of-use/') }}
@@ -263,3 +263,14 @@ openapi:
 {% endif %}
 
 namematching.url: {{ namematching_url | default('https://namematching-ws.ala.org.au') }}
+
+# Internal sandbox service for processing uploaded CSV files
+sandboxEnabled: {{ spatial_sandbox_enable | default('false') }}
+sandboxSolrUrl: {{ spatial_sandbox_solr_url | default('') }}
+sandboxSolrCollection: {{ spatial_sandbox_solr_collection | default('sandbox') }}
+sandboxThreadCount: {{ spatial_sandbox_thread_count | default(2) }}
+pipelinesCmd: {{ spatial_pipelines_cmd | default('java -Dspark.local.dir=/data/spatial-data/sandbox/tmp -Djava.io.tmpdir=/data/spatial-data/sandbox/tmp -Dlog4j.configuration=file:/data/spatial-data/modelling/la-pipelines/log4j.properties -cp /data/spatial-data/modelling/la-pipelines/pipelines-2.19.0-SNAPSHOT-shaded.jar') }}
+pipelinesConfig: {{ spatial_pipelines_config | default('--config=/data/spatial-data/modelling/la-pipelines/la-pipelines.yaml') }}
+
+# For the copying of layers between spatial-service instances, a JWT with the following role must be provided in the `/manageLayers/remote` page.
+layerCopyRole: {{ spatial_layer_copy_role | default('ROLE_ADMIN') }}

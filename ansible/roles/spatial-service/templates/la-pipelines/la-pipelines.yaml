@@ -1,0 +1,526 @@
+###
+### la-pipelines.yaml for spatial-service. The majority of configuration is unused.
+###
+
+run:
+  # where to run: local, spark-embedded or spark-cluster
+  platform: local
+  local:
+    # jar: we get the jar from our dev or production environment
+    sparkTmp: /data/sandbox/tmp
+    sparkMaster: ""
+    dwcaTmp: /data/sandbox/tmp
+    dwcaImportDir: /data/sandbox/upload
+  spark-embedded:
+    dwcaTmp: /data/sandbox/tmp
+    dwcaImportDir: /data/sandbox/upload
+    sparkTmp: /data/sandbox/tmp
+    sparkMaster: ""
+#  spark-cluster:
+#    dwcaTmp: /data/dwca-tmp
+#    dwcaImportDir: /data/biocache-load
+#    jar: /usr/share/la-pipelines/la-pipelines.jar
+#    sparkSubmit: /data/spark/bin/spark-submit
+#    sparkTmp: /data/spark-tmp
+#    sparkMaster: spark://localhost:7077
+
+# which filesystem to use: local or hdfs
+fs:
+  platform: local
+  local:
+    fsPath: /data/sandbox
+#  hdfs:
+#    fsPath: hdfs://localhost:8020
+
+copy:
+  copyPath: "/data/sandbox/upload"
+recordedByConfig:
+  cacheSizeMb: 64
+alaNameMatch:
+  wsUrl: {{ namematching_url | default('https://namematching-ws.ala.org.au') }}
+  timeoutSec: 70
+  retryConfig:
+    maxAttempts: 5
+    initialIntervalMillis: 5000
+sds:
+#  wsUrl: intentionally missing
+  timeoutSec: 70
+collectory:
+#  wsUrl: intentionally missing
+  timeoutSec: 70
+  retryConfig:
+    maxAttempts: 10
+    initialIntervalMillis: 10000
+  httpHeaders:
+    Authorization: add-a-api-key-here
+imageService:
+#  wsUrl: intentionally missing
+  timeoutSec: 70
+  httpHeaders:
+    apiKey: add-a-api-key-here
+speciesListService:
+#  wsUrl: intentionally missing
+  timeoutSec: 70
+samplingService:
+  wsUrl: "{{ sampling_url | default('https://sampling.ala.org.au/sampling-service') }}/"
+  timeoutSec: 70
+  batchSize: 25000
+  batchStatusSleepTime: 1000
+  downloadRetries: 5
+geocodeConfig:
+  country:
+    path: {{ data_dir }}/pipelines-shp/political
+    field: ISO_A2
+    intersectBuffer:  0.135
+    intersectMapping:
+      CX: AU
+      CC: AU
+      HM: AU
+      NF: AU
+  eez:
+    path: {{ data_dir }}/pipelines-shp/eez
+    field: ISO2
+    intersectBuffer:  0.135
+  stateProvince:
+    path: {{ data_dir }}/pipelines-shp/cw_state_poly
+    field: FEATURE
+    intersectBuffer: 0
+  biome:
+    path: {{ data_dir }}/pipelines-shp/gadm0
+    field: FEATURE
+
+gbifConfig:
+  extensionsAllowedForVerbatimSet:
+    - http://rs.tdwg.org/ac/terms/Multimedia
+    - http://data.ggbn.org/schemas/ggbn/terms/Amplification
+    - http://data.ggbn.org/schemas/ggbn/terms/Cloning
+    - http://data.ggbn.org/schemas/ggbn/terms/GelImage
+    - http://data.ggbn.org/schemas/ggbn/terms/Loan
+    - http://data.ggbn.org/schemas/ggbn/terms/MaterialSample
+    - http://data.ggbn.org/schemas/ggbn/terms/Permit
+    - http://data.ggbn.org/schemas/ggbn/terms/Preparation
+    - http://data.ggbn.org/schemas/ggbn/terms/Preservation
+    - http://rs.iobis.org/obis/terms/ExtendedMeasurementOrFact
+    - http://rs.tdwg.org/chrono/terms/ChronometricAge
+    - http://purl.org/germplasm/germplasmTerm#GermplasmAccession
+    - http://purl.org/germplasm/germplasmTerm#MeasurementScore
+    - http://purl.org/germplasm/germplasmTerm#MeasurementTrait
+    - http://purl.org/germplasm/germplasmTerm#MeasurementTrial
+    - http://rs.tdwg.org/dwc/terms/Identification
+    - http://rs.tdwg.org/dwc/terms/Occurrence
+    - http://rs.gbif.org/terms/1.0/Identifier
+    - http://rs.gbif.org/terms/1.0/Image
+    - http://rs.tdwg.org/dwc/terms/MeasurementOrFact
+    - http://rs.gbif.org/terms/1.0/Multimedia
+    - http://rs.gbif.org/terms/1.0/Reference
+    - http://rs.tdwg.org/dwc/terms/ResourceRelationship
+    - http://rs.gbif.org/terms/1.0/DNADerivedData
+    - http://ala.org.au/terms/seedbank/0.1/SeedbankRecord
+  vocabularyConfig:
+    vocabulariesPath: {{ data_dir }}/pipelines-vocabularies/
+    vocabulariesNames:
+      http://rs.tdwg.org/dwc/terms/degreeOfEstablishment: DegreeOfEstablishment
+      http://rs.tdwg.org/dwc/terms/lifeStage: LifeStage
+      http://rs.tdwg.org/dwc/terms/establishmentMeans: EstablishmentMeans
+      http://rs.tdwg.org/dwc/terms/pathway: Pathway
+
+alaNameMatchConfig:
+  matchOnTaxonID: true
+
+#locationInfoConfig:
+#    countryNamesFile : /data/pipelines-data/resources/countries.txt
+#    countryCentrePointsFile : /data/pipelines-data/resources/countryCentrePoints.txt
+#    stateProvinceCentrePointsFile : /data/pipelines-data/resources/stateProvinceCentrePoints.txt
+#    stateProvinceNamesFile : /data/pipelines-data/resources/stateProvinces.txt
+
+### pipelines options: should match each GBIF PipelineOptions class options, that is, not extra options should be added
+### on each yml category
+
+# As PipelineOptions does not admits extra arguments, we use this comma separated list of --args to remove it after
+# use it. In the case of fsPath be substitute '{fsPath}/pipelines-data' with fs.hdfs.fsPath if hdfs is selected in
+# fs.platform or '/data' if 'local' is selected.
+pipelineExcludeArgs: fsPath
+
+# Common PipelineOptions
+general:
+  # Target path where the outputs of the pipeline will be written to
+  targetPath: '{fsPath}/pipelines-data'
+  # Attempt of the dataset used to name the target file in file system
+  attempt: 1
+  # The absolute path to a hdfs-site.xml with default.FS configuration
+  hdfsSiteConfig: ""
+  # Path to core-site-config.xml
+  coreSiteConfig: ""
+
+# class: au.org.ala.pipelines.beam.ALADwcaToVerbatimPipeline
+dwca-avro:
+#  runner: SparkRunner
+  # Path of the input file
+  inputPath: /data/sandbox/upload/{datasetId}/archive.zip
+  tempLocation: /data/sandbox/upload/{datasetId}/tmp/
+
+# class: au.org.ala.pipelines.beam.ALAVerbatimToInterpretedPipeline
+interpret:
+  appName: Interpretation for {datasetId}
+  interpretationTypes: ALL
+  defaultDateFormat: DMYT,DMY
+  inputPath: '{fsPath}/pipelines-data/{datasetId}/1/verbatim/*.avro'
+  # Skips GBIF id generation and copies ids from ExtendedRecord ids
+  useExtendedRecordId: true
+  runner: SparkRunner
+
+# class: au.org.ala.pipelines.beam.ALAUUIDMintingPipeline
+uuid:
+  appName: UUID minting for {datasetId}
+  runner: SparkRunner
+  inputPath: '{fsPath}/pipelines-data'
+  numberOfBackupsToKeep: 10
+  percentageChangeAllowed: 50
+  throwErrorOnValidationFail: false
+
+images:
+  appName: Image syncing for {datasetId}
+  runner: SparkRunner
+  inputPath: '{fsPath}/pipelines-data'
+  tempLocation: /tmp
+  # pipe separated list (note: YAML list not coming through correctly)
+  recognisedPaths: "https://images-test.ala.org.au"
+
+speciesLists:
+  runner: SparkRunner
+  inputPath: '{fsPath}/pipelines-data'
+  targetPath: '{fsPath}/pipelines-data'
+  speciesAggregatesPath: '{fsPath}/pipelines-species'
+  tempLocation: /tmp
+  maxDownloadAgeInMinutes: 1440
+  includeConservationStatus: true
+  includeInvasiveStatus: true
+
+# Sampling specific configuration
+sampling:
+  appName: Sample for {datasetId}
+  inputPath: '{fsPath}/pipelines-data'
+  allDatasetsInputPath: '{fsPath}/pipelines-all-datasets'
+  runner: SparkRunner
+
+# Calculate distance to the expert distribution layers
+# class:au.org.ala.pipelines.beam.DistributionOutlierPipeline
+outlier:
+  appName: Expert distribution outliers for {datasetId}
+  baseUrl: https://spatial-test.ala.org.au/ws/
+  targetPath: '{fsPath}/pipelines-outlier'
+  allDatasetsInputPath: '{fsPath}/pipelines-all-datasets'
+  runner: SparkRunner
+
+annotation:
+  runner: SparkRunner
+  inputPath: /data/pipelines-annotations
+  targetPath: /data/pipelines-annotations
+  tempLocation: /tmp/
+
+# class: au.org.ala.pipelines.beam.ALAInterpretedToSensitivePipeline
+sensitive:
+  appName: Sensitive Data Processing for {datasetId}
+  inputPath: '{fsPath}/pipelines-data'
+  runner: SparkRunner
+
+# class: au.org.ala.pipelines.java.IndexRecordPipeline
+index:
+  appName: IndexRecord generation for {datasetId}
+  inputPath: '{fsPath}/pipelines-data'
+  targetPath: '{fsPath}/pipelines-data'
+  includeImages: true
+  includeSpeciesLists: true
+  # set this to false to avoid SDS requirement
+  includeSensitiveDataChecks: true
+  runner: SparkRunner
+  allDatasetsInputPath: '{fsPath}/pipelines-all-datasets'
+
+# class: au.org.ala.pipelines.beam.IndexRecordToSolrPipeline
+solr:
+  appName: SOLR indexing for {datasetId}
+  inputPath: '{fsPath}/pipelines-data'
+  targetPath: '{fsPath}/pipelines-data'
+  allDatasetsInputPath: '{fsPath}/pipelines-all-datasets'
+  jackKnifePath: "{fsPath}/pipelines-jackknife"
+  clusteringPath: "{fsPath}/pipelines-clustering"
+  outlierPath: '{fsPath}/pipelines-outlier'
+  annotationsPath: '{fsPath}/pipelines-annotations'
+  solrCollection: biocache
+  includeSampling: false
+  includeJackKnife: false
+  includeClustering: false
+  runner: SparkRunner
+  zkHost: localhost:9983
+
+# class: au.org.ala.pipelines.beam.IndexRecordToSolrPipeline
+elastic:
+  appName: Elastic indexing for {datasetId}
+  inputPath: '{fsPath}/pipelines-data'
+  targetPath: '{fsPath}/pipelines-data'
+  runner: SparkRunner
+  esHosts: http://localhost:9200
+  esSchemaPath: /tmp/es-parent-schema.json
+  esAlias: event
+  esIndexName: 'event_{datasetId}'
+  indexNumberShards: 1
+  indexNumberReplicas: 0
+  metaFileName: elastic.yml
+  esDocumentId: internalId
+
+export:
+  appName: DwCA export for {datasetId}
+  inputPath: '{fsPath}/pipelines-data'
+  targetPath: '{fsPath}/pipelines-data'
+  localExportPath: /tmp/pipelines-export
+  allDatasetsInputPath: '{fsPath}/pipelines-all-datasets'
+  imageServicePath: "https://images-test.ala.org.au/image/proxyImageThumbnailLarge?imageId={0}"
+  runner: SparkRunner
+  predicateExportEnabled: true
+
+predicate-export:
+  inputPath: '{fsPath}/pipelines-data'
+  targetPath: '{fsPath}/pipelines-export'
+  localExportPath: /tmp/pipelines-export
+  skipEventExportFields:
+    - "id"
+    - "parentId"
+    - "created"
+    - "hasGeospatialIssue"
+    - "hasCoordinate"
+    - "repatriated"
+    - "coreId"
+  skipOccurrenceExportFields:
+    - "id"
+    - "parentId"
+    - "created"
+    - "hasGeospatialIssue"
+    - "hasCoordinate"
+    - "repatriated"
+    - "coreId"
+
+# class: au.org.ala.pipelines.beam.IndexRecordToSolrPipeline
+solrSchema:
+  appName: SOLR Schema Sync
+
+# JackKnife specific configuration
+# class: au.org.ala.pipelines.beam.ALAReverseJackKnifePipeline
+jackKnife:
+  appName: Jack knife outlier detection
+  jackKnifePath: "{fsPath}/pipelines-jackknife"
+  layers: el882,el889,el887,el865,el894
+  minSampleThreshold: 80
+  allDatasetsInputPath: '{fsPath}/pipelines-all-datasets'
+  runner: SparkRunner
+
+clustering:
+  appName: Occurrence clustering
+  clusteringPath: "{fsPath}/pipelines-clustering"
+  allDatasetsInputPath: '{fsPath}/pipelines-all-datasets'
+  runner: SparkRunner
+
+# class: DumpArchiveList
+dataset-archive-list:
+  inputPath: '{fsPath}/upload'
+  targetPath: /tmp/dataset-archive-list.csv
+
+# class: au.org.ala.utils.DumpDatasetSize
+dataset-count-dump:
+  inputPath: '{fsPath}/pipelines-data'
+  targetPath: /tmp/dataset-counts.csv
+  dwcaImportPath: '{fsPath}/dwca-imports'
+
+validation-report:
+  inputPath: '{fsPath}/pipelines-data'
+  targetPath: /tmp/dataset-validation-list.csv
+  fullReportPath: /tmp/full-validation-list.csv
+  zkHost: localhost:9983
+  checkSolr: true
+  checkSampling: true
+  solrCollection: biocache
+
+
+
+-dwca-avro-sh-args:
+  local:
+    jvm: -Xmx2g
+  spark-embedded:
+    jvm: -Xmx2g
+  spark-cluster:
+    conf: spark.default.parallelism=144
+    num-executors: 6
+    executor-cores: 8
+    executor-memory: 24G
+    driver-memory: 4G
+
+### la-pipelines cli additional arguments, like JVM or spark command line arguments
+interpret-sh-args:
+  local:
+    jvm: -Xmx8g -XX:+UseG1GC -Dspark.master=local[*]
+  spark-embedded:
+    jvm: -Xmx8g -XX:+UseG1GC -Dspark.master=local[*]
+  spark-cluster:
+    conf: spark.default.parallelism=144
+    num-executors: 6
+    executor-cores: 8
+    executor-memory: 24G
+    driver-memory: 4G
+
+image-sync-sh-args:
+  local:
+    jvm: -Xmx8g -XX:+UseG1GC -Dspark.master=local[*]
+  spark-embedded:
+    jvm: -Xmx8g -XX:+UseG1GC -Dspark.master=local[*]
+  spark-cluster:
+    conf: spark.default.parallelism=144
+    num-executors: 16
+    executor-cores: 8
+    executor-memory: 7G
+    driver-memory: 1G
+
+image-load-sh-args:
+  local:
+    jvm: -Xmx8g -XX:+UseG1GC -Dspark.master=local[*]
+  spark-embedded:
+    jvm: -Xmx8g -XX:+UseG1GC -Dspark.master=local[*]
+  spark-cluster:
+    conf: spark.default.parallelism=144
+    num-executors: 16
+    executor-cores: 8
+    executor-memory: 7G
+    driver-memory: 1G
+
+annotations-sh-args:
+  local:
+    jvm: -Xmx8g -XX:+UseG1GC -Dspark.master=local[*]
+  spark-embedded:
+    jvm: -Xmx8g -XX:+UseG1GC -Dspark.master=local[*]
+  spark-cluster:
+    conf: spark.default.parallelism=144
+    num-executors: 16
+    executor-cores: 8
+    executor-memory: 7G
+    driver-memory: 1G
+
+export-sh-args:
+  local:
+    jvm: -Xmx8g -XX:+UseG1GC -Dspark.master=local[*]
+  spark-embedded:
+    jvm: -Xmx8g -XX:+UseG1GC -Dspark.master=local[*]
+  spark-cluster:
+    conf: spark.default.parallelism=144
+    num-executors: 16
+    executor-cores: 8
+    executor-memory: 7G
+    driver-memory: 1G
+
+uuid-sh-args:
+  local:
+    jvm: -Xmx8g -XX:+UseG1GC
+  spark-embedded:
+    jvm: -Xmx8g -XX:+UseG1GC
+  spark-cluster:
+    conf: spark.default.parallelism=500
+    num-executors: 6
+    executor-cores: 8
+    executor-memory: 20G
+    driver-memory: 4G
+
+sampling-sh-args:
+  local:
+    jvm: -Xmx8g -XX:+UseG1GC -Dspark.master=local[*]
+  spark-embedded:
+    jvm: -Xmx8g -XX:+UseG1GC -Dspark.master=local[*]
+  spark-cluster:
+    conf: spark.default.parallelism=144
+    num-executors: 8
+    executor-cores: 8
+    executor-memory: 16G
+    driver-memory: 4G
+
+outlier-sh-args:
+  local:
+    jvm: -Xmx8g -XX:+UseG1GC -Dspark.master=local[*]
+  spark-embedded:
+    jvm: -Xmx8g -XX:+UseG1GC -Dspark.master=local[*]
+  spark-cluster:
+    conf: spark.default.parallelism=144
+    num-executors: 8
+    executor-cores: 8
+    executor-memory: 16G
+    driver-memory: 4G
+
+sensitive-sh-args:
+  spark-embedded:
+    jvm: -Xmx8g -XX:+UseG1GC
+  spark-cluster:
+    jvm: -Xmx8g -XX:+UseG1GC
+    num-executors: 8
+    executor-cores: 8
+    executor-memory: 16G
+    driver-memory: 4G
+
+sample-sh-args:
+  local:
+    jvm: -Xmx8g -XX:+UseG1GC
+
+index-sh-args:
+  local:
+    jvm: -Xmx8g -XX:+UseG1GC
+  spark-embedded:
+    jvm: -Xmx8g -XX:+UseG1GC
+  spark-cluster:
+    conf: spark.default.parallelism=48
+    num-executors: 6
+    executor-cores: 8
+    executor-memory: 20G
+    driver-memory: 4G
+
+jackknife-sh-args:
+  local:
+    jvm: -Xmx8g -XX:+UseG1GC
+  spark-embedded:
+    jvm: -Xmx8g -XX:+UseG1GC
+  spark-cluster:
+    conf: spark.default.parallelism=500
+    num-executors: 24
+    executor-cores: 8
+    executor-memory: 7G
+    driver-memory: 1G
+
+clustering-sh-args:
+  local:
+    jvm: -Xmx8g -XX:+UseG1GC
+  spark-embedded:
+    jvm: -Xmx8g -XX:+UseG1GC
+  spark-cluster:
+    conf: spark.default.parallelism=500
+    num-executors: 6
+    executor-cores: 8
+    executor-memory: 20G
+    driver-memory: 4G
+
+solr-sh-args:
+  local:
+    jvm: -Xmx8g -XX:+UseG1GC
+  spark-embedded:
+    jvm: -Xmx8g -XX:+UseG1GC
+  spark-cluster:
+    conf: spark.default.parallelism=500
+    num-executors: 6
+    executor-cores: 8
+    executor-memory: 22G
+    driver-memory: 6G
+
+elastic-sh-args:
+  local:
+    jvm: -Xmx8g -XX:+UseG1GC
+  spark-embedded:
+    jvm: -Xmx8g -XX:+UseG1GC
+  spark-cluster:
+    conf: spark.default.parallelism=48
+    num-executors: 6
+    executor-cores: 8
+    executor-memory: 22G
+    driver-memory: 6G
+

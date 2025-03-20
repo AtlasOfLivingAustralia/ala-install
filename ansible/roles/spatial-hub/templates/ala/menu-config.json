@@ -86,10 +86,6 @@
         "open": "Classification"
       },
       {
-        "name": "Phylogenetic Diversity",
-        "open": "PhylogeneticDiversity"
-      },
-      {
         "name": "Nearest Locality",
         "open": "nearestLocality"
       },
@@ -108,12 +104,7 @@
     "items": [
       {
         "name": "Points",
-        "open": "sandBox",
-        "params": {
-          "display": {
-            "size": "full"
-          }
-        }
+        {{ '"open": "addPoints"' if use_spatial_sandbox is defined and use_spatial_sandbox else '"open": "sandBox", "params": { "display": { "size": "full" } }' }}
       },
       {
         "name": "Species List",
