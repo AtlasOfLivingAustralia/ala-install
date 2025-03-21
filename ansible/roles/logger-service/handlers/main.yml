@@ -1,0 +1,4 @@
+- name: restart logger
+  service: name=logger state=restarted enabled=yes
+  when:
+  - skip_handlers | default("false") | bool == false

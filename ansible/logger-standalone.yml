@@ -2,7 +2,7 @@
   roles:
     - common
     - java
-    - tomcat
+    - {role: tomcat, when: not exec_jar}
     - webserver
     - mysql
     - logger-service

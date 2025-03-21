@@ -2,7 +2,7 @@
 version: "{{ logger_version | default('LATEST') }}"
 artifactId: "logger-service"
 groupId: "au.org.ala"
-classifier: ''
-packaging: "war"
-logger_war_url: "{{maven_repo_ws_url}}"
+classifier: "{{ logger_classifier | default('') }}"
+packaging: "{{ logger_packaging | default('war') }}"
+logger_artifact_url: "{{maven_repo_ws_url}}"
 content_type_options_header: "{{ logger_content_type_options_header | default(false) }}"
