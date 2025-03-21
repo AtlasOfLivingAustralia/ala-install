@@ -144,3 +144,7 @@ userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/us
 
 aws:
   region: ap-southeast-2
+
+tiling:
+  levelThreads: {{ image_service_tiler_levelThreads | default('2') }}
+  ioThreads: {{ image_service_tiler_iothreads | default('2') }}
