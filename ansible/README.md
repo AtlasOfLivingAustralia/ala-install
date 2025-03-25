@@ -15,6 +15,7 @@
 
 # Tomcat and Apache configuration
 If your application requires a WAR file deployment then you use the common ```tomcat_deploy``` and ```apache_vhost``` roles. This will ensure a consistent approach to Tomcat and Apache configuration.
+If your application requires a JAR deployment then use the ```exec_jar``` role.
 
 ## How to use them
 
@@ -28,7 +29,7 @@ The easiest way to use these roles is to use parameterised includes in your main
     - deploy
 }}'
 
-- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ logger_war_url }}' context_path='{{ logger_context_path }}' hostname='{{ logger_hostname }}'
+- include: ../../tomcat_deploy/tasks/main.yml war_url='{{ logger_artifact_url }}' context_path='{{ logger_context_path }}' hostname='{{ logger_hostname }}'
   tags:
     - logger
     - apache_vhost
