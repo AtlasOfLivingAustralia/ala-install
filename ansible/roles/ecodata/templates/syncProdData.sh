@@ -5,10 +5,19 @@ export FILE="ecodata-$(date +%y%m%d).tgz"
 cd /data/backups/prod
 tar -xf $FILE
 # audit messages are stored outside the tar
-cp ./audit/auditMessage.* ./data/backups/dump/ecodata/
+mv ./audit/auditMessage.* ./data/backups/dump/ecodata/
+cp ./data/ecodata/models/* /data/ecodata/models/
+chown ecodata:ecodata /data/ecodata/models/*
+
 mongorestore --drop -d ecodata -u {{ ecodata_username }} -p {{ ecodata_password }} ./data/backups/dump/ecodata
 
 mongosh -u {{ ecodata_username }} -p {{ ecodata_password }} ecodata --eval 'db.setting.update({key:"meritfielddata.announcement.text"},{$set:{value:"This is the MERIT staging environment"}})';
+
+# clean up as we are tight on disk space and the audit messages are > 50GB
+mv ./data/backups/dump/ecodata/auditMessage.* ./audit/
+rm -r /data/backups/prod/data
+
+# Run any release tagged data migration scripts
 ECODATA_VERSION={{ ecodata_version }}
 ECODATA_NUMERIC_VERSION=${ECODATA_VERSION%%'-SNAPSHOT'*}
 
