@@ -354,7 +354,7 @@
         sort_label: "darwin_core_archive"
         is_proxy: true
         proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
-        proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/project/$1/archive"
+        proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/project/$1/archive$is_args$args"
   tags:
     - nginx_vhost
     - deploy
