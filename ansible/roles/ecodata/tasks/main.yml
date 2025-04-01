@@ -447,7 +447,7 @@
   when: scheduled_database_backup or scheduled_production_data_copy or scheduled_downloads
 
 - name: Schedule cron job to backup ecodata
-  cron: minute=13 hour=4 name="Backup ecodata database" job="{{data_dir}}/ecodata/scripts/backup-ecodata.sh >/dev/null 2>&1" user={{ecodata_backup_user}} state=present
+  cron: minute=13 hour=4 name="Backup ecodata database" job="{{data_dir}}/ecodata/scripts/backup-ecodata.sh >/dev/null 2>&1" user=root state=present
   tags:
     - cron
   when: scheduled_database_backup

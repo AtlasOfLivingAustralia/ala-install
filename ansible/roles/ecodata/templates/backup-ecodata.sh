@@ -1,5 +1,7 @@
 #!/bin/bash
 
+su - {{ecodata_backup_user}}
+
 mkdir -p {{data_dir}}/backups/daily
 mkdir -p {{data_dir}}/backups/weekly
 mkdir -p {{data_dir}}/backups/monthly
@@ -31,3 +33,27 @@ find {{data_dir}}/backups/weekly -mtime +30 -delete
 
 # and 2 years of monthlys
 find {{data_dir}}/backups/monthly -mtime +730 -delete
+
+{% if mongo_backup_bucket is defined %}
+
+cd {{data_dir}}/backups
+aws s3 sync . s3://{{mongo_backup_bucket}}/
+
+{% endif %}
+
+exit
+
+
+{% if document_backup_bucket is defined %}
+# This is temporary until we make s3 the primary document storage mechanism
+su - {{ecodata_user}}
+
+cd {{data_dir}}/ecodata/uploads
+aws s3 sync . s3://{{document_backup_bucket}}/
+
+exit
+
+{% endif %}
+
+
+

@@ -64,3 +64,5 @@ paratoo_core_base_url: "https://dev.core-api.paratoo.tern.org.au/api"
 
 ecodata_ips: "{{ mongo_cluster_enabled | ternary(ecodata_server_ip +','+ecodata_reporting_server_ip, host_ip_address) }}"
 data_dir: /data
+
+production_server_hostname: ala-waters.it.csiro.au
