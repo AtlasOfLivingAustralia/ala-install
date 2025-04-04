@@ -63,7 +63,7 @@ webservice:
   client-id: {{ bie_index_client_id | default(webservice_clientId) | default('') }}
   client-secret: {{ bie_index_client_secret | default(webservice_secert) | default('') }}
 userDetails:
-  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails/') }}
+  url: {{ bie_userdetails_url | default(userdetails_url) | default('https://auth.ala.org.au/userdetails/') }}
 biocache:
   base: {{ biocache_base_url | default('https://biocache.ala.org.au') }}
   service: {{ biocache_service_url | default('https://biocache-ws.ala.org.au/ws') }}
@@ -215,7 +215,7 @@ openapi:
 {% endif %}
 
 userdetails:
-  url: {{ userdetails_url | default('https://auth.ala.org.au/userdetails') }}
+  url: {{ bie_userdetails_url | default(userdetails_url) | default('https://auth.ala.org.au/userdetails') }}
 userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
 userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
 
