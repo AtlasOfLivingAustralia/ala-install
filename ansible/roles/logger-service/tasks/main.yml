@@ -52,21 +52,7 @@
   tags:
     - logger-service
     - properties
-
-- name: copy all config.properties
-  template: src=logger-config.properties dest={{data_dir}}/logger/config/logger-config.properties output_encoding=iso-8859-1
-  tags:
-    - logger-service
-    - properties
-    - properties-file
-
-- name: copy logback config
-  template:
-    src: logback.xml
-    dest: "{{data_dir}}/logger/config/logback.xml"
-  tags:
-    - properties
-    - logger-service
+  when: not exec_jar
 
 - name: set data ownership
   file: path={{data_dir}}/logger owner={{tomcat_user}} group={{tomcat_user}} recurse=true
@@ -75,6 +61,7 @@
   tags:
     - logger-service
     - properties
+  when: not exec_jar
 
 - include_tasks: ../../apache_vhost/tasks/main.yml
   vars:
@@ -221,3 +208,18 @@
     - logger-service
     - properties
   when: exec_jar
+
+- name: copy all config.properties
+  template: src=logger-config.properties dest={{data_dir}}/logger/config/logger-config.properties output_encoding=iso-8859-1
+  tags:
+    - logger-service
+    - properties
+    - properties-file
+
+- name: copy logback config
+  template:
+    src: logback.xml
+    dest: "{{data_dir}}/logger/config/logback.xml"
+  tags:
+    - properties
+    - logger-service
