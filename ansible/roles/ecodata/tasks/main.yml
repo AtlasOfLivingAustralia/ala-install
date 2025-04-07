@@ -453,19 +453,19 @@
   when: scheduled_database_backup
 
 - name: install cron job for indexing elastic search
-  cron: minute=0 hour=6 weekday=0 name="Elastic search indexing" job="{{data_dir}}/ecodata/scripts/reIndexAll.sh >/dev/null 2>&1" user=root state=present
+  cron: minute=0 hour=7 weekday=0 name="Elastic search indexing" job="{{data_dir}}/ecodata/scripts/reIndexAll.sh >/dev/null 2>&1" user=root state=present
   tags:
     - cron
   when: scheduled_re_index
 
 - name: Schedule cron job to load production data into the staging server
-  cron: minute=1 hour=5 weekday=0 name="Load production data" job="{{data_dir}}/ecodata/scripts/syncProdData.sh >/dev/null 2>&1" user=root state=present
+  cron: minute=1 hour=6 weekday=0 name="Load production data" job="{{data_dir}}/ecodata/scripts/syncProdData.sh >/dev/null 2>&1" user=root state=present
   tags:
     - cron
   when: scheduled_production_data_load
 
 - name: Schedule cron job to copy data from the production server
-  cron: minute=1 hour=6 name="Copy data from the production server" job="{{data_dir}}/ecodata/scripts/copyProdData.sh >/dev/null 2>&1" user="{{ecodata_backup_user}}" state=present
+  cron: minute=1 hour=5 name="Copy data from the production server" job="{{data_dir}}/ecodata/scripts/copyProdData.sh >/dev/null 2>&1" user="{{ecodata_backup_user}}" state=present
   tags:
     - cron
   when: scheduled_production_data_copy
@@ -477,7 +477,7 @@
   when: scheduled_production_documents_copy
 
 - name: Schedule cron job to automate MERIT downloads
-  cron: minute=30 hour=17 weekday=0 name="Scheduled MERIT downloads" job="{{data_dir}}/ecodata/scripts/scheduledDAWEDownloads.sh >/dev/null 2>&1" user="{{ecodata_backup_user}}" state=present
+  cron: minute=30 hour=11 weekday=0 name="Scheduled MERIT downloads" job="{{data_dir}}/ecodata/scripts/scheduledDAWEDownloads.sh >/dev/null 2>&1" user="{{ecodata_backup_user}}" state=present
   tags:
     - cron
   when: scheduled_downloads
