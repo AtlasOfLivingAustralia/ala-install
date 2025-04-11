@@ -1,0 +1,38 @@
+---
+- name: ensure mysql is running (this is idempotent so safe)
+  service: name={{ mysql_service }} state=started enabled="yes"
+  tags:
+    - db
+    - collectory
+
+- name: create collectory DB
+  mysql_db: name=collectory state=present encoding=utf8
+  register: dbschema
+  tags:
+    - db
+    - collectory
+
+- name: create collectory DB user
+  mysql_user: name={{collectory_db_user}} password={{collectory_db_password}} priv=collectory.*:ALL state=present
+  tags:
+    - db
+    - collectory
+
+- name: set data ownership [all data is owned by tomcat]
+  file: path={{ collectory_data_dir }} owner={{ collectory_service_system_user }} group={{ collectory_service_system_user }} recurse=true
+  notify:
+    - restart tomcat
+  tags:
+    - properties
+    - collectory
+
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
+  vars:
+    war_url: '{{ collectory_war_url }}'
+    context_path: '{{ collectory_context_path }}'
+    hostname: '{{ collectory_hostname }}'
+  tags:
+    - deploy
+    - tomcat_vhost
+    - collectory
+    - webapps

@@ -1,0 +1,17 @@
+---
+- name: ensure target db directories exist
+  file: path={{item}} state=directory
+  # owner={{tomcat_user}} group={{tomcat_user}}
+  with_items:
+    - "{{ collectory_docker_db_data_dir }}"
+    - "{{ collectory_data_dir }}/docker/"
+  run_once: true
+  tags:
+    - docker
+    - docker-service
+
+- name: Deploy collectory stack
+  import_tasks: ../../docker-common/tasks/stack-create.yml
+  vars:
+    stack: la_collectory
+    docker_compose_data_dir: "{{ collectory_data_dir }}/docker/"

@@ -1,0 +1,40 @@
+{
+  "biocache": {
+    "state" : {
+      "title": "By State",
+      "chartType": "doughnut",
+      "emptyValueMsg": "State not specified",
+      "hideEmptyValues" : true
+    },
+    "type_status" : {
+      "title": "Type Status",
+      "chartType": "doughnut",
+      "emptyValueMsg": "Type not specified",
+      "hideEmptyValues" : true
+    },
+    "month": {
+      "title": "By month",
+      "chartType": "bar",
+      "emptyValueMsg": "Month not specified",
+      "hideEmptyValues": true
+    },
+    "decade": {
+      "title": "By decade",
+      "chartType": "bar",
+      "emptyValueMsg": "Year not specified",
+      "hideEmptyValues": true
+    },
+    "assertions": {
+      "title": "By data quality",
+      "chartType": "horizontal-bar",
+      "emptyValueMsg": "",
+      "hideEmptyValues": true
+    },
+    "family": {
+      "title": "By family",
+      "chartType": "doughnut",
+      "emptyValueMsg": "",
+      "hideEmptyValues": true
+    }
+  }
+}
