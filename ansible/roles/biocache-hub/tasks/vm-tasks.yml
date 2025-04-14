@@ -2,6 +2,17 @@
 #
 # WAR/JAR file deployment
 #
+
+# java 17, add to existing jvm_params list
+- name: add java 17 specific params to jvm_params, for exec_jar
+  set_fact:
+    jvm_params: "{{ jvm_params | default([]) + ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.lang.reflect=ALL-UNNAMED'] }}"
+  tags:
+    - deploy
+    - service
+    - biocache_hub
+  when: exec_jar and use_openjdk17
+
 - name: add jar and service
   include_role:
     name: exec-jar
