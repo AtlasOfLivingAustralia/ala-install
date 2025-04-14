@@ -1,7 +1,11 @@
 # application versions
 # assets
 # collectory_version: "1.5.1"
-version: "{{ collectory_version | default('LATEST') }}"
+collectory_service_hostname: "{{ collectory_app | default('collectory') }}"
+
+collectory_service_system_user: "collectory"
+
+collectory_version: "{{ collectory_app_version | default('LATEST') }}"
 
 artifactId: "{{ collectory_app | default('generic-collectory') }}"
 
@@ -9,9 +13,11 @@ groupId: "{{ collectory_group_id | default('au.org.ala') }}"
 # collectory does not need a value for classifier
 classifier: ''
 
-packaging: "war"
+packaging: "jar"
 
-collectory_war_url: "{{ collectory_maven_repo_ws_url | default(maven_repo_ws_url) }}"
+collectory_jar_url: "{{ collectory_maven_repo_ws_url | default(maven_repo_ws_url) }}"
+
+logback_config_filename: "logback.xml"
 
 collectory_data_dir: "{{ data_dir }}/{{ collectory_app | default('generic-collectory') }}"
 

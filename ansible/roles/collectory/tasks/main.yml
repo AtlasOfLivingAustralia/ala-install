@@ -7,8 +7,18 @@
     - deploy
     - config
 
+- name: "Ensure system user for collectory-service"
+  user:
+    name: "{{ collectory_service_system_user }}"
+    state: present
+    system: yes
+  tags:
+    - collectory
+    - properties
+
+
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{item}} state=directory owner={{collectory_service_system_user}} group={{collectory_service_system_user}}
   with_items:
     - "{{ collectory_data_dir }}"
     - "{{ collectory_data_dir }}/upload/tmp"
@@ -18,7 +28,7 @@
     - collectory
 
 - name: copy all data assets
-  copy: src={{item}} dest={{ collectory_data_dir }} owner={{tomcat_user}} group={{tomcat_user}}
+  copy: src={{item}} dest={{ collectory_data_dir }} owner={{collectory_service_system_user}} group={{collectory_service_system_user}}
   with_items:
     - data/config
     - data/data
@@ -26,7 +36,11 @@
     - properties
     - collectory
 
-- name: copy all template configs
+- name: Print collectory_version
+  debug:
+    msg: "Collectory version is {{ collectory_version }}"
+
+- name: copy all template configs - standalone application
   template: src={{item}} dest={{ collectory_data_dir }}/config/{{ collectory_app | default('generic-collectory') }}-config.properties output_encoding=iso-8859-1
   with_items:
     - config/collectory-config.properties
@@ -44,13 +58,43 @@
     - properties
     - collectory
 
-- name: set data ownership [all data is owned by tomcat]
-  file: path={{ collectory_data_dir }} owner={{ tomcat_user }}  group={{ tomcat_user }}  recurse=true
-  notify: 
-    - restart tomcat  
+- name: ensure www directory exists
+  file: path={{item}} state=directory
+  with_items:
+    - "/srv/{{ collectory_service_hostname }}/www"
+  notify:
+    - restart collectory
+  tags:
+    - collectory-service
+
+- name: add collectory-service jar and setup service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: 'collectory'
+    jar_url: '{{ collectory_jar_url }}'
+    use_openjdk17: "{{ collectory_version | string is version('5.2.0', '>') }}"
+    log_config_filename: "{{ logback_config_filename }}"
+    java_headless: True
+  tags:
+    - deploy
+    - service
+    - collectory-service
+    -
+- name: set data ownership for /var/log/collectory
+  file: path="/var/log/collectory" owner="{{ collectory_service_system_user | default('collectory') }}"  state="directory" group="{{ collectory_service_system_user | default('collectory-service') }}" recurse=true
+  notify:
+    - restart collectory
+  tags:
+    - collectory-service
+    - properties
+
+
+- name: set data ownership
+  file: path={{ collectory_data_dir }} owner={{ collectory_service_system_user }}  group={{ collectory_service_system_user }}  recurse=true
   tags:
     - properties
-    - collectory
+    - collectory-service
 
 - include_tasks: ../../apache_vhost/tasks/main.yml
   vars:
@@ -82,10 +126,10 @@
     - collectory
   when: webserver_nginx
 
-- name: Include docker tasks
-  include_tasks: docker-tasks.yml
-  when: deployment_type == 'swarm'
-
-- name: Include VM tasks
-  import_tasks: vm-tasks.yml
-  when: deployment_type == 'vm'
+#- name: Include docker tasks
+#  include_tasks: docker-tasks.yml
+#  when: deployment_type == 'swarm'
+#
+#- name: Include VM tasks
+#  import_tasks: vm-tasks.yml
+#  when: deployment_type == 'vm'
