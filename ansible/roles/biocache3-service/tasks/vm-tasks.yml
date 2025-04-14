@@ -1,11 +1,24 @@
 ---
 
+- name: add war and service
+  include_role:
+    name: exec-war
+  vars:
+    service_name: '{{ biocache_service }}'
+    jar_url: '{{ biocache_service_war_path }}'
+    log_config_filename: logback.xml
+  tags:
+    - deploy
+    - service
+    - biocache_service
+  when: exec_jar
+
 - include_tasks: ../../tomcat_deploy/tasks/main.yml
   vars:
     war_url: '{{ biocache_service_war_path }}'
     context_path: '{{ biocache_service_context_path }}'
     hostname: '{{ biocache_service_hostname }}'
-  when: biocache_service_local_build is not defined
+  when: not exec_jar and biocache_service_local_build is not defined
   tags:
     - biocache-service
     - deploy
@@ -17,7 +30,7 @@
     war_local_build: '{{ biocache_service_local_build }}'
     context_path: '{{ biocache_service_context_path }}'
     hostname: '{{ biocache_service_hostname }}'
-  when: biocache_service_local_build is defined
+  when: not exec_jar and biocache_service_local_build is defined
   tags:
     - biocache-service
     - deploy
@@ -30,3 +43,14 @@
     - biocache-service
   notify:
     - restart tomcat
+  when: not exec_jar
+
+- name: Restart {{ biocache_service }} service
+  service:
+    name: "{{ biocache_service }}"
+    state: restarted
+    enabled: yes
+  tags:
+    - biocache_service
+    - properties
+  when: exec_jar

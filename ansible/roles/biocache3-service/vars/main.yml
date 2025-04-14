@@ -5,10 +5,15 @@ cassandra: cassandra12-1.2.10-1
 # war location in maven repo
 version: "{{ biocache_service_version | default('1.9.2') }}"
 artifactId: "biocache-service"
+groupId: "{{ biocache_service_group_id | default('au.org.ala') }}"
 
-# biocache service does not need a value for classifier
-classifier: ''
-packaging: "war"
+# If deploying this as a service, use
+# exec_jar=True
+# biocache_service_packaging=jar
+# biocache_service_classifier=exec
+# logger_client_user=biocache-service
+classifier:  "{{ biocache_service_classifier | default('') }}"
+packaging: "{{ biocache_service_packaging | default('war') }}"
 
 biocache_service_war_path: "{{  biocache_service_maven_repo_ws_url | default(maven_repo_ws_url)  }}"
 
@@ -20,3 +25,5 @@ nginx_extra_http_options: |
   proxy_max_temp_file_size 0;
 
 content_type_options_header: "{{ biocache_service_content_type_options_header | default(false) }}"
+
+biocache_service_server_port: "{{ biocache_server_port | default('8080') }}"
