@@ -1,0 +1,151 @@
+- include_tasks: ../../common/tasks/setfacts.yml
+  tags:
+    - service
+
+- import_role:
+    name: java
+
+- name: Update apt
+  apt:
+    update_cache: yes
+  tags:
+  - service
+
+- name: Install dependencies for ansible python 2
+  apt:
+    name: python-lxml
+    state: present
+  when: ansible_python.version.major==2
+  tags:
+  - service
+
+- name: Install dependencies for ansible python 3
+  apt:
+    name: python3-lxml
+    state: present
+  when: ansible_python.version.major==3
+  tags:
+  - service
+
+- name: "Create system user for {{service_name}}"
+  user:
+    name: "{{ service_owner | default(service_name) }}"
+    state: present
+    system: yes
+  tags:
+  - service
+
+- name: "Create {{service_name}} dir"
+  file:
+    path: "/opt/atlas/{{service_name}}"
+    state: directory
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_owner | default(service_name) }}"
+    mode: 0755
+  tags:
+  - service
+
+- name: "Create {{service_name}} service file"
+  template:
+    src: systemd.service
+    dest: "/etc/systemd/system/{{service_name}}.service"
+  register: service
+  tags:
+  - service
+
+- name: "Reload services"
+  when: service.changed
+  systemd:
+    name: "{{service_name}}"
+    daemon-reload: yes
+  tags:
+  - service
+
+- name: "Enable service"
+  systemd:
+    name: "{{service_name}}"
+    enabled: true
+  tags:
+  - service
+
+- name: "Download datadog JAR"
+  ansible.builtin.get_url:
+    url: https://github.com/DataDog/dd-trace-java/releases/{{datadog_version | default('latest')}}/download/dd-java-agent.jar
+    force: true
+    dest: "/opt/atlas/{{service_name}}/dd-java-agent.jar"
+    mode: '0550'
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_group | default(service_name) }}"
+  notify: "restart {{service_name}}"
+  when: datadog_java_apm_enabled is defined and datadog_java_apm_enabled
+  tags:
+  - datadog
+  - service
+
+- name: "Check datadog agent JAR state"
+  ansible.builtin.file:
+    path: "/opt/atlas/{{service_name}}/dd-java-agent.jar"
+    state: absent
+  when: datadog_java_apm_enabled is not defined or not datadog_java_apm_enabled
+  tags:
+  - datadog
+  - service
+
+- name: "Download {{service_name}} WAR (unauthenticated)"
+  maven_artifact:
+    group_id: "{{groupId}}"
+    artifact_id: "{{artifactId}}"
+    version: "{{version|default('latest')}}"
+    extension: "war"
+    classifier: "{{classifier|default('')}}"
+    repository_url: "{{maven_repo_url}}"
+    timeout: 30
+    dest: "/opt/atlas/{{service_name}}/{{service_name}}.war"
+    mode: u=rwx,g=rx,o=rx
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_group | default(service_name) }}"
+    verify_checksum: always
+  notify: "restart {{service_name}}"
+  when: maven_repo_username is not defined
+  tags:
+  - service
+
+- name: "Download {{service_name}} WAR (with supplied username and password)"
+  maven_artifact:
+    group_id: "{{groupId}}"
+    artifact_id: "{{artifactId}}"
+    version: "{{version|default('latest')}}"
+    extension: "war"
+    classifier: "{{classifier|default('')}}"
+    repository_url: "{{maven_repo_url}}"
+    username: "{{maven_repo_username}}"
+    password: "{{maven_repo_password}}"
+    timeout: 30
+    dest: "/opt/atlas/{{service_name}}/{{service_name}}.war"
+    mode: u=rwx,g=rx,o=rx
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_group | default(service_name) }}"
+    verify_checksum: always
+  notify: "restart {{service_name}}"
+  when: maven_repo_username is defined
+  tags:
+    - service
+
+- name: "Set {{service_name}} WAR config"
+  template:
+    src: service.conf
+    dest: "/opt/atlas/{{service_name}}/{{service_name}}.conf"
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_group | default(service_name) }}"
+  notify: "restart {{service_name}}"
+  tags:
+  - service
+  - service-conf
+
+# Don't force start the service, rely on the handlers to do it
+# - name: "Start {{service_name}} service"
+#   systemd:
+#     name: "{{service_name}}"
+#     state: started
+#   tags:
+#   - service
