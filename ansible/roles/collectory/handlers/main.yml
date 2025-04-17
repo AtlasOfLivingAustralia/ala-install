@@ -2,9 +2,18 @@
   service: name={{mysql_service}} state=restarted enabled="yes"
 
 - name: restart collectory
-  service: name="collectory" state=restarted enabled=yes
-  when:
-    - skip_handlers | default("false") | bool == false
+  service:
+    name: "{{ collectory_service_system_user if exec_jar else tomcat }}"
+    state: restarted
+    enabled: yes
+  when: not (skip_handlers | default(false) | bool)
+
+- name: restart tomcat
+  service:
+    name: "{{ tomcat }}"
+    state: restarted
+    enabled: yes
+  when: not (skip_handlers | default(false) | bool)
 
 - name: restart httpd
   service: name={{apache}} state=restarted enabled="yes"
