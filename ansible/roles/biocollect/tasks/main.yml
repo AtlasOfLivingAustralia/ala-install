@@ -201,20 +201,18 @@
   tags:
     - pwa
 
-- name: Clear existing PWA files (if they exist)
-  file:
-    path: '{{ item }}'
-    state: absent
-  with_items:
-    - /data/biocollect/pwa.zip
-    - "/data/biocollect/{{ pwa_artifact_name }}.zip"
+- name: Check if PWA artifact already exists
+  ansible.builtin.stat:
+    path: "/data/biocollect/{{ pwa_artifact_id }}.zip"
+  register: pwa_artifact_stat
   tags:
     - pwa
 
  # We have to use curl instead of get_url as the latter is broken for some mysterious reason
-- name: Download PWA artifact
+- name: Download PWA artifact (if it doesn't exist)
   ansible.builtin.command:
-    cmd: "curl -X GET https://api.github.com/repos/AtlasOfLivingAustralia/biocollect-pwa/actions/artifacts/{{ pwa_artifact_id }}/zip -H 'Authorization: Bearer {{ pwa_gh_token }}' -o /data/biocollect/pwa.zip -v -L"
+    cmd: "curl -X GET https://api.github.com/repos/AtlasOfLivingAustralia/biocollect-pwa/actions/artifacts/{{ pwa_artifact_id }}/zip -H 'Authorization: Bearer {{ pwa_gh_token }}' -o /data/biocollect/{{ pwa_artifact_id }}.zip -v -L"
+  when: not pwa_artifact_stat.stat.exists
   tags:
    - pwa
 
@@ -226,7 +224,7 @@
     - pwa
 
 - name: Extract new PWA archives
-  ansible.builtin.shell: sudo unzip pwa.zip
+  ansible.builtin.shell: "sudo unzip {{ pwa_artifact_id }}.zip"
   args:
     chdir: /data/biocollect
   tags:
@@ -244,7 +242,6 @@
     path: '{{ item }}'
     state: absent
   with_items:
-    - /data/biocollect/pwa.zip
     - "/data/biocollect/{{ pwa_artifact_name }}.zip"
   tags:
     - pwa
