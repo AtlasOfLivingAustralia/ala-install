@@ -3,6 +3,7 @@
     - common
     - java
     - webserver
+    - { role: tomcat, when: not (exec_jar | default(false) | bool) }
     - mysql
     - i18n
     - collectory

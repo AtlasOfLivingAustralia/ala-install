@@ -5,17 +5,15 @@ collectory_service_hostname: "{{ collectory_app | default('collectory') }}"
 
 collectory_service_system_user: "collectory"
 
-collectory_version: "{{ collectory_app_version | default('LATEST') }}"
-
 artifactId: "{{ collectory_app | default('generic-collectory') }}"
 
 groupId: "{{ collectory_group_id | default('au.org.ala') }}"
 # collectory does not need a value for classifier
 classifier: ''
 
-packaging: "jar"
+packaging: "{{ collectory_packaging | default('war') }}"
 
-collectory_jar_url: "{{ collectory_maven_repo_ws_url | default(maven_repo_ws_url) }}"
+version: "{{ collectory_version | default('LATEST') }}"
 
 logback_config_filename: "logback.xml"
 
