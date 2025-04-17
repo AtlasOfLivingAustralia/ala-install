@@ -237,11 +237,19 @@
   tags:
     - pwa
 
-- name: Clear temporary PWA archives
-  file:
-    path: '{{ item }}'
+- name: Find all .zip files in the biocollect directory
+  ansible.builtin.find:
+    paths: "/data/biocollect"
+    patterns: "*.zip"
+  register: zip_files
+  tags:
+    - pwa
+
+- name: Remove all .zip files excluding the current PWA artifact
+  ansible.builtin.file:
+    path: "{{ item.path }}"
     state: absent
-  with_items:
-    - "/data/biocollect/{{ pwa_artifact_name }}.zip"
+  loop: "{{ zip_files.files }}"
+  when: (item.path | basename) != (pwa_artifact_id ~ '.zip')
   tags:
     - pwa
