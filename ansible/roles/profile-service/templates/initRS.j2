@@ -1,0 +1,20 @@
+var result = {ok:false};
+try {
+    result = rs.status();
+}
+catch (e) {
+ // rs.status can throw an error.
+}
+
+if (!result.ok) {
+    result = rs.initiate();
+}
+
+if (result.ok) {
+    if (!result.members || result.members.length == 1) {
+
+        rs.add({ host: "{{ internal_secondary_ip }}:27017", votes: 0, hidden: false, priority: 0});
+        printjson(rs.status());
+    }
+}
+
