@@ -23,7 +23,7 @@
       Version: {{ version }}.{{ packaging }}
       Service user: {{ data_owner_user }}
 
-- name: "ensure systemd user: {{ data_owner_user}} exists"
+- name: "ensure system user for collectory exists - "
   user:
     name: "{{ data_owner_user }}"
     state: present
@@ -49,6 +49,9 @@
     - properties
     - collectory
 
+- name: Print collectory_version
+  debug:
+    msg: "Collectory version is {{ collectory_version }}"
 
 - name: copy all template configs - standalone application
   template: src={{item}} dest={{ collectory_data_dir }}/config/{{ collectory_app | default('generic-collectory') }}-config.properties output_encoding=iso-8859-1

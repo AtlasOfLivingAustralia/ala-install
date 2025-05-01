@@ -34,32 +34,6 @@
     - collectory
   when: exec_jar | default(false) | bool
 
-- name: Extract assets (images) from jar for systemd service
-  block:
-    - name: Extract assets from jar
-      command: "jar xf /opt/atlas/{{ collectory_app }}/{{ collectory_app }}.jar {{ item }}"
-      loop:
-        - "assets/map/marker-icon.png"
-        - "assets/map/marker-icon-2x.png"
-        - "assets/map/marker-icon-shadow.png"
-      args:
-        chdir: "/opt/atlas/{{ collectory_app }}"
-
-    - name: copy asserts folder into static/images
-      shell: |
-        mkdir -p /opt/atlas/{{ collectory_app }}/static/images
-        cp -R /opt/atlas/{{ collectory_app }}/assets/map /opt/atlas/{{ collectory_app }}/static/images/
-
-    - name: Change owner of /opt/atlas/{{ collectory_app }}/static/images to {{ collectory_service_system_user}}
-      file:
-        path: "/opt/atlas/{{ collectory_app }}/static/      "
-        owner: "{{ collectory_service_system_user }}"
-        group: "{{ collectory_service_system_user }}"
-        recurse: yes
-      notify:
-        - restart collectory
-  when: exec_jar | default(false) | bool
-
 - name: set log file for collectory systemd service
   file: path="/var/log/collectory" owner="{{ data_owner_user | default('collectory') }}"  state="directory" group="{{ data_owner_user | default('collectory') }}" recurse=true
   notify:
@@ -81,7 +55,7 @@
 - include_tasks: ../../tomcat_deploy/tasks/main.yml
   vars:
     #only used when tomcat_deploy_from_url
-    war_url: '{{ collectory_war_url | default('')}}'
+    war_url: '{{ collectory_war_url }}'
     context_path: '{{ collectory_context_path }}'
     hostname: '{{ collectory_hostname }}'
   tags:
