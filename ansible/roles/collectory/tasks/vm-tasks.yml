@@ -18,6 +18,31 @@
     - db
     - collectory
 
+
+#deploy as systemd service
+- name: add collectory jar and setup systemd service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: "{{collectory_app | default('collectory')}}"
+    use_openjdk17: "{{ collectory_version | string is version('5.2.0', '>') }}"
+    log_config_filename: "{{ logback_config_filename }}"
+    java_headless: True
+  tags:
+    - deploy
+    - service
+    - collectory
+  when: exec_jar | default(false) | bool
+
+- name: set log file for collectory systemd service
+  file: path="/var/log/collectory" owner="{{ data_owner_user | default('collectory') }}"  state="directory" group="{{ data_owner_user | default('collectory') }}" recurse=true
+  notify:
+    - restart collectory
+  tags:
+    - collectory
+  when: exec_jar | default(false) | bool
+
+#deploy on tomcat
 - name: set data ownership [all data is owned by tomcat]
   file: path={{ collectory_data_dir }} owner={{ tomcat_user }} group={{ tomcat_user }} recurse=true
   notify:
@@ -25,9 +50,11 @@
   tags:
     - properties
     - collectory
+  when: not (exec_jar | default(false) | bool)
 
 - include_tasks: ../../tomcat_deploy/tasks/main.yml
   vars:
+    #only used when tomcat_deploy_from_url
     war_url: '{{ collectory_war_url }}'
     context_path: '{{ collectory_context_path }}'
     hostname: '{{ collectory_hostname }}'
@@ -35,4 +62,5 @@
     - deploy
     - tomcat_vhost
     - collectory
-    - webapps
+    - webapp
+  when: not (exec_jar | default(false) | bool)
