@@ -327,3 +327,14 @@
     name: mongod
     state: started
   tags: mongodb-org
+
+- name: add cron job to send email notification when replica server is down
+  cron:
+    name: "notify when replica mongodb is down"
+    hour: "*"
+    minute: "*"
+    job: "pgrep mongod > /dev/null && rm -f /tmp/mongod_alert_sent || ( [ ! -f /tmp/mongod_alert_sent ] && echo \"MongoDB down at $(date) on {{ internal_secondary_hostname }}\" | mail -s \"MongoDB Alert\" profiles-recipients@ala.org.au && touch /tmp/mongod_alert_sent )"
+  tags:
+    - profile-service
+    - cron
+  when: not is_primary | bool

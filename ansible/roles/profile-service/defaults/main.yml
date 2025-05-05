@@ -11,3 +11,4 @@ is_primary: true
 # mongo
 mongo_cluster_enabled: false
 mongodb_root_username: "admin"
+internal_secondary_hostname: ""
