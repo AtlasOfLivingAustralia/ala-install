@@ -86,12 +86,21 @@
   apt:
     name: python-pymongo
     state: absent
+  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int < 24) or ansible_distribution != 'Ubuntu'
   tags: mongodb-org
 
 - name: Install pip python-pymongo package
   pip:
     name: pymongo==3.12.2
 #    name: pymongo==4.3.3
+  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int < 24) or ansible_distribution != 'Ubuntu'
+  tags: mongodb-org
+
+- name: Install official python3-pymongo package (Ubuntu 24+)
+  apt:
+    name: python3-pymongo
+    state: present
+  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int >= 24)
   tags: mongodb-org
 
 - name: Enable service mongod

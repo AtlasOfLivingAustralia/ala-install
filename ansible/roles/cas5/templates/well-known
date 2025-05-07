@@ -1,9 +1,13 @@
 {
   "issuer": "{{auth_cas_url}}/oidc",
   "scopes_supported": [
-{% for ascope in cas_oidc_well_known_scopes %}
+{% for ascope in cas_oidc_scopes %}
     "{{ ascope }}"{% if not loop.last %},{%endif%}
     
+{% endfor %}
+{% for extra_scope in cas_extra_scopes | default ([]) %}
+    "{{ extra_scope }}"{% if not loop.last %},{%endif%}
+
 {% endfor %}
   ],
   "response_types_supported": [
