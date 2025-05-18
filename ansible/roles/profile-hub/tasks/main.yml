@@ -20,7 +20,8 @@
   tags:
     - profile-hub
 
-- include: ../../common/tasks/setfacts.yml
+- include_tasks:
+      file: ../../common/tasks/setfacts.yml
   tags:
     - profile-hub
     - deploy
