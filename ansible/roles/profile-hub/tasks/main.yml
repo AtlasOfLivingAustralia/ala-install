@@ -165,9 +165,11 @@
 #
 # WAR file deployment and virtual host configuration
 #
-- include: ../../apache_vhost/tasks/main.yml
-    context_path='{{ profile_hub_context_path }}'
-    hostname='{{ profile_hub_hostname }}'
+- include_role:
+    name: apache_vhost
+  vars:
+    context_path: '{{ profile_hub_context_path }}'
+    hostname: '{{ profile_hub_hostname }}'
   tags:
     - profile-hub
     - deploy
@@ -189,7 +191,8 @@
   when: webserver_nginx
 
 # deploy to tomcat container
-- include: ../../tomcat_deploy/tasks/main.yml
+- include_role:
+    name: tomcat_deploy
   vars:
     war_url: '{{ profile_hub_war_url }}'
     context_path: '{{ profile_hub_context_path }}'
