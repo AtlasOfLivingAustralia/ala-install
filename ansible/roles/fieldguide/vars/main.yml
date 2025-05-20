@@ -1,6 +1,6 @@
 version: "{{ fieldguide_version | default('LATEST') }}"
 artifactId: "fieldguide"
-classifier: ''
-packaging: "war"
+classifier: "{{ fieldguide_classifier | default('') }}"
+packaging: "{{ fieldguide_packaging | default('war') }}"
 groupId: "au.org.ala"
-fieldguide_war_url: "{{maven_repo_ws_url}}"
+fieldguide_artifact_url: "{{maven_repo_ws_url}}"
