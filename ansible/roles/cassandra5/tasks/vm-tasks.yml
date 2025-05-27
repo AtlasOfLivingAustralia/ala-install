@@ -158,15 +158,6 @@
   tags:
     - cassandra
 
-- name: enable cassandra logging
-  lineinfile:
-    path: /etc/cassandra/conf/environment
-    line: 'CLASSPATH="/etc/zookeeper/conf:/usr/share/java/jline.jar:/usr/share/java/log4j-1.2.jar:/usr/share/java/xercesImpl.jar:/usr/share/java/xmlParserAPIs.jar:/usr/share/java/netty.jar:/usr/share/java/slf4j-api.jar:/usr/share/java/slf4j-log4j12.jar:/usr/share/java/zookeeper.jar"'
-    insertafter: EOF
-    state: present
-  tags:
-    - cassandra
-
 - name: create the cassandra yaml from template
   template: src="{{item.src}}" dest="{{item.dest}}" owner="{{cassandra_user}}" group="{{cassandra_user}}" force=yes
   with_items:
