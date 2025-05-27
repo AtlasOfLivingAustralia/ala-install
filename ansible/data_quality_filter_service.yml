@@ -5,7 +5,7 @@
     - {role: db-backup, db: postgres, db_name: "{{ dq_db_name }}", db_user: "postgres" }
     - postgresql
     - {role: pg_instance, extensions: [], db_name: "{{ dq_db_name }}", db_user: "{{ dq_db_user }}", db_password: "{{ dq_db_password }}" }
-    - tomcat
+    - {role: tomcat, when: not exec_jar}
     - webserver
     - { role: data_quality_filter_service, data_quality_filter_service: data-quality-filter-service }
 

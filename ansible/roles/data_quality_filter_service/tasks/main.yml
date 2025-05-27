@@ -100,7 +100,7 @@
     - hub_config
 
 - name: copy logback config
-  template: src=config/logback.groovy dest={{data_dir}}/{{data_quality_filter_service}}/config/logback.groovy  owner={{data_quality_filter_service}} group={{data_quality_filter_service}}
+  template: src=config/logback_exec_jar.xml dest={{data_dir}}/{{data_quality_filter_service}}/config/logback.xml  owner={{data_quality_filter_service}} group={{data_quality_filter_service}}
   tags:
     - properties
     - data_quality_filter_service
@@ -114,6 +114,7 @@
     - properties
     - data_quality_filter_service
     - hub_config
+  when: not exec_jar
 
 - name: set data ownership
   file: path={{data_dir}}/{{data_quality_filter_service}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
