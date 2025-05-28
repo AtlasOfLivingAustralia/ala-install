@@ -93,6 +93,15 @@
     - properties
   when: not exec_jar
 
+- name: set data ownership
+  file: path={{data_dir}}/{{fieldguide_app}} owner=fieldguide group=fieldguide recurse=true
+  notify:
+    - restart fieldguide
+  tags:
+    - fieldguide
+    - properties
+  when: exec_jar
+
 - name: set data ownership for /var/log/atlas/fieldguide
   file: path=/var/log/atlas/fieldguide owner=fieldguide group=fieldguide recurse=true
   notify:
