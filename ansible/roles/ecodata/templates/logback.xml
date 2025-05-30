@@ -40,7 +40,9 @@
   <logger name="grails.mongodb" level="DEBUG"/>
   <logger name="grails.gorm" level="DEBUG"/>
   <logger name="au.org.ala.ecodata" level="DEBUG"/>
+  <logger name="au.org.ala.ecodata.UserService" level="INFO"/>
   <logger name="au.org.ala.ecodata.CommonService" level="INFO"/>
+  <logger name="au.org.ala.ecodata.converter.RecordConverter" level="INFO"/>
   <logger name="au.org.ala.ecodata.ElasticSearchService" level="INFO">
     <appender-ref ref="ES-INDEXING"/>
   </logger>
