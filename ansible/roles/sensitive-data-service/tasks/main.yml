@@ -28,17 +28,17 @@
     - nginx_vhost
 
 # Recent versions use the namemaching index so we have to configure too
-- include_vars: ../namematching-service/defaults/main.yml
-  tags:
-    - sensitive-data-service
-    - deploy
-    - apt
+# - include_vars: ../namematching-service/defaults/main.yml
+#   tags:
+#     - sensitive-data-service
+#     - deploy
+#     - apt
 
 # Allow the use of a specified namematching-service version for the sds
-- set_fact:
-    ala_namematching_service_version: "{{ sds_ala_namematching_service_version }}"
-  when:
-    - sds_ala_namematching_service_version is defined
+# - set_fact:
+#     ala_namematching_service_version: "{{ sds_ala_namematching_service_version }}"
+#   when:
+#     - sds_ala_namematching_service_version is defined
 
 - name: Include VM tasks
   import_tasks: vm-tasks.yml
