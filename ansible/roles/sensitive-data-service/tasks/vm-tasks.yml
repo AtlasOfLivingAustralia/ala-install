@@ -65,3 +65,5 @@
     state: stopped
   tags:
     - apt
+  when:
+    - skip_handlers | default("false") | bool == true
