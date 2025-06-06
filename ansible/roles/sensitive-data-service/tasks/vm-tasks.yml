@@ -58,3 +58,10 @@
   run_once: true
   tags:
     - sensitive-data-service
+
+- name: Stop service ala-namematching-service installed via apt, if running
+  service:
+    name: ala-namematching-service
+    state: stopped
+  tags:
+    - apt
