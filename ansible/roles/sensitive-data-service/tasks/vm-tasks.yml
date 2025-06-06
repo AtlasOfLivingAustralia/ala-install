@@ -1,10 +1,10 @@
 ---
 
-# - include_tasks: ../namematching-service/tasks/apt.yml
-#   tags:
-#     - sensitive-data-service
-#     - deploy
-#     - apt
+- include_tasks: ../namematching-service/tasks/apt.yml
+  tags:
+    - sensitive-data-service
+    - deploy
+    - apt
 
 - include_tasks: ./apt.yml
   tags:
@@ -19,33 +19,33 @@
     enabled: false
   ignore_errors: true
 
-# - name: Workaround for ala-namematching-service unable to unpack namematching-*.tgz's, /data/lucene/namematching-nm
-#   import_tasks: ../../namematching-service/tasks/download-nameindex.yml
-#   vars:
-#     dest: "{{ data_dir }}/lucene/namematching-nm.tgz"
-#     final_dest: "{{ data_dir }}/lucene/namematching-nm/"
-#     url: "{{ nameindex_source }}"
-#     sha1: "{{ nameindex_source_sha1 }}"
-#   notify:
+- name: Workaround for ala-namematching-service unable to unpack namematching-*.tgz's, /data/lucene/namematching-nm
+  import_tasks: ../../namematching-service/tasks/download-nameindex.yml
+  vars:
+    dest: "{{ data_dir }}/lucene/namematching-nm.tgz"
+    final_dest: "{{ data_dir }}/lucene/namematching-nm/"
+    url: "{{ nameindex_source }}"
+    sha1: "{{ nameindex_source_sha1 }}"
+  # notify:
 #     - restart ala-namematching-service
-#   when:
-#     - nameindex_source is defined
-#   tags:
-#     - nameindex
+  when:
+    - nameindex_source is defined
+  tags:
+    - nameindex
 
-# - name: Workaround for ala-namematching-service unable to unpack namematching-*.tgz's, /data/lucene/namematching-{{ nameindex_datestamp }}
-#   import_tasks: ../../namematching-service/tasks/download-nameindex.yml
-#   vars:
-#     dest: "{{ data_dir }}/lucene/namematching-{{ nameindex_datestamp }}.tgz"
-#     final_dest: "{{ data_dir }}/lucene/namematching-{{ nameindex_datestamp }}/"
-#     url: "{{ nameindex_source }}"
-#     sha1: "{{ nameindex_source_sha1 }}"
-#   notify:
-#     - restart ala-sensitive-data-service
-#   when:
-#     - nameindex_source is defined
-#   tags:
-#     - nameindex
+- name: Workaround for ala-namematching-service unable to unpack namematching-*.tgz's, /data/lucene/namematching-{{ nameindex_datestamp }}
+  import_tasks: ../../namematching-service/tasks/download-nameindex.yml
+  vars:
+    dest: "{{ data_dir }}/lucene/namematching-{{ nameindex_datestamp }}.tgz"
+    final_dest: "{{ data_dir }}/lucene/namematching-{{ nameindex_datestamp }}/"
+    url: "{{ nameindex_source }}"
+    sha1: "{{ nameindex_source_sha1 }}"
+  notify:
+    - restart ala-sensitive-data-service
+  when:
+    - nameindex_source is defined
+  tags:
+    - nameindex
 
 - name: ensure sds log directories exist
   file:
