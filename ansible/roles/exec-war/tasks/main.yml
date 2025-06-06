@@ -45,6 +45,18 @@
   tags:
   - service
 
+- name: "construct logging_file fact from other facts"
+  set_fact:
+    logging_file_path: "/data/{{service_name}}/config/{{log_config_filename | default('logback.groovy')}}"
+  tags:
+  - service
+
+- name: "construct java_opts fact for the .service"
+  set_fact:
+      java_opts: "{{ java_opts | default('') }} -Djava.awt.headless=true -Xmx{{ max_memory | default('2g') }} -Xms{{ min_memory | default('1g') }}{% for jvm_param in jvm_params | default([]) %} {{jvm_param}}{% endfor %}{% for extra_param in extra_params | default([]) %} -D{{extra_param.key}}={{extra_param.value}}{% endfor %} {{java_security_opts}} -Dlogging.config={{logging_file_path}}"
+  tags:
+  - service
+
 - name: "Create {{service_name}} service file"
   template:
     src: systemd.service
@@ -130,17 +142,6 @@
   when: maven_repo_username is defined
   tags:
     - service
-
-- name: "Set {{service_name}} WAR config"
-  template:
-    src: service.conf
-    dest: "/opt/atlas/{{service_name}}/{{service_name}}.conf"
-    owner: "{{ service_owner | default(service_name) }}"
-    group: "{{ service_group | default(service_name) }}"
-  notify: "restart {{service_name}}"
-  tags:
-  - service
-  - service-conf
 
 # Don't force start the service, rely on the handlers to do it
 # - name: "Start {{service_name}} service"
