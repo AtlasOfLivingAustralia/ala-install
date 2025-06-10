@@ -7,7 +7,7 @@
 - name: Include docker tasks
   include_tasks: docker-tasks.yml
   vars:
-    - solr_temp_disable_shardsWhitelist: true
+    solr_temp_disable_shardsWhitelist: true
   when: deployment_type == 'swarm'
   tags: [docker, docker-service]
 
@@ -137,10 +137,10 @@
 - import_role:
     name: solrcloud_config
   vars:
-    - solr_config_host: 127.0.0.1
-    - solr_zk_host: la_solrcloud_zoo_1
-    - solr_user: "{{ docker_default_user }}"
-    - solrcloud_num_shards: 1
+    solr_config_host: 127.0.0.1
+    solr_zk_host: la_solrcloud_zoo_1
+    solr_user: "{{ docker_default_user }}"
+    solrcloud_num_shards: 1
   when: deployment_type == 'swarm'
 
   # We can let this port open during development
