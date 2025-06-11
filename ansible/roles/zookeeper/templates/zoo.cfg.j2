@@ -20,6 +20,9 @@ dataLogDir={{ zookeeper_data_log_dir }}
 # the port at which the clients will connect
 clientPort={{ zookeeper_client_port }}
 
+# allows solr admin UI to query Zookeeper
+4lw.commands.whitelist=mntr,conf,ruok
+
 # specify all zookeeper servers
 # The first port is used by followers to connect to the leader
 # The second one is used for leader election
