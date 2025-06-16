@@ -20,8 +20,10 @@ dataLogDir={{ zookeeper_data_log_dir }}
 # the port at which the clients will connect
 clientPort={{ zookeeper_client_port }}
 
-# allows solr admin UI to query Zookeeper
+{% if solr_version is defined and solr_version|float >= 8.2 %}
+# allows solr admin UI to query Zookeeper (solr 8.2+)
 4lw.commands.whitelist=mntr,conf,ruok
+{% endif %}
 
 # specify all zookeeper servers
 # The first port is used by followers to connect to the leader
