@@ -1,14 +1,14 @@
 ---
 - hosts: biocache-hub
   vars:
-    - deployment_type: swarm
-    - skip_handlers: true
-    - nginx_conf_dir: "{{ data_dir }}/nginx"
-    - biocache_hub: ala-hub
-    - biocache_hub_docker_host: la_biocache_hub_war
-    - grouped_facets_json: grouped_facets_ala.json
-    - tomcat_user: "{{ docker_default_user }}"
-    - biocache_hub_tomcat_server_address: "0.0.0.0"
+    deployment_type: swarm
+    skip_handlers: true
+    nginx_conf_dir: "{{ data_dir }}/nginx"
+    biocache_hub: ala-hub
+    biocache_hub_docker_host: la_biocache_hub_war
+    grouped_facets_json: grouped_facets_ala.json
+    tomcat_user: "{{ docker_default_user }}"
+    biocache_hub_tomcat_server_address: "0.0.0.0"
   roles:
     - common
     - biocache-hub

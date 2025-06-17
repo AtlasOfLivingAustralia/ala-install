@@ -71,19 +71,19 @@
     - cas-dbs
   run_once: true
   vars:
-    - cas_db_hostname: 127.0.0.1
-    - user_store_db_hostname: 127.0.0.1
-    - user_store_db_hostname: 127.0.0.1
-    - apikey_db_hostname: 127.0.0.1
-    - ticket_registry_db_hostname: 127.0.0.1
-    - cas_audit_host: 127.0.0.1
-    - cas_spring_session_host: 127.0.0.1
-    - cas_tickets_host: 127.0.0.1
-    - cas_tickets_host: 127.0.0.1
-    - cas_services_host: 127.0.0.1
-    - cas_services_host: 127.0.0.1
-    - cas_mysql_src_host: '%'
-    - apikey_mysql_src_host: '%'
+    cas_db_hostname: 127.0.0.1
+    user_store_db_hostname: 127.0.0.1
+    user_store_db_hostname: 127.0.0.1
+    apikey_db_hostname: 127.0.0.1
+    ticket_registry_db_hostname: 127.0.0.1
+    cas_audit_host: 127.0.0.1
+    cas_spring_session_host: 127.0.0.1
+    cas_tickets_host: 127.0.0.1
+    cas_tickets_host: 127.0.0.1
+    cas_services_host: 127.0.0.1
+    cas_services_host: 127.0.0.1
+    cas_mysql_src_host: '%'
+    apikey_mysql_src_host: '%'
 
 - import_tasks: ../../docker-common/tasks/socat-rm.yml
   vars:
@@ -102,7 +102,7 @@
 
 - import_tasks: ../../cas5/tasks/admin-account.yml
   vars:
-    - cas_db_hostname: 127.0.0.1
+    cas_db_hostname: 127.0.0.1
   run_once: true
   tags:
     - cas-dbs
