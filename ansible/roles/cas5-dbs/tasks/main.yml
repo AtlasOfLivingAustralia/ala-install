@@ -44,11 +44,17 @@
   tags:
     - cas-dbs
 
-- name: Install pymongo for Python 3 using pip
+- name: Install pip python-pymongo package for ubuntu < 22.04
   pip:
     name: pymongo
     version: "4.8.0"
-  when: ansible_python.version.major==3
+  when: ansible_python.version.major==3 and ansible_os_family == "Debian" and ansible_distribution_version is version("22.04", "<")
+  tags:
+    - cas-dbs
+
+- name: Install pip python-pymongo package for ubuntu >= 22.04
+  shell: python3 -m pip install pymongo==4.13.2 {{ '--break-system-packages' if ansible_distribution_version is version('24.04', '>=') else '' }}
+  when: ansible_os_family == "Debian" and ansible_distribution_version is version("22.04", ">=")
   tags:
     - cas-dbs
 

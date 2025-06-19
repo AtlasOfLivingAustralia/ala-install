@@ -3,7 +3,7 @@
     - common
     - i18n
     - mysql
-    - { role: mongodb-org, mongodb_version: 5.0 }
+    - { role: mongodb-org }
 - name: include default cas 5 steps
   vars:
     cas_add_mongo_users: true
