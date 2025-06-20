@@ -6,8 +6,11 @@
 # Where and how to store data.
 storage:
   dbPath: {{ dbPath }} #/var/lib/mongodb
+# https://www.mongodb.com/docs/manual/core/journaling/#:~:text=Starting%20in%20MongoDB%206.1%2C%20journaling,%2D%2Dnojournal%20command%2Dline%20options
+{% if mongodb_version is version('6.1', '<') %}
   journal:
     enabled: true
+{% endif %}
 #  engine:
 #  mmapv1:
 #  wiredTiger:
@@ -23,7 +26,7 @@ net:
   port: {{ mongodb_port }}
   bindIp: {{ mongodb_bind_ip }}
 
-{% if mongodb_version >= 4 %}
+{% if mongodb_version is version('4', '>=') %}
 # how the process runs
 processManagement:
   timeZoneInfo: /usr/share/zoneinfo
