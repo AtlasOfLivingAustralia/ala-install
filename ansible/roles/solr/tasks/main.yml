@@ -1,0 +1,167 @@
+---
+- include_tasks: ../../common/tasks/setfacts.yml
+  tags:
+    - solr
+    - solr_create_cores
+    - properties
+    - solr_check_running
+
+- name: Select JTS version
+  set_fact:
+    jts_version: >-
+      {% if solr_version is version('7', '>=') and solr_version is version('8', '<') %}1.15.0
+      {% elif solr_version is version('8', '>=') and solr_version is version('9', '<') %}1.19.0
+      {% elif solr_version is version('9', '>=') %}1.19.0{% endif %}
+    solr_in: >-
+      {% if solr_version is version('7', '>=') and solr_version is version('8', '<') %}solr.in.sh.solr7
+      {% elif solr_version is version('8', '>=') and solr_version is version('9', '<') %}solr.in.sh.solr8
+      {% elif solr_version is version('9', '>=') %}solr.in.sh.solr8{% endif %}
+
+- name: Download SOLR {{ solr_version }}
+  get_url: url="https://archive.apache.org/dist/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz" dest=/tmp/solr-{{ solr_version }}.tgz
+  tags:
+    - solr
+
+- name: Extract the install script
+  shell: "tar xzf /tmp/solr-{{ solr_version }}.tgz solr-{{ solr_version }}/bin/install_solr_service.sh --strip-components=2"
+  tags:  
+    - solr
+
+- name: ensure target directories exist [data subdirectories etc.
+  file: path={{item}} state=directory
+  with_items:
+    - "{{data_dir}}/solr/"
+  tags:
+    - solr
+    - properties
+
+- name: Run install script
+  shell: "./install_solr_service.sh /tmp/solr-{{ solr_version }}.tgz -d /data/solr -f"
+  become: yes
+  tags:  
+    - solr
+
+- name: Download and install jts-core
+  ansible.builtin.get_url:
+    url: "https://repo1.maven.org/maven2/org/locationtech/jts/jts-core/{{ jts_version | trim }}/jts-core-{{ jts_version | trim }}.jar"
+    dest: "/opt/solr/server/lib/ext/jts-core-{{ jts_version | trim }}.jar"
+    mode: '0644'
+    validate_certs: yes
+    timeout: 30
+
+- name: Download and install jst-io
+  ansible.builtin.get_url:
+    url: "https://repo1.maven.org/maven2/org/locationtech/jts/io/jts-io-common/{{ jts_version | trim }}/jts-io-common-{{ jts_version | trim }}.jar"
+    dest: "/opt/solr/server/lib/ext/jts-io-common-{{ jts_version | trim }}.jar"
+    mode: '0644'
+    validate_certs: yes
+    timeout: 30
+
+- name: set SOLR directory ownership [all data is owned by solr]
+  file: path=/opt/solr/ owner=solr  group=solr recurse=true
+  tags:
+    - solr
+
+- name: Stop solr
+  shell: "service solr stop"
+  tags:
+    - solr
+    - solr_restart
+
+- name: copy SOLR config
+  template: src={{ solr_in | trim }} dest=/opt/solr/bin/solr.in.sh force=yes
+  tags:
+    - solr
+    - properties
+
+- name: copy SOLR config /etc/default
+  template: src={{ solr_in | trim }} dest=/etc/default/solr.in.sh force=yes
+  tags:
+    - solr
+    - properties
+
+- name: ensure target directories exist [data subdirectories etc.
+  file: path={{item}} state=directory owner=solr  group=solr
+  with_items:
+    - "{{data_dir}}/solr/data/biocache/conf"
+    - "{{data_dir}}/solr/data/bie/conf"
+    - "{{data_dir}}/solr/data/bie-offline/conf"
+    - "{{data_dir}}/solr/data/biocache/data"
+    - "{{data_dir}}/solr/data/bie/data"
+    - "{{data_dir}}/solr/data/bie-offline/data"
+  tags:
+    - solr
+    - properties
+
+- name: copy SOLR config files for BIE and Biocache
+  copy: src={{ role_path }}/../solrcloud_config/files/{{ item }}/conf dest={{ data_dir }}/solr/data/{{ item }}/ owner=solr  group=solr
+  with_items:
+    - "biocache"
+    - "bie"
+    - "bie-offline"
+  tags:
+    - solr
+    - properties
+    - solr_create_cores
+
+- name: Set up SOLR Biocache schema (non doc values)
+  template: src={{ role_path }}/../solrcloud_config/templates/biocache_schema.xml dest={{ data_dir }}/solr/data/biocache/conf/schema.xml owner=solr group=solr
+  when: use_docvalues is not defined or use_docvalues|bool == false
+  tags:
+    - solr
+    - properties
+    - solr_create_cores
+
+- name: Set up SOLR Biocache schema (with doc values)
+  template: src={{ role_path }}/../solrcloud_config/templates/biocache_schema_docvalues.xml dest={{ data_dir }}/solr/data/biocache/conf/schema.xml owner=solr group=solr
+  when: use_docvalues is defined and use_docvalues|bool == true
+  tags:
+    - solr
+    - properties
+    - solr_create_cores
+
+- name: Set up SOLR Biocache schema
+  template: src={{ role_path}}//../solrcloud_config/templates/biocache_schema.xml dest={{ data_dir }}/solr/data/biocache/conf/biocache_schema_docvalues.xml owner=solr group=solr
+  tags:
+    - solr
+    - properties
+    - solr_create_cores
+
+- name: set data ownership [all data is owned by the unix user solr]
+  file: path="{{ data_dir }}/solr/" owner=solr  group=solr recurse=true
+  tags:
+    - solr
+    - properties
+
+- name: Start solr
+  service:
+    name: solr
+    state: restarted
+    enabled: "yes"
+  tags:
+    - solr
+    - solr_restart
+    - solr_create_cores
+
+- name: Ensure SOLR is running
+  wait_for: host="{{ solr_host }}" port="{{ solr_port }}" delay=1 timeout=300
+  tags:
+    - solr
+    - solr_check_running
+
+- name: Create SOLR cores
+  get_url: url="{{ solr_base_url }}/solr/admin/cores?action=CREATE&name={{ item }}&instanceDir={{data_dir}}/solr/data/{{ item }}&config=solrconfig.xml&dataDir=data" force=yes timeout=30 dest=/tmp/solr-output-{{ item }}
+  with_items:
+    - "biocache"
+    - "bie"
+    - "bie-offline"
+  tags:
+    - solr
+    - solr_create_cores
+
+
+
+
+
+
+
