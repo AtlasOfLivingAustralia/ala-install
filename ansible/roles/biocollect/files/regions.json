@@ -1,6 +1,10 @@
 {
   "regions": [
     {
+      "key": "cl932",
+      "value": "Countries"
+    },
+    {
       "key": "cl2111",
       "value": "NRM"
     },
