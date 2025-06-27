@@ -5,6 +5,14 @@
       "value": "Countries"
     },
     {
+      "key": "cl11225",
+        "value": "Federal electorates"
+    },
+    {
+        "key": "cl2112",
+        "value": "Conservation Management Zones"
+    },
+    {
       "key": "cl2111",
       "value": "NRM"
     },
