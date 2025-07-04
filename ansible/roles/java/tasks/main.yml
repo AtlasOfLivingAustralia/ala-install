@@ -18,3 +18,6 @@
 
 - include_tasks: openjdk-java-17.yml
   when: use_openjdk17 is defined and use_openjdk17 | bool == True
+
+- include_tasks: openjdk-java-21.yml
+  when: use_openjdk21 is defined and use_openjdk21 | bool == True
