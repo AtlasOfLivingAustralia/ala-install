@@ -120,14 +120,15 @@
     - ecodata
   when: exec_jar
 
-- name: set ecodata log ownership
-  file: path=/var/log/atlas/ecodata owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true
-  notify:
-    - restart ecodata
-  tags:
-    - properties
-    - ecodata
-  when: exec_jar
+# Running this on prod primary threw a fatal error. Uncomment when needed.
+#- name: set ecodata log ownership
+#  file: path=/var/log/atlas/ecodata owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true
+#  notify:
+#    - restart ecodata
+#  tags:
+#    - properties
+#    - ecodata
+#  when: exec_jar
 
 #
 # Copy sensitive data xml file
