@@ -1,0 +1,4 @@
+artifactId: "solr"
+solr_mode: ""
+solr_zk_host: ""
+
