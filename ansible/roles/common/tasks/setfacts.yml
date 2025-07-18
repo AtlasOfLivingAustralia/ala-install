@@ -216,6 +216,22 @@
   tags:
     - setfacts
 
+- name: set java defaults for openjdk21 (amd64)
+  set_fact:
+    java_security_opts: -Dlog4j2.formatMsgNoLookups=true
+    java_home: /usr/lib/jvm/java-21-openjdk-amd64
+  when: use_openjdk21 is defined and use_openjdk21 | bool == True and ansible_architecture != "aarch64"
+  tags:
+    - setfacts
+
+- name: set java defaults for openjdk21 (arm64)
+  set_fact:
+    java_security_opts: -Dlog4j2.formatMsgNoLookups=true
+    java_home: /usr/lib/jvm/java-21-openjdk-arm64
+  when: use_openjdk21 is defined and use_openjdk21 | bool == True and ansible_architecture == "aarch64"
+  tags:
+    - setfacts
+
 - name: set java defaults for openjdk17 (amd64)
   set_fact:
     java_security_opts: -Dlog4j2.formatMsgNoLookups=true
