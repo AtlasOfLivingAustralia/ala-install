@@ -9,7 +9,7 @@ artifactId: "{{ collectory_app | default('generic-collectory') }}"
 
 groupId: "{{ collectory_group_id | default('au.org.ala') }}"
 # collectory does not need a value for classifier
-classifier: ''
+classifier: "{{ collectory_classifier | default('') }}"
 
 packaging: "{{ collectory_packaging | default('war') }}"
 
