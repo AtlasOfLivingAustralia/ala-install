@@ -381,14 +381,14 @@
     context_path: "{{ ecodata_context_path }}"
     tomcat_server_port: "{{ ecodata_server_port }}"
     nginx_paths:
-      - path: "{{ecodata_proxy_target}}/ws/document/download"
+      - path: "{{ecodata_proxy_target}}/ws/document/download/"
         sort_label: "1_upload"
         is_proxy: false
-        alias: "{{ upload_dir | default('/data/ecodata/uploads') }}"
-      - path: "{{ecodata_proxy_target}}/document/download"
+        alias: "{{ upload_dir | default('/data/ecodata/uploads/') }}"
+      - path: "{{ecodata_proxy_target}}/document/download/"
         sort_label: "2_upload"
         is_proxy: false
-        alias: "{{ upload_dir | default('/data/ecodata/uploads') }}"
+        alias: "{{ upload_dir | default('/data/ecodata/uploads/') }}"
       - path: "{{ecodata_context_path}}"
         sort_label: "2_ws"
         is_proxy: true
