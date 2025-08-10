@@ -11,7 +11,7 @@
 - name: Add PPA key for Nginx repository
   apt_key:
     keyserver: "hkp://keyserver.ubuntu.com:80"
-    id: "ABF5BD827BD9BF62"
+    id: "2FD21310B49F6B46"
   when:
     - nginx_ppa_use is defined and nginx_ppa_use | bool == True
 
