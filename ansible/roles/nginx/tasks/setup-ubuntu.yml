@@ -1,48 +1,82 @@
 ---
-- name: Add gnupg dep for nginx repo
-  apt:
-    name: gnupg
-    state: present
-  when:
-    - nginx_ppa_use is defined and nginx_ppa_use | bool == True
-    - ansible_os_family == "Debian" and ansible_distribution_version|int >= 16
 
-
-- name: Add PPA key for Nginx repository
-  apt_key:
-    keyserver: "hkp://keyserver.ubuntu.com:80"
-    id: "ABF5BD827BD9BF62"
-  when:
-    - nginx_ppa_use is defined and nginx_ppa_use | bool == True
-
-- name: Add PPA for Nginx on Trusty
-  apt_repository:
-    repo: "deb http://nginx.org/packages/ubuntu/ trusty nginx"
-    state: present
-    filename: nginx-official
-    update_cache: yes
-  register: nginx_ppa_added_stable
-  when:
-    - nginx_ppa_use is defined and nginx_ppa_use | bool == True
-    - ansible_os_family == "Debian" and ansible_distribution_version == "14.04"
-
-- name: Add PPA for Nginx on current versions
-  apt_repository:
-    repo: "deb http://nginx.org/packages/mainline/ubuntu/ {{ ansible_distribution_release }} nginx"
-    state: present
-    filename: nginx-official
-    update_cache: yes
-  register: nginx_ppa_added_mainline
-  when:
-    - nginx_ppa_use is defined and nginx_ppa_use | bool == True
-    - ansible_os_family == "Debian" and ansible_distribution_version|int >= 16
-
-- name: Ensure nginx will reinstall if the PPA was just added.
-  apt:
-    name: nginx
+- name: Remove legacy NGINX PPA
+  become: true
+  ansible.builtin.apt_repository:
+    repo: ppa:nginx/stable
     state: absent
-  notify:
-    - restart nginx
-  when:
-    - nginx_ppa_use is defined and nginx_ppa_use | bool == True
-    - nginx_ppa_added_stable.changed or nginx_ppa_added_mainline.changed
+
+- name: Remove legacy nginx source list files
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ query('fileglob', '/etc/apt/sources.list.d/*nginx*.list') + query('fileglob', '/etc/apt/sources.list.d/*nginx*.sources') }}"
+
+- name: Remove legacy global APT keys for nginx
+  become: true
+  ansible.builtin.apt_key:
+    id: "{{ item }}"
+    state: absent
+  loop:
+    - ABF5BD827BD9BF62
+  ignore_errors: yes
+
+- name: Update APT cache after cleanup
+  become: true
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Ensure deps for deb822_repository
+  become: true
+  ansible.builtin.apt:
+    name:
+      - python3-debian
+      - ca-certificates
+    state: present
+    update_cache: yes
+
+- name: Add official NGINX repository
+  become: true
+  ansible.builtin.deb822_repository:
+    name: nginx
+    types: [deb]
+    uris: "http://nginx.org/packages/ubuntu"
+    suites: "{{ ansible_facts['distribution_release'] }}"
+    components: ["nginx"]
+    signed_by: "https://nginx.org/keys/nginx_signing.key"
+    state: present
+    enabled: true
+
+- name: Update APT cache
+  become: true
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Prefer nginx.org packages
+  ansible.builtin.copy:
+    dest: /etc/apt/preferences.d/99nginx
+    mode: '0644'
+    content: |
+      Package: *
+      Pin: origin nginx.org
+      Pin: release o=nginx
+      Pin-Priority: 900
+
+- name: Update APT cache
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install NGINX
+  become: true
+  ansible.builtin.apt:
+    name: "{{ nginx_packages | default(['nginx']) }}"
+    state: present
+    update_cache: yes
+
+- name: Ensure NGINX is running
+  become: true
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: yes
