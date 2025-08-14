@@ -145,8 +145,9 @@
 # WAR file deployment and virtual host configuration
 #
 - include_tasks: ../../apache_vhost/tasks/main.yml
-    context_path='{{ profile_service_context_path }}'
-    hostname='{{ profile_service_hostname }}'
+  vars:
+    context_path: '{{ profile_service_context_path }}'
+    hostname: '{{ profile_service_hostname }}'
   tags:
     - profile-service
     - deploy
