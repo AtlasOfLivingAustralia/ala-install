@@ -283,7 +283,7 @@
       - path: "~ ^{{ecodata_proxy_target}}/ws/(.*)/document/download/(.*)$"  #Delete me when MERIT 4.7 is released
         sort_label: "3_upload"
         is_proxy: false
-        alias: "{{ upload_dir | default('/data/ecodata/uploads/$2') }}"
+        alias: "{{ upload_dir | default('/data/ecodata/uploads') }}/$2"
       - path: "{{ecodata_context_path}}"
         sort_label: "2_ws"
         is_proxy: true
@@ -400,7 +400,7 @@
       - path: "~ ^{{ecodata_proxy_target}}/ws/(.*)/document/download/(.*)$" #Delete me when MERIT 4.7 is released
         sort_label: "3_upload"
         is_proxy: false
-        alias: "{{ upload_dir | default('/data/ecodata/uploads/$2') }}"
+        alias: "{{ upload_dir | default('/data/ecodata/uploads') }}/$2"
 
   when: webserver_nginx and not use_reporting_server
   tags:
