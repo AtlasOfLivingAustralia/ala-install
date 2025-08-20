@@ -214,7 +214,7 @@ defaultareas:
       areaSqKm: {{ default_area_sqkm }}
       bbox: {{ default_area_bbox }}
     - name: 'World'
-      fqs: []
+      fqs: ['longitude:[-180 TO 180]', 'latitude:[-90 TO 90]']
       wkt: 'POLYGON((-180 -90.0,180.0 -90.0,180.0 90.0,-180 90.0,-180 -90.0))'
       areaSqKm: 510000000
       bbox: [-180, -90, 180, 90]
