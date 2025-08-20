@@ -2,7 +2,7 @@
   roles:
     - common
     - java
-    - { role: tomcat, tomcat: tomcat9 }
+    - { role: tomcat, tomcat: tomcat9, when: not exec_jar}
     - webserver
     - biocache3-properties
     - biocache3-service

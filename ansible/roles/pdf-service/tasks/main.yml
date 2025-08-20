@@ -74,7 +74,7 @@
     - libreoffice
   when: not use_docker
 
-- name: install wkhtml2pdf and libreoffice when not using a docker container
+- name: install libreoffice when not using a docker container
   apt:
     name:
       - libreoffice
@@ -88,15 +88,6 @@
     - libreoffice
   when: not use_docker
 
-- name: Check if wkthml2pdf is installed
-  command: dpkg-query -W wkhtml2pdf
-  register: wkthml2pdf_deb
-  failed_when: wkthml2pdf_deb.rc > 1
-  changed_when: wkthml2pdf_deb.rc == 1
-  tags:
-    - wkhtml2pdf
-  when: not use_docker
-
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner='{{ pdf_user }}' group='{{ pdf_user }}'
   with_items:
@@ -106,22 +97,8 @@
     - "{{logging_dir}}"
     - "{{config_dir}}"
   tags:
-    - wkhtml2pdf
+    - pdf-service
   when: not use_docker
-
-- name: Download wkhtml2pdf
-  get_url:
-    url: "https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb"
-    dest: "{{data_dir}}/downloads/wkhtmltox_0.12.6-1.bionic_amd64.deb"
-  tags:
-    - wkhtml2pdf
-  when: not use_docker and wkthml2pdf_deb.rc == 1
-
-- name: Install wkhtml2pdf
-  apt: deb="/data/downloads/wkhtmltox_0.12.6-1.bionic_amd64.deb"
-  tags:
-    - wkhtml2pdf
-  when: not use_docker and wkthml2pdf_deb.rc == 1
 
 - name: Install java
   include_role:
@@ -197,9 +174,12 @@
 #
 # webserver virtual host configuration
 #
-- include_tasks: ../../apache_vhost/tasks/main.yml
-    context_path='{{ profile_service_context_path }}' 
-    hostname='{{ profile_service_hostname }}'
+- name: add apache vhost if configured
+  include_role:
+    name: apache_vhost
+  vars:
+    context_path: '{{ profile_service_context_path }}' 
+    hostname: '{{ profile_service_hostname }}' 
   tags:
     - pdf-service
     - deploy

@@ -1,17 +1,21 @@
 # application versions
 # assets
 # collectory_version: "1.5.1"
-version: "{{ collectory_version | default('LATEST') }}"
+collectory_service_hostname: "{{ collectory_app | default('collectory') }}"
+
+collectory_service_system_user: "collectory"
 
 artifactId: "{{ collectory_app | default('generic-collectory') }}"
 
 groupId: "{{ collectory_group_id | default('au.org.ala') }}"
 # collectory does not need a value for classifier
-classifier: ''
+classifier: "{{ collectory_classifier | default('') }}"
 
-packaging: "war"
+packaging: "{{ collectory_packaging | default('war') }}"
 
-collectory_war_url: "{{ collectory_maven_repo_ws_url | default(maven_repo_ws_url) }}"
+version: "{{ collectory_version | default('LATEST') }}"
+
+logback_config_filename: "logback.xml"
 
 collectory_data_dir: "{{ data_dir }}/{{ collectory_app | default('generic-collectory') }}"
 
@@ -20,3 +24,5 @@ collectory_docker_db_data_dir: "{{ docker_db_data_dir }}/collectory-mysql-data"
 content_type_options_header: "{{ collectory_content_type_options_header | default(false) }}"
 
 nginx_client_max_body_size: "{{ collectory_nginx_client_max_body_size | default('1024m') }}"
+
+collectory_war_url: "{{ collectory_maven_repo_ws_url | default(maven_repo_ws_url) }}"

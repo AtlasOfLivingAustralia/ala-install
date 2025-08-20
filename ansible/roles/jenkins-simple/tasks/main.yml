@@ -51,9 +51,64 @@
   when: ansible_os_family == "Debian"
   tags: jenkins
 
-- service: name=jenkins enabled=yes state=started
-  when: ansible_os_family == "Debian"
-  tags: jenkins
+- name: Get current default Java version
+  shell: |
+    update-alternatives --query java | grep '^Value:' | awk '{print $2}'
+  register: current_java_path
+  changed_when: false
+  ignore_errors: yes
+  tags:
+    - java
+    - jenkins
+
+- name: Store previous Java default
+  set_fact:
+    previous_java_path: "{{ current_java_path.stdout }}"
+    previous_java_name: "{{ current_java_path.stdout | dirname | dirname | basename }}"
+  when: current_java_path.stdout is defined
+  tags:
+    - java
+    - jenkins
+
+- name: Install Java {{ jenkins_java_version }}
+  apt:
+    name: "{{ jenkins_java_package }}"
+    state: present
+  tags:
+    - java
+    - jenkins
+
+- name: Restore previous Java default
+  command: update-alternatives --set java "{{ previous_java_path }}"
+  when:
+    - previous_java_path is defined
+    - previous_java_path | length > 0
+  tags:
+    - java
+    - jenkins
+
+- name: Create systemd override directory
+  file:
+    path: "/etc/systemd/system/jenkins.service.d"
+    state: directory
+    mode: '0755'
+  tags:
+    - jenkins
+    - properties
+
+- name: Configure Jenkins Java override
+  copy:
+    dest: "{{ jenkins_override_path }}"
+    content: |
+      [Service]
+      Environment="JENKINS_PORT={{ jenkins_http_port }}"
+      Environment="JAVA_HOME={{ jenkins_java_home }}"
+    owner: root
+    group: root
+    mode: '0644'
+  tags:
+    - jenkins
+    - properties
 
   # Retry to reinstall deps, specially jenkins
   # Useful if we use a different port than 8080 and 8080 is in use (so the first install fails)
@@ -67,3 +122,12 @@
   # with correct ports
   ignore_errors: no
   tags: jenkins
+
+- name: Reload systemd and restart Jenkins
+  systemd:
+    name: jenkins
+    state: restarted
+    daemon_reload: yes
+  tags:
+    - jenkins
+    - service

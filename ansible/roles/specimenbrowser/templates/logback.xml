@@ -6,7 +6,7 @@
     <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
 
     <variable name="appName" value="specimenbrowser"/>
-    <variable name="LOG_DIR" value="/var/log/tomcat9" />
+    <variable name="LOG_DIR" value="/var/log/{{ tomcat | default('tomcat9')}}" />
 
     <appender name="TOMCAT_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/${appName}.log</file>

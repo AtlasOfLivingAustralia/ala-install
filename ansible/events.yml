@@ -10,13 +10,13 @@
   vars:
     es_version: "7.17.7"
     es_heap_dump_path: "/data/"
-    es_api_host: "{{ (events_elasticsearch_host | default(elasticsearch_host) | default('localhost') }}"
+    es_api_host: "{{ events_elasticsearch_host | default(elasticsearch_host) | default('localhost') }}"
     es_heap_size: "8g"
     es_config:
       cluster.name: "{{ elasticsearch_cluster_name | default('extended-data') }}"
       node.name: "{{ elasticsearch_host | default('localhost') }}"
-      network.host: "{{ (events_elasticsearch_network_host | default(elasticsearch_network_host) }}"
-      discovery.seed_hosts: "{{ (events_elasticsearch_seed_host | default(elasticsearch_seed_host) }}"
+      network.host: "{{ events_elasticsearch_network_host | default(elasticsearch_network_host) }}"
+      discovery.seed_hosts: "{{ events_elasticsearch_seed_hosts | default(elasticsearch_seed_hosts) }}"
       bootstrap.memory_lock: false
       cluster.initial_master_nodes: "{{ elasticsearch_cluster_initial_master_nodes }}"
       indices.memory.index_buffer_size: "{{ elasticsearch_index_buffer_size | default('40%') }}"

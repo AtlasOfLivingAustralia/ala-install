@@ -133,6 +133,10 @@
                 "field":"establishment_means"
             },
             {
+                "sort":"count",
+                "field":"degreeOfEstablishment"
+            },
+            {
                 "sort":"index",
                 "field":"month"
             },

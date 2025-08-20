@@ -11,3 +11,6 @@ layers_service_url: "https://spatial.ala.org.au/layers-service"
 # * = latest
 ala_sensitive_data_service_version: "*"
 ala_sensitive_data_service_docker_dir: "{{ data_dir }}/ala-sensitive-data-service/docker"
+# skip_handlers should prevent starting names-matching-service
+skip_handlers: true 
+nginx_cors_origin_regexp: '.*'

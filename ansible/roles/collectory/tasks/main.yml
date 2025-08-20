@@ -7,8 +7,31 @@
     - deploy
     - config
 
+
+- name: Set service user  - tomcat or a systemd service user (collectory by default)
+  set_fact:
+    data_owner_user: "{{ collectory_service_system_user if exec_jar else tomcat_user }}"
+
+- name: run collectory on Tomcat or as systemd
+  debug:
+    msg: >
+      {% if exec_jar | default(false) | bool %}
+        Running as a systemd service.
+      {% else %}
+        Running on {{tomcat}}.
+      {% endif %}
+      Version: {{ version }}.{{ packaging }}
+      Service user: {{ data_owner_user }}
+
+- name: "ensure system user for collectory exists - "
+  user:
+    name: "{{ data_owner_user }}"
+    state: present
+    system: yes
+  when: exec_jar | default(false) | bool
+
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{item}} state=directory owner={{data_owner_user}} group={{data_owner_user}}
   with_items:
     - "{{ collectory_data_dir }}"
     - "{{ collectory_data_dir }}/upload/tmp"
@@ -18,7 +41,7 @@
     - collectory
 
 - name: copy all data assets
-  copy: src={{item}} dest={{ collectory_data_dir }} owner={{tomcat_user}} group={{tomcat_user}}
+  copy: src={{item}} dest={{ collectory_data_dir }} owner={{data_owner_user}} group={{data_owner_user}}
   with_items:
     - data/config
     - data/data
@@ -26,7 +49,11 @@
     - properties
     - collectory
 
-- name: copy all template configs
+- name: Print collectory_version
+  debug:
+    msg: "Collectory version is {{ collectory_version }}"
+
+- name: copy all template configs - standalone application
   template: src={{item}} dest={{ collectory_data_dir }}/config/{{ collectory_app | default('generic-collectory') }}-config.properties output_encoding=iso-8859-1
   with_items:
     - config/collectory-config.properties
@@ -44,10 +71,8 @@
     - properties
     - collectory
 
-- name: set data ownership [all data is owned by tomcat]
-  file: path={{ collectory_data_dir }} owner={{ tomcat_user }}  group={{ tomcat_user }}  recurse=true
-  notify: 
-    - restart tomcat  
+- name: set data ownership
+  file: path={{ collectory_data_dir }} owner={{ data_owner_user }}  group={{ data_owner_user }}  recurse=true
   tags:
     - properties
     - collectory

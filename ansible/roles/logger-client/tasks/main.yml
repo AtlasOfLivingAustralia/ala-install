@@ -1,7 +1,7 @@
 - include_tasks: ../../common/tasks/setfacts.yml
 
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{item}} state=directory owner={{logger_user}} group={{logger_user}}
   with_items:
     - "{{data_dir}}/logger-client/config"
   tags:

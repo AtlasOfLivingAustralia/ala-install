@@ -5,8 +5,10 @@
     - specieslist
     - db
 
+# This task may fail with MySQL 8.0+ - not tested on fresh install
 - name: create DB user
   mysql_user: name={{specieslist_db_username}} password={{ specieslist_db_password}} priv=*.*:ALL state=present
+  when: (db_create | default('create')) != 'none'
   tags:
     - specieslist
     - db

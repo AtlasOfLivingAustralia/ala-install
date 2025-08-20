@@ -53,6 +53,17 @@
 # Properties and data file configuration
 #
 
+- name: Create a unique user for the service
+  user:
+    name: "{{ biocache_hub }}"
+    state: present
+    create_home: no
+  when: exec_jar
+  tags:
+    - webapps
+    - properties
+    - biocache_hub
+
 - name: ensure target directories exist [data subdirectories etc.]
   file: path={{item}} state=directory owner={{biocache_hub}} group={{biocache_hub}}
   with_items:

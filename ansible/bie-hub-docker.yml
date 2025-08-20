@@ -1,16 +1,16 @@
 ---
 - hosts: bie-hub
   vars:
-    - deployment_type: swarm
-    - tomcat_user: "{{ docker_default_user }}"
-    - nginx_conf_dir: "{{ data_dir }}/nginx"
-    - nginx_user: "{{ docker_default_user }}"
-    - bie_hub_upstream_host: la_bie_hub_war
-    - skip_handlers: true
-    - bie_hub: ala-bie-hub
-    - nginx_paths_gatus_exclude:
-        - "{{bie_hub_context_path}}/trove"
-        - "{{bie_hub_context_path}}/externalSite"
+    deployment_type: swarm
+    tomcat_user: "{{ docker_default_user }}"
+    nginx_conf_dir: "{{ data_dir }}/nginx"
+    nginx_user: "{{ docker_default_user }}"
+    bie_hub_upstream_host: la_bie_hub_war
+    skip_handlers: true
+    bie_hub: ala-bie-hub
+    nginx_paths_gatus_exclude:
+      - "{{bie_hub_context_path}}/trove"
+      - "{{bie_hub_context_path}}/externalSite"
   roles:
     - common
     - bie-hub

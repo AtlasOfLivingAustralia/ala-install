@@ -39,14 +39,23 @@
   tags:
     - oidc_keys_add
 
-- name: insert clientId/clientSecret in service mongo db for {{ name }} via shell
+- name: insert clientId/clientSecret in service mongo db for {{ name }} via shell (ubuntu < 22.04)
   shell: >
     mongo --host "{{ cas_services_host }}" --port "{{ cas_services_port | default('27017') }}"
     --username "{{ cas_services_username }}" --password "{{ cas_services_password }}"
     "{{ cas_services_db | default('cas-service-registry' ) }}" --quiet < "{{data_dir}}/cas-management/oidc-keys/add-key.js"
   tags:
     - oidc_keys_add
-  when: deployment_type == 'vm'
+  when: ansible_distribution_version is version('22.04', '<') and deployment_type == 'vm'
+
+- name: insert clientId/clientSecret in service mongo db for {{ name }} via shell (ubuntu >= 22.04)
+  shell: >
+    mongosh --host "{{ cas_services_host }}" --port "{{ cas_services_port | default('27017') }}"
+    --username "{{ cas_services_username }}" --password "{{ cas_services_password }}"
+    "{{ cas_services_db | default('cas-service-registry' ) }}" --quiet < "{{data_dir}}/cas-management/oidc-keys/add-key.js"
+  tags:
+    - oidc_keys_add
+  when: ansible_distribution_version is version('22.04', '>=') and deployment_type == 'vm'
 
 - name: Create and run mongo-oidc-script docker service
   # warn in mongo >= 6 use mongosh instead

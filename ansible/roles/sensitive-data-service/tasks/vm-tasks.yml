@@ -26,8 +26,8 @@
     final_dest: "{{ data_dir }}/lucene/namematching-nm/"
     url: "{{ nameindex_source }}"
     sha1: "{{ nameindex_source_sha1 }}"
-  notify:
-    - restart ala-namematching-service
+  # notify:
+#     - restart ala-namematching-service
   when:
     - nameindex_source is defined
   tags:
@@ -58,3 +58,12 @@
   run_once: true
   tags:
     - sensitive-data-service
+
+- name: Stop service ala-namematching-service installed via apt, if running
+  service:
+    name: ala-namematching-service
+    state: stopped
+  tags:
+    - apt
+  when:
+    - skip_handlers | default("false") | bool == true
