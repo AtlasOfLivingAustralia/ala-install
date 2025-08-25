@@ -9,8 +9,9 @@
 # WAR file deployment and virtual host configuration
 #
 - include_tasks: ../../apache_vhost/tasks/main.yml
-    context_path='{{ merit_context_path }}'
-    hostname='{{ merit_hostname }}'
+  vars:
+    context_path: '{{ merit_context_path }}'
+    hostname: '{{ merit_hostname }}'
   tags:
     - deploy
     - apache_vhost
