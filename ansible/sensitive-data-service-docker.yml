@@ -1,14 +1,14 @@
 ---
 - hosts: sensitive-data-service
   vars:
-    - deployment_type: swarm
-    - tomcat_user: "{{ docker_default_user }}"
-    - nginx_conf_dir: "{{ data_dir }}/nginx"
-    - nginx_user: "{{ docker_default_user }}"
-    - sensitive_data_user: "{{ docker_default_user }}"
-    - namematching_user: "{{ docker_default_user }}"
-    - sensitive_data_service_upstream_host: la_sensitive_data_service_war
-    - skip_handlers: true
+    deployment_type: swarm
+    tomcat_user: "{{ docker_default_user }}"
+    nginx_conf_dir: "{{ data_dir }}/nginx"
+    nginx_user: "{{ docker_default_user }}"
+    sensitive_data_user: "{{ docker_default_user }}"
+    namematching_user: "{{ docker_default_user }}"
+    sensitive_data_service_upstream_host: la_sensitive_data_service_war
+    skip_handlers: true
   roles:
     - common
     - sensitive-data-service

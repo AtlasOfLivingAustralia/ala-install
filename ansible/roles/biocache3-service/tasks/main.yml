@@ -12,7 +12,7 @@
 - include_tasks: ../../apache_vhost/tasks/main.yml
   vars:
     context_path: '{{ biocache_service_context_path }}'
-    hostname: '{{ biocache_service_hostname }}' 
+    hostname: '{{ biocache_service_hostname }}'
   tags:
     - biocache-service
     - deploy
@@ -21,7 +21,7 @@
   when: not webserver_nginx
 
 - name: set nginx proxy target if configured
-  set_fact: 
+  set_fact:
     biocache_service_proxy_target: "{{ biocache_service_context_path }}"
   tags:
     - nginx_vhost
@@ -30,7 +30,7 @@
   when: webserver_nginx and biocache_service_proxy_target is not defined
 
 - name: set download context path target if configured
-  set_fact: 
+  set_fact:
     biocache_service_download_target: "{{ biocache_service_context_path }}"
   tags:
     - nginx_vhost
@@ -52,6 +52,7 @@
    appname: "biocache-service"
    hostname: "{{ biocache_service_hostname }}"
    context_path: "{{ biocache_service_context_path }}"
+   tomcat_server_port: "{{ biocache_service_server_port }}"
    nginx_upstream_host: "{{ upstream_host }}"
    nginx_paths:
       - path: "{{biocache_service_context_path}}/webportal/wms/reflect"
@@ -380,14 +381,41 @@
     - biocache-service
   when: webserver_nginx
 
-- name: ensure application data directory exists
-  file: path={{ data_dir }}/biocache state=directory owner={{ tomcat_user }}  group={{ tomcat_user }}
+- name: Create a unique user for the service
+  user:
+    name: "{{ biocache_service }}"
+    state: present
+    create_home: no
+  when: exec_jar
   tags:
-    - biocache-service  
+    - webapps
+    - properties
+    - biocache_hub
+
+- name: set owner_user and group_user (exec_jar)
+  set_fact:
+    owner_user: "{{ biocache_service }}"
+    group_user: "{{ biocache_service }}"
+  tags:
+    - properties
+  when: exec_jar
+
+- name: set owner_user and group_user (tomcat)
+  set_fact:
+    owner_user: "{{ tomcat_user }}"
+    group_user: "{{ tomcat_user }}"
+  tags:
+    - properties
+  when: not exec_jar
+
+- name: ensure application data directory exists
+  file: path={{ data_dir }}/biocache state=directory owner={{ owner_user }}  group={{ group_user }}
+  tags:
+    - biocache-service
     - properties
 
 - name: ensure target directories exist [data subdirectories etc.
-  file: path={{ item.path }} state=directory owner={{ tomcat_user }}  group={{ tomcat_user }} mode={{ item.perm | default(775) }}
+  file: path={{ item.path }} state=directory owner={{ owner_user }}  group={{ group_user }} mode={{ item.perm | default(775) }}
   with_items:
     - { path: "{{data_dir}}/biocache-download" }
     - { path: "{{data_dir}}/biocache-download/tmp" }
@@ -410,10 +438,10 @@
     - biocache-service
     - properties
 
-- name: set data ownership [all data is owned by tomcat]
-# FIXME: The ansible file module fails with a recursion limit issue that "chown" isn't prone to
-#  file: path={{data_dir}}/{{item}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
-  shell: "chown -R {{ tomcat_user }}:{{ tomcat_user }} {{ item }} && chmod -R 775 {{ item }}"
+- name: set data ownership [all data is owned by tomcat/biocache-service]
+  # FIXME: The ansible file module fails with a recursion limit issue that "chown" isn't prone to
+  #  file: path={{data_dir}}/{{item}} owner={{tomcat_user}} group={{tomcat_user}} recurse=true
+  shell: "chown -R {{ owner_user }}:{{ group_user }} {{ item }} && chmod -R 775 {{ item }}"
   args:
     chdir: "{{ data_dir }}"
   with_items:
@@ -460,9 +488,9 @@
 
 - name: create download and media symlinks
   file:
-     src: "{{ download_dir | default('/data/biocache-download') }}"
-     dest: "/srv/{{ biocache_service_hostname }}/www/biocache-download"
-     state: link
+    src: "{{ download_dir | default('/data/biocache-download') }}"
+    dest: "/srv/{{ biocache_service_hostname }}/www/biocache-download"
+    state: link
   when: not webserver_nginx
   tags:
     - biocache-service
@@ -472,7 +500,7 @@
 - name: Include docker tasks
   include_tasks: docker-tasks.yml
   when: deployment_type == 'swarm'
-  tags: [docker, docker-service]
+  tags: [ docker, docker-service ]
 
 - name: Include VM tasks
   import_tasks: vm-tasks.yml

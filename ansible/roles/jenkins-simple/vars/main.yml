@@ -2,3 +2,7 @@ local_repo_dir: ~/.ala
 data_dir: /data
 # Jenkins LTS channel is debian-stable, bleeding edge is debian
 jenkins_channel: debian-stable
+jenkins_java_version: 17
+jenkins_java_package: "openjdk-{{ jenkins_java_version }}-jdk"
+jenkins_java_home: "/usr/lib/jvm/java-{{ jenkins_java_version }}-openjdk-amd64"
+jenkins_override_path: "/etc/systemd/system/jenkins.service.d/override.conf"

@@ -2,7 +2,7 @@
   ansible.builtin.apt_key:
     url: "{{ item.url }}"
     state: present
-  when: mongodb_version == item.version
+  when: mongodb_version is version(item.version, '==')
   tags:
     - mongodb-org
     - apt
@@ -15,7 +15,7 @@
     - { version: 4.0, url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x9DA31620334BD75D9DCB49F368818C72E52529D4' }
     - { version: 3.6, url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5' }
     - { version: 3.4, url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x0c49f3730359a14518585931bc711f9ba15703c6' }
-  tags: 
+  tags:
     - mongodb-org
     - apt
 
@@ -23,8 +23,8 @@
   apt_repository:
     repo: deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/{{ mongodb_version }} multiverse
     state: present
-  when: mongodb_version != 3.4 or ansible_distribution_release != 'bionic'
-  tags: 
+  when: mongodb_version is version('3.4', '!=') or ansible_distribution_release != 'bionic'
+  tags:
     - mongodb-org
     - apt
 
@@ -32,20 +32,35 @@
   apt_repository:
     repo: deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/{{ mongodb_version }} multiverse
     state: present
-  when: mongodb_version == 3.4 and ansible_distribution_release == 'bionic' or mongodb_version == 3.6 and ansible_distribution_release == 'bionic'
-  tags: 
+  when: mongodb_version is version('3.4', '==') and ansible_distribution_release == 'bionic' or mongodb_version is version('3.6', '==') and ansible_distribution_release == 'bionic'
+  tags:
     - mongodb-org
     - apt
 
-- name: Install mongodb.org client package
+- name: Install mongodb.org client package (ubuntu < 22)
   apt:
     name: ['mongodb-org-shell', 'mongodb-org-tools' ]
   tags: mongodb-org-client
+  when: ansible_os_family == "Debian" and ansible_distribution_version is version("22.04", "<")
 
-- name: Install mongodb.org packages and related
+- name: Install mongodb.org packages and related (ubuntu < 22)
   apt:
     name: ['mongodb-org-shell', 'mongodb-org-server', 'mongodb-org-tools' ]
   tags: mongodb-org
+  when: ansible_os_family == "Debian" and ansible_distribution_version is version("22.04", "<")
+
+- name: Install mongodb.org client package (ubuntu >= 22)
+  apt:
+    name: ['mongodb-mongosh']
+  tags: mongodb-org-client
+  when: ansible_os_family == "Debian" and ansible_distribution_version is version("22.04", ">=")
+
+
+- name: Install mongodb.org packages and related (ubuntu >= 22)
+  apt:
+    name: ['mongodb-mongosh', 'mongodb-org-server']
+  tags: mongodb-org
+  when: ansible_os_family == "Debian" and ansible_distribution_version is version("22.04", ">=")
 
 - name: Install pip2 when necessary
   apt:
@@ -78,7 +93,7 @@
 - name: Restart mongod
   service: name=mongod state=restarted daemon-reload=true enabled="yes"
   when: ansible_os_family == "Debian"
-  tags: 
+  tags:
     mongodb-org
     mongodb-org-restart
 
@@ -89,33 +104,30 @@
   when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int < 24) or ansible_distribution != 'Ubuntu'
   tags: mongodb-org
 
-- name: Install pip python-pymongo package
+- name: Install pip python-pymongo package for ubuntu < 22.04
   pip:
     name: pymongo==3.12.2
-#    name: pymongo==4.3.3
-  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int < 24) or ansible_distribution != 'Ubuntu'
   tags: mongodb-org
+  when: ansible_os_family == "Debian" and ansible_distribution_version is version("22.04", "<")
 
-- name: Install official python3-pymongo package (Ubuntu 24+)
-  apt:
-    name: python3-pymongo
-    state: present
-  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int >= 24)
+- name: Install pip python-pymongo package for ubuntu >= 22.04
+  shell: python3 -m pip install pymongo==4.13.2 {{ '--break-system-packages' if ansible_distribution_version is version('24.04', '>=') else '' }}
+  when: ansible_os_family == "Debian" and ansible_distribution_version is version("22.04", ">=")
   tags: mongodb-org
 
 - name: Enable service mongod
   service:
     name: mongod
     enabled: yes
-  tags: 
+  tags:
     mongodb-org
     mongodb-org-restart
 
-
-
 # https://github.com/ansible/ansible/issues/33832
-- name: Check if some admin user is already configured (if admin already exists this fails and can be ignored)
-  shell: /usr/bin/mongo --eval 'db.getUsers()' admin
+- name: Check if some admin user is already configured (mongosh or mongo)
+  shell: >
+    {{ ('/usr/bin/mongosh' if ansible_distribution_version is version('22.04', '>=') else '/usr/bin/mongo') }}
+    --eval 'db.getUsers()' admin
   ignore_errors: true
   register: get_mongo_admin_users
   changed_when: false
@@ -130,7 +142,7 @@
 # after creating rs.initiate().
 # https://docs.ansible.com/ansible/latest/modules/mongodb_user_module.html
 - name: Create admin user if necessary
-  mongodb_user:
+  community.mongodb.mongodb_user:
     database: "{{ mongodb_root_database | default('admin') }}"
     name: "{{ mongodb_root_username }}"
     password: "{{ mongodb_root_password }}"
@@ -139,10 +151,8 @@
     roles:
       - { db: "{{ mongodb_root_database | default('admin') }}", role: "clusterAdmin" }
       - { db: "{{ mongodb_root_database | default('admin') }}", role: "userAdminAnyDatabase" }
-
   tags: mongodb-org
   when: get_mongo_admin_users.rc == 0
-
 
 - name: Enable security
   blockinfile:
@@ -154,7 +164,7 @@
         authorization: enabled
   notify:
     - restart mongod
-  tags: 
+  tags:
     mongodb-org
     mongodb-org-restart
   when: "{{ ecodata_replica_set_disable_mongo_security | default(true) }}"

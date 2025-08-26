@@ -7,7 +7,7 @@
   when: fieldguide_app is undefined
 
 #
-# WAR file deployment and virtual host configuration
+# WAR/JAR file deployment and virtual host configuration
 #
 
 - include_tasks: ../../apache_vhost/tasks/main.yml
@@ -35,20 +35,35 @@
 
 - include_tasks: ../../tomcat_deploy/tasks/main.yml
   vars:
-    war_url: '{{ fieldguide_war_url }}'
+    war_url: '{{ fieldguide_artifact_url }}'
     context_path: '{{ fieldguide_context_path }}'
     hostname: '{{ fieldguide_hostname }}'
   tags:
     - fieldguide
     - deploy
     - tomcat_vhost
+  when: not exec_jar
+
+- name: add fieldguide jar and setup service
+  include_role:
+    name: exec-jar
+  vars:
+    service_name: 'fieldguide'
+    jar_url: '{{ fieldguide_artifact_url }}'
+    log_config_filename: "logback.xml"
+    java_headless: True
+  tags:
+    - deploy
+    - service
+    - fieldguide
+  when: exec_jar
 
 #
 # Properties and data file configuration
 #
 
 - name: ensure target directories exist [data subdirectories etc.]
-  file: path={{item}} state=directory owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{item}} state=directory owner={{ exec_jar | ternary('fieldguide', tomcat_user) }} group={{ exec_jar | ternary('fieldguide', tomcat_user) }}
   with_items:
     - "{{data_dir}}/{{fieldguide_app}}/config"
     - "{{data_dir}}/{{fieldguide_app}}/store"
@@ -76,3 +91,31 @@
   tags:
     - fieldguide
     - properties
+  when: not exec_jar
+
+- name: set data ownership
+  file: path={{data_dir}}/{{fieldguide_app}} owner=fieldguide group=fieldguide recurse=true
+  notify:
+    - restart fieldguide
+  tags:
+    - fieldguide
+    - properties
+  when: exec_jar
+
+- name: set data ownership for /var/log/atlas/fieldguide
+  file: path=/var/log/atlas/fieldguide owner=fieldguide group=fieldguide recurse=true
+  notify:
+    - restart fieldguide
+  tags:
+    - fieldguide
+    - properties
+  when: exec_jar
+
+- name: Restart fieldguide
+  service:
+    name: fieldguide
+    state: restarted
+    enabled: yes
+  tags:
+    - fieldguide
+  when: exec_jar

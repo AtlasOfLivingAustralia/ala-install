@@ -179,6 +179,15 @@
     - cas
   when: webserver_nginx and cas_oidc_well_known_static | bool == True
 
+- name: Reload nginx (needed by userdetails)
+  ansible.builtin.command: nginx -s reload
+  when: deployment_type == 'vm' and webserver_nginx
+  become: yes
+  tags:
+    - nginx_vhost
+    - deploy
+    - cas
+
 - name: Include docker tasks
   include_tasks: docker-tasks.yml
   when: deployment_type == 'swarm'

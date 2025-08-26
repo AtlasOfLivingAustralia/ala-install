@@ -1,0 +1,1 @@
+logger_user: "{{ logger_client_user | default(tomcat_user) }}"

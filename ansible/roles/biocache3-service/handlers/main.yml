@@ -2,9 +2,14 @@
   service: name={{tomcat}} state=restarted enabled="yes"
   when:
   - skip_handlers | default("false") | bool == false
+  - not exec_jar
 
 - name: restart httpd
   service: name={{apache}} state=restarted enabled="yes"
 
 - name: restart apache
   service: name={{apache}} state=restarted enabled="yes"
+
+- name: restart biocache-service
+  service: name={{biocache_service}} state=restarted enabled="yes"
+  when: exec_jar

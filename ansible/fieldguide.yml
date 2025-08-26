@@ -3,5 +3,5 @@
     - common
     - java
     - webserver
-    - tomcat
+    - { role: tomcat, when: not exec_jar }
     - fieldguide

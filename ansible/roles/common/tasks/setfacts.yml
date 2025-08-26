@@ -87,6 +87,7 @@
     python_software_properties: "python3-software-properties"
     tomcat_dir: "/var/lib/{{ tomcat }}"
     tomcat_webapps: "/var/lib/{{ tomcat }}/webapps/"
+    mongodb_version: "{{ mongodb_version | default(5.0) | float }}"
     pg_version: "{{ pg_version | default('9.6') }}"
     postgis_version: "{{ postgis_version | default('2.4') }}"
     postgis_version_folder: "{{ postgis_version_folder | default('2.4') }}"
@@ -128,6 +129,7 @@
     python_software_properties: "python3-software-properties"
     tomcat_dir: "/var/lib/{{ tomcat }}"
     tomcat_webapps: "/var/lib/{{ tomcat }}/webapps/"
+    mongodb_version: "{{ mongodb_version | default(5.0) | float }}"
     pg_version: "{{ pg_version | default('10') }}"
     postgis_version: "{{ postgis_version | default('2.5') }}"
     postgis_version_folder: "{{ postgis_version_folder | default('2.5') }}"
@@ -169,10 +171,11 @@
     tomcat_dir: "/var/lib/{{ tomcat }}"
     tomcat_webapps: "/var/lib/{{ tomcat }}/webapps/"
     psycopg2_package: "python3-psycopg2"
+    mongodb_version: "{{ mongodb_version | default(8.0) | float }}"
     pg_version: "{{ pg_version | default('14') }}"
     postgis_version: "{{ postgis_version | default('3') }}"
     postgis_version_folder: "{{ postgis_version_folder | default('3') }}"
-    postgis_scripts_version: "{{ postgis_scripts_version | default('3.4') }}"
+    postgis_scripts_version: "{{ postgis_scripts_version | default('3.5') }}"
   when: ansible_os_family == "Debian" and ansible_distribution_version == "22.04"
   tags:
     - setfacts
@@ -204,11 +207,28 @@
     tomcat_dir: "/var/lib/{{ tomcat }}"
     tomcat_webapps: "/var/lib/{{ tomcat }}/webapps/"
     psycopg2_package: "python3-psycopg2"
+    mongodb_version: "{{ mongodb_version | default(8.0) | float }}"
     pg_version: "{{ pg_version | default('16') }}"
     postgis_version: "{{ postgis_version | default('3') }}"
     postgis_version_folder: "{{ postgis_version_folder | default('3') }}"
     postgis_scripts_version: "{{ postgis_scripts_version | default('3.4') }}"
   when: ansible_os_family == "Debian" and ansible_distribution_version == "24.04"
+  tags:
+    - setfacts
+
+- name: set java defaults for openjdk21 (amd64)
+  set_fact:
+    java_security_opts: -Dlog4j2.formatMsgNoLookups=true
+    java_home: /usr/lib/jvm/java-21-openjdk-amd64
+  when: use_openjdk21 is defined and use_openjdk21 | bool == True and ansible_architecture != "aarch64"
+  tags:
+    - setfacts
+
+- name: set java defaults for openjdk21 (arm64)
+  set_fact:
+    java_security_opts: -Dlog4j2.formatMsgNoLookups=true
+    java_home: /usr/lib/jvm/java-21-openjdk-arm64
+  when: use_openjdk21 is defined and use_openjdk21 | bool == True and ansible_architecture == "aarch64"
   tags:
     - setfacts
 
