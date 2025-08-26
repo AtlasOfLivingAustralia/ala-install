@@ -95,8 +95,9 @@
 
 
 - include_tasks: ../../apache_vhost/tasks/main.yml
-     context_path='{{ cas_context_path }}' 
-     hostname='{{ cas_hostname }}' 
+  vars:
+    context_path: '{{ cas_context_path }}' 
+    hostname: '{{ cas_hostname }}' 
   tags:
     - cas
     - deploy

@@ -104,8 +104,9 @@
 # WAR file deployment and virtual host configuration
 #
 - include_tasks: ../../apache_vhost/tasks/main.yml
-    context_path='{{ biocollect_context_path }}'
-    hostname='{{ biocollect_hostname }}'
+  vars:
+    context_path: '{{ biocollect_context_path }}'
+    hostname: '{{ biocollect_hostname }}'
   tags:
     - deploy
     - apache_vhost
