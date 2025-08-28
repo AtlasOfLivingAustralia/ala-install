@@ -1,0 +1,1 @@
+http_user_agent: "{{ service_name }}/{{ version }}"
