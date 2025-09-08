@@ -370,6 +370,16 @@
         is_proxy: true
         proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
         proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/search/downloadAllDocuments"
+      - path: "~ ^{{ecodata_context_path}}/ws/igraphql/([a-zA-Z0-9_-]+)$"
+        sort_label: "graphiql"
+        is_proxy: true
+        proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
+        proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/igraphql/$1"
+      - path: "~ ^{{ecodata_context_path}}/ws/graphql/([a-zA-Z0-9_-]+)$"
+        sort_label: "graphql"
+        is_proxy: true
+        proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
+        proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/graphql/$1"
   tags:
     - nginx_vhost
     - deploy
