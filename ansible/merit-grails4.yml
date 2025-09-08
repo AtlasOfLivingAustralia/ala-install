@@ -8,7 +8,7 @@
     nginx_client_header_timeout: "10"
     nginx_large_client_header_buffers: "4 2k"
     ala_default_vhost_include_paths: False
-    nginx_content_security_policy: "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://maps.googleapis.com https://ssl.google-analytics.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://cdn.usefathom.com; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; worker-src blob:;"
+    nginx_content_security_policy: "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://maps.googleapis.com https://ssl.google-analytics.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://cdn.usefathom.com; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; worker-src blob: 'self';"
 
   roles:
     - common
