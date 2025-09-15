@@ -143,8 +143,9 @@
     hostname: "{{ cas_host_name }}"
     context_path: "{{ cas_context_path | default('cas') }}"
     nginx_paths:
-      - path: "/{{ cas_context_path | default('cas') }}/oidc/.well-known"
+      - path: "= /{{ cas_context_path | default('cas') }}/oidc/.well-known"
         sort_label: "cas_1_well_known"
+        add_header: "{{ cas_oidc_well_known_static_cors }}"
         is_proxy: false
         try_files: "$uri $uri/"
         default_type: "application/json"

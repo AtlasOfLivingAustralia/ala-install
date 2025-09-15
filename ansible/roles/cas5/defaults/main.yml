@@ -2,6 +2,7 @@
 # By default, CAS serves the response to cas/oidc/.well-known requests from the CAS app itself.
 # If cas_oidc_well_known_static is set to true in an inventory, nginx will serve the response directly from a static file.
 cas_oidc_well_known_static: false
+cas_oidc_well_known_static_cors: "Access-Control-Allow-Origin *"
 # OICD scopes for CAS
 cas_oidc_scopes:
     - "openid"
