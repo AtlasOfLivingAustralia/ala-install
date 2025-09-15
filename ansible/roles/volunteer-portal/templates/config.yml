@@ -53,8 +53,8 @@ userdetails.url: {{ auth_base_url }}/userdetails/
 userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
 userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
 webservice:
-  client-id: {{ digivol_web_client_id | default('digivol_oidc_client_id') }}
-  client-secret: {{ digivol_web_secret | default('digivol_oidc_secret') }}
+  client-id: {{ digivol_web_client_id | default(digivol_oidc_client_id) | default('') }}
+  client-secret: {{ digivol_web_secret | default(digivol_oidc_secret) | default('') }}
   jwt-scopes: {{ security_jwt_scopes | default('users/read') }}
   jwt: true
 dataSource:
