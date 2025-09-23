@@ -5,6 +5,7 @@ su - {{ecodata_backup_user}}
 mkdir -p {{data_dir}}/backups/daily
 mkdir -p {{data_dir}}/backups/weekly
 mkdir -p {{data_dir}}/backups/monthly
+mkdir -p {{data_dir}}/backups/yearly
 mkdir -p {{data_dir}}/backups/audit
 
 cd {{data_dir}}/backups
@@ -24,6 +25,10 @@ if [ $(date +%d) -eq 1 ]; then
   cp {{data_dir}}/backups/daily/ecodata-$(date +%y%m%d).tgz {{data_dir}}/backups/monthly
 fi
 
+#copy a backup to the yearly dir on the 1st of Jan every year
+if [ $(date +%j) -eq 1 ]; then
+  cp {{data_dir}}/backups/daily/ecodata-$(date +%y%m%d).tgz {{data_dir}}/backups/yearly
+fi
 
 # only keep 2 weeks of dailys
 find {{data_dir}}/backups/daily -mtime +14 -delete
@@ -33,6 +38,9 @@ find {{data_dir}}/backups/weekly -mtime +30 -delete
 
 # and 2 years of monthlys
 find {{data_dir}}/backups/monthly -mtime +730 -delete
+
+# Remove the dump directory to save space and prevent it being backed up to s3
+rm -r {{data_dir}}/backups/dump
 
 {% if mongo_backup_bucket is defined %}
 
