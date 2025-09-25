@@ -87,11 +87,6 @@
   tags:
     - nginx
 
-- name: Override default 50x.html and index.html files to remove references to nginx
-  copy: src="files/" dest="/usr/share/nginx/html" owner="root" group="root" mode=0644
-  tags:
-    - nginx
-
 - name: Check Nginx status
   systemd:
     name: nginx
