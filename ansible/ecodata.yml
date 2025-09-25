@@ -18,6 +18,12 @@
       cluster.routing.allocation.disk.watermark.high: 95%
       cluster.routing.allocation.disk.watermark.flood_stage: 99%
 
+    nginx_server_tokens: "off"
+    nginx_keepalive_timeout: "10"
+    nginx_send_timeout: "10"
+    nginx_error_log: "/var/log/nginx/error.log info"
+    nginx_config_directory_mode: 0750
+    nginx_config_file_mode: 0640
     nginx_remove_default_vhost: True
     nginx_client_body_timeout: "10"
     nginx_client_header_timeout: "10"

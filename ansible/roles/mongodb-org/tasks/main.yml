@@ -3,9 +3,6 @@
     url: "{{ item.url }}"
     state: present
   when: mongodb_version is version(item.version, '==')
-  tags:
-    - mongodb-org
-    - apt
   loop:
     - { version: 8.0, url: 'https://pgp.mongodb.com/server-8.0.asc' }
     - { version: 7.0, url: 'https://pgp.mongodb.com/server-7.0.asc' }

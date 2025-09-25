@@ -2,7 +2,6 @@
 
 server {
     listen {{ aws_elb_default_port | default('80') }} default_server;
-    listen [::]:{{ aws_elb_default_port | default('80') }} default_server;
     server_name  _;
 
     root   {{ aws_elb_default_root | default('/var/www/html') }};

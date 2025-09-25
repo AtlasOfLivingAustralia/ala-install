@@ -170,7 +170,7 @@
   file:
     src: "/usr/share/nginx/modules-available/mod-http-auth-pam.conf"
     dest: "/etc/nginx/modules-enabled/50-mod-http-auth-pam.conf"
-    mode: 0640
+    mode: "{{nginx_config_file_mode}}"
     state: link
   when: nginx_auth_pam_shadow 
   notify:
@@ -185,7 +185,7 @@
     - nginx_vhost
 
 - name: pam authentication - pam.d
-  copy: src="files/pam-nginx" dest="/etc/pam.d/nginx" owner="root" group="root" mode=0640
+  copy: src="files/pam-nginx" dest="/etc/pam.d/nginx" owner="root" group="root" mode={{nginx_config_file_mode}}
   when: nginx_auth_pam_shadow 
   notify:
    - reload nginx
@@ -196,7 +196,7 @@
   file: 
     path: "{{nginx_conf_dir}}/sites-available"
     state: directory
-    mode: 0750
+    mode: "{{nginx_config_directory_mode}}"
     owner: root
     group: root
   when: vhost_required | bool == True
@@ -210,7 +210,7 @@
   file: 
     path: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}"
     state: directory
-    mode: 0750
+    mode: "{{nginx_config_directory_mode}}"
     owner: root
     group: root
   when: vhost_required | bool == True
@@ -524,7 +524,7 @@
   assemble:
     src: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}"
     dest: "{{nginx_conf_dir}}/sites-available/{{hostname}}{{vfragments_suffix}}.conf"
-    mode: 0640
+    mode: "{{nginx_config_file_mode}}"
   when: vhost_required | bool == True
   notify:
    - reload nginx
@@ -537,7 +537,7 @@
     state: link
     src: "../sites-available/{{hostname}}{{vfragments_suffix}}.conf"
     dest: "{{nginx_conf_dir}}/sites-enabled/{{hostname}}{{vfragments_suffix}}.conf"
-    mode: 0640
+    mode: "{{nginx_config_file_mode}}"
   when: vhost_required | bool == True
   notify:
    - reload nginx
