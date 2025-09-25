@@ -1,1 +1,13 @@
 merit_server_port: 8080
+pdfgen_base_url: https://pdfgen.ala.org.au/
+merit_repo_url: https://maven.pkg.github.com/atlasoflivingaustralia/fieldcapture
+
+ecodata_base_url: https://{{ecodata_hostname}}/ws
+
+# oidc settings
+oidc_client_id:
+oidc_client_secret:
+
+fathom_tracking_id:
+enable_google_analytics: True
+bdr_api_readTimeout: 60000

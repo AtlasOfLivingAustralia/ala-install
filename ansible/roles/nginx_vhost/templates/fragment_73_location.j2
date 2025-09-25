@@ -87,6 +87,9 @@
     {% else %}
         proxy_read_timeout 10m;
     {% endif %}
+    {% if item.add_header is defined and item.add_header %}
+        proxy_set_header {{ item.add_header }};
+    {% endif %}
     {% if nginx_disable_download_disk_buffering | bool == True %}
         proxy_max_temp_file_size 0;
     {% endif %}
@@ -149,6 +152,9 @@
     {% endif %}
     {% if item.try_files is defined and item.try_files %}
 try_files {{ item.try_files }};
+    {% endif %}
+    {% if item.index is defined and item.index %}
+    index {{ item.index }};
     {% endif %}
 {% elif item.rewrite is defined %}
         return 301 {{ item.rewrite }};

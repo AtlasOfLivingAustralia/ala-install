@@ -12,7 +12,7 @@
     
 {% if force_https | bool %}
     # Force HTTPS was configured, so setting STS value to 1 year (31536000 seconds)
-    add_header Strict-Transport-Security "max-age=31536000" always;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 {% else %}
     # Testing HSTS with 1 hour (3600 seconds) intervals so we can rollback if necessary
     add_header Strict-Transport-Security "max-age=3600" always;

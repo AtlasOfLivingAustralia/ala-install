@@ -3,3 +3,5 @@
 mongodb_bind_ip: 127.0.0.1
 mongodb_port: 27017
 dbPath: /var/lib/mongodb
+mongodb_root_username: admin
+mongo_cluster_enabled: False

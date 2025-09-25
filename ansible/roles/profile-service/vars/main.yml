@@ -1,8 +1,8 @@
 # assets
 version: "{{ profile_service_version | default('LATEST') }}"
 artifactId: "profile-service"
-classifier: ''
-packaging: "war"
+classifier: 'exec'
+packaging: "jar"
 groupId: "au.org.ala"
 profile_service_war_url: "{{maven_repo_ws_url}}"
 # If Apache is using ajp module to talk to tomcat the remoteIpValve should not be required

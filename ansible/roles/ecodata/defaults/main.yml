@@ -1,3 +1,14 @@
+# For a standalone deployment use localhost.  Where there is a reporting server, override with
+# the hostname of the primary server
+internal_primary_hostname: localhost
+internal_reporting_hostname: localhost
+
+ecodata_packaging: jar
+ecodata_classifier: exec
+ecodata_context_path: ""
+ecodata_tomcat_server_port: 8081
+
+
 # GeoServer
 install_geoserver: False
 geoserver_enabled: true
@@ -8,17 +19,50 @@ geoserver_context_path: /geoserver
 geoserver_app: geoserver
 geoserver_username: admin
 geoserver_password: geoserver
-geoserver_elastic_home: localhost
+geoserver_elastic_home: "{{ internal_primary_hostname }}"
 geoserver_elastic_port: 9300
 geoserver_cluster_name: elasticsearch
 
+
 # elasticsearch
-elasticsearch_local: true
-elasticsearch_primary_host: localhost
-elasticsearch_primary_port: 9300
+elasticsearch_local: false
+elasticsearch_primary_host: "{{ internal_primary_hostname }}"
+elasticsearch_primary_port: 9200
 elasticsearch_primary_server: true
 
 # mongo
+mongo_cluster_enabled: false
 ecodata_local_authentication_keyFile:
-mongo_hosts: localhost:27017
-mongodb_port: 27017
+mongodb_port: "27017" # String to allow for easy concatination in the connection string
+mongo_hosts: "{{ internal_primary_hostname }}:{{ mongodb_port }}"
+read_preference: "{{ is_primary | ternary('primary', 'secondary') }}"
+
+# users
+ecodata_backup_user: ecodatabackup
+
+# cron settings
+scheduled_database_backup: True
+scheduled_production_data_load: False
+schedueld_production_document_sync: False
+scheduled_re_index: False
+scheduled_report_download: False
+scheduled_production_data_copy: False
+scheduled_production_documents_copy: False
+scheduled_downloads: False
+
+access_expiry_cron_expression: "0 10 3 * * ? *"
+
+# oidc settings
+oidc_client_id:
+oidc_client_secret:
+
+# reporting server nginx config
+download_header: "X-ALA-hostname"
+use_reporting_server: "{{ mongo_cluster_enabled and is_primary | default(false)}}"
+
+paratoo_core_base_url: "https://dev.core-api.paratoo.tern.org.au/api"
+
+ecodata_ips: "{{ mongo_cluster_enabled | ternary(ecodata_server_ip +','+ecodata_reporting_server_ip, host_ip_address) }}"
+data_dir: /data
+
+production_server_hostname: ala-waters.it.csiro.au

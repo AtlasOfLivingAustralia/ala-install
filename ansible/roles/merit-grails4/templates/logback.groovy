@@ -41,12 +41,12 @@ final info = [
         'grails.app',
         'grails.plugins.mail',
         'org.quartz',
-        'org.springframework'
+        'org.springframework',
+        'au.org.ala.merit'
 ]
 
 final debug = [
-        'grails.gorm',
-        'au.org.ala.merit'
+        'grails.gorm'
 ]
 
 final trace = [

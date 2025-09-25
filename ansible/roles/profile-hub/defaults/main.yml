@@ -5,3 +5,4 @@ dimension_userid: "cd5"
 dimension_collectionid: "cd6"
 dimension_profileid: "cd7"
 profile_hub_repo_url: https://maven.pkg.github.com/atlasoflivingaustralia/profile-hub
+ala_default_vhost_include_paths: False

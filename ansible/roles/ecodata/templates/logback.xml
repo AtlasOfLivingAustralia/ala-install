@@ -1,0 +1,49 @@
+<configuration>
+  <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+  <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+
+  <property name="ECODATA_LOG_LOCATION" value="/var/log/atlas/ecodata/ecodata.log"/>
+  <appender name="APPLICATION_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} : %m%n%wex</pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>/var/log/atlas/ecodata/ecodata.log.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+      <!-- each archived file, size max 100MB -->
+      <maxFileSize>100MB</maxFileSize>
+      <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+      <totalSizeCap>20GB</totalSizeCap>
+      <!-- 60 days to keep -->
+      <maxHistory>60</maxHistory>
+    </rollingPolicy>
+  </appender>
+  <appender name="ES-INDEXING" class="ch.qos.logback.core.FileAppender">
+    <file>/var/log/atlas/ecodata/elasticsearch-indexing.log</file>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n</pattern>
+    </encoder>
+  </appender>
+  <root level="INFO">
+    <appender-ref ref="APPLICATION_LOG"/>
+  </root>
+  <logger name="EsIndexing" level="INFO" additivity="false">
+    <appender-ref ref="ES-INDEXING"/>
+  </logger>
+  <logger name="au.org.ala.cas" level="WARN"/>
+  <logger name="asset.pipeline" level="INFO"/>
+  <logger name="au.org.ala" level="INFO"/>
+  <logger name="grails.app" level="INFO"/>
+  <logger name="grails.plugins.mail" level="INFO"/>
+  <logger name="com.mongo" level="INFO"/>
+  <logger name="org.quartz" level="INFO"/>
+  <logger name="org.springframework" level="INFO"/>
+  <logger name="grails.mongodb" level="DEBUG"/>
+  <logger name="grails.gorm" level="DEBUG"/>
+  <logger name="au.org.ala.ecodata" level="DEBUG"/>
+  <logger name="au.org.ala.ecodata.UserService" level="INFO"/>
+  <logger name="au.org.ala.ecodata.CommonService" level="INFO"/>
+  <logger name="au.org.ala.ecodata.converter.RecordConverter" level="INFO"/>
+  <logger name="au.org.ala.ecodata.ElasticSearchService" level="INFO">
+    <appender-ref ref="ES-INDEXING"/>
+  </logger>
+</configuration>
