@@ -17,10 +17,6 @@
     group: "{{ pdf_user }}"
     system: true
 
-- name: install python for docker
-  apt: pkg=python3-docker
-  tags:
-    - docker
 #
 # install docker
 #
@@ -28,6 +24,7 @@
   apt: pkg=docker.io update_cache=yes state=latest
   tags:
     - docker
+  when: use_docker
 
 
 - name: enable docker to run on startup and start it
@@ -37,35 +34,8 @@
     state: started
   tags:
     - docker
+  when: use_docker
 
-- name: use the athenapdf docker image
-  docker_image:
-    name: arachnysdocker/athenapdf
-    source: pull
-  tags:
-    - docker
-    - athenapdf
-
-- name: copy script to execute docker to /opt/athenapdf
-  template:
-    src: templates/athenapdf.sh
-    dest: "{{athena_pdf_path}}/"
-    owner: pdfgen
-    group: pdfgen
-    mode: u=rx
-  tags:
-    - athenapdf
-
-- name: allow pdfgen to execute script using sudo
-  ansible.builtin.lineinfile:
-    path: /etc/sudoers.d/pdfgen_athenapdf
-    line: "{{ pdf_user }} ALL=NOPASSWD: {{athena_pdf_path}}/athenapdf.sh"
-    state: present
-    mode: 0440
-    create: yes
-    validate: 'visudo -cf %s'
-  tags:
-    - athenapdf
 
 - apt_repository:
     repo: ppa:libreoffice/ppa

@@ -1,5 +1,3 @@
 # Use this to add extra parameters to the service for JMX or heap configuration or other parameters
 extra_java_opts: ""
-nodejs_version: 10
 pdf_path: /data/pdfs
-athena_pdf_path: /opt/athenapdf
