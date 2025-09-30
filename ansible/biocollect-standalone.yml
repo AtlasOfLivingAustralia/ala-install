@@ -1,4 +1,9 @@
 - hosts: biocollect
+  vars:
+    ala_default_vhost_include_paths: False
+    # enable large downloads with nginx, > ~1GB
+    nginx_extra_http_options: |
+      proxy_max_temp_file_size 0;
   roles:
     - common
     - java

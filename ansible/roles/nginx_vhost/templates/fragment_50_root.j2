@@ -1,10 +1,17 @@
     root {{nginx_root}};
     index {{nginx_index}};
     client_max_body_size {{ nginx_client_max_body_size | default('64m') }};
-
     # set a default value so x_request_id can be used as a logging parameter
     set $x_request_id "";
-
+{% if nginx_client_body_timeout is defined %}
+    client_body_timeout {{ nginx_client_body_timeout }};
+{% endif %}
+{% if nginx_client_header_timeout is defined %}
+    client_header_timeout {{ nginx_client_body_timeout }};
+{% endif %}
+{% if nginx_large_client_header_buffers is defined %}
+    large_client_header_buffers {{ nginx_large_client_header_buffers }};
+{% endif %}
 {% if ssl | bool == True %}
     # If ssl is supported, then push this policy to all users who understand it to trigger HSTS
     add_header Content-Security-Policy upgrade-insecure-requests;
@@ -15,3 +22,7 @@
     add_header X-Cache-Status $upstream_cache_status;
 
 {% endif %}
+{% if nginx_content_security_policy is defined %}
+    add_header Content-Security-Policy "{{ nginx_content_security_policy }}";
+{% endif %}
+    add_header X-Xss-Protection "1; mode=block";

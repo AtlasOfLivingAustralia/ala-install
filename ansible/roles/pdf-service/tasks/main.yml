@@ -97,7 +97,6 @@
   when: not use_docker
 
 - name: "Reload services"
-  when: service.changed
   systemd:
     name: "{{service_name}}"
     daemon-reload: yes

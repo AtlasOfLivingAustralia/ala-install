@@ -1,0 +1,31 @@
+<configuration>
+  <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+  <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+
+  <property name="MERIT_LOG_LOCATION" value="/var/log/atlas/fieldcapture/fieldcapture.log"/>
+  <appender name="APPLICATION_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} : %m%n%wex</pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>/var/log/atlas/fieldcapture/fieldcapture.log.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+      <!-- each archived file, size max 100MB -->
+      <maxFileSize>100MB</maxFileSize>
+      <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+      <totalSizeCap>20GB</totalSizeCap>
+      <!-- 60 days to keep -->
+      <maxHistory>60</maxHistory>
+    </rollingPolicy>
+  </appender>
+  <root level="INFO">
+    <appender-ref ref="APPLICATION_LOG"/>
+  </root>
+  <logger name="au.org.ala.cas" level="WARN"/>
+  <logger name="asset.pipeline" level="INFO"/>
+  <logger name="au.org.ala" level="INFO"/>
+  <logger name="grails.app" level="INFO"/>
+  <logger name="grails.plugins.mail" level="INFO"/>
+  <logger name="org.springframework" level="INFO"/>
+  <logger name="au.org.ala.fieldcapture" level="INFO"/>
+  <logger name="grails.plugin.cookie" level="WARN"/>
+</configuration>

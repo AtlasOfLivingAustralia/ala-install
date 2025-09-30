@@ -14,20 +14,13 @@ ecodata_server_port: "{{ ecodata_tomcat_server_port | default('8080') }}"
 #ecodata_dbPath: "{{ ecodata_dbPath | default('/var/lib/mongodb') }} "
 
 # mongo replication
-mongo_replica_enabled: "{{ enable_mongo_replica_set | default(false) }}"
 replicaSetName: "rs0"
-mongo_replication: "{{ replication | default(false)}}"
-create_user_in_primary_node: "{{ create_user | default(false) }}"      # # creating both admin and ecodata user in primary node after mongo replication
-
-mongo_replica_options: "{{ mongo_replica_enabled | ternary('&replicaSet=rs0&readPreference=nearest', '') }}"
+read_preference_options: "&replicaSet=rs0&readPreference={{ read_preference }}"
+mongo_replica_options: "{{ mongo_cluster_enabled | ternary(read_preference_options, '') }}"
 mongo_auth_options: "authSource={{ ecodata_database }}&gssapiServiceName=mongodb"
+mongo_hosts: "{{ mongo_cluster_enabled | ternary(internal_primary_hostname+':'+mongodb_port+','+internal_reporting_hostname+':'+mongodb_port, internal_primary_hostname+':'+mongodb_port)}}"
 mongo_connection_url: "mongodb://{{ ecodata_username }}:{{ ecodata_password }}@{{ mongo_hosts }}/{{ ecodata_database }}?{{ mongo_auth_options }}{{ mongo_replica_options }}"
 
-copy_mongorc_to_secondary_node: "{{ copy_mongorc | default(false) }}"
-
-ecodata_not_yet_admin: "{{ enable_mongo_security | default(true)}}"
-
-enable_security_replica_set: "{{ enable_security_after_replica_set | default(false) }}"
-
-mongo_version4: "{{ mongodb_version_4 | default(false) }}"
-mongo_version3: "{{ mongodb_version_3 | default(false) }}"
+userdetails_url: "{{ auth_base_url }}/userdetails/"
+ecodata_url: "https://{{ ecodata_hostname }}"
+security_serviceUrl: "{{ auth_base_url }}/apikey/ws/check?apikey="

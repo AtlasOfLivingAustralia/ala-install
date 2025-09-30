@@ -1,8 +1,8 @@
-- include_tasks: ../../common/tasks/setfacts.yml
-  tags:
-    - ecodata
-    - deploy
-    - properties
+- include_tasks:
+    file: ../../common/tasks/setfacts.yml
+    apply:
+      tags: setfacts
+  tags: always
 
 - name: set ecodata_user as default value
   set_fact:
@@ -11,6 +11,44 @@
     - ecodata
     - deploy
     - properties
+    - cron
+
+- name: Add ecodata reporting server internal IP to the hosts file
+  blockinfile:
+    state: present
+    dest: /etc/hosts
+    block: |
+      {{ ecodata_reporting_server_ip }} {{ ecodata_reporting_hostname }}
+    marker_begin: "# BEGIN_Use internal IP for ecodata reporting"
+    marker_end: "# END_Use internal IP for ecodata reporting"
+  tags:
+    - hosts
+  when:
+    - use_reporting_server and is_primary
+
+- name: "Create system user for ecodata"
+  user:
+    name: "{{ ecodata_user }}"
+    state: present
+    system: yes
+  tags:
+    - service
+
+- name: Ensure group for the backup user exists
+  ansible.builtin.group:
+    name: "{{ecodata_backup_user}}"
+    state: present
+
+- name: create the user used for backups
+  user:
+    name: "{{ecodata_backup_user}}"
+    state: present
+    system: yes
+    groups:
+      - "{{ecodata_backup_user}}"
+      - "{{ecodata_user}}"
+  tags:
+    - cron
 
 #
 # External configuration directories and files
@@ -20,7 +58,6 @@
   with_items:
     - "{{data_dir}}/mongodb"
   tags:
-    - mongodb-org
     - properties
     - ecodata
 
@@ -30,8 +67,9 @@
   vars:
     service_name: "ecodata"
     jar_url: '{{ ecodata_artifact_url }}'
-    use_openjdk11: True
-    use_openjdk8: False
+    extra_params:
+      - key: "java.io.tmpdir"
+        value: "{{data_dir}}/tmp"
   tags:
     - deploy
     - service
@@ -46,6 +84,7 @@
     - "{{data_dir}}/ecodata/models"
     - "{{data_dir}}/ecodata/elasticsearch"
     - "{{data_dir}}/ecodata/scripts"
+    - "{{data_dir}}/tmp"
   tags:
     - properties
     - ecodata
@@ -54,15 +93,17 @@
   template: src={{ecodata_properties_file | default('ecodata-config.properties')}} dest={{data_dir}}/ecodata/config/ecodata-config.properties
   tags:
     - properties
-    - properties-file
     - ecodata
 
 - name: copy logback config
   template:
-    src: logback.groovy
-    dest: "{{data_dir}}/ecodata/config/logback.groovy"
+    src: "{{item}}"
+    dest: "{{data_dir}}/ecodata/config/{{item}}"
     owner: "{{ecodata_user}}"
     group: "{{ecodata_user}}"
+  with_items:
+    - logback.groovy
+    - logback.xml
   notify:
     - restart ecodata
   tags:
@@ -79,14 +120,15 @@
     - ecodata
   when: exec_jar
 
-- name: set ecodata log ownership
-  file: path=/var/log/atlas/ecodata owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true
-  notify:
-    - restart ecodata
-  tags:
-    - properties
-    - ecodata
-  when: exec_jar
+# Running this on prod primary threw a fatal error. Uncomment when needed.
+#- name: set ecodata log ownership
+#  file: path=/var/log/atlas/ecodata owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true
+#  notify:
+#    - restart ecodata
+#  tags:
+#    - properties
+#    - ecodata
+#  when: exec_jar
 
 #
 # Copy sensitive data xml file
@@ -107,33 +149,93 @@
     - ecodata
     - properties
 
+- name: Create backup path if it doesn't exist
+  file: path="{{data_dir}}/backups" owner="{{ecodata_backup_user}}" group="{{ecodata_backup_user}}" recurse=true mode='u=rwX,g=rwX,o-rwx'
+  tags:
+    - cron
+
+- name: Install jq command line json processor
+  apt: pkg="jq" state=present
+  tags:
+    - ecodata
+    - properties
+    - jq
 
 - name: Copy scripts to scripts directory
   template:
-    src: backup-ecodata.sh
-    dest: "{{data_dir}}/ecodata/scripts/backup-ecodata.sh"
+    src: "{{ item }}"
+    dest: "{{data_dir}}/ecodata/scripts/{{item}}"
     owner: "{{ecodata_user}}"
     group: "{{ecodata_user}}"
     mode: "u+rx,g+r,o-rxw"
+  with_items:
+    - accessToken.sh
+    - replicaSetConfig.sh
+    - replicaSetStatus.sh
+    - runProjectDownload.sh
+    - reIndexAll.sh
+    - runMuDownload.sh
+    - runOrgDownload.sh
+    - scheduledDAWEDownloads.sh
   tags:
     - ecodata
     - properties
 
-- name: set data ownership
-  file: path={{data_dir}}/ecodata owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true mode='u=rwX,g=rX,o-rxw'
+- name: Copy scripts to scripts directory
+  template:
+    src: "{{ item }}"
+    dest: "{{data_dir}}/ecodata/scripts/{{item}}"
+    owner: "{{ecodata_backup_user}}"
+    group: "{{ecodata_backup_user}}"
+    mode: "u+rx,g+r,o-rxw"
   with_items:
-    - "{{data_dir}}/ecodata/config"
-    - "{{data_dir}}/ecodata/models"
-    - "{{data_dir}}/ecodata/elasticsearch"
-    - "{{data_dir}}/ecodata/scripts"
+    - backup-ecodata.sh
+  tags:
+    - ecodata
+    - properties
+
+- name: Copy scripts to scripts directory
+  template:
+    src: "{{ item }}"
+    dest: "{{data_dir}}/ecodata/scripts/{{item}}"
+    owner: "{{ecodata_backup_user}}"
+    group: "{{ecodata_backup_user}}"
+    mode: "u+rx,g+r,o-rxw"
+  with_items:
+    - copyProdData.sh
+  tags:
+    - cron
+  when: scheduled_production_data_copy
+
+- name: Copy scripts that copy and restore production data (not for use on production hosts)
+  template:
+    src: "{{ item }}"
+    dest: "{{data_dir}}/ecodata/scripts/{{item}}"
+    owner: "{{ecodata_user}}"
+    group: "{{ecodata_user}}"
+    mode: "u+rx,g+r,o-rxw"
+  with_items:
+      - syncProdData.sh
+      - copyProdDocuments.sh
+  tags:
+    - cron
+  when: scheduled_production_data_load or scheduled_production_documents_copy
+
+
+- name: set data ownership
+  file: path={{data_dir}}/ecodata/{{item}} owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true mode='u=rwX,g=rX,o-rxw'
+  with_items:
+    - config
+    - models
+    - elasticsearch
   tags:
     - properties
     - ecodata
 
 - name: set uploads ownership so they can be served by nginx
-  file: path={{data_dir}}/ecodata owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true mode='u=rwX,g=rX,o=rX'
+  file: path={{data_dir}}/ecodata/{{item}} owner='{{ecodata_user}}' group='{{ecodata_user}}' recurse=true mode='u=rwX,g=rX,o=rX'
   with_items:
-    - "{{data_dir}}/ecodata/uploads"
+    - uploads/
   tags:
     - properties
     - ecodata
@@ -141,10 +243,11 @@
 #
 # WAR file deployment and virtual host configuration
 #
-- include_tasks: ../../apache_vhost/tasks/main.yml
+- include_role:
+    name: apache_vhost
   vars:
-    context_path: '{{ ecodata_context_path }}'
-    hostname: '{{ ecodata_hostname }}'
+    context_path: "{{ ecodata_context_path }}"
+    hostname: "{{ ecodata_hostname }}"
   tags:
     - deploy
     - apache_vhost
@@ -160,7 +263,7 @@
     - ecodata
   when: webserver_nginx and ecodata_proxy_target is not defined
 
-- name: add nginx vhost if configured
+- name: add nginx vhost to proxy to grails and reporting server
   include_role:
     name: nginx_vhost
   vars:
@@ -169,10 +272,18 @@
     context_path: "{{ ecodata_context_path }}"
     tomcat_server_port: "{{ ecodata_server_port }}"
     nginx_paths:
-      - path: "{{ecodata_proxy_target}}/uploads"
+      - path: "{{ecodata_proxy_target}}/ws/document/download"
         sort_label: "1_upload"
         is_proxy: false
         alias: "{{ upload_dir | default('/data/ecodata/uploads') }}"
+      - path: "{{ecodata_proxy_target}}/document/download"
+        sort_label: "2_upload"
+        is_proxy: false
+        alias: "{{ upload_dir | default('/data/ecodata/uploads') }}"
+      - path: "~ ^{{ecodata_proxy_target}}/ws/(.*)/document/download/(.*)$"  #Delete me when MERIT 4.7 is released
+        sort_label: "3_upload"
+        is_proxy: false
+        alias: "{{ upload_dir | default('/data/ecodata/uploads') }}/$2"
       - path: "{{ecodata_context_path}}"
         sort_label: "2_ws"
         is_proxy: true
@@ -180,6 +291,7 @@
       - path: "{{ecodata_context_path}}/ws/search/downloadAllData"
         sort_label: "2_ws_downloads"
         is_proxy: true
+        add_header: "{{download_header}} {{ ecodata_url }}"
         proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
         proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/search/downloadAllData"
       - path: "{{ecodata_context_path}}/ws/search/downloadUserList"
@@ -207,6 +319,7 @@
         is_proxy: true
         proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
         proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/search/downloadProjectDataFile/"
+#        TODO: remove once https://github.com/AtlasOfLivingAustralia/fieldcapture/issues/3004 is deployed to production
       - path: "{{ecodata_context_path}}/ws/managementunit/getReportPeriods/"
         sort_label: "8_ws_mu_periods"
         is_proxy: true
@@ -222,7 +335,11 @@
         is_proxy: true
         proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
         proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/download/"
-
+      - path: "{{ecodata_context_path}}/ws/report/generateReportsInPeriod/"
+        sort_label: "11_ws_mu_report"
+        is_proxy: true
+        proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
+        proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/report/generateReportsInPeriod/"
       - path: "{{ ecodata_context_path }}/ws/geoServer/wms"
         sort_label: "geo_server_wms"
         is_proxy: true
@@ -238,17 +355,92 @@
         is_proxy: true
         proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
         proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/geoServer/getLayerName"
+      - path: "~ ^{{ ecodata_context_path }}/ws/project/([a-zA-Z0-9_-]+)/archive$"
+        sort_label: "darwin_core_archive"
+        is_proxy: true
+        proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
+        proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/project/$1/archive$is_args$args"
+      - path: "~ ^{{ ecodata_context_path }}/reporting/(.+)$"
+        sort_label: "rewrite_to_reporting_path"
+        is_proxy: true
+        proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
+        proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/$1$is_args$args"
+      - path: "{{ecodata_context_path}}/ws/search/downloadAllDocuments"
+        sort_label: "download_documents"
+        is_proxy: true
+        proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
+        proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/search/downloadAllDocuments"
+      - path: "~ ^{{ecodata_context_path}}/ws/igraphql/([a-zA-Z0-9_-]+)$"
+        sort_label: "graphiql"
+        is_proxy: true
+        proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
+        proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/igraphql/$1"
+      - path: "~ ^{{ecodata_context_path}}/ws/graphql/([a-zA-Z0-9_-]+)$"
+        sort_label: "graphql"
+        is_proxy: true
+        proxy_hostname: "{{ ecodata_reporting_hostname | default(ecodata_hostname) }}"
+        proxy_pass: "{{ ecodata_reporting_server if ecodata_reporting_server is defined else 'http://127.0.0.1:' + ecodata_server_port }}{{ecodata_proxy_target}}/ws/graphql/$1"
   tags:
     - nginx_vhost
     - deploy
     - ecodata
-  when: webserver_nginx
+  when: webserver_nginx and use_reporting_server
 
-- include_tasks: ../../tomcat_deploy/tasks/main.yml
+- name: add nginx vhost to proxy to grails
+  include_role:
+    name: nginx_vhost
   vars:
-    war_url: '{{ ecodata_war_url }}'
-    context_path: '{{ecodata_context_path}}'
-    hostname: '{{ ecodata_hostname }}'
+    appname: "ecodata"
+    hostname: "{{ ecodata_hostname }}"
+    context_path: "{{ ecodata_context_path }}"
+    tomcat_server_port: "{{ ecodata_server_port }}"
+    nginx_paths:
+      - path: "{{ecodata_proxy_target}}/ws/document/download/"
+        sort_label: "1_upload"
+        is_proxy: false
+        alias: "{{ upload_dir | default('/data/ecodata/uploads/') }}"
+      - path: "{{ecodata_proxy_target}}/document/download/"
+        sort_label: "2_upload"
+        is_proxy: false
+        alias: "{{ upload_dir | default('/data/ecodata/uploads/') }}"
+      - path: "{{ecodata_context_path}}"
+        sort_label: "2_ws"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:{{ ecodata_server_port }}{{ecodata_proxy_target}}"
+      - path: "~ ^{{ecodata_proxy_target}}/ws/(.*)/document/download/(.*)$" #Delete me when MERIT 4.7 is released
+        sort_label: "3_upload"
+        is_proxy: false
+        alias: "{{ upload_dir | default('/data/ecodata/uploads') }}/$2"
+
+  when: webserver_nginx and not use_reporting_server
+  tags:
+    - nginx_vhost
+
+- name: Configure the /uploads location to be only accessible from MERIT and BioCollect
+  blockinfile:
+    dest: /etc/nginx/sites-available/{{ecodata_hostname}}.conf
+    insertafter: "location {{item.loc}}"
+    block: |
+      allow 127.0.0.1;
+      allow {{ merit_ip }};
+      allow {{ biocollect_ip }};
+      allow {{ ecodata_reporting_server_ip | default('127.0.0.1') }};
+      deny all;
+      expires 1y;
+    marker_begin: "BEGIN_{{item.mark}}"
+    marker_end: "END_{{item.mark}}"
+  loop:
+    - { mark: '1', loc: '/ws/document/download' }
+    - { mark: '2', loc: '/document/download' }
+  tags:
+    - nginx_vhost_block
+
+- include_role:
+    name: tomcat_deploy
+  vars:
+    war_url: "{{ ecodata_war_url }}"
+    context_path: "{{ecodata_context_path}}"
+    hostname: "{{ ecodata_hostname }}"
   tags:
     - deploy
     - tomcat_vhost
@@ -274,8 +466,59 @@
 #
 # Cron Job configuration
 #
+- name: Allow ecodatabackup to configure cron
+  lineinfile:
+    path: /etc/cron.allow
+    line: "{{ecodata_backup_user}}"
+    create: yes
+  tags:
+    - cron
+  when: scheduled_database_backup or scheduled_production_data_copy or scheduled_downloads
+
+- name: Schedule cron job to backup ecodata
+  cron: minute=13 hour=4 name="Backup ecodata database" job="{{data_dir}}/ecodata/scripts/backup-ecodata.sh >/dev/null 2>&1" user=root state=present
+  tags:
+    - cron
+  when: scheduled_database_backup
+
 - name: install cron job for indexing elastic search
-  cron: minute=21 hour=22 name="Elastic search indexing" job="wget -O - {{ ecodata_url }}{{ ecodata_context_path }}/admin/reIndexAll >/dev/null 2>&1" user=root state=present
+  cron: minute=0 hour=7 weekday=0 name="Elastic search indexing" job="{{data_dir}}/ecodata/scripts/reIndexAll.sh >/dev/null 2>&1" user=root state=present
+  tags:
+    - cron
+  when: scheduled_re_index
+
+- name: Schedule cron job to load production data into the staging server
+  cron: minute=1 hour=6 weekday=0 name="Load production data" job="{{data_dir}}/ecodata/scripts/syncProdData.sh >/dev/null 2>&1" user=root state=present
+  tags:
+    - cron
+  when: scheduled_production_data_load
+
+- name: Schedule cron job to copy data from the production server
+  cron: minute=1 hour=5 name="Copy data from the production server" job="{{data_dir}}/ecodata/scripts/copyProdData.sh >/dev/null 2>&1" user="{{ecodata_backup_user}}" state=present
+  tags:
+    - cron
+  when: scheduled_production_data_copy
+
+- name: Schedule cron job to copy documents from the production server
+  cron: minute=14 name="Copy documents from the production server" job="{{data_dir}}/ecodata/scripts/copyProdDocuments.sh >/dev/null 2>&1" user=root state=present
+  tags:
+    - cron
+  when: scheduled_production_documents_copy
+
+- name: Schedule cron job to automate MERIT downloads
+  cron: minute=30 hour=11 weekday=0 name="Scheduled MERIT downloads" job="{{data_dir}}/ecodata/scripts/scheduledDAWEDownloads.sh >/dev/null 2>&1" user="{{ecodata_backup_user}}" state=present
+  tags:
+    - cron
+  when: scheduled_downloads
+
+- name: Prevent ecodatabackup from futher changes to cron from ecodatabackup
+  lineinfile:
+    path: /etc/cron.allow
+    line: "{{ecodata_backup_user}}"
+    state: absent
+  tags:
+    - cron
+  when: scheduled_database_backup or scheduled_production_data_copy or scheduled_downloads
 
 # Mongo users and database
 - name: Create the ecodata database and user
@@ -290,6 +533,28 @@
       - { db: "{{ ecodata_database }}", role: "dbAdmin" }
       - { db: "{{ ecodata_database }}", role: "readWrite" }
   tags:
+    - mongodb-org-user
+
+
+- name: Setup mongo logging to support logrotate
+  blockinfile:
+    path: /etc/mongod.conf
+    insertafter: "systemLog:"
+    marker_begin: "BEGIN_logrorate"
+    marker_end: "END_logrotate"
+    block: |2
+        logRotate: reopen
+  tags:
+    - mongodb-org
+    -
+
+
+
+- name: Add mongo logrotate config
+  template:
+    src: logRotate
+    dest: /etc/logrotate.d/mongodb
+  tags:
     - mongodb-org
 
 - name: Insert replication set name both Server
@@ -299,20 +564,20 @@
       replication:
         replSetName: rs0
   notify:
-    - restart mongod
+  - restart mongod
   tags: mongodb-org
-  when: mongo_replica_enabled
+  when: mongo_cluster_enabled
 
   # Copy the keyfile for authentication
 - name: copy security key file to nodes
   copy: src={{ ecodata_local_authentication_keyFile }} dest=/etc/mongodb-keyFile mode=0400
   tags: mongodb-org
-  when:  mongo_replica_enabled
+  when:  mongo_cluster_enabled
 
 # changes access right of the key file for mongo,
 - name: change access right of key file
   file: path=/etc/mongodb-keyFile state=file owner=mongodb group=mongodb mode=0400
-  when: mongo_replica_enabled
+  when: mongo_cluster_enabled
 
 - name: Enable security
   blockinfile:
@@ -326,7 +591,7 @@
   notify:
     - restart mongod
   tags: mongodb-org
-  when: mongo_replica_enabled
+  when: mongo_cluster_enabled
 
 - name: Stop mongo Service
   service:
@@ -346,7 +611,7 @@
   notify:
     - restart mongod
   tags: mongodb-org
-  when: "{% if mongo_replication and mongo_version3 %} True {% else %} False {% endif %}"
+  when: mongo_cluster_enabled
 
 - name: Stop mongod db server
   service:
@@ -359,30 +624,25 @@
     state: started
 
 # copying script to create a replica set
-- name: copy initrs script only for mongo version 3.4
+- name: copy initrs script
   template:
     src: initRS.j2
     dest: ./initRS.j2
-  when: "{% if mongo_replication and mongo_version3 %} True {% else %} False {% endif %}"
+  when: mongo_cluster_enabled and is_primary
 
-## Initialize the replica set in mongo version 3.4
-- name: Initialize the replica set in primary node for mongo version 3.4
-  command: mongo --host "{{ mongo_primary_ip }}" --authenticationDatabase "{{ mongodb_root_database | default('admin') }}" -u "{{ mongodb_root_username }}" -p "{{ mongodb_root_password }}" ./initRS.j2
-  when: "{% if mongo_replication and mongo_version3 %} True {% else %} False {% endif %}"
-
-# Copy the mongorc to the secondary node. do connect between primary and secondary node without complication
-- name: copying mongorc to secondary mongo replica set
-  template:
-    src: mongorc.js
-    dest: /etc/mongorc.js
-  when: copy_mongorc_to_secondary_node
+## Initialize the replica set
+- name: Initialize the replica set in primary node
+  command: mongosh --host "{{ internal_primary_hostname }}" --authenticationDatabase "{{ mongodb_root_database | default('admin') }}" -u "{{ mongodb_root_username }}" -p "{{ mongodb_root_password }}" "{{ mongodb_root_database | default('admin') }}" initRS.j2
+  when: mongo_cluster_enabled and is_primary
 
 - name: Stop mongod db server
   service:
     name: mongod
     state: stopped
+  tags: mongodb-org
 
 - name: Start mongod server
   service:
     name: mongod
     state: started
+  tags: mongodb-org

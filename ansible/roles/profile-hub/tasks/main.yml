@@ -151,7 +151,7 @@
     name: exec-jar
   vars:
     service_name: "profile-hub"
-    jar_url: '{{ profile_hub_war_url }}'
+#    jar_url: '{{ profile_hub_war_url }}'
     maven_repo_url: '{{ profile_hub_repo_url }}'
     maven_repo_username: '{{ profile_repo_username }}'
     maven_repo_password: '{{ profile_repo_password }}'
@@ -165,8 +165,9 @@
 # WAR file deployment and virtual host configuration
 #
 - include_tasks: ../../apache_vhost/tasks/main.yml
-    context_path='{{ profile_hub_context_path }}'
-    hostname='{{ profile_hub_hostname }}'
+  vars:
+    context_path: '{{ profile_hub_context_path }}'
+    hostname: '{{ profile_hub_hostname }}'
   tags:
     - profile-hub
     - deploy

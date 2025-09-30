@@ -15,6 +15,7 @@ storage:
 # where to write logging data.
 systemLog:
   destination: file
+  logRotate: reopen
   logAppend: true
   path: {{ecodata_SystemLog}}/mongod.log
 
@@ -28,7 +29,7 @@ net:
 # how the process runs
 processManagement:
 #  fork: true  # fork and run in background
-#  pidFilePath: /var/run/mongodb/mongod.pid  # location of pidfile
+  pidFilePath: /var/run/mongodb/mongod.pid  # location of pidfile
   timeZoneInfo: /usr/share/zoneinfo
 
 #security:

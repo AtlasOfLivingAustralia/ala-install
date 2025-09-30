@@ -3,9 +3,6 @@
     url: "{{ item.url }}"
     state: present
   when: mongodb_version is version(item.version, '==')
-  tags:
-    - mongodb-org
-    - apt
   loop:
     - { version: 8.0, url: 'https://pgp.mongodb.com/server-8.0.asc' }
     - { version: 7.0, url: 'https://pgp.mongodb.com/server-7.0.asc' }
@@ -154,6 +151,8 @@
   tags: mongodb-org
   when: get_mongo_admin_users.rc == 0
 
+
+# The conditional variable exists here to allow ecodata to setup a different security block with a keyfile for the cluster
 - name: Enable security
   blockinfile:
     path: /etc/mongod.conf
@@ -167,4 +166,4 @@
   tags:
     mongodb-org
     mongodb-org-restart
-  when: "{{ ecodata_replica_set_disable_mongo_security | default(true) }}"
+  when: not mongo_cluster_enabled

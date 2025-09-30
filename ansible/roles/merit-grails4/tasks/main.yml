@@ -3,6 +3,17 @@
     - deploy
     - merit
 
+- name: Add ecodata server to the hosts file so we can connect internally
+  blockinfile:
+    state: present
+    dest: /etc/hosts
+    block: |
+      {{ ecodata_server_ip }} {{ ecodata_hostname }}
+    marker_begin: "# BEGIN_Use internal IP for ecodata"
+    marker_end: "# END_Use internal IP for ecodata"
+  tags:
+    - hosts
+
 - name: set merit user
   set_fact:
     merit_user: "{{ (exec_jar) | ternary ('fieldcapture', 'tomcat')}}"
@@ -16,7 +27,9 @@
     name: exec-jar
   vars:
     service_name: "fieldcapture"
-    jar_url: '{{ merit_artifact_url }}'
+    maven_repo_url: '{{ merit_repo_url }}'
+    maven_repo_username: '{{ merit_repo_username }}'
+    maven_repo_password: '{{ merit_repo_password }}'
   tags:
     - deploy
     - service
@@ -30,6 +43,7 @@
   file: path={{item}} state=directory owner={{merit_user}} group={{merit_user}}
   with_items:
     - "{{data_dir}}/fieldcapture/config"
+    - "{{data_dir}}/fieldcapture/doc"
   tags:
     - properties
     - merit
@@ -42,10 +56,13 @@
 
 - name: copy logback config
   template:
-    src: logback.groovy
-    dest: "{{data_dir}}/fieldcapture/config/logback.groovy"
+    src: "{{item}}"
+    dest: "{{data_dir}}/fieldcapture/config/{{item}}"
     owner: "{{merit_user}}"
     group: "{{merit_user}}"
+  with_items:
+    - logback.groovy
+    - logback.xml
   notify:
     - restart fieldcapture
   tags:
@@ -79,16 +96,6 @@
     - merit
 
 # WAR file deployment and virtual host configuration
-#
-- include_tasks: ../../apache_vhost/tasks/main.yml
-    context_path='{{ merit_context_path }}'
-    hostname='{{ merit_hostname }}'
-  tags:
-    - deploy
-    - apache_vhost
-    - merit
-  when: not webserver_nginx
-
 - name: add nginx vhost if configured
   include_role:
     name: nginx_vhost
@@ -97,8 +104,24 @@
     hostname: "{{ merit_hostname }}"
     context_path: "{{ merit_context_path }}"
     tomcat_server_port: "{{ merit_server_port }}"
+    nginx_paths:
+      - path: "/doc/"
+        sort_label: "1_doc"
+        is_proxy: false
+        alias: "/data/fieldcapture/doc"
+      - path: "{{merit_context_path}}"
+        sort_label: "2_ws"
+        is_proxy: true
+        proxy_pass: "http://127.0.0.1:{{ merit_server_port }}"
   tags:
     - nginx_vhost
-    - deploy
-    - merit
+  when: webserver_nginx
+
+- name: remove trailing / in proxy pass to prevent URI decoding
+  ansible.builtin.replace:
+    path: /etc/nginx/sites-available/{{merit_hostname}}.conf
+    regexp: '^.*proxy_pass.*$'
+    replace: proxy_pass http://127.0.0.1:{{merit_server_port}};
+  tags:
+    - test
   when: webserver_nginx

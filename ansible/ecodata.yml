@@ -1,13 +1,40 @@
-- hosts: ecodata,ecodata-reporting,primary,secondary
+- hosts: all
   vars:
     tomcat: "tomcat7"
     tomcat_user: "tomcat7"
-    es_version: "7.14.1"
-    es_heap_dump_path: "/data/"
-    es_api_host: "{{ elasticsearch_host | default('localhost') }}"
+    es_version: "7.17.29"
+    es_heap_dump_path: "/data/elasticsearch"
+    es_tmp_dir: "/data/elasticsearch"
+    es_api_host: "{{ internal_primary_hostname | default('localhost') }}"
+    es_gc_filecount: 16
+    es_gc_filesize: "16m"
     es_config:
-      network.host: "{{ (ecodata_elasticsearch_host | default(elasticsearch_host)) | default('localhost') }}"
+      network.host: "{{ internal_primary_hostname | default('localhost') }}"
       discovery.type: "single-node"
+# This is needed for the biocollect all sites query.
+      indices.query.bool.max_clause_count: 8192
+      # Set these values higher due to ongoing issues with not enough disk space.
+      cluster.routing.allocation.disk.watermark.low: 90%
+      cluster.routing.allocation.disk.watermark.high: 95%
+      cluster.routing.allocation.disk.watermark.flood_stage: 99%
+
+    nginx_server_tokens: "off"
+    nginx_keepalive_timeout: "10"
+    nginx_send_timeout: "10"
+    nginx_error_log: "/var/log/nginx/error.log info"
+    nginx_config_directory_mode: 0750
+    nginx_config_file_mode: 0640
+    nginx_remove_default_vhost: True
+    nginx_client_body_timeout: "10"
+    nginx_client_header_timeout: "10"
+    nginx_large_client_header_buffers: "4 16k"
+    ala_default_vhost_include_paths: False
+#    nginx_content_security_policy: "script-src 'self' 'unsafe-inline' 'unsafe-eval' data: https://www.google-analytics.com https://maps.googleapis.com https://ssl.google-analytics.com https://www.google.com https://www.gstatic.com; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; worker-src blob:"
+# ecodata-dev config for graphql browser
+    nginx_content_security_policy: "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net data: https://www.google-analytics.com https://maps.googleapis.com https://ssl.google-analytics.com https://www.google.com https://www.gstatic.com; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; worker-src blob:"
+    nginx_extra_http_options: |
+      proxy_max_temp_file_size 0;
+
   roles:
     - common
     - java

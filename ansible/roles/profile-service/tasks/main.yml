@@ -4,6 +4,7 @@
   tags:
     - setfacts
     - profile-service
+  when: ( is_primary | bool )
 
 - name: set deployment vars
   set_fact:
@@ -12,15 +13,16 @@
   tags:
     - setfacts
     - profile-service
-  when: exec_jar
+  when: exec_jar and ( is_primary | bool )
 
-- include_tasks: ../../common/tasks/setfacts.yml
+- include: ../../common/tasks/setfacts.yml
   tags:
     - profile-service
     - deploy
     - properties
     - apache_vhost
     - tomcat_vhost
+  when: ( is_primary | bool )
 
 #- name: set exec_jar
 #  set_fact:
@@ -34,6 +36,17 @@
     msg: "exec_jar: {{ exec_jar }}"
   tags:
     - profile-service
+  when: ( is_primary | bool )
+#
+# External configuration directories and files
+#
+- name: ensure target directories exist [data subdirectories etc.]
+  file: path={{item}} state=directory owner='mongodb' group='mongodb'
+  with_items:
+    - "{{data_dir}}/mongodb"
+  tags:
+    - properties
+    - ecodata
 
 # Mongo users and database
 - name: Create the profiles database and user
@@ -52,12 +65,77 @@
     - mongodb-users
   when: grails_version is version("3", ">=")
 
+- name: Setup mongo logging to support logrotate
+  blockinfile:
+    path: /etc/mongod.conf
+    insertafter: "systemLog:"
+    marker_begin: "BEGIN_logrorate"
+    marker_end: "END_logrotate"
+    block: |2
+        logRotate: reopen
+  tags:
+    - mongodb-org
+
+- name: Add mongo logrotate config
+  template:
+    src: logRotate
+    dest: /etc/logrotate.d/mongodb
+  tags:
+    - mongodb-org
+
+- name: Insert replication set name both Server
+  blockinfile:
+    path: /etc/mongod.conf
+    block: |
+      replication:
+        replSetName: rs0
+  notify:
+    - restart mongod
+  tags: mongodb-org
+  when: mongo_cluster_enabled
+
+  # Copy the keyfile for authentication
+- name: copy security key file to nodes
+  copy: src={{ profiles_local_authentication_keyFile }} dest=/etc/mongodb-keyFile mode=0400
+  tags: mongodb-org
+  when:  mongo_cluster_enabled
+
+# changes access right of the key file for mongo,
+- name: change access right of key file
+  file: path=/etc/mongodb-keyFile state=file owner=mongodb group=mongodb mode=0400
+  when: mongo_cluster_enabled
+
+- name: Enable security
+  blockinfile:
+    path: /etc/mongod.conf
+    backup: yes
+    marker: '# {mark} Enable mongodb security authorization'
+    block: |
+      security:
+        authorization: enabled
+        keyFile: /etc/mongodb-keyFile
+  notify:
+    - restart mongod
+  tags: mongodb-org
+  when: mongo_cluster_enabled
+
+- name: Stop mongo Service
+  service:
+    name: mongod
+    state: stopped
+
+- name: Start mongod as a service with security
+  service:
+    name: mongod
+    state: started
+
 - name: set profile_service_user as default value
   set_fact:
     profile_service_user: "{{ (exec_jar | bool) | ternary ('profile-service', tomcat_user)}}"
   tags:
     - profile-service
     - deploy
+  when: ( is_primary | bool )
 
 - name: "Create system user for {{profile_service_user}}"
   user:
@@ -66,7 +144,7 @@
     system: yes
   tags:
     - profile-service
-  when: exec_jar
+  when: exec_jar and ( is_primary | bool )
 
 #
 # Properties file configuration
@@ -76,12 +154,14 @@
   tags:
     - profile-service
     - properties
+  when: ( is_primary | bool )
 
 - name: ensure temporary file directory exists
   file: path={{data_dir}}/profile-service/temp state=directory owner={{profile_service_user}} group={{profile_service_user}}
   tags:
     - profile-service
-    - properties      
+    - properties
+  when: ( is_primary | bool )
 
 - name: ensure snapshot directory exists
   file: path={{data_dir}}/profile-service/{{item}} state=directory owner={{profile_service_user}} group={{profile_service_user}}
@@ -91,18 +171,21 @@
   tags:
     - profile-service
     - properties
+  when: ( is_primary | bool )
 
 - name: ensure target log directories exist
   file: path=/var/log/atlas/profile-service state=directory owner={{profile_service_user}} group={{profile_service_user}}
   tags:
     - profile-service
     - properties
+  when: ( is_primary | bool )
 
 - name: copy all template configs
   template: src=profile-service-config.properties dest={{data_dir}}/profile-service/config/profile-service-config.properties
   tags:
     - profile-service
     - properties
+  when: ( is_primary | bool )
 
 - name: copy logback config
   template:
@@ -115,6 +198,7 @@
   tags:
     - properties
     - profile-service
+  when: ( is_primary | bool )
 
 - name: ensure profile-service log directory exists
   file: path={{item}} state=directory owner={{profile_service_user}} group={{profile_service_user}}
@@ -123,7 +207,7 @@
   tags:
     - properties
     - profile-service
-  when: exec_jar
+  when: exec_jar and ( is_primary | bool )
 
 - name: set profile-service log ownership
   file: path='{{data_dir}}/profile-service/logs' owner='{{profile_service_user}}' group='{{profile_service_user}}' recurse=true
@@ -132,26 +216,27 @@
   tags:
     - properties
     - profile-service
-  when: exec_jar
+  when: exec_jar and ( is_primary | bool )
 
 - name: set data ownership [all data is owned by tomcat]
   file: path={{data_dir}}/profile-service owner={{profile_service_user}} group={{profile_service_user}} recurse=true
   tags:
     - profile-service
     - properties
+  when: ( is_primary | bool )
 
 
 #
 # WAR file deployment and virtual host configuration
 #
-- include_tasks: ../../apache_vhost/tasks/main.yml
+- include: ../../apache_vhost/tasks/main.yml
     context_path='{{ profile_service_context_path }}'
     hostname='{{ profile_service_hostname }}'
   tags:
     - profile-service
     - deploy
     - apache_vhost
-  when: not webserver_nginx
+  when: not webserver_nginx and ( is_primary | bool )
 
 #
 # Deploy executable jar
@@ -161,7 +246,7 @@
     name: exec-jar
   vars:
     service_name: "profile-service"
-    jar_url: '{{ profile_service_war_url }}'
+#    jar_url: '{{ profile_service_war_url }}'
     maven_repo_url: '{{ profile_service_repo_url }}'
     maven_repo_username: '{{ profile_repo_username }}'
     maven_repo_password: '{{ profile_repo_password }}'
@@ -169,7 +254,7 @@
     - deploy
     - service
     - profile-service
-  when: exec_jar
+  when: exec_jar and ( is_primary | bool )
 
 #
 # Configure webserver
@@ -186,9 +271,9 @@
     - nginx_vhost
     - deploy
     - profile-service
-  when: webserver_nginx
+  when: webserver_nginx and ( is_primary | bool )
 
-- include_tasks: ../../tomcat_deploy/tasks/main.yml
+- include: ../../tomcat_deploy/tasks/main.yml
   vars:
     war_url: '{{ profile_service_war_url }}'
     context_path: '{{ profile_service_context_path }}'
@@ -197,4 +282,59 @@
     - profile-service
     - deploy
     - tomcat_vhost
-  when: not (exec_jar | bool)
+  when: not (exec_jar | bool) and ( is_primary | bool )
+
+- name: Updating bind IPs mongodb 3.4
+  replace:
+    path: /etc/mongod.conf
+    regexp: 'bindIp: 127.0.0.1'
+    replace: "bindIp: {{ host_ip_address }},127.0.0.1"
+  notify:
+    - restart mongod
+  tags: mongodb-org
+  when: mongo_cluster_enabled
+
+- name: Stop mongod db server
+  service:
+    name: mongod
+    state: stopped
+
+- name: Start mongod server
+  service:
+    name: mongod
+    state: started
+
+# copying script to create a replica set
+- name: copy initrs script
+  template:
+    src: initRS.j2
+    dest: ./initRS.j2
+  when: mongo_cluster_enabled and is_primary
+
+## Initialize the replica set
+- name: Initialize the replica set in primary node
+  command: mongosh --host "{{ internal_primary_hostname }}" --authenticationDatabase "{{ mongodb_root_database | default('admin') }}" -u "{{ mongodb_root_username }}" -p "{{ mongodb_root_password }}" "{{ mongodb_root_database | default('admin') }}" initRS.j2
+  when: mongo_cluster_enabled and is_primary
+
+- name: Stop mongod db server
+  service:
+    name: mongod
+    state: stopped
+  tags: mongodb-org
+
+- name: Start mongod server
+  service:
+    name: mongod
+    state: started
+  tags: mongodb-org
+
+- name: add cron job to send email notification when replica server is down
+  cron:
+    name: "notify when replica mongodb is down"
+    hour: "*"
+    minute: "*"
+    job: "pgrep mongod > /dev/null && rm -f /tmp/mongod_alert_sent || ( [ ! -f /tmp/mongod_alert_sent ] && echo \"MongoDB down at $(date) on {{ internal_secondary_hostname }}\" | mail -s \"MongoDB Alert\" profiles-recipients@ala.org.au && touch /tmp/mongod_alert_sent )"
+  tags:
+    - profile-service
+    - cron
+  when: not is_primary | bool
