@@ -103,5 +103,5 @@ nginx_vhost_fragments_to_clear: []
 # WARNING: You must also understand the issues associated with attempting to deploy multiple apps to a single vhost and when you will need to manually clear and reinstall the nginx configuration in this case
 #nginx_vhost_fragments_to_clear_no_warning: False
 
-nginx_config_directory_mode: 0755
-nginx_config_file_mode: 0644
+nginx_config_directory_mode: "0755"
+nginx_config_file_mode: "0644"

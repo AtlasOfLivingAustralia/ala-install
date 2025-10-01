@@ -115,5 +115,7 @@ nginx_cors_headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Con
 nginx_cors_methods: "GET, POST, OPTIONS"
 # by default, Access-Control-Allow-Credentials header is not included; to include it, set this to True
 nginx_cors_allow_credentials: False
-nginx_config_directory_mode: 0755
-nginx_config_file_mode: 0644
+nginx_config_directory_mode: "0755"
+nginx_config_file_mode: "0644"
+
+ala_default_vhost_include_paths: False
