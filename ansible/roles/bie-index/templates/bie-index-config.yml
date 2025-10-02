@@ -106,10 +106,10 @@ lists:
   useListWs: true
   service: {{ specieslist_service_url | default('https://lists-ws.ala.org.au') }}
   ui: {{ specieslist_url | default('https://lists.ala.org.au') }}
-  items: /speciesListItems/{0}?pageSize={1}&page={2}
-  search: /speciesList/?isAuthoritative=true&pageSize={0}&page={1}
-  conservation: /speciesList/?isAuthoritative=true&isThreatened=true&pageSize={0}&page={1}
-  show: /#/list/{0}
+  items: /v2/speciesListItems/{0}?pageSize={1}&page={2}
+  search: /v2/speciesList?isAuthoritative=true&pageSize={0}&page={1}
+  conservation: /v2/speciesList?isAuthoritative=true&isThreatened=true&pageSize={0}&page={1}
+  show: /list/{0}
 {% else %}
   useListWs: false
   service: {{ specieslist_service_url | default('https://lists.ala.org.au/ws') }}
