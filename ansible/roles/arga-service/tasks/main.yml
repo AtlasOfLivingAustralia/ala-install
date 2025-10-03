@@ -135,7 +135,7 @@
     - nginx_vhost
     - deploy
     - arga-service
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - name: Create solr8 docker directory
   file:

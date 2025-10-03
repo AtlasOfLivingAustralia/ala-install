@@ -261,7 +261,7 @@
     - nginx_vhost
     - deploy
     - ecodata
-  when: webserver_nginx and ecodata_proxy_target is not defined
+  when: webserver_nginx | bool  and ecodata_proxy_target is not defined
 
 - name: add nginx vhost to proxy to grails and reporting server
   include_role:
@@ -384,7 +384,7 @@
     - nginx_vhost
     - deploy
     - ecodata
-  when: webserver_nginx and use_reporting_server
+  when: webserver_nginx | bool  and use_reporting_server
 
 - name: add nginx vhost to proxy to grails
   include_role:
@@ -412,7 +412,7 @@
         is_proxy: false
         alias: "{{ upload_dir | default('/data/ecodata/uploads') }}/$2"
 
-  when: webserver_nginx and not use_reporting_server
+  when: webserver_nginx | bool  and not use_reporting_server
   tags:
     - nginx_vhost
 

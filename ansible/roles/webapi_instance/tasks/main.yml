@@ -62,7 +62,7 @@
     - nginx_vhost
     - deploy
     - webapi
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - include_tasks: ../../tomcat_deploy/tasks/main.yml
   vars:

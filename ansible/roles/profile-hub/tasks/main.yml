@@ -186,7 +186,7 @@
     - nginx_vhost
     - deploy
     - profile-hub
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 # deploy to tomcat container
 - include_tasks: ../../tomcat_deploy/tasks/main.yml

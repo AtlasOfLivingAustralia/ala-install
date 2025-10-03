@@ -176,7 +176,7 @@
     - nginx_vhost
     - deploy
     - pdf-service
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 
 # Manual setup required for docker not automated

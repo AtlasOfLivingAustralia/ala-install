@@ -30,4 +30,4 @@
     - nginx_vhost
     - deploy
     - moths
-  when: webserver_nginx
+  when: webserver_nginx | bool 

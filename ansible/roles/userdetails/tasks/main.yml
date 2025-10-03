@@ -102,7 +102,7 @@
     - nginx_vhost
     - deploy
     - userdetails
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - name: Include docker tasks
   include_tasks: docker-tasks.yml
