@@ -49,7 +49,7 @@
   tags:
     - nginx_vhost
     - gatus
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - name: Deploy gatus stack
   import_tasks: ../../docker-common/tasks/stack-create.yml

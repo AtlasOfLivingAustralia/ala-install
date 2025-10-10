@@ -74,7 +74,7 @@
     - nginx_vhost
     - deploy
     - demo
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - name: Finish message
   debug: msg="That's ready! You can now access your ALA demo instance at http://{{ demo_hostname }}"

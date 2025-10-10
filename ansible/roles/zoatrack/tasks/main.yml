@@ -278,7 +278,7 @@
         proxy_pass: "{{ geoserver_url }}"
   tags:
     - nginx_vhost
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 
 #########################################

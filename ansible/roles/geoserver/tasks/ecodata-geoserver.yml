@@ -48,7 +48,7 @@
     - nginx_vhost
     - deploy
     - geoserver
-  when: webserver_nginx and (geoserver_private == True)
+  when: webserver_nginx | bool  and (geoserver_private == True)
 
 - include_tasks: ../../tomcat_deploy/tasks/main.yml
   vars:
@@ -142,7 +142,7 @@
     enabled: "yes"
   tags:
     - geoserver
-  when: webserver_nginx
+  when: webserver_nginx | bool 
   become: true
 
 - name: geoserver for ecodata - restart apache2

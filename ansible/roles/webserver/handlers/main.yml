@@ -9,8 +9,8 @@
 
 - name: reload nginx
   service: name=nginx state=reloaded enabled="yes"
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - name: restart nginx
   service: name=nginx state=restarted enabled="yes"
-  when: webserver_nginx
+  when: webserver_nginx | bool 

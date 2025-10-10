@@ -63,7 +63,7 @@
     - nginx_vhost
     - deploy
     - geoserver
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - include_tasks: ../../tomcat_deploy/tasks/main.yml
   vars:
@@ -128,7 +128,7 @@
     enabled: "yes"
   tags:
     - geoserver
-  when: webserver_nginx
+  when: webserver_nginx | bool 
   become: true
 
 - name: restart apache2

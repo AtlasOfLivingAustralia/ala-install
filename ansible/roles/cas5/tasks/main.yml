@@ -133,7 +133,7 @@
     - nginx_vhost
     - deploy
     - cas
-  when: webserver_nginx and cas_oidc_well_known_static | bool == False
+  when: webserver_nginx | bool  and cas_oidc_well_known_static | bool == False
 
 - name: add nginx vhost (.well-known static)
   include_role:
@@ -157,7 +157,7 @@
     - nginx_vhost
     - deploy
     - cas
-  when: webserver_nginx and cas_oidc_well_known_static | bool == True
+  when: webserver_nginx | bool  and cas_oidc_well_known_static | bool == True
 
 - name: create directory for .well-known static file
   file: path="{{ nginx_root }}/{{ cas_context_path | default('cas') }}/oidc" state=directory mode=0755 force=yes follow=yes
@@ -165,7 +165,7 @@
     - nginx_vhost
     - deploy
     - cas
-  when: webserver_nginx and cas_oidc_well_known_static | bool == True
+  when: webserver_nginx | bool  and cas_oidc_well_known_static | bool == True
 
 - name: copy .well-known static file
   template:
@@ -177,11 +177,11 @@
     - nginx_vhost
     - deploy
     - cas
-  when: webserver_nginx and cas_oidc_well_known_static | bool == True
+  when: webserver_nginx | bool  and cas_oidc_well_known_static | bool == True
 
 - name: Reload nginx (needed by userdetails)
   ansible.builtin.command: nginx -s reload
-  when: deployment_type == 'vm' and webserver_nginx
+  when: deployment_type == 'vm' and webserver_nginx | bool
   become: yes
   tags:
     - nginx_vhost

@@ -56,7 +56,7 @@
     - nginx_vhost
     - deploy
     - spatial-hub
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - name: Add proxy paths for grandfathered routes
   include_role:
@@ -73,7 +73,7 @@
     - nginx_vhost
     - deploy
     - spatial-hub
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - include_tasks: ../../tomcat_deploy/tasks/main.yml
   vars:

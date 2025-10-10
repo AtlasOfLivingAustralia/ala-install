@@ -64,7 +64,7 @@
     - nginx_vhost
     - deploy
     - specimenbrowser
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - include_tasks: ../../tomcat_deploy/tasks/main.yml
   vars:

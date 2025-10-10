@@ -387,7 +387,7 @@
     src: "fragment_70_location_start.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_70_start"
   with_items:
-    - "{{ nginx_paths}} "
+    - "{{ nginx_paths }}"
   when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True
   tags:
     - nginx_vhost
@@ -399,7 +399,7 @@
     src: "fragment_73_location.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_73_content"
   with_items:
-    - "{{ nginx_paths}} "
+    - "{{ nginx_paths }}"
   when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True
   tags:
     - nginx_vhost
@@ -409,7 +409,7 @@
     src: "fragment_74_location_cors.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_74_cors"
   with_items:
-    - "{{ nginx_paths}} "
+    - "{{ nginx_paths }}"
   when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True and nginx_cors_origin_regexp is defined
   tags:
     - nginx_vhost
@@ -421,7 +421,7 @@
     src: "fragment_75_location_end.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_75_end"
   with_items:
-    - "{{ nginx_paths}} "
+    - "{{ nginx_paths }}"
   when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True
   tags:
     - nginx_vhost
@@ -501,7 +501,7 @@
     src: "fragment_74_location_cors.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_74_cors"
   with_items:
-    - "{{ nginx_paths}} "
+    - "{{ nginx_paths }}"
   when: ssl | bool == True and vhost_required | bool == True and nginx_cors_origin_regexp is defined
   tags:
     - nginx_vhost

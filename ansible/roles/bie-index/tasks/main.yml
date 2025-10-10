@@ -125,7 +125,7 @@
     - nginx_vhost
     - deploy
     - bie_index
-  when: webserver_nginx and bie_index_proxy_target is not defined
+  when: webserver_nginx | bool  and bie_index_proxy_target is not defined
 
 - name: add nginx vhost if configured
   include_role:
@@ -189,7 +189,7 @@
     - bie-index
     - nginx_vhost
     - deploy
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - name: copy all data assets
   copy: src=subgroups.json dest=/srv/{{bie_index_hostname}}/www/

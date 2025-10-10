@@ -114,4 +114,4 @@
     - nginx_vhost
     - doi-service
     - deploy
-  when: webserver_nginx
+  when: webserver_nginx | bool 

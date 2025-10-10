@@ -42,7 +42,7 @@
     - nginx_vhost
     - deploy
     - sandbox
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - debug: msg="Testing sandbox war url - {{ sandbox_war_url }} , path - {{ sandbox_context_path }} "
   tags:

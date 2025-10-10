@@ -8,7 +8,7 @@
   file:
     path: "{{nginx_conf_dir}}/sites-enabled/default"
     state: absent
-  when: ala_default_vhost and vhost_required
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -16,7 +16,7 @@
   file:
     path: "{{nginx_conf_dir}}/sites-enabled/aws_elb_default.conf"
     state: absent
-  when: ala_default_vhost and vhost_required
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True
   notify:
    - reload nginx
   tags:
@@ -26,7 +26,7 @@
   file:
     path: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default"
     state: absent
-  when: ala_default_vhost and vhost_required
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -37,7 +37,7 @@
     mode:  "{{nginx_config_directory_mode}}"
     owner: root
     group: root
-  when: ala_default_vhost and vhost_required
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -71,7 +71,7 @@
     src: "ala_default_start.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/10_ala_default_start"
     mode: "{{nginx_config_file_mode}}"
-  when: ala_default_vhost and vhost_required
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -82,7 +82,7 @@
     mode: "{{nginx_config_file_mode}}"
   with_items:
     - "{{ nginx_paths }}"
-  when: ala_default_vhost and vhost_required and ala_default_vhost_include_paths
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True and ala_default_vhost_include_paths
   tags:
     - nginx_vhost
 
@@ -93,7 +93,7 @@
     mode: "{{nginx_config_file_mode}}"
   with_items:
     - "{{ nginx_paths }}"
-  when: ala_default_vhost and vhost_required and ala_default_vhost_include_paths
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True and ala_default_vhost_include_paths
   tags:
     - nginx_vhost
 
@@ -104,7 +104,7 @@
     mode: "{{nginx_config_file_mode}}"
   with_items:
     - "{{ nginx_paths }}"
-  when: ala_default_vhost and vhost_required and ala_default_vhost_include_paths
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True and ala_default_vhost_include_paths
   tags:
     - nginx_vhost
 
@@ -115,7 +115,7 @@
     mode: "{{nginx_config_file_mode}}"
   with_items:
     - "{{ nginx_paths }}"
-  when: ala_default_vhost and vhost_required and ala_default_vhost_include_paths
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True and ala_default_vhost_include_paths
   tags:
     - nginx_vhost
 
@@ -124,7 +124,7 @@
     src: "ala_default_end.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/90_ala_default_end"
     mode: "{{nginx_config_file_mode}}"
-  when: ala_default_vhost and vhost_required
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True
   tags:
     - nginx_vhost
 
@@ -133,7 +133,7 @@
     src: "{{nginx_conf_dir}}/vhost_fragments/ala_default"
     dest: "{{nginx_conf_dir}}/sites-available/ala_default.conf"
     mode: "{{nginx_config_file_mode}}"
-  when: ala_default_vhost and vhost_required
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True
   notify:
    - reload nginx
   tags:
@@ -145,7 +145,7 @@
     src: "{{nginx_conf_dir}}/sites-available/ala_default.conf"
     dest: "{{nginx_conf_dir}}/sites-enabled/ala_default.conf"
     mode: "{{nginx_config_file_mode}}"
-  when: ala_default_vhost and vhost_required
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True
   notify:
    - reload nginx
   tags:
