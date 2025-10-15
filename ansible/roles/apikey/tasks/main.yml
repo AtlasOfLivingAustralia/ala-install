@@ -161,4 +161,4 @@
     - nginx_vhost
     - deploy
     - apikey
-  when: webserver_nginx
+  when: webserver_nginx | bool 

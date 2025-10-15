@@ -144,7 +144,7 @@
 #   tags:
 #     - nginx_vhost
 #     - volunteer-portal
-#  when: webserver_nginx
+#  when: webserver_nginx | bool 
 
 - name: create data dir under nginx root
   file: 

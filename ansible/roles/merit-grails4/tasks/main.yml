@@ -115,7 +115,7 @@
         proxy_pass: "http://127.0.0.1:{{ merit_server_port }}"
   tags:
     - nginx_vhost
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - name: remove trailing / in proxy pass to prevent URI decoding
   ansible.builtin.replace:
@@ -124,4 +124,4 @@
     replace: proxy_pass http://127.0.0.1:{{merit_server_port}};
   tags:
     - test
-  when: webserver_nginx
+  when: webserver_nginx | bool 

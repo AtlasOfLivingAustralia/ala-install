@@ -51,7 +51,7 @@
     - nginx_vhost
     - deploy
     - bie_index
-  when: webserver_nginx and specieslist_proxy_target is not defined
+  when: webserver_nginx | bool  and specieslist_proxy_target is not defined
 
 - include_tasks: ../../docker-common/tasks/common.yml
   tags:
@@ -74,7 +74,7 @@
     - specieslist
     - nginx_vhost
     - deploy
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - name: Include docker tasks
   include_tasks: docker-tasks.yml

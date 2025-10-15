@@ -150,7 +150,7 @@
     - nginx_vhost
     - deploy
     - biocollect
-  when: webserver_nginx and not biocollect_rewrite_root | bool
+  when: webserver_nginx | bool  and not biocollect_rewrite_root | bool
 
 - name: add nginx vhost if configured (root rewrite)
   include_role:
@@ -182,7 +182,7 @@
     - nginx_vhost
     - deploy
     - biocollect
-  when: webserver_nginx and biocollect_rewrite_root | bool
+  when: webserver_nginx | bool  and biocollect_rewrite_root | bool
 
 - name: Deploy war to tomcat
   include_role:

@@ -33,7 +33,7 @@
     - nginx_vhost
     - deploy
     - data_quality_filter_service
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 #
 # WAR/JAR file deployment

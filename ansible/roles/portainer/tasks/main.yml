@@ -54,7 +54,7 @@
   tags:
     - nginx_vhost
     - portainer
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - name: Deploy portainer stack
   import_tasks: ../../docker-common/tasks/stack-create.yml

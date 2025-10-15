@@ -271,7 +271,7 @@
     - nginx_vhost
     - deploy
     - profile-service
-  when: webserver_nginx and ( is_primary | bool )
+  when: webserver_nginx | bool  and ( is_primary | bool )
 
 - include: ../../tomcat_deploy/tasks/main.yml
   vars:

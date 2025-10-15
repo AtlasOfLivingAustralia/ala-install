@@ -26,4 +26,4 @@
     - nginx_vhost
     - deploy
     - branding
-  when: webserver_nginx
+  when: webserver_nginx | bool 

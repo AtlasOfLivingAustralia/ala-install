@@ -100,7 +100,7 @@
     - nginx_vhost
     - sensitive-data-service
     - deploy
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - name: Include docker tasks
   include_tasks: docker-tasks.yml

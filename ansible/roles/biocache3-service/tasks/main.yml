@@ -27,7 +27,7 @@
     - nginx_vhost
     - deploy
     - biocache-service
-  when: webserver_nginx and biocache_service_proxy_target is not defined
+  when: webserver_nginx | bool  and biocache_service_proxy_target is not defined
 
 - name: set download context path target if configured
   set_fact:
@@ -36,7 +36,7 @@
     - nginx_vhost
     - deploy
     - biocache-service
-  when: webserver_nginx and biocache_service_download_target is not defined
+  when: webserver_nginx | bool  and biocache_service_download_target is not defined
 
 - name: set nginx upstream server for nginx
   set_fact:
@@ -379,7 +379,7 @@
     - nginx_vhost
     - deploy
     - biocache-service
-  when: webserver_nginx
+  when: webserver_nginx | bool 
 
 - name: Create a unique user for the service
   user:
