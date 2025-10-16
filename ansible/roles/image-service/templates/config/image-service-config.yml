@@ -148,3 +148,23 @@ aws:
 tiling:
   levelThreads: {{ image_service_tiler_levelThreads | default('2') }}
   ioThreads: {{ image_service_tiler_iothreads | default('2') }}
+
+elasticsearch:
+  indexName: "{{ elasticsearch_index_name | default('images') }}"
+  username: "{{ elasticsearch_username | default('') }}"
+  password: "{{ elasticsearch_password | default ('') }}"
+{% if elasticsearch_default_headers is defined and elasticsearch_default_headers | length > 0 %}
+  hosts:
+{% for item in elasticsearch_default_headers %}
+  - name: {{ item.name }}
+    value: {{ item.value }}
+{% endfor %}
+{% endif %}
+{% if elasticsearch_hosts is defined and elasticsearch_hosts | length > 0 %}
+  hosts:
+{% for item in elasticsearch_hosts %}
+  - host: {{ item.host | default('localhost') }}
+    scheme: {{ item.scheme | default('http') }}
+    port: {{ item.port | default ('9200') }}
+{% endfor %}
+{% endif %}
