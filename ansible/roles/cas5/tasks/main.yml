@@ -146,7 +146,7 @@
       - path: "/{{ cas_context_path | default('cas') }}/oidc/.well-known"
         sort_label: "cas_1_well_known"
         is_proxy: false
-        try_files: "$uri $uri/"
+        rewrite_path_alt: " /{{ cas_context_path | default('cas') }}/oidc/.well-known break"
         default_type: "application/json"
       - path: "/{{ cas_context_path | default('cas') }}"
         sort_label: "cas_2_app"
