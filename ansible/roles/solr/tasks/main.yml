@@ -149,8 +149,32 @@
     - solr
     - solr_check_running
 
-- name: Create SOLR cores
-  get_url: url="{{ solr_base_url }}/solr/admin/cores?action=CREATE&name={{ item }}&instanceDir={{data_dir}}/solr/data/{{ item }}&config=solrconfig.xml&dataDir=data" force=yes timeout=30 dest=/tmp/solr-output-{{ item }}
+- name: Get SOLR cores status
+  uri:
+    url: "{{ solr_base_url }}/solr/admin/cores?action=STATUS&wt=json"
+    method: GET
+    timeout: 30
+    return_content: yes
+  register: solr_status
+  ignore_errors: yes
+  tags:
+    - solr
+    - solr_create_cores
+
+- name: Extract existing cores from SOLR status
+  set_fact:
+    existing_cores: "{{ (solr_status.json.status | default({}) | dict2items | map(attribute='key') | list) if solr_status.status == 200 else [] }}"
+  tags:
+    - solr
+    - solr_create_cores
+
+- name: Create missing SOLR cores
+  get_url:
+    url: "{{ solr_base_url }}/solr/admin/cores?action=CREATE&name={{ item }}&instanceDir={{ data_dir }}/solr/data/{{ item }}&config=solrconfig.xml&dataDir=data"
+    force: yes
+    timeout: 30
+    dest: "/tmp/solr-output-{{ item }}"
+  when: item not in existing_cores
   with_items:
     - "biocache"
     - "bie"
@@ -158,10 +182,3 @@
   tags:
     - solr
     - solr_create_cores
-
-
-
-
-
-
-
