@@ -142,6 +142,15 @@ userdetails:
 userdetails.web.url: {{ userdetails_web_url | default('https://auth.ala.org.au/userdetails/') }}
 userdetails.api.url: {{ userdetails_api_url | default('https://api.ala.org.au/userdetails/') }}
 
+imageServiceUrls:
+{% if image_service_urls is defined and image_service_urls | length > 0 %}
+{% for item in image_service_urls %}
+  - {{ item }}
+{% endfor %}
+{% else %}
+  - "{{image_service_base_url}}{{image_service_context_path}}"
+{% endif %}
+
 aws:
   region: ap-southeast-2
 
