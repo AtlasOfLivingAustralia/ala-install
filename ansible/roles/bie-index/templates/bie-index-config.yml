@@ -116,6 +116,7 @@ lists:
   ui: {{ specieslist_url | default('https://lists.ala.org.au') }}
   conservation: /speciesList?isAuthoritative=eq:true&isThreatened=eq:true&max={0}&offset={1}
   search: /speciesList/?isAuthoritative=eq:true&max={0}&offset={1}
+  items: /speciesListItems/{0}?max={1}&offset={2}&includeKVP=true
   show: /speciesListItem/list/{0}
   add: /createItem
   remove: /deleteItem
