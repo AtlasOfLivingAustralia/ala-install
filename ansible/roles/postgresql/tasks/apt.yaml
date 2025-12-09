@@ -55,15 +55,11 @@
   tags: postgresql
 
 - name: Add postgres archive repository
-  ansible.builtin.apt_repository:
-    repo: 'deb [arch=amd64,arm64] http://apt-archive.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main'
-    state: present
+  apt_repository: repo='deb http://apt-archive.postgresql.org/pub/repos/apt/ {{ansible_distribution_release}}-pgdg main' state=present
   when: ansible_os_family == "Debian" and ansible_distribution_version is version('22.04', '<')
   tags: postgresql
 
 - name: Add postgres repository
-  ansible.builtin.apt_repository:
-    repo: 'deb [arch=amd64,arm64] http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main'
-    state: present
+  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ansible_distribution_release}}-pgdg main' state=present
   when: ansible_os_family == "Debian" and ansible_distribution_version is version('22.04', '>=')
   tags: postgresql
