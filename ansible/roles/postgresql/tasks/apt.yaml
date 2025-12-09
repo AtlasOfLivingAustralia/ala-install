@@ -47,16 +47,23 @@
   tags: postgresql
 
 - name: Add postgres repository key
-  apt_key: url=http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc state=present
+  ansible.builtin.get_url:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    dest: /etc/apt/trusted.gpg.d/postgresql-archive-keyring.asc
+    mode: '0644'
   when: ansible_os_family == "Debian"
   tags: postgresql
 
 - name: Add postgres archive repository
-  apt_repository: repo='deb http://apt-archive.postgresql.org/pub/repos/apt/ {{ansible_distribution_release}}-pgdg main' state=present
+  ansible.builtin.apt_repository:
+    repo: 'deb [arch=amd64,arm64] http://apt-archive.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main'
+    state: present
   when: ansible_os_family == "Debian" and ansible_distribution_version is version('22.04', '<')
   tags: postgresql
 
 - name: Add postgres repository
-  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ansible_distribution_release}}-pgdg main' state=present
+  ansible.builtin.apt_repository:
+    repo: 'deb [arch=amd64,arm64] http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main'
+    state: present
   when: ansible_os_family == "Debian" and ansible_distribution_version is version('22.04', '>=')
   tags: postgresql
