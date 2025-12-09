@@ -26,7 +26,7 @@
   "defaultLanguage": "en",
   "lists": [
     {
-      "uid": "dr23462",
+      "uid": "dr33742",
       "vernacularNameField": "raw Vernacular Name",
       "kingdomField": "raw Kingdom",
       "phylumField": "raw Phylum",
@@ -35,7 +35,7 @@
       "familyField": "raw Family",
       "statusField": "raw Status",
       "defaultStatus": "traditionalKnowledge",
-      "defaultLanguage": "W41"
+      "defaultLanguage": "W11"
     }
   ]
 }
