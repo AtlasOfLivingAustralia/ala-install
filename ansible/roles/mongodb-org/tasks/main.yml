@@ -19,7 +19,7 @@
 
 - name: Add mongodb.org repo
   apt_repository:
-    repo: "deb [arch=amd64,arm64] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/{{ mongodb_version }} multiverse"
+    repo: deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/{{ mongodb_version }} multiverse
     state: present
   when: mongodb_version is version('3.4', '!=') or ansible_distribution_release != 'bionic'
   tags:
