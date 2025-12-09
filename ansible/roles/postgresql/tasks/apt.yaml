@@ -47,7 +47,10 @@
   tags: postgresql
 
 - name: Add postgres repository key
-  apt_key: url=http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc state=present
+  ansible.builtin.get_url:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    dest: /etc/apt/trusted.gpg.d/postgresql-archive-keyring.asc
+    mode: '0644'
   when: ansible_os_family == "Debian"
   tags: postgresql
 

@@ -1,7 +1,8 @@
 - name: Add MongoDB apt key based on version
-  ansible.builtin.apt_key:
+  ansible.builtin.get_url:
     url: "{{ item.url }}"
-    state: present
+    dest: "/etc/apt/trusted.gpg.d/mongodb-org-{{ item.version }}.asc"
+    mode: '0644'
   when: mongodb_version is version(item.version, '==')
   loop:
     - { version: 8.0, url: 'https://pgp.mongodb.com/server-8.0.asc' }
