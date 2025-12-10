@@ -25,7 +25,7 @@ security:
     casServerLogoutUrl: {{ auth_cas_url }}/logout
     loginUrl: {{ auth_cas_url }}/login
     logoutUrl: {{ auth_cas_url }}/logout
-    authenticateOnlyIfLoggedInFilterPattern : {{ images_authenticate_only_if_logged_in_filter_pattern | default('') }}
+    authenticateOnlyIfLoggedInFilterPattern: {{ images_authenticate_only_if_logged_in_filter_pattern | default('') }}
   oidc:
     enabled: {{ security_oidc_enabled | default(false) }}
     clientId: {{ (images_client_id | default(clientId)) | default('') }}
@@ -90,9 +90,20 @@ imageservice:
     staging: "/data/image-service/store/staging"
   apache:
     root: "{{image_service_base_url}}{{image_service_context_path}}/store/"
-    multiple_roots: {% if multiple_root is defined %} "{{ multiple_roots }}" {% else %} "{{image_service_base_url}}{{image_service_context_path}}/store/" {% endif %}
+    multiple_roots: {% if multiple_root is defined %} "{{ multiple_roots }}" {% else %} "{{image_service_base_url}}{{image_service_context_path}}/store/"{% endif %}
 
     exportDir: "{{ image_service_export_dir | default('/data/image-service/exports')}}"
+{% if image_service_storage_locations is defined and image_service_storage_locations | length > 0 %}
+  storage:
+    locations:
+{% for item in image_service_storage_locations %}
+      {{ item.name }}:
+        {{ item.config | to_nice_yaml(indent=2) | indent(8) }}
+{% endfor %}
+{% endif %}
+
+images:
+  disableCache: {{ image_service_disable_cache | default('false') }}
 
 # skin
 skin:
@@ -153,6 +164,26 @@ imageServiceUrls:
 
 aws:
   region: ap-southeast-2
+  s3:
+    force.async: {{ image_service_s3_force_async | default('false') }}
+    cloudwatch:
+      metrics:
+        enabled: {{ image_service_s3_cloudwatch_metrics_enabled | default('false') }}
+
+management:
+  metrics:
+    export:
+      datadog:
+        enabled: {{ image_service_metrics_datadog_enabled | default('false') }}
+      cloudwatch:
+        enabled: {{ image_service_metrics_cloudwatch_enabled | default('false') }}
+      statsd:
+        enabled: {{ image_service_metrics_statsd_enabled | default('false') }}
+  tags:
+    environment: {{ datadog_apm_environment | default('production') }}
+
+
+
 
 tiling:
   levelThreads: {{ image_service_tiler_levelThreads | default('2') }}
