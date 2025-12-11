@@ -190,6 +190,7 @@ tiling:
   ioThreads: {{ image_service_tiler_iothreads | default('2') }}
 
 elasticsearch:
+  tls.disableTrust: "{{ elasticsearch_disable_tls_trust_verification | default('false') }}"
   indexName: "{{ elasticsearch_index_name | default('images') }}"
   username: "{{ elasticsearch_username | default('') }}"
   password: "{{ elasticsearch_password | default ('') }}"
