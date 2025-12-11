@@ -105,6 +105,8 @@ imageservice:
 images:
   disableCache: {{ image_service_disable_cache | default('false') }}
 
+iiif.enabled: {{ image_service_iiif_enabled | default('false') }}
+
 # skin
 skin:
   layout: {{ (image_skin_layout | default(skin_layout)) | default('main') }}
@@ -166,6 +168,7 @@ aws:
   region: ap-southeast-2
   s3:
     force.async: {{ image_service_s3_force_async | default('false') }}
+    crt.enabled: {{ image_service_s3_use_crt_async | default('false') }}
     cloudwatch:
       metrics:
         enabled: {{ image_service_s3_cloudwatch_metrics_enabled | default('false') }}
@@ -181,9 +184,6 @@ management:
         enabled: {{ image_service_metrics_statsd_enabled | default('false') }}
   tags:
     environment: {{ datadog_apm_environment | default('production') }}
-
-
-
 
 tiling:
   levelThreads: {{ image_service_tiler_levelThreads | default('2') }}
