@@ -1,0 +1,61 @@
+---
+# Docker Compose Deployment Playbook
+# POC for Living Atlas Container Migration
+
+- name: Generate Docker Compose configuration
+  hosts: docker_compose
+  become: false
+  vars:
+    # Skip handlers as we're generating docker-compose files, not deploying to VMs
+    skip_handlers: true
+    # Enable services based on inventory groups
+    services_enabled: "{{ groups.keys() | select('match', '^(collectory|biocache-hub|biocache-service|bie-hub|bie-index|nginx)$') | list | default(['collectory', 'nginx'], true) }}"
+    # i18n configuration
+    i18n:
+      enabled: true
+      strategy: volume
+      volume:
+        name: ala-i18n-data
+        source: init-container
+    # Docker Compose overrides for container connectivity
+    # Use service names instead of localhost for inter-container communication
+    collectory_db_host_address: "mysql"
+    collectory_hostname: "collectory"
+
+  tasks:
+    - name: Load variables from collectory group
+      include_vars:
+        file: "{{ playbook_dir }}/roles/collectory/vars/main.yml"
+      when: "'collectory' in groups"
+      tags:
+        - always
+
+    - name: Calculate collectory_app based on version
+      set_fact:
+        collectory_app: "{{ 'collectory' if collectory_version is version('3', '>=') else 'ala-collectory' }}"
+      when: "'collectory' in groups and collectory_version is defined"
+      tags:
+        - always
+
+    - name: Include docker-common role to generate docker-compose
+      include_role:
+        name: docker-common
+        tasks_from: generate-compose
+      when: deployment_type == 'container'
+
+    - name: Display next steps
+      debug:
+        msg: |
+          Docker Compose files generated successfully!
+          
+          Next steps:
+          1. Review the generated file: cat {{ data_dir }}/docker-compose.yml
+          2. Start the stack: cd {{ data_dir }} && docker-compose up -d
+          3. Check status: docker-compose ps
+          4. View logs: docker-compose logs -f
+          5. Stop: docker-compose down
+          
+          Healthchecks:
+          - Collectory: curl http://localhost:8080/collectory/actuator/health
+          - Nginx: curl http://localhost/
+
