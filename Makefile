@@ -212,8 +212,8 @@ la-toolkit-deploy:
 	@./build-i18n-image.sh
 	@echo ""
 	@echo "[3/4] Building service images with docker buildx bake..."
-	@cd $(DATA_DIR) && docker buildx bake -f docker-bake.hcl builders
-	@cd $(DATA_DIR) && docker buildx bake -f docker-bake.hcl services
+	@cd $(DATA_DIR) && BUILDX_BAKE_ENTITLEMENTS_FS=0 docker buildx bake -f docker-bake.hcl --load builders
+	@cd $(DATA_DIR) && BUILDX_BAKE_ENTITLEMENTS_FS=0 docker buildx bake -f docker-bake.hcl --load services
 	@echo ""
 	@echo "[4/4] Starting services..."
 	@cd $(DATA_DIR) && docker compose up -d

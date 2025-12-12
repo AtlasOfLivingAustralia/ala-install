@@ -5,13 +5,31 @@
       - "80:80"
       - "443:443"
     volumes:
-      - {{ nginx_conf_dir }}:/etc/nginx/conf.d:ro
+      - {{ nginx_conf_dir }}/conf.d:/etc/nginx/conf.d:ro
+{% if ssl_certificate_server_dir is defined %}
+      # Mount Let's Encrypt certificates from host
+      - {{ ssl_certificate_server_dir }}:/etc/nginx/ssl:ro
+{% endif %}
     networks:
       default: {}
       {{ docker_network | default('la_internal') }}:
-{% if 'collectory' in services_enabled %}
     depends_on:
+{% if 'collectory' in services_enabled %}
       collectory:
+        condition: service_healthy
+{% endif %}
+{% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
+      cas:
+        condition: service_healthy
+      userdetails:
+        condition: service_healthy
+      apikey:
+        condition: service_healthy
+      cas-management:
+        condition: service_healthy
+{% endif %}
+{% if 'species-list' in services_enabled or groups['species-list'] is defined %}
+      species-list:
         condition: service_healthy
 {% endif %}
     healthcheck:

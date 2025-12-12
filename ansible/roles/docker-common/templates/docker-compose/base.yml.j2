@@ -48,13 +48,22 @@ services:
 {% include 'docker-compose/services/cas-management.yml.j2' %}
 {% endif %}
 
+{% if 'species-list' in services_enabled or groups['species-list'] is defined %}
+{% include 'docker-compose/services/species-list.yml.j2' %}
+{% endif %}
+
 {% if 'collectory' in services_enabled %}
 {% include 'docker-compose/services/collectory.yml.j2' %}
 {% endif %}
 
-{% if 'collectory' in services_enabled or 'cas' in services_enabled or groups['cas-servers'] is defined %}
-  # MySQL for collectory and auth services (following PR #675 pattern)
+{% if 'collectory' in services_enabled or 'cas' in services_enabled or groups['cas-servers'] is defined or 'species-list' in services_enabled %}
+  # MySQL for collectory, auth services, and species-list (following PR #675 pattern)
 {% include 'docker-compose/services/mysql.yml.j2' %}
+{% endif %}
+
+{% if 'gatus' in services_enabled or gatus_enabled | default(true) %}
+  # Gatus Health Monitoring
+{% include 'docker-compose/services/gatus.yml.j2' %}
 {% endif %}
 
 networks:
@@ -77,6 +86,9 @@ volumes:
 {% endif %}
 {% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
   mongodb-data:
+{% endif %}
+{% if 'gatus' in services_enabled or gatus_enabled | default(true) %}
+  gatus-data:
 {% endif %}
 
 

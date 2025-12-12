@@ -1,0 +1,33 @@
+  # Gatus Health Monitoring Dashboard
+  gatus:
+    image: twinproduction/gatus:v5
+    volumes:
+      - {{ data_dir }}/gatus/config:/config:ro
+      - gatus-data:/data
+    environment:
+      TZ: {{ server_tz | default('UTC') }}
+    ports:
+      - "8090:8080"
+    networks:
+      default: {}
+      {{ docker_network | default('la_internal') }}:
+        aliases:
+          - {{ gatus_hostname | default('gatus') }}
+    depends_on:
+{% if 'collectory' in services_enabled %}
+      collectory:
+        condition: service_started
+{% endif %}
+{% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
+      cas:
+        condition: service_started
+{% endif %}
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+

@@ -14,6 +14,7 @@
       CAS_MYSQL_PASSWORD: {{ cas_mysql_password | default(mysql_root_password) }}
       USERDETAILS_MYSQL_PASSWORD: {{ userdetails_mysql_password | default(mysql_root_password) }}
       APIKEY_MYSQL_PASSWORD: {{ apikey_mysql_password | default(mysql_root_password) }}
+      SPECIESLIST_MYSQL_PASSWORD: {{ specieslist_mysql_password | default(mysql_root_password) }}
     expose:
       - 3306
     networks:

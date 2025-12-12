@@ -52,6 +52,21 @@ target "gradle-builder-jdk21" {
 # Service Targets
 # ============================================
 
+{% if i18n.enabled %}
+target "i18n" {
+  dockerfile = "Dockerfile"
+  context = "{{ playbook_dir }}/../docker/i18n"
+  args = {}
+{% if docker_registry and docker_registry != '' %}
+  tags = ["{{ docker_registry }}/ala-i18n:${TAG}", "{{ docker_registry }}/ala-i18n:latest"]
+{% else %}
+  tags = ["ala-i18n:${TAG}", "ala-i18n:latest"]
+{% endif %}
+  cache-to = ["type=inline"]
+  platforms = ["linux/amd64"]
+}
+{% endif %}
+
 {% if 'collectory' in services_enabled %}
 target "collectory" {
   dockerfile = "Dockerfile"
@@ -152,13 +167,36 @@ target "cas-management" {
   args = {
     GRADLE_BUILDER_IMAGE = "gradle-builder:jdk17"
     CAS_MANAGEMENT_VERSION = "{{ cas_management_version | default('develop') }}"
-    CAS_MANAGEMENT_REPO = "https://github.com/AtlasOfLivingAustralia/ala-cas-management.git"
+    CAS_MANAGEMENT_REPO = "https://github.com/AtlasOfLivingAustralia/ala-cas-5-services.git"
     CAS_MANAGEMENT_BRANCH = "{{ cas_management_branch | default('master') }}"
   }
 {% if docker_registry and docker_registry != '' %}
   tags = ["{{ docker_registry }}/cas-management:${TAG}", "{{ docker_registry }}/cas-management:latest"]
 {% else %}
   tags = ["cas-management:${TAG}", "cas-management:latest"]
+{% endif %}
+  cache-to = ["type=inline"]
+  platforms = ["linux/amd64"]
+}
+{% endif %}
+
+{% if 'species-list' in services_enabled or groups['species-list'] is defined %}
+target "species-list" {
+  dockerfile = "Dockerfile"
+  context = "{{ playbook_dir }}/../docker/species-list"
+  contexts = {
+    "gradle-builder:jdk17" = "target:gradle-builder-jdk17"
+  }
+  args = {
+    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk17"
+    SPECIES_LIST_VERSION = "{{ species_list_version | default('develop') }}"
+    SPECIES_LIST_REPO = "https://github.com/AtlasOfLivingAustralia/specieslist-webapp.git"
+    SPECIES_LIST_BRANCH = "{{ species_list_branch | default('master') }}"
+  }
+{% if docker_registry and docker_registry != '' %}
+  tags = ["{{ docker_registry }}/species-list:${TAG}", "{{ docker_registry }}/species-list:latest"]
+{% else %}
+  tags = ["species-list:${TAG}", "species-list:latest"]
 {% endif %}
   cache-to = ["type=inline"]
   platforms = ["linux/amd64"]
@@ -192,15 +230,16 @@ group "all" {
     "apikey",
     "cas-management",
 {% endif %}
+{% if 'species-list' in services_enabled or groups['species-list'] is defined %}
+    "species-list",
+{% endif %}
   ]
 }
 
 # Build only services (assumes builders exist)
+# Note: i18n is built separately with build-i18n-image.sh
 group "services" {
   targets = [
-{% if i18n.enabled %}
-    "i18n",
-{% endif %}
 {% if 'collectory' in services_enabled %}
     "collectory",
 {% endif %}
@@ -209,6 +248,9 @@ group "services" {
     "userdetails",
     "apikey",
     "cas-management",
+{% endif %}
+{% if 'species-list' in services_enabled or groups['species-list'] is defined %}
+    "species-list",
 {% endif %}
   ]
 }

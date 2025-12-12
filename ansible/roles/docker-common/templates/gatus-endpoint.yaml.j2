@@ -1,0 +1,15 @@
+---
+# Gatus endpoint check for {{ endpoint_name }}
+endpoints:
+  - name: {{ endpoint_name }}
+    group: {{ endpoint_group | default('services') }}
+    url: "{{ endpoint_url }}"
+    interval: {{ gatus_interval | default('1m') }}
+    conditions:
+      - "[STATUS] == 200"
+      - "[RESPONSE_TIME] < {{ gatus_response_time_threshold | default('5000') }}"
+    alerts:
+      - type: slack
+        enabled: false
+        description: "{{ endpoint_name }} is down"
+

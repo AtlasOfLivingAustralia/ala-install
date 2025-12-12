@@ -9,7 +9,7 @@
     # Skip handlers as we're generating docker-compose files, not deploying to VMs
     skip_handlers: true
     # Enable services based on inventory groups
-    services_enabled: "{{ groups.keys() | select('match', '^(collectory|biocache-hub|biocache-service|bie-hub|bie-index|nginx|cas)$') | list | default(['collectory', 'nginx'], true) }}"
+    services_enabled: "{{ groups.keys() | select('match', '^(collectory|biocache-hub|biocache-service|bie-hub|bie-index|nginx|cas|species-list)$') | list | default(['collectory', 'nginx'], true) }}"
     # i18n configuration
     i18n:
       enabled: true
@@ -38,6 +38,10 @@
     # MongoDB configuration
     mongodb_root_user: "root"
     mongodb_cas_database: "cas"
+    # Species List configuration
+    specieslist_db_hostname: "mysql"
+    specieslist_hostname: "species-list"
+    species_list_docker_host: "species-list"
 
   tasks:
     - name: Load variables from collectory group
