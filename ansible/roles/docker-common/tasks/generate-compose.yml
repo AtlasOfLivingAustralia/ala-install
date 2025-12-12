@@ -1,0 +1,78 @@
+---
+# Generate docker-compose.yml from templates
+# Using existing ala-install variables
+
+- name: Ensure output directory exists
+  file:
+    path: "{{ data_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Detect enabled services from inventory groups
+  set_fact:
+    services_enabled: "{{ groups.keys() | select('match', '^(collectory|biocache-hub|biocache-service|bie-hub|bie-index|nginx)$') | list }}"
+  when: services_enabled is not defined
+
+- name: Load collectory role variables if needed
+  include_vars:
+    file: "{{ playbook_dir }}/roles/collectory/vars/main.yml"
+  when: "'collectory' in services_enabled or groups['collectory'] is defined"
+  tags:
+    - collectory
+    - config
+
+- name: Generate docker-compose.yml
+  template:
+    src: docker-compose/base.yml.j2
+    dest: "{{ data_dir }}/docker-compose.yml"
+    mode: '0644'
+
+- name: Remove old docker-bake.hcl to force regeneration
+  file:
+    path: "{{ data_dir }}/docker-bake.hcl"
+    state: absent
+  when: build_images | default(false)
+
+- name: Generate docker-bake.hcl for optimized builds
+  template:
+    src: docker-bake.hcl.j2
+    dest: "{{ data_dir }}/docker-bake.hcl"
+    mode: '0644'
+  when: build_images | default(false)
+
+- name: Ensure nginx config directory exists
+  file:
+    path: "{{ nginx_conf_dir }}"
+    state: directory
+    mode: '0755'
+  when: "'nginx' in services_enabled"
+
+- name: Generate nginx configuration
+  template:
+    src: nginx/default.conf.j2
+    dest: "{{ nginx_conf_dir }}/default.conf"
+    mode: '0644'
+  when: "'nginx' in services_enabled"
+
+- name: Generate service configuration files
+  include_tasks: generate-service-configs.yml
+
+- name: Include build-images tasks
+  include_tasks: build-images.yml
+  when: build_images | default(false)
+
+- name: Display generated compose file location
+  debug:
+    msg:
+      - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      - "📄 Docker Compose Configuration Generated"
+      - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      - "  Location: {{ data_dir }}/"
+      - "  Files:"
+      - "    - docker-compose.yml"
+      - "{% if build_images | default(false) %}    - docker-bake.hcl{% endif %}"
+      - "{% if 'nginx' in services_enabled %}    - nginx/default.conf{% endif %}"
+      - "{% if 'collectory' in services_enabled %}    - collectory/config/collectory-config.properties{% endif %}"
+      - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+

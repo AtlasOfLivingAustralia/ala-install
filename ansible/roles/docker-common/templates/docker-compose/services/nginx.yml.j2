@@ -1,0 +1,26 @@
+  # Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - {{ nginx_conf_dir }}:/etc/nginx/conf.d:ro
+    networks:
+      default: {}
+      {{ docker_network | default('la_internal') }}:
+{% if 'collectory' in services_enabled %}
+    depends_on:
+      collectory:
+        condition: service_healthy
+{% endif %}
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    environment:
+      TZ: {{ server_tz | default('UTC') }}
+

@@ -1,0 +1,51 @@
+---
+# Generate configuration files for services in docker-common deployment
+# This reuses the configuration generation tasks from each service role
+# without executing deployment tasks
+
+# Collectory configuration
+- name: Generate collectory configuration
+  when: "'collectory' in services_enabled"
+  tags:
+    - always  # Always run these tasks, they're essential
+  block:
+    - name: Include collectory setfacts
+      include_tasks: "{{ playbook_dir }}/roles/common/tasks/setfacts.yml"
+
+    - name: Set collectory data owner user
+      set_fact:
+        collectory_data_owner_user: "{{ tomcat_user | default('tomcat') }}"
+
+    - name: Ensure collectory target directories exist
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      with_items:
+        - "{{ collectory_data_dir }}"
+        - "{{ collectory_data_dir }}/config"
+        - "{{ collectory_data_dir }}/upload/tmp"
+        - "{{ collectory_data_dir }}/taxa/data"
+        - "{{ collectory_data_dir }}/data"
+
+    - name: Copy collectory data assets if they exist
+      copy:
+        src: "{{ item }}"
+        dest: "{{ collectory_data_dir }}"
+      with_fileglob:
+        - "{{ playbook_dir }}/roles/collectory/files/data/config/*"
+        - "{{ playbook_dir }}/roles/collectory/files/data/data/*"
+      failed_when: false
+
+    - name: Generate collectory-config.properties from template
+      template:
+        src: "{{ playbook_dir }}/roles/collectory/templates/config/collectory-config.properties"
+        dest: "{{ collectory_data_dir }}/config/{{ collectory_app | default('generic-collectory') }}-config.properties"
+        mode: '0644'
+
+    - name: Generate collectory logback.xml
+      template:
+        src: "{{ playbook_dir }}/roles/collectory/templates/logback.xml"
+        dest: "{{ collectory_data_dir }}/config/logback.xml"
+        mode: '0644'
+

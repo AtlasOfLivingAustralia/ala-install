@@ -1,0 +1,68 @@
+---
+# Docker Compose Base Template
+# Using existing ala-install variables
+# Note: version key removed (obsolete in modern docker-compose)
+
+services:
+{% if i18n.enabled and i18n.strategy == 'volume' and i18n.volume.source == 'init-container' %}
+  # i18n initialization container
+  # Uses pre-built ala-i18n image (built via docker buildx bake)
+  # This reuses the same Ansible roles/la-apt + roles/i18n pattern at build time
+  i18n-init:
+{% if build_images | default(false) %}
+    # Using pre-built image from 'docker buildx bake'
+    image: {{ docker_registry | default('') }}ala-i18n:develop
+    pull_policy: never  # Don't try to pull - image is local
+{% else %}
+    image: {{ docker_registry | default('') }}ala-i18n:develop
+{% endif %}
+    volumes:
+      - {{ i18n.volume.name }}:/opt/atlas/i18n/
+    command: >
+      sh -c "
+        echo '✅ ala-i18n data available in volume' &&
+        ls -la /opt/atlas/i18n/ | head -10 &&
+        echo 'ℹ️  Volume will persist this data for other containers'
+      "
+    healthcheck:
+      test: ["CMD", "test", "-d", "/opt/atlas/i18n"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 2s
+    restart: "no"
+    environment:
+      TZ: {{ server_tz | default('UTC') }}
+{% endif %}
+
+{% if 'nginx' in services_enabled %}
+{% include 'docker-compose/services/nginx.yml.j2' %}
+{% endif %}
+
+{% if 'collectory' in services_enabled %}
+{% include 'docker-compose/services/collectory.yml.j2' %}
+{% endif %}
+
+{% if 'collectory' in services_enabled %}
+  # MySQL for collectory (following PR #675 pattern)
+{% include 'docker-compose/services/mysql.yml.j2' %}
+{% endif %}
+
+networks:
+  {{ docker_network | default('la_internal') }}:
+{% if deployment_type == 'swarm' %}
+    external: true
+{% else %}
+    driver: bridge
+{% endif %}
+
+volumes:
+{% if i18n.enabled and i18n.strategy == 'volume' %}
+  {{ i18n.volume.name }}:
+{% endif %}
+{% if 'collectory' in services_enabled %}
+  collectory-upload:
+  mysql-data:
+{% endif %}
+
+

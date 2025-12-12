@@ -1,0 +1,29 @@
+  # MySQL database (following PR #675 pattern)
+  mysql:
+    image: mysql:8.0-debian
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - {{ playbook_dir }}/../docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      TZ: {{ server_tz | default('UTC') }}
+      MYSQL_ROOT_PASSWORD: {{ mysql_root_password }}
+      MYSQL_USER: {{ collectory_db_user }}
+      MYSQL_PASSWORD: {{ collectory_db_password }}
+      MYSQL_DATABASE: {{ collectory_db_name | default('collectory') }}
+    expose:
+      - 3306
+    networks:
+      default: {}
+      {{ docker_network | default('la_internal') }}:
+        aliases:
+          - {{ collectory_db_host_address }}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p{{ mysql_root_password }}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+

@@ -1,0 +1,63 @@
+---
+# Docker Common Role Defaults
+# Using existing ala-install variable patterns
+
+# Deployment type (existing from PR #675)
+deployment_type: vm  # Options: vm, container, swarm
+deployment_env: production  # Options: dev, staging, production
+
+# Build configuration
+build_images: false  # Set to true to build from source instead of pulling from registry
+docker_registry: ""  # Empty means local builds, set to registry URL for push/pull
+
+# Docker image tagging strategy:
+# Priority: 1) collectory_branch (for git branches like 'develop')
+#           2) collectory_version (for releases like '5.2.0')
+#           3) Default: 'develop'
+# This allows flexibility: use branches for dev, versions for production
+docker_tag: "{{ collectory_branch | default(collectory_version | default('develop')) }}"
+docker_image_tag: "{{ docker_tag }}"  # Alias for docker_tag
+docker_cache_tag: "buildcache"  # Cache tag for layer caching
+
+# Docker build cache directory (persistent across builds)
+# Using ~/.cache/docker-buildx instead of /tmp for persistence
+docker_build_cache_dir: "{{ ansible_env.HOME }}/.cache/docker-buildx"
+
+# Docker network configuration (existing from PR #675)
+docker_network: la_internal
+docker_network_mtu: 1500
+
+# Services to enable (determines which services are included in docker-compose.yml)
+services_enabled: []
+  # - nginx
+  # - collectory
+  # - biocache-service
+  # - bie-hub
+  # etc.
+
+# i18n configuration
+# See I18N_DOCKER_STRATEGIES.md for detailed explanation
+i18n:
+  enabled: true
+  # Strategy options:
+  #   - 'host-mount': (RECOMMENDED) Reuses Ansible i18n role, mounts /opt/atlas/i18n from host
+  #                   Requires i18n role to be run on the host first
+  #   - 'volume':     Uses Docker volume with init-container (portable but duplicates Ansible logic)
+  strategy: host-mount
+  volume:
+    name: ala-i18n-data
+    source: init-container  # Only used when strategy='volume'
+
+# Nginx configuration (existing variables)
+nginx_conf_dir: "{{ data_dir }}/nginx"
+nginx_user: nginx
+
+# Data directories (existing variable)
+data_dir: /opt/docker-compose
+
+# Monitoring (existing from gatus role)
+monitoring_enabled: false
+
+# Deprecated variables (no longer used in container deployment)
+i18n_package_enabled: false  # Replaced by i18n.strategy
+

@@ -1,0 +1,186 @@
+---
+# Build Docker images from source
+# This task file is included when build_images is true
+
+- name: Ensure docker directory exists
+  file:
+    path: "{{ playbook_dir }}/../docker"
+    state: directory
+    mode: '0755'
+
+- name: Check if docker buildx is available
+  command: docker buildx version
+  register: buildx_check
+  failed_when: false
+  changed_when: false
+
+- name: Fail if buildx is not available
+  fail:
+    msg: "Docker buildx is not available. Please install Docker Desktop or enable buildx."
+  when: buildx_check.rc != 0
+
+- name: Display build information
+  debug:
+    msg:
+      - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      - "Building images with docker buildx bake"
+      - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      - "  Configuration:"
+      - "    - Docker Bake File: {{ data_dir }}/docker-bake.hcl"
+      - "    - Registry: {{ docker_registry | default('(local)') }}"
+      - "    - Tag: {{ docker_image_tag }}"
+      - "    - Services: {{ services_enabled | join(', ') }}{% if i18n.enabled %} + ala-i18n{% endif %}"
+      - ""
+      - "  ⏱️  Estimated time:"
+      - "    - First build: 15-30 minutes (downloads base images ~500MB)"
+      - "    - Subsequent builds: 2-5 minutes (uses cache)"
+      - ""
+      - "  💡 Tip: Watch progress with 'docker images' in another terminal"
+      - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+- name: Build builder images first (gradle-builder)
+  shell: >
+    docker buildx bake
+    -f docker-bake.hcl
+    --set *.cache-from=type=local,src={{ docker_build_cache_dir }}
+    --set *.cache-to=type=local,dest={{ docker_build_cache_dir }},mode=max
+    --allow=fs={{ ansible_env.HOME }}/.cache
+    --allow=fs.read=../docker
+    --progress=plain
+    --load
+    builders
+    2>&1 | tee /tmp/docker-build-builders.log
+  args:
+    chdir: "{{ data_dir }}"
+    executable: /bin/bash
+  register: build_builders
+  changed_when: true
+  when: services_enabled | length > 0
+  async: 1800
+  poll: 0
+
+- name: Wait for builder build to start (check log file)
+  wait_for:
+    path: /tmp/docker-build-builders.log
+    timeout: 30
+  when: services_enabled | length > 0
+
+- name: Monitor builder build progress
+  shell: |
+    while kill -0 {{ build_builders.ansible_job_id }} 2>/dev/null; do
+      echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      echo "🔨 Building gradle-builder images..."
+      echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      tail -15 /tmp/docker-build-builders.log | grep -E '#[0-9]+|DONE|CACHED|downloading|extracting|exporting' || tail -5 /tmp/docker-build-builders.log
+      echo ""
+      echo "💡 Full log: tail -f /tmp/docker-build-builders.log"
+      echo ""
+      sleep 15
+    done
+  args:
+    executable: /bin/bash
+  async: 1800
+  poll: 0
+  when: services_enabled | length > 0
+  register: monitor_builders
+
+- name: Wait for builder images to finish
+  async_status:
+    jid: "{{ build_builders.ansible_job_id }}"
+  register: build_result
+  until: build_result.finished
+  retries: 180
+  delay: 10
+  when: services_enabled | length > 0
+
+- name: Stop monitoring
+  async_status:
+    jid: "{{ monitor_builders.ansible_job_id }}"
+    mode: cleanup
+  when: services_enabled | length > 0
+  ignore_errors: true
+
+- name: Build service images
+  shell: >
+    docker buildx bake
+    -f docker-bake.hcl
+    --set *.cache-from=type=local,src={{ docker_build_cache_dir }}
+    --set *.cache-to=type=local,dest={{ docker_build_cache_dir }},mode=max
+    --allow=fs={{ ansible_env.HOME }}/.cache
+    --allow=fs.read=../docker
+    --progress=plain
+    --load
+    services
+    2>&1 | tee /tmp/docker-build-services.log
+  args:
+    chdir: "{{ data_dir }}"
+    executable: /bin/bash
+  register: build_services
+  changed_when: true
+  when: services_enabled | length > 0
+  async: 3600
+  poll: 0
+
+- name: Wait for service build to start
+  wait_for:
+    path: /tmp/docker-build-services.log
+    timeout: 30
+  when: services_enabled | length > 0
+
+- name: Monitor service build progress
+  shell: |
+    while kill -0 {{ build_services.ansible_job_id }} 2>/dev/null; do
+      clear
+      echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      echo "🚀 Building service images: {{ services_enabled | join(', ') }}"
+      echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      echo ""
+      tail -20 /tmp/docker-build-services.log | grep -E '#[0-9]+|DONE|CACHED|downloading|extracting|exporting|Downloading|Compiling|Task :' || tail -10 /tmp/docker-build-services.log
+      echo ""
+      echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      echo "💡 Full log: tail -f /tmp/docker-build-services.log"
+      echo "🕐 $(date '+%H:%M:%S')"
+      echo ""
+      sleep 15
+    done
+  args:
+    executable: /bin/bash
+  async: 3600
+  poll: 0
+  when: services_enabled | length > 0
+  register: monitor_services
+
+- name: Wait for service images to finish
+  async_status:
+    jid: "{{ build_services.ansible_job_id }}"
+  register: services_result
+  until: services_result.finished
+  retries: 360
+  delay: 10
+  when: services_enabled | length > 0
+
+- name: Stop service monitoring
+  async_status:
+    jid: "{{ monitor_services.ansible_job_id }}"
+    mode: cleanup
+  when: services_enabled | length > 0
+  ignore_errors: true
+
+- name: Build list of images for display
+  set_fact:
+    built_images: "{{ (['ala-i18n:' + docker_image_tag] if i18n.enabled else []) + (services_enabled | map('regex_replace', '^(.*)$', '\\1:' + docker_image_tag) | list) }}"
+
+- name: Display build results
+  debug:
+    msg:
+      - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      - "✅ Images built successfully!"
+      - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      - "  Built images:"
+      - "{{ built_images | map('regex_replace', '^(.*)$', '    - \\1') | list }}"
+      - ""
+      - "  Next steps:"
+      - "    - View images: docker images"
+      - "    - Run services: docker-compose up -d"
+      - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
