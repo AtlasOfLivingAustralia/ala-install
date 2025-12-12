@@ -1,0 +1,42 @@
+  # Userdetails Service
+  userdetails:
+{% if build_images is defined and (build_images | bool or build_images == 'true') %}
+    image: {{ docker_registry | default('') }}userdetails:{{ docker_tag | default('develop') }}
+    pull_policy: never
+{% else %}
+    image: {{ docker_registry | default('') }}userdetails:{{ user_details_version | default('latest') }}
+{% endif %}
+    volumes:
+      - {{ data_dir }}/userdetails/config:/data/userdetails/config:ro
+      - {{ data_dir }}/userdetails/data:/data/userdetails/data
+{% if i18n.enabled and i18n.strategy == 'volume' %}
+      - {{ i18n.volume.name }}:/opt/atlas/i18n/:ro
+{% endif %}
+    environment:
+      TZ: {{ server_tz | default('UTC') }}
+      DOCKERIZE_OPTS: "-wait tcp://{{ user_store_db_hostname | default('mysql') }}:3306 -timeout 120s"
+    ports:
+      - "9001:8080"
+    networks:
+      default: {}
+      {{ docker_network | default('la_internal') }}:
+        aliases:
+          - {{ userdetails_hostname | default(userdetails_docker_host | default('userdetails')) }}
+    depends_on:
+{% if i18n.enabled and i18n.strategy == 'volume' and i18n.volume.source == 'init-container' %}
+      i18n-init:
+        condition: service_completed_successfully
+{% endif %}
+      mysql:
+        condition: service_healthy
+      cas:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/userdetails/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+

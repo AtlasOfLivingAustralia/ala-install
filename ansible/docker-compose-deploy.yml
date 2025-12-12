@@ -9,7 +9,7 @@
     # Skip handlers as we're generating docker-compose files, not deploying to VMs
     skip_handlers: true
     # Enable services based on inventory groups
-    services_enabled: "{{ groups.keys() | select('match', '^(collectory|biocache-hub|biocache-service|bie-hub|bie-index|nginx)$') | list | default(['collectory', 'nginx'], true) }}"
+    services_enabled: "{{ groups.keys() | select('match', '^(collectory|biocache-hub|biocache-service|bie-hub|bie-index|nginx|cas)$') | list | default(['collectory', 'nginx'], true) }}"
     # i18n configuration
     i18n:
       enabled: true
@@ -21,12 +21,36 @@
     # Use service names instead of localhost for inter-container communication
     collectory_db_host_address: "mysql"
     collectory_hostname: "collectory"
+    # Auth services hostnames for Docker networking
+    cas_db_hostname: "mysql"
+    user_store_db_hostname: "mysql"
+    apikey_db_hostname: "mysql"
+    ticket_registry_db_hostname: "mongodb"
+    cas_audit_host: "mongodb"
+    cas_spring_session_host: "mongodb"
+    cas_tickets_host: "mongodb"
+    cas_services_host: "mongodb"
+    cas_hostname: "cas"
+    userdetails_hostname: "userdetails"
+    apikey_hostname: "apikey"
+    cas_management_hostname: "cas-management"
+    mongodb_hostname: "mongodb"
+    # MongoDB configuration
+    mongodb_root_user: "root"
+    mongodb_cas_database: "cas"
 
   tasks:
     - name: Load variables from collectory group
       include_vars:
         file: "{{ playbook_dir }}/roles/collectory/vars/main.yml"
       when: "'collectory' in groups"
+      tags:
+        - always
+
+    - name: Load variables from cas group
+      include_vars:
+        file: "{{ playbook_dir }}/roles/cas5/vars/main.yml"
+      when: "'cas-servers' in groups"
       tags:
         - always
 

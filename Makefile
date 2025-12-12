@@ -202,17 +202,24 @@ la-toolkit-config:
 	@echo "   1. make build-i18n              # Build i18n image (first time only)"
 	@echo "   2. cd $(DATA_DIR) && docker compose up -d"
 
-la-toolkit-deploy: la-toolkit-config
-	@echo ""
+la-toolkit-deploy:
 	@echo "🚀 Deploying with LA Toolkit configuration..."
 	@echo ""
-	@echo "[1/2] Building ala-i18n image..."
+	@echo "[1/4] Generating docker-compose.yml with build config..."
+	@ansible-playbook -i $(LA_TOOLKIT_INVENTORY) -i la-test-inventories/la-test-local-passwords.ini $(PLAYBOOK) -e "data_dir=$(DATA_DIR_ABS)" -e build_images=true
+	@echo ""
+	@echo "[2/4] Building ala-i18n image..."
 	@./build-i18n-image.sh
-	@echo "[2/2] Starting services..."
+	@echo ""
+	@echo "[3/4] Building service images with docker buildx bake..."
+	@cd $(DATA_DIR) && docker buildx bake -f docker-bake.hcl builders
+	@cd $(DATA_DIR) && docker buildx bake -f docker-bake.hcl services
+	@echo ""
+	@echo "[4/4] Starting services..."
 	@cd $(DATA_DIR) && docker compose up -d
 	@echo ""
 	@echo "✅ Services deployed!"
 	@echo ""
 	@echo "Check status:"
 	@echo "   cd $(DATA_DIR) && docker compose ps"
-	@echo "   cd $(DATA_DIR) && docker compose logs -f collectory"
+	@echo "   cd $(DATA_DIR) && docker compose logs -f cas collectory"

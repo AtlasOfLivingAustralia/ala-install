@@ -27,6 +27,14 @@
         - "{{ collectory_data_dir }}/upload/tmp"
         - "{{ collectory_data_dir }}/taxa/data"
         - "{{ collectory_data_dir }}/data"
+        - "{{ data_dir }}/mysql"
+        - "{{ data_dir }}/mysql/init"
+
+    - name: Copy MySQL collectory initialization script
+      copy:
+        src: "{{ playbook_dir }}/../docker/mysql/init/01-collectory.sh"
+        dest: "{{ data_dir }}/mysql/init/01-collectory.sh"
+        mode: '0755'
 
     - name: Copy collectory data assets if they exist
       copy:
@@ -48,4 +56,81 @@
         src: "{{ playbook_dir }}/roles/collectory/templates/logback.xml"
         dest: "{{ collectory_data_dir }}/config/logback.xml"
         mode: '0644'
+
+# Auth services configuration (CAS ecosystem)
+- name: Generate auth services configuration
+  when: "'cas' in services_enabled or groups['cas-servers'] is defined"
+  tags:
+    - always
+  block:
+    - name: Include common setfacts for auth services
+      include_tasks: "{{ playbook_dir }}/roles/common/tasks/setfacts.yml"
+
+    - name: Ensure CAS target directories exist
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      with_items:
+        - "{{ data_dir }}/cas"
+        - "{{ data_dir }}/cas/config"
+        - "{{ data_dir }}/cas/data"
+        - "{{ data_dir }}/userdetails"
+        - "{{ data_dir }}/userdetails/config"
+        - "{{ data_dir }}/userdetails/data"
+        - "{{ data_dir }}/apikey"
+        - "{{ data_dir }}/apikey/config"
+        - "{{ data_dir }}/apikey/data"
+        - "{{ data_dir }}/cas-management"
+        - "{{ data_dir }}/cas-management/config"
+        - "{{ data_dir }}/cas-management/data"
+        - "{{ data_dir }}/mongodb"
+        - "{{ data_dir }}/mongodb/init"
+
+    - name: Copy MongoDB initialization scripts
+      copy:
+        src: "{{ playbook_dir }}/../docker/mongodb/init/"
+        dest: "{{ data_dir }}/mongodb/init/"
+        mode: '0755'
+      when: mongodb_root_password is defined
+
+    - name: Copy MySQL auth initialization script
+      copy:
+        src: "{{ playbook_dir }}/../docker/mysql/init/02-auth-services.sh"
+        dest: "{{ data_dir }}/mysql/init/02-auth-services.sh"
+        mode: '0755'
+      when: mysql_root_password is defined
+      failed_when: false
+
+    - name: Generate CAS application.yml
+      template:
+        src: "{{ playbook_dir }}/roles/cas5/templates/application.yml"
+        dest: "{{ data_dir }}/cas/config/application.yml"
+        mode: '0644'
+      when: cas_version is defined
+      failed_when: false
+
+    - name: Generate userdetails config
+      template:
+        src: "{{ playbook_dir }}/roles/userdetails/templates/userdetails-config.properties"
+        dest: "{{ data_dir }}/userdetails/config/userdetails-config.properties"
+        mode: '0644'
+      when: userdetails_version is defined
+      failed_when: false
+
+    - name: Generate apikey config
+      template:
+        src: "{{ playbook_dir }}/roles/apikey/templates/apikey-config.properties"
+        dest: "{{ data_dir }}/apikey/config/apikey-config.properties"
+        mode: '0644'
+      when: apikey_version is defined
+      failed_when: false
+
+    - name: Generate cas-management config
+      template:
+        src: "{{ playbook_dir }}/roles/cas-management/templates/application.yml"
+        dest: "{{ data_dir }}/cas-management/config/application.yml"
+        mode: '0644'
+      when: cas_management_version is defined
+      failed_when: false
 

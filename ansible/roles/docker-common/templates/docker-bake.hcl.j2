@@ -79,6 +79,92 @@ target "collectory" {
 }
 {% endif %}
 
+{% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
+target "cas" {
+  dockerfile = "Dockerfile"
+  context = "{{ playbook_dir }}/../docker/cas"
+  contexts = {
+    "gradle-builder:jdk17" = "target:gradle-builder-jdk17"
+  }
+  args = {
+    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk17"
+    CAS_VERSION = "{{ cas_version | default('develop') }}"
+    CAS_REPO = "https://github.com/AtlasOfLivingAustralia/ala-cas-5.git"
+    CAS_BRANCH = "{{ cas_branch | default('master') }}"
+  }
+{% if docker_registry and docker_registry != '' %}
+  tags = ["{{ docker_registry }}/cas:${TAG}", "{{ docker_registry }}/cas:latest"]
+{% else %}
+  tags = ["cas:${TAG}", "cas:latest"]
+{% endif %}
+  cache-to = ["type=inline"]
+  platforms = ["linux/amd64"]
+}
+
+target "userdetails" {
+  dockerfile = "Dockerfile"
+  context = "{{ playbook_dir }}/../docker/userdetails"
+  contexts = {
+    "gradle-builder:jdk17" = "target:gradle-builder-jdk17"
+  }
+  args = {
+    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk17"
+    USERDETAILS_VERSION = "{{ user_details_version | default('develop') }}"
+    USERDETAILS_REPO = "https://github.com/AtlasOfLivingAustralia/userdetails.git"
+    USERDETAILS_BRANCH = "{{ userdetails_branch | default('master') }}"
+  }
+{% if docker_registry and docker_registry != '' %}
+  tags = ["{{ docker_registry }}/userdetails:${TAG}", "{{ docker_registry }}/userdetails:latest"]
+{% else %}
+  tags = ["userdetails:${TAG}", "userdetails:latest"]
+{% endif %}
+  cache-to = ["type=inline"]
+  platforms = ["linux/amd64"]
+}
+
+target "apikey" {
+  dockerfile = "Dockerfile"
+  context = "{{ playbook_dir }}/../docker/apikey"
+  contexts = {
+    "gradle-builder:jdk17" = "target:gradle-builder-jdk17"
+  }
+  args = {
+    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk17"
+    APIKEY_VERSION = "{{ apikey_version | default('develop') }}"
+    APIKEY_REPO = "https://github.com/AtlasOfLivingAustralia/apikey.git"
+    APIKEY_BRANCH = "{{ apikey_branch | default('master') }}"
+  }
+{% if docker_registry and docker_registry != '' %}
+  tags = ["{{ docker_registry }}/apikey:${TAG}", "{{ docker_registry }}/apikey:latest"]
+{% else %}
+  tags = ["apikey:${TAG}", "apikey:latest"]
+{% endif %}
+  cache-to = ["type=inline"]
+  platforms = ["linux/amd64"]
+}
+
+target "cas-management" {
+  dockerfile = "Dockerfile"
+  context = "{{ playbook_dir }}/../docker/cas-management"
+  contexts = {
+    "gradle-builder:jdk17" = "target:gradle-builder-jdk17"
+  }
+  args = {
+    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk17"
+    CAS_MANAGEMENT_VERSION = "{{ cas_management_version | default('develop') }}"
+    CAS_MANAGEMENT_REPO = "https://github.com/AtlasOfLivingAustralia/ala-cas-management.git"
+    CAS_MANAGEMENT_BRANCH = "{{ cas_management_branch | default('master') }}"
+  }
+{% if docker_registry and docker_registry != '' %}
+  tags = ["{{ docker_registry }}/cas-management:${TAG}", "{{ docker_registry }}/cas-management:latest"]
+{% else %}
+  tags = ["cas-management:${TAG}", "cas-management:latest"]
+{% endif %}
+  cache-to = ["type=inline"]
+  platforms = ["linux/amd64"]
+}
+{% endif %}
+
 # ============================================
 # Build Groups
 # ============================================
@@ -100,6 +186,12 @@ group "all" {
 {% if 'collectory' in services_enabled %}
     "collectory",
 {% endif %}
+{% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
+    "cas",
+    "userdetails",
+    "apikey",
+    "cas-management",
+{% endif %}
   ]
 }
 
@@ -111,6 +203,12 @@ group "services" {
 {% endif %}
 {% if 'collectory' in services_enabled %}
     "collectory",
+{% endif %}
+{% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
+    "cas",
+    "userdetails",
+    "apikey",
+    "cas-management",
 {% endif %}
   ]
 }

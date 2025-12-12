@@ -1,0 +1,42 @@
+  # CAS Authentication Server
+  cas:
+{% if build_images is defined and (build_images | bool or build_images == 'true') %}
+    image: {{ docker_registry | default('') }}cas:{{ docker_tag | default('develop') }}
+    pull_policy: never
+{% else %}
+    image: {{ docker_registry | default('') }}cas:{{ cas_version | default('latest') }}
+{% endif %}
+    volumes:
+      - {{ data_dir }}/cas/config:/data/cas/config:ro
+      - {{ data_dir }}/cas/data:/data/cas/data
+{% if i18n.enabled and i18n.strategy == 'volume' %}
+      - {{ i18n.volume.name }}:/opt/atlas/i18n/:ro
+{% endif %}
+    environment:
+      TZ: {{ server_tz | default('UTC') }}
+      DOCKERIZE_OPTS: "-wait tcp://{{ cas_db_hostname | default('mysql') }}:3306 -wait tcp://{{ ticket_registry_db_hostname | default('mongodb') }}:27017 -timeout 120s"
+    ports:
+      - "9000:8080"
+    networks:
+      default: {}
+      {{ docker_network | default('la_internal') }}:
+        aliases:
+          - {{ cas_hostname | default(cas_docker_host | default('cas')) }}
+    depends_on:
+{% if i18n.enabled and i18n.strategy == 'volume' and i18n.volume.source == 'init-container' %}
+      i18n-init:
+        condition: service_completed_successfully
+{% endif %}
+      mysql:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/cas/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    restart: unless-stopped
+
+

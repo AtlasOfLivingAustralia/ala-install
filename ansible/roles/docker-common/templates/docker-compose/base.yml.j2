@@ -39,12 +39,21 @@ services:
 {% include 'docker-compose/services/nginx.yml.j2' %}
 {% endif %}
 
+{% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
+  # Authentication Services (CAS ecosystem)
+{% include 'docker-compose/services/mongodb.yml.j2' %}
+{% include 'docker-compose/services/cas.yml.j2' %}
+{% include 'docker-compose/services/userdetails.yml.j2' %}
+{% include 'docker-compose/services/apikey.yml.j2' %}
+{% include 'docker-compose/services/cas-management.yml.j2' %}
+{% endif %}
+
 {% if 'collectory' in services_enabled %}
 {% include 'docker-compose/services/collectory.yml.j2' %}
 {% endif %}
 
-{% if 'collectory' in services_enabled %}
-  # MySQL for collectory (following PR #675 pattern)
+{% if 'collectory' in services_enabled or 'cas' in services_enabled or groups['cas-servers'] is defined %}
+  # MySQL for collectory and auth services (following PR #675 pattern)
 {% include 'docker-compose/services/mysql.yml.j2' %}
 {% endif %}
 
@@ -62,7 +71,12 @@ volumes:
 {% endif %}
 {% if 'collectory' in services_enabled %}
   collectory-upload:
+{% endif %}
+{% if 'collectory' in services_enabled or 'cas' in services_enabled or groups['cas-servers'] is defined %}
   mysql-data:
+{% endif %}
+{% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
+  mongodb-data:
 {% endif %}
 
 
