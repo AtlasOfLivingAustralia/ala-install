@@ -287,8 +287,37 @@ group "all" {
   ]
 }
 
+# Build all services (depends on builders)
+group "all" {
+  targets = [
+{% if i18n.enabled %}
+    "i18n",
+{% endif %}
+{% if 'collectory' in services_enabled %}
+    "collectory",
+{% endif %}
+{% if 'species-list' in services_enabled or groups['species-list'] is defined %}
+    "species-list",
+{% endif %}
+{% if 'cas' in services_enabled %}
+    "cas",
+{% endif %}
+{% if 'userdetails' in services_enabled %}
+    "userdetails",
+{% endif %}
+{% if 'apikey' in services_enabled %}
+    "apikey",
+{% endif %}
+{% if 'cas-management' in services_enabled %}
+    "cas-management",
+{% endif %}
+{% if 'gatus' in services_enabled %}
+    "gatus",
+{% endif %}
+  ]
+}
+
 # Build only services (assumes builders exist)
-# Note: i18n is built separately with build-i18n-image.sh
 group "services" {
   targets = [
 {% if 'collectory' in services_enabled %}

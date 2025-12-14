@@ -81,7 +81,7 @@ build:
 
 build-i18n:
 	@echo "🔨 Building ala-i18n image..."
-	@./build-i18n-image.sh
+	@cd $(DATA_DIR) && BUILDX_BAKE_ENTITLEMENTS_FS=0 docker buildx bake -f docker-bake.hcl --load i18n
 	@echo ""
 	@echo "✅ ala-i18n image ready!"
 	@echo "   You can now run: make test-quick or docker compose up -d"
@@ -216,17 +216,14 @@ la-toolkit-config:
 la-toolkit-deploy:
 	@echo "🚀 Deploying with LA Toolkit configuration..."
 	@echo ""
-	@echo "[1/4] Generating docker-compose.yml with build config..."
+	@echo "[1/3] Generating docker-compose.yml with build config..."
 	@ansible-playbook -i $(LA_TOOLKIT_INVENTORY) -i la-test-inventories/la-test-local-passwords.ini $(PLAYBOOK) -e "data_dir=$(DATA_DIR_ABS)" -e build_images=true
 	@echo ""
-	@echo "[2/4] Building ala-i18n image..."
-	@./build-i18n-image.sh
-	@echo ""
-	@echo "[3/4] Building service images with docker buildx bake..."
+	@echo "[2/3] Building images with docker buildx bake..."
 	@cd $(DATA_DIR) && BUILDX_BAKE_ENTITLEMENTS_FS=0 docker buildx bake -f docker-bake.hcl --load builders
-	@cd $(DATA_DIR) && BUILDX_BAKE_ENTITLEMENTS_FS=0 docker buildx bake -f docker-bake.hcl --load services
+	@cd $(DATA_DIR) && BUILDX_BAKE_ENTITLEMENTS_FS=0 docker buildx bake -f docker-bake.hcl --load all
 	@echo ""
-	@echo "[4/4] Starting services..."
+	@echo "[3/3] Starting services..."
 	@cd $(DATA_DIR) && docker compose up -d
 	@echo ""
 	@echo "✅ Services deployed!"
