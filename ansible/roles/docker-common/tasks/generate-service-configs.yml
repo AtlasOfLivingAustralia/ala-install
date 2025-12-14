@@ -21,6 +21,8 @@
         path: "{{ item }}"
         state: directory
         mode: '0755'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       with_items:
         - "{{ collectory_data_dir }}"
         - "{{ collectory_data_dir }}/config"
@@ -35,11 +37,15 @@
         src: "{{ playbook_dir }}/../docker/mysql/init/01-collectory.sh"
         dest: "{{ data_dir }}/mysql/init/01-collectory.sh"
         mode: '0755'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
 
     - name: Copy collectory data assets if they exist
       copy:
         src: "{{ item }}"
         dest: "{{ collectory_data_dir }}"
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       with_fileglob:
         - "{{ playbook_dir }}/roles/collectory/files/data/config/*"
         - "{{ playbook_dir }}/roles/collectory/files/data/data/*"
@@ -50,12 +56,16 @@
         src: "{{ playbook_dir }}/roles/collectory/templates/config/collectory-config.properties"
         dest: "{{ collectory_data_dir }}/config/{{ collectory_app | default('generic-collectory') }}-config.properties"
         mode: '0644'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
 
     - name: Generate collectory logback.xml
       template:
         src: "{{ playbook_dir }}/roles/collectory/templates/logback.xml"
         dest: "{{ collectory_data_dir }}/config/logback.xml"
         mode: '0644'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
 
 # Auth services configuration (CAS ecosystem)
 - name: Generate auth services configuration
@@ -71,6 +81,8 @@
         path: "{{ item }}"
         state: directory
         mode: '0755'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       with_items:
         - "{{ data_dir }}/cas"
         - "{{ data_dir }}/cas/config"
@@ -92,6 +104,8 @@
         src: "{{ playbook_dir }}/../docker/mongodb/init/"
         dest: "{{ data_dir }}/mongodb/init/"
         mode: '0755'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       when: mongodb_root_password is defined
 
     - name: Copy MySQL auth initialization script
@@ -99,6 +113,8 @@
         src: "{{ playbook_dir }}/../docker/mysql/init/02-auth-services.sh"
         dest: "{{ data_dir }}/mysql/init/02-auth-services.sh"
         mode: '0755'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       when: mysql_root_password is defined
       failed_when: false
 
@@ -107,6 +123,8 @@
         src: "{{ playbook_dir }}/roles/cas5/templates/application.yml"
         dest: "{{ data_dir }}/cas/config/application.yml"
         mode: '0644'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       when: cas_version is defined
       failed_when: false
 
@@ -115,6 +133,8 @@
         src: "{{ playbook_dir }}/roles/userdetails/templates/userdetails-config.properties"
         dest: "{{ data_dir }}/userdetails/config/userdetails-config.properties"
         mode: '0644'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       when: userdetails_version is defined
       failed_when: false
 
@@ -123,6 +143,8 @@
         src: "{{ playbook_dir }}/roles/apikey/templates/apikey-config.properties"
         dest: "{{ data_dir }}/apikey/config/apikey-config.properties"
         mode: '0644'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       when: apikey_version is defined
       failed_when: false
 
@@ -131,6 +153,8 @@
         src: "{{ playbook_dir }}/roles/cas-management/templates/application.yml"
         dest: "{{ data_dir }}/cas-management/config/application.yml"
         mode: '0644'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       when: cas_management_version is defined
       failed_when: false
 
@@ -145,6 +169,8 @@
         path: "{{ item }}"
         state: directory
         mode: '0755'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       with_items:
         - "{{ data_dir }}/species-list"
         - "{{ data_dir }}/species-list/config"
@@ -156,6 +182,8 @@
         src: "{{ playbook_dir }}/../docker/mysql/init/03-species-list.sh"
         dest: "{{ data_dir }}/mysql/init/03-species-list.sh"
         mode: '0755'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       when: mysql_root_password is defined
       failed_when: false
 
@@ -164,6 +192,8 @@
         src: "{{ playbook_dir }}/roles/species-list/templates/specieslist-config.properties"
         dest: "{{ data_dir }}/species-list/config/specieslist-config.properties"
         mode: '0644'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       when: species_list_version is defined
       failed_when: false
 
@@ -189,6 +219,8 @@
         path: "{{ item }}"
         state: directory
         mode: '0755'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       with_items:
         - "{{ nginx_conf_dir }}"
         - "{{ nginx_conf_dir }}/sites-available"
@@ -287,6 +319,8 @@
         path: "{{ item }}"
         state: directory
         mode: '0755'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       with_items:
         - "{{ gatus_config_dir }}"
         - "{{ gatus_data_dir }}"
@@ -296,12 +330,16 @@
         src: "{{ playbook_dir }}/roles/gatus/templates/config.yaml"
         dest: "{{ gatus_config_dir }}/config.yaml"
         mode: '0644'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
 
     - name: Generate collectory health check
       template:
         src: gatus-endpoint.yaml.j2
         dest: "{{ gatus_config_dir }}/collectory.yaml"
         mode: '0644'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       vars:
         endpoint_name: "collectory"
         endpoint_url: "http://collectory:8080/collectory/actuator/health"
@@ -313,6 +351,8 @@
         src: gatus-endpoint.yaml.j2
         dest: "{{ gatus_config_dir }}/cas.yaml"
         mode: '0644'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       vars:
         endpoint_name: "cas"
         endpoint_url: "http://cas:8080/cas/status"
@@ -324,6 +364,8 @@
         src: gatus-endpoint.yaml.j2
         dest: "{{ gatus_config_dir }}/userdetails.yaml"
         mode: '0644'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       vars:
         endpoint_name: "userdetails"
         endpoint_url: "http://userdetails:8080/userdetails/"
@@ -335,6 +377,8 @@
         src: gatus-endpoint.yaml.j2
         dest: "{{ gatus_config_dir }}/apikey.yaml"
         mode: '0644'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       vars:
         endpoint_name: "apikey"
         endpoint_url: "http://apikey:8080/apikey/"
@@ -346,6 +390,8 @@
         src: gatus-endpoint.yaml.j2
         dest: "{{ gatus_config_dir }}/cas-management.yaml"
         mode: '0644'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       vars:
         endpoint_name: "cas-management"
         endpoint_url: "http://cas-management:8080/cas-management/"
@@ -357,9 +403,38 @@
         src: gatus-endpoint.yaml.j2
         dest: "{{ gatus_config_dir }}/species-list.yaml"
         mode: '0644'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       vars:
         endpoint_name: "species-list"
         endpoint_url: "http://species-list:8080/specieslist/"
         endpoint_group: "core-services"
       when: "'species-list' in services_enabled or groups['species-list'] is defined"
+
+- name: Fix ownership of configuration and nginx files (user-relevant files only)
+  shell: |
+    # Fix configuration directories and files
+    for dir in collectory cas userdetails apikey cas-management species-list gatus mongodb; do
+      if [ -d "{{ data_dir }}/$dir" ]; then
+        chown -R {{ ansible_user_id }}:{{ ansible_user_gid }} "{{ data_dir }}/$dir"
+      fi
+    done
+    
+    # Fix nginx configuration
+    if [ -d "{{ data_dir }}/nginx" ]; then
+      chown -R {{ ansible_user_id }}:{{ ansible_user_gid }} "{{ data_dir }}/nginx"
+    fi
+    
+    # Fix docker-compose.yml (generated config)
+    if [ -f "{{ data_dir }}/docker-compose.yml" ]; then
+      chown {{ ansible_user_id }}:{{ ansible_user_gid }} "{{ data_dir }}/docker-compose.yml"
+    fi
+    
+    # Set correct permissions: dirs 755, config files 644
+    find "{{ data_dir }}" \( -name "collectory" -o -name "cas" -o -name "userdetails" -o -name "apikey" -o -name "cas-management" -o -name "species-list" -o -name "gatus" -o -name "nginx" -o -name "mongodb" \) -type d -exec chmod 0755 {} \;
+    find "{{ data_dir }}" \( -path "*/collectory/*" -o -path "*/cas/*" -o -path "*/userdetails/*" -o -path "*/apikey/*" -o -path "*/cas-management/*" -o -path "*/species-list/*" -o -path "*/gatus/*" -o -path "*/nginx/*" -o -path "*/mongodb/*" \) -type f -exec chmod 0644 {} \;
+  changed_when: false
+  become: yes
+
+
 

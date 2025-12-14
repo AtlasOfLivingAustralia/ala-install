@@ -1,7 +1,13 @@
   # CAS Authentication Server
   cas:
-    # Use Docker Hub image - building from ala-cas-5-services has compatibility issues
-    image: atlasoflivingaustralia/ala-cas:latest
+{% if build_images | default(false) %}
+    # Using locally built image from docker buildx bake
+    image: {{ docker_registry | default('') }}cas:{{ docker_tag | default('develop') }}
+    pull_policy: never  # Don't try to pull - image is local
+{% else %}
+    # Using pre-built image from Docker Hub
+    image: {{ docker_registry | default('atlasoflivingaustralia/') }}ala-cas:{{ cas_version | default('latest') }}
+{% endif %}
     volumes:
       - {{ data_dir }}/cas/config:/data/cas/config:ro
       - {{ data_dir }}/cas/data:/data/cas/data

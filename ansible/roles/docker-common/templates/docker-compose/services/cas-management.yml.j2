@@ -1,6 +1,13 @@
   # CAS Management Service
   cas-management:
-    image: atlasoflivingaustralia/ala-cas-management:latest
+{% if build_images | default(false) %}
+    # Using locally built image from docker buildx bake
+    image: {{ docker_registry | default('') }}cas-management:{{ docker_tag | default('develop') }}
+    pull_policy: never  # Don't try to pull - image is local
+{% else %}
+    # Using pre-built image from Docker Hub
+    image: {{ docker_registry | default('atlasoflivingaustralia/') }}ala-cas-management:{{ cas_management_version | default('latest') }}
+{% endif %}
     volumes:
       - {{ data_dir }}/cas-management/config:/data/cas-management/config:ro
       - {{ data_dir }}/cas-management/data:/data/cas-management/data

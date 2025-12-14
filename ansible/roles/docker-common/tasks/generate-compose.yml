@@ -7,14 +7,24 @@
     path: "{{ data_dir }}"
     state: directory
     mode: '0755'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
 
 - name: Determine Java versions for services from LA Toolkit dependencies
   include_tasks: determine-java-versions.yml
 
 - name: Detect enabled services from inventory groups
   set_fact:
-    services_enabled: "{{ groups.keys() | select('match', '^(collectory|biocache-hub|biocache-service|bie-hub|bie-index|nginx)$') | list }}"
+    services_enabled: "{{ groups.keys() | select('match', '^(collectory|biocache-hub|biocache-service|bie-hub|bie-index|nginx|cas|userdetails|apikey|cas-management|species-list|gatus|cas-servers)$') | list }}"
   when: services_enabled is not defined
+
+# If cas-servers group exists, ensure 'cas' is in services_enabled for template consistency
+- name: Ensure cas is in services_enabled if cas-servers exists
+  set_fact:
+    services_enabled: "{{ services_enabled + ['cas'] }}"
+  when:
+    - "'cas' not in services_enabled"
+    - "groups['cas-servers'] is defined"
 
 - name: Load collectory role variables if needed
   include_vars:
@@ -29,6 +39,8 @@
     src: docker-compose/base.yml.j2
     dest: "{{ data_dir }}/docker-compose.yml"
     mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
 
 - name: Remove old docker-bake.hcl to force regeneration
   file:
@@ -41,6 +53,8 @@
     src: docker-bake.hcl.j2
     dest: "{{ data_dir }}/docker-bake.hcl"
     mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
   when: build_images | default(false)
 
 - name: Ensure nginx config directory exists
@@ -48,6 +62,8 @@
     path: "{{ nginx_conf_dir }}"
     state: directory
     mode: '0755'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
   when: "'nginx' in services_enabled"
 
 - name: Generate nginx configuration
@@ -77,5 +93,22 @@
       - "{% if 'nginx' in services_enabled %}    - nginx/default.conf{% endif %}"
       - "{% if 'collectory' in services_enabled %}    - collectory/config/collectory-config.properties{% endif %}"
       - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+- name: Fix ownership of configuration files (user-relevant files only)
+  shell: |
+    # Fix docker-compose.yml
+    if [ -f "{{ data_dir }}/docker-compose.yml" ]; then
+      chown {{ ansible_user_id }}:{{ ansible_user_gid }} "{{ data_dir }}/docker-compose.yml"
+    fi
+    
+    # Fix nginx configuration
+    if [ -d "{{ data_dir }}/nginx" ]; then
+      chown -R {{ ansible_user_id }}:{{ ansible_user_gid }} "{{ data_dir }}/nginx"
+      find "{{ data_dir }}/nginx" -type d -exec chmod 0755 {} \;
+      find "{{ data_dir }}/nginx" -type f -exec chmod 0644 {} \;
+    fi
+  changed_when: false
+  become: yes
+
 
 
