@@ -35,7 +35,7 @@ RUN --mount=type=cache,target=/root/.gradle \
 FROM ${RUNTIME_IMAGE}
 
 LABEL org.opencontainers.image.title="ALA CAS"
-LABEL org.opencontainers.image.description="Living Atlas CAS Authentication Server"
+LABEL org.opencontainers.image.description="Atlas of Living Australia CAS Authentication Server"
 LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/ala-cas-5"
 
 # Install runtime dependencies

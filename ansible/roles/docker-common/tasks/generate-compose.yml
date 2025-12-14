@@ -8,6 +8,9 @@
     state: directory
     mode: '0755'
 
+- name: Determine Java versions for services from LA Toolkit dependencies
+  include_tasks: determine-java-versions.yml
+
 - name: Detect enabled services from inventory groups
   set_fact:
     services_enabled: "{{ groups.keys() | select('match', '^(collectory|biocache-hub|biocache-service|bie-hub|bie-index|nginx)$') | list }}"

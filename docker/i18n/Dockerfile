@@ -10,7 +10,7 @@ FROM debian:${DEBIAN_VERSION}-slim
 ARG LA_APT_REPO=unstable
 
 LABEL org.opencontainers.image.title="ALA i18n Data"
-LABEL org.opencontainers.image.description="Living Atlas i18n translations package"
+LABEL org.opencontainers.image.description="Atlas of Living Australia i18n translations package"
 LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/ala-install"
 
 # Install ala-i18n package following roles/la-apt + roles/i18n pattern

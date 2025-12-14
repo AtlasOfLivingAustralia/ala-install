@@ -1,0 +1,44 @@
+{# Template to determine Java version from dependencies.yaml #}
+{# Input: service (name), version (semver), deps (parsed dependencies.yaml) #}
+{% set service_deps = deps.get(service, {}) %}
+{% set java_version = '17' %}
+{# Iterate through version constraints in the dependencies #}
+{% for constraint, requirements in service_deps.items() %}
+  {% if constraint is string and constraint.startswith('>') or constraint.startswith('<') or constraint.startswith('=') %}
+    {# Parse constraint like '>= 3.1.0 < 6.0.0' or '>= 6.0.0' #}
+    {% set constraint_str = constraint | replace(' ', '') %}
+    {% if 'java' in requirements %}
+      {# Try to match version against constraint #}
+      {% if version == 'develop' %}
+        {# develop should use the latest/highest Java version for this service #}
+        {% set java_version = requirements['java'] %}
+      {% else %}
+        {# Check if version matches constraint #}
+        {% set match = false %}
+        {% if constraint_str.startswith('>=') %}
+          {% set min_version = constraint_str | replace('>=', '') | replace('<', '|') | split('|') | first %}
+          {% if version is version(min_version, '>=') %}
+            {% if '<' in constraint_str %}
+              {% set max_version = constraint_str | split('<') | last %}
+              {% if version is version(max_version, '<') %}
+                {% set match = true %}
+              {% endif %}
+            {% else %}
+              {% set match = true %}
+            {% endif %}
+          {% endif %}
+        {% elif constraint_str.startswith('<') %}
+          {% set max_version = constraint_str | replace('<', '') | replace('=', '') %}
+          {% if version is version(max_version, '<') %}
+            {% set match = true %}
+          {% endif %}
+        {% endif %}
+        {% if match %}
+          {% set java_version = requirements['java'] %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+{{ java_version | trim }}
+

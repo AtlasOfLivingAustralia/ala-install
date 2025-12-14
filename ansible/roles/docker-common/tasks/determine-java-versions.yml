@@ -1,0 +1,37 @@
+---
+# Task to determine Java version for each service based on dependencies.yaml
+# This keeps the Docker builds in sync with LA Toolkit requirements
+
+- name: Download LA Toolkit dependencies.yaml
+  uri:
+    url: https://raw.githubusercontent.com/living-atlases/la-toolkit-backend/master/assets/dependencies.yaml
+    return_content: yes
+  register: la_dependencies_yaml
+  delegate_to: localhost
+  run_once: true
+
+- name: Parse dependencies.yaml
+  set_fact:
+    la_dependencies: "{{ la_dependencies_yaml.content | from_yaml }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Determine Java version for each service using dependencies.yaml
+  set_fact:
+    collectory_java_version: "{{ 'collectory' | determine_java_version(collectory_version | default('develop'), la_dependencies) }}"
+    species_list_java_version: "{{ 'species-lists' | determine_java_version(species_list_version | default('develop'), la_dependencies) }}"
+    cas_java_version: "{{ 'cas' | determine_java_version(cas_version | default('develop'), la_dependencies) }}"
+    userdetails_java_version: "{{ 'userdetails' | determine_java_version(user_details_version | default('develop'), la_dependencies) }}"
+    apikey_java_version: "{{ 'apikey' | determine_java_version(apikey_version | default('develop'), la_dependencies) }}"
+    cas_management_java_version: "{{ 'cas-management' | determine_java_version(cas_management_version | default('develop'), la_dependencies) }}"
+
+- name: Display determined Java versions
+  debug:
+    msg:
+      - "Java versions determined from LA Toolkit dependencies.yaml:"
+      - "  collectory {{ collectory_version | default('develop') }}: Java {{ collectory_java_version }}"
+      - "  species-list {{ species_list_version | default('develop') }}: Java {{ species_list_java_version }}"
+      - "  cas {{ cas_version | default('develop') }}: Java {{ cas_java_version }}"
+      - "  userdetails {{ user_details_version | default('develop') }}: Java {{ userdetails_java_version }}"
+      - "  apikey {{ apikey_version | default('develop') }}: Java {{ apikey_java_version }}"
+

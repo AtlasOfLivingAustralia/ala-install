@@ -18,6 +18,21 @@ variable "DOCKER_REPO" {
 # Builder Base Images (INBO pattern)
 # ============================================
 
+# Gradle builder for JDK 11 services (for Gradle 5.x compatibility - collectory, species-list)
+target "gradle-builder-jdk11" {
+  dockerfile = "Dockerfile"
+  context = "{{ playbook_dir }}/../docker/gradle"
+  args = {
+    JDK_VERSION = "11"
+    GRADLE_VERSION = "7"
+  }
+  tags = ["gradle-builder:jdk11"]
+{% if docker_registry and docker_registry != '' %}
+  cache-from = ["type=registry,ref={{ docker_registry }}/gradle-builder:jdk11-${CACHE_TAG}"]
+{% endif %}
+  cache-to = ["type=inline"]
+}
+
 # Gradle builder for JDK 17 services (default for all current ALA services)
 target "gradle-builder-jdk17" {
   dockerfile = "Dockerfile"
@@ -68,14 +83,17 @@ target "i18n" {
 {% endif %}
 
 {% if 'collectory' in services_enabled %}
+{% endif %}
+
+{% if 'collectory' in services_enabled %}
 target "collectory" {
   dockerfile = "Dockerfile"
   context = "{{ playbook_dir }}/../docker/collectory"
   contexts = {
-    "gradle-builder:jdk17" = "target:gradle-builder-jdk17"
+    "gradle-builder:jdk{{ collectory_java_version | default('17') }}" = "target:gradle-builder-jdk{{ collectory_java_version | default('17') }}"
   }
   args = {
-    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk17"
+    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ collectory_java_version | default('17') }}"
     COLLECTORY_VERSION = "{{ collectory_version | default('develop') }}"
     COLLECTORY_REPO = "https://github.com/AtlasOfLivingAustralia/collectory.git"
     COLLECTORY_BRANCH = "{{ collectory_branch | default('develop') }}"
@@ -94,15 +112,18 @@ target "collectory" {
 }
 {% endif %}
 
-{% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
+# CAS, UserDetails, APIKey and CAS Management services - built locally
+# Builds from ala-cas-5, userdetails, apikey and ala-cas-5-services repositories
+
+{% if 'cas' in services_enabled %}
 target "cas" {
   dockerfile = "Dockerfile"
   context = "{{ playbook_dir }}/../docker/cas"
   contexts = {
-    "gradle-builder:jdk17" = "target:gradle-builder-jdk17"
+    "gradle-builder:jdk{{ cas_java_version | default('11') }}" = "target:gradle-builder-jdk{{ cas_java_version | default('11') }}"
   }
   args = {
-    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk17"
+    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ cas_java_version | default('11') }}"
     CAS_VERSION = "{{ cas_version | default('develop') }}"
     CAS_REPO = "https://github.com/AtlasOfLivingAustralia/ala-cas-5.git"
     CAS_BRANCH = "{{ cas_branch | default('master') }}"
@@ -115,18 +136,20 @@ target "cas" {
   cache-to = ["type=inline"]
   platforms = ["linux/amd64"]
 }
+{% endif %}
 
+{% if 'userdetails' in services_enabled %}
 target "userdetails" {
   dockerfile = "Dockerfile"
   context = "{{ playbook_dir }}/../docker/userdetails"
   contexts = {
-    "gradle-builder:jdk17" = "target:gradle-builder-jdk17"
+    "gradle-builder:jdk{{ userdetails_java_version | default('11') }}" = "target:gradle-builder-jdk{{ userdetails_java_version | default('11') }}"
   }
   args = {
-    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk17"
+    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ userdetails_java_version | default('11') }}"
     USERDETAILS_VERSION = "{{ user_details_version | default('develop') }}"
     USERDETAILS_REPO = "https://github.com/AtlasOfLivingAustralia/userdetails.git"
-    USERDETAILS_BRANCH = "{{ userdetails_branch | default('master') }}"
+    USERDETAILS_BRANCH = "{{ user_details_branch | default('master') }}"
   }
 {% if docker_registry and docker_registry != '' %}
   tags = ["{{ docker_registry }}/userdetails:${TAG}", "{{ docker_registry }}/userdetails:latest"]
@@ -136,15 +159,17 @@ target "userdetails" {
   cache-to = ["type=inline"]
   platforms = ["linux/amd64"]
 }
+{% endif %}
 
+{% if 'apikey' in services_enabled %}
 target "apikey" {
   dockerfile = "Dockerfile"
   context = "{{ playbook_dir }}/../docker/apikey"
   contexts = {
-    "gradle-builder:jdk17" = "target:gradle-builder-jdk17"
+    "gradle-builder:jdk{{ apikey_java_version | default('11') }}" = "target:gradle-builder-jdk{{ apikey_java_version | default('11') }}"
   }
   args = {
-    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk17"
+    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ apikey_java_version | default('11') }}"
     APIKEY_VERSION = "{{ apikey_version | default('develop') }}"
     APIKEY_REPO = "https://github.com/AtlasOfLivingAustralia/apikey.git"
     APIKEY_BRANCH = "{{ apikey_branch | default('master') }}"
@@ -157,15 +182,17 @@ target "apikey" {
   cache-to = ["type=inline"]
   platforms = ["linux/amd64"]
 }
+{% endif %}
 
+{% if 'cas-management' in services_enabled %}
 target "cas-management" {
   dockerfile = "Dockerfile"
   context = "{{ playbook_dir }}/../docker/cas-management"
   contexts = {
-    "gradle-builder:jdk17" = "target:gradle-builder-jdk17"
+    "gradle-builder:jdk{{ cas_management_java_version | default('11') }}" = "target:gradle-builder-jdk{{ cas_management_java_version | default('11') }}"
   }
   args = {
-    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk17"
+    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ cas_management_java_version | default('11') }}"
     CAS_MANAGEMENT_VERSION = "{{ cas_management_version | default('develop') }}"
     CAS_MANAGEMENT_REPO = "https://github.com/AtlasOfLivingAustralia/ala-cas-5-services.git"
     CAS_MANAGEMENT_BRANCH = "{{ cas_management_branch | default('master') }}"
@@ -180,15 +207,30 @@ target "cas-management" {
 }
 {% endif %}
 
+{% if 'gatus' in services_enabled %}
+target "gatus" {
+  dockerfile = "Dockerfile"
+  context = "{{ playbook_dir }}/../docker/gatus"
+  args = {}
+{% if docker_registry and docker_registry != '' %}
+  tags = ["{{ docker_registry }}/gatus:${TAG}", "{{ docker_registry }}/gatus:latest"]
+{% else %}
+  tags = ["gatus:${TAG}", "gatus:latest"]
+{% endif %}
+  cache-to = ["type=inline"]
+  platforms = ["linux/amd64"]
+}
+{% endif %}
+
 {% if 'species-list' in services_enabled or groups['species-list'] is defined %}
 target "species-list" {
   dockerfile = "Dockerfile"
   context = "{{ playbook_dir }}/../docker/species-list"
   contexts = {
-    "gradle-builder:jdk17" = "target:gradle-builder-jdk17"
+    "gradle-builder:jdk{{ species_list_java_version | default('17') }}" = "target:gradle-builder-jdk{{ species_list_java_version | default('17') }}"
   }
   args = {
-    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk17"
+    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ species_list_java_version | default('17') }}"
     SPECIES_LIST_VERSION = "{{ species_list_version | default('develop') }}"
     SPECIES_LIST_REPO = "https://github.com/AtlasOfLivingAustralia/specieslist-webapp.git"
     SPECIES_LIST_BRANCH = "{{ species_list_branch | default('master') }}"
@@ -224,14 +266,23 @@ group "all" {
 {% if 'collectory' in services_enabled %}
     "collectory",
 {% endif %}
-{% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
-    "cas",
-    "userdetails",
-    "apikey",
-    "cas-management",
-{% endif %}
 {% if 'species-list' in services_enabled or groups['species-list'] is defined %}
     "species-list",
+{% endif %}
+{% if 'cas' in services_enabled %}
+    "cas",
+{% endif %}
+{% if 'userdetails' in services_enabled %}
+    "userdetails",
+{% endif %}
+{% if 'apikey' in services_enabled %}
+    "apikey",
+{% endif %}
+{% if 'cas-management' in services_enabled %}
+    "cas-management",
+{% endif %}
+{% if 'gatus' in services_enabled %}
+    "gatus",
 {% endif %}
   ]
 }
@@ -243,14 +294,23 @@ group "services" {
 {% if 'collectory' in services_enabled %}
     "collectory",
 {% endif %}
-{% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
-    "cas",
-    "userdetails",
-    "apikey",
-    "cas-management",
-{% endif %}
 {% if 'species-list' in services_enabled or groups['species-list'] is defined %}
     "species-list",
+{% endif %}
+{% if 'cas' in services_enabled %}
+    "cas",
+{% endif %}
+{% if 'userdetails' in services_enabled %}
+    "userdetails",
+{% endif %}
+{% if 'apikey' in services_enabled %}
+    "apikey",
+{% endif %}
+{% if 'cas-management' in services_enabled %}
+    "cas-management",
+{% endif %}
+{% if 'gatus' in services_enabled %}
+    "gatus",
 {% endif %}
   ]
 }

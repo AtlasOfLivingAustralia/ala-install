@@ -35,7 +35,7 @@ RUN --mount=type=cache,target=/root/.gradle \
 FROM ${RUNTIME_IMAGE}
 
 LABEL org.opencontainers.image.title="ALA Userdetails"
-LABEL org.opencontainers.image.description="Living Atlas User Details Service"
+LABEL org.opencontainers.image.description="Atlas of Living Australia User Details Service"
 LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/userdetails"
 
 # Install runtime dependencies

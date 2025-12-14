@@ -11,7 +11,7 @@ ARG RUNTIME_IMAGE=eclipse-temurin:17-jre-jammy
 FROM ${GRADLE_BUILDER_IMAGE} AS builder
 
 ARG CAS_MANAGEMENT_VERSION=6.5.5-2
-ARG CAS_MANAGEMENT_REPO=https://github.com/AtlasOfLivingAustralia/ala-cas-management.git
+ARG CAS_MANAGEMENT_REPO=https://github.com/AtlasOfLivingAustralia/ala-cas-5-services.git
 ARG CAS_MANAGEMENT_BRANCH=master
 
 WORKDIR /build
@@ -35,7 +35,7 @@ RUN --mount=type=cache,target=/root/.gradle \
 FROM ${RUNTIME_IMAGE}
 
 LABEL org.opencontainers.image.title="ALA CAS Management"
-LABEL org.opencontainers.image.description="Living Atlas CAS Management Interface"
+LABEL org.opencontainers.image.description="Atlas of Living Australia CAS Management Interface"
 LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/ala-cas-management"
 
 # Install runtime dependencies

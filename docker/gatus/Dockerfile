@@ -5,7 +5,7 @@
 FROM twinproduction/gatus:v5
 
 LABEL org.opencontainers.image.title="Gatus Health Dashboard"
-LABEL org.opencontainers.image.description="Living Atlas Health Monitoring"
+LABEL org.opencontainers.image.description="Atlas of Living Australia Health Monitoring"
 LABEL org.opencontainers.image.source="https://github.com/TwiN/gatus"
 
 # Create data directory

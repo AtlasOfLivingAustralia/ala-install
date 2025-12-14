@@ -1,11 +1,6 @@
-  # Userdetails Service
+  # User Details Service
   userdetails:
-{% if build_images is defined and (build_images | bool or build_images == 'true') %}
-    image: {{ docker_registry | default('') }}userdetails:{{ docker_tag | default('develop') }}
-    pull_policy: never
-{% else %}
-    image: {{ docker_registry | default('') }}userdetails:{{ user_details_version | default('latest') }}
-{% endif %}
+    image: atlasoflivingaustralia/userdetails:latest
     volumes:
       - {{ data_dir }}/userdetails/config:/data/userdetails/config:ro
       - {{ data_dir }}/userdetails/data:/data/userdetails/data

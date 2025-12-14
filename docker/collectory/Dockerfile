@@ -25,9 +25,12 @@ RUN git clone ${COLLECTORY_REPO} . && \
         git checkout ${COLLECTORY_VERSION} || git checkout tags/v${COLLECTORY_VERSION} || true; \
     fi
 
-# Build the WAR file
+# Gradle configuration for better handling of wrapper downloads
+ENV GRADLE_OPTS="-Dorg.gradle.internal.http.connectionTimeout=120000 -Dorg.gradle.internal.http.socketTimeout=120000"
+
+# Build the WAR file (increased timeout for gradle wrapper download)
 RUN --mount=type=cache,target=/root/.gradle \
-    ./gradlew clean war -x test --no-daemon
+    ./gradlew clean war -x test --no-daemon --max-workers=1
 
 # ============================================
 # Stage 2: Runtime
@@ -35,7 +38,7 @@ RUN --mount=type=cache,target=/root/.gradle \
 FROM ${RUNTIME_IMAGE}
 
 LABEL org.opencontainers.image.title="ALA Collectory"
-LABEL org.opencontainers.image.description="Living Atlas Collectory Service"
+LABEL org.opencontainers.image.description="Atlas of Living Australia Collectory Service"
 LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/collectory"
 
 # Install runtime dependencies
@@ -50,9 +53,12 @@ ENV DOCKERIZE_VERSION=v0.7.0
 RUN curl -sfL https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
     | tar -C /usr/local/bin -xz
 
-# Create directories
+# Create directories with proper permissions for tomcat
 RUN mkdir -p /data/collectory/config /data/collectory/data /data/collectory/upload && \
-    chown -R tomcat:tomcat /data/collectory
+    chmod 755 /data/collectory && \
+    chmod 755 /data/collectory/config && \
+    chmod 755 /data/collectory/data && \
+    chmod 755 /data/collectory/upload
 
 # Remove default webapps
 RUN rm -rf /usr/local/tomcat/webapps/*

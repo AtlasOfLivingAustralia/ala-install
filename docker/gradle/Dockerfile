@@ -13,12 +13,10 @@ FROM --platform=${BUILDPLATFORM} gradle:${GRADLE_VERSION}-jdk${JDK_VERSION}-jamm
 COPY gradle.properties /home/gradle/.gradle/gradle.properties
 COPY init.gradle /home/gradle/.gradle/init.gradle
 
-# Environment for read-only dependency cache
-ENV GRADLE_RO_DEP_CACHE=/gradle-cache
 
 # Install common build tools
-# This cache is mounted as a volume from gradle-deps-cache
-# and shared across all builds for better performance
+# Docker BuildKit cache is used with --mount=type=cache in RUN commands
+# This provides shared caching across builds without needing external volumes
 RUN --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update && \
     apt-get install -y --no-install-recommends \

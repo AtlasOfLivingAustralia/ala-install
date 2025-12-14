@@ -35,7 +35,7 @@ RUN --mount=type=cache,target=/root/.gradle \
 FROM ${RUNTIME_IMAGE}
 
 LABEL org.opencontainers.image.title="ALA API Key"
-LABEL org.opencontainers.image.description="Living Atlas API Key Service"
+LABEL org.opencontainers.image.description="Atlas of Living Australia API Key Service"
 LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/apikey"
 
 # Install runtime dependencies

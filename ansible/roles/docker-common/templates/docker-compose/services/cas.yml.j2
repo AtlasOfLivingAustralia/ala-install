@@ -1,11 +1,7 @@
   # CAS Authentication Server
   cas:
-{% if build_images is defined and (build_images | bool or build_images == 'true') %}
-    image: {{ docker_registry | default('') }}cas:{{ docker_tag | default('develop') }}
-    pull_policy: never
-{% else %}
-    image: {{ docker_registry | default('') }}cas:{{ cas_version | default('latest') }}
-{% endif %}
+    # Use Docker Hub image - building from ala-cas-5-services has compatibility issues
+    image: atlasoflivingaustralia/ala-cas:latest
     volumes:
       - {{ data_dir }}/cas/config:/data/cas/config:ro
       - {{ data_dir }}/cas/data:/data/cas/data

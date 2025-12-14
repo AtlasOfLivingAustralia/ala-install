@@ -1,11 +1,6 @@
   # CAS Management Service
   cas-management:
-{% if build_images is defined and (build_images | bool or build_images == 'true') %}
-    image: {{ docker_registry | default('') }}cas-management:{{ docker_tag | default('develop') }}
-    pull_policy: never
-{% else %}
-    image: {{ docker_registry | default('') }}cas-management:{{ cas_management_version | default('latest') }}
-{% endif %}
+    image: atlasoflivingaustralia/ala-cas-management:latest
     volumes:
       - {{ data_dir }}/cas-management/config:/data/cas-management/config:ro
       - {{ data_dir }}/cas-management/data:/data/cas-management/data

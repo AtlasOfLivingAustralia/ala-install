@@ -1,4 +1,4 @@
-.PHONY: test-quick test-config-only test-full build build-i18n clean help localhost-config localhost-quick localhost-full la-toolkit-config la-toolkit-deploy
+.PHONY: test-quick test-config-only test-full build build-i18n clean help localhost-config localhost-quick localhost-full la-toolkit-config la-toolkit-deploy publish-images
 
 # Variables
 INVENTORY ?= la-test-inventories/la-test-inventory.ini
@@ -6,6 +6,9 @@ LA_TOOLKIT_INVENTORY ?= la-test-inventories/la-test-inventory.ini
 PLAYBOOK := ansible/docker-compose-deploy.yml
 DATA_DIR := docker-compose-output
 DATA_DIR_ABS := $(shell pwd)/$(DATA_DIR)
+DOCKER_REGISTRY ?= livingatlases
+DOCKER_USERNAME ?=
+DOCKER_PASSWORD ?=
 
 help:
 	@echo "Living Atlas Container Deployment"
@@ -23,6 +26,10 @@ help:
 	@echo "    build-i18n       - Build ala-i18n image (required before first run)"
 	@echo "    clean            - Stop and remove all containers"
 	@echo ""
+	@echo "  📤 Publish (optional - requires Docker Hub credentials):"
+	@echo "    publish-images   - Push built images to Docker Hub (livingatlases/*)"
+	@echo "                       Requires: DOCKER_USERNAME and DOCKER_PASSWORD"
+	@echo ""
 	@echo "  🏠 Legacy (localhost-container):"
 	@echo "    localhost-config - Generate config for localhost"
 	@echo "    localhost-quick  - Full build for localhost"
@@ -37,6 +44,10 @@ help:
 	@echo ""
 	@echo "💡 Custom inventory:"
 	@echo "    make INVENTORY=path/to/inventory.ini test-quick"
+	@echo ""
+	@echo "💡 Publish to Docker Hub:"
+	@echo "    docker login"
+	@echo "    make publish-images"
 	@echo ""
 	@echo "ℹ️  Default inventory: la-test-inventories/la-test-inventory.ini"
 
@@ -223,3 +234,24 @@ la-toolkit-deploy:
 	@echo "Check status:"
 	@echo "   cd $(DATA_DIR) && docker compose ps"
 	@echo "   cd $(DATA_DIR) && docker compose logs -f cas collectory"
+
+# ============================================
+# Publish Images to Docker Hub
+# ============================================
+
+publish-images:
+	@echo "📤 Publishing images to Docker Hub ($(DOCKER_REGISTRY))..."
+	@echo ""
+	@if [ -z "$(shell docker info 2>&1 | grep Username)" ]; then \
+		echo "❌ Not logged into Docker Hub. Please run: docker login"; \
+		exit 1; \
+	fi
+	@echo "✅ Docker login verified"
+	@echo ""
+	@echo "🏷️  Tagging and pushing images..."
+	@./scripts/publish-images.sh $(DOCKER_REGISTRY)
+	@echo ""
+	@echo "✅ Images published to Docker Hub!"
+	@echo ""
+	@echo "📋 Published images:"
+	@echo "   https://hub.docker.com/u/$(DOCKER_REGISTRY)"

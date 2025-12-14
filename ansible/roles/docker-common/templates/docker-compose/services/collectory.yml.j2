@@ -1,11 +1,11 @@
-  # Collectory service (using existing ala-install variables)
+  # Collectory service
   collectory:
 {% if build_images is defined and (build_images | bool or build_images == 'true') %}
-    # Using pre-built image from 'docker buildx bake'
-    # Image was built in docker/ with gradle-builder base
+    # Build locally with correct Java version based on collectory_version
     image: {{ docker_registry | default('') }}collectory:{{ docker_tag | default('dev') }}
-    pull_policy: never  # Don't try to pull - image is local
+    pull_policy: never
 {% else %}
+    # Use Docker Hub image with version from inventory
     image: atlasoflivingaustralia/collectory:{{ collectory_version | default('latest') }}
 {% endif %}
     volumes:

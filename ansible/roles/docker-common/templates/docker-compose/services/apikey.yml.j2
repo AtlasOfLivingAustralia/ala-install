@@ -1,11 +1,6 @@
   # API Key Service
   apikey:
-{% if build_images is defined and (build_images | bool or build_images == 'true') %}
-    image: {{ docker_registry | default('') }}apikey:{{ docker_tag | default('develop') }}
-    pull_policy: never
-{% else %}
-    image: {{ docker_registry | default('') }}apikey:{{ apikey_version | default('latest') }}
-{% endif %}
+    image: atlasoflivingaustralia/apikey:{{ apikey_version | default('1.7.0') }}
     volumes:
       - {{ data_dir }}/apikey/config:/data/apikey/config:ro
       - {{ data_dir }}/apikey/data:/data/apikey/data
