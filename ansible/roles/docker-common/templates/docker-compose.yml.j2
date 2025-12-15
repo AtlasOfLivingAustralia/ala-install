@@ -1,6 +1,11 @@
 ---
 version: '3.8'
 
+# Load environment variables from .env file
+# This allows passwords and sensitive data to be stored separately from docker-compose.yml
+env_file:
+  - .env
+
 services:
 
   nginx:
@@ -35,11 +40,11 @@ services:
       - 25
     environment:
       TZ: {{ server_tz }}
-      HOSTNAME: {{ email_hostname | default('') }}
-      RELAYHOST: {{ email_sender_server | default('') }}
-      RELAYHOST_USERNAME: {{ email_sender | default('') }}
-      RELAYHOST_PASSWORD: {{ email_sender_password | default('') }}
-      ALLOWED_SENDER_DOMAINS: {{ email_allowed_domains | default('l-a.site') }}
+      HOSTNAME: ${EMAIL_HOSTNAME}
+      RELAYHOST: ${EMAIL_SENDER_SERVER}
+      RELAYHOST_USERNAME: ${EMAIL_SENDER}
+      RELAYHOST_PASSWORD: ${EMAIL_SENDER_PASSWORD}
+      ALLOWED_SENDER_DOMAINS: ${EMAIL_ALLOWED_DOMAINS}
     networks:
       la_internal:
 

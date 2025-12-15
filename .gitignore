@@ -3,6 +3,13 @@
 *.DS_Store
 *.pyc
 
+# Sensitive files - DO NOT COMMIT
+.env
+.env.local
+docker-compose-output/.env
+*.swp
+*.swo
+
 # Package Files #
 *.ear
 

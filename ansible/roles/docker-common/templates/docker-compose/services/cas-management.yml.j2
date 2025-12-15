@@ -16,8 +16,8 @@
     image: livingatlases/cas-management:{{ cas_management_version | default('6.5.5-2') }}
 {% endif %}
     volumes:
-      - {{ data_dir }}/cas-management/config:/data/cas-management/config:ro
-      - {{ data_dir }}/cas-management/data:/data/cas-management/data
+      - ./cas-management/config:/data/cas-management/config:ro
+      - ./cas-management/data:/data/cas-management/data
 {% if i18n.enabled and i18n.strategy == 'volume' %}
       - {{ i18n.volume.name }}:/opt/atlas/i18n/:ro
 {% endif %}

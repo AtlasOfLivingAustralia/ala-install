@@ -3,13 +3,13 @@
     image: mongo:{{ mongodb_version | default('4.4') }}
     volumes:
       - mongodb-data:/data/db
-      - {{ data_dir }}/mongodb/init:/docker-entrypoint-initdb.d:ro
+      - ./mongodb/init:/docker-entrypoint-initdb.d:ro
     environment:
       TZ: {{ server_tz | default('UTC') }}
-      MONGO_INITDB_ROOT_USERNAME: {{ mongodb_root_user | default('root') }}
-      MONGO_INITDB_ROOT_PASSWORD: {{ mongodb_root_password }}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: {{ mongodb_cas_database | default('cas') }}
-      CAS_MONGO_PASSWORD: {{ cas_mongo_password | default(mongodb_root_password) }}
+      CAS_MONGO_PASSWORD: ${MONGODB_ROOT_PASSWORD}
     expose:
       - 27017
     networks:

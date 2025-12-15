@@ -309,7 +309,7 @@
       vars:
         appname: "specieslist"
         hostname: "{{ specieslist_hostname }}"
-        context_path: "{{ specieslist_context_path }}"
+        context_path: "{{ specieslist_context_path | default('/specieslist') if specieslist_context_path | default('') else '/specieslist' }}"
         nginx_upstream_host: "species-list"
         nginx_upstream_port: 8080
       when: "'species-list' in services_enabled or groups['species-list'] is defined"
@@ -434,7 +434,7 @@
     - name: Create .env file with docker-compose variables
       template:
         src: docker-compose.env.j2
-        dest: "{{ data_dir }}/docker-compose/.env"
+        dest: "{{ data_dir }}/.env"
         mode: '0600'
         owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_gid }}"

@@ -1,5 +1,8 @@
 .PHONY: test-quick test-config-only test-full build build-i18n clean help localhost-config localhost-quick localhost-full la-toolkit-config la-toolkit-deploy publish-images
 
+# Environment variables
+export COMPOSE_BAKE?=true
+
 # Variables
 INVENTORY ?= la-test-inventories/la-test-inventory.ini
 LA_TOOLKIT_INVENTORY ?= la-test-inventories/la-test-inventory.ini

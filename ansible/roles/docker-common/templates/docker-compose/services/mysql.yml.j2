@@ -3,18 +3,18 @@
     image: mysql:8.0-debian
     volumes:
       - mysql-data:/var/lib/mysql
-      - {{ data_dir }}/mysql/init:/docker-entrypoint-initdb.d:ro
+      - ./mysql/init:/docker-entrypoint-initdb.d:ro
     command: --default-authentication-plugin=mysql_native_password
     environment:
       TZ: {{ server_tz | default('UTC') }}
-      MYSQL_ROOT_PASSWORD: {{ mysql_root_password }}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_USER: {{ collectory_db_user }}
-      MYSQL_PASSWORD: {{ collectory_db_password }}
+      MYSQL_PASSWORD: ${MYSQL_COLLECTORY_PASSWORD}
       MYSQL_DATABASE: {{ collectory_db_name | default('collectory') }}
-      CAS_MYSQL_PASSWORD: {{ cas_mysql_password | default(mysql_root_password) }}
-      USERDETAILS_MYSQL_PASSWORD: {{ userdetails_mysql_password | default(mysql_root_password) }}
-      APIKEY_MYSQL_PASSWORD: {{ apikey_mysql_password | default(mysql_root_password) }}
-      SPECIESLIST_MYSQL_PASSWORD: {{ specieslist_mysql_password | default(mysql_root_password) }}
+      CAS_MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      USERDETAILS_MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      APIKEY_MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      SPECIESLIST_MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     expose:
       - 3306
     networks:

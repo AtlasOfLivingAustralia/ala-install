@@ -25,7 +25,11 @@ RUN git clone ${CAS_REPO} . && \
         git checkout ${CAS_VERSION} || git checkout tags/v${CAS_VERSION} || true; \
     fi
 
-# Build the WAR file
+# Download dependencies (separate layer for better caching)
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn dependency:resolve-plugins dependency:resolve
+
+# Build the WAR file (uses cached dependencies)
 RUN --mount=type=cache,target=/root/.m2 \
     mvn clean package -DskipTests -T 1C
 
