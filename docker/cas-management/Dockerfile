@@ -2,8 +2,8 @@
 # ALA CAS Management
 # Multi-stage build: gradle-builder -> runtime
 
-ARG GRADLE_BUILDER_IMAGE=gradle:7-jdk17-jammy
-ARG RUNTIME_IMAGE=eclipse-temurin:17-jre-jammy
+ARG GRADLE_BUILDER_IMAGE=gradle:7-jdk11-jammy
+ARG RUNTIME_IMAGE=eclipse-temurin:11-jre-jammy
 
 # ============================================
 # Stage 1: Build

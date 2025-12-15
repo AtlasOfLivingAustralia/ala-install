@@ -15,20 +15,32 @@
 
 - name: Detect enabled services from inventory groups
   set_fact:
-    services_enabled: "{{ groups.keys() | select('match', '^(collectory|biocache-hub|biocache-service|bie-hub|bie-index|nginx|cas|userdetails|apikey|cas-management|species-list|gatus|cas-servers)$') | list }}"
+    services_enabled: "{{ groups.keys() | select('match', '^(collectory|biocache-hub|biocache-service|bie-hub|bie-index|nginx|userdetails|apikey|cas-management|species-list|gatus|cas-servers)$') | list }}"
   when: services_enabled is not defined
 
-# If cas-servers group exists, ensure 'cas' is in services_enabled for template consistency
+# For template consistency, rename 'cas-servers' to 'cas' in services_enabled
+# This allows templates to check for 'cas' in services_enabled instead of 'cas-servers'
 - name: Ensure cas is in services_enabled if cas-servers exists
   set_fact:
-    services_enabled: "{{ services_enabled + ['cas'] }}"
-  when:
-    - "'cas' not in services_enabled"
-    - "groups['cas-servers'] is defined"
+    services_enabled: "{{ (services_enabled | reject('equalto', 'cas-servers') | list) + (['cas'] if 'cas-servers' in services_enabled else []) }}"
+  when: services_enabled is defined and 'cas-servers' in services_enabled
 
 - name: Load collectory role variables if needed
   include_vars:
     file: "{{ playbook_dir }}/roles/collectory/vars/main.yml"
+
+# Ensure database password variables have values (from inventory or defaults)
+# These are critical for docker-compose .env generation
+- name: Ensure database password variables are set
+  set_fact:
+    mysql_root_password: "{{ mysql_root_password | default('generated_mysql_password') }}"
+    collectory_db_password: "{{ collectory_db_password | default('generated_collectory_password') }}"
+    mongodb_root_password: "{{ mongodb_root_password | default('generated_mongodb_password') }}"
+    mongodb_root_username: "{{ mongodb_root_username | default('admin') }}"
+
+# Create common directories BEFORE any role tries to use them
+- name: Run common directory and config setup
+  include_tasks: common.yml
 
 # Reuse role initialization - each role generates its own directories and configs
 - name: Run collectory configuration generation (asset copy, config templates)
@@ -45,7 +57,7 @@
   template:
     src: docker-compose.env.j2
     dest: "{{ data_dir }}/.env"
-    mode: '0600'
+    mode: '0644'
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_gid }}"
 

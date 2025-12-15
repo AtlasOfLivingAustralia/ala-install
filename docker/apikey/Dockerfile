@@ -2,8 +2,8 @@
 # ALA API Key Service
 # Multi-stage build: gradle-builder -> runtime
 
-ARG GRADLE_BUILDER_IMAGE=gradle:7-jdk17-jammy
-ARG RUNTIME_IMAGE=tomcat:9-jre17
+ARG GRADLE_BUILDER_IMAGE=gradle:7-jdk11-jammy
+ARG RUNTIME_IMAGE=tomcat:9-jre11
 
 # ============================================
 # Stage 1: Build

@@ -6,10 +6,13 @@
   hosts: docker_compose
   become: false
   vars:
+    # User for docker operations (uses current user or 'ubuntu' for VM)
+    docker_default_user: "{{ docker_user | default(ansible_user_id) }}"
+
     # Skip handlers as we're generating docker-compose files, not deploying to VMs
     skip_handlers: true
-    # Enable services based on inventory groups
-    services_enabled: "{{ groups.keys() | select('match', '^(collectory|biocache-hub|biocache-service|bie-hub|bie-index|nginx|cas|species-list)$') | list | default(['collectory', 'nginx'], true) }}"
+    # Enable services based on inventory groups (collectory, nginx, cas-servers, etc)
+    services_enabled: "{{ groups.keys() | select('match', '^(collectory|biocache-hub|biocache-service|bie-hub|bie-index|nginx|cas-servers|userdetails|apikey|cas-management|species-list|gatus)$') | list | default(['collectory', 'nginx'], true) }}"
     # i18n configuration
     i18n:
       enabled: true
@@ -30,8 +33,8 @@
     cas_tickets_host: "mongodb"
     cas_services_host: "mongodb"
     mongodb_hostname: "mongodb"
-    # MongoDB configuration
-    mongodb_root_user: "root"
+    # MongoDB configuration - from inventory or default
+    # (mongodb_root_username comes from la-test-local-passwords.ini [all:vars])
     mongodb_cas_database: "cas"
     # Species List configuration
     specieslist_db_hostname: "mysql"

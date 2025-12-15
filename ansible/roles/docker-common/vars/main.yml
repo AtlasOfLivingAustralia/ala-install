@@ -1,4 +1,5 @@
 ---
+# Nginx configuration (uses docker_default_user from playbook vars)
 nginx_user: "{{ docker_default_user }}"
 
 nginx_data_dir: "{{ data_dir }}/nginx"
