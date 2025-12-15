@@ -20,7 +20,6 @@
     # Docker Compose overrides for container connectivity
     # Use service names instead of localhost for inter-container communication
     collectory_db_host_address: "mysql"
-    collectory_hostname: "collectory"
     # Auth services hostnames for Docker networking
     cas_db_hostname: "mysql"
     user_store_db_hostname: "mysql"
@@ -30,17 +29,12 @@
     cas_spring_session_host: "mongodb"
     cas_tickets_host: "mongodb"
     cas_services_host: "mongodb"
-    cas_hostname: "cas"
-    userdetails_hostname: "userdetails"
-    apikey_hostname: "apikey"
-    cas_management_hostname: "cas-management"
     mongodb_hostname: "mongodb"
     # MongoDB configuration
     mongodb_root_user: "root"
     mongodb_cas_database: "cas"
     # Species List configuration
     specieslist_db_hostname: "mysql"
-    specieslist_hostname: "species-list"
     species_list_docker_host: "species-list"
 
   tasks:

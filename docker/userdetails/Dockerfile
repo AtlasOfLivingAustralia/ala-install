@@ -2,7 +2,7 @@
 # ALA Userdetails Service
 # Multi-stage build: gradle-builder -> runtime
 
-ARG GRADLE_BUILDER_IMAGE=gradle-builder:jdk17
+ARG GRADLE_BUILDER_IMAGE=gradle:7-jdk17-jammy
 ARG RUNTIME_IMAGE=tomcat:9-jre17
 
 # ============================================

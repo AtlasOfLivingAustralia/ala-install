@@ -1,14 +1,14 @@
 # syntax=docker/dockerfile:1.4
 # ALA CAS 5/6 Server
-# Multi-stage build: gradle-builder -> runtime
+# Multi-stage build: maven-builder -> runtime
 
-ARG GRADLE_BUILDER_IMAGE=gradle-builder:jdk17
+ARG MAVEN_BUILDER_IMAGE=maven:3-eclipse-temurin-17
 ARG RUNTIME_IMAGE=eclipse-temurin:17-jre-jammy
 
 # ============================================
 # Stage 1: Build
 # ============================================
-FROM ${GRADLE_BUILDER_IMAGE} AS builder
+FROM ${MAVEN_BUILDER_IMAGE} AS builder
 
 ARG CAS_VERSION=6.5.6-3
 ARG CAS_REPO=https://github.com/AtlasOfLivingAustralia/ala-cas-5.git
@@ -26,8 +26,8 @@ RUN git clone ${CAS_REPO} . && \
     fi
 
 # Build the WAR file
-RUN --mount=type=cache,target=/root/.gradle \
-    ./gradlew clean bootWar -x test --no-daemon
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn clean package -DskipTests -T 1C
 
 # ============================================
 # Stage 2: Runtime
@@ -58,7 +58,7 @@ RUN groupadd -r cas && useradd -r -g cas cas && \
 WORKDIR /opt/atlas/cas
 
 # Copy built WAR from builder
-COPY --from=builder --chown=cas:cas /build/build/libs/*.war ./cas.war
+COPY --from=builder --chown=cas:cas /build/target/*.war ./cas.war
 
 USER cas
 

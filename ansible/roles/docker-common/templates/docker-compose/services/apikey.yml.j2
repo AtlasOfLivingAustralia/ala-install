@@ -1,16 +1,23 @@
   # API Key Service
   apikey:
 {% if build_images | default(false) %}
-    # Using locally built image from docker buildx bake
-    image: {{ docker_registry | default('') }}apikey:{{ docker_tag | default('develop') }}
-    pull_policy: never  # Don't try to pull - image is local
+    # Using locally built image
+    image: apikey:{{ docker_tag | default('develop') }}
+    pull_policy: never
+    build:
+      context: {{ playbook_dir }}/../docker/apikey
+      dockerfile: Dockerfile
+      args:
+        APIKEY_VERSION: {{ apikey_version | default('1.7.0') }}
+        APIKEY_REPO: {{ apikey_repo | default('https://github.com/AtlasOfLivingAustralia/apikey.git') }}
+        APIKEY_BRANCH: {{ apikey_branch | default('master') }}
 {% else %}
-    # Using pre-built image from Docker Hub
-    image: {{ docker_registry | default('atlasoflivingaustralia/') }}apikey:{{ apikey_version | default('1.7.0') }}
+    # Using pre-built image from livingatlases
+    image: livingatlases/apikey:{{ apikey_version | default('1.7.0') }}
 {% endif %}
     volumes:
-      - {{ data_dir }}/apikey/config:/data/apikey/config:ro
-      - {{ data_dir }}/apikey/data:/data/apikey/data
+      - ./apikey/config:/data/apikey/config:ro
+      - ./apikey/data:/data/apikey/data
 {% if i18n.enabled and i18n.strategy == 'volume' %}
       - {{ i18n.volume.name }}:/opt/atlas/i18n/:ro
 {% endif %}

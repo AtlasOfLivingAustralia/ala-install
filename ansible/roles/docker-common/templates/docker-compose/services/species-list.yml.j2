@@ -4,7 +4,7 @@
     image: {{ docker_registry | default('') }}species-list:{{ docker_tag | default('dev') }}
     pull_policy: never
 {% else %}
-    image: atlasoflivingaustralia/specieslist:{{ species_list_version | default('latest') }}
+    image: livingatlases/species-list:{{ species_list_version | default('latest') }}
 {% endif %}
     volumes:
       - {{ data_dir }}/species-list/config:/data/species-list/config:ro
@@ -32,6 +32,12 @@
         condition: service_healthy
 {% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
       cas:
+        condition: service_healthy
+      userdetails:
+        condition: service_healthy
+      apikey:
+        condition: service_healthy
+      cas-management:
         condition: service_healthy
 {% endif %}
     healthcheck:

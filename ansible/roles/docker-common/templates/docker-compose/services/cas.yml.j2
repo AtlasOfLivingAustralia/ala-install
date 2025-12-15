@@ -1,16 +1,23 @@
   # CAS Authentication Server
   cas:
 {% if build_images | default(false) %}
-    # Using locally built image from docker buildx bake
-    image: {{ docker_registry | default('') }}cas:{{ docker_tag | default('develop') }}
-    pull_policy: never  # Don't try to pull - image is local
-{% else %}
-    # Using pre-built image from Docker Hub
-    image: {{ docker_registry | default('atlasoflivingaustralia/') }}ala-cas:{{ cas_version | default('latest') }}
+    # Using locally built image
+    image: cas:{{ docker_tag | default('develop') }}
+    pull_policy: never
+    build:
+      context: {{ playbook_dir }}/../docker/cas
+      dockerfile: Dockerfile
+      args:
+        CAS_VERSION: {{ cas_version | default('6.5.6-3') }}
+        CAS_REPO: {{ cas_repo | default('https://github.com/AtlasOfLivingAustralia/ala-cas-5.git') }}
+        CAS_BRANCH: {{ cas_branch | default('master') }}
+{% else %}r.
+    # Using pre-built image from livingatlases
+    image: livingatlases/cas:{{ cas_version | default('6.5.6-3') }}
 {% endif %}
     volumes:
-      - {{ data_dir }}/cas/config:/data/cas/config:ro
-      - {{ data_dir }}/cas/data:/data/cas/data
+      - ./cas/config:/data/cas/config:ro
+      - ./cas/data:/data/cas/data
 {% if i18n.enabled and i18n.strategy == 'volume' %}
       - {{ i18n.volume.name }}:/opt/atlas/i18n/:ro
 {% endif %}

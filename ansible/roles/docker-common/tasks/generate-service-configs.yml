@@ -214,6 +214,20 @@
         force_https: "{{ force_https | default(true) }}"
         nginx_vhost_fragments_to_clear_no_warning: true
 
+    - name: Load hostname variables from inventory
+      include_vars:
+        file: "{{ inventory_file }}"
+        name: inventory_vars
+      failed_when: false
+      when: inventory_file is defined
+
+    - name: Set hostname variables with fallbacks
+      set_fact:
+        collectory_hostname: "{{ collectory_hostname | default('colecciones-es.l-a.site') }}"
+        cas_host_name: "{{ cas_host_name | default('auth-es.l-a.site') }}"
+        specieslist_hostname: "{{ specieslist_hostname | default('listas-es.l-a.site') }}"
+      when: services_enabled | length > 0
+
     - name: Ensure nginx directories exist
       file:
         path: "{{ item }}"
@@ -250,8 +264,8 @@
         name: nginx_vhost
       vars:
         appname: "cas"
-        hostname: "{{ cas_hostname }}"
-        context_path: "/cas"
+        hostname: "{{ cas_host_name | default('auth-es.l-a.site') }}"
+        context_path: "/{{ (cas_context_path | default('cas')).lstrip('/') }}"
         nginx_upstream_host: "cas"
         nginx_upstream_port: 8080
       when: "'cas' in services_enabled or groups['cas-servers'] is defined"
@@ -261,8 +275,8 @@
         name: nginx_vhost
       vars:
         appname: "userdetails"
-        hostname: "{{ userdetails_hostname }}"
-        context_path: "/userdetails"
+        hostname: "{{ cas_host_name | default('auth-es.l-a.site') }}"
+        context_path: "/{{ (userdetails_context_path | default('userdetails')).lstrip('/') }}"
         nginx_upstream_host: "userdetails"
         nginx_upstream_port: 8080
       when: "'cas' in services_enabled or groups['cas-servers'] is defined"
@@ -272,8 +286,8 @@
         name: nginx_vhost
       vars:
         appname: "apikey"
-        hostname: "{{ apikey_hostname }}"
-        context_path: "/apikey"
+        hostname: "{{ cas_host_name | default('auth-es.l-a.site') }}"
+        context_path: "/{{ (apikey_context_path | default('apikey')).lstrip('/') }}"
         nginx_upstream_host: "apikey"
         nginx_upstream_port: 8080
       when: "'cas' in services_enabled or groups['cas-servers'] is defined"
@@ -283,8 +297,8 @@
         name: nginx_vhost
       vars:
         appname: "cas-management"
-        hostname: "{{ cas_management_hostname }}"
-        context_path: "/cas-management"
+        hostname: "{{ cas_host_name | default('auth-es.l-a.site') }}"
+        context_path: "/{{ (cas_management_context_path | default('cas-management')).lstrip('/') }}"
         nginx_upstream_host: "cas-management"
         nginx_upstream_port: 8080
       when: "'cas' in services_enabled or groups['cas-servers'] is defined"
@@ -295,7 +309,7 @@
       vars:
         appname: "specieslist"
         hostname: "{{ specieslist_hostname }}"
-        context_path: "/specieslist"
+        context_path: "{{ specieslist_context_path }}"
         nginx_upstream_host: "species-list"
         nginx_upstream_port: 8080
       when: "'species-list' in services_enabled or groups['species-list'] is defined"
@@ -410,6 +424,29 @@
         endpoint_url: "http://species-list:8080/specieslist/"
         endpoint_group: "core-services"
       when: "'species-list' in services_enabled or groups['species-list'] is defined"
+
+# Generate .env file with secrets from inventory
+- name: Generate .env file for docker-compose
+  when: services_enabled | length > 0
+  tags:
+    - always
+  block:
+    - name: Create .env file with docker-compose variables
+      template:
+        src: docker-compose.env.j2
+        dest: "{{ data_dir }}/docker-compose/.env"
+        mode: '0600'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
+      vars:
+        # Database passwords from inventory
+        mysql_root_password_env: "{{ mysql_root_password | default('changeme') }}"
+        mysql_collectory_password_env: "{{ mysql_collectory_password | default(mysql_root_password | default('changeme')) }}"
+        mongodb_root_password_env: "{{ mongodb_root_password | default('changeme') }}"
+        # Application-specific passwords
+        cas_ldap_password_env: "{{ cas_ldap_password | default('') }}"
+        # Add any other sensitive variables here
+      failed_when: false
 
 - name: Fix ownership of configuration and nginx files (user-relevant files only)
   shell: |
