@@ -29,10 +29,26 @@
 - name: Load collectory role variables if needed
   include_vars:
     file: "{{ playbook_dir }}/roles/collectory/vars/main.yml"
-  when: "'collectory' in services_enabled or groups['collectory'] is defined"
+
+# Reuse role initialization - each role generates its own directories and configs
+- name: Run collectory configuration generation (asset copy, config templates)
+  include_role:
+    name: collectory
+  vars:
+    deployment_type: container
+  when: "'collectory' in services_enabled"
   tags:
     - collectory
     - config
+
+- name: Generate .env file with database passwords from inventories
+  template:
+    src: docker-compose.env.j2
+    dest: "{{ data_dir }}/.env"
+    mode: '0600'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+
 
 - name: Generate docker-compose.yml
   template:
@@ -73,8 +89,67 @@
     mode: '0644'
   when: "'nginx' in services_enabled"
 
-- name: Generate service configuration files
-  include_tasks: generate-service-configs.yml
+# Reuse role tasks for other services
+# Each role handles its own configuration generation
+- name: Run userdetails configuration generation
+  include_role:
+    name: userdetails
+  vars:
+    deployment_type: container
+  when: "'userdetails' in services_enabled"
+  tags:
+    - userdetails
+    - config
+
+- name: Run apikey configuration generation
+  include_role:
+    name: apikey
+  vars:
+    deployment_type: container
+  when: "'apikey' in services_enabled"
+  tags:
+    - apikey
+    - config
+
+- name: Run cas configuration generation
+  include_role:
+    name: cas
+  vars:
+    deployment_type: container
+  when: "'cas' in services_enabled or groups['cas-servers'] is defined"
+  tags:
+    - cas
+    - config
+
+- name: Run cas-management configuration generation
+  include_role:
+    name: cas-management
+  vars:
+    deployment_type: container
+  when: "'cas-management' in services_enabled"
+  tags:
+    - cas-management
+    - config
+
+- name: Run species-list configuration generation
+  include_role:
+    name: species-list
+  vars:
+    deployment_type: container
+  when: "'species-list' in services_enabled"
+  tags:
+    - species-list
+    - config
+
+- name: Run gatus configuration generation
+  include_role:
+    name: gatus
+  vars:
+    deployment_type: container
+  when: "'gatus' in services_enabled"
+  tags:
+    - gatus
+    - config
 
 - name: Include build-images tasks
   include_tasks: build-images.yml
@@ -109,6 +184,5 @@
     fi
   changed_when: false
   become: yes
-
 
 

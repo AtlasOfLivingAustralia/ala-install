@@ -53,18 +53,11 @@ ENV DOCKERIZE_VERSION=v0.7.0
 RUN curl -sfL https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
     | tar -C /usr/local/bin -xz
 
-# Create directories with proper permissions for tomcat
-RUN mkdir -p /data/collectory/config /data/collectory/data /data/collectory/upload && \
-    chmod 755 /data/collectory && \
-    chmod 755 /data/collectory/config && \
-    chmod 755 /data/collectory/data && \
-    chmod 755 /data/collectory/upload
-
 # Remove default webapps
 RUN rm -rf /usr/local/tomcat/webapps/*
 
 # Copy built WAR from builder
-COPY --from=builder --chown=tomcat:tomcat /build/build/libs/*.war /usr/local/tomcat/webapps/collectory.war
+COPY --from=builder /build/build/libs/*.war /usr/local/tomcat/webapps/collectory.war
 
 # Set config location
 ENV CATALINA_OPTS="-Dcollectory.config=file:/data/collectory/config/collectory-config.properties"

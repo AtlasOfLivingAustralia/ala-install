@@ -5,13 +5,14 @@ export COMPOSE_BAKE?=true
 
 # Variables
 INVENTORY ?= la-test-inventories/la-test-inventory.ini
-LA_TOOLKIT_INVENTORY ?= la-test-inventories/la-test-inventory.ini
+INVENTORY_EXTRAS ?= la-test-inventories/la-test-local-extras.ini
+INVENTORY_PASSWORDS ?= la-test-inventories/la-test-local-passwords.ini
+INVENTORY_TOOLKIT ?= la-test-inventories/la-test-toolkit.ini
+INVENTORIES := -i $(INVENTORY) -i $(INVENTORY_EXTRAS) -i $(INVENTORY_PASSWORDS) -i $(INVENTORY_TOOLKIT)
 PLAYBOOK := ansible/docker-compose-deploy.yml
 DATA_DIR := docker-compose-output
 DATA_DIR_ABS := $(shell pwd)/$(DATA_DIR)
 DOCKER_REGISTRY ?= livingatlases
-DOCKER_USERNAME ?=
-DOCKER_PASSWORD ?=
 
 help:
 	@echo "Living Atlas Container Deployment"
@@ -57,9 +58,9 @@ help:
 test-config-only:
 	@echo "📄 Generating configuration only (no builds)..."
 	@echo "[1/3] Checking Ansible syntax..."
-	@ansible-playbook -i $(INVENTORY) -i la-test-inventories/la-test-local-passwords.ini $(PLAYBOOK) -e "data_dir=$(DATA_DIR_ABS)" --syntax-check
+	@ansible-playbook $(INVENTORIES) $(PLAYBOOK) -e "data_dir=$(DATA_DIR_ABS)" --syntax-check
 	@echo "[2/3] Generating docker-compose.yml..."
-	@ansible-playbook -i $(INVENTORY) -i la-test-inventories/la-test-local-passwords.ini $(PLAYBOOK) -e "data_dir=$(DATA_DIR_ABS)" -e build_images=false
+	@ansible-playbook $(INVENTORIES) $(PLAYBOOK) -e "data_dir=$(DATA_DIR_ABS)" -e build_images=false
 	@echo "[3/3] Validating generated YAML..."
 	@docker compose -f $(DATA_DIR)/docker-compose.yml config --quiet
 	@echo "✅ Config generation passed!"
@@ -70,9 +71,9 @@ test-config-only:
 test-quick:
 	@echo "🔍 Running quick validation..."
 	@echo "[1/3] Checking Ansible syntax..."
-	@ansible-playbook -i $(INVENTORY) -i la-test-inventories/la-test-local-passwords.ini $(PLAYBOOK) -e "data_dir=$(DATA_DIR_ABS)" --syntax-check
+	@ansible-playbook $(INVENTORIES) $(PLAYBOOK) -e "data_dir=$(DATA_DIR_ABS)" --syntax-check
 	@echo "[2/3] Generating docker-compose.yml..."
-	@ansible-playbook -vv -i $(INVENTORY) -i la-test-inventories/la-test-local-passwords.ini $(PLAYBOOK) -e "data_dir=$(DATA_DIR_ABS)"
+	@ansible-playbook -vv $(INVENTORIES) $(PLAYBOOK) -e "data_dir=$(DATA_DIR_ABS)"
 	@echo "[3/3] Validating generated YAML..."
 	@docker compose -f $(DATA_DIR)/docker-compose.yml config --quiet
 	@echo "✅ Quick tests passed!"
@@ -197,12 +198,16 @@ localhost-full: localhost-quick
 la-toolkit-config:
 	@echo "🛠️  Generating docker-compose from LA Toolkit inventory..."
 	@echo ""
-	@echo "Using inventory: $(LA_TOOLKIT_INVENTORY)"
+	@echo "Using inventories:"
+	@echo "  - $(INVENTORY)"
+	@echo "  - $(INVENTORY_EXTRAS)"
+	@echo "  - $(INVENTORY_PASSWORDS)"
+	@echo "  - $(INVENTORY_TOOLKIT)"
 	@echo ""
 	@echo "[1/3] Checking Ansible syntax..."
-	@ansible-playbook -i $(LA_TOOLKIT_INVENTORY) -i la-test-inventories/la-test-local-passwords.ini $(PLAYBOOK) -e "data_dir=$(DATA_DIR_ABS)" --syntax-check
+	@ansible-playbook $(INVENTORIES) $(PLAYBOOK) -e "data_dir=$(DATA_DIR_ABS)" --syntax-check
 	@echo "[2/3] Generating docker-compose.yml..."
-	@ansible-playbook -i $(LA_TOOLKIT_INVENTORY) -i la-test-inventories/la-test-local-passwords.ini $(PLAYBOOK) -e "data_dir=$(DATA_DIR_ABS)" -e build_images=false
+	@ansible-playbook $(INVENTORIES) $(PLAYBOOK) -e "data_dir=$(DATA_DIR_ABS)" -e build_images=false
 	@echo "[3/3] Validating generated YAML..."
 	@docker compose -f $(DATA_DIR)/docker-compose.yml config --quiet
 	@echo ""
@@ -210,7 +215,7 @@ la-toolkit-config:
 	@echo ""
 	@echo "📁 Generated files:"
 	@echo "   - $(DATA_DIR)/docker-compose.yml"
-	@echo "   - $(DATA_DIR)/generic-collectory/config/"
+	@echo "   - $(DATA_DIR)/.env"
 	@echo ""
 	@echo "Next steps:"
 	@echo "   1. make build-i18n              # Build i18n image (first time only)"
@@ -220,7 +225,7 @@ la-toolkit-deploy:
 	@echo "🚀 Deploying with LA Toolkit configuration..."
 	@echo ""
 	@echo "[1/3] Generating docker-compose.yml with build config..."
-	@ansible-playbook -i $(LA_TOOLKIT_INVENTORY) -i la-test-inventories/la-test-local-passwords.ini $(PLAYBOOK) -e "data_dir=$(DATA_DIR_ABS)" -e build_images=true
+	@ansible-playbook $(INVENTORIES) $(PLAYBOOK) -e "data_dir=$(DATA_DIR_ABS)" -e build_images=true
 	@echo ""
 	@echo "[2/3] Building images with docker buildx bake..."
 	@cd $(DATA_DIR) && BUILDX_BAKE_ENTITLEMENTS_FS=0 docker buildx bake -f docker-bake.hcl --load builders

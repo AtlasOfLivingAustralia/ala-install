@@ -1,14 +1,14 @@
 # syntax=docker/dockerfile:1.4
 # ALA CAS 5/6 Server
-# Multi-stage build: maven-builder -> runtime
+# Multi-stage build: gradle-builder -> runtime
 
-ARG MAVEN_BUILDER_IMAGE=maven:3-eclipse-temurin-17
+ARG GRADLE_BUILDER_IMAGE=gradle:7-jdk17-jammy
 ARG RUNTIME_IMAGE=eclipse-temurin:17-jre-jammy
 
 # ============================================
 # Stage 1: Build
 # ============================================
-FROM ${MAVEN_BUILDER_IMAGE} AS builder
+FROM ${GRADLE_BUILDER_IMAGE} AS builder
 
 ARG CAS_VERSION=6.5.6-3
 ARG CAS_REPO=https://github.com/AtlasOfLivingAustralia/ala-cas-5.git
@@ -25,13 +25,9 @@ RUN git clone ${CAS_REPO} . && \
         git checkout ${CAS_VERSION} || git checkout tags/v${CAS_VERSION} || true; \
     fi
 
-# Download dependencies (separate layer for better caching)
-RUN --mount=type=cache,target=/root/.m2 \
-    mvn dependency:resolve-plugins dependency:resolve
-
-# Build the WAR file (uses cached dependencies)
-RUN --mount=type=cache,target=/root/.m2 \
-    mvn clean package -DskipTests -T 1C
+# Build the WAR file
+RUN --mount=type=cache,target=/root/.gradle \
+    ./gradlew clean bootWar -x test --no-daemon
 
 # ============================================
 # Stage 2: Runtime
@@ -54,15 +50,16 @@ ENV DOCKERIZE_VERSION=v0.7.0
 RUN curl -sfL https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
     | tar -C /usr/local/bin -xz
 
-# Create CAS user and directories
-RUN groupadd -r cas && useradd -r -g cas cas && \
-    mkdir -p /data/cas/config /data/cas/data && \
-    chown -R cas:cas /data/cas
+# Create CAS user
+RUN groupadd -r cas && useradd -r -g cas cas
 
 WORKDIR /opt/atlas/cas
 
 # Copy built WAR from builder
-COPY --from=builder --chown=cas:cas /build/target/*.war ./cas.war
+COPY --from=builder /build/build/libs/*.war ./cas.war
+
+# Fix permissions for WAR file
+RUN chown cas:cas /opt/atlas/cas/cas.war
 
 USER cas
 

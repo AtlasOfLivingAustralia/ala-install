@@ -1,6 +1,56 @@
 # ALA Installation Scripts
-This project contains [Ansible](http://www.ansible.com/) playbooks for setting up ALA components on Ubuntu 16 machines and above.
-This project includes a playbook for setting up an ALA demo.
+
+Automated deployment for [Atlas of Living Australia](https://www.ala.org.au/) components using Ansible and Docker.
+
+**Two deployment modes**:
+- **VM**: Traditional VM-based deployment with Ansible roles
+- **Docker Compose**: Containerized deployment with auto-generated docker-compose.yml
+
+---
+
+## 🐳 Docker Compose (NEW!)
+
+**Status**: POC - Foundation Complete & Optimized  
+**Documentation**: [docs/CONTAINER-POC.md](docs/CONTAINER-POC.md)  
+**Quick Start**: [docs/WORK.md](docs/WORK.md)
+
+### Quick Start
+
+```bash
+# Generate docker-compose configuration from inventory
+make la-toolkit-deploy
+
+# Start services
+cd docker-compose-output
+docker-compose up -d
+```
+
+**Key Features**:
+- ✅ Auto-generates `docker-compose.yml` from Ansible inventories
+- ✅ Secure configuration (passwords in `.env`, not in docker-compose.yml)
+- ✅ Relative paths for portability
+- ✅ Optimized caching (Maven + Gradle)
+- ✅ Cloud-agnostic (no AWS dependencies)
+
+**For detailed information**: See [docs/CONTAINER-POC.md](docs/CONTAINER-POC.md)
+
+---
+
+## 📚 Documentation
+
+### Primary Documentation
+- **[docs/CONTAINER-POC.md](docs/CONTAINER-POC.md)** - Complete project overview, objectives, design decisions
+- **[docs/WORK.md](docs/WORK.md)** - Current work-in-progress, tasks, debugging notes
+
+### Reference Documentation
+- **[docs/CAMBIOS_RELATIVAS_Y_ENV.md](docs/CAMBIOS_RELATIVAS_Y_ENV.md)** - Docker Compose improvements (relative paths + .env)
+- **[docs/RESOLUCION_ISSUES.md](docs/RESOLUCION_ISSUES.md)** - Issues fixed (Maven cache, COMPOSE_BAKE, etc.)
+- **[docs/RESUMEN_CAMBIOS_DOCKER_COMPOSE.md](docs/RESUMEN_CAMBIOS_DOCKER_COMPOSE.md)** - Summary of changes
+
+### Service Directories
+- **[docker-compose-output/README.md](docker-compose-output/README.md)** - Usage guide for generated docker-compose
+
+---
 
 ## Prerequisites
 
@@ -12,24 +62,17 @@ NOTE: many linux packages have an older version of Ansible (1.7 or even 1.5). Yo
 
 For APT:
 
-```
-$ sudo apt-get install software-properties-common python-dev git python-pip
-$ sudo pip install setuptools
-$ sudo pip install -I ansible==[community-version] ansible-core==[core-version]
-```
-
-also
-```
-pipx install ansible==[community-version] ansible-core==[core-version]
+```bash
+sudo apt-get install software-properties-common python-dev git python-pip
+sudo pip install setuptools
+sudo pip install -I ansible==10.3.0 ansible-core==2.17.3
 ```
 
-for instance:
+Or using pipx:
 
-```
+```bash
 pipx install ansible==10.3.0 ansible-core==2.17.3
-```
-
-where ```[community-version]``` and ```[core-version]``` are the supported versions listed above.
+```where ```[community-version]``` and ```[core-version]``` are the supported versions listed above.
 
 For OSX:
 

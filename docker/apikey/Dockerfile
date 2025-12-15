@@ -50,15 +50,11 @@ ENV DOCKERIZE_VERSION=v0.7.0
 RUN curl -sfL https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
     | tar -C /usr/local/bin -xz
 
-# Create directories
-RUN mkdir -p /data/apikey/config /data/apikey/data && \
-    chown -R tomcat:tomcat /data/apikey
-
 # Remove default webapps
 RUN rm -rf /usr/local/tomcat/webapps/*
 
 # Copy built WAR from builder
-COPY --from=builder --chown=tomcat:tomcat /build/build/libs/*.war /usr/local/tomcat/webapps/apikey.war
+COPY --from=builder /build/build/libs/*.war /usr/local/tomcat/webapps/apikey.war
 
 # Set config location
 ENV CATALINA_OPTS="-Dapikey.config=file:/data/apikey/config/apikey-config.properties"
