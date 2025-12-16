@@ -117,23 +117,23 @@ target "collectory" {
 
 # CAS, UserDetails, APIKey and CAS Management services
 
-{% if 'cas' in services_enabled %}
-target "cas" {
+{% if 'userdetails' in services_enabled %}
+target "userdetails" {
   dockerfile = "Dockerfile"
-  context = "../docker/cas"
+  context = "../docker/userdetails"
   contexts = {
-    "gradle-builder:jdk{{ cas_java_version | default('11') }}" = "target:gradle-builder-jdk{{ cas_java_version | default('11') }}"
+    "gradle-builder:jdk{{ userdetails_java_version | default('11') }}" = "target:gradle-builder-jdk{{ userdetails_java_version | default('11') }}"
   }
   args = {
-    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ cas_java_version | default('11') }}"
-    CAS_VERSION = "{{ cas_version | default('develop') }}"
-    CAS_REPO = "https://github.com/AtlasOfLivingAustralia/ala-cas-5.git"
-    CAS_BRANCH = "{{ cas_branch | default('master') }}"
+    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ userdetails_java_version | default('11') }}"
+    USERDETAILS_VERSION = "{{ user_details_version | default('develop') }}"
+    USERDETAILS_REPO = "https://github.com/AtlasOfLivingAustralia/userdetails.git"
+    USERDETAILS_BRANCH = "{{ user_details_branch | default('master') }}"
   }
 {% if docker_registry and docker_registry != '' %}
-  tags = ["{{ docker_registry }}/cas:{{ cas_version | default('latest') }}", "{{ docker_registry }}/cas:latest"]
+  tags = ["{{ docker_registry }}/userdetails:{{ user_details_version | default('latest') }}", "{{ docker_registry }}/userdetails:latest"]
 {% else %}
-  tags = ["cas:{{ cas_version | default('latest') }}", "cas:latest"]
+  tags = ["userdetails:{{ user_details_version | default('latest') }}", "userdetails:latest"]
 {% endif %}
   cache-to = ["type=inline"]
   platforms = ["linux/amd64"]
@@ -157,6 +157,27 @@ target "userdetails" {
   tags = ["{{ docker_registry }}/userdetails:{{ user_details_version | default('latest') }}", "{{ docker_registry }}/userdetails:latest"]
 {% else %}
   tags = ["userdetails:{{ user_details_version | default('latest') }}", "userdetails:latest"]
+{% endif %}
+  cache-to = ["type=inline"]
+  platforms = ["linux/amd64"]
+}
+{% endif %}
+
+{% if 'cas' in services_enabled %}
+target "cas" {
+  dockerfile = "Dockerfile"
+  context = "../docker/cas"
+  args = {
+    MAVEN_BUILDER_IMAGE = "maven:3.8-eclipse-temurin-11"
+    RUNTIME_IMAGE = "eclipse-temurin:11-jre-jammy"
+    CAS_VERSION = "{{ cas_version | default('develop') }}"
+    CAS_REPO = "https://github.com/AtlasOfLivingAustralia/ala-cas-5.git"
+    CAS_BRANCH = "{{ cas_branch | default('master') }}"
+  }
+{% if docker_registry and docker_registry != '' %}
+  tags = ["{{ docker_registry }}/cas:{{ cas_version | default('latest') }}", "{{ docker_registry }}/cas:latest"]
+{% else %}
+  tags = ["cas:{{ cas_version | default('latest') }}", "cas:latest"]
 {% endif %}
   cache-to = ["type=inline"]
   platforms = ["linux/amd64"]
