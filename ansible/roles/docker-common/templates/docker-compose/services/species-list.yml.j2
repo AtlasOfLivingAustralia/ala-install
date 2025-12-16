@@ -1,5 +1,6 @@
   # Species List Service
   species-list:
+    container_name: species-list
 {% if build_images is defined and (build_images | bool or build_images == 'true') %}
     image: {{ docker_registry | default('') }}species-list:{{ docker_tag | default('dev') }}
     pull_policy: never

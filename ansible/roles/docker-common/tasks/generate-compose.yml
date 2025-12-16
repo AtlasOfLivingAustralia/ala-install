@@ -10,7 +10,7 @@
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_gid }}"
 
-- name: Determine Java versions for services from LA Toolkit dependencies
+- name: Determine Java versions for services
   include_tasks: determine-java-versions.yml
 
 - name: Detect enabled services from inventory groups
@@ -53,6 +53,42 @@
     - collectory
     - config
 
+- name: Ensure database init directories exist with correct permissions
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  loop:
+    - "{{ data_dir }}/mysql/init"
+    - "{{ data_dir }}/mongodb/init"
+
+- name: Set CAS database variables from inventories for MongoDB initialization
+  set_fact:
+    cas_tickets_username: "{{ cas_tickets_username | default('cas-ticket-user') }}"
+    cas_tickets_password: "{{ cas_tickets_password | default(lookup('password', '/dev/null length=20')) }}"
+    cas_tickets_db: "{{ cas_tickets_db | default('cas-ticket-registry') }}"
+    cas_services_username: "{{ cas_services_username | default('cas-services-user') }}"
+    cas_services_password: "{{ cas_services_password | default(lookup('password', '/dev/null length=20')) }}"
+    cas_services_db: "{{ cas_services_db | default('cas-service-registry') }}"
+    cas_audit_username: "{{ cas_audit_username | default('cas-audit-user') }}"
+    cas_audit_password: "{{ cas_audit_password | default(lookup('password', '/dev/null length=20')) }}"
+    cas_audit_db: "{{ cas_audit_db | default('cas-audit-repository') }}"
+    cas_spring_session_username: "{{ cas_spring_session_username | default('cas-session-user') }}"
+    cas_spring_session_password: "{{ cas_spring_session_password | default(lookup('password', '/dev/null length=20')) }}"
+    spring_session_mongo_collection: "{{ spring_session_mongo_collection | default('spring-sessions') }}"
+  when: "'cas' in services_enabled or groups['cas-servers'] is defined"
+
+- name: Generate MongoDB initialization script
+  template:
+    src: mongodb-init.js.j2
+    dest: "{{ data_dir }}/mongodb/init/init-users.js"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  when: "'cas' in services_enabled or groups['cas-servers'] is defined"
+
 - name: Generate .env file with database passwords from inventories
   template:
     src: docker-compose.env.j2
@@ -60,7 +96,6 @@
     mode: '0644'
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_gid }}"
-
 
 - name: Generate docker-compose.yml
   template:
@@ -196,5 +231,3 @@
     fi
   changed_when: false
   become: yes
-
-

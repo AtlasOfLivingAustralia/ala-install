@@ -16,18 +16,20 @@
   - properties
   - user
   - apikey
+  when: deployment_type is not defined or deployment_type != 'container'
 
 - name: ensure target directories exist data subdirectories etc.
   file:
     path: "{{item}}"
     state: directory
-    owner: "{{ apikey_user | default('apikey') }}"
-    group: "{{ apikey_user | default('apikey') }}"
+    mode: '0755'
+    owner: "{{ docker_default_user | default(ansible_user_id) if deployment_type == 'container' else apikey_user | default('apikey') }}"
+    group: "{{ docker_default_user | default(ansible_user_id) if deployment_type == 'container' else apikey_user | default('apikey') }}"
   with_items:
     - "{{data_dir}}/apikey"
     - "{{data_dir}}/apikey/config"
     - "{{data_dir}}/apikey/"
-    - "/var/log/atlas/apikey"
+    - "{% if deployment_type != 'container' %}/var/log/atlas/apikey{% endif %}"
   tags:
     - properties
     - apikey
@@ -35,12 +37,13 @@
 - name: set data ownership
   file:
     path: "{{data_dir}}/apikey"
-    owner: "{{ apikey_user | default('apikey') }}"
-    group: "{{ apikey_user | default('apikey') }}"
+    owner: "{{ docker_default_user | default(ansible_user_id) if deployment_type == 'container' else apikey_user | default('apikey') }}"
+    group: "{{ docker_default_user | default(ansible_user_id) if deployment_type == 'container' else apikey_user | default('apikey') }}"
     recurse: true
   tags:
     - properties
     - apikey
+  when: deployment_type is not defined or deployment_type != 'container' or data_dir is defined
 
 - name: copy apikey-config.yml
   template:

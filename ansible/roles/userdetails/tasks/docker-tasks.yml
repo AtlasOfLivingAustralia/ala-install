@@ -3,8 +3,9 @@
   file:
     path: "{{item}}"
     state: directory
-    owner: "{{userdetails_user}}"
-    group: "{{userdetails_user}}"
+    mode: '0755'
+    owner: "{{ docker_default_user | default(ansible_user_id) }}"
+    group: "{{ docker_default_user | default(ansible_user_id) }}"
   with_items:
     - "{{ userdetails_docker_db_mysql_data_dir }}"
     - "{{ userdetails_docker_db_mongo_data_dir }}"

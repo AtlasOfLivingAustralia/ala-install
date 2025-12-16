@@ -1,11 +1,12 @@
   # CAS Authentication Server
   cas:
+    container_name: cas
 {% if build_images | default(false) %}
     # Using locally built image
     image: cas:{{ docker_tag | default('develop') }}
     pull_policy: never
     build:
-      context: {{ playbook_dir }}/../docker/cas
+      context: ./docker/cas
       dockerfile: Dockerfile
       args:
         CAS_VERSION: {{ cas_version | default('6.5.6-3') }}

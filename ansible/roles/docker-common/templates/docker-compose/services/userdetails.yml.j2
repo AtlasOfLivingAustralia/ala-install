@@ -1,11 +1,12 @@
   # User Details Service
   userdetails:
+    container_name: userdetails
 {% if build_images | default(false) %}
     # Using locally built image
     image: userdetails:{{ docker_tag | default('develop') }}
     pull_policy: never
     build:
-      context: {{ playbook_dir }}/../docker/userdetails
+      context: ./docker/userdetails
       dockerfile: Dockerfile
       args:
         USERDETAILS_VERSION: {{ user_details_version | default('3.2.1') }}

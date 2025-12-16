@@ -1,7 +1,6 @@
 ---
 - name: ensure target db directories exist
-  file: path={{item}} state=directory
-  # owner={{tomcat_user}} group={{tomcat_user}}
+  file: path={{item}} state=directory mode='0755' owner={{docker_default_user | default(ansible_user_id)}} group={{docker_default_user | default(ansible_user_id)}}
   with_items:
     - "{{ collectory_docker_db_data_dir }}"
     - "{{ collectory_data_dir }}/docker/"

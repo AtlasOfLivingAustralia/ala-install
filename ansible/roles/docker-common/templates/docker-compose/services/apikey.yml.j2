@@ -1,11 +1,12 @@
   # API Key Service
   apikey:
+    container_name: apikey
 {% if build_images | default(false) %}
     # Using locally built image
     image: apikey:{{ docker_tag | default('develop') }}
     pull_policy: never
     build:
-      context: {{ playbook_dir }}/../docker/apikey
+      context: ./docker/apikey
       dockerfile: Dockerfile
       args:
         APIKEY_VERSION: {{ apikey_version | default('1.7.0') }}

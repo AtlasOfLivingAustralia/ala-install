@@ -1,7 +1,7 @@
 ---
 
 - name: ensure nginx directories exist for docker vhost generation
-  file: path={{item}} state=directory owner={{nginx_user}} group={{nginx_user}}
+  file: path={{item}} state=directory owner={{docker_default_user | default(ansible_user_id)}} group={{docker_default_user | default(ansible_user_id)}} mode='0755'
   with_items:
     - "{{ nginx_conf_dir }}/conf.d"
     - "{{ nginx_conf_dir }}/sites-enabled"

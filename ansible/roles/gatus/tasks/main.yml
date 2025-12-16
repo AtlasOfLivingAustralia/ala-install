@@ -4,12 +4,26 @@
     - properties
     - gatus
 
-- name: Ensure data directory exists
+- name: Ensure data directory exists (container mode)
+  file:
+    path: "{{ data_dir | default('/tmp') }}/{{ item }}"
+    state: directory
+    mode: '0755'
+    owner: "{{ docker_default_user | default(ansible_user_id) }}"
+    group: "{{ docker_default_user | default(ansible_user_id) }}"
+  with_items:
+    - "gatus"
+  when: deployment_type == 'container'
+  tags:
+    - gatus
+
+- name: Ensure data directory exists (non-container mode)
   file:
     path: /srv/{{ gatus_url }}/www/{{ item }}
     state: directory
   with_items:
     - "{{ gatus_path }}"
+  when: deployment_type is not defined or deployment_type != 'container'
   tags:
     - gatus
 
@@ -17,8 +31,9 @@
   file:
     path: "{{ item.path }}"
     state: directory
-    owner: "{{ item.owner | default(omit) }}"
-    group: "{{ item.group | default(omit) }}"
+    mode: '0755'
+    owner: "{{ docker_default_user | default(item.owner | default(omit)) if deployment_type == 'container' else item.owner | default(omit) }}"
+    group: "{{ docker_default_user | default(item.group | default(omit)) if deployment_type == 'container' else item.group | default(omit) }}"
   with_items:
     - {path: "{{ gatus_config_dir }}"}
     - {path: "{{ gatus_docker_dir }}"}

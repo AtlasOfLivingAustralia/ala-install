@@ -1,5 +1,6 @@
   # MySQL database (following PR #675 pattern)
   mysql:
+    container_name: mysql
     image: mysql:8.0-debian
     volumes:
       - mysql-data:/var/lib/mysql

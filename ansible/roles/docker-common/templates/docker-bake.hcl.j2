@@ -21,12 +21,13 @@ variable "DOCKER_REPO" {
 # Gradle builder for JDK 11 services (for Gradle 5.x compatibility - collectory, species-list)
 target "gradle-builder-jdk11" {
   dockerfile = "Dockerfile"
-  context = "{{ playbook_dir }}/../docker/gradle"
+  context = "../docker/gradle"
   args = {
     JDK_VERSION = "11"
     GRADLE_VERSION = "7"
   }
-  tags = ["gradle-builder:jdk11"]
+  # Builders should not have output - they're only used as base images
+  # output = ["type=docker"]
 {% if docker_registry and docker_registry != '' %}
   cache-from = ["type=registry,ref={{ docker_registry }}/gradle-builder:jdk11-${CACHE_TAG}"]
 {% endif %}
@@ -36,12 +37,13 @@ target "gradle-builder-jdk11" {
 # Gradle builder for JDK 17 services (default for all current ALA services)
 target "gradle-builder-jdk17" {
   dockerfile = "Dockerfile"
-  context = "{{ playbook_dir }}/../docker/gradle"
+  context = "../docker/gradle"
   args = {
     JDK_VERSION = "17"
     GRADLE_VERSION = "7"
   }
-  tags = ["gradle-builder:jdk17so"]
+  # Builders should not have output - they're only used as base images
+  # output = ["type=docker"]
 {% if docker_registry and docker_registry != '' %}
   cache-from = ["type=registry,ref={{ docker_registry }}/gradle-builder:jdk17-${CACHE_TAG}"]
 {% endif %}
@@ -51,12 +53,13 @@ target "gradle-builder-jdk17" {
 # Gradle builder for JDK 21 services (future-proofing)
 target "gradle-builder-jdk21" {
   dockerfile = "Dockerfile"
-  context = "{{ playbook_dir }}/../docker/gradle"
+  context = "../docker/gradle"
   args = {
     JDK_VERSION = "21"
     GRADLE_VERSION = "8"
   }
-  tags = ["gradle-builder:jdk21"]
+  # Builders should not have output - they're only used as base images
+  # output = ["type=docker"]
 {% if docker_registry and docker_registry != '' %}
   cache-from = ["type=registry,ref={{ docker_registry }}/gradle-builder:jdk21-${CACHE_TAG}"]
 {% endif %}
@@ -70,7 +73,7 @@ target "gradle-builder-jdk21" {
 {% if i18n.enabled %}
 target "i18n" {
   dockerfile = "Dockerfile"
-  context = "{{ playbook_dir }}/../docker/i18n"
+  context = "../docker/i18n"
   args = {}
 {% if docker_registry and docker_registry != '' %}
   tags = ["{{ docker_registry }}/ala-i18n:${TAG}", "{{ docker_registry }}/ala-i18n:latest"]
@@ -88,7 +91,7 @@ target "i18n" {
 {% if 'collectory' in services_enabled %}
 target "collectory" {
   dockerfile = "Dockerfile"
-  context = "{{ playbook_dir }}/../docker/collectory"
+  context = "../docker/collectory"
   contexts = {
     "gradle-builder:jdk{{ collectory_java_version | default('17') }}" = "target:gradle-builder-jdk{{ collectory_java_version | default('17') }}"
   }
@@ -120,7 +123,7 @@ target "collectory" {
 # {% if 'cas' in services_enabled %}
 # target "cas" {
 #   dockerfile = "Dockerfile"
-#   context = "{{ playbook_dir }}/../docker/cas"
+#   context = "../docker/cas"
 #   contexts = {
 #     "gradle-builder:jdk{{ cas_java_version | default('11') }}" = "target:gradle-builder-jdk{{ cas_java_version | default('11') }}"
 #   }
@@ -143,7 +146,7 @@ target "collectory" {
 # {% if 'userdetails' in services_enabled %}
 # target "userdetails" {
 #   dockerfile = "Dockerfile"
-#   context = "{{ playbook_dir }}/../docker/userdetails"
+#   context = "../docker/userdetails"
 #   contexts = {
 #     "gradle-builder:jdk{{ userdetails_java_version | default('11') }}" = "target:gradle-builder-jdk{{ userdetails_java_version | default('11') }}"
 #   }
@@ -166,7 +169,7 @@ target "collectory" {
 # {% if 'apikey' in services_enabled %}
 # target "apikey" {
 #   dockerfile = "Dockerfile"
-#   context = "{{ playbook_dir }}/../docker/apikey"
+#   context = "../docker/apikey"
 #   contexts = {
 #     "gradle-builder:jdk{{ apikey_java_version | default('11') }}" = "target:gradle-builder-jdk{{ apikey_java_version | default('11') }}"
 #   }
@@ -189,7 +192,7 @@ target "collectory" {
 # {% if 'cas-management' in services_enabled %}
 # target "cas-management" {
 #   dockerfile = "Dockerfile"
-#   context = "{{ playbook_dir }}/../docker/cas-management"
+#   context = "../docker/cas-management"
 #   contexts = {
 #     "gradle-builder:jdk{{ cas_management_java_version | default('11') }}" = "target:gradle-builder-jdk{{ cas_management_java_version | default('11') }}"
 #   }
@@ -212,7 +215,7 @@ target "collectory" {
 {% if 'gatus' in services_enabled %}
 target "gatus" {
   dockerfile = "Dockerfile"
-  context = "{{ playbook_dir }}/../docker/gatus"
+  context = "../docker/gatus"
   args = {}
 {% if docker_registry and docker_registry != '' %}
   tags = ["{{ docker_registry }}/gatus:${TAG}", "{{ docker_registry }}/gatus:latest"]
@@ -227,7 +230,7 @@ target "gatus" {
 {% if 'species-list' in services_enabled or groups['species-list'] is defined %}
 target "species-list" {
   dockerfile = "Dockerfile"
-  context = "{{ playbook_dir }}/../docker/species-list"
+  context = "../docker/species-list"
   contexts = {
     "gradle-builder:jdk{{ species_list_java_version | default('17') }}" = "target:gradle-builder-jdk{{ species_list_java_version | default('17') }}"
   }

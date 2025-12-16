@@ -1,11 +1,12 @@
   # CAS Management Service
   cas-management:
+    container_name: cas-management
 {% if build_images | default(false) %}
     # Using locally built image
     image: cas-management:{{ docker_tag | default('develop') }}
     pull_policy: never
     build:
-      context: {{ playbook_dir }}/../docker/cas-management
+      context: ./docker/cas-management
       dockerfile: Dockerfile
       args:
         CAS_MANAGEMENT_VERSION: {{ cas_management_version | default('6.5.5-2') }}

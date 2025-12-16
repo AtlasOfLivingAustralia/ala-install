@@ -1,6 +1,11 @@
 ---
 - name: ensure target db directories exist
-  file: path={{item}} state=directory
+  file:
+    path: "{{item}}"
+    state: directory
+    mode: '0755'
+    owner: "{{ docker_default_user | default(ansible_user_id) }}"
+    group: "{{ docker_default_user | default(ansible_user_id) }}"
   with_items:
     - "{{ species_list_docker_db_data_dir }}"
     - "{{ species_list_docker_conf_dir }}"

@@ -1,6 +1,7 @@
   # MongoDB for CAS (ticket registry, audit, sessions)
   mongodb:
-    image: mongo:{{ mongodb_version | default('4.4') }}
+    container_name: mongodb
+    image: mongo:7
     volumes:
       - mongodb-data:/data/db
       - ./mongodb/init:/docker-entrypoint-initdb.d:ro
@@ -22,7 +23,7 @@
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 60s
     restart: unless-stopped
 
 

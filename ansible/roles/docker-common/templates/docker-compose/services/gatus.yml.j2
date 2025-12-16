@@ -1,5 +1,6 @@
   # Gatus Health Monitoring Dashboard
   gatus:
+    container_name: gatus
     image: twinproduction/gatus:{{ gatus_version | default('latest') }}
     volumes:
       - ./gatus/config:/config:ro

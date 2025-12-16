@@ -1,8 +1,8 @@
 ---
 # Task to determine Java version for each service based on dependencies.yaml
-# This keeps the Docker builds in sync with LA Toolkit requirements
+# This keeps the Docker builds in sync with ALA requirements
 
-- name: Download LA Toolkit dependencies.yaml
+- name: Download ALA dependencies from LA Toolkit dependencies.yaml
   uri:
     url: https://raw.githubusercontent.com/living-atlases/la-toolkit-backend/master/assets/dependencies.yaml
     return_content: yes
@@ -28,7 +28,7 @@
 - name: Display determined Java versions
   debug:
     msg:
-      - "Java versions determined from LA Toolkit dependencies.yaml:"
+      - "Java versions determined from dependencies.yaml:"
       - "  collectory {{ collectory_version | default('develop') }}: Java {{ collectory_java_version }}"
       - "  species-list {{ species_list_version | default('develop') }}: Java {{ species_list_java_version }}"
       - "  cas {{ cas_version | default('develop') }}: Java {{ cas_java_version }}"
