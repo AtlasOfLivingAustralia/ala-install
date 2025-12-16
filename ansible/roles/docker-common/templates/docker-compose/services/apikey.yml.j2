@@ -3,18 +3,19 @@
     container_name: apikey
 {% if build_images | default(false) %}
     # Using locally built image
-    image: apikey:{{ docker_tag | default('develop') }}
+    image: apikey:{{ apikey_version | default('1.7.0') }}
     pull_policy: never
     build:
-      context: ./docker/apikey
+      context: ../docker/apikey
       dockerfile: Dockerfile
       args:
         APIKEY_VERSION: {{ apikey_version | default('1.7.0') }}
         APIKEY_REPO: {{ apikey_repo | default('https://github.com/AtlasOfLivingAustralia/apikey.git') }}
         APIKEY_BRANCH: {{ apikey_branch | default('master') }}
 {% else %}
-    # Using pre-built image from livingatlases
-    image: livingatlases/apikey:{{ apikey_version | default('1.7.0') }}
+    # Using locally built image (from docker buildx bake)
+    image: apikey:{{ apikey_version | default('1.7.0') }}
+    pull_policy: never
 {% endif %}
     volumes:
       - ./apikey/config:/data/apikey/config:ro

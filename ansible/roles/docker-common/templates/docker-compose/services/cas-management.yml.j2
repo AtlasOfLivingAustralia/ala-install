@@ -3,22 +3,22 @@
     container_name: cas-management
 {% if build_images | default(false) %}
     # Using locally built image
-    image: cas-management:{{ docker_tag | default('develop') }}
+    image: cas-management:{{ cas_management_version | default('6.5.5-2') }}
     pull_policy: never
     build:
-      context: ./docker/cas-management
+      context: ../docker/cas-management
       dockerfile: Dockerfile
       args:
         CAS_MANAGEMENT_VERSION: {{ cas_management_version | default('6.5.5-2') }}
         CAS_MANAGEMENT_REPO: {{ cas_management_repo | default('https://github.com/AtlasOfLivingAustralia/ala-cas-5-services.git') }}
         CAS_MANAGEMENT_BRANCH: {{ cas_management_branch | default('master') }}
 {% else %}
-    # Using pre-built image from livingatlases
-    image: livingatlases/cas-management:{{ cas_management_version | default('6.5.5-2') }}
+    # Using locally built image (from docker buildx bake)
+    image: cas-management:{{ cas_management_version | default('6.5.5-2') }}
+    pull_policy: never
 {% endif %}
     volumes:
-      - ./cas-management/config:/data/cas-management/config:ro
-      - ./cas-management/data:/data/cas-management/data
+      - ./cas-management:/data/cas-management
 {% if i18n.enabled and i18n.strategy == 'volume' %}
       - {{ i18n.volume.name }}:/opt/atlas/i18n/:ro
 {% endif %}

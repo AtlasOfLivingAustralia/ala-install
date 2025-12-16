@@ -142,7 +142,7 @@
 - name: symlink default vhost for Amazon load balancer health checks to sites-enabled
   file:
     state: link
-    src: "{{nginx_conf_dir}}/sites-available/ala_default.conf"
+    src: "../sites-available/ala_default.conf"
     dest: "{{nginx_conf_dir}}/sites-enabled/ala_default.conf"
     mode: "{{nginx_config_file_mode}}"
   when: ala_default_vhost  | bool == True and vhost_required | bool == True

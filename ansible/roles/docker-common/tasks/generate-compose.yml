@@ -13,17 +13,108 @@
 - name: Determine Java versions for services
   include_tasks: determine-java-versions.yml
 
-- name: Detect enabled services from inventory groups
-  set_fact:
-    services_enabled: "{{ groups.keys() | select('match', '^(collectory|biocache-hub|biocache-service|bie-hub|bie-index|nginx|userdetails|apikey|cas-management|species-list|gatus|cas-servers)$') | list }}"
-  when: services_enabled is not defined
 
-# For template consistency, rename 'cas-servers' to 'cas' in services_enabled
-# This allows templates to check for 'cas' in services_enabled instead of 'cas-servers'
-- name: Ensure cas is in services_enabled if cas-servers exists
+- name: Detect enabled services from use_* inventory variables
   set_fact:
-    services_enabled: "{{ (services_enabled | reject('equalto', 'cas-servers') | list) + (['cas'] if 'cas-servers' in services_enabled else []) }}"
-  when: services_enabled is defined and 'cas-servers' in services_enabled
+    services_enabled: >-
+      {{
+        (['collectory', 'nginx'] +
+        (['cas', 'userdetails', 'apikey', 'cas-management'] if (use_cas | default(false) | bool) else []) +
+        (['oidc'] if (use_oidc | default(false) | bool) else []) +
+        (['ala-bie'] if (use_ala_bie | default(false) | bool) else []) +
+        (['spatial'] if (use_spatial | default(false) | bool) else []) +
+        (['regions'] if (use_regions | default(false) | bool) else []) +
+        (['species'] if (use_species | default(false) | bool) else []) +
+        (['species-lists'] if (use_species_lists | default(false) | bool) else []) +
+        (['images'] if (use_images | default(false) | bool) else []) +
+        (['alerts'] if (use_alerts | default(false) | bool) else []) +
+        (['doi'] if (use_doi | default(false) | bool) else []) +
+        (['webapi'] if (use_webapi | default(false) | bool) else []) +
+        (['dashboard'] if (use_dashboard | default(false) | bool) else []) +
+        (['biocache-backend'] if (use_biocache_backend | default(false) | bool) else []) +
+        (['pipelines'] if (use_pipelines | default(false) | bool) else []) +
+        (['solrcloud'] if (use_solrcloud | default(false) | bool) else []) +
+        (['sds'] if (use_sds | default(false) | bool) else []) +
+        (['biocollect'] if (use_biocollect | default(false) | bool) else []) +
+        (['namematching'] if (use_namematching_service | default(false) | bool) else []) +
+        (['sensitive-data'] if (use_sensitive_data_service | default(false) | bool) else []) +
+        (['data-quality'] if (use_data_quality | default(false) | bool) else []) +
+        (['events'] if (use_events | default(false) | bool) else []) +
+        (['events-elasticsearch'] if (use_events_elasticsearch | default(false) | bool) else []) +
+        (['gatus'] if (use_gatus | default(false) | bool) else []))
+        | unique
+      }}
+
+- name: Debug services_enabled
+  debug:
+    msg: "Services enabled: {{ services_enabled }}"
+
+- name: Debug individual use_* variables
+  debug:
+    msg: |
+      use_cas = {{ use_cas | default(false) }}
+      use_oidc = {{ use_oidc | default(false) }}
+      use_collectory = {{ use_collectory | default(false) }}
+      use_ala_bie = {{ use_ala_bie | default(false) }}
+      use_spatial = {{ use_spatial | default(false) }}
+
+- name: Debug services_enabled list
+  debug:
+    msg: "{{ services_enabled | to_nice_yaml }}"
+
+- name: Verify cas in services_enabled
+  debug:
+    msg: "'cas' in services_enabled = {{ 'cas' in services_enabled }}"
+
+- name: Verify userdetails in services_enabled
+  debug:
+    msg: "'userdetails' in services_enabled = {{ 'userdetails' in services_enabled }}"
+
+- name: Assert cas should be in services_enabled if use_cas is true
+  assert:
+    that:
+      - "'cas' in services_enabled or not (use_cas | default(false) | bool)"
+    fail_msg: "ERROR: cas should be in services_enabled when use_cas=true. Got: {{ services_enabled }}"
+
+- name: Run cas configuration generation
+  include_role:
+    name: cas5
+  vars:
+    deployment_type: container
+  when: "'cas' in services_enabled"
+  tags:
+    - cas
+    - config
+
+- name: Run userdetails configuration generation
+  include_role:
+    name: userdetails
+  vars:
+    deployment_type: container
+  when: "'userdetails' in services_enabled"
+  tags:
+    - userdetails
+    - config
+
+- name: Run apikey configuration generation
+  include_role:
+    name: apikey
+  vars:
+    deployment_type: container
+  when: "'apikey' in services_enabled"
+  tags:
+    - apikey
+    - config
+
+- name: Run cas-management configuration generation
+  include_role:
+    name: cas-management
+  vars:
+    deployment_type: container
+  when: "'cas-management' in services_enabled"
+  tags:
+    - cas-management
+    - config
 
 - name: Load collectory role variables if needed
   include_vars:
@@ -42,7 +133,7 @@
 - name: Run common directory and config setup
   include_tasks: common.yml
 
-# Reuse role initialization - each role generates its own directories and configs
+# Now run collectory and other services
 - name: Run collectory configuration generation (asset copy, config templates)
   include_role:
     name: collectory
@@ -78,7 +169,7 @@
     cas_spring_session_username: "{{ cas_spring_session_username | default('cas-session-user') }}"
     cas_spring_session_password: "{{ cas_spring_session_password | default(lookup('password', '/dev/null length=20')) }}"
     spring_session_mongo_collection: "{{ spring_session_mongo_collection | default('spring-sessions') }}"
-  when: "'cas' in services_enabled or groups['cas-servers'] is defined"
+  when: "'cas' in services_enabled"
 
 - name: Generate MongoDB initialization script
   template:
@@ -87,7 +178,7 @@
     mode: '0644'
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_gid }}"
-  when: "'cas' in services_enabled or groups['cas-servers'] is defined"
+  when: "'cas' in services_enabled"
 
 - name: Generate .env file with database passwords from inventories
   template:
@@ -138,52 +229,12 @@
 
 # Reuse role tasks for other services
 # Each role handles its own configuration generation
-- name: Run userdetails configuration generation
-  include_role:
-    name: userdetails
-  vars:
-    deployment_type: container
-  when: "'userdetails' in services_enabled"
-  tags:
-    - userdetails
-    - config
-
-- name: Run apikey configuration generation
-  include_role:
-    name: apikey
-  vars:
-    deployment_type: container
-  when: "'apikey' in services_enabled"
-  tags:
-    - apikey
-    - config
-
-- name: Run cas configuration generation
-  include_role:
-    name: cas
-  vars:
-    deployment_type: container
-  when: "'cas' in services_enabled or groups['cas-servers'] is defined"
-  tags:
-    - cas
-    - config
-
-- name: Run cas-management configuration generation
-  include_role:
-    name: cas-management
-  vars:
-    deployment_type: container
-  when: "'cas-management' in services_enabled"
-  tags:
-    - cas-management
-    - config
-
 - name: Run species-list configuration generation
   include_role:
     name: species-list
   vars:
     deployment_type: container
-  when: "'species-list' in services_enabled"
+  when: "'species-lists' in services_enabled"
   tags:
     - species-list
     - config

@@ -34,4 +34,5 @@
       - "  cas {{ cas_version | default('develop') }}: Java {{ cas_java_version }}"
       - "  userdetails {{ user_details_version | default('develop') }}: Java {{ userdetails_java_version }}"
       - "  apikey {{ apikey_version | default('develop') }}: Java {{ apikey_java_version }}"
+      - "  cas-management {{ cas_management_version | default('develop') }}: Java {{ cas_management_java_version }}"
 

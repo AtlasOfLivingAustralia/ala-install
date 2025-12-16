@@ -1,35 +1,35 @@
+---
+
 - name: "set facts"
   include_role:
     name: common
     tasks_from: setfacts
   tags:
-  - properties
-  - setfacts
-  - apikey
+    - properties
+    - setfacts
+    - apikey
 
 - name: "Create system user for apikey"
   user:
     name: apikey
     state: present
-    system: yes
+    system: true
   tags:
-  - properties
-  - user
-  - apikey
-  when: deployment_type is not defined or deployment_type != 'container'
+    - properties
+    - user
+    - apikey
 
 - name: ensure target directories exist data subdirectories etc.
   file:
     path: "{{item}}"
     state: directory
-    mode: '0755'
-    owner: "{{ docker_default_user | default(ansible_user_id) if deployment_type == 'container' else apikey_user | default('apikey') }}"
-    group: "{{ docker_default_user | default(ansible_user_id) if deployment_type == 'container' else apikey_user | default('apikey') }}"
+    owner: "{{ apikey_user | default('apikey') }}"
+    group: "{{ apikey_user | default('apikey') }}"
   with_items:
     - "{{data_dir}}/apikey"
     - "{{data_dir}}/apikey/config"
     - "{{data_dir}}/apikey/"
-    - "{% if deployment_type != 'container' %}/var/log/atlas/apikey{% endif %}"
+    - "/var/log/atlas/apikey"
   tags:
     - properties
     - apikey
@@ -37,13 +37,12 @@
 - name: set data ownership
   file:
     path: "{{data_dir}}/apikey"
-    owner: "{{ docker_default_user | default(ansible_user_id) if deployment_type == 'container' else apikey_user | default('apikey') }}"
-    group: "{{ docker_default_user | default(ansible_user_id) if deployment_type == 'container' else apikey_user | default('apikey') }}"
+    owner: "{{ apikey_user | default('apikey') }}"
+    group: "{{ apikey_user | default('apikey') }}"
     recurse: true
   tags:
     - properties
     - apikey
-  when: deployment_type is not defined or deployment_type != 'container' or data_dir is defined
 
 - name: copy apikey-config.yml
   template:
@@ -82,72 +81,6 @@
     - properties
     - apikey
 
-- name: add jar and service
-  include_role:
-    name: exec-jar
-    apply:
-      tags: apikey
-  vars:
-    service_name: "apikey"
-    jar_url: '{{ apikey_jar_url }}'
-    use_openjdk11: "{{ apikey_version is version('1.7.0', '>=') }}"
-    use_openjdk8: "{{ apikey_version is version('1.7.0', '<') }}"
-    java_headless: true
-    java_jre: true
-    log_config_filename: logback.xml
-  tags:
-    - deploy
-    - service
-    - service-conf
-    - apikey
-
-- name: Ensure apikey is in a running state
-  service:
-    name: apikey
-    state: started
-  register: apikeyService
-  until: apikeyService.status.ActiveState == "active"
-  retries: 15
-  delay: 30
-  tags:
-    - apikey
-    - db
-
-- name: wait for apikey is running to create the apikeys
-  wait_for: host=127.0.0.1 port={{ apikey_port | default('9002') }} delay=30
-  when: apikey_def_creator_email is defined and apikey_def_creator_userid is defined
-  tags:
-    - apikey
-    - db
-
-- name: add apikeys if do not exist
-  include_role:
-    name: apikey-add
-  vars:
-    app: "{{ oitem.app }}"
-    apikey: "{{ oitem.apikey }}"
-  with_items:
-    - { app: "alerts", apikey: "{{ alerts_apikey }}" }
-    - { app: "bie-index", apikey: "{{ bie_index_api_key }}" }
-    - { app: "biocache", apikey: "{{ biocache_api_key }}" }
-    - { app: "collectory", apikey: "{{ api_key }}" }
-    - { app: "collectory", apikey: "{{ registry_api_key }}" }
-    - { app: "doi-service", apikey: "{{ doi_service_apiKey }}" }
-    - { app: "image-service", apikey: "{{ image_service_apiKey }}" }
-    - { app: "spatialportal", apikey: "{{ spatial_service_api_key }}" }
-    - { app: "spatialportal", apikey: "{{ spatial_service_service_key }}" }
-    - { app: "spatialportal", apikey: "{{ spatial_service_slave_key }}" }
-    - { app: "specieslists", apikey: "{{ speciesList_api_key }}" }
-    - { app: "pipelines", apikey: "{{ pipelines_api_key | default('') }}" }
-    - { app: "data-quality", apikey: "{{ data_quality_api_key | default('') }}" }
-    - { app: "ecodata", apikey: "{{ ecodata_api_key | default('') }}" }
-  loop_control:
-    loop_var: oitem
-  when: apikey_def_creator_email is defined and apikey_def_creator_userid is defined and oitem.apikey|length > 0
-  tags:
-    - apikeys_add
-    - apikey
-
 - name: add nginx vhost
   include_role:
     name: nginx_vhost
@@ -159,9 +92,17 @@
       - path: "/{{ apikey_context_path | default('apikey') }}"
         appname: "apikey"
         is_proxy: true
-        proxy_pass: "http://127.0.0.1:{{ apikey_port | default('9002') }}/{{ apikey_context_path | default('apikey') }}"
+        proxy_pass: "http://{{ apikey_docker_host | default('127.0.0.1') }}:{{ apikey_port | default('9002') }}/{{ apikey_context_path | default('apikey') }}"
   tags:
     - nginx_vhost
     - deploy
     - apikey
-  when: webserver_nginx | bool 
+  when: webserver_nginx
+
+- name: Include docker tasks
+  include_tasks: docker-tasks.yml
+  when: deployment_type == 'swarm'
+
+- name: Include VM tasks
+  import_tasks: vm-tasks.yml
+  when: deployment_type == 'vm'

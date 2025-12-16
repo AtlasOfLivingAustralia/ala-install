@@ -1,29 +1,34 @@
 ---
 - hosts: cas-servers
   vars:
-    deployment_type: swarm
-    nginx_conf_dir: "{{ data_dir }}/nginx"
-    cas_db_hostname: la_auth_mysql
-    user_store_db_hostname: la_auth_mysql
-    apikey_db_hostname: la_auth_mysql
-    ticket_registry_db_hostname: la_auth_mongo
-    cas_audit_host: la_auth_mongo
-    cas_spring_session_host: la_auth_mongo
-    cas_tickets_host: la_auth_mongo
-    cas_services_host: la_auth_mongo
-    skip_handlers: true
-    cas_add_mongo_users: true
-    bootadmin_client_base_url: 'https://{{ inventory_hostname}}/'
-    tomcat_user: "{{ docker_default_user }}"
-    nginx_user: "{{ docker_default_user }}"
-    cas_user: "{{ docker_default_user }}"
-    userdetails_user: "{{ docker_default_user }}"
-    apikey_user: "{{ docker_default_user }}"
-    cas_docker_host: la_auth_cas
-    userdetails_docker_host: la_auth_userdetails
-    cas_management_docker_host: la_auth_cas-management
+    - deployment_type: swarm
+    - nginx_conf_dir: "{{ data_dir }}/nginx"
+    - cas_db_hostname: la_auth_mysql
+    - user_store_db_hostname: la_auth_mysql
+    - user_store_db_hostname: la_auth_mysql
+    - apikey_db_hostname: la_auth_mysql
+    - ticket_registry_db_hostname: la_auth_mongo
+    - cas_audit_host: la_auth_mongo
+    - cas_spring_session_host: la_auth_mongo
+    - cas_tickets_host: la_auth_mongo
+    - cas_tickets_host: la_auth_mongo
+    - cas_services_host: la_auth_mongo
+    - cas_services_host: la_auth_mongo
+    - skip_handlers: true
+    - cas_add_mongo_users: true
+    - bootadmin_client_base_url: 'https://{{ inventory_hostname}}/'
+    - tomcat_user: "{{ docker_default_user }}"
+    - nginx_user: "{{ docker_default_user }}"
+    - cas_user: "{{ docker_default_user }}"
+    - userdetails_user: "{{ docker_default_user }}"
+    - apikey_user: "{{ docker_default_user }}"
+    - cas_docker_host: la_auth_cas
+    - userdetails_docker_host: la_auth_userdetails
+    - cas_management_docker_host: la_auth_cas-management
+    - apikey_docker_host: la_auth_apikey
   roles:
     - common
     - cas5
     - cas-management
     - userdetails
+    - apikey

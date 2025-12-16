@@ -102,13 +102,13 @@ target "collectory" {
     COLLECTORY_BRANCH = "{{ collectory_branch | default('develop') }}"
   }
 {% if docker_registry and docker_registry != '' %}
-  tags = ["{{ docker_registry }}/collectory:${TAG}", "{{ docker_registry }}/collectory:latest"]
+  tags = ["{{ docker_registry }}/collectory:{{ collectory_version | default('latest') }}", "{{ docker_registry }}/collectory:latest"]
   cache-from = [
     "type=registry,ref={{ docker_registry }}/collectory:${CACHE_TAG}",
     "type=registry,ref={{ docker_registry }}/collectory:latest"
   ]
 {% else %}
-  tags = ["collectory:${TAG}", "collectory:latest"]
+  tags = ["collectory:{{ collectory_version | default('latest') }}", "collectory:latest"]
 {% endif %}
   cache-to = ["type=inline"]
   platforms = ["linux/amd64"]
@@ -116,101 +116,98 @@ target "collectory" {
 {% endif %}
 
 # CAS, UserDetails, APIKey and CAS Management services
-# Note: These services have complex build requirements and are better sourced from Docker Hub
-# Local builds are disabled by default. Enable by setting docker_cas_image_local=true if needed.
-# Uncomment the sections below if you want to build locally (requires working Dockerfiles)
 
-# {% if 'cas' in services_enabled %}
-# target "cas" {
-#   dockerfile = "Dockerfile"
-#   context = "../docker/cas"
-#   contexts = {
-#     "gradle-builder:jdk{{ cas_java_version | default('11') }}" = "target:gradle-builder-jdk{{ cas_java_version | default('11') }}"
-#   }
-#   args = {
-#     GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ cas_java_version | default('11') }}"
-#     CAS_VERSION = "{{ cas_version | default('develop') }}"
-#     CAS_REPO = "https://github.com/AtlasOfLivingAustralia/ala-cas-5.git"
-#     CAS_BRANCH = "{{ cas_branch | default('master') }}"
-#   }
-# {% if docker_registry and docker_registry != '' %}
-#   tags = ["{{ docker_registry }}/cas:${TAG}", "{{ docker_registry }}/cas:latest"]
-# {% else %}
-#   tags = ["cas:${TAG}", "cas:latest"]
-# {% endif %}
-#   cache-to = ["type=inline"]
-#   platforms = ["linux/amd64"]
-# }
-# {% endif %}
+{% if 'cas' in services_enabled %}
+target "cas" {
+  dockerfile = "Dockerfile"
+  context = "../docker/cas"
+  contexts = {
+    "gradle-builder:jdk{{ cas_java_version | default('11') }}" = "target:gradle-builder-jdk{{ cas_java_version | default('11') }}"
+  }
+  args = {
+    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ cas_java_version | default('11') }}"
+    CAS_VERSION = "{{ cas_version | default('develop') }}"
+    CAS_REPO = "https://github.com/AtlasOfLivingAustralia/ala-cas-5.git"
+    CAS_BRANCH = "{{ cas_branch | default('master') }}"
+  }
+{% if docker_registry and docker_registry != '' %}
+  tags = ["{{ docker_registry }}/cas:{{ cas_version | default('latest') }}", "{{ docker_registry }}/cas:latest"]
+{% else %}
+  tags = ["cas:{{ cas_version | default('latest') }}", "cas:latest"]
+{% endif %}
+  cache-to = ["type=inline"]
+  platforms = ["linux/amd64"]
+}
+{% endif %}
 
-# {% if 'userdetails' in services_enabled %}
-# target "userdetails" {
-#   dockerfile = "Dockerfile"
-#   context = "../docker/userdetails"
-#   contexts = {
-#     "gradle-builder:jdk{{ userdetails_java_version | default('11') }}" = "target:gradle-builder-jdk{{ userdetails_java_version | default('11') }}"
-#   }
-#   args = {
-#     GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ userdetails_java_version | default('11') }}"
-#     USERDETAILS_VERSION = "{{ user_details_version | default('develop') }}"
-#     USERDETAILS_REPO = "https://github.com/AtlasOfLivingAustralia/userdetails.git"
-#     USERDETAILS_BRANCH = "{{ user_details_branch | default('master') }}"
-#   }
-# {% if docker_registry and docker_registry != '' %}
-#   tags = ["{{ docker_registry }}/userdetails:${TAG}", "{{ docker_registry }}/userdetails:latest"]
-# {% else %}
-#   tags = ["userdetails:${TAG}", "userdetails:latest"]
-# {% endif %}
-#   cache-to = ["type=inline"]
-#   platforms = ["linux/amd64"]
-# }
-# {% endif %}
+{% if 'userdetails' in services_enabled %}
+target "userdetails" {
+  dockerfile = "Dockerfile"
+  context = "../docker/userdetails"
+  contexts = {
+    "gradle-builder:jdk{{ userdetails_java_version | default('11') }}" = "target:gradle-builder-jdk{{ userdetails_java_version | default('11') }}"
+  }
+  args = {
+    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ userdetails_java_version | default('11') }}"
+    USERDETAILS_VERSION = "{{ user_details_version | default('develop') }}"
+    USERDETAILS_REPO = "https://github.com/AtlasOfLivingAustralia/userdetails.git"
+    USERDETAILS_BRANCH = "{{ user_details_branch | default('master') }}"
+  }
+{% if docker_registry and docker_registry != '' %}
+  tags = ["{{ docker_registry }}/userdetails:{{ user_details_version | default('latest') }}", "{{ docker_registry }}/userdetails:latest"]
+{% else %}
+  tags = ["userdetails:{{ user_details_version | default('latest') }}", "userdetails:latest"]
+{% endif %}
+  cache-to = ["type=inline"]
+  platforms = ["linux/amd64"]
+}
+{% endif %}
 
-# {% if 'apikey' in services_enabled %}
-# target "apikey" {
-#   dockerfile = "Dockerfile"
-#   context = "../docker/apikey"
-#   contexts = {
-#     "gradle-builder:jdk{{ apikey_java_version | default('11') }}" = "target:gradle-builder-jdk{{ apikey_java_version | default('11') }}"
-#   }
-#   args = {
-#     GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ apikey_java_version | default('11') }}"
-#     APIKEY_VERSION = "{{ apikey_version | default('develop') }}"
-#     APIKEY_REPO = "https://github.com/AtlasOfLivingAustralia/apikey.git"
-#     APIKEY_BRANCH = "{{ apikey_branch | default('master') }}"
-#   }
-# {% if docker_registry and docker_registry != '' %}
-#   tags = ["{{ docker_registry }}/apikey:${TAG}", "{{ docker_registry }}/apikey:latest"]
-# {% else %}
-#   tags = ["apikey:${TAG}", "apikey:latest"]
-# {% endif %}
-#   cache-to = ["type=inline"]
-#   platforms = ["linux/amd64"]
-# }
-# {% endif %}
+{% if 'apikey' in services_enabled %}
+target "apikey" {
+  dockerfile = "Dockerfile"
+  context = "../docker/apikey"
+  contexts = {
+    "gradle-builder:jdk{{ apikey_java_version | default('11') }}" = "target:gradle-builder-jdk{{ apikey_java_version | default('11') }}"
+  }
+  args = {
+    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ apikey_java_version | default('11') }}"
+    APIKEY_VERSION = "{{ apikey_version | default('develop') }}"
+    APIKEY_REPO = "https://github.com/AtlasOfLivingAustralia/apikey.git"
+    APIKEY_BRANCH = "{{ apikey_branch | default('master') }}"
+  }
+{% if docker_registry and docker_registry != '' %}
+  tags = ["{{ docker_registry }}/apikey:{{ apikey_version | default('latest') }}", "{{ docker_registry }}/apikey:latest"]
+{% else %}
+  tags = ["apikey:{{ apikey_version | default('latest') }}", "apikey:latest"]
+{% endif %}
+  cache-to = ["type=inline"]
+  platforms = ["linux/amd64"]
+}
+{% endif %}
 
-# {% if 'cas-management' in services_enabled %}
-# target "cas-management" {
-#   dockerfile = "Dockerfile"
-#   context = "../docker/cas-management"
-#   contexts = {
-#     "gradle-builder:jdk{{ cas_management_java_version | default('11') }}" = "target:gradle-builder-jdk{{ cas_management_java_version | default('11') }}"
-#   }
-#   args = {
-#     GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ cas_management_java_version | default('11') }}"
-#     CAS_MANAGEMENT_VERSION = "{{ cas_management_version | default('develop') }}"
-#     CAS_MANAGEMENT_REPO = "https://github.com/AtlasOfLivingAustralia/ala-cas-5-services.git"
-#     CAS_MANAGEMENT_BRANCH = "{{ cas_management_branch | default('master') }}"
-#   }
-# {% if docker_registry and docker_registry != '' %}
-#   tags = ["{{ docker_registry }}/cas-management:${TAG}", "{{ docker_registry }}/cas-management:latest"]
-# {% else %}
-#   tags = ["cas-management:${TAG}", "cas-management:latest"]
-# {% endif %}
-#   cache-to = ["type=inline"]
-#   platforms = ["linux/amd64"]
-# }
-# {% endif %}
+{% if 'cas-management' in services_enabled %}
+target "cas-management" {
+  dockerfile = "Dockerfile"
+  context = "../docker/cas-management"
+  contexts = {
+    "gradle-builder:jdk{{ cas_management_java_version | default('11') }}" = "target:gradle-builder-jdk{{ cas_management_java_version | default('11') }}"
+  }
+  args = {
+    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ cas_management_java_version | default('11') }}"
+    CAS_MANAGEMENT_VERSION = "{{ cas_management_version | default('develop') }}"
+    CAS_MANAGEMENT_REPO = "https://github.com/AtlasOfLivingAustralia/ala-cas-5-services.git"
+    CAS_MANAGEMENT_BRANCH = "{{ cas_management_branch | default('master') }}"
+  }
+{% if docker_registry and docker_registry != '' %}
+  tags = ["{{ docker_registry }}/cas-management:{{ cas_management_version | default('latest') }}", "{{ docker_registry }}/cas-management:latest"]
+{% else %}
+  tags = ["cas-management:{{ cas_management_version | default('latest') }}", "cas-management:latest"]
+{% endif %}
+  cache-to = ["type=inline"]
+  platforms = ["linux/amd64"]
+}
+{% endif %}
 
 {% if 'gatus' in services_enabled %}
 target "gatus" {
@@ -241,9 +238,9 @@ target "species-list" {
     SPECIES_LIST_BRANCH = "{{ species_list_branch | default('master') }}"
   }
 {% if docker_registry and docker_registry != '' %}
-  tags = ["{{ docker_registry }}/species-list:${TAG}", "{{ docker_registry }}/species-list:latest"]
+  tags = ["{{ docker_registry }}/species-list:{{ species_list_version | default('latest') }}", "{{ docker_registry }}/species-list:latest"]
 {% else %}
-  tags = ["species-list:${TAG}", "species-list:latest"]
+  tags = ["species-list:{{ species_list_version | default('latest') }}", "species-list:latest"]
 {% endif %}
   cache-to = ["type=inline"]
   platforms = ["linux/amd64"]
@@ -263,7 +260,6 @@ group "builders" {
 }
 
 # Build all services (depends on builders)
-# Note: cas, userdetails, apikey, cas-management are sourced from Docker Hub by default
 group "all" {
   targets = [
 {% if i18n.enabled %}
@@ -274,6 +270,18 @@ group "all" {
 {% endif %}
 {% if 'species-list' in services_enabled or groups['species-list'] is defined %}
     "species-list",
+{% endif %}
+{% if 'cas' in services_enabled %}
+    "cas",
+{% endif %}
+{% if 'userdetails' in services_enabled %}
+    "userdetails",
+{% endif %}
+{% if 'apikey' in services_enabled %}
+    "apikey",
+{% endif %}
+{% if 'cas-management' in services_enabled %}
+    "cas-management",
 {% endif %}
 {% if 'gatus' in services_enabled %}
     "gatus",
@@ -289,6 +297,18 @@ group "services" {
 {% endif %}
 {% if 'species-list' in services_enabled or groups['species-list'] is defined %}
     "species-list",
+{% endif %}
+{% if 'cas' in services_enabled %}
+    "cas",
+{% endif %}
+{% if 'userdetails' in services_enabled %}
+    "userdetails",
+{% endif %}
+{% if 'apikey' in services_enabled %}
+    "apikey",
+{% endif %}
+{% if 'cas-management' in services_enabled %}
+    "cas-management",
 {% endif %}
 {% if 'gatus' in services_enabled %}
     "gatus",
