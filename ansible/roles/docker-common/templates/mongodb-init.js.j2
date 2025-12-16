@@ -1,0 +1,53 @@
+// MongoDB initialization script for CAS ecosystem
+// This script creates the necessary users and databases for CAS components
+// Called automatically by MongoDB during container initialization
+
+// Note: Root user is created automatically by MongoDB using MONGO_INITDB_ROOT_USERNAME
+// and MONGO_INITDB_ROOT_PASSWORD environment variables
+
+// Create CAS Ticket Registry database and user
+{% if cas_tickets_username is defined and cas_tickets_password is defined %}
+db = db.getSiblingDB("{{ cas_tickets_db | default('cas-ticket-registry') }}");
+db.createUser({
+  user: "{{ cas_tickets_username }}",
+  pwd: "{{ cas_tickets_password }}",
+  roles: [{role: "readWrite", db: "{{ cas_tickets_db | default('cas-ticket-registry') }}"}]
+});
+print("✅ Created user for CAS Ticket Registry");
+{% endif %}
+
+// Create CAS Service Registry database and user
+{% if cas_services_username is defined and cas_services_password is defined %}
+db = db.getSiblingDB("{{ cas_services_db | default('cas-service-registry') }}");
+db.createUser({
+  user: "{{ cas_services_username }}",
+  pwd: "{{ cas_services_password }}",
+  roles: [{role: "readWrite", db: "{{ cas_services_db | default('cas-service-registry') }}"}]
+});
+print("✅ Created user for CAS Service Registry");
+{% endif %}
+
+// Create CAS Audit Repository database and user
+{% if cas_audit_username is defined and cas_audit_password is defined %}
+db = db.getSiblingDB("{{ cas_audit_db | default('cas-audit-repository') }}");
+db.createUser({
+  user: "{{ cas_audit_username }}",
+  pwd: "{{ cas_audit_password }}",
+  roles: [{role: "readWrite", db: "{{ cas_audit_db | default('cas-audit-repository') }}"}]
+});
+print("✅ Created user for CAS Audit Repository");
+{% endif %}
+
+// Create Spring Session database and user
+{% if cas_spring_session_username is defined and cas_spring_session_password is defined %}
+db = db.getSiblingDB("{{ spring_session_mongo_collection | default('spring-sessions') }}");
+db.createUser({
+  user: "{{ cas_spring_session_username }}",
+  pwd: "{{ cas_spring_session_password }}",
+  roles: [{role: "readWrite", db: "{{ spring_session_mongo_collection | default('spring-sessions') }}"}]
+});
+print("✅ Created user for Spring Session");
+{% endif %}
+
+print("✅ MongoDB initialization complete");
+
