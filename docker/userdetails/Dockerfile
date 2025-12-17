@@ -6,28 +6,45 @@ ARG GRADLE_BUILDER_IMAGE=gradle:7-jdk11-jammy
 ARG RUNTIME_IMAGE=tomcat:9-jre11
 
 # ============================================
-# Stage 1: Build
+# Stage 1: Build (try Nexus first, then source)
 # ============================================
 FROM ${GRADLE_BUILDER_IMAGE} AS builder
 
-ARG USERDETAILS_VERSION=3.0.2
+ARG USERDETAILS_VERSION=3.2.1
 ARG USERDETAILS_REPO=https://github.com/AtlasOfLivingAustralia/userdetails.git
 ARG USERDETAILS_BRANCH=master
+ARG USERDETAILS_ARTIFACT=userdetails
+ARG USERDETAILS_GROUP_ID=au.org.ala
+ARG USERDETAILS_CLASSIFIER=exec
+ARG NEXUS_BASE=https://nexus.ala.org.au/service/local/artifact/maven/redirect
 
 WORKDIR /build
 
-# Clone and checkout specific version/branch
-RUN git clone ${USERDETAILS_REPO} . && \
-    if [ "${USERDETAILS_BRANCH}" != "master" ]; then \
-        git checkout ${USERDETAILS_BRANCH}; \
-    fi && \
-    if [ "${USERDETAILS_VERSION}" != "develop" ]; then \
-        git checkout ${USERDETAILS_VERSION} || git checkout tags/v${USERDETAILS_VERSION} || true; \
+# Using Maven redirect service with classifier=exec
+RUN echo "🔍 Checking Nexus for ${USERDETAILS_ARTIFACT} ${USERDETAILS_VERSION}..." && \
+    if [ "${USERDETAILS_VERSION}" != "develop" ] && [ "${USERDETAILS_VERSION}" != "master" ]; then \
+        NEXUS_URL="${NEXUS_BASE}?r=public&g=${USERDETAILS_GROUP_ID}&a=${USERDETAILS_ARTIFACT}&v=${USERDETAILS_VERSION}&e=war&c=${USERDETAILS_CLASSIFIER}" && \
+        echo "   Trying: ${NEXUS_URL}" && \
+        if curl -f -L -o userdetails.war "${NEXUS_URL}"; then \
+            echo "✅ Downloaded from Nexus in seconds"; \
+        else \
+            echo "⚠️  Not found in Nexus, building from source..." && \
+            git clone ${USERDETAILS_REPO} . && \
+            (git checkout ${USERDETAILS_VERSION} || git checkout tags/v${USERDETAILS_VERSION} || git checkout ${USERDETAILS_BRANCH}) && \
+            export GRADLE_OPTS="-Dorg.gradle.internal.http.connectionTimeout=300000 -Dorg.gradle.internal.http.socketTimeout=300000 -Dorg.gradle.internal.http.totaltimeout=1800000" && \
+            ./gradlew clean war -x test --no-daemon --max-workers=1 && \
+            mv build/libs/*.war userdetails.war && \
+            echo "✅ Built from source"; \
+        fi; \
+    else \
+        echo "⚠️  Building from source..." && \
+        git clone ${USERDETAILS_REPO} . && \
+        git checkout ${USERDETAILS_BRANCH} && \
+        export GRADLE_OPTS="-Dorg.gradle.internal.http.connectionTimeout=300000 -Dorg.gradle.internal.http.socketTimeout=300000 -Dorg.gradle.internal.http.totaltimeout=1800000" && \
+        ./gradlew clean war -x test --no-daemon --max-workers=1 && \
+        mv build/libs/*.war userdetails.war && \
+        echo "✅ Built from source"; \
     fi
-
-# Build the WAR file
-RUN --mount=type=cache,target=/root/.gradle \
-    ./gradlew clean war -x test --no-daemon
 
 # ============================================
 # Stage 2: Runtime
@@ -53,8 +70,8 @@ RUN curl -sfL https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE
 # Remove default webapps
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Copy built WAR from builder
-COPY --from=builder /build/build/libs/*.war /usr/local/tomcat/webapps/userdetails.war
+# Copy built WAR from builder (standardized name from Nexus or source build)
+COPY --from=builder /build/userdetails.war /usr/local/tomcat/webapps/userdetails.war
 
 # Set config location
 ENV CATALINA_OPTS="-Duserdetails.config=file:/data/userdetails/config/userdetails-config.properties"

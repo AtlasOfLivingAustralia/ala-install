@@ -6,31 +6,44 @@ ARG GRADLE_BUILDER_IMAGE=gradle-builder:jdk17
 ARG RUNTIME_IMAGE=tomcat:9-jre17
 
 # ============================================
-# Stage 1: Build
+# Stage 1: Build (try Nexus first, then source)
 # ============================================
 FROM ${GRADLE_BUILDER_IMAGE} AS builder
 
-ARG SPECIES_LIST_VERSION=4.0.4
+ARG SPECIES_LIST_VERSION=5.3.0
 ARG SPECIES_LIST_REPO=https://github.com/AtlasOfLivingAustralia/specieslist-webapp.git
 ARG SPECIES_LIST_BRANCH=master
+ARG SPECIES_LIST_ARTIFACT=specieslist-webapp
+ARG SPECIES_LIST_GROUP_ID=au.org.ala
+ARG NEXUS_BASE=https://nexus.ala.org.au/service/local/artifact/maven/redirect
 
 WORKDIR /build
 
-# Clone and checkout specific version/branch
-RUN git clone ${SPECIES_LIST_REPO} . && \
-    if [ "${SPECIES_LIST_BRANCH}" != "master" ]; then \
-        git checkout ${SPECIES_LIST_BRANCH}; \
-    fi && \
-    if [ "${SPECIES_LIST_VERSION}" != "develop" ]; then \
-        git checkout ${SPECIES_LIST_VERSION} || git checkout tags/v${SPECIES_LIST_VERSION} || true; \
+# Using Maven redirect service (no classifier)
+RUN echo "🔍 Checking Nexus for ${SPECIES_LIST_ARTIFACT} ${SPECIES_LIST_VERSION}..." && \
+    if [ "${SPECIES_LIST_VERSION}" != "develop" ] && [ "${SPECIES_LIST_VERSION}" != "master" ]; then \
+        NEXUS_URL="${NEXUS_BASE}?r=public&g=${SPECIES_LIST_GROUP_ID}&a=${SPECIES_LIST_ARTIFACT}&v=${SPECIES_LIST_VERSION}&e=war" && \
+        echo "   Trying: ${NEXUS_URL}" && \
+        if curl -f -L -o specieslist-webapp.war "${NEXUS_URL}"; then \
+            echo "✅ Downloaded from Nexus"; \
+        else \
+            echo "⚠️  Building from source..." && \
+            git clone ${SPECIES_LIST_REPO} . && \
+            (git checkout ${SPECIES_LIST_VERSION} || git checkout tags/v${SPECIES_LIST_VERSION} || git checkout ${SPECIES_LIST_BRANCH}) && \
+            export GRADLE_OPTS="-Dorg.gradle.internal.http.connectionTimeout=300000 -Dorg.gradle.internal.http.socketTimeout=300000 -Dorg.gradle.internal.http.totaltimeout=1800000" && \
+            ./gradlew clean war -x test --no-daemon --max-workers=1 && \
+            mv build/libs/*.war specieslist-webapp.war && \
+            echo "✅ Built from source"; \
+        fi; \
+    else \
+        echo "⚠️  Building from source..." && \
+        git clone ${SPECIES_LIST_REPO} . && \
+        git checkout ${SPECIES_LIST_BRANCH} && \
+        export GRADLE_OPTS="-Dorg.gradle.internal.http.connectionTimeout=300000 -Dorg.gradle.internal.http.socketTimeout=300000 -Dorg.gradle.internal.http.totaltimeout=1800000" && \
+        ./gradlew clean war -x test --no-daemon --max-workers=1 && \
+        mv build/libs/*.war specieslist-webapp.war && \
+        echo "✅ Built from source"; \
     fi
-
-# Gradle configuration for better handling of wrapper downloads
-ENV GRADLE_OPTS="-Dorg.gradle.internal.http.connectionTimeout=120000 -Dorg.gradle.internal.http.socketTimeout=120000"
-
-# Build the WAR file (increased timeout for gradle wrapper download)
-RUN --mount=type=cache,target=/root/.gradle \
-    ./gradlew clean war -x test --no-daemon --max-workers=1
 
 # ============================================
 # Stage 2: Runtime
@@ -63,8 +76,8 @@ RUN mkdir -p /data/species-list/config /data/species-list/data /data/species-lis
 # Remove default webapps
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Copy built WAR from builder
-COPY --from=builder --chown=tomcat:tomcat /build/build/libs/*.war /usr/local/tomcat/webapps/specieslist.war
+# Copy built WAR from builder (standardized name from Nexus or source build)
+COPY --from=builder --chown=tomcat:tomcat /build/specieslist-webapp.war /usr/local/tomcat/webapps/specieslist.war
 
 # Set config location
 ENV CATALINA_OPTS="-Dspecieslist.config=file:/data/species-list/config/specieslist-config.properties"

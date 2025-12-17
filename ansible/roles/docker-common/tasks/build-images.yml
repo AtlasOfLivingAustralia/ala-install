@@ -28,7 +28,13 @@
       - "  Configuration:"
       - "    - Docker Bake File: {{ data_dir }}/docker-bake.hcl"
       - "    - Registry: {{ docker_registry | default('(local)') }}"
-      - "    - Tag: {{ docker_image_tag }}"
+      - "    - Tags: Using service-specific versions from inventory"
+      - "      • CAS: {{ cas_version }}"
+      - "      • Collectory: {{ collectory_version }}"
+      - "      • Species List: {{ species_list_version }}"
+      - "      • UserDetails: {{ user_details_version }}"
+      - "      • APIKey: {{ apikey_version }}"
+      - "      • CAS Management: {{ cas_management_version }}"
       - "    - Services: {{ services_enabled | join(', ') }}{% if i18n.enabled %} + ala-i18n{% endif %}"
       - ""
       - "  ⏱️  Estimated time:"
@@ -38,8 +44,20 @@
       - "  💡 Tip: Watch progress with 'docker images' in another terminal"
       - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
+- name: Check if gradle-builder images already exist
+  shell: docker image inspect gradle-builder:jdk17 > /dev/null 2>&1 && docker image inspect gradle-builder:jdk11 > /dev/null 2>&1
+  register: builders_exist
+  failed_when: false
+  changed_when: false
+
+- name: Display builder cache status
+  debug:
+    msg: "{{ '✅ Gradle builders already exist, skipping rebuild' if builders_exist.rc == 0 else '🔨 Building gradle-builder images (first time only)' }}"
+
 - name: Build builder images first (gradle-builder)
   shell: >
+    set -e;
+    docker context use desktop-linux 2>/dev/null || docker context use default;
     docker buildx bake
     -f docker-bake.hcl
     --set *.cache-from=type=local,src={{ docker_build_cache_dir }}
@@ -55,7 +73,7 @@
     executable: /bin/bash
   register: build_builders
   changed_when: true
-  when: services_enabled | length > 0
+  when: services_enabled | length > 0 and builders_exist.rc != 0
   async: 1800
   poll: 0
 
@@ -63,7 +81,7 @@
   wait_for:
     path: /tmp/docker-build-builders.log
     timeout: 30
-  when: services_enabled | length > 0
+  when: services_enabled | length > 0 and builders_exist.rc != 0
 
 - name: Monitor builder build progress
   shell: |
@@ -79,10 +97,10 @@
     done
   args:
     executable: /bin/bash
+  when: services_enabled | length > 0 and builders_exist.rc != 0
+  register: monitor_builders
   async: 1800
   poll: 0
-  when: services_enabled | length > 0
-  register: monitor_builders
 
 - name: Wait for builder images to finish
   async_status:
@@ -91,7 +109,7 @@
   until: build_result.finished
   retries: 180
   delay: 10
-  when: services_enabled | length > 0
+  when: services_enabled | length > 0 and builders_exist.rc != 0
 
 - name: Stop monitoring
   async_status:
@@ -102,6 +120,8 @@
 
 - name: Build service images
   shell: >
+    set -e;
+    docker context use desktop-linux 2>/dev/null || docker context use default;
     docker buildx bake
     -f docker-bake.hcl
     --set *.cache-from=type=local,src={{ docker_build_cache_dir }}
@@ -166,21 +186,25 @@
   when: services_enabled | length > 0
   ignore_errors: true
 
-- name: Build list of images for display
-  set_fact:
-    built_images: "{{ (['ala-i18n:' + docker_image_tag] if i18n.enabled else []) + (services_enabled | map('regex_replace', '^(.*)$', '\\1:' + docker_image_tag) | list) }}"
-
 - name: Display build results
   debug:
     msg:
       - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
       - "✅ Images built successfully!"
       - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-      - "  Built images:"
-      - "{{ built_images | map('regex_replace', '^(.*)$', '    - \\1') | list }}"
+      - "  Built services with versions:"
+      - "    • CAS: {{ cas_version | default('N/A') }}"
+      - "    • Collectory: {{ collectory_version | default('N/A') }}"
+      - "    • Species List: {{ species_list_version | default('N/A') }}"
+      - "    • UserDetails: {{ user_details_version | default('N/A') }}"
+      - "    • APIKey: {{ apikey_version | default('N/A') }}"
+      - "    • CAS Management: {{ cas_management_version | default('N/A') }}"
+      - ""
+      - "  Verify with: docker images"
       - ""
       - "  Next steps:"
-      - "    - View images: docker images"
-      - "    - Run services: docker-compose up -d"
+      - "    - Start services: docker compose -f {{ data_dir }}/docker-compose.yml up -d"
+      - "    - Check status: docker compose ps"
+      - "    - View logs: docker compose logs -f"
       - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 

@@ -6,28 +6,45 @@ ARG GRADLE_BUILDER_IMAGE=gradle:7-jdk11-jammy
 ARG RUNTIME_IMAGE=eclipse-temurin:11-jre-jammy
 
 # ============================================
-# Stage 1: Build
+# Stage 1: Build (try Nexus first, then source)
 # ============================================
 FROM ${GRADLE_BUILDER_IMAGE} AS builder
 
 ARG CAS_MANAGEMENT_VERSION=6.5.5-2
 ARG CAS_MANAGEMENT_REPO=https://github.com/AtlasOfLivingAustralia/ala-cas-5-services.git
 ARG CAS_MANAGEMENT_BRANCH=master
+ARG CAS_MANAGEMENT_ARTIFACT=cas-management
+ARG CAS_MANAGEMENT_GROUP_ID=au.org.ala
+ARG CAS_MANAGEMENT_CLASSIFIER=exec
+ARG NEXUS_BASE=https://nexus.ala.org.au/service/local/artifact/maven/redirect
 
 WORKDIR /build
 
-# Clone and checkout specific version/branch
-RUN git clone ${CAS_MANAGEMENT_REPO} . && \
-    if [ "${CAS_MANAGEMENT_BRANCH}" != "master" ]; then \
-        git checkout ${CAS_MANAGEMENT_BRANCH}; \
-    fi && \
-    if [ "${CAS_MANAGEMENT_VERSION}" != "develop" ]; then \
-        git checkout ${CAS_MANAGEMENT_VERSION} || git checkout tags/v${CAS_MANAGEMENT_VERSION} || true; \
+# Using Maven redirect service with classifier=exec
+RUN echo "🔍 Checking Nexus for ${CAS_MANAGEMENT_ARTIFACT} ${CAS_MANAGEMENT_VERSION}..." && \
+    if [ "${CAS_MANAGEMENT_VERSION}" != "develop" ] && [ "${CAS_MANAGEMENT_VERSION}" != "master" ]; then \
+        NEXUS_URL="${NEXUS_BASE}?r=public&g=${CAS_MANAGEMENT_GROUP_ID}&a=${CAS_MANAGEMENT_ARTIFACT}&v=${CAS_MANAGEMENT_VERSION}&e=war&c=${CAS_MANAGEMENT_CLASSIFIER}" && \
+        echo "   Trying: ${NEXUS_URL}" && \
+        if curl -f -L -o ala-cas-management.war "${NEXUS_URL}"; then \
+            echo "✅ Downloaded from Nexus"; \
+        else \
+            echo "⚠️  Building from source..." && \
+            git clone ${CAS_MANAGEMENT_REPO} . && \
+            (git checkout ${CAS_MANAGEMENT_VERSION} || git checkout tags/v${CAS_MANAGEMENT_VERSION} || git checkout ${CAS_MANAGEMENT_BRANCH}) && \
+            export GRADLE_OPTS="-Dorg.gradle.internal.http.connectionTimeout=300000 -Dorg.gradle.internal.http.socketTimeout=300000 -Dorg.gradle.internal.http.totaltimeout=1800000" && \
+            ./gradlew clean bootWar -x test --no-daemon --max-workers=1 && \
+            mv build/libs/*.war ala-cas-management.war && \
+            echo "✅ Built from source"; \
+        fi; \
+    else \
+        echo "⚠️  Building from source..." && \
+        git clone ${CAS_MANAGEMENT_REPO} . && \
+        git checkout ${CAS_MANAGEMENT_BRANCH} && \
+        export GRADLE_OPTS="-Dorg.gradle.internal.http.connectionTimeout=300000 -Dorg.gradle.internal.http.socketTimeout=300000 -Dorg.gradle.internal.http.totaltimeout=1800000" && \
+        ./gradlew clean bootWar -x test --no-daemon --max-workers=1 && \
+        mv build/libs/*.war ala-cas-management.war && \
+        echo "✅ Built from source"; \
     fi
-
-# Build the WAR file
-RUN --mount=type=cache,target=/root/.gradle \
-    ./gradlew clean bootWar -x test --no-daemon
 
 # ============================================
 # Stage 2: Runtime
@@ -55,8 +72,8 @@ RUN groupadd -r casmanagement && useradd -r -g casmanagement casmanagement
 
 WORKDIR /opt/atlas/cas-management
 
-# Copy built WAR from builder
-COPY --from=builder /build/build/libs/*.war ./cas-management.war
+# Copy built WAR from builder (standardized name from Nexus or source build)
+COPY --from=builder /build/ala-cas-management.war ./cas-management.war
 
 # Fix permissions for WAR file
 RUN chown casmanagement:casmanagement /opt/atlas/cas-management/cas-management.war

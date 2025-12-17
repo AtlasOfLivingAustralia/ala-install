@@ -6,28 +6,46 @@ ARG GRADLE_BUILDER_IMAGE=gradle:7-jdk11-jammy
 ARG RUNTIME_IMAGE=tomcat:9-jre11
 
 # ============================================
-# Stage 1: Build
+# Stage 1: Build (try Nexus first, then source)
 # ============================================
 FROM ${GRADLE_BUILDER_IMAGE} AS builder
 
 ARG APIKEY_VERSION=1.7.0
 ARG APIKEY_REPO=https://github.com/AtlasOfLivingAustralia/apikey.git
 ARG APIKEY_BRANCH=master
+ARG APIKEY_ARTIFACT=apikey
+ARG APIKEY_GROUP_ID=au.org.ala
+ARG APIKEY_CLASSIFIER=exec
+ARG NEXUS_BASE=https://nexus.ala.org.au/service/local/artifact/maven/redirect
 
 WORKDIR /build
 
-# Clone and checkout specific version/branch
-RUN git clone ${APIKEY_REPO} . && \
-    if [ "${APIKEY_BRANCH}" != "master" ]; then \
-        git checkout ${APIKEY_BRANCH}; \
-    fi && \
-    if [ "${APIKEY_VERSION}" != "develop" ]; then \
-        git checkout ${APIKEY_VERSION} || git checkout tags/v${APIKEY_VERSION} || true; \
+# Strategy: Try to download pre-built artifact from Nexus first
+# Using Maven redirect service with classifier=exec
+RUN echo "🔍 Checking Nexus for ${APIKEY_ARTIFACT} ${APIKEY_VERSION}..." && \
+    if [ "${APIKEY_VERSION}" != "develop" ] && [ "${APIKEY_VERSION}" != "master" ]; then \
+        NEXUS_URL="${NEXUS_BASE}?r=public&g=${APIKEY_GROUP_ID}&a=${APIKEY_ARTIFACT}&v=${APIKEY_VERSION}&e=war&c=${APIKEY_CLASSIFIER}" && \
+        echo "   Trying: ${NEXUS_URL}" && \
+        if curl -f -L -o apikey.war "${NEXUS_URL}"; then \
+            echo "✅ Downloaded from Nexus in seconds (skipping 5-10 min build)"; \
+        else \
+            echo "⚠️  Not found in Nexus, building from source..." && \
+            git clone ${APIKEY_REPO} . && \
+            (git checkout ${APIKEY_VERSION} || git checkout tags/v${APIKEY_VERSION} || git checkout ${APIKEY_BRANCH}) && \
+            export GRADLE_OPTS="-Dorg.gradle.internal.http.connectionTimeout=300000 -Dorg.gradle.internal.http.socketTimeout=300000 -Dorg.gradle.internal.http.totaltimeout=1800000" && \
+            ./gradlew clean war -x test --no-daemon --max-workers=1 && \
+            mv build/libs/*.war apikey.war && \
+            echo "✅ Built from source"; \
+        fi; \
+    else \
+        echo "⚠️  Version is ${APIKEY_VERSION}, building from source..." && \
+        git clone ${APIKEY_REPO} . && \
+        git checkout ${APIKEY_BRANCH} && \
+        export GRADLE_OPTS="-Dorg.gradle.internal.http.connectionTimeout=300000 -Dorg.gradle.internal.http.socketTimeout=300000 -Dorg.gradle.internal.http.totaltimeout=1800000" && \
+        ./gradlew clean war -x test --no-daemon --max-workers=1 && \
+        mv build/libs/*.war apikey.war && \
+        echo "✅ Built from source"; \
     fi
-
-# Build the WAR file
-RUN --mount=type=cache,target=/root/.gradle \
-    ./gradlew clean war -x test --no-daemon
 
 # ============================================
 # Stage 2: Runtime
@@ -53,8 +71,8 @@ RUN curl -sfL https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE
 # Remove default webapps
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Copy built WAR from builder
-COPY --from=builder /build/build/libs/*.war /usr/local/tomcat/webapps/apikey.war
+# Copy built WAR from builder (standardized name from Nexus or source build)
+COPY --from=builder /build/apikey.war /usr/local/tomcat/webapps/apikey.war
 
 # Set config location
 ENV CATALINA_OPTS="-Dapikey.config=file:/data/apikey/config/apikey-config.properties"

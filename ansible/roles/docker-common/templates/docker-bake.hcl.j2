@@ -71,14 +71,14 @@ target "gradle-builder-jdk21" {
 # ============================================
 
 {% if i18n.enabled %}
-target "i18n" {
+target "ala-i18n" {
   dockerfile = "Dockerfile"
   context = "../docker/i18n"
   args = {}
 {% if docker_registry and docker_registry != '' %}
-  tags = ["{{ docker_registry }}/ala-i18n:${TAG}", "{{ docker_registry }}/ala-i18n:latest"]
+  tags = ["{{ docker_registry }}/ala-i18n:{{ i18n_version }}", "{{ docker_registry }}/ala-i18n:latest"]
 {% else %}
-  tags = ["ala-i18n:${TAG}", "ala-i18n:latest"]
+  tags = ["ala-i18n:{{ i18n_version }}", "ala-i18n:latest"]
 {% endif %}
   cache-to = ["type=inline"]
   platforms = ["linux/amd64"]
@@ -284,7 +284,7 @@ group "builders" {
 group "all" {
   targets = [
 {% if i18n.enabled %}
-    "i18n",
+    "ala-i18n",
 {% endif %}
 {% if 'collectory' in services_enabled %}
     "collectory",

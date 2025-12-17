@@ -13,6 +13,29 @@
 - name: Determine Java versions for services
   include_tasks: determine-java-versions.yml
 
+- name: Fetch latest ala-i18n version from GBIF APT repository
+  block:
+    - name: Download GBIF Packages.gz and extract version
+      shell: |
+        curl -s https://apt.gbif.es/dists/unstable/main/binary-amd64/Packages.gz | \
+        gunzip | \
+        awk '/^Package: ala-i18n$/{p=1; next} p && /^Version:/{print $2; p=0}' | \
+        sort -V | \
+        tail -1 | \
+        sed 's/~.*//' | \
+        sed 's/+.*//'
+      register: gbif_i18n_version
+      changed_when: false
+      failed_when: false
+
+    - name: Set i18n_version from GBIF
+      set_fact:
+        i18n_version: "{{ gbif_i18n_version.stdout | trim }}"
+      when: gbif_i18n_version.stdout | length > 0
+
+    - name: Display fetched i18n version
+      debug:
+        msg: "Latest ala-i18n version from GBIF: {{ i18n_version | default('unable to fetch') }}"
 
 - name: Detect enabled services from use_* inventory variables
   set_fact:

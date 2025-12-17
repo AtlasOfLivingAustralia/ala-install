@@ -6,28 +6,48 @@ ARG MAVEN_BUILDER_IMAGE=maven:3.8-eclipse-temurin-11
 ARG RUNTIME_IMAGE=eclipse-temurin:11-jre-jammy
 
 # ============================================
-# Stage 1: Build
+# Stage 1: Build (try Nexus first, then source)
 # ============================================
 FROM ${MAVEN_BUILDER_IMAGE} AS builder
 
 ARG CAS_VERSION=6.5.6-3
 ARG CAS_REPO=https://github.com/AtlasOfLivingAustralia/ala-cas-5.git
 ARG CAS_BRANCH=master
+ARG CAS_ARTIFACT=cas
+ARG CAS_GROUP_ID=au.org.ala
+ARG CAS_CLASSIFIER=exec
+ARG NEXUS_BASE=https://nexus.ala.org.au/service/local/artifact/maven/redirect
 
 WORKDIR /build
 
-# Clone and checkout specific version/branch
-RUN git clone ${CAS_REPO} . && \
-    if [ "${CAS_BRANCH}" != "master" ]; then \
-        git checkout ${CAS_BRANCH}; \
-    fi && \
-    if [ "${CAS_VERSION}" != "develop" ]; then \
-        git checkout ${CAS_VERSION} || git checkout tags/v${CAS_VERSION} || true; \
+# Strategy: Try to download pre-built artifact from Nexus first
+# Using Maven redirect service (not direct repository path)
+RUN echo "🔍 Checking Nexus for ${CAS_ARTIFACT} ${CAS_VERSION}..." && \
+    if [ "${CAS_VERSION}" != "develop" ] && [ "${CAS_VERSION}" != "master" ]; then \
+        NEXUS_URL="${NEXUS_BASE}?r=public&g=${CAS_GROUP_ID}&a=${CAS_ARTIFACT}&v=${CAS_VERSION}&e=war&c=${CAS_CLASSIFIER}" && \
+        echo "   Trying: ${NEXUS_URL}" && \
+        if curl -f -L -o ala-cas.war "${NEXUS_URL}"; then \
+            echo "✅ Downloaded from Nexus in seconds (skipping 25-35 min build)"; \
+        else \
+            echo "⚠️  Not found in Nexus, building from source..." && \
+            git clone ${CAS_REPO} . && \
+            (git checkout ${CAS_VERSION} || git checkout tags/v${CAS_VERSION} || git checkout ${CAS_BRANCH}) && \
+            export MAVEN_OPTS="-Dmaven.wagon.http.connectionTimeout=120000 -Dmaven.wagon.http.readTimeout=120000" && \
+            echo "🔨 Building CAS with Maven..." && \
+            mvn clean package -DskipTests -q -T 1C -Dmaven.wagon.http.retryHandler.count=3 && \
+            mv target/*.war ala-cas.war && \
+            echo "✅ CAS built from source"; \
+        fi; \
+    else \
+        echo "⚠️  Version is ${CAS_VERSION}, building from source..." && \
+        git clone ${CAS_REPO} . && \
+        git checkout ${CAS_BRANCH} && \
+        export MAVEN_OPTS="-Dmaven.wagon.http.connectionTimeout=120000 -Dmaven.wagon.http.readTimeout=120000" && \
+        echo "🔨 Building CAS with Maven..." && \
+        mvn clean package -DskipTests -q -T 1C -Dmaven.wagon.http.retryHandler.count=3 && \
+        mv target/*.war ala-cas.war && \
+        echo "✅ CAS built from source"; \
     fi
-
-# Build the WAR file with Maven
-RUN --mount=type=cache,target=/root/.m2 \
-    mvn clean package -DskipTests -q
 
 # ============================================
 # Stage 2: Runtime
@@ -55,8 +75,8 @@ RUN groupadd -r cas && useradd -r -g cas cas
 
 WORKDIR /opt/atlas/cas
 
-# Copy built WAR from builder
-COPY --from=builder /build/build/libs/*.war ./cas.war
+# Copy built WAR from builder (standardized name from Nexus or Maven build)
+COPY --from=builder /build/ala-cas.war ./cas.war
 
 # Fix permissions for WAR file
 RUN chown cas:cas /opt/atlas/cas/cas.war

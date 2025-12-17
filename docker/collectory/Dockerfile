@@ -6,31 +6,45 @@ ARG GRADLE_BUILDER_IMAGE=gradle-builder:jdk17
 ARG RUNTIME_IMAGE=tomcat:9-jre17
 
 # ============================================
-# Stage 1: Build
+# Stage 1: Build (try Nexus first, then source)
 # ============================================
 FROM ${GRADLE_BUILDER_IMAGE} AS builder
 
-ARG COLLECTORY_VERSION=3.1.1
+ARG COLLECTORY_VERSION=6.0.0
 ARG COLLECTORY_REPO=https://github.com/AtlasOfLivingAustralia/collectory.git
 ARG COLLECTORY_BRANCH=develop
+ARG COLLECTORY_ARTIFACT=generic-collectory
+ARG COLLECTORY_GROUP_ID=au.org.ala
+ARG NEXUS_BASE=https://nexus.ala.org.au/service/local/artifact/maven/redirect
 
 WORKDIR /build
 
-# Clone and checkout specific version/branch
-RUN git clone ${COLLECTORY_REPO} . && \
-    if [ "${COLLECTORY_BRANCH}" != "develop" ]; then \
-        git checkout ${COLLECTORY_BRANCH}; \
-    fi && \
-    if [ "${COLLECTORY_VERSION}" != "develop" ]; then \
-        git checkout ${COLLECTORY_VERSION} || git checkout tags/v${COLLECTORY_VERSION} || true; \
+# Strategy: Try to download pre-built artifact from Nexus first
+# Using Maven redirect service (not direct repository path)
+RUN echo "🔍 Checking Nexus for ${COLLECTORY_ARTIFACT} ${COLLECTORY_VERSION}..." && \
+    if [ "${COLLECTORY_VERSION}" != "develop" ] && [ "${COLLECTORY_VERSION}" != "master" ]; then \
+        NEXUS_URL="${NEXUS_BASE}?r=public&g=${COLLECTORY_GROUP_ID}&a=${COLLECTORY_ARTIFACT}&v=${COLLECTORY_VERSION}&e=war" && \
+        echo "   Trying: ${NEXUS_URL}" && \
+        if curl -f -L -o collectory.war "${NEXUS_URL}"; then \
+            echo "✅ Downloaded from Nexus in seconds (skipping 5-10 min build)"; \
+        else \
+            echo "⚠️  Not found in Nexus, building from source..." && \
+            git clone ${COLLECTORY_REPO} . && \
+            (git checkout ${COLLECTORY_VERSION} || git checkout tags/v${COLLECTORY_VERSION} || git checkout ${COLLECTORY_BRANCH}) && \
+            export GRADLE_OPTS="-Dorg.gradle.internal.http.connectionTimeout=300000 -Dorg.gradle.internal.http.socketTimeout=300000 -Dorg.gradle.internal.http.totaltimeout=1800000" && \
+            ./gradlew clean war -x test --no-daemon --max-workers=1 && \
+            mv build/libs/*.war collectory.war && \
+            echo "✅ Built from source"; \
+        fi; \
+    else \
+        echo "⚠️  Version is ${COLLECTORY_VERSION}, building from source..." && \
+        git clone ${COLLECTORY_REPO} . && \
+        git checkout ${COLLECTORY_BRANCH} && \
+        export GRADLE_OPTS="-Dorg.gradle.internal.http.connectionTimeout=300000 -Dorg.gradle.internal.http.socketTimeout=300000 -Dorg.gradle.internal.http.totaltimeout=1800000" && \
+        ./gradlew clean war -x test --no-daemon --max-workers=1 && \
+        mv build/libs/*.war collectory.war && \
+        echo "✅ Built from source"; \
     fi
-
-# Gradle configuration for better handling of wrapper downloads
-ENV GRADLE_OPTS="-Dorg.gradle.internal.http.connectionTimeout=120000 -Dorg.gradle.internal.http.socketTimeout=120000"
-
-# Build the WAR file (increased timeout for gradle wrapper download)
-RUN --mount=type=cache,target=/root/.gradle \
-    ./gradlew clean war -x test --no-daemon --max-workers=1
 
 # ============================================
 # Stage 2: Runtime
@@ -56,8 +70,8 @@ RUN curl -sfL https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE
 # Remove default webapps
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Copy built WAR from builder
-COPY --from=builder /build/build/libs/*.war /usr/local/tomcat/webapps/collectory.war
+# Copy built WAR from builder (standardized name from Nexus or source build)
+COPY --from=builder /build/collectory.war /usr/local/tomcat/webapps/collectory.war
 
 # Set config location
 ENV CATALINA_OPTS="-Dcollectory.config=file:/data/collectory/config/collectory-config.properties"
