@@ -1,0 +1,11 @@
+---
+image_optimisation_packages:
+  - imagemagick
+  - libjpeg-turbo-progs
+  - jpegoptim
+  - mozjpeg
+  - zopfli
+  - pngquant
+  - gifsicle
+  - webp
+  - libavif-tools
