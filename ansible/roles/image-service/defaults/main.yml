@@ -1,3 +1,6 @@
 # default images variables
 image_service_port: 8080
 image_service_logfile: logback.groovy
+image_service_install_optimisation_packages: false
+oxipng_version: "9.1.0"
+oxipng_deb_url: "https://github.com/shssoichiro/oxipng/releases/download/v{{ oxipng_version }}/oxipng_{{ oxipng_version }}-1_amd64.deb"

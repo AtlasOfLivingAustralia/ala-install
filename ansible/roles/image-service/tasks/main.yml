@@ -156,6 +156,89 @@
     - packages
     - image-service
 
+- name: Install image optimisation packages
+  tags:
+    - packages
+    - image-service
+  when: image_service_install_optimisation_packages | bool
+  block:
+    - name: Include OS-specific variables
+      include_vars: "{{ lookup('first_found', params) }}"
+      vars:
+        params:
+          files:
+            - "{{ ansible_os_family }}.yml"
+            - "main.yml"
+          paths:
+            - "vars"
+
+    - name: Install base image optimisation packages
+      package:
+        name: "{{ image_optimisation_packages }}"
+        state: present
+      become: true
+
+    - name: Install svgo for SVG optimisation (Snap)
+      snap:
+        name: svgo
+        state: present
+      become: true
+      when: ansible_os_family == "Debian"
+
+    - name: Install svgo for SVG optimisation (npm)
+      npm:
+        name: svgo
+        global: yes
+        state: present
+      become: true
+      when: ansible_os_family != "Debian"
+
+    - name: Check installed oxipng version
+      command: dpkg-query -W -f='${Version}' oxipng
+      register: oxipng_installed_version
+      changed_when: false
+      failed_when: false
+      when: ansible_os_family == "Debian"
+
+    - name: Install oxipng with optipng fallback (Debian/Ubuntu)
+      when:
+        - ansible_os_family == "Debian"
+        - oxipng_installed_version.stdout != (oxipng_version + "-1")
+      block:
+        - name: Try to install oxipng from GitHub
+          block:
+            - name: Download oxipng .deb package
+              get_url:
+                url: "{{ oxipng_deb_url }}"
+                dest: "/tmp/oxipng.deb"
+                mode: '0644'
+              register: download_oxipng
+              until: download_oxipng is succeeded
+              retries: 3
+              delay: 5
+
+            - name: Install oxipng from .deb package
+              apt:
+                deb: "/tmp/oxipng.deb"
+              become: true
+          rescue:
+            - name: "Installation of oxipng failed, falling back to optipng"
+              debug:
+                msg: "Could not install oxipng from GitHub release. Falling back to installing 'optipng' from APT."
+            - name: Install optipng as a fallback
+              apt:
+                name: optipng
+                state: present
+                update_cache: yes
+              become: true
+          always:
+            - name: Clean up oxipng .deb package
+              file:
+                path: "/tmp/oxipng.deb"
+                state: absent
+              become: true
+              when: download_oxipng is defined and not download_oxipng.failed
+
 - name: add clear old failed_uploads CRON job
   ansible.builtin.cron:
     name: "clear old failed_uploads"
