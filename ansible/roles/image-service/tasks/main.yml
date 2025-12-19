@@ -183,7 +183,7 @@
         name: svgo
         state: present
       become: true
-      when: ansible_os_family == "Debian"
+      when: ansible_distribution == "Ubuntu"
 
     - name: Install svgo for SVG optimisation (npm)
       npm:
@@ -191,7 +191,7 @@
         global: yes
         state: present
       become: true
-      when: ansible_os_family != "Debian"
+      when: ansible_distribution != "Ubuntu"
 
     - name: Check installed oxipng version
       command: dpkg-query -W -f='${Version}' oxipng
