@@ -4,12 +4,6 @@
   tags:
     - nginx_vhost
 
-- name: pause playbook temporarily
-  pause:
-    prompt: "Pausing playbook - press enter to continue"
-  tags:
-    - nginx_vhost
-
 - name: set ubuntu-14.04 variables
   set_fact:
     nginx_tls_v1_3_enabled: False
