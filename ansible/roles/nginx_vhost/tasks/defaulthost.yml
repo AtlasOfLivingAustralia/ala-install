@@ -22,12 +22,11 @@
   tags:
     - nginx_vhost
 
-<<<<<<< HEAD
 - name: remove previous fragments dir for aws_elb_default
   file:
     path: "{{nginx_conf_dir}}/vhost_fragments/aws_elb_default"
     state: absent
-  when: ala_default_vhost  | bool == True and vhost_required | bool == True
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -38,7 +37,7 @@
     mode:  "{{nginx_config_directory_mode}}"
     owner: root
     group: root
-  when: ala_default_vhost  | bool == True and vhost_required | bool == True
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -67,12 +66,12 @@
   tags:
     - nginx_vhost
 
-- name: Create Nginx default config from template
+- name: add start of default vhost for ala
   template:
     src: "ala_default_start.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/10_ala_default_start"
     mode: "{{nginx_config_file_mode}}"
-  when: ala_default_vhost  | bool == True and vhost_required | bool == True
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -83,7 +82,7 @@
     mode: "{{nginx_config_file_mode}}"
   with_items:
     - "{{ nginx_paths }}"
-  when: ala_default_vhost  | bool == True and vhost_required | bool == True and ala_default_vhost_include_paths
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True and ala_default_vhost_include_paths and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -94,7 +93,7 @@
     mode: "{{nginx_config_file_mode}}"
   with_items:
     - "{{ nginx_paths }}"
-  when: ala_default_vhost  | bool == True and vhost_required | bool == True and ala_default_vhost_include_paths
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True and ala_default_vhost_include_paths and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -105,7 +104,7 @@
     mode: "{{nginx_config_file_mode}}"
   with_items:
     - "{{ nginx_paths }}"
-  when: ala_default_vhost  | bool == True and vhost_required | bool == True and ala_default_vhost_include_paths
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True and ala_default_vhost_include_paths and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -116,7 +115,7 @@
     mode: "{{nginx_config_file_mode}}"
   with_items:
     - "{{ nginx_paths }}"
-  when: ala_default_vhost  | bool == True and vhost_required | bool == True and ala_default_vhost_include_paths
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True and ala_default_vhost_include_paths and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -125,7 +124,7 @@
     src: "ala_default_end.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/ala_default/90_ala_default_end"
     mode: "{{nginx_config_file_mode}}"
-  when: ala_default_vhost  | bool == True and vhost_required | bool == True
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -134,12 +133,17 @@
     src: "{{nginx_conf_dir}}/vhost_fragments/ala_default"
     dest: "{{nginx_conf_dir}}/sites-available/ala_default.conf"
     mode: "{{nginx_config_file_mode}}"
-  when: ala_default_vhost  | bool == True and vhost_required | bool == True
-=======
+  when: ala_default_vhost  | bool == True and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
+  notify:
+   - reload nginx
+  tags:
+    - nginx_vhost
+
+- name: Create Nginx default config from template (optimized mode)
+  template:
     src: "nginx_vhost_default.j2"
     dest: "{{ nginx_conf_dir }}/sites-available/ala_default.conf"
-  when: vhost_required | bool == True
->>>>>>> b941f6e5 (Optimize nginx vhost generation)
+  when: vhost_required | bool == True and nginx_vhost_fast_mode | bool
   notify:
     - reload nginx
   tags:
@@ -162,3 +166,4 @@
     ala_default_vhost: False
   tags:
     - nginx_vhost
+
