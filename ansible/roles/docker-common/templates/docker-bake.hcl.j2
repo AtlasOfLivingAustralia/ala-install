@@ -97,9 +97,11 @@ target "collectory" {
   }
   args = {
     GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ collectory_java_version | default('17') }}"
-    COLLECTORY_VERSION = "{{ collectory_version | default('develop') }}"
-    COLLECTORY_REPO = "https://github.com/AtlasOfLivingAustralia/collectory.git"
-    COLLECTORY_BRANCH = "{{ collectory_branch | default('develop') }}"
+    ARTIFACT = "collectory"
+    GROUP_ID = "au.org.ala"
+    VERSION = "{{ collectory_version | default('develop') }}"
+    REPO = "https://github.com/AtlasOfLivingAustralia/collectory.git"
+    BRANCH = "{{ collectory_branch | default('develop') }}"
   }
 {% if docker_registry and docker_registry != '' %}
   tags = ["{{ docker_registry }}/collectory:{{ collectory_version | default('latest') }}", "{{ docker_registry }}/collectory:latest"]
@@ -126,32 +128,12 @@ target "userdetails" {
   }
   args = {
     GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ userdetails_java_version | default('11') }}"
-    USERDETAILS_VERSION = "{{ user_details_version | default('develop') }}"
-    USERDETAILS_REPO = "https://github.com/AtlasOfLivingAustralia/userdetails.git"
-    USERDETAILS_BRANCH = "{{ user_details_branch | default('master') }}"
-  }
-{% if docker_registry and docker_registry != '' %}
-  tags = ["{{ docker_registry }}/userdetails:{{ user_details_version | default('latest') }}", "{{ docker_registry }}/userdetails:latest"]
-{% else %}
-  tags = ["userdetails:{{ user_details_version | default('latest') }}", "userdetails:latest"]
-{% endif %}
-  cache-to = ["type=inline"]
-  platforms = ["linux/amd64"]
-}
-{% endif %}
-
-{% if 'userdetails' in services_enabled %}
-target "userdetails" {
-  dockerfile = "Dockerfile"
-  context = "../docker/userdetails"
-  contexts = {
-    "gradle-builder:jdk{{ userdetails_java_version | default('11') }}" = "target:gradle-builder-jdk{{ userdetails_java_version | default('11') }}"
-  }
-  args = {
-    GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ userdetails_java_version | default('11') }}"
-    USERDETAILS_VERSION = "{{ user_details_version | default('develop') }}"
-    USERDETAILS_REPO = "https://github.com/AtlasOfLivingAustralia/userdetails.git"
-    USERDETAILS_BRANCH = "{{ user_details_branch | default('master') }}"
+    ARTIFACT = "userdetails"
+    GROUP_ID = "au.org.ala"
+    VERSION = "{{ user_details_version | default('develop') }}"
+    REPO = "https://github.com/AtlasOfLivingAustralia/userdetails.git"
+    BRANCH = "{{ user_details_branch | default('master') }}"
+    CLASSIFIER = "exec"
   }
 {% if docker_registry and docker_registry != '' %}
   tags = ["{{ docker_registry }}/userdetails:{{ user_details_version | default('latest') }}", "{{ docker_registry }}/userdetails:latest"]
@@ -170,9 +152,11 @@ target "cas" {
   args = {
     MAVEN_BUILDER_IMAGE = "maven:3.8-eclipse-temurin-11"
     RUNTIME_IMAGE = "eclipse-temurin:11-jre-jammy"
-    CAS_VERSION = "{{ cas_version | default('develop') }}"
-    CAS_REPO = "https://github.com/AtlasOfLivingAustralia/ala-cas-5.git"
-    CAS_BRANCH = "{{ cas_branch | default('master') }}"
+    ARTIFACT = "cas"
+    GROUP_ID = "au.org.ala"
+    VERSION = "{{ cas_version | default('develop') }}"
+    REPO = "https://github.com/AtlasOfLivingAustralia/ala-cas-5.git"
+    BRANCH = "{{ cas_branch | default('master') }}"
   }
 {% if docker_registry and docker_registry != '' %}
   tags = ["{{ docker_registry }}/cas:{{ cas_version | default('latest') }}", "{{ docker_registry }}/cas:latest"]
@@ -193,9 +177,12 @@ target "apikey" {
   }
   args = {
     GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ apikey_java_version | default('11') }}"
-    APIKEY_VERSION = "{{ apikey_version | default('develop') }}"
-    APIKEY_REPO = "https://github.com/AtlasOfLivingAustralia/apikey.git"
-    APIKEY_BRANCH = "{{ apikey_branch | default('master') }}"
+    ARTIFACT = "apikey"
+    GROUP_ID = "au.org.ala"
+    VERSION = "{{ apikey_version | default('develop') }}"
+    REPO = "https://github.com/AtlasOfLivingAustralia/apikey.git"
+    BRANCH = "{{ apikey_branch | default('master') }}"
+    CLASSIFIER = "exec"
   }
 {% if docker_registry and docker_registry != '' %}
   tags = ["{{ docker_registry }}/apikey:{{ apikey_version | default('latest') }}", "{{ docker_registry }}/apikey:latest"]
@@ -216,9 +203,12 @@ target "cas-management" {
   }
   args = {
     GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ cas_management_java_version | default('11') }}"
-    CAS_MANAGEMENT_VERSION = "{{ cas_management_version | default('develop') }}"
-    CAS_MANAGEMENT_REPO = "https://github.com/AtlasOfLivingAustralia/ala-cas-5-services.git"
-    CAS_MANAGEMENT_BRANCH = "{{ cas_management_branch | default('master') }}"
+    ARTIFACT = "cas-management"
+    GROUP_ID = "au.org.ala"
+    VERSION = "{{ cas_management_version | default('develop') }}"
+    REPO = "https://github.com/AtlasOfLivingAustralia/ala-cas-5-services.git"
+    BRANCH = "{{ cas_management_branch | default('master') }}"
+    CLASSIFIER = "exec"
   }
 {% if docker_registry and docker_registry != '' %}
   tags = ["{{ docker_registry }}/cas-management:{{ cas_management_version | default('latest') }}", "{{ docker_registry }}/cas-management:latest"]
@@ -254,9 +244,9 @@ target "species-list" {
   }
   args = {
     GRADLE_BUILDER_IMAGE = "gradle-builder:jdk{{ species_list_java_version | default('17') }}"
-    SPECIES_LIST_VERSION = "{{ species_list_version | default('develop') }}"
-    SPECIES_LIST_REPO = "https://github.com/AtlasOfLivingAustralia/specieslist-webapp.git"
-    SPECIES_LIST_BRANCH = "{{ species_list_branch | default('master') }}"
+    VERSION = "{{ species_list_version | default('develop') }}"
+    REPO = "https://github.com/AtlasOfLivingAustralia/specieslist-webapp.git"
+    BRANCH = "{{ species_list_branch | default('master') }}"
   }
 {% if docker_registry and docker_registry != '' %}
   tags = ["{{ docker_registry }}/species-list:{{ species_list_version | default('latest') }}", "{{ docker_registry }}/species-list:latest"]

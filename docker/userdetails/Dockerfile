@@ -1,8 +1,9 @@
 # syntax=docker/dockerfile:1.4
-# ALA Userdetails Service
-# Multi-stage build: gradle-builder -> runtime
+# userdetails - User Details - User profiles and authentication
+# AUTO-GENERATED - DO NOT EDIT MANUALLY
+# Edit docker-common/defaults/main.yml and re-run ansible
 
-ARG GRADLE_BUILDER_IMAGE=gradle:7-jdk11-jammy
+ARG GRADLE_BUILDER_IMAGE=gradle-builder:jdk11
 ARG RUNTIME_IMAGE=tomcat:9-jre11
 
 # ============================================
@@ -10,77 +11,63 @@ ARG RUNTIME_IMAGE=tomcat:9-jre11
 # ============================================
 FROM ${GRADLE_BUILDER_IMAGE} AS builder
 
-ARG USERDETAILS_VERSION=3.2.1
-ARG USERDETAILS_REPO=https://github.com/AtlasOfLivingAustralia/userdetails.git
-ARG USERDETAILS_BRANCH=master
-ARG USERDETAILS_ARTIFACT=userdetails
-ARG USERDETAILS_GROUP_ID=au.org.ala
-ARG USERDETAILS_CLASSIFIER=exec
-ARG NEXUS_BASE=https://nexus.ala.org.au/service/local/artifact/maven/redirect
+ARG VERSION=6.0.0
+ARG REPO=https://github.com/AtlasOfLivingAustralia/userdetails.git
+ARG BRANCH=master
+ARG ARTIFACT=userdetails
+ARG GROUP_ID=au.org.ala
+# Format: https://nexus.ala.org.au/repository/releases/au/org/ala/{artifact}/{version}/{artifact}-{version}{classifier}.war
 
 WORKDIR /build
 
-# Using Maven redirect service with classifier=exec
-RUN echo "🔍 Checking Nexus for ${USERDETAILS_ARTIFACT} ${USERDETAILS_VERSION}..." && \
-    if [ "${USERDETAILS_VERSION}" != "develop" ] && [ "${USERDETAILS_VERSION}" != "master" ]; then \
-        NEXUS_URL="${NEXUS_BASE}?r=public&g=${USERDETAILS_GROUP_ID}&a=${USERDETAILS_ARTIFACT}&v=${USERDETAILS_VERSION}&e=war&c=${USERDETAILS_CLASSIFIER}" && \
-        echo "   Trying: ${NEXUS_URL}" && \
-        if curl -f -L -o userdetails.war "${NEXUS_URL}"; then \
-            echo "✅ Downloaded from Nexus in seconds"; \
+# Try Nexus first (if version is release tag), fail if not found
+RUN echo "🔍 Checking Nexus for ${ARTIFACT} ${VERSION}..." && \
+    if [ "${VERSION}" != "develop" ] && [ "${VERSION}" != "master" ]; then \
+        NEXUS_URL="https://nexus.ala.org.au/repository/releases/au/org/ala/${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}.war" && \
+        echo "   📥 Trying: ${NEXUS_URL}" && \
+        if curl -f -L -o artifact.war "${NEXUS_URL}"; then \
+            echo "✅ Downloaded from Nexus"; \
         else \
-            echo "⚠️  Not found in Nexus, building from source..." && \
-            git clone ${USERDETAILS_REPO} . && \
-            (git checkout ${USERDETAILS_VERSION} || git checkout tags/v${USERDETAILS_VERSION} || git checkout ${USERDETAILS_BRANCH}) && \
-            export GRADLE_OPTS="-Dorg.gradle.internal.http.connectionTimeout=300000 -Dorg.gradle.internal.http.socketTimeout=300000 -Dorg.gradle.internal.http.totaltimeout=1800000" && \
-            ./gradlew clean war -x test --no-daemon --max-workers=1 && \
-            mv build/libs/*.war userdetails.war && \
-            echo "✅ Built from source"; \
+            echo "❌ ERROR: Artifact not found in Nexus at ${NEXUS_URL}"; \
+            echo "    Please verify:"; \
+            echo "    1. ARTIFACT=${ARTIFACT} is correct"; \
+            echo "    2. VERSION=${VERSION} exists in Nexus"; \
+            echo "    3. CLASSIFIER=${CLASSIFIER} is correct (if applicable)"; \
+            exit 1; \
         fi; \
     else \
-        echo "⚠️  Building from source..." && \
-        git clone ${USERDETAILS_REPO} . && \
-        git checkout ${USERDETAILS_BRANCH} && \
-        export GRADLE_OPTS="-Dorg.gradle.internal.http.connectionTimeout=300000 -Dorg.gradle.internal.http.socketTimeout=300000 -Dorg.gradle.internal.http.totaltimeout=1800000" && \
+        git clone ${REPO} . && \
+        git checkout ${BRANCH} && \
         ./gradlew clean war -x test --no-daemon --max-workers=1 && \
-        mv build/libs/*.war userdetails.war && \
-        echo "✅ Built from source"; \
+        mv build/libs/*.war artifact.war; \
     fi
 
 # ============================================
 # Stage 2: Runtime
 # ============================================
-FROM ${RUNTIME_IMAGE}
+FROM tomcat:9-jre11
 
-LABEL org.opencontainers.image.title="ALA Userdetails"
-LABEL org.opencontainers.image.description="Atlas of Living Australia User Details Service"
-LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/userdetails"
+LABEL org.opencontainers.image.title="userdetails"
+LABEL org.opencontainers.image.description="User Details - User profiles and authentication"
+LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/userdetails.git"
 
-# Install runtime dependencies
+# Install dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
         netcat-traditional \
     && rm -rf /var/lib/apt/lists/*
 
-# Install dockerize
-ENV DOCKERIZE_VERSION=v0.7.0
-RUN curl -sfL https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
-    | tar -C /usr/local/bin -xz
-
-# Remove default webapps
+# Setup
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Copy built WAR from builder (standardized name from Nexus or source build)
-COPY --from=builder /build/userdetails.war /usr/local/tomcat/webapps/userdetails.war
+COPY --from=builder /build/artifact.war /usr/local/tomcat/webapps/userdetails.war
 
-# Set config location
-ENV CATALINA_OPTS="-Duserdetails.config=file:/data/userdetails/config/userdetails-config.properties"
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=5 \
+    CMD curl -f http://localhost:8080/userdetails/actuator/health || exit 1
 
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=5 \
-    CMD curl --fail http://localhost:8080/userdetails/ || exit 1
-
-# Start with dockerize
-ENTRYPOINT ["sh", "-c", "exec dockerize ${DOCKERIZE_OPTS} catalina.sh run"]
+CMD ["catalina.sh", "run"]
 

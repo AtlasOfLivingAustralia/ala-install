@@ -53,4 +53,5 @@ docker-compose-output/
 # but ignore any local build artifacts
 docker/*/build/
 docker/*/.gradle/
-
+docker/docopts
+docopts

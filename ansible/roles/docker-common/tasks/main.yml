@@ -24,6 +24,82 @@
     - docker-service
     - docker-common
 
+# Generate Dockerfiles from templates for enabled services
+- name: Create directories for all services
+  file:
+    path: "{{ docker_output_dir }}/{{ item.key }}"
+    state: directory
+    mode: '0755'
+  loop: "{{ docker_services_config | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  tags:
+    - docker-common
+  when:
+    - item.value.get('source_type', 'java') not in ['debian-package', 'docker-image']
+
+- name: Generate Gradle Dockerfiles
+  template:
+    src: "Dockerfile.gradle.j2"
+    dest: "{{ docker_output_dir }}/{{ item.key }}/Dockerfile"
+    mode: '0644'
+  loop: "{{ docker_services_config | dict2items | selectattr('value.build_tool', 'equalto', 'gradle') }}"
+  loop_control:
+    label: "{{ item.key }}"
+  vars:
+    service_name: "{{ item.key }}"
+    description: "{{ item.value.description }}"
+    artifact_id: "{{ item.value.artifact_id }}"
+    group_id: "{{ item.value.group_id }}"
+    java_version: "{{ item.value.java_version }}"
+    runtime_image: "{{ item.value.runtime_image }}"
+    repo: "{{ item.value.repo }}"
+    branch: "{{ item.value.branch }}"
+    port: "{{ item.value.port }}"
+    classifier: "{{ item.value.classifier }}"
+    version_variable: "{{ item.value.version_variable }}"
+  tags:
+    - docker-common
+  when:
+    - item.value.get('source_type', 'java') not in ['debian-package', 'docker-image']
+
+- name: Generate Maven Dockerfiles
+  template:
+    src: "Dockerfile.maven.j2"
+    dest: "{{ docker_output_dir }}/{{ item.key }}/Dockerfile"
+    mode: '0644'
+  loop: "{{ docker_services_config | dict2items | selectattr('value.build_tool', 'equalto', 'maven') }}"
+  loop_control:
+    label: "{{ item.key }}"
+  vars:
+    service_name: "{{ item.key }}"
+    description: "{{ item.value.description }}"
+    artifact_id: "{{ item.value.artifact_id }}"
+    group_id: "{{ item.value.group_id }}"
+    java_version: "{{ item.value.java_version }}"
+    runtime_image: "{{ item.value.runtime_image }}"
+    repo: "{{ item.value.repo }}"
+    branch: "{{ item.value.branch }}"
+    port: "{{ item.value.port }}"
+    classifier: "{{ item.value.classifier }}"
+    version_variable: "{{ item.value.version_variable }}"
+  tags:
+    - docker-common
+  when:
+    - item.value.get('source_type', 'java') not in ['debian-package', 'docker-image']
+
+- name: Display generated Dockerfiles
+  debug:
+    msg: |
+      ✅ Generated Dockerfiles:
+      {% for service_name, service_config in docker_services_config.items() %}
+      {% if service_config.get('source_type', 'java') not in ['debian-package', 'docker-image'] %}
+      - {{ service_name }}/Dockerfile ({{ service_config.build_tool | default('gradle') }})
+      {% endif %}
+      {% endfor %}
+  tags:
+    - docker-common
+
 - name: Include common tasks to others roles
   include_tasks: common.yml
   tags:

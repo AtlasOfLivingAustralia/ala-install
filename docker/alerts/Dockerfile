@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-# apikey - API Key Service
+# alerts - Alerts Service - User notifications
 # AUTO-GENERATED - DO NOT EDIT MANUALLY
 # Edit docker-common/defaults/main.yml and re-run ansible
 
@@ -12,9 +12,9 @@ ARG RUNTIME_IMAGE=tomcat:9-jre11
 FROM ${GRADLE_BUILDER_IMAGE} AS builder
 
 ARG VERSION=6.0.0
-ARG REPO=https://github.com/AtlasOfLivingAustralia/apikey.git
+ARG REPO=https://github.com/AtlasOfLivingAustralia/alerts.git
 ARG BRANCH=master
-ARG ARTIFACT=apikey
+ARG ARTIFACT=alerts
 ARG GROUP_ID=au.org.ala
 # Format: https://nexus.ala.org.au/repository/releases/au/org/ala/{artifact}/{version}/{artifact}-{version}{classifier}.war
 
@@ -47,9 +47,9 @@ RUN echo "🔍 Checking Nexus for ${ARTIFACT} ${VERSION}..." && \
 # ============================================
 FROM tomcat:9-jre11
 
-LABEL org.opencontainers.image.title="apikey"
-LABEL org.opencontainers.image.description="API Key Service"
-LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/apikey.git"
+LABEL org.opencontainers.image.title="alerts"
+LABEL org.opencontainers.image.description="Alerts Service - User notifications"
+LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/alerts.git"
 
 # Install dependencies
 RUN apt-get update && \
@@ -61,11 +61,11 @@ RUN apt-get update && \
 # Setup
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-COPY --from=builder /build/artifact.war /usr/local/tomcat/webapps/apikey.war
+COPY --from=builder /build/artifact.war /usr/local/tomcat/webapps/alerts.war
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=5 \
-    CMD curl -f http://localhost:8080/apikey/actuator/health || exit 1
+    CMD curl -f http://localhost:8080/alerts/actuator/health || exit 1
 
 EXPOSE 8080
 

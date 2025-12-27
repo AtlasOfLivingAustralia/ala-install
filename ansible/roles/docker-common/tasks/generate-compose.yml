@@ -219,6 +219,131 @@
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_gid }}"
 
+- name: Fix docker-compose build paths (relative to docker-compose-output/)
+  replace:
+    path: "{{ data_dir }}/docker-compose.yml"
+    regexp: 'context: \./docker/'
+    replace: 'context: ../docker/'
+  when: data_dir is defined
+
+# Create a dictionary mapping service names to their versions
+- name: Create service versions dictionary
+  set_fact:
+    service_versions:
+      collectory: "{{ collectory_version | default('develop') }}"
+      cas: "{{ cas_version | default('develop') }}"
+      userdetails: "{{ user_details_version | default('develop') }}"
+      apikey: "{{ apikey_version | default('develop') }}"
+      cas-management: "{{ cas_management_version | default('develop') }}"
+      species-lists: "{{ species_list_version | default('develop') }}"
+      ala-bie: "{{ bie_hub_version | default('develop') }}"
+      spatial: "{{ spatial_hub_version | default('develop') }}"
+      regions: "{{ regions_version | default('develop') }}"
+      species: "{{ bie_index_version | default('develop') }}"
+      images: "{{ image_service_version | default('develop') }}"
+      alerts: "{{ alerts_version | default('develop') }}"
+      doi: "{{ doi_service_version | default('develop') }}"
+      dashboard: "{{ dashboard_version | default('develop') }}"
+      sds: "{{ sds_version | default('develop') }}"
+      biocollect: "{{ biocollect_version | default('develop') }}"
+      namematching: "{{ ala_namematching_service_version | default('develop') }}"
+      sensitive-data: "{{ ala_sensitive_data_service_version | default('develop') }}"
+      data-quality: "{{ data_quality_filter_service_version | default('develop') }}"
+
+# Create directories for enabled services with build tools
+- name: Create directories for Dockerfile generation
+  file:
+    path: "{{ playbook_dir | dirname }}/docker/{{ item }}"
+    state: directory
+    mode: '0755'
+  loop: "{{ services_enabled }}"
+  when:
+    - item in docker_services_config
+    - docker_services_config[item].get('build_tool') in ['gradle', 'maven']
+
+# Generate Gradle Dockerfiles using already-determined Java versions
+- name: Generate Gradle Dockerfiles
+  template:
+    src: "Dockerfile.gradle.j2"
+    dest: "{{ playbook_dir | dirname }}/docker/{{ item }}/Dockerfile"
+    mode: '0644'
+  loop: "{{ services_enabled }}"
+  vars:
+    service_name: "{{ item }}"
+    description: "{{ docker_services_config[item].description }}"
+    artifact_id: "{{ docker_services_config[item].artifact_id }}"
+    group_id: "{{ docker_services_config[item].group_id }}"
+    # Java version from variables calculated in determine-java-versions.yml
+    java_version: "{{ vars[item.replace('-', '_') + '_java_version'] | default(docker_services_config[item].java_version) }}"
+    runtime_image: "{{ docker_services_config[item].runtime_image }}"
+    repo: "{{ docker_services_config[item].repo }}"
+    branch: "{{ docker_services_config[item].branch }}"
+    port: "{{ docker_services_config[item].port }}"
+    classifier: "{{ docker_services_config[item].classifier | default('') }}"
+    # Version from service_versions dictionary
+    version: "{{ service_versions[item] | default(docker_services_config[item].branch) }}"
+  when:
+    - item in docker_services_config
+    - docker_services_config[item].build_tool == 'gradle'
+
+# Generate Maven Dockerfiles using already-determined Java versions
+- name: Generate Maven Dockerfiles
+  template:
+    src: "Dockerfile.maven.j2"
+    dest: "{{ playbook_dir | dirname }}/docker/{{ item }}/Dockerfile"
+    mode: '0644'
+  loop: "{{ services_enabled }}"
+  vars:
+    service_name: "{{ item }}"
+    description: "{{ docker_services_config[item].description }}"
+    artifact_id: "{{ docker_services_config[item].artifact_id }}"
+    group_id: "{{ docker_services_config[item].group_id }}"
+    # Java version from variables calculated in determine-java-versions.yml
+    java_version: "{{ vars[item.replace('-', '_') + '_java_version'] | default(docker_services_config[item].java_version) }}"
+    runtime_image: "{{ docker_services_config[item].runtime_image }}"
+    repo: "{{ docker_services_config[item].repo }}"
+    branch: "{{ docker_services_config[item].branch }}"
+    port: "{{ docker_services_config[item].port }}"
+    classifier: "{{ docker_services_config[item].classifier | default('') }}"
+    # Version from service_versions dictionary
+    version: "{{ service_versions[item] | default(docker_services_config[item].branch) }}"
+  when:
+    - item in docker_services_config
+    - docker_services_config[item].build_tool == 'maven'
+
+- name: Display generated Dockerfiles with versions and Java
+  debug:
+    msg: |
+      ✅ Generated Dockerfiles:
+      {% for service in services_enabled %}
+      {% if service in docker_services_config and docker_services_config[service].get('build_tool') in ['gradle', 'maven'] %}
+      {% set svc_version = (
+        collectory_version if service == 'collectory' else
+        cas_version if service == 'cas' else
+        user_details_version if service == 'userdetails' else
+        apikey_version if service == 'apikey' else
+        cas_management_version if service == 'cas-management' else
+        species_list_version if service == 'species-lists' else
+        bie_hub_version if service == 'ala-bie' else
+        spatial_hub_version if service == 'spatial' else
+        regions_version if service == 'regions' else
+        bie_index_version if service == 'species' else
+        image_service_version if service == 'images' else
+        alerts_version if service == 'alerts' else
+        doi_service_version if service == 'doi' else
+        dashboard_version if service == 'dashboard' else
+        sds_version if service == 'sds' else
+        biocollect_version if service == 'biocollect' else
+        ala_namematching_service_version if service == 'namematching' else
+        ala_sensitive_data_service_version if service == 'sensitive-data' else
+        data_quality_filter_service_version if service == 'data-quality' else
+        'develop'
+      ) | default('develop') %}
+      {% set svc_java = vars[service.replace('-', '_') + '_java_version'] | default(docker_services_config[service].java_version) %}
+      - docker/{{ service }}/Dockerfile ({{ docker_services_config[service].build_tool }}) v{{ svc_version }} (Java {{ svc_java }})
+      {% endif %}
+      {% endfor %}
+
 - name: Remove old docker-bake.hcl to force regeneration
   file:
     path: "{{ data_dir }}/docker-bake.hcl"
@@ -294,8 +419,7 @@
   shell: |
     # Fix docker-compose.yml
     if [ -f "{{ data_dir }}/docker-compose.yml" ]; then
-      chown {{ ansible_user_id }}:{{ ansible_user_gid }} "{{ data_dir }}/docker-compose.yml"
-    fi
+      chown {{ ansible_user_id }}:{{ ansible_user_gid }} "{{ data_dir }}/docker-compose.yml"    fi
     
     # Fix nginx configuration
     if [ -d "{{ data_dir }}/nginx" ]; then
@@ -305,3 +429,4 @@
     fi
   changed_when: false
   become: yes
+

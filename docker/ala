@@ -1,0 +1,631 @@
+#!/usr/bin/env bash
+
+# ============================================================================
+# Living Atlas CLI - Using docopts for command parsing
+# ============================================================================
+
+DOC=$(cat <<'EOF'
+Living Atlas CLI
+
+Usage:
+  ala [options] ( config | config-docker | validate | build | up | down | publish )...
+  ala init-config
+  ala -h | --help
+  ala -v | --version
+
+Commands:
+  config                Generate all configs (Ansible + docker-compose.yml)
+  config-docker         Generate only docker-compose.yml and docker-bake.hcl (no Ansible roles)
+  validate              Validate Ansible syntax + docker-compose YAML
+  build                 Build Docker images
+  up                    Start services
+  down                  Stop services
+  publish               Push images to Docker Hub
+  init-config           Create .alarc configuration file
+
+Options:
+  --inventories=<dir>   Inventory directory [default: la-test-inventories]
+  --registry=<name>     Docker registry [default: livingatlases]
+  --ssl-certs=<dir>     SSL certificates directory to mount in nginx
+  --wipe                Remove volumes when stopping - WARNING: DELETES DATA!
+  -h --help             Show this help message
+  -v --version          Show version
+
+Examples:
+  ala config                               # Generate all configs via Ansible
+  ala config-docker                        # Generate only docker files (faster)
+  ala config validate                      # Generate + validate
+  ala config validate build                # Generate + validate + build
+  ala config validate build up             # Full: generate + validate + build + up
+  ala validate                             # Just validate
+  ala build                                # Just build
+  ala up                                   # Just start
+  ala down                                 # Stop services
+  ala down --wipe                          # Stop + remove volumes
+  ala config --inventories=custom
+  ala config --ssl-certs=/etc/ssl/my-certs
+  ala publish --registry=myregistry
+
+Configuration File (.alarc):
+  inventories=<dir>           Inventory directory
+  registry=<name>             Docker registry
+  ssl_certs=<dir>             SSL certificates directory
+
+EOF
+)
+# ============================================================================
+# Setup paths
+# ============================================================================
+
+SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if [[ "$SCRIPT_PATH" == */docker ]]; then
+    PROJECT_ROOT="$(dirname "$SCRIPT_PATH")"
+    DOCKER_DIR="$SCRIPT_PATH"
+else
+    PROJECT_ROOT="$SCRIPT_PATH/.."
+    DOCKER_DIR="$SCRIPT_PATH"
+fi
+
+# ============================================================================
+# Detect Docker context and set DOCKER_HOST
+# ============================================================================
+
+detect_docker_context() {
+    # Check if docker command exists
+    if ! command -v docker &> /dev/null; then
+        echo "❌ Error: Docker is not installed or not in PATH"
+        exit 1
+    fi
+
+    # Get the current active context
+    local current_context
+    current_context=$(docker context ls --format "{{.Name}}" 2>/dev/null | grep "^\*" | sed 's/\*//' || docker context show 2>/dev/null)
+
+    # List all available contexts
+    local contexts
+    contexts=$(docker context ls --format "{{.DockerEndpoint}}" 2>/dev/null)
+
+    # Check if Docker Desktop context is available
+    if echo "$contexts" | grep -q "\.docker/desktop/docker\.sock"; then
+        export DOCKER_HOST="unix://$HOME/.docker/desktop/docker.sock"
+        export DOCKER_CONTEXT="desktop-linux"
+        echo "✅ Using Docker Desktop context: $DOCKER_HOST"
+    elif echo "$contexts" | grep -q "var/run/docker\.sock"; then
+        export DOCKER_HOST="unix:///var/run/docker.sock"
+        export DOCKER_CONTEXT="default"
+        echo "✅ Using default Docker context: $DOCKER_HOST"
+    else
+        # Try to detect any available Docker socket
+        if [[ -S "$HOME/.docker/desktop/docker.sock" ]]; then
+            export DOCKER_HOST="unix://$HOME/.docker/desktop/docker.sock"
+            export DOCKER_CONTEXT="desktop-linux"
+            echo "✅ Detected Docker Desktop socket: $DOCKER_HOST"
+        elif [[ -S "/var/run/docker.sock" ]]; then
+            export DOCKER_HOST="unix:///var/run/docker.sock"
+            export DOCKER_CONTEXT="default"
+            echo "✅ Detected default Docker socket: $DOCKER_HOST"
+        else
+            echo "❌ Error: Could not find Docker daemon socket"
+            echo "   Checked: $HOME/.docker/desktop/docker.sock and /var/run/docker.sock"
+            exit 1
+        fi
+    fi
+
+    # Test Docker connection
+    if ! docker ps > /dev/null 2>&1; then
+        echo "❌ Error: Cannot connect to Docker daemon at $DOCKER_HOST"
+        echo "   Make sure Docker is running"
+        exit 1
+    fi
+}
+
+# ============================================================================
+# Validate Docker context before build
+# ============================================================================
+
+validate_docker_for_build() {
+    echo "🔍 Validating Docker configuration for build..."
+    echo ""
+
+    # Check docker is available
+    if ! command -v docker &> /dev/null; then
+        echo "❌ Docker is not installed"
+        exit 1
+    fi
+    echo "  ✓ Docker command found: $(command -v docker)"
+
+    # Check docker buildx is available
+    if ! docker buildx version > /dev/null 2>&1; then
+        echo "❌ Docker buildx is not available"
+        exit 1
+    fi
+    echo "  ✓ Docker buildx available: $(docker buildx version 2>/dev/null | head -1)"
+
+    # Check docker daemon is running
+    if ! docker ps > /dev/null 2>&1; then
+        echo "❌ Docker daemon is not running"
+        echo "   Try: docker context use desktop-linux"
+        exit 1
+    fi
+    echo "  ✓ Docker daemon running"
+
+    # Show current context
+    local current_context
+    current_context=$(docker context show 2>/dev/null)
+    echo "  ✓ Current Docker context: $current_context"
+
+    # Show Docker info
+    local docker_endpoint
+    docker_endpoint=$(docker context inspect "$current_context" 2>/dev/null | grep "DockerEndpoint" | head -1 || echo "unknown")
+    echo "  ✓ Endpoint: $docker_endpoint"
+
+    # Check buildx builders
+    echo "  ✓ Available buildx builders:"
+    if docker buildx ls > /dev/null 2>&1; then
+        docker buildx ls | sed 's/^/    /'
+    else
+        echo "❌ Cannot list buildx builders - docker daemon may not be responding"
+        exit 1
+    fi
+
+    echo ""
+    echo "✅ Docker validation passed - ready to build"
+    echo ""
+}
+
+
+# ============================================================================
+# Download/find docopts
+# ============================================================================
+
+DOCOPTS="$DOCKER_DIR/docopts"
+
+if [[ ! -e "$DOCOPTS" ]]; then
+    echo "📥 Downloading docopts..."
+    curl -s -o "$DOCOPTS" -LJO https://github.com/docopt/docopts/releases/download/v0.6.3-rc2/docopts_linux_amd64 2>/dev/null
+    chmod +x "$DOCOPTS"
+    echo "✅ docopts ready"
+fi
+
+# ============================================================================
+# Config loading
+# ============================================================================
+
+load_config() {
+    local config_file="$PROJECT_ROOT/.alarc"
+    if [[ -f "$config_file" ]]; then
+        while IFS='=' read -r key value; do
+            [[ "$key" =~ ^#.*$ ]] && continue
+            [[ -z "$key" ]] && continue
+            key=$(echo "$key" | xargs)
+            value=$(echo "$value" | xargs)
+            case "$key" in
+                inventories) INVENTORIES_DIR="$value" ;;
+                registry) REGISTRY="$value" ;;
+                data_dir) DATA_DIR="$value" ;;
+                ssl_certs) SSL_CERTS_DIR="$value" ;;
+            esac
+        done < "$config_file"
+    fi
+}
+
+# ============================================================================
+# Defaults
+# ============================================================================
+
+INVENTORIES_DIR="la-test-inventories"
+REGISTRY="livingatlases"
+DATA_DIR="docker-compose-output"
+PLAYBOOK="$PROJECT_ROOT/ansible/docker-compose-deploy.yml"
+SSL_CERTS_DIR=""
+
+load_config
+
+# ============================================================================
+# Helper functions
+# ============================================================================
+
+error() { echo "❌ Error: $*" >&2; exit 1; }
+success() { echo "✅ $*"; }
+info() { echo "ℹ️  $*"; }
+step() { echo "➤ $*"; }
+
+# ============================================================================
+# Resolve paths
+# ============================================================================
+
+resolve_inventories_dir() {
+    if [[ "$1" = /* ]]; then
+        echo "$1"
+    else
+        echo "${PROJECT_ROOT}/${1}"
+    fi
+}
+
+get_inventory_files() {
+    local inv_dir="$1"
+    local inv_files=""
+
+    # Add inventory-docker.ini first (defines groups that roles need)
+    [[ -f "$inv_dir/inventory-docker.ini" ]] && inv_files="$inv_files -i $inv_dir/inventory-docker.ini"
+
+    # Add la-test-inventory.ini for variables
+    [[ -f "$inv_dir/la-test-inventory.ini" ]] && inv_files="$inv_files -i $inv_dir/la-test-inventory.ini"
+
+    # Add local extras if they exist
+    [[ -f "$inv_dir/la-test-local-extras.ini" ]] && inv_files="$inv_files -i $inv_dir/la-test-local-extras.ini"
+    [[ -f "$inv_dir/la-test-local-passwords.ini" ]] && inv_files="$inv_files -i $inv_dir/la-test-local-passwords.ini"
+    [[ -f "$inv_dir/la-test-toolkit.ini" ]] && inv_files="$inv_files -i $inv_dir/la-test-toolkit.ini"
+
+    echo "$inv_files"
+}
+
+# ============================================================================
+# Commands
+# ============================================================================
+
+cmd_validate() {
+    local inventories_dir="${1:-la-test-inventories}"
+    inventories_dir=$(resolve_inventories_dir "$inventories_dir")
+    [[ ! -d "$inventories_dir" ]] && error "Inventories directory not found: $inventories_dir"
+
+    info "Validating configuration..."
+    mkdir -p "$DATA_DIR"
+    [[ ! -f "$PLAYBOOK" ]] && error "Playbook not found: $PLAYBOOK"
+
+    local inventories_arg=$(get_inventory_files "$inventories_dir")
+
+    step "Checking Ansible syntax..."
+    info "Inventory files: $inventories_arg"
+    cd "$PROJECT_ROOT" || exit 1
+    ansible-playbook $inventories_arg "$PLAYBOOK" \
+        -e "data_dir=$DATA_DIR" \
+        --syntax-check > /dev/null 2>&1 || error "Ansible syntax check failed"
+    success "Ansible syntax OK"
+
+    step "Validating docker-compose YAML..."
+    [[ ! -f "$DATA_DIR/docker-compose.yml" ]] && error "docker-compose.yml not found. Run 'ala config' first"
+    docker-compose -f "$DATA_DIR/docker-compose.yml" config --quiet > /dev/null 2>&1 || error "Docker-compose validation failed"
+    success "docker-compose.yml is valid"
+
+    success "Validation complete!"
+}
+
+cmd_config() {
+    local inventories_dir="${1:-la-test-inventories}"
+    inventories_dir=$(resolve_inventories_dir "$inventories_dir")
+    [[ ! -d "$inventories_dir" ]] && error "Inventories directory not found: $inventories_dir"
+
+    info "Generating docker-compose.yml and service configurations..."
+    mkdir -p "$DATA_DIR"
+    [[ ! -f "$PLAYBOOK" ]] && error "Playbook not found: $PLAYBOOK"
+
+    # Convert data_dir to absolute path to avoid creating in ansible/ subdirectory
+    local abs_data_dir
+    if [[ "$DATA_DIR" = /* ]]; then
+        abs_data_dir="$DATA_DIR"
+    else
+        abs_data_dir="$PROJECT_ROOT/$DATA_DIR"
+    fi
+
+    local inventories_arg=$(get_inventory_files "$inventories_dir")
+    local extra_vars="-e data_dir=$abs_data_dir -e build_images=false"
+
+    if [[ -n "$SSL_CERTS_DIR" ]]; then
+        extra_vars="$extra_vars -e ssl_certs_dir=$SSL_CERTS_DIR"
+        info "SSL certificates directory: $SSL_CERTS_DIR"
+    fi
+
+    step "Running Ansible playbook..."
+    # info "Inventory files: $inventories_arg"
+    # echo "DEBUG: Full command will be:"
+    # echo "ansible-playbook $inventories_arg $PLAYBOOK $extra_vars"
+    cd "$PROJECT_ROOT" || exit 1
+    ansible-playbook $inventories_arg "$PLAYBOOK" $extra_vars || error "Failed to generate configuration"
+    success "Configuration generated"
+
+    # Fix build context paths in docker-compose.yml
+    # Change ./docker/SERVICE to ../docker/SERVICE (relative from docker-compose-output/)
+    if [[ -f "$DATA_DIR/docker-compose.yml" ]]; then
+        step "Fixing docker-compose build paths..."
+        chmod 644 "$DATA_DIR/docker-compose.yml" 2>/dev/null || true
+        # Use mktemp to avoid permission issues
+        local TEMP_FILE=$(mktemp)
+        sed 's|context: \./docker/|context: ../docker/|g' "$DATA_DIR/docker-compose.yml" > "$TEMP_FILE"
+        mv "$TEMP_FILE" "$DATA_DIR/docker-compose.yml"
+        success "Build paths fixed"
+    fi
+
+    # Create required docker subdirectories for volumes/configs
+    step "Preparing docker subdirectories..."
+    # Set umask to ensure proper permissions (777 - 022 = 755)
+    (
+        umask 022
+        for dir in cas/config cas/data userdetails/config userdetails/data cas-management/config cas-management/data apikey/config apikey/data mongodb nginx; do
+            mkdir -p "$DATA_DIR/$dir" 2>/dev/null || true
+        done
+    )
+
+    success "Docker directories prepared"
+    success "Configuration ready!"
+    info "Location: $DATA_DIR/docker-compose.yml"
+
+}
+
+cmd_config_docker() {
+    local inventories_dir="${1:-la-test-inventories}"
+    inventories_dir=$(resolve_inventories_dir "$inventories_dir")
+    [[ ! -d "$inventories_dir" ]] && error "Inventories directory not found: $inventories_dir"
+
+    info "Generating Docker files (docker-compose.yml, docker-bake.hcl, Dockerfiles)..."
+    mkdir -p "$DATA_DIR"
+    [[ ! -f "$PLAYBOOK" ]] && error "Playbook not found: $PLAYBOOK"
+
+    # Convert data_dir to absolute path
+    local abs_data_dir
+    if [[ "$DATA_DIR" = /* ]]; then
+        abs_data_dir="$DATA_DIR"
+    else
+        abs_data_dir="$PROJECT_ROOT/$DATA_DIR"
+    fi
+
+    local inventories_arg=$(get_inventory_files "$inventories_dir")
+    local extra_vars="-e data_dir=$abs_data_dir -e build_images=false"
+
+    if [[ -n "$SSL_CERTS_DIR" ]]; then
+        extra_vars="$extra_vars -e ssl_certs_dir=$SSL_CERTS_DIR"
+        info "SSL certificates directory: $SSL_CERTS_DIR"
+    fi
+
+    step "Generating docker-compose.yml, docker-bake.hcl, and Dockerfiles (Docker files only, no role configs)..."
+    cd "$PROJECT_ROOT" || exit 1
+    # Skip all role-specific configuration tasks, only run docker-common generation
+    ansible-playbook $inventories_arg "$PLAYBOOK" $extra_vars \
+        --skip-tags cas,collectory,userdetails,apikey,cas-management,nginx,bie-hub,biocache-hub,spatial,alerts,species-list,sds,pipelines,doi,data-quality,namematching,sensitive-data,biocollect,dashboard,regions,images,events,gatus,config \
+        || error "Failed to generate Docker configuration"
+    success "Docker files generated"
+
+
+    # Create required docker subdirectories for volumes
+    step "Preparing docker subdirectories..."
+    (
+        umask 022
+        for dir in cas/config cas/data userdetails/config userdetails/data cas-management/config cas-management/data apikey/config apikey/data mongodb nginx logs; do
+            mkdir -p "$DATA_DIR/$dir" 2>/dev/null || true
+        done
+    )
+
+    success "Docker files ready!"
+    info "Generated files in: $DATA_DIR/"
+    info "  ✓ docker-compose.yml"
+    info "  ✓ docker-bake.hcl"
+    info "  ✓ Dockerfiles"
+    info ""
+    info "Next steps:"
+    info "  docker buildx bake -f $DATA_DIR/docker-bake.hcl --load all"
+    info "  docker compose -f $DATA_DIR/docker-compose.yml up -d"
+
+}
+
+cmd_build() {
+    info "Building Docker images..."
+
+    # Ensure DATA_DIR exists and is accessible
+    mkdir -p "$DATA_DIR" 2>/dev/null || true
+    cd "$DATA_DIR" || error "Cannot access $DATA_DIR"
+
+    # Use mktemp for log files to avoid permission issues
+    local BUILD_LOG_BUILDERS=$(mktemp /tmp/docker-build-builders.XXXXXX.log)
+    local BUILD_LOG_SERVICES=$(mktemp /tmp/docker-build-services.XXXXXX.log)
+
+    step "Building builder images..."
+    if ! BUILDX_BAKE_ENTITLEMENTS_FS=0 docker buildx bake -f docker-bake.hcl --load builders 2>&1 | tee "$BUILD_LOG_BUILDERS"; then
+        error "Failed to build builders"
+        echo ""
+        echo "========== BUILD ERROR OUTPUT =========="
+        [[ -f "$BUILD_LOG_BUILDERS" ]] && cat "$BUILD_LOG_BUILDERS"
+        echo "========== END ERROR OUTPUT =========="
+        rm -f "$BUILD_LOG_BUILDERS" "$BUILD_LOG_SERVICES"
+        exit 1
+    fi
+
+    step "Building all service images..."
+    if ! BUILDX_BAKE_ENTITLEMENTS_FS=0 docker buildx bake -f docker-bake.hcl --load all 2>&1 | tee "$BUILD_LOG_SERVICES"; then
+        error "Failed to build services"
+        echo ""
+        echo "========== BUILD ERROR OUTPUT =========="
+        [[ -f "$BUILD_LOG_SERVICES" ]] && cat "$BUILD_LOG_SERVICES"
+        echo "========== END ERROR OUTPUT =========="
+        rm -f "$BUILD_LOG_BUILDERS" "$BUILD_LOG_SERVICES"
+        exit 1
+    fi
+
+    # Clean up temp files
+    rm -f "$BUILD_LOG_BUILDERS" "$BUILD_LOG_SERVICES"
+
+    success "Build completed!"
+}
+
+cmd_up() {
+    info "Starting services..."
+    [[ ! -f "$DATA_DIR/docker-compose.yml" ]] && error "docker-compose.yml not found. Run 'ala config' first"
+
+    cd "$DATA_DIR" || exit 1
+    docker-compose up -d || error "Failed to start services"
+    success "Services started (background)"
+    docker-compose ps
+}
+
+cmd_down() {
+    info "Stopping services..."
+    cd "$DATA_DIR" 2>/dev/null || {
+        info "No services running"
+        return 0
+    }
+
+    if [[ "${wipe}" == "true" ]]; then
+        # Ask for confirmation before deleting volumes
+        echo ""
+        echo "⚠️  WARNING: You are about to DELETE ALL DATA in volumes!"
+        echo "This action cannot be undone!"
+        echo ""
+        read -p "Type 'yes' to confirm deletion: " confirm
+
+        if [[ "$confirm" != "yes" ]]; then
+            info "Cancelled. Volumes preserved."
+            return 0
+        fi
+
+        step "Removing containers and volumes..."
+        docker-compose down -v || true
+        success "✓ Containers and volumes removed"
+    else
+        step "Removing containers..."
+        docker-compose down || true
+        success "✓ Containers stopped"
+    fi
+
+    success "Services stopped!"
+}
+
+cmd_publish() {
+    info "Publishing images to $REGISTRY..."
+    cd "$PROJECT_ROOT" || exit 1
+    [[ ! -f "scripts/publish-images.sh" ]] && error "Script not found: scripts/publish-images.sh"
+
+    ./scripts/publish-images.sh "$REGISTRY" || error "Failed to publish"
+    success "Publishing completed!"
+}
+
+init_config() {
+    local config_file="$PROJECT_ROOT/.alarc"
+    local sample_file="$PROJECT_ROOT/.alarc.sample"
+
+    # If .alarc already exists, create .alarc.sample instead
+    if [[ -f "$config_file" ]]; then
+        info ".alarc already exists, creating .alarc.sample with new options..."
+        config_file="$sample_file"
+    fi
+
+    cat > "$config_file" << 'EOF'
+# ALA CLI Configuration
+inventories=la-test-inventories
+registry=livingatlases
+data_dir=docker-compose-output
+
+# SSL certificates directory (optional)
+ssl_certs=/etc/ssl/certs
+EOF
+
+    success "Created config file: $config_file"
+
+    if [[ "$config_file" == "$sample_file" ]]; then
+        info "Review .alarc.sample and update your .alarc if needed"
+    fi
+}
+
+# ============================================================================
+# Parse with docopts
+# ============================================================================
+
+# Show help if no arguments
+if [[ $# -eq 0 ]]; then
+    echo "$DOC"
+    exit 0
+fi
+
+args=$("$DOCOPTS" -h "$DOC" : "$@")
+eval "$args"
+
+# ============================================================================
+# Execute commands
+# ============================================================================
+
+if [[ "${help}" == "true" ]]; then
+    echo "$DOC"
+    exit 0
+fi
+
+if [[ "${version}" == "true" ]]; then
+    echo "ala 1.0.0"
+    exit 0
+fi
+
+if [[ "${init_config}" == "true" ]]; then
+    init_config
+    exit 0
+fi
+
+# Detect and set Docker context before proceeding
+detect_docker_context
+
+# Process inventories argument if provided
+if [[ -n "${inventories}" ]]; then
+    INVENTORIES_DIR="${inventories}"
+fi
+
+# Process registry argument if provided
+if [[ -n "${registry}" ]]; then
+    REGISTRY="${registry}"
+fi
+
+# Process ssl-certs argument if provided
+if [[ -n "${ssl_certs}" ]]; then
+    SSL_CERTS_DIR="${ssl_certs}"
+fi
+
+# Track if any command was executed
+EXECUTED=false
+
+# Execute commands in order: config, config-docker, validate, build, up, down, publish
+# Note: docopts returns numbers (1/0) not booleans, so we check > 0
+if [[ "${config:-0}" -gt 0 ]]; then
+    cmd_config "$INVENTORIES_DIR"
+    EXECUTED=true
+fi
+
+if [[ "${config_docker:-0}" -gt 0 ]]; then
+    [[ "$EXECUTED" == "true" ]] && echo ""
+    cmd_config_docker "$INVENTORIES_DIR"
+    EXECUTED=true
+fi
+
+if [[ "${validate:-0}" -gt 0 ]]; then
+    [[ "$EXECUTED" == "true" ]] && echo ""
+    cmd_validate "$INVENTORIES_DIR"
+    EXECUTED=true
+fi
+
+if [[ "${build:-0}" -gt 0 ]]; then
+    [[ "$EXECUTED" == "true" ]] && echo ""
+    validate_docker_for_build
+    cmd_build
+    EXECUTED=true
+fi
+
+if [[ "${up:-0}" -gt 0 ]]; then
+    [[ "$EXECUTED" == "true" ]] && echo ""
+    cmd_up
+    EXECUTED=true
+fi
+
+if [[ "${down:-0}" -gt 0 ]]; then
+    [[ "$EXECUTED" == "true" ]] && echo ""
+    cmd_down
+    EXECUTED=true
+fi
+
+if [[ "${publish:-0}" -gt 0 ]]; then
+    [[ "$EXECUTED" == "true" ]] && echo ""
+    cmd_publish
+    EXECUTED=true
+fi
+
+# Only show "Done!" if commands were actually executed
+if [[ "$EXECUTED" == "true" ]]; then
+    echo ""
+    success "Done!"
+fi
+
+

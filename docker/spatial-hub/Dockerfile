@@ -1,10 +1,10 @@
 # syntax=docker/dockerfile:1.4
-# apikey - API Key Service
+# spatial-hub - Spatial Hub UI
 # AUTO-GENERATED - DO NOT EDIT MANUALLY
 # Edit docker-common/defaults/main.yml and re-run ansible
 
-ARG GRADLE_BUILDER_IMAGE=gradle-builder:jdk11
-ARG RUNTIME_IMAGE=tomcat:9-jre11
+ARG GRADLE_BUILDER_IMAGE=gradle-builder:jdk17
+ARG RUNTIME_IMAGE=tomcat:9-jre17
 
 # ============================================
 # Stage 1: Build (try Nexus first, then source)
@@ -12,28 +12,26 @@ ARG RUNTIME_IMAGE=tomcat:9-jre11
 FROM ${GRADLE_BUILDER_IMAGE} AS builder
 
 ARG VERSION=6.0.0
-ARG REPO=https://github.com/AtlasOfLivingAustralia/apikey.git
+ARG REPO=https://github.com/AtlasOfLivingAustralia/spatial-hub.git
 ARG BRANCH=master
-ARG ARTIFACT=apikey
+ARG ARTIFACT=spatial-hub
 ARG GROUP_ID=au.org.ala
-# Format: https://nexus.ala.org.au/repository/releases/au/org/ala/{artifact}/{version}/{artifact}-{version}{classifier}.war
+ARG NEXUS_BASE=https://nexus.ala.org.au/service/local/artifact/maven/redirect
 
 WORKDIR /build
 
-# Try Nexus first (if version is release tag), fail if not found
+# Try Nexus first (if version is release tag), fallback to source build
 RUN echo "🔍 Checking Nexus for ${ARTIFACT} ${VERSION}..." && \
     if [ "${VERSION}" != "develop" ] && [ "${VERSION}" != "master" ]; then \
-        NEXUS_URL="https://nexus.ala.org.au/repository/releases/au/org/ala/${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}.war" && \
-        echo "   📥 Trying: ${NEXUS_URL}" && \
+        NEXUS_URL="${NEXUS_BASE}?r=public&g=${GROUP_ID}&a=${ARTIFACT}&v=${VERSION}&e=war" && \
         if curl -f -L -o artifact.war "${NEXUS_URL}"; then \
             echo "✅ Downloaded from Nexus"; \
         else \
-            echo "❌ ERROR: Artifact not found in Nexus at ${NEXUS_URL}"; \
-            echo "    Please verify:"; \
-            echo "    1. ARTIFACT=${ARTIFACT} is correct"; \
-            echo "    2. VERSION=${VERSION} exists in Nexus"; \
-            echo "    3. CLASSIFIER=${CLASSIFIER} is correct (if applicable)"; \
-            exit 1; \
+            echo "⚠️  Building from source..." && \
+            git clone ${REPO} . && \
+            git checkout ${VERSION} || git checkout tags/v${VERSION} || git checkout ${BRANCH} && \
+            ./gradlew clean war -x test --no-daemon --max-workers=1 && \
+            mv build/libs/*.war artifact.war; \
         fi; \
     else \
         git clone ${REPO} . && \
@@ -45,11 +43,11 @@ RUN echo "🔍 Checking Nexus for ${ARTIFACT} ${VERSION}..." && \
 # ============================================
 # Stage 2: Runtime
 # ============================================
-FROM tomcat:9-jre11
+FROM tomcat:9-jre17
 
-LABEL org.opencontainers.image.title="apikey"
-LABEL org.opencontainers.image.description="API Key Service"
-LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/apikey.git"
+LABEL org.opencontainers.image.title="spatial-hub"
+LABEL org.opencontainers.image.description="Spatial Hub UI"
+LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/spatial-hub.git"
 
 # Install dependencies
 RUN apt-get update && \
@@ -61,11 +59,11 @@ RUN apt-get update && \
 # Setup
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-COPY --from=builder /build/artifact.war /usr/local/tomcat/webapps/apikey.war
+COPY --from=builder /build/artifact.war /usr/local/tomcat/webapps/spatial-hub.war
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=5 \
-    CMD curl -f http://localhost:8080/apikey/actuator/health || exit 1
+    CMD curl -f http://localhost:8080/spatial-hub/actuator/health || exit 1
 
 EXPOSE 8080
 
