@@ -4,7 +4,7 @@
 # https://github.com/living-atlases/la-toolkit/blob/master/lib/src/la_service_desc.dart
 docker_services_desc:
   collectory:
-    name: 'collections'
+    name: 'collectory'
     nameInt: 'collectory'
     group: 'collectory'
     desc: 'metadata of biodiversity collections'
@@ -80,7 +80,7 @@ docker_services_desc:
     classifier: 'exec'
     version_variable: 'image_service_version'
   species_lists:
-    name: 'lists'
+    name: 'species-lists'
     nameInt: 'species_lists'
     group: 'species-list'
     desc: 'user provided species lists'
@@ -144,6 +144,7 @@ docker_services_desc:
     optional: true
     desc: ''
     artifacts: 'userdetails'
+    buildTool: 'gradle'
     repository: 'https://github.com/AtlasOfLivingAustralia/userdetails'
     isSubService: true
     parentService: "cas"
@@ -159,6 +160,7 @@ docker_services_desc:
     desc: ''
     repository: 'https://github.com/AtlasOfLivingAustralia/apikey'
     artifacts: 'apikey'
+    buildTool: 'gradle'
     classifier: 'exec'
     version_variable: 'apikey_version'
   cas_management:
@@ -171,6 +173,7 @@ docker_services_desc:
     repository: 'https://github.com/AtlasOfLivingAustralia/ala-cas-5-services'
     isSubService: true
     parentService: "cas"
+    buildTool: 'gradle'
     classifier: 'exec'
     version_variable: 'cas_management_version'
   spatial:
@@ -182,6 +185,7 @@ docker_services_desc:
     forceSubdomain: true
     sample: 'https://spatial.ala.org.au'
     artifacts: 'spatial-hub'
+    buildTool: 'gradle'
     repository: 'https://github.com/AtlasOfLivingAustralia/spatial-hub'
     version_variable: 'spatial_hub_version'
   spatial_service:
@@ -192,6 +196,7 @@ docker_services_desc:
     parentService: "spatial"
     group: 'spatial-service'
     optional: true
+    buildTool: 'gradle'
     repository: 'https://github.com/AtlasOfLivingAustralia/spatial-service'
     desc: ''
     version_variable: 'spatial_service_version'
@@ -292,7 +297,7 @@ docker_services_desc:
     nameInt: 'pipelines'
     group: 'pipelines'
     desc: 'Pipelines for data processing and indexing of biodiversity data'
-    optional: true
+    optional: false
     buildTool: 'maven'
     artifacts: 'pipelines'
     allowMultipleDeploys: true
@@ -410,33 +415,3 @@ docker_services_desc:
     optional: true
     allowMultipleDeploys: true
     desc: 'biocache cassandra DB for annotations, persistent queries'
-  biocache_cli:
-    name: 'biocache-cli'
-    nameInt: 'biocache_cli'
-    group: 'biocache-cli'
-    optional: true
-    desc: 'Biocache command line interface'
-  biocache_backend:
-    name: 'biocache-backend'
-    nameInt: 'biocache_backend'
-    group: 'biocache-backend'
-    optional: true
-    desc: 'Biocache backend services'
-  nameindexer:
-    name: 'nameindexer'
-    nameInt: 'nameindexer'
-    group: 'nameindexer'
-    optional: true
-    desc: 'Name indexer service'
-  docker_swarm:
-    name: 'docker-swarm'
-    nameInt: 'docker_swarm'
-    group: 'docker-swarm'
-    optional: true
-    desc: 'Docker Swarm orchestration'
-  docker_common:
-    name: 'docker-common'
-    nameInt: 'docker_common'
-    group: 'docker-common'
-    optional: false
-    desc: 'Common Docker configuration'

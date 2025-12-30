@@ -67,6 +67,58 @@ target "gradle-builder-jdk21" {
 }
 
 # ============================================
+# Maven Builder Base Images
+# ============================================
+
+# Maven builder for JDK 11 services
+target "maven-builder-jdk11" {
+  dockerfile = "Dockerfile"
+  context = "../docker/maven"
+  args = {
+    JDK_VERSION = "11"
+    MAVEN_VERSION = "3.9"
+  }
+  # Builders should not have output - they're only used as base images
+  # output = ["type=docker"]
+{% if docker_registry and docker_registry != '' %}
+  cache-from = ["type=registry,ref={{ docker_registry }}/maven-builder:jdk11-${CACHE_TAG}"]
+{% endif %}
+  cache-to = ["type=inline"]
+}
+
+# Maven builder for JDK 17 services (default for all current ALA services)
+target "maven-builder-jdk17" {
+  dockerfile = "Dockerfile"
+  context = "../docker/maven"
+  args = {
+    JDK_VERSION = "17"
+    MAVEN_VERSION = "3.9"
+  }
+  # Builders should not have output - they're only used as base images
+  # output = ["type=docker"]
+{% if docker_registry and docker_registry != '' %}
+  cache-from = ["type=registry,ref={{ docker_registry }}/maven-builder:jdk17-${CACHE_TAG}"]
+{% endif %}
+  cache-to = ["type=inline"]
+}
+
+# Maven builder for JDK 21 services (future-proofing)
+target "maven-builder-jdk21" {
+  dockerfile = "Dockerfile"
+  context = "../docker/maven"
+  args = {
+    JDK_VERSION = "21"
+    MAVEN_VERSION = "3.9"
+  }
+  # Builders should not have output - they're only used as base images
+  # output = ["type=docker"]
+{% if docker_registry and docker_registry != '' %}
+  cache-from = ["type=registry,ref={{ docker_registry }}/maven-builder:jdk21-${CACHE_TAG}"]
+{% endif %}
+  cache-to = ["type=inline"]
+}
+
+# ============================================
 # Service Targets
 # ============================================
 
@@ -149,9 +201,12 @@ target "userdetails" {
 target "cas" {
   dockerfile = "Dockerfile"
   context = "../docker/cas"
+  contexts = {
+    "maven-builder:jdk{{ cas_java_version | default('11') }}" = "target:maven-builder-jdk{{ cas_java_version | default('11') }}"
+  }
   args = {
-    MAVEN_BUILDER_IMAGE = "maven:3.8-eclipse-temurin-11"
-    RUNTIME_IMAGE = "eclipse-temurin:11-jre-jammy"
+    MAVEN_BUILDER_IMAGE = "maven-builder:jdk{{ cas_java_version | default('11') }}"
+    RUNTIME_IMAGE = "eclipse-temurin:{{ cas_java_version | default('11') }}-jre-jammy"
     ARTIFACT = "cas"
     GROUP_ID = "au.org.ala"
     VERSION = "{{ cas_version | default('develop') }}"
@@ -265,8 +320,12 @@ target "species-list" {
 # Build builders first
 group "builders" {
   targets = [
+    "gradle-builder-jdk11",
     "gradle-builder-jdk17",
     "gradle-builder-jdk21",
+    "maven-builder-jdk11",
+    "maven-builder-jdk17",
+    "maven-builder-jdk21",
   ]
 }
 

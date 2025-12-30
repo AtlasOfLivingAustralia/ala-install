@@ -2,7 +2,7 @@
 # Gatus Health Dashboard
 # Lightweight monitoring solution for Living Atlas services
 
-FROM twinproduction/gatus:v5
+FROM twinproduction/gatus:stable
 
 LABEL org.opencontainers.image.title="Gatus Health Dashboard"
 LABEL org.opencontainers.image.description="Atlas of Living Australia Health Monitoring"
