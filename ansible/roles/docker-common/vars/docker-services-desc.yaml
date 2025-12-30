@@ -1,0 +1,442 @@
+---
+# Docker services configuration - mapping of service names, artifacts, repos, and versions
+# Based on la-toolkit LAServiceDesc structure
+# https://github.com/living-atlases/la-toolkit/blob/master/lib/src/la_service_desc.dart
+docker_services_desc:
+  collectory:
+    name: 'collections'
+    nameInt: 'collectory'
+    group: 'collectory'
+    desc: 'metadata of biodiversity collections'
+    optional: false
+    sample: 'https://collections.ala.org.au'
+    artifacts: 'ala-collectory collectory'
+    repository: 'https://github.com/AtlasOfLivingAustralia/collectory/'
+    # Can be 'gradle' or 'maven' for now, if not buildTool is specified, no Dockefile is generated
+    buildTool: 'gradle'
+    version_variable: 'collectory_version'
+  ala_hub:
+    name: 'records'
+    alias: 'biocache-hub'
+    nameInt: 'ala_hub'
+    group: 'biocache-hub'
+    desc: 'occurrences search frontend (aka biocache-hub)'
+    optional: false
+    sample: 'https://biocache.ala.org.au'
+    artifacts: 'ala-hub'
+    buildTool: 'gradle'
+    allowMultipleDeploys: true
+    repository: 'https://github.com/AtlasOfLivingAustralia/biocache-hubs'
+    version_variable: 'biocache_hub_version'
+  biocache_service:
+    name: 'records-ws'
+    alias: 'biocache-service'
+    nameInt: 'biocache_service'
+    group: 'biocache-service-clusterdb'
+    desc: 'occurrences web service (aka biocache-service)'
+    optional: false
+    sample: 'https://biocache.ala.org.au/ws'
+    artifacts: 'biocache-service'
+    buildTool: 'gradle'
+    allowMultipleDeploys: true
+    repository: 'https://github.com/AtlasOfLivingAustralia/biocache-service'
+    version_variable: 'biocache_service_version'
+  ala_bie:
+    name: 'species'
+    alias: 'bie'
+    nameInt: 'bie'
+    group: 'bie-hub'
+    desc: 'species search frontend'
+    optional: true
+    sample: 'https://bie.ala.org.au'
+    allowMultipleDeploys: true
+    artifacts: 'ala-bie ala-bie-hub'
+    buildTool: 'gradle'
+    repository: 'https://github.com/AtlasOfLivingAustralia/ala-bie-hub'
+    version_variable: 'bie_hub_version'
+  bie_index:
+    name: 'species-ws'
+    alias: 'bie-index'
+    nameInt: 'bie_index'
+    group: 'bie-index'
+    desc: 'species web service'
+    optional: false
+    sample: 'https://bie.ala.org.au/ws'
+    artifacts: 'bie-index'
+    allowMultipleDeploys: true
+    buildTool: 'gradle'
+    repository: 'https://github.com/AtlasOfLivingAustralia/bie-index'
+    version_variable: 'bie_index_version'
+  images:
+    name: 'images'
+    nameInt: 'images'
+    group: 'image-service'
+    desc: 'images service'
+    optional: true
+    sample: 'https://images.ala.org.au'
+    artifacts: 'image-service'
+    buildTool: 'gradle'
+    repository: 'https://github.com/AtlasOfLivingAustralia/image-service'
+    classifier: 'exec'
+    version_variable: 'image_service_version'
+  species_lists:
+    name: 'lists'
+    nameInt: 'species_lists'
+    group: 'species-list'
+    desc: 'user provided species lists'
+    optional: true
+    sample: 'https://lists.ala.org.au'
+    artifacts: 'specieslist-webapp'
+    buildTool: 'gradle'
+    repository: 'https://github.com/AtlasOfLivingAustralia/specieslist-webapp'
+    version_variable: 'species_list_version'
+  regions:
+    name: 'regions'
+    nameInt: 'regions'
+    group: 'regions'
+    desc: 'regional data frontend'
+    optional: true
+    sample: 'https://regions.ala.org.au'
+    allowMultipleDeploys: true
+    artifacts: 'regions'
+    buildTool: 'gradle'
+    repository: 'https://github.com/AtlasOfLivingAustralia/regions'
+    version_variable: 'regions_version'
+  logger:
+    name: 'logger'
+    nameInt: 'logger'
+    group: 'logger-service'
+    desc: 'event logging (downloads stats, etc)'
+    optional: false
+    sample: 'https://logger.ala.org.au'
+    artifacts: 'logger-service'
+    buildTool: 'gradle'
+    repository: 'https://github.com/AtlasOfLivingAustralia/logger-service'
+    version_variable: 'logger_version'
+  solr:
+    name: 'solr'
+    nameInt: 'solr'
+    group: 'solr7-server'
+    desc: 'species indexing'
+    optional: false
+    artifacts: 'solr'
+    version_variable: 'solr_version'
+  cas:
+    name: 'auth'
+    alias: 'cas'
+    nameInt: 'cas'
+    group: 'cas-servers'
+    desc: 'CAS authentication system'
+    optional: true
+    forceSubdomain: true
+    sample: 'https://auth.ala.org.au/cas/'
+    artifacts: 'cas'
+    recommended: true
+    iniPath: ''
+    buildTool: 'maven'
+    repository: 'https://github.com/AtlasOfLivingAustralia/ala-cas-5'
+    classifier: 'exec'
+    version_variable: 'cas_version'
+  userdetails:
+    name: 'User Details'
+    nameInt: 'userdetails'
+    group: 'cas-servers'
+    optional: true
+    desc: ''
+    artifacts: 'userdetails'
+    repository: 'https://github.com/AtlasOfLivingAustralia/userdetails'
+    isSubService: true
+    parentService: "cas"
+    classifier: 'exec'
+    version_variable: 'user_details_version'
+  apikey:
+    name: 'API keys'
+    nameInt: 'apikey'
+    group: 'cas-servers'
+    optional: true
+    isSubService: true
+    parentService: "cas"
+    desc: ''
+    repository: 'https://github.com/AtlasOfLivingAustralia/apikey'
+    artifacts: 'apikey'
+    classifier: 'exec'
+    version_variable: 'apikey_version'
+  cas_management:
+    name: 'CAS Management'
+    nameInt: 'cas_management'
+    artifacts: 'cas-management'
+    group: 'cas-servers'
+    optional: true
+    desc: ''
+    repository: 'https://github.com/AtlasOfLivingAustralia/ala-cas-5-services'
+    isSubService: true
+    parentService: "cas"
+    classifier: 'exec'
+    version_variable: 'cas_management_version'
+  spatial:
+    name: 'spatial'
+    nameInt: 'spatial'
+    group: 'spatial'
+    desc: 'spatial front-end'
+    optional: true
+    forceSubdomain: true
+    sample: 'https://spatial.ala.org.au'
+    artifacts: 'spatial-hub'
+    repository: 'https://github.com/AtlasOfLivingAustralia/spatial-hub'
+    version_variable: 'spatial_hub_version'
+  spatial_service:
+    name: 'Spatial Webservice'
+    nameInt: 'spatial_service'
+    artifacts: 'spatial-service'
+    isSubService: true
+    parentService: "spatial"
+    group: 'spatial-service'
+    optional: true
+    repository: 'https://github.com/AtlasOfLivingAustralia/spatial-service'
+    desc: ''
+    version_variable: 'spatial_service_version'
+  geoserver:
+    name: 'Geoserver'
+    nameInt: 'geoserver'
+    isSubService: true
+    parentService: "spatial"
+    group: 'geoserver'
+    optional: true
+    desc: ''
+  dashboard:
+    name: 'dashboard'
+    nameInt: 'dashboard'
+    group: 'dashboard'
+    desc: 'Dashboard with portal stats'
+    optional: true
+    sample: 'https://dashboard.ala.org.au'
+    artifacts: 'dashboard'
+    buildTool: 'gradle'
+    repository: 'https://github.com/AtlasOfLivingAustralia/dashboard'
+    version_variable: 'dashboard_version'
+  sds:
+    name: 'sds'
+    nameInt: 'sds'
+    group: 'sds'
+    desc: 'Sensitive Data Service (SDS)'
+    optional: true
+    sample: 'https://sds.ala.org.au'
+    artifacts: 'sds-webapp2'
+    buildTool: 'gradle'
+    repository: 'https://github.com/AtlasOfLivingAustralia/sds'
+    version_variable: 'sds_version'
+  alerts:
+    name: 'alerts'
+    nameInt: 'alerts'
+    group: 'alerts-service'
+    desc: 'users can subscribe to notifications about new occurrences regions,…'
+    optional: true
+    sample: 'https://alerts.ala.org.au'
+    artifacts: 'alerts'
+    buildTool: 'gradle'
+    repository: 'https://github.com/AtlasOfLivingAustralia/alerts'
+    version_variable: 'alerts_version'
+  doi:
+    name: 'doi'
+    nameInt: 'doi'
+    group: 'doi-service'
+    desc: 'mainly used for generating DOIs of user downloads'
+    optional: true
+    sample: 'https://doi.ala.org.au'
+    artifacts: 'doi-service'
+    buildTool: 'gradle'
+    repository: 'https://github.com/AtlasOfLivingAustralia/doi-service'
+    classifier: 'exec'
+    version_variable: 'doi_service_version'
+  branding:
+    name: 'branding'
+    nameInt: 'branding'
+    group: 'branding'
+    desc: 'Web branding used by all services'
+    sample: 'Styling-the-web-app'
+    optional: false
+    allowMultipleDeploys: true
+    repository: 'https://github.com/living-atlases/base-branding'
+  namematchingService:
+    name: 'namematching'
+    nameInt: 'namematching_service'
+    group: 'namematching-service'
+    desc: 'namematching webservice'
+    optional: true
+    artifacts: 'namematchingService'
+    sample: 'https://namematching-ws.ala.org.au/'
+    allowMultipleDeploys: true
+    version_variable: 'ala_namematching_service_version'
+  sensitiveDataService:
+    name: 'sensitive-data-service'
+    nameInt: 'sensitive_data_service'
+    group: 'sensitive-data-service'
+    desc: 'Web services for sensitive data evaluation'
+    optional: true
+    artifacts: 'sensitiveDataService'
+    sample: 'https://sensitive-ws-test.ala.org.au'
+    allowMultipleDeploys: true
+    version_variable: 'ala_sensitive_data_service_version'
+  dataQuality:
+    name: 'data-quality'
+    nameInt: 'data_quality'
+    group: 'data_quality_filter_service'
+    desc: 'Data Quality Filter Service'
+    optional: true
+    artifacts: 'data-quality-filter-service'
+    buildTool: 'gradle'
+    sample: 'https://data-quality-service.ala.org.au'
+    version_variable: 'data_quality_filter_service_version'
+  pipelines:
+    name: 'pipelines'
+    nameInt: 'pipelines'
+    group: 'pipelines'
+    desc: 'Pipelines for data processing and indexing of biodiversity data'
+    optional: true
+    buildTool: 'maven'
+    artifacts: 'pipelines'
+    allowMultipleDeploys: true
+  events:
+    name: 'events'
+    nameInt: 'events'
+    group: 'events'
+    desc: 'events extended-data-model'
+    optional: true
+    sample: 'https://events.test.ala.org.au/'
+    forceSubdomain: true
+    artifacts: 'atlasoflivingaustralia/es2vt'
+  eventsElasticSearch:
+    name: 'events-elasticsearch'
+    nameInt: 'events_elasticsearch'
+    group: 'eventsElasticSearch'
+    desc: 'elasticsearch for events'
+    optional: true
+    allowMultipleDeploys: true
+  spark:
+    name: 'spark'
+    nameInt: 'spark'
+    group: 'spark'
+    desc: 'Spark cluster for Pipelines'
+    optional: true
+    allowMultipleDeploys: true
+  hadoop:
+    name: 'hadoop'
+    nameInt: 'hadoop'
+    group: 'hadoop'
+    desc: 'Hadoop cluster for Pipelines'
+    optional: true
+    allowMultipleDeploys: true
+  pipelinesJenkins:
+    name: 'pipelinesJenkins'
+    nameInt: 'pipelinesJenkins'
+    group: 'pipelinesJenkins'
+    desc: 'Jenkins for pipelines'
+    optional: true
+    allowMultipleDeploys: true
+  solrcloud:
+    name: 'solrcloud'
+    nameInt: 'solrcloud'
+    group: 'solrcloud'
+    desc: 'pipelines indexing'
+    optional: true
+    artifacts: 'solrcloud'
+    allowMultipleDeploys: true
+    version_variable: 'solrcloud_version'
+  zookeeper:
+    name: 'zookeeper'
+    nameInt: 'zookeeper'
+    group: 'zookeeper'
+    desc: 'zookeeper, for solrcloud coordination'
+    optional: true
+    allowMultipleDeploys: true
+  biocollect:
+    name: 'biocollect'
+    nameInt: 'biocollect'
+    group: 'biocollect'
+    forceSubdomain: true
+    desc: 'advanced data collection tool for biodiversity science'
+    sample: 'https://biocollect.ala.org.au/acsa'
+    artifacts: 'biocollect'
+    optional: true
+    buildTool: 'gradle'
+    classifier: 'exec'
+    version_variable: 'biocollect_version'
+  pdfgen:
+    name: 'pdfgen'
+    nameInt: 'pdfgen'
+    group: 'pdfgen'
+    desc: 'Service for turning .docs into .pdfs (used by biocollect)'
+    artifacts: 'pdfgen'
+    optional: true
+    version_variable: 'pdf_service_version'
+  ecodata:
+    name: 'ecodata'
+    nameInt: 'ecodata'
+    group: 'ecodata'
+    forceSubdomain: true
+    artifacts: 'ecodata'
+    desc: 'provides primarily data services for BioCollect applications'
+    optional: true
+    buildTool: 'gradle'
+    classifier: 'exec'
+    version_variable: 'ecodata_version'
+  ecodataReporting:
+    name: 'ecodata-reporting'
+    nameInt: 'ecodata_reporting'
+    group: 'ecodata-reporting'
+    forceSubdomain: true
+    artifacts: 'ecodata'
+    desc: 'provides reporting service for ecodata'
+    optional: true
+  gatus:
+    name: 'gatus'
+    nameInt: 'gatus'
+    group: 'gatus'
+    allowMultipleDeploys: true
+    desc: 'gatus monitoring service'
+    optional: true
+    sample: 'https://status.twin.sh/'
+  portainer:
+    name: 'portainer'
+    nameInt: 'portainer'
+    group: 'portainer'
+    optional: true
+    allowMultipleDeploys: true
+    desc: 'portainer docker management service'
+  cassandra:
+    name: 'cassandra'
+    nameInt: 'cassandra'
+    group: 'cassandra'
+    optional: true
+    allowMultipleDeploys: true
+    desc: 'biocache cassandra DB for annotations, persistent queries'
+  biocache_cli:
+    name: 'biocache-cli'
+    nameInt: 'biocache_cli'
+    group: 'biocache-cli'
+    optional: true
+    desc: 'Biocache command line interface'
+  biocache_backend:
+    name: 'biocache-backend'
+    nameInt: 'biocache_backend'
+    group: 'biocache-backend'
+    optional: true
+    desc: 'Biocache backend services'
+  nameindexer:
+    name: 'nameindexer'
+    nameInt: 'nameindexer'
+    group: 'nameindexer'
+    optional: true
+    desc: 'Name indexer service'
+  docker_swarm:
+    name: 'docker-swarm'
+    nameInt: 'docker_swarm'
+    group: 'docker-swarm'
+    optional: true
+    desc: 'Docker Swarm orchestration'
+  docker_common:
+    name: 'docker-common'
+    nameInt: 'docker_common'
+    group: 'docker-common'
+    optional: false
+    desc: 'Common Docker configuration'
