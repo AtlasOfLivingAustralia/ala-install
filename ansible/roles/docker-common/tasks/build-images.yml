@@ -186,25 +186,3 @@
   when: services_enabled | length > 0
   ignore_errors: true
 
-- name: Display build results
-  debug:
-    msg:
-      - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-      - "✅ Images built successfully!"
-      - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-      - "  Built services with versions:"
-      - "    • CAS: {{ cas_version | default('N/A') }}"
-      - "    • Collectory: {{ collectory_version | default('N/A') }}"
-      - "    • Species List: {{ species_list_version | default('N/A') }}"
-      - "    • UserDetails: {{ user_details_version | default('N/A') }}"
-      - "    • APIKey: {{ apikey_version | default('N/A') }}"
-      - "    • CAS Management: {{ cas_management_version | default('N/A') }}"
-      - ""
-      - "  Verify with: docker images"
-      - ""
-      - "  Next steps:"
-      - "    - Start services: docker compose -f {{ data_dir }}/docker-compose.yml up -d"
-      - "    - Check status: docker compose ps"
-      - "    - View logs: docker compose logs -f"
-      - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-

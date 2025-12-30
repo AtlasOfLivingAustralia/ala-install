@@ -10,12 +10,44 @@
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_gid }}"
 
+- name: Include services descriptions
+  include_vars:
+    file: docker-services-desc.yaml
+
+- name: Set docker_services_desc as a clean variable
+  set_fact:
+    docker_services_desc: "{{ docker_services_desc }}"
+
 - name: Determine Java versions for services
   include_tasks: determine-java-versions.yml
 
-- name: Fetch latest ala-i18n version from GBIF APT repository
+# Create clean dictionaries for easy access to software and Java versions
+# Uses version_variable from docker_services_desc dynamically
+- name: Build service versions dictionary from docker_services_desc
+  set_fact:
+    service_versions_dict: "{{ service_versions_dict | default({}) | combine({item.key: vars[item.value.version_variable] | default('develop')}) }}"
+  loop: "{{ docker_services_desc | dict2items }}"
+  when: item.value.version_variable is defined
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Build Java versions dictionary from determined java versions
+  set_fact:
+    service_java_dict: >-
+      {{
+        service_java_dict | default({}) | combine({
+          item.key: vars.get(item.key.replace('-', '_') + '_java_version', item.value.get('java_version', 'N/A'))
+        })
+      }}
+  loop: "{{ docker_services_desc | dict2items }}"
+  when:
+    - vars.get(item.key.replace('-', '_') + '_java_version') is defined or item.value.get('java_version') is defined
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Fetch latest ala-i18n version from apt.gbif.es repository
   block:
-    - name: Download GBIF Packages.gz and extract version
+    - name: Download Packages.gz and extract version
       shell: |
         curl -s https://apt.gbif.es/dists/unstable/main/binary-amd64/Packages.gz | \
         gunzip | \
@@ -28,76 +60,34 @@
       changed_when: false
       failed_when: false
 
-    - name: Set i18n_version from GBIF
+    - name: Set i18n_version from apt.gbif.es
       set_fact:
         i18n_version: "{{ gbif_i18n_version.stdout | trim }}"
       when: gbif_i18n_version.stdout | length > 0
 
     - name: Display fetched i18n version
       debug:
-        msg: "Latest ala-i18n version from GBIF: {{ i18n_version | default('unable to fetch') }}"
+        msg: "Latest ala-i18n version from apt.gbif.es: {{ i18n_version | default('unable to fetch') }}"
 
-- name: Detect enabled services from use_* inventory variables
+- name: Detect enabled services from optional flag and use_* inventory variables
   set_fact:
-    services_enabled: >-
-      {{
-        (['collectory', 'nginx'] +
-        (['cas', 'userdetails', 'apikey', 'cas-management'] if (use_cas | default(false) | bool) else []) +
-        (['oidc'] if (use_oidc | default(false) | bool) else []) +
-        (['ala-bie'] if (use_ala_bie | default(false) | bool) else []) +
-        (['spatial'] if (use_spatial | default(false) | bool) else []) +
-        (['regions'] if (use_regions | default(false) | bool) else []) +
-        (['species'] if (use_species | default(false) | bool) else []) +
-        (['species-lists'] if (use_species_lists | default(false) | bool) else []) +
-        (['images'] if (use_images | default(false) | bool) else []) +
-        (['alerts'] if (use_alerts | default(false) | bool) else []) +
-        (['doi'] if (use_doi | default(false) | bool) else []) +
-        (['webapi'] if (use_webapi | default(false) | bool) else []) +
-        (['dashboard'] if (use_dashboard | default(false) | bool) else []) +
-        (['biocache-backend'] if (use_biocache_backend | default(false) | bool) else []) +
-        (['pipelines'] if (use_pipelines | default(false) | bool) else []) +
-        (['solrcloud'] if (use_solrcloud | default(false) | bool) else []) +
-        (['sds'] if (use_sds | default(false) | bool) else []) +
-        (['biocollect'] if (use_biocollect | default(false) | bool) else []) +
-        (['namematching'] if (use_namematching_service | default(false) | bool) else []) +
-        (['sensitive-data'] if (use_sensitive_data_service | default(false) | bool) else []) +
-        (['data-quality'] if (use_data_quality | default(false) | bool) else []) +
-        (['events'] if (use_events | default(false) | bool) else []) +
-        (['events-elasticsearch'] if (use_events_elasticsearch | default(false) | bool) else []) +
-        (['gatus'] if (use_gatus | default(false) | bool) else []))
-        | unique
-      }}
+    services_enabled: "{{ services_enabled | default([]) + ([item.key] if (
+      (not item.value.optional | default(true)) or 
+      (item.value.isSubService | default(false) and vars.get('use_' + docker_services_desc[item.value.parentService].nameInt, false) | bool) or
+      (not item.value.isSubService | default(false) and vars.get('use_' + item.value.nameInt, false) | bool)
+    ) else []) }}"
+  loop: "{{ docker_services_desc | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
 
-- name: Debug services_enabled
+# Always add nginx and ensure unique services
+- name: Add nginx and ensure unique services list
+  set_fact:
+    services_enabled: "{{ (['nginx'] + services_enabled) | unique }}"
+
+- name: Debug - Show services configuration
   debug:
     msg: "Services enabled: {{ services_enabled }}"
-
-- name: Debug individual use_* variables
-  debug:
-    msg: |
-      use_cas = {{ use_cas | default(false) }}
-      use_oidc = {{ use_oidc | default(false) }}
-      use_collectory = {{ use_collectory | default(false) }}
-      use_ala_bie = {{ use_ala_bie | default(false) }}
-      use_spatial = {{ use_spatial | default(false) }}
-
-- name: Debug services_enabled list
-  debug:
-    msg: "{{ services_enabled | to_nice_yaml }}"
-
-- name: Verify cas in services_enabled
-  debug:
-    msg: "'cas' in services_enabled = {{ 'cas' in services_enabled }}"
-
-- name: Verify userdetails in services_enabled
-  debug:
-    msg: "'userdetails' in services_enabled = {{ 'userdetails' in services_enabled }}"
-
-- name: Assert cas should be in services_enabled if use_cas is true
-  assert:
-    that:
-      - "'cas' in services_enabled or not (use_cas | default(false) | bool)"
-    fail_msg: "ERROR: cas should be in services_enabled when use_cas=true. Got: {{ services_enabled }}"
 
 - name: Run cas configuration generation
   include_role:
@@ -226,97 +216,72 @@
     replace: 'context: ../docker/'
   when: data_dir is defined
 
-# Create a dictionary mapping service names to their versions
-- name: Create service versions dictionary
-  set_fact:
-    service_versions:
-      collectory: "{{ collectory_version | default('develop') }}"
-      cas: "{{ cas_version | default('develop') }}"
-      userdetails: "{{ user_details_version | default('develop') }}"
-      apikey: "{{ apikey_version | default('develop') }}"
-      cas-management: "{{ cas_management_version | default('develop') }}"
-      species-lists: "{{ species_list_version | default('develop') }}"
-      ala-bie: "{{ bie_hub_version | default('develop') }}"
-      spatial: "{{ spatial_hub_version | default('develop') }}"
-      regions: "{{ regions_version | default('develop') }}"
-      species: "{{ bie_index_version | default('develop') }}"
-      images: "{{ image_service_version | default('develop') }}"
-      alerts: "{{ alerts_version | default('develop') }}"
-      doi: "{{ doi_service_version | default('develop') }}"
-      dashboard: "{{ dashboard_version | default('develop') }}"
-      sds: "{{ sds_version | default('develop') }}"
-      biocollect: "{{ biocollect_version | default('develop') }}"
-      namematching: "{{ ala_namematching_service_version | default('develop') }}"
-      sensitive-data: "{{ ala_sensitive_data_service_version | default('develop') }}"
-      data-quality: "{{ data_quality_filter_service_version | default('develop') }}"
+# Note: service_versions is now dynamically built from docker_services_desc
+# via service_versions_dict and service_java_dict
 
 # Create directories for enabled services with build tools
 - name: Create directories for Dockerfile generation
   file:
-    path: "{{ playbook_dir | dirname }}/docker/{{ item }}"
+    path: "{{ playbook_dir | dirname }}/docker/{{ docker_services_desc[item].get('alias', docker_services_desc[item].get('name', item)) }}"
     state: directory
     mode: '0755'
   loop: "{{ services_enabled }}"
   when:
-    - item in docker_services_config
-    - docker_services_config[item].get('build_tool') in ['gradle', 'maven']
+    - item in docker_services_desc
+    - docker_services_desc[item].get('buildTool') in ['gradle', 'maven']
 
 # Generate Gradle Dockerfiles using already-determined Java versions
 - name: Generate Gradle Dockerfiles
   template:
     src: "Dockerfile.gradle.j2"
-    dest: "{{ playbook_dir | dirname }}/docker/{{ item }}/Dockerfile"
+    dest: "{{ playbook_dir | dirname }}/docker/{{ docker_services_desc[item].get('alias', docker_services_desc[item].get('name', item)) }}/Dockerfile"
     mode: '0644'
   loop: "{{ services_enabled }}"
   vars:
     service_name: "{{ item }}"
-    description: "{{ docker_services_config[item].description }}"
-    artifact_id: "{{ docker_services_config[item].artifact_id }}"
-    group_id: "{{ docker_services_config[item].group_id }}"
-    # Java version from variables calculated in determine-java-versions.yml
-    java_version: "{{ vars[item.replace('-', '_') + '_java_version'] | default(docker_services_config[item].java_version) }}"
-    runtime_image: "{{ docker_services_config[item].runtime_image }}"
-    repo: "{{ docker_services_config[item].repo }}"
-    branch: "{{ docker_services_config[item].branch }}"
-    port: "{{ docker_services_config[item].port }}"
-    classifier: "{{ docker_services_config[item].classifier | default('') }}"
-    # Version from service_versions dictionary
-    version: "{{ service_versions[item] | default(docker_services_config[item].branch) }}"
+    description: "{{ docker_services_desc[item].desc }}"
+    artifact_id: "{{ docker_services_desc[item].artifacts }}"
+    # Java version from service_java_dict
+    java_version: "{{ service_java_dict.get(item, '11') }}"
+    repo: "{{ docker_services_desc[item].repository | default('') }}"
+    branch: "develop"
+    port: "8080"
+    classifier: "{{ docker_services_desc[item].classifier | default('') }}"
+    # Version from service_versions_dict
+    version: "{{ service_versions_dict.get(item, 'develop') }}"
   when:
-    - item in docker_services_config
-    - docker_services_config[item].build_tool == 'gradle'
+    - item in docker_services_desc
+    - docker_services_desc[item].get('buildTool') == 'gradle'
 
 # Generate Maven Dockerfiles using already-determined Java versions
 - name: Generate Maven Dockerfiles
   template:
     src: "Dockerfile.maven.j2"
-    dest: "{{ playbook_dir | dirname }}/docker/{{ item }}/Dockerfile"
+    dest: "{{ playbook_dir | dirname }}/docker/{{ docker_services_desc[item].get('alias', docker_services_desc[item].get('name', item)) }}/Dockerfile"
     mode: '0644'
   loop: "{{ services_enabled }}"
   vars:
     service_name: "{{ item }}"
-    description: "{{ docker_services_config[item].description }}"
-    artifact_id: "{{ docker_services_config[item].artifact_id }}"
-    group_id: "{{ docker_services_config[item].group_id }}"
-    # Java version from variables calculated in determine-java-versions.yml
-    java_version: "{{ vars[item.replace('-', '_') + '_java_version'] | default(docker_services_config[item].java_version) }}"
-    runtime_image: "{{ docker_services_config[item].runtime_image }}"
-    repo: "{{ docker_services_config[item].repo }}"
-    branch: "{{ docker_services_config[item].branch }}"
-    port: "{{ docker_services_config[item].port }}"
-    classifier: "{{ docker_services_config[item].classifier | default('') }}"
-    # Version from service_versions dictionary
-    version: "{{ service_versions[item] | default(docker_services_config[item].branch) }}"
+    description: "{{ docker_services_desc[item].desc }}"
+    artifact_id: "{{ docker_services_desc[item].artifacts }}"
+    # Java version from service_java_dict
+    java_version: "{{ service_java_dict.get(item, '11') }}"
+    repo: "{{ docker_services_desc[item].repository | default('') }}"
+    branch: "develop"
+    port: "8080"
+    classifier: "{{ docker_services_desc[item].classifier | default('') }}"
+    # Version from service_versions_dict
+    version: "{{ service_versions_dict.get(item, 'develop') }}"
   when:
-    - item in docker_services_config
-    - docker_services_config[item].build_tool == 'maven'
+    - item in docker_services_desc
+    - docker_services_desc[item].get('buildTool') == 'maven'
 
 - name: Display generated Dockerfiles with versions and Java
   debug:
     msg: |
       ✅ Generated Dockerfiles:
       {% for service in services_enabled %}
-      {% if service in docker_services_config and docker_services_config[service].get('build_tool') in ['gradle', 'maven'] %}
+      {% if service in docker_services_desc and docker_services_desc[service].get('build_tool') in ['gradle', 'maven'] %}
       {% set svc_version = (
         collectory_version if service == 'collectory' else
         cas_version if service == 'cas' else
@@ -339,8 +304,8 @@
         data_quality_filter_service_version if service == 'data-quality' else
         'develop'
       ) | default('develop') %}
-      {% set svc_java = vars[service.replace('-', '_') + '_java_version'] | default(docker_services_config[service].java_version) %}
-      - docker/{{ service }}/Dockerfile ({{ docker_services_config[service].build_tool }}) v{{ svc_version }} (Java {{ svc_java }})
+      {% set svc_java = vars[service.replace('-', '_') + '_java_version'] | default(docker_services_desc[service].java_version) %}
+      - docker/{{ service }}/Dockerfile ({{ docker_services_desc[service].build_tool }}) v{{ svc_version }} (Java {{ svc_java }})
       {% endif %}
       {% endfor %}
 
@@ -414,19 +379,19 @@
       - "{% if 'nginx' in services_enabled %}    - nginx/default.conf{% endif %}"
       - "{% if 'collectory' in services_enabled %}    - collectory/config/collectory-config.properties{% endif %}"
       - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-- name: Fix ownership of configuration files (user-relevant files only)
-  shell: |
-    # Fix docker-compose.yml
-    if [ -f "{{ data_dir }}/docker-compose.yml" ]; then
-      chown {{ ansible_user_id }}:{{ ansible_user_gid }} "{{ data_dir }}/docker-compose.yml"    fi
-    
-    # Fix nginx configuration
-    if [ -d "{{ data_dir }}/nginx" ]; then
-      chown -R {{ ansible_user_id }}:{{ ansible_user_gid }} "{{ data_dir }}/nginx"
-      find "{{ data_dir }}/nginx" -type d -exec chmod 0755 {} \;
-      find "{{ data_dir }}/nginx" -type f -exec chmod 0644 {} \;
-    fi
-  changed_when: false
-  become: yes
+#
+#- name: Fix ownership of configuration files (user-relevant files only)
+#  shell: |
+#    # Fix docker-compose.yml
+#    if [ -f "{{ data_dir }}/docker-compose.yml" ]; then
+#      chown {{ ansible_user_id }}:{{ ansible_user_gid }} "{{ data_dir }}/docker-compose.yml"    fi
+#
+#    # Fix nginx configuration
+#    if [ -d "{{ data_dir }}/nginx" ]; then
+#      chown -R {{ ansible_user_id }}:{{ ansible_user_gid }} "{{ data_dir }}/nginx"
+#      find "{{ data_dir }}/nginx" -type d -exec chmod 0755 {} \;
+#      find "{{ data_dir }}/nginx" -type f -exec chmod 0644 {} \;
+#    fi
+#  changed_when: false
+#  become: yes
 
