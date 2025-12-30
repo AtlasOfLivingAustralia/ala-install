@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-# userdetails - 
+# ala_hub - occurrences search frontend (aka biocache-hub)
 # AUTO-GENERATED - DO NOT EDIT MANUALLY
 # Edit ansible/roles/docker-common/tasks/generate-compose.yml and re-run ansible
 #
@@ -45,9 +45,9 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # ============================================
 FROM base-builder AS builder-nexus
 
-ARG VERSION=3.2.1
-ARG ARTIFACT=userdetails
-ARG CLASSIFIER=exec
+ARG VERSION=8.1.0
+ARG ARTIFACT=ala-hub
+ARG CLASSIFIER=""
 
 RUN echo "🔍 Preparing download from Nexus..." && \
     echo "   Version: ${VERSION}" && \
@@ -99,7 +99,7 @@ RUN curl -f -L -o artifact.war "${ARTIFACT_URL}" && \
 # ============================================
 FROM base-builder AS builder-repo-branch
 
-ARG REPO=https://github.com/AtlasOfLivingAustralia/userdetails
+ARG REPO=https://github.com/AtlasOfLivingAustralia/biocache-hubs
 ARG BRANCH=develop
 ARG BUILD_TOOL=gradle
 
@@ -130,7 +130,7 @@ RUN ls -lh artifact.war && \
 # ============================================
 FROM base-builder AS builder-repo-commit
 
-ARG REPO=https://github.com/AtlasOfLivingAustralia/userdetails
+ARG REPO=https://github.com/AtlasOfLivingAustralia/biocache-hubs
 ARG COMMIT=HEAD
 ARG BUILD_TOOL=gradle
 
@@ -171,16 +171,16 @@ FROM builder-${BUILD_METHOD} AS final-builder
 # ============================================
 FROM tomcat:9-jre11 AS runtime-tomcat
 
-LABEL org.opencontainers.image.title="userdetails"
-LABEL org.opencontainers.image.description=""
-LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/userdetails"
+LABEL org.opencontainers.image.title="ala_hub"
+LABEL org.opencontainers.image.description="occurrences search frontend (aka biocache-hub)"
+LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/biocache-hubs"
 
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-COPY --from=final-builder /build/artifact.war /usr/local/tomcat/webapps/userdetails.war
+COPY --from=final-builder /build/artifact.war /usr/local/tomcat/webapps/ala_hub.war
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=3 CMD \
-curl --fail --silent http://localhost:8080/userdetails/actuator/health || exit 1
+curl --fail --silent http://localhost:8080/ala_hub/actuator/health || exit 1
 
 EXPOSE 8080
 
@@ -191,16 +191,16 @@ CMD ["catalina.sh", "run"]
 # ============================================
 FROM eclipse-temurin:11-jre-jammy AS runtime-java-jar
 
-LABEL org.opencontainers.image.title="userdetails"
-LABEL org.opencontainers.image.description=""
-LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/userdetails"
+LABEL org.opencontainers.image.title="ala_hub"
+LABEL org.opencontainers.image.description="occurrences search frontend (aka biocache-hub)"
+LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/biocache-hubs"
 
 WORKDIR /app
 
 COPY --from=final-builder /build/artifact.war /app/app.war
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=3 CMD \
-curl --fail --silent http://localhost:8080/userdetails/actuator/health || exit 1
+curl --fail --silent http://localhost:8080/ala_hub/actuator/health || exit 1
 
 EXPOSE 8080
 
@@ -224,7 +224,7 @@ USER 1000:1000
 
 ARG BUILD_DATE
 ARG VCS_REF
-ARG VERSION=3.2.1
+ARG VERSION=8.1.0
 
 LABEL org.opencontainers.image.created="${BUILD_DATE}"
 LABEL org.opencontainers.image.revision="${VCS_REF}"

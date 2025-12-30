@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-# doi - mainly used for generating DOIs of user downloads
+# pipelines - Pipelines for data processing and indexing of biodiversity data
 # AUTO-GENERATED - DO NOT EDIT MANUALLY
 # Edit ansible/roles/docker-common/tasks/generate-compose.yml and re-run ansible
 #
@@ -25,9 +25,9 @@
 # ============================================
 # GLOBAL BUILD ARGUMENTS
 # ============================================
-ARG BUILDER_IMAGE=gradle-builder:jdk17
+ARG BUILDER_IMAGE=maven-builder:jdk11
 ARG BUILD_METHOD=nexus
-ARG BUILD_TOOL=gradle
+ARG BUILD_TOOL=maven
 ARG RUN_TOOL=java-jar
 
 # ============================================
@@ -37,26 +37,28 @@ FROM ${BUILDER_IMAGE} AS base-builder
 
 WORKDIR /build
 
+# Ensure bash is available for all stages
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # ============================================
 # Stage 2: Build from Nexus
 # ============================================
 FROM base-builder AS builder-nexus
 
-ARG VERSION=6.0.0
-ARG ARTIFACT=doi-service
-ARG CLASSIFIER=
+ARG VERSION=develop
+ARG ARTIFACT=pipelines
+ARG CLASSIFIER=""
 
 RUN echo "🔍 Preparing download from Nexus..." && \
     echo "   Version: ${VERSION}" && \
     echo "   Artifact: ${ARTIFACT}"
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN --mount=type=cache,target=/cache/nexus,sharing=locked \
     set -e && \
     NEXUS_BASE_URL="https://nexus.ala.org.au/repository/releases" && \
     ARTIFACT_NAME="${ARTIFACT}-${VERSION}" && \
-    if [ -n "${CLASSIFIER}" ]; then \
-        ARTIFACT_NAME="${ARTIFACT}-${VERSION}-${CLASSIFIER}"; \
+    if [ -n "${CLASSIFIER}" ] && [ "${CLASSIFIER}" != "" ]; then \
+        ARTIFACT_NAME="${ARTIFACT_NAME}-${CLASSIFIER}"; \
     fi && \
     NEXUS_URL="${NEXUS_BASE_URL}/au/org/ala/${ARTIFACT}/${VERSION}/${ARTIFACT_NAME}.war" && \
     CACHE_FILE="/cache/nexus/${ARTIFACT}-${VERSION}${CLASSIFIER:+-${CLASSIFIER}}.war" && \
@@ -97,9 +99,9 @@ RUN curl -f -L -o artifact.war "${ARTIFACT_URL}" && \
 # ============================================
 FROM base-builder AS builder-repo-branch
 
-ARG REPO=https://github.com/AtlasOfLivingAustralia/doi-service
+ARG REPO=
 ARG BRANCH=develop
-ARG BUILD_TOOL=gradle
+ARG BUILD_TOOL=maven
 
 RUN echo "🔍 Cloning repository..." && \
     echo "   Repo: ${REPO}"
@@ -116,9 +118,9 @@ RUN git checkout "${BRANCH}" && \
 
 RUN echo "🔨 Building with ${BUILD_TOOL}..."
 
-RUN --mount=type=cache,target=/root/.gradle \
-    ./gradlew clean war -x test --no-daemon --max-workers=1 && \
-    mv build/libs/*.war artifact.war
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn clean package -DskipTests -P war && \
+    mv target/*.war artifact.war
 
 RUN ls -lh artifact.war && \
     echo "✅ Build completed successfully"
@@ -128,9 +130,9 @@ RUN ls -lh artifact.war && \
 # ============================================
 FROM base-builder AS builder-repo-commit
 
-ARG REPO=https://github.com/AtlasOfLivingAustralia/doi-service
+ARG REPO=
 ARG COMMIT=HEAD
-ARG BUILD_TOOL=gradle
+ARG BUILD_TOOL=maven
 
 RUN echo "🔍 Cloning repository..." && \
     echo "   Repo: ${REPO}"
@@ -147,9 +149,9 @@ RUN git checkout "${COMMIT}" && \
 
 RUN echo "🔨 Building with ${BUILD_TOOL}..."
 
-RUN --mount=type=cache,target=/root/.gradle \
-    ./gradlew clean war -x test --no-daemon --max-workers=1 && \
-    mv build/libs/*.war artifact.war
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn clean package -DskipTests -P war && \
+    mv target/*.war artifact.war
 
 RUN ls -lh artifact.war && \
     echo "✅ Build completed successfully"
@@ -167,18 +169,18 @@ FROM builder-${BUILD_METHOD} AS final-builder
 # ============================================
 # Stage 7: Runtime - Tomcat
 # ============================================
-FROM tomcat:9-jre17 AS runtime-tomcat
+FROM tomcat:9-jre11 AS runtime-tomcat
 
-LABEL org.opencontainers.image.title="doi"
-LABEL org.opencontainers.image.description="mainly used for generating DOIs of user downloads"
-LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/doi-service"
+LABEL org.opencontainers.image.title="pipelines"
+LABEL org.opencontainers.image.description="Pipelines for data processing and indexing of biodiversity data"
+LABEL org.opencontainers.image.source=""
 
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-COPY --from=final-builder /build/artifact.war /usr/local/tomcat/webapps/doi.war
+COPY --from=final-builder /build/artifact.war /usr/local/tomcat/webapps/pipelines.war
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=3 CMD \
-curl --fail --silent http://localhost:8080/doi/actuator/health || exit 1
+curl --fail --silent http://localhost:8080/pipelines/actuator/health || exit 1
 
 EXPOSE 8080
 
@@ -187,18 +189,18 @@ CMD ["catalina.sh", "run"]
 # ============================================
 # Stage 8: Runtime - Java JAR
 # ============================================
-FROM eclipse-temurin:17-jre-jammy AS runtime-java-jar
+FROM eclipse-temurin:11-jre-jammy AS runtime-java-jar
 
-LABEL org.opencontainers.image.title="doi"
-LABEL org.opencontainers.image.description="mainly used for generating DOIs of user downloads"
-LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/doi-service"
+LABEL org.opencontainers.image.title="pipelines"
+LABEL org.opencontainers.image.description="Pipelines for data processing and indexing of biodiversity data"
+LABEL org.opencontainers.image.source=""
 
 WORKDIR /app
 
 COPY --from=final-builder /build/artifact.war /app/app.war
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=3 CMD \
-curl --fail --silent http://localhost:8080/doi/actuator/health || exit 1
+curl --fail --silent http://localhost:8080/pipelines/actuator/health || exit 1
 
 EXPOSE 8080
 
@@ -222,7 +224,7 @@ USER 1000:1000
 
 ARG BUILD_DATE
 ARG VCS_REF
-ARG VERSION=6.0.0
+ARG VERSION=develop
 
 LABEL org.opencontainers.image.created="${BUILD_DATE}"
 LABEL org.opencontainers.image.revision="${VCS_REF}"

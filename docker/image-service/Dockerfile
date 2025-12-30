@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-# userdetails - 
+# images - images service
 # AUTO-GENERATED - DO NOT EDIT MANUALLY
 # Edit ansible/roles/docker-common/tasks/generate-compose.yml and re-run ansible
 #
@@ -25,7 +25,7 @@
 # ============================================
 # GLOBAL BUILD ARGUMENTS
 # ============================================
-ARG BUILDER_IMAGE=gradle-builder:jdk11
+ARG BUILDER_IMAGE=gradle-builder:jdk21
 ARG BUILD_METHOD=nexus
 ARG BUILD_TOOL=gradle
 ARG RUN_TOOL=java-jar
@@ -45,8 +45,8 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # ============================================
 FROM base-builder AS builder-nexus
 
-ARG VERSION=3.2.1
-ARG ARTIFACT=userdetails
+ARG VERSION=3.1.0
+ARG ARTIFACT=image-service
 ARG CLASSIFIER=exec
 
 RUN echo "🔍 Preparing download from Nexus..." && \
@@ -99,7 +99,7 @@ RUN curl -f -L -o artifact.war "${ARTIFACT_URL}" && \
 # ============================================
 FROM base-builder AS builder-repo-branch
 
-ARG REPO=https://github.com/AtlasOfLivingAustralia/userdetails
+ARG REPO=https://github.com/AtlasOfLivingAustralia/image-service
 ARG BRANCH=develop
 ARG BUILD_TOOL=gradle
 
@@ -130,7 +130,7 @@ RUN ls -lh artifact.war && \
 # ============================================
 FROM base-builder AS builder-repo-commit
 
-ARG REPO=https://github.com/AtlasOfLivingAustralia/userdetails
+ARG REPO=https://github.com/AtlasOfLivingAustralia/image-service
 ARG COMMIT=HEAD
 ARG BUILD_TOOL=gradle
 
@@ -169,18 +169,18 @@ FROM builder-${BUILD_METHOD} AS final-builder
 # ============================================
 # Stage 7: Runtime - Tomcat
 # ============================================
-FROM tomcat:9-jre11 AS runtime-tomcat
+FROM tomcat:9-jre21 AS runtime-tomcat
 
-LABEL org.opencontainers.image.title="userdetails"
-LABEL org.opencontainers.image.description=""
-LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/userdetails"
+LABEL org.opencontainers.image.title="images"
+LABEL org.opencontainers.image.description="images service"
+LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/image-service"
 
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-COPY --from=final-builder /build/artifact.war /usr/local/tomcat/webapps/userdetails.war
+COPY --from=final-builder /build/artifact.war /usr/local/tomcat/webapps/images.war
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=3 CMD \
-curl --fail --silent http://localhost:8080/userdetails/actuator/health || exit 1
+curl --fail --silent http://localhost:8080/images/actuator/health || exit 1
 
 EXPOSE 8080
 
@@ -189,18 +189,18 @@ CMD ["catalina.sh", "run"]
 # ============================================
 # Stage 8: Runtime - Java JAR
 # ============================================
-FROM eclipse-temurin:11-jre-jammy AS runtime-java-jar
+FROM eclipse-temurin:21-jre-jammy AS runtime-java-jar
 
-LABEL org.opencontainers.image.title="userdetails"
-LABEL org.opencontainers.image.description=""
-LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/userdetails"
+LABEL org.opencontainers.image.title="images"
+LABEL org.opencontainers.image.description="images service"
+LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/image-service"
 
 WORKDIR /app
 
 COPY --from=final-builder /build/artifact.war /app/app.war
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=3 CMD \
-curl --fail --silent http://localhost:8080/userdetails/actuator/health || exit 1
+curl --fail --silent http://localhost:8080/images/actuator/health || exit 1
 
 EXPOSE 8080
 
@@ -224,7 +224,7 @@ USER 1000:1000
 
 ARG BUILD_DATE
 ARG VCS_REF
-ARG VERSION=3.2.1
+ARG VERSION=3.1.0
 
 LABEL org.opencontainers.image.created="${BUILD_DATE}"
 LABEL org.opencontainers.image.revision="${VCS_REF}"

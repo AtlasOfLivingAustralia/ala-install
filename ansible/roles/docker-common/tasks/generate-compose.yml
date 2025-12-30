@@ -36,7 +36,7 @@
     service_java_dict: >-
       {{
         service_java_dict | default({}) | combine({
-          item.key: vars.get(item.key.replace('-', '_') + '_java_version', item.value.get('java_version', 'N/A'))
+          item.key: vars.get(item.key.replace('-', '_') + '_java_version', item.value.get('java_version', '11'))
         })
       }}
   loop: "{{ docker_services_desc | dict2items }}"
@@ -81,9 +81,10 @@
     label: "{{ item.key }}"
 
 # Always add nginx and ensure unique services
+# Note: gatus is launched directly as an external image (like nginx) without custom Dockerfile
 - name: Add nginx and ensure unique services list
   set_fact:
-    services_enabled: "{{ (['nginx'] + services_enabled) | unique }}"
+    services_enabled: "{{ (['nginx'] + services_enabled) | unique | difference(['gatus']) }}"
 
 - name: Debug - Show services configuration
   debug:
@@ -222,7 +223,7 @@
 # Create directories for enabled services with build tools
 - name: Create directories for Dockerfile generation
   file:
-    path: "{{ playbook_dir | dirname }}/docker/{{ docker_services_desc[item].get('alias', docker_services_desc[item].get('name', item)) }}"
+    path: "{{ playbook_dir | dirname }}/docker/{{ docker_services_desc[item].role }}"
     state: directory
     mode: '0755'
   loop: "{{ services_enabled }}"
@@ -234,7 +235,7 @@
 - name: Generate Gradle Dockerfiles
   template:
     src: "Dockerfile.gradle.j2"
-    dest: "{{ playbook_dir | dirname }}/docker/{{ docker_services_desc[item].get('alias', docker_services_desc[item].get('name', item)) }}/Dockerfile"
+    dest: "{{ playbook_dir | dirname }}/docker/{{ docker_services_desc[item].role }}/Dockerfile"
     mode: '0644'
   loop: "{{ services_enabled }}"
   vars:
@@ -246,9 +247,9 @@
     repo: "{{ docker_services_desc[item].repository | default('') }}"
     branch: "develop"
     port: "8080"
-    classifier: "{{ docker_services_desc[item].classifier | default('') }}"
+    service_classifier: "{{ docker_services_desc[item].get('classifier') | default('') }}"
     # Version from service_versions_dict
-    version: "{{ service_versions_dict.get(item, 'develop') }}"
+    service_version: "{{ service_versions_dict.get(item, 'develop') }}"
   when:
     - item in docker_services_desc
     - docker_services_desc[item].get('buildTool') == 'gradle'
@@ -257,7 +258,7 @@
 - name: Generate Maven Dockerfiles
   template:
     src: "Dockerfile.maven.j2"
-    dest: "{{ playbook_dir | dirname }}/docker/{{ docker_services_desc[item].get('alias', docker_services_desc[item].get('name', item)) }}/Dockerfile"
+    dest: "{{ playbook_dir | dirname }}/docker/{{ docker_services_desc[item].role }}/Dockerfile"
     mode: '0644'
   loop: "{{ services_enabled }}"
   vars:
@@ -265,13 +266,13 @@
     description: "{{ docker_services_desc[item].desc }}"
     artifact_id: "{{ docker_services_desc[item].artifacts }}"
     # Java version from service_java_dict
-    java_version: "{{ service_java_dict.get(item, '11') }}"
+    java_version: "{{ service_java_dict.get(item) }}"
     repo: "{{ docker_services_desc[item].repository | default('') }}"
     branch: "develop"
     port: "8080"
-    classifier: "{{ docker_services_desc[item].classifier | default('') }}"
+    service_classifier: "{{ docker_services_desc[item].get('classifier') | default('') }}"
     # Version from service_versions_dict
-    version: "{{ service_versions_dict.get(item, 'develop') }}"
+    service_version: "{{ service_versions_dict.get(item, 'develop') }}"
   when:
     - item in docker_services_desc
     - docker_services_desc[item].get('buildTool') == 'maven'

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-# images - images service
+# logger - event logging (downloads stats, etc)
 # AUTO-GENERATED - DO NOT EDIT MANUALLY
 # Edit ansible/roles/docker-common/tasks/generate-compose.yml and re-run ansible
 #
@@ -37,26 +37,28 @@ FROM ${BUILDER_IMAGE} AS base-builder
 
 WORKDIR /build
 
+# Ensure bash is available for all stages
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # ============================================
 # Stage 2: Build from Nexus
 # ============================================
 FROM base-builder AS builder-nexus
 
-ARG VERSION=6.0.0
-ARG ARTIFACT=image-service
-ARG CLASSIFIER=
+ARG VERSION=4.3
+ARG ARTIFACT=logger-service
+ARG CLASSIFIER=""
 
 RUN echo "🔍 Preparing download from Nexus..." && \
     echo "   Version: ${VERSION}" && \
     echo "   Artifact: ${ARTIFACT}"
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN --mount=type=cache,target=/cache/nexus,sharing=locked \
     set -e && \
     NEXUS_BASE_URL="https://nexus.ala.org.au/repository/releases" && \
     ARTIFACT_NAME="${ARTIFACT}-${VERSION}" && \
-    if [ -n "${CLASSIFIER}" ]; then \
-        ARTIFACT_NAME="${ARTIFACT}-${VERSION}-${CLASSIFIER}"; \
+    if [ -n "${CLASSIFIER}" ] && [ "${CLASSIFIER}" != "" ]; then \
+        ARTIFACT_NAME="${ARTIFACT_NAME}-${CLASSIFIER}"; \
     fi && \
     NEXUS_URL="${NEXUS_BASE_URL}/au/org/ala/${ARTIFACT}/${VERSION}/${ARTIFACT_NAME}.war" && \
     CACHE_FILE="/cache/nexus/${ARTIFACT}-${VERSION}${CLASSIFIER:+-${CLASSIFIER}}.war" && \
@@ -97,7 +99,7 @@ RUN curl -f -L -o artifact.war "${ARTIFACT_URL}" && \
 # ============================================
 FROM base-builder AS builder-repo-branch
 
-ARG REPO=https://github.com/AtlasOfLivingAustralia/image-service
+ARG REPO=https://github.com/AtlasOfLivingAustralia/logger-service
 ARG BRANCH=develop
 ARG BUILD_TOOL=gradle
 
@@ -128,7 +130,7 @@ RUN ls -lh artifact.war && \
 # ============================================
 FROM base-builder AS builder-repo-commit
 
-ARG REPO=https://github.com/AtlasOfLivingAustralia/image-service
+ARG REPO=https://github.com/AtlasOfLivingAustralia/logger-service
 ARG COMMIT=HEAD
 ARG BUILD_TOOL=gradle
 
@@ -169,16 +171,16 @@ FROM builder-${BUILD_METHOD} AS final-builder
 # ============================================
 FROM tomcat:9-jre11 AS runtime-tomcat
 
-LABEL org.opencontainers.image.title="images"
-LABEL org.opencontainers.image.description="images service"
-LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/image-service"
+LABEL org.opencontainers.image.title="logger"
+LABEL org.opencontainers.image.description="event logging (downloads stats, etc)"
+LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/logger-service"
 
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-COPY --from=final-builder /build/artifact.war /usr/local/tomcat/webapps/images.war
+COPY --from=final-builder /build/artifact.war /usr/local/tomcat/webapps/logger.war
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=3 CMD \
-curl --fail --silent http://localhost:8080/images/actuator/health || exit 1
+curl --fail --silent http://localhost:8080/logger/actuator/health || exit 1
 
 EXPOSE 8080
 
@@ -189,16 +191,16 @@ CMD ["catalina.sh", "run"]
 # ============================================
 FROM eclipse-temurin:11-jre-jammy AS runtime-java-jar
 
-LABEL org.opencontainers.image.title="images"
-LABEL org.opencontainers.image.description="images service"
-LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/image-service"
+LABEL org.opencontainers.image.title="logger"
+LABEL org.opencontainers.image.description="event logging (downloads stats, etc)"
+LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/logger-service"
 
 WORKDIR /app
 
 COPY --from=final-builder /build/artifact.war /app/app.war
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=3 CMD \
-curl --fail --silent http://localhost:8080/images/actuator/health || exit 1
+curl --fail --silent http://localhost:8080/logger/actuator/health || exit 1
 
 EXPOSE 8080
 
@@ -222,7 +224,7 @@ USER 1000:1000
 
 ARG BUILD_DATE
 ARG VCS_REF
-ARG VERSION=6.0.0
+ARG VERSION=4.3
 
 LABEL org.opencontainers.image.created="${BUILD_DATE}"
 LABEL org.opencontainers.image.revision="${VCS_REF}"

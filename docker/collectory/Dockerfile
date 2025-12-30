@@ -37,26 +37,28 @@ FROM ${BUILDER_IMAGE} AS base-builder
 
 WORKDIR /build
 
+# Ensure bash is available for all stages
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # ============================================
 # Stage 2: Build from Nexus
 # ============================================
 FROM base-builder AS builder-nexus
 
 ARG VERSION=6.0.0
-ARG ARTIFACT=ala-collectory collectory
-ARG CLASSIFIER=
+ARG ARTIFACT=collectory
+ARG CLASSIFIER=""
 
 RUN echo "🔍 Preparing download from Nexus..." && \
     echo "   Version: ${VERSION}" && \
     echo "   Artifact: ${ARTIFACT}"
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN --mount=type=cache,target=/cache/nexus,sharing=locked \
     set -e && \
     NEXUS_BASE_URL="https://nexus.ala.org.au/repository/releases" && \
     ARTIFACT_NAME="${ARTIFACT}-${VERSION}" && \
-    if [ -n "${CLASSIFIER}" ]; then \
-        ARTIFACT_NAME="${ARTIFACT}-${VERSION}-${CLASSIFIER}"; \
+    if [ -n "${CLASSIFIER}" ] && [ "${CLASSIFIER}" != "" ]; then \
+        ARTIFACT_NAME="${ARTIFACT_NAME}-${CLASSIFIER}"; \
     fi && \
     NEXUS_URL="${NEXUS_BASE_URL}/au/org/ala/${ARTIFACT}/${VERSION}/${ARTIFACT_NAME}.war" && \
     CACHE_FILE="/cache/nexus/${ARTIFACT}-${VERSION}${CLASSIFIER:+-${CLASSIFIER}}.war" && \

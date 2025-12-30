@@ -6,11 +6,13 @@ docker_services_desc:
   collectory:
     name: 'collectory'
     nameInt: 'collectory'
+    role: 'collectory'
     group: 'collectory'
     desc: 'metadata of biodiversity collections'
     optional: false
     sample: 'https://collections.ala.org.au'
-    artifacts: 'ala-collectory collectory'
+    # Originally artifacts: 'ala-collectory collectory', for now only use one
+    artifacts: 'collectory'
     repository: 'https://github.com/AtlasOfLivingAustralia/collectory/'
     # Can be 'gradle' or 'maven' for now, if not buildTool is specified, no Dockefile is generated
     buildTool: 'gradle'
@@ -19,6 +21,7 @@ docker_services_desc:
     name: 'records'
     alias: 'biocache-hub'
     nameInt: 'ala_hub'
+    role: 'biocache-hub'
     group: 'biocache-hub'
     desc: 'occurrences search frontend (aka biocache-hub)'
     optional: false
@@ -32,6 +35,7 @@ docker_services_desc:
     name: 'records-ws'
     alias: 'biocache-service'
     nameInt: 'biocache_service'
+    role: 'biocache-service'
     group: 'biocache-service-clusterdb'
     desc: 'occurrences web service (aka biocache-service)'
     optional: false
@@ -45,12 +49,14 @@ docker_services_desc:
     name: 'species'
     alias: 'bie'
     nameInt: 'bie'
+    role: 'bie-hub'
     group: 'bie-hub'
     desc: 'species search frontend'
     optional: true
     sample: 'https://bie.ala.org.au'
     allowMultipleDeploys: true
-    artifacts: 'ala-bie ala-bie-hub'
+    # Originally artifacts: 'ala-bie ala-bie-hub', for now only use one
+    artifacts: 'ala-bie-hub'
     buildTool: 'gradle'
     repository: 'https://github.com/AtlasOfLivingAustralia/ala-bie-hub'
     version_variable: 'bie_hub_version'
@@ -58,6 +64,7 @@ docker_services_desc:
     name: 'species-ws'
     alias: 'bie-index'
     nameInt: 'bie_index'
+    role: 'bie-index'
     group: 'bie-index'
     desc: 'species web service'
     optional: false
@@ -70,6 +77,7 @@ docker_services_desc:
   images:
     name: 'images'
     nameInt: 'images'
+    role: 'image-service'
     group: 'image-service'
     desc: 'images service'
     optional: true
@@ -82,6 +90,7 @@ docker_services_desc:
   species_lists:
     name: 'species-lists'
     nameInt: 'species_lists'
+    role: 'species-list'
     group: 'species-list'
     desc: 'user provided species lists'
     optional: true
@@ -93,6 +102,7 @@ docker_services_desc:
   regions:
     name: 'regions'
     nameInt: 'regions'
+    role: 'regions'
     group: 'regions'
     desc: 'regional data frontend'
     optional: true
@@ -105,6 +115,7 @@ docker_services_desc:
   logger:
     name: 'logger'
     nameInt: 'logger'
+    role: 'logger-service'
     group: 'logger-service'
     desc: 'event logging (downloads stats, etc)'
     optional: false
@@ -116,7 +127,8 @@ docker_services_desc:
   solr:
     name: 'solr'
     nameInt: 'solr'
-    group: 'solr7-server'
+    role: 'solr'
+    group: 'solr-server'
     desc: 'species indexing'
     optional: false
     artifacts: 'solr'
@@ -125,6 +137,7 @@ docker_services_desc:
     name: 'auth'
     alias: 'cas'
     nameInt: 'cas'
+    role: 'cas5'
     group: 'cas-servers'
     desc: 'CAS authentication system'
     optional: true
@@ -140,6 +153,7 @@ docker_services_desc:
   userdetails:
     name: 'User Details'
     nameInt: 'userdetails'
+    role: 'userdetails'
     group: 'cas-servers'
     optional: true
     desc: ''
@@ -153,6 +167,7 @@ docker_services_desc:
   apikey:
     name: 'API keys'
     nameInt: 'apikey'
+    role: 'apikey'
     group: 'cas-servers'
     optional: true
     isSubService: true
@@ -167,6 +182,7 @@ docker_services_desc:
     name: 'CAS Management'
     nameInt: 'cas_management'
     artifacts: 'cas-management'
+    role: 'cas-management'
     group: 'cas-servers'
     optional: true
     desc: ''
@@ -179,6 +195,7 @@ docker_services_desc:
   spatial:
     name: 'spatial'
     nameInt: 'spatial'
+    role: 'spatial-hub'
     group: 'spatial'
     desc: 'spatial front-end'
     optional: true
@@ -194,6 +211,7 @@ docker_services_desc:
     artifacts: 'spatial-service'
     isSubService: true
     parentService: "spatial"
+    role: 'spatial-service'
     group: 'spatial-service'
     optional: true
     buildTool: 'gradle'
@@ -205,6 +223,7 @@ docker_services_desc:
     nameInt: 'geoserver'
     isSubService: true
     parentService: "spatial"
+    role: 'geoserver'
     group: 'geoserver'
     optional: true
     desc: ''
@@ -212,6 +231,7 @@ docker_services_desc:
     name: 'dashboard'
     nameInt: 'dashboard'
     group: 'dashboard'
+    role: 'dashboard'
     desc: 'Dashboard with portal stats'
     optional: true
     sample: 'https://dashboard.ala.org.au'
@@ -222,6 +242,7 @@ docker_services_desc:
   sds:
     name: 'sds'
     nameInt: 'sds'
+    role: 'sds'
     group: 'sds'
     desc: 'Sensitive Data Service (SDS)'
     optional: true
@@ -233,6 +254,7 @@ docker_services_desc:
   alerts:
     name: 'alerts'
     nameInt: 'alerts'
+    role: 'alerts'
     group: 'alerts-service'
     desc: 'users can subscribe to notifications about new occurrences regions,…'
     optional: true
@@ -244,6 +266,7 @@ docker_services_desc:
   doi:
     name: 'doi'
     nameInt: 'doi'
+    role: 'doi-service'
     group: 'doi-service'
     desc: 'mainly used for generating DOIs of user downloads'
     optional: true
@@ -256,6 +279,7 @@ docker_services_desc:
   branding:
     name: 'branding'
     nameInt: 'branding'
+    role: 'branding'
     group: 'branding'
     desc: 'Web branding used by all services'
     sample: 'Styling-the-web-app'
@@ -265,6 +289,7 @@ docker_services_desc:
   namematchingService:
     name: 'namematching'
     nameInt: 'namematching_service'
+    role: 'namematching-service'
     group: 'namematching-service'
     desc: 'namematching webservice'
     optional: true
@@ -275,6 +300,7 @@ docker_services_desc:
   sensitiveDataService:
     name: 'sensitive-data-service'
     nameInt: 'sensitive_data_service'
+    role: 'sensitive-data-service'
     group: 'sensitive-data-service'
     desc: 'Web services for sensitive data evaluation'
     optional: true
@@ -285,6 +311,7 @@ docker_services_desc:
   dataQuality:
     name: 'data-quality'
     nameInt: 'data_quality'
+    role: 'data_quality_filter_service'
     group: 'data_quality_filter_service'
     desc: 'Data Quality Filter Service'
     optional: true
@@ -295,6 +322,7 @@ docker_services_desc:
   pipelines:
     name: 'pipelines'
     nameInt: 'pipelines'
+    role: 'pipelines'
     group: 'pipelines'
     desc: 'Pipelines for data processing and indexing of biodiversity data'
     optional: false
@@ -304,6 +332,7 @@ docker_services_desc:
   events:
     name: 'events'
     nameInt: 'events'
+    role: 'events'
     group: 'events'
     desc: 'events extended-data-model'
     optional: true
@@ -320,6 +349,7 @@ docker_services_desc:
   spark:
     name: 'spark'
     nameInt: 'spark'
+    role: 'spark'
     group: 'spark'
     desc: 'Spark cluster for Pipelines'
     optional: true
@@ -327,6 +357,7 @@ docker_services_desc:
   hadoop:
     name: 'hadoop'
     nameInt: 'hadoop'
+    role: 'hadoop'
     group: 'hadoop'
     desc: 'Hadoop cluster for Pipelines'
     optional: true
@@ -341,6 +372,7 @@ docker_services_desc:
   solrcloud:
     name: 'solrcloud'
     nameInt: 'solrcloud'
+    role: 'solrcloud'
     group: 'solrcloud'
     desc: 'pipelines indexing'
     optional: true
@@ -350,6 +382,7 @@ docker_services_desc:
   zookeeper:
     name: 'zookeeper'
     nameInt: 'zookeeper'
+    role: 'zookeeper'
     group: 'zookeeper'
     desc: 'zookeeper, for solrcloud coordination'
     optional: true
@@ -357,6 +390,7 @@ docker_services_desc:
   biocollect:
     name: 'biocollect'
     nameInt: 'biocollect'
+    role: 'biocollect'
     group: 'biocollect'
     forceSubdomain: true
     desc: 'advanced data collection tool for biodiversity science'
@@ -369,6 +403,7 @@ docker_services_desc:
   pdfgen:
     name: 'pdfgen'
     nameInt: 'pdfgen'
+    role: 'pdf-service'
     group: 'pdfgen'
     desc: 'Service for turning .docs into .pdfs (used by biocollect)'
     artifacts: 'pdfgen'
@@ -377,6 +412,7 @@ docker_services_desc:
   ecodata:
     name: 'ecodata'
     nameInt: 'ecodata'
+    role: 'ecodata'
     group: 'ecodata'
     forceSubdomain: true
     artifacts: 'ecodata'
@@ -396,6 +432,7 @@ docker_services_desc:
   gatus:
     name: 'gatus'
     nameInt: 'gatus'
+    role: 'gatus'
     group: 'gatus'
     allowMultipleDeploys: true
     desc: 'gatus monitoring service'
@@ -404,6 +441,7 @@ docker_services_desc:
   portainer:
     name: 'portainer'
     nameInt: 'portainer'
+    role: 'portainer'
     group: 'portainer'
     optional: true
     allowMultipleDeploys: true
@@ -411,6 +449,7 @@ docker_services_desc:
   cassandra:
     name: 'cassandra'
     nameInt: 'cassandra'
+    role: 'cassandra'
     group: 'cassandra'
     optional: true
     allowMultipleDeploys: true

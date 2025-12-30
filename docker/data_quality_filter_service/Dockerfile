@@ -25,7 +25,7 @@
 # ============================================
 # GLOBAL BUILD ARGUMENTS
 # ============================================
-ARG BUILDER_IMAGE=gradle-builder:jdkN/A
+ARG BUILDER_IMAGE=gradle-builder:jdk11
 ARG BUILD_METHOD=nexus
 ARG BUILD_TOOL=gradle
 ARG RUN_TOOL=java-jar
@@ -37,26 +37,28 @@ FROM ${BUILDER_IMAGE} AS base-builder
 
 WORKDIR /build
 
+# Ensure bash is available for all stages
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # ============================================
 # Stage 2: Build from Nexus
 # ============================================
 FROM base-builder AS builder-nexus
 
-ARG VERSION=6.0.0
+ARG VERSION=3.0.0
 ARG ARTIFACT=data-quality-filter-service
-ARG CLASSIFIER=
+ARG CLASSIFIER=""
 
 RUN echo "🔍 Preparing download from Nexus..." && \
     echo "   Version: ${VERSION}" && \
     echo "   Artifact: ${ARTIFACT}"
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN --mount=type=cache,target=/cache/nexus,sharing=locked \
     set -e && \
     NEXUS_BASE_URL="https://nexus.ala.org.au/repository/releases" && \
     ARTIFACT_NAME="${ARTIFACT}-${VERSION}" && \
-    if [ -n "${CLASSIFIER}" ]; then \
-        ARTIFACT_NAME="${ARTIFACT}-${VERSION}-${CLASSIFIER}"; \
+    if [ -n "${CLASSIFIER}" ] && [ "${CLASSIFIER}" != "" ]; then \
+        ARTIFACT_NAME="${ARTIFACT_NAME}-${CLASSIFIER}"; \
     fi && \
     NEXUS_URL="${NEXUS_BASE_URL}/au/org/ala/${ARTIFACT}/${VERSION}/${ARTIFACT_NAME}.war" && \
     CACHE_FILE="/cache/nexus/${ARTIFACT}-${VERSION}${CLASSIFIER:+-${CLASSIFIER}}.war" && \
@@ -167,7 +169,7 @@ FROM builder-${BUILD_METHOD} AS final-builder
 # ============================================
 # Stage 7: Runtime - Tomcat
 # ============================================
-FROM tomcat:9-jreN/A AS runtime-tomcat
+FROM tomcat:9-jre11 AS runtime-tomcat
 
 LABEL org.opencontainers.image.title="dataQuality"
 LABEL org.opencontainers.image.description="Data Quality Filter Service"
@@ -187,7 +189,7 @@ CMD ["catalina.sh", "run"]
 # ============================================
 # Stage 8: Runtime - Java JAR
 # ============================================
-FROM eclipse-temurin:N/A-jre-jammy AS runtime-java-jar
+FROM eclipse-temurin:11-jre-jammy AS runtime-java-jar
 
 LABEL org.opencontainers.image.title="dataQuality"
 LABEL org.opencontainers.image.description="Data Quality Filter Service"
@@ -222,7 +224,7 @@ USER 1000:1000
 
 ARG BUILD_DATE
 ARG VCS_REF
-ARG VERSION=6.0.0
+ARG VERSION=3.0.0
 
 LABEL org.opencontainers.image.created="${BUILD_DATE}"
 LABEL org.opencontainers.image.revision="${VCS_REF}"
