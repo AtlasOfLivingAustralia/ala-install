@@ -143,7 +143,7 @@ target "ala-i18n" {
 {% if 'collectory' in services_enabled %}
 target "collectory" {
   dockerfile = "Dockerfile"
-  context = "../docker/collectory"
+  context = "../docker/{{ docker_services_desc['collectory'].role }}"
   contexts = {
     "gradle-builder:jdk{{ collectory_java_version | default('17') }}" = "target:gradle-builder-jdk{{ collectory_java_version | default('17') }}"
   }
@@ -174,7 +174,7 @@ target "collectory" {
 {% if 'userdetails' in services_enabled %}
 target "userdetails" {
   dockerfile = "Dockerfile"
-  context = "../docker/userdetails"
+  context = "../docker/{{ docker_services_desc['userdetails'].role }}"
   contexts = {
     "gradle-builder:jdk{{ userdetails_java_version | default('11') }}" = "target:gradle-builder-jdk{{ userdetails_java_version | default('11') }}"
   }
@@ -200,7 +200,7 @@ target "userdetails" {
 {% if 'cas' in services_enabled %}
 target "cas" {
   dockerfile = "Dockerfile"
-  context = "../docker/cas"
+  context = "../docker/{{ docker_services_desc['cas'].role }}"
   contexts = {
     "maven-builder:jdk{{ cas_java_version | default('11') }}" = "target:maven-builder-jdk{{ cas_java_version | default('11') }}"
   }
@@ -226,7 +226,7 @@ target "cas" {
 {% if 'apikey' in services_enabled %}
 target "apikey" {
   dockerfile = "Dockerfile"
-  context = "../docker/apikey"
+  context = "../docker/{{ docker_services_desc['apikey'].role }}"
   contexts = {
     "gradle-builder:jdk{{ apikey_java_version | default('11') }}" = "target:gradle-builder-jdk{{ apikey_java_version | default('11') }}"
   }
@@ -252,7 +252,7 @@ target "apikey" {
 {% if 'cas-management' in services_enabled %}
 target "cas-management" {
   dockerfile = "Dockerfile"
-  context = "../docker/cas-management"
+  context = "../docker/{{ docker_services_desc['cas_management'].role }}"
   contexts = {
     "gradle-builder:jdk{{ cas_management_java_version | default('11') }}" = "target:gradle-builder-jdk{{ cas_management_java_version | default('11') }}"
   }
@@ -295,7 +295,7 @@ target "cas-management" {
 {% if 'species-list' in services_enabled or groups['species-list'] is defined %}
 target "species-list" {
   dockerfile = "Dockerfile"
-  context = "../docker/species-list"
+  context = "../docker/{{ docker_services_desc['species_lists'].role }}"
   contexts = {
     "gradle-builder:jdk{{ species_list_java_version | default('17') }}" = "target:gradle-builder-jdk{{ species_list_java_version | default('17') }}"
   }
@@ -356,9 +356,8 @@ group "all" {
     "cas-management",
 {% endif %}
 # Gatus is launched directly from docker-compose without custom Dockerfile
-# {% if 'gatus' in services_enabled %}
-# "gatus",
-# {% endif %}
+{% if 'gatus' in services_enabled %}
+{% endif %}
   ]
 }
 
@@ -384,8 +383,7 @@ group "services" {
     "cas-management",
 {% endif %}
 # Gatus is launched directly from docker-compose without custom Dockerfile
-# {% if 'gatus' in services_enabled %}
-# "gatus",
-# {% endif %}
+{% if 'gatus' in services_enabled %}
+{% endif %}
   ]
 }
