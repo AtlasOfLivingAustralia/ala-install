@@ -29,6 +29,8 @@ ARG BUILDER_IMAGE=gradle-builder:jdk{{ java_version }}
 ARG BUILD_METHOD=nexus
 ARG BUILD_TOOL=gradle
 ARG RUN_TOOL=java-jar
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
 
 # ============================================
 # Stage 1: Base builder image
@@ -57,26 +59,7 @@ RUN echo "🔍 Preparing download from Nexus..." && \
     echo "   Version: ${VERSION}" && \
     echo "   Artifact: ${ARTIFACT}"
 
-RUN --mount=type=cache,target=/cache/nexus,sharing=locked \
-    set -e && \
-    NEXUS_BASE_URL="https://nexus.ala.org.au/repository/releases" && \
-    ARTIFACT_NAME="${ARTIFACT}-${VERSION}" && \
-    if [ -n "${CLASSIFIER}" ] && [ "${CLASSIFIER}" != "" ]; then \
-        ARTIFACT_NAME="${ARTIFACT_NAME}-${CLASSIFIER}"; \
-    fi && \
-    NEXUS_URL="${NEXUS_BASE_URL}/au/org/ala/${ARTIFACT}/${VERSION}/${ARTIFACT_NAME}.war" && \
-    CACHE_FILE="/cache/nexus/${ARTIFACT}-${VERSION}${CLASSIFIER:+-${CLASSIFIER}}.war" && \
-    echo "📥 Downloading from: ${NEXUS_URL}" && \
-    if [ -f "${CACHE_FILE}" ]; then \
-        echo "💾 Using cached artifact" && \
-        cp "${CACHE_FILE}" artifact.war; \
-    else \
-        echo "⬇️  Fetching from Nexus..." && \
-        curl -f -L -o artifact.war "${NEXUS_URL}" && \
-        cp artifact.war "${CACHE_FILE}"; \
-    fi && \
-    ls -lh artifact.war && \
-    echo "✅ Download completed"
+RUN --mount=type=cache,target=/cache/nexus,sharing=locked bash -c 'set -e; echo "📦 Building artifact name..."; ARTIFACT_NAME="${ARTIFACT}-${VERSION}"; if [ -n "${CLASSIFIER}" ] && [ "${CLASSIFIER}" != "" ]; then ARTIFACT_NAME="${ARTIFACT_NAME}-${CLASSIFIER}"; fi; echo "🏗️  Artifact: ${ARTIFACT_NAME}"; NEXUS_BASE_URL="https://nexus.ala.org.au/repository/releases"; NEXUS_URL="${NEXUS_BASE_URL}/au/org/ala/${ARTIFACT}/${VERSION}/${ARTIFACT_NAME}.war"; CACHE_FILE="/cache/nexus/${ARTIFACT}-${VERSION}${CLASSIFIER:+-${CLASSIFIER}}.war"; echo "📥 Target: ${NEXUS_URL}"; if [ -f "${CACHE_FILE}" ]; then echo "💾 Cache hit! Using cached artifact..."; cp "${CACHE_FILE}" artifact.war; else echo "⬇️  Cache miss. Fetching from Nexus..."; curl -f -L -o artifact.war "${NEXUS_URL}"; echo "💾 Saving to cache..."; cp artifact.war "${CACHE_FILE}"; fi; echo "📋 Artifact details:"; ls -lh artifact.war; echo "✅ Download completed"'
 
 # ============================================
 # Stage 3: Build from URL
