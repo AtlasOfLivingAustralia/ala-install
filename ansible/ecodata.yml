@@ -38,6 +38,7 @@
   roles:
     - common
     - java
+    - clamav
     - { role: mongodb-org, dbPath: "{{ ecodata_dbPath }}"}
     - { role: tomcat, when: packaging == "war" or install_geoserver }
     - webserver

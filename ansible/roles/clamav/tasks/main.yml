@@ -1,0 +1,80 @@
+- name: Install ClamAV and ClamAV Daemon
+  apt:
+    name:
+      - clamav
+      - clamav-daemon
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+  tags:
+    - clamav
+
+- name: Install ClamAV and ClamAV Daemon (RHEL-based)
+  yum:
+    name:
+      - clamav
+      - clamav-update
+      - clamav-scanner-systemd
+    state: present
+  when: ansible_os_family == "RedHat"
+  tags:
+    - clamav
+
+
+- name: Ensure freshclam.conf exists
+  copy:
+    dest: /etc/clamav/freshclam.conf
+    content: |
+      DatabaseOwner clamav
+      UpdateLogFile /var/log/clamav/freshclam.log
+      LogTime yes
+      LogVerbose yes
+      DatabaseDirectory /var/lib/clamav
+      DNSDatabaseInfo current.cvd.clamav.net
+      ConnectTimeout 30
+      ReceiveTimeout 30
+      MaxAttempts 5
+      ScriptedUpdates yes
+      Checks 12
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - clamav
+
+
+- name: Enable and start freshclam service
+  service:
+    name: clamav-freshclam
+    state: started
+    enabled: yes
+  tags:
+    - clamav
+
+
+- name: Ensure clamd.conf exists
+  copy:
+    dest: /etc/clamav/clamd.conf
+    content: |
+      LogFile /var/log/clamav/clamd.log
+      LogTime yes
+      LogVerbose yes
+      PidFile /var/run/clamav/clamd.pid
+      DatabaseDirectory /var/lib/clamav
+      LocalSocket /var/run/clamav/clamd.ctl
+      FixStaleSocket yes
+      TCPSocket 3310
+      TCPAddr 127.0.0.1
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - clamav
+
+- name: Enable and start ClamAV daemon
+  service:
+    name: clamav-daemon
+    state: started
+    enabled: yes
+  tags:
+    - clamav
