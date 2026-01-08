@@ -38,7 +38,7 @@
   roles:
     - common
     - java
-    - { role: clamav, when: is_primary is not defined or is_primary | bool}
+    - clamav
     - { role: mongodb-org, dbPath: "{{ ecodata_dbPath }}"}
     - { role: tomcat, when: packaging == "war" or install_geoserver }
     - webserver
