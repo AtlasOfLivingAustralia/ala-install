@@ -31,6 +31,7 @@
       LogVerbose yes
       DatabaseDirectory /var/lib/clamav
       DNSDatabaseInfo current.cvd.clamav.net
+      DatabaseMirror database.clamav.net
       ConnectTimeout 30
       ReceiveTimeout 30
       MaxAttempts 5
@@ -39,15 +40,6 @@
     owner: root
     group: root
     mode: 0644
-  tags:
-    - clamav
-
-
-- name: Enable and start freshclam service
-  service:
-    name: clamav-freshclam
-    state: started
-    enabled: yes
   tags:
     - clamav
 
@@ -71,10 +63,84 @@
   tags:
     - clamav
 
-- name: Enable and start ClamAV daemon
+- name: add configuration file to freshclam service
+  lineinfile:
+    path: /lib/systemd/system/clamav-freshclam.service
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    create: yes
+  loop:
+    - { regexp: '^ExecStart=', line: 'ExecStart=/usr/bin/freshclam --config-file=/etc/clamav/freshclam.conf -d --foreground=true' }
+  notify: restart clamav-freshclam
+  tags:
+    - clamav
+
+- name: run clamav-daemon with above configuration file
+  lineinfile:
+    path: /lib/systemd/system/clamav-daemon.service
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    create: yes
+  loop:
+    - { regexp: '^ExecStart=', line: 'ExecStart=/usr/sbin/clamd -c /etc/clamav/clamd.conf --foreground=true' }
+  notify: restart clamav-daemon.service
+  tags:
+    - clamav
+
+# tcp port is disabled by default, so we need to enable it
+- name: Add tcp port to clamav daemon socket configuration
+  lineinfile:
+    path: /lib/systemd/system/clamav-daemon.socket
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    create: yes
+  loop:
+    - { regexp: '^#?ListenStream=1024', line: 'ListenStream=127.0.0.1:3310' }
+  notify:
+    - stop clamav-daemon
+    - daemon-reload
+    - restart clamav-daemon.socket
+  tags:
+    - clamav
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+  become: yes
+  tags:
+    - clamav
+
+- name: Stop clamav-daemon
+  systemd:
+    name: clamav-daemon.service
+    state: stopped
+  become: yes
+  tags:
+    - clamav
+
+
+- name: Restart clamav-daemon socket
+  systemd:
+    name: clamav-daemon.socket
+    state: restarted
+  become: yes
+  tags:
+    - clamav
+
+
+- name: Restart clamav-daemon service
+  systemd:
+    name: clamav-daemon.service
+    state: restarted
+  become: yes
+  tags:
+    - clamav
+
+
+- name: Enable and start freshclam service
   service:
-    name: clamav-daemon
-    state: started
+    name: clamav-freshclam
+    state: restarted
     enabled: yes
   tags:
     - clamav

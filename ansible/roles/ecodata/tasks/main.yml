@@ -272,18 +272,6 @@
     context_path: "{{ ecodata_context_path }}"
     tomcat_server_port: "{{ ecodata_server_port }}"
     nginx_paths:
-      - path: "{{ecodata_proxy_target}}/ws/document/download"
-        sort_label: "1_upload"
-        is_proxy: false
-        alias: "{{ upload_dir | default('/data/ecodata/uploads') }}"
-      - path: "{{ecodata_proxy_target}}/document/download"
-        sort_label: "2_upload"
-        is_proxy: false
-        alias: "{{ upload_dir | default('/data/ecodata/uploads') }}"
-      - path: "~ ^{{ecodata_proxy_target}}/ws/(.*)/document/download/(.*)$"  #Delete me when MERIT 4.7 is released
-        sort_label: "3_upload"
-        is_proxy: false
-        alias: "{{ upload_dir | default('/data/ecodata/uploads') }}/$2"
       - path: "{{ecodata_context_path}}"
         sort_label: "2_ws"
         is_proxy: true
@@ -395,45 +383,14 @@
     context_path: "{{ ecodata_context_path }}"
     tomcat_server_port: "{{ ecodata_server_port }}"
     nginx_paths:
-      - path: "{{ecodata_proxy_target}}/ws/document/download/"
-        sort_label: "1_upload"
-        is_proxy: false
-        alias: "{{ upload_dir | default('/data/ecodata/uploads/') }}"
-      - path: "{{ecodata_proxy_target}}/document/download/"
-        sort_label: "2_upload"
-        is_proxy: false
-        alias: "{{ upload_dir | default('/data/ecodata/uploads/') }}"
       - path: "{{ecodata_context_path}}"
-        sort_label: "2_ws"
+        sort_label: "1_ws"
         is_proxy: true
         proxy_pass: "http://127.0.0.1:{{ ecodata_server_port }}{{ecodata_proxy_target}}"
-      - path: "~ ^{{ecodata_proxy_target}}/ws/(.*)/document/download/(.*)$" #Delete me when MERIT 4.7 is released
-        sort_label: "3_upload"
-        is_proxy: false
-        alias: "{{ upload_dir | default('/data/ecodata/uploads') }}/$2"
 
   when: webserver_nginx | bool  and not use_reporting_server
   tags:
     - nginx_vhost
-
-- name: Configure the /uploads location to be only accessible from MERIT and BioCollect
-  blockinfile:
-    dest: /etc/nginx/sites-available/{{ecodata_hostname}}.conf
-    insertafter: "location {{item.loc}}"
-    block: |
-      allow 127.0.0.1;
-      allow {{ merit_ip }};
-      allow {{ biocollect_ip }};
-      allow {{ ecodata_reporting_server_ip | default('127.0.0.1') }};
-      deny all;
-      expires 1y;
-    marker_begin: "BEGIN_{{item.mark}}"
-    marker_end: "END_{{item.mark}}"
-  loop:
-    - { mark: '1', loc: '/ws/document/download' }
-    - { mark: '2', loc: '/document/download' }
-  tags:
-    - nginx_vhost_block
 
 - include_role:
     name: tomcat_deploy
