@@ -211,7 +211,7 @@
     pg_version: "{{ pg_version | default('16') }}"
     postgis_version: "{{ postgis_version | default('3') }}"
     postgis_version_folder: "{{ postgis_version_folder | default('3') }}"
-    postgis_scripts_version: "{{ postgis_scripts_version | default('3.4') }}"
+    postgis_scripts_version: "{{ postgis_scripts_version | default('3.6') }}"
   when: ansible_os_family == "Debian" and ansible_distribution_version == "24.04"
   tags:
     - setfacts
