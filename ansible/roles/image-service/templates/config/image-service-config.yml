@@ -101,6 +101,18 @@ imageservice:
         {{ item.config | to_nice_yaml(indent=2) | indent(8) }}
 {% endfor %}
 {% endif %}
+  optimisation:
+    enabled: {{ image_service_image_optimisation_enabled | default('false') }}
+  metadata:
+    legacy:
+      persist:
+        enabled: {{ image_service_metadata_legacy_persist_enabled | default('true') }}
+    jsonb:
+      migration:
+        enabled: {{ image_service_metadata_jsonb_migration_enabled | default('true') }}
+        startTime: {{ image_service_metadata_jsonb_migration_start_time | default('23:00') }}
+        endTime: {{ image_service_metadata_jsonb_migration_start_time | default('06:00') }}
+        maxLoadAverage: {{ image_service_metadata_jsonb_max_load_average | default('6.0') }}
 
 images:
   disableCache: {{ image_service_disable_cache | default('false') }}

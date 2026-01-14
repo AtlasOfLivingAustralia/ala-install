@@ -1,11 +1,12 @@
 ---
 image_optimisation_packages:
+  - snapd
   - imagemagick
   - libjpeg-turbo-progs
   - jpegoptim
-  - mozjpeg
+  # - mozjpeg # no package, libjpeg-turbo-progs provides?
   - zopfli
   - pngquant
   - gifsicle
   - webp
-  - libavif-tools
+  - libavif-bin
