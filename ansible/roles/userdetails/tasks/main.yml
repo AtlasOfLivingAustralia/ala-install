@@ -23,23 +23,12 @@
   file:
     path: "{{item}}"
     state: directory
-    owner: "{{ docker_default_user | default(ansible_user_id) if deployment_type == 'container' else userdetails_user | default('userdetails') }}"
-    group: "{{ docker_default_user | default(ansible_user_id) if deployment_type == 'container' else userdetails_user | default('userdetails') }}"
+    owner: "{{ userdetails_user | default('userdetails') }}"
+    group: "{{ userdetails_user | default('userdetails') }}"
   with_items:
     - "{{data_dir}}/userdetails"
     - "{{data_dir}}/userdetails/config"
     - "{{data_dir}}/userdetails/"
-  tags:
-    - properties
-    - userdetails
-
-- name: ensure logs directory exists (container mode)
-  file:
-    path: "{{data_dir}}/logs/userdetails"
-    state: directory
-    owner: "{{ docker_default_user | default(ansible_user_id) }}"
-    group: "{{ docker_default_user | default(ansible_user_id) }}"
-  when: deployment_type == 'container'
   tags:
     - properties
     - userdetails
