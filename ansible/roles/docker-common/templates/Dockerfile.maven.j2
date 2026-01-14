@@ -182,12 +182,12 @@ LABEL org.opencontainers.image.title="{{ service_name }}"
 LABEL org.opencontainers.image.description="{{ description }}"
 LABEL org.opencontainers.image.source="{{ repo }}"
 
-WORKDIR /app
+WORKDIR /opt/atlas/$APP_ARTIFACT
 
 COPY --from=final-builder /build/artifact.war /app/app.war
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=3 CMD \
-curl --fail --silent http://localhost:{{ port }}/{{ service_name }}/actuator/health || exit 1
+curl --fail --silent http://localhost:{{ port }}/actuator/health || exit 1
 
 EXPOSE {{ port }}
 
@@ -203,11 +203,23 @@ CMD ["java", "-jar", "/app/app.war"]
 # hadolint ignore=DL3006
 FROM runtime-${RUN_TOOL}
 
-RUN mkdir -p /data && \
-    chown 1000:1000 /data
+ARG SERVICE_USER={{ service_name }}
+ARG APP_ARTIFACT={{ artifact_id }}
+ARG LOG_DIR={{ log_dir | default('') }}
+
+# Create user and directories
+RUN groupadd -r ${SERVICE_USER} -g 1000 && \
+    useradd -r -g ${SERVICE_USER} -u 1000 -m ${SERVICE_USER} && \
+    mkdir -p /data/${APP_ARTIFACT}/config && \
+    chown -R ${SERVICE_USER}:${SERVICE_USER} /data/${APP_ARTIFACT}
+
+{% if log_dir and log_dir != '' %}
+RUN mkdir -p {{ log_dir }} && \
+    chown -R ${SERVICE_USER}:${SERVICE_USER} {{ log_dir }}
+{% endif %}
 
 VOLUME /data
-USER 1000:1000
+USER ${SERVICE_USER}
 
 ARG BUILD_DATE
 ARG VCS_REF
