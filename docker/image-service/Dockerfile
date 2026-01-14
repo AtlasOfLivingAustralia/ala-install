@@ -201,7 +201,7 @@ FROM runtime-${RUN_TOOL}
 
 ARG SERVICE_USER=images
 ARG APP_ARTIFACT=image-service
-ARG LOG_DIR=/var/log/ala/image-service
+ARG LOG_DIR=/var/log/atlas/image-service
 
 # Create user and directories
 RUN groupadd -r ${SERVICE_USER} -g 1000 && \
@@ -209,8 +209,8 @@ RUN groupadd -r ${SERVICE_USER} -g 1000 && \
     mkdir -p /data/${APP_ARTIFACT}/config && \
     chown -R ${SERVICE_USER}:${SERVICE_USER} /data/${APP_ARTIFACT}
 
-RUN mkdir -p /var/log/ala/image-service && \
-    chown -R ${SERVICE_USER}:${SERVICE_USER} /var/log/ala/image-service
+RUN mkdir -p /var/log/atlas/image-service && \
+    chown -R ${SERVICE_USER}:${SERVICE_USER} /var/log/atlas/image-service
 
 VOLUME /data
 USER ${SERVICE_USER}

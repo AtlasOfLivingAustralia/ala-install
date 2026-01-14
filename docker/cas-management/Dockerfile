@@ -201,7 +201,7 @@ FROM runtime-${RUN_TOOL}
 
 ARG SERVICE_USER=cas_management
 ARG APP_ARTIFACT=cas-management
-ARG LOG_DIR=/var/log/ala/cas-management
+ARG LOG_DIR=/var/log/atlas/cas-management
 
 # Create user and directories
 RUN groupadd -r ${SERVICE_USER} -g 1000 && \
@@ -209,8 +209,8 @@ RUN groupadd -r ${SERVICE_USER} -g 1000 && \
     mkdir -p /data/${APP_ARTIFACT}/config && \
     chown -R ${SERVICE_USER}:${SERVICE_USER} /data/${APP_ARTIFACT}
 
-RUN mkdir -p /var/log/ala/cas-management && \
-    chown -R ${SERVICE_USER}:${SERVICE_USER} /var/log/ala/cas-management
+RUN mkdir -p /var/log/atlas/cas-management && \
+    chown -R ${SERVICE_USER}:${SERVICE_USER} /var/log/atlas/cas-management
 
 VOLUME /data
 USER ${SERVICE_USER}

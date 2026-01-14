@@ -201,7 +201,7 @@ FROM runtime-${RUN_TOOL}
 
 ARG SERVICE_USER=apikey
 ARG APP_ARTIFACT=apikey
-ARG LOG_DIR=/var/log/ala/apikey
+ARG LOG_DIR=/var/log/atlas/apikey
 
 # Create user and directories
 RUN groupadd -r ${SERVICE_USER} -g 1000 && \
@@ -209,8 +209,8 @@ RUN groupadd -r ${SERVICE_USER} -g 1000 && \
     mkdir -p /data/${APP_ARTIFACT}/config && \
     chown -R ${SERVICE_USER}:${SERVICE_USER} /data/${APP_ARTIFACT}
 
-RUN mkdir -p /var/log/ala/apikey && \
-    chown -R ${SERVICE_USER}:${SERVICE_USER} /var/log/ala/apikey
+RUN mkdir -p /var/log/atlas/apikey && \
+    chown -R ${SERVICE_USER}:${SERVICE_USER} /var/log/atlas/apikey
 
 VOLUME /data
 USER ${SERVICE_USER}
