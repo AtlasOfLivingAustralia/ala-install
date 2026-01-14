@@ -2,6 +2,17 @@
 # Docker services configuration - mapping of service names, artifacts, repos, and versions
 # Based on la-toolkit LAServiceDesc structure
 # https://github.com/living-atlases/la-toolkit/blob/master/lib/src/la_service_desc.dart
+#
+# EXTRA PARAMETERS (extra_params):
+# Some services can define extra JVM parameters that will be added to JAVA_OPTS.
+# These are defined as a list of key-value pairs and will be converted to -D{key}={value} flags.
+# Example:
+#   extra_params:
+#     - key: some.property
+#       value: some_value
+#     - key: java.io.tmpdir
+#       value: /tmp/custom
+# These parameters are used by the exec-jar and exec-war roles in their templates.
 docker_services_desc:
   collectory:
     name: 'collectory'
@@ -152,6 +163,11 @@ docker_services_desc:
     classifier: 'exec'
     version_variable: 'cas_version'
     log_dir: '/var/log/atlas/cas'
+    extra_params:
+      - key: cas.standalone.configurationDirectory
+        value: /data/cas/config
+      - key: ala.password.properties
+        value: /data/cas/config/pwe.properties
   userdetails:
     name: 'User Details'
     nameInt: 'userdetails'
@@ -197,6 +213,9 @@ docker_services_desc:
     classifier: 'exec'
     version_variable: 'cas_management_version'
     log_dir: '/var/log/atlas/cas-management'
+    extra_params:
+      - key: cas.standalone.configurationDirectory
+        value: /data/cas-management/config/
   spatial:
     name: 'spatial'
     nameInt: 'spatial'
@@ -426,6 +445,9 @@ docker_services_desc:
     buildTool: 'gradle'
     classifier: 'exec'
     version_variable: 'ecodata_version'
+    extra_params:
+      - key: java.io.tmpdir
+        value: /data/tmp
   ecodataReporting:
     name: 'ecodata-reporting'
     nameInt: 'ecodata_reporting'

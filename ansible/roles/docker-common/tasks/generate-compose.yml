@@ -4,7 +4,7 @@
 
 - name: Set docker facts for all services
   set_fact:
-    docker_default_user: "{{ docker_user | default(ansible_user_id) }}"
+    docker_default_user: "{{ docker_compose_userid | default('1000') }}"
     # Core user variables for all services
     tomcat_user: "{{ docker_default_user | default(ansible_user_id) }}"
     nginx_user: "{{ docker_default_user | default(ansible_user_id) }}"
@@ -19,6 +19,43 @@
     # userdetails_docker_host: "{{ userdetails_docker_host | default('la_auth_userdetails') }}"
     # CAS MongoDB flags
     cas_add_mongo_users: "{{ cas_add_mongo_users | default(true) }}"
+
+- name: "⚠️  DEBUG - Show docker user configuration BEFORE creating directories"
+  debug:
+    msg: |
+      ╔════════════════════════════════════════════════════════════════╗
+      ║  DOCKER USER CONFIGURATION (will own all generated files)      ║
+      ╠════════════════════════════════════════════════════════════════╣
+      ║  docker_user variable: {{ docker_user | default('NOT SET') }}
+      ║  ansible_user_id: {{ ansible_user_id }}
+      ║  ansible_user_gid: {{ ansible_user_gid }}
+      ║  docker_default_user: {{ docker_default_user }}
+      ║  
+      ║  Result: All files will be owned by:
+      ║    - User: {{ ansible_user_id }} (UID: {{ ansible_user_gid }})
+      ║    - Group: {{ ansible_user_gid }}
+      ║
+      ║  ⚠️  IF THIS IS 'root' AND YOU DON'T WANT ROOT OWNERSHIP:
+      ║     Set 'docker_user' in your inventory to your username
+      ║
+      ║  Example in inventory:
+      ║    docker_user: your_username
+      ║    ansible_user_id: your_username
+      ╚════════════════════════════════════════════════════════════════╝
+
+- name: "⏸️  PAUSE - Verify docker user is CORRECT before continuing"
+  pause:
+    prompt: |
+      
+      👁️  Verify the user above is CORRECT!
+      
+      If the user is 'root' and you don't want root ownership of files:
+        1. Press Ctrl+C to cancel
+        2. Set 'docker_user' in your inventory file
+        3. Re-run the playbook
+      
+      If the user is correct, press ENTER to continue
+      
 
 - name: Ensure output directory exists
   file:
@@ -229,11 +266,29 @@
     }) }}"
   loop: "{{ services_enabled | difference(['nginx', 'gatus', 'mysql', 'mongodb']) }}"
 
+# Build service_extra_params dict for templates
+- name: Build extra_params dict for services
+  set_fact:
+    service_extra_params: "{{ service_extra_params | default({}) | combine({
+      item: docker_services_desc.get(item, {}).get('extra_params', [])
+    }) }}"
+  loop: "{{ services_enabled | difference(['nginx', 'gatus', 'mysql', 'mongodb']) }}"
+
 - name: Set service_java_opts_dict from temp_java_opts
   set_fact:
     service_java_opts_dict: "{{ temp_java_opts }}"
 
-- name: Debug - Show generated JAVA_OPTS for services
+- name: Debug - Show service_extra_params (extra JVM parameters defined per service)
+  debug:
+    msg: |
+      Services with extra_params that will be concatenated in .env:
+      {% for service, extras in service_extra_params.items() %}
+      {% if extras %}
+        {{ service }}: {{ extras | map(attribute='key') | list | join(', ') }}
+      {% endif %}
+      {% endfor %}
+
+- name: Debug - Show generated JAVA_OPTS for services (BASE - extras added in template)
   debug:
     msg: "{{ service_java_opts_dict }}"
 
