@@ -12,34 +12,13 @@
   file:
     path: "{{item}}"
     state: directory
-    owner: "{{ docker_default_user | default(ansible_user_id) if deployment_type == 'container' else cas_user | default('cas') }}"
-    group: "{{ docker_default_user | default(ansible_user_id) if deployment_type == 'container' else cas_user | default('cas') }}"
+    owner: "{{ cas_user | default('cas') }}"
+    group: "{{ cas_user | default('cas') }}"
   with_items:
     - "{{data_dir}}/cas-management"
     - "{{data_dir}}/cas-management/config"
     - "{{data_dir}}/cas-management/"
-  tags:
-    - properties
-    - cas-management
-
-- name: ensure logs directory exists (container mode)
-  file:
-    path: "{{data_dir}}/logs/cas-management"
-    state: directory
-    owner: "{{ docker_default_user | default(ansible_user_id) }}"
-    group: "{{ docker_default_user | default(ansible_user_id) }}"
-  when: deployment_type == 'container'
-  tags:
-    - properties
-    - cas-management
-
-- name: ensure log directory exists (non-container mode)
-  file:
-    path: "/var/log/atlas/cas-management/"
-    state: directory
-    owner: "{{ cas_user | default('cas') }}"
-    group: "{{ cas_user | default('cas') }}"
-  when: deployment_type != 'container'
+    - "/var/log/atlas/cas-management/"
   tags:
     - properties
     - cas-management
