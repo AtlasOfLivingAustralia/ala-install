@@ -4,58 +4,25 @@
 
 - name: Set docker facts for all services
   set_fact:
-    docker_default_user: "{{ docker_compose_userid | default('1000') }}"
+    docker_default_user: "{{ docker_compose_userid | default(ansible_env.SUDO_USER) | default(ansible_user_id) }}"
     # Core user variables for all services
-    tomcat_user: "{{ docker_default_user | default(ansible_user_id) }}"
-    nginx_user: "{{ docker_default_user | default(ansible_user_id) }}"
-    cas_user: "{{ docker_default_user | default(ansible_user_id) }}"
-    collectory_user: "{{ docker_default_user | default(ansible_user_id) }}"
-    userdetails_user: "{{ docker_default_user | default(ansible_user_id) }}"
-    apikey_user: "{{ docker_default_user | default(ansible_user_id) }}"
-    namematching_user: "{{ docker_default_user | default(ansible_user_id) }}"
-    sensitive_data_user: "{{ docker_default_user | default(ansible_user_id) }}"
+    tomcat_user: "{{ docker_compose_userid | default(ansible_env.SUDO_USER) | default(ansible_user_id) }}"
+    nginx_user: "{{ docker_compose_userid | default(ansible_env.SUDO_USER) | default(ansible_user_id) }}"
+    cas_user: "{{ docker_compose_userid | default(ansible_env.SUDO_USER) | default(ansible_user_id) }}"
+    collectory_user: "{{ docker_compose_userid | default(ansible_env.SUDO_USER) | default(ansible_user_id) }}"
+    userdetails_user: "{{ docker_compose_userid | default(ansible_env.SUDO_USER) | default(ansible_user_id) }}"
+    apikey_user: "{{ docker_compose_userid | default(ansible_env.SUDO_USER) | default(ansible_user_id) }}"
+    namematching_user: "{{ docker_compose_userid | default(ansible_env.SUDO_USER) | default(ansible_user_id) }}"
+    sensitive_data_user: "{{ docker_compose_userid | default(ansible_env.SUDO_USER) | default(ansible_user_id) }}"
     # Docker host variables for services (WIP, comented for now)
     # collectory_docker_host: "{{ collectory_docker_host | default('la_collectory_war') }}"
     # userdetails_docker_host: "{{ userdetails_docker_host | default('la_auth_userdetails') }}"
     # CAS MongoDB flags
     cas_add_mongo_users: "{{ cas_add_mongo_users | default(true) }}"
 
-- name: "⚠️  DEBUG - Show docker user configuration BEFORE creating directories"
+- name: Debug - Docker user configuration
   debug:
-    msg: |
-      ╔════════════════════════════════════════════════════════════════╗
-      ║  DOCKER USER CONFIGURATION (will own all generated files)      ║
-      ╠════════════════════════════════════════════════════════════════╣
-      ║  docker_user variable: {{ docker_user | default('NOT SET') }}
-      ║  ansible_user_id: {{ ansible_user_id }}
-      ║  ansible_user_gid: {{ ansible_user_gid }}
-      ║  docker_default_user: {{ docker_default_user }}
-      ║  
-      ║  Result: All files will be owned by:
-      ║    - User: {{ ansible_user_id }} (UID: {{ ansible_user_gid }})
-      ║    - Group: {{ ansible_user_gid }}
-      ║
-      ║  ⚠️  IF THIS IS 'root' AND YOU DON'T WANT ROOT OWNERSHIP:
-      ║     Set 'docker_user' in your inventory to your username
-      ║
-      ║  Example in inventory:
-      ║    docker_user: your_username
-      ║    ansible_user_id: your_username
-      ╚════════════════════════════════════════════════════════════════╝
-
-- name: "⏸️  PAUSE - Verify docker user is CORRECT before continuing"
-  pause:
-    prompt: |
-      
-      👁️  Verify the user above is CORRECT!
-      
-      If the user is 'root' and you don't want root ownership of files:
-        1. Press Ctrl+C to cancel
-        2. Set 'docker_user' in your inventory file
-        3. Re-run the playbook
-      
-      If the user is correct, press ENTER to continue
-      
+    msg: "Docker users - tomcat: {{ tomcat_user }}, nginx: {{ nginx_user }}, cas: {{ cas_user }}, collectory: {{ collectory_user }}, userdetails: {{ userdetails_user }}, apikey: {{ apikey_user }}"
 
 - name: Ensure output directory exists
   file:
