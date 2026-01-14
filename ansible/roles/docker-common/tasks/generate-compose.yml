@@ -112,6 +112,34 @@
   debug:
     msg: "Services enabled: {{ services_enabled }}"
 
+# Create nginx directories BEFORE any role tries to use nginx_vhost
+- name: Ensure nginx config directory exists
+  file:
+    path: "{{ nginx_conf_dir }}"
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  when: "'nginx' in services_enabled"
+
+- name: Ensure nginx conf.d directory exists
+  file:
+    path: "{{ nginx_conf_dir }}/conf.d"
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  when: "'nginx' in services_enabled"
+
+- name: Ensure nginx sites-enabled directory exists
+  file:
+    path: "{{ nginx_conf_dir }}/sites-enabled"
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  when: "'nginx' in services_enabled"
+
 - name: Run cas configuration generation
   include_role:
     name: cas5
@@ -392,14 +420,6 @@
     group: "{{ ansible_user_gid }}"
   when: build_images | default(false)
 
-- name: Ensure nginx config directory exists
-  file:
-    path: "{{ nginx_conf_dir }}"
-    state: directory
-    mode: '0755'
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_gid }}"
-  when: "'nginx' in services_enabled"
 
 - name: Generate nginx configuration
   template:
