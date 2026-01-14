@@ -11,8 +11,8 @@
 
     # Skip handlers as we're generating docker-compose files, not deploying to VMs
     skip_handlers: true
-    # Enable services based on inventory groups (collectory, nginx, cas-servers, etc)
-    services_enabled: "{{ groups.keys() | select('match', '^(collectory|biocache-hub|biocache-service|bie-hub|bie-index|nginx|cas-servers|userdetails|apikey|cas-management|species-list|gatus)$') | list | default(['collectory', 'nginx'], true) }}"
+    # Note: services_enabled is determined by docker-common role based on inventory variables
+    # (not hardcoded here - allow generate-compose.yml to build it from use_* variables)
     # i18n configuration
     i18n:
       enabled: true
