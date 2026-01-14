@@ -1,0 +1,12 @@
+{% import 'nginx_vhost_macros.j2' as m with context %}
+{% if (ala_default_vhost and vhost_required) -%}
+{{ m.ala_default_start() }}
+{% for item in nginx_paths | sort(attribute='sort_label') %}
+{{ m.fragment_70_location_start(item) -}}
+{{ m.fragment_71_location_default(item) }}
+{{ m.fragment_73_location(item) }}
+{{ m.fragment_75_location_end() }}
+{% endfor %}
+{# Close the HTTPS server block #}
+{{ m.ala_default_end() }}
+{%- endif %}

@@ -119,3 +119,7 @@ nginx_config_directory_mode: "0755"
 nginx_config_file_mode: "0644"
 
 ala_default_vhost_include_paths: False
+
+# Set to true to fast generate the vhost configuration files (it does not work for CAS of other services that uses
+# same subdomains for different services), but it may work for normal cases
+nginx_vhost_fast_mode: False

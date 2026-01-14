@@ -1,3 +1,9 @@
+- name: debug nginx_vhost_fast_mode
+  debug:
+    msg: "nginx_vhost_fast_mode value is {{ nginx_vhost_fast_mode }}"
+  tags:
+    - nginx_vhost
+
 - name: set ubuntu-14.04 variables
   set_fact:
     nginx_tls_v1_3_enabled: False
@@ -217,7 +223,7 @@
   file:
     path: "{{nginx_conf_dir}}/vhost_fragments/{{ item }}"
     state: absent
-  when: nginx_vhost_fragments_to_clear is defined and nginx_vhost_fragments_to_clear|length > 0
+  when: nginx_vhost_fragments_to_clear is defined and nginx_vhost_fragments_to_clear|length > 0 and not nginx_vhost_fast_mode | bool
   with_items: "{{ nginx_vhost_fragments_to_clear }}"
   tags:
     - nginx_vhost
@@ -230,7 +236,7 @@
     mode: "{{nginx_config_directory_mode}}"
     owner: root
     group: root
-  when: vhost_required | bool == True
+  when: vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -273,7 +279,7 @@
   template:
     src: "fragment_02_upstream.j2"
     dest: "{{nginx_conf_dir}}/conf.d/http_02_upstream_{{ hostname }}_127.0.0.1_{{ tomcat_server_port | default('8080', True) }}.conf"
-  when: vhost_required | bool == True and nginx_load_balancing | bool == true and item.is_proxy and item.proxy_pass is defined
+  when: vhost_required | bool == True and nginx_load_balancing | bool == true and item.is_proxy and item.proxy_pass is defined and not nginx_vhost_fast_mode | bool
   with_items:
     - "{{ nginx_paths}} "
   notify:
@@ -285,7 +291,7 @@
   file:
     path: "{{nginx_conf_dir}}/conf.d/http_02_upstream_{{ hostname }}_127.0.0.1_{{ tomcat_server_port | default('8080', True) }}.conf"
     state: absent
-  when: vhost_required | bool == True and nginx_load_balancing | bool != true
+  when: vhost_required | bool == True and nginx_load_balancing | bool != true and not nginx_vhost_fast_mode | bool
   with_items:
     - "{{ nginx_paths}} "
   notify:
@@ -297,7 +303,7 @@
   template:
     src: "fragment_03_blocking.j2"
     dest: "{{nginx_conf_dir}}/conf.d/http_03_blocking.conf"
-  when: vhost_required | bool == True
+  when: vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   notify:
    - reload nginx
   tags:
@@ -307,7 +313,7 @@
   template:
     src: "fragment_04_ratelimit.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_04_ratelimit"
-  when: vhost_required | bool == True and nginx_rate_limit_enabled | bool == True
+  when: vhost_required | bool == True and nginx_rate_limit_enabled | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -315,7 +321,7 @@
   template:
     src: "fragment_05_cache.j2"
     dest: "{{nginx_conf_dir}}/conf.d/http_05_cache_{{ nginx_cache_zone }}.conf"
-  when: vhost_required | bool == True and nginx_cache | bool == True
+  when: vhost_required | bool == True and nginx_cache | bool == True and not nginx_vhost_fast_mode | bool
   notify:
    - reload nginx
   tags:
@@ -326,7 +332,7 @@
   template:
     src: "fragment_06_connection.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_06_connection"
-  when: vhost_required | bool == True and nginx_load_balancing | bool == false and item.is_websocket is defined and item.is_websocket | bool == true
+  when: vhost_required | bool == True and nginx_load_balancing | bool == false and item.is_websocket is defined and item.is_websocket | bool == true and not nginx_vhost_fast_mode | bool
   with_items:
     - "{{ nginx_paths}} "
 
@@ -335,7 +341,7 @@
   template:
     src: "fragment_10_start_http.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_10_start"
-  when: vhost_required | bool == True
+  when: vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -346,7 +352,7 @@
   with_items:
     - "20_servername"
     - "90_end"
-  when: vhost_required | bool == True
+  when: vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -355,7 +361,7 @@
     paths: "{{ nginx_conf_dir }}/vhost_fragments/{{ hostname }}/"
     patterns: "https_*"
   register: https_fragments_to_delete
-  when: ssl | bool == False and vhost_required | bool == True
+  when: ssl | bool == False and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -364,7 +370,7 @@
     path: "{{ item.path }}"
     state: absent
   with_items: "{{ https_fragments_to_delete.files }}"
-  when: ssl | bool == False and vhost_required | bool == True
+  when: ssl | bool == False and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -382,7 +388,7 @@
   with_items:
     - "50_root"
     - "55_include"
-  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True
+  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -393,7 +399,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_{{ item }}"
   with_items:
     - "60_robots"
-  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True
+  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -405,7 +411,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_70_start"
   with_items:
     - "{{ nginx_paths }}"
-  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True
+  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -417,7 +423,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_73_content"
   with_items:
     - "{{ nginx_paths }}"
-  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True
+  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -427,7 +433,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_74_cors"
   with_items:
     - "{{ nginx_paths }}"
-  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True and nginx_cors_origin_regexp is defined
+  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True and nginx_cors_origin_regexp is defined and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -439,7 +445,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_70_location_{{ item.sort_label | default(item.path | basename) }}_75_end"
   with_items:
     - "{{ nginx_paths }}"
-  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True
+  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -448,7 +454,7 @@
   file: 
     path: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_30_force_https"
     state: absent
-  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True
+  when: (ssl | bool == False or (ssl | bool == True and force_https | bool == False)) and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -459,7 +465,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/http_{{ item }}"
   with_items:
     - "30_force_https"
-  when: ssl | bool == True and force_https | bool == True and vhost_required | bool == True
+  when: ssl | bool == True and force_https | bool == True and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -468,7 +474,7 @@
   template:
     src: "fragment_10_start_https.j2"
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_10_start"
-  when: ssl | bool == True and vhost_required | bool == True
+  when: ssl | bool == True and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -483,7 +489,7 @@
     - "55_include"
     - "60_robots"
     - "90_end"
-  when: ssl | bool == True and vhost_required | bool == True
+  when: ssl | bool == True and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -496,7 +502,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_70_start"
   with_items:
     - "{{ nginx_paths }}"
-  when: ssl | bool == True and vhost_required | bool == True
+  when: ssl | bool == True and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -509,7 +515,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_73_content"
   with_items:
     - "{{ nginx_paths }}"
-  when: ssl | bool == True and vhost_required | bool == True
+  when: ssl | bool == True and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -519,7 +525,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_74_cors"
   with_items:
     - "{{ nginx_paths }}"
-  when: ssl | bool == True and vhost_required | bool == True and nginx_cors_origin_regexp is defined
+  when: ssl | bool == True and vhost_required | bool == True and nginx_cors_origin_regexp is defined and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -532,7 +538,7 @@
     dest: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}/https_70_location_{{ item.sort_label | default(item.path | basename) }}_75_end"
   with_items:
     - "{{ nginx_paths }}"
-  when: ssl | bool == True and vhost_required | bool == True
+  when: ssl | bool == True and vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   tags:
     - nginx_vhost
 
@@ -542,9 +548,19 @@
     src: "{{nginx_conf_dir}}/vhost_fragments/{{hostname}}"
     dest: "{{nginx_conf_dir}}/sites-available/{{hostname}}{{vfragments_suffix}}.conf"
     mode: "{{nginx_config_file_mode}}"
-  when: vhost_required | bool == True
+  when: vhost_required | bool == True and not nginx_vhost_fast_mode | bool
   notify:
    - reload nginx
+  tags:
+    - nginx_vhost
+
+- name: Create Nginx config from template (optimized version)
+  template:
+    src: "nginx_vhost.j2"
+    dest: "{{ nginx_conf_dir }}/sites-available/{{ hostname }}{{ vfragments_suffix }}.conf"
+  when: vhost_required | bool == True and nginx_vhost_fast_mode | bool
+  notify:
+    - reload nginx
   tags:
     - nginx_vhost
 
