@@ -216,6 +216,27 @@
     group: "{{ ansible_user_gid }}"
   when: "'cas' in services_enabled"
 
+# Build JAVA_OPTS for each service from inventory variables
+- name: Build JAVA_OPTS strings for each service
+  set_fact:
+    temp_java_opts: "{{ temp_java_opts | default({}) | combine({
+      item: '-Djava.awt.headless=true -Xmx' +
+            (vars.get(item.replace('-', '_') + '_max_memory', '2g')) +
+            ' -Xms' +
+            (vars.get(item.replace('-', '_') + '_min_memory', '1g')) +
+            ' ' +
+            (vars.get('java_security_opts', '-Dlog4j2.formatMsgNoLookups=true'))
+    }) }}"
+  loop: "{{ services_enabled | difference(['nginx', 'gatus', 'mysql', 'mongodb']) }}"
+
+- name: Set service_java_opts_dict from temp_java_opts
+  set_fact:
+    service_java_opts_dict: "{{ temp_java_opts }}"
+
+- name: Debug - Show generated JAVA_OPTS for services
+  debug:
+    msg: "{{ service_java_opts_dict }}"
+
 - name: Generate .env file with database passwords from inventories
   template:
     src: docker-compose.env.j2

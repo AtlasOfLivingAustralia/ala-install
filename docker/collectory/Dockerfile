@@ -162,6 +162,9 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 
 COPY --from=final-builder /build/artifact.war /usr/local/tomcat/webapps/collectory.war
 
+# Default JAVA_OPTS can be overridden via docker-compose environment variables
+ENV JAVA_OPTS="-Djava.awt.headless=true -Xmx2g -Xms1g"
+
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=3 CMD \
 curl --fail --silent http://localhost:8080/collectory/actuator/health || exit 1
 
@@ -182,12 +185,15 @@ WORKDIR /opt/atlas/$APP_ARTIFACT
 
 COPY --from=final-builder /build/artifact.war /app/app.war
 
+# Default JAVA_OPTS can be overridden via docker-compose environment variables
+ENV JAVA_OPTS="-Djava.awt.headless=true -Xmx2g -Xms1g"
+
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=3 CMD \
 curl --fail --silent http://localhost:8080/actuator/health || exit 1
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "/app/app.war"]
+CMD ["sh", "-c", "java ${JAVA_OPTS} -jar /app/app.war"]
 
 # ============================================
 # Stage 9: Final stage selection
