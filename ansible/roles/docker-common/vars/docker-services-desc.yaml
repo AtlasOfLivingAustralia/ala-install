@@ -87,6 +87,7 @@ docker_services_desc:
     repository: 'https://github.com/AtlasOfLivingAustralia/image-service'
     classifier: 'exec'
     version_variable: 'image_service_version'
+    log_dir: '/var/log/ala/image-service'
   species_lists:
     name: 'species-lists'
     nameInt: 'species_lists'
@@ -150,6 +151,7 @@ docker_services_desc:
     repository: 'https://github.com/AtlasOfLivingAustralia/ala-cas-5'
     classifier: 'exec'
     version_variable: 'cas_version'
+    log_dir: '/var/log/ala/cas'
   userdetails:
     name: 'User Details'
     nameInt: 'userdetails'
@@ -164,6 +166,7 @@ docker_services_desc:
     parentService: "cas"
     classifier: 'exec'
     version_variable: 'user_details_version'
+    log_dir: '/var/log/ala/userdetails'
   apikey:
     name: 'API keys'
     nameInt: 'apikey'
@@ -178,6 +181,7 @@ docker_services_desc:
     buildTool: 'gradle'
     classifier: 'exec'
     version_variable: 'apikey_version'
+    log_dir: '/var/log/ala/apikey'
   cas_management:
     name: 'CAS Management'
     nameInt: 'cas_management'
@@ -192,6 +196,7 @@ docker_services_desc:
     buildTool: 'gradle'
     classifier: 'exec'
     version_variable: 'cas_management_version'
+    log_dir: '/var/log/ala/cas-management'
   spatial:
     name: 'spatial'
     nameInt: 'spatial'
