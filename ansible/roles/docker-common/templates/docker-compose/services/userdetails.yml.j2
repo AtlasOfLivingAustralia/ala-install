@@ -24,7 +24,7 @@
 {% endif %}
     environment:
       TZ: {{ server_tz | default('UTC') }}
-      DOCKERIZE_OPTS: "-wait tcp://{{ user_store_db_hostname | default('mysql') }}:3306 -timeout 120s"
+      JAVA_OPTS: ${USERDETAILS_JAVA_OPTS}
     ports:
       - "9001:8080"
     networks:

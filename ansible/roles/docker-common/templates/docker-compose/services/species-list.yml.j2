@@ -4,6 +4,9 @@
 {% if build_images is defined and (build_images | bool or build_images == 'true') %}
     image: {{ docker_registry | default('') }}species-list:{{ species_list_version | default('latest') }}
     pull_policy: never
+    build:
+      context: ../docker/species-list
+      dockerfile: Dockerfile
 {% else %}
     # Use locally built image (from docker buildx bake)
     image: species-list:{{ species_list_version | default('latest') }}
@@ -16,7 +19,7 @@
 {% endif %}
     environment:
       TZ: {{ server_tz | default('UTC') }}
-      DOCKERIZE_OPTS: "-wait tcp://{{ specieslist_db_hostname | default('mysql') }}:3306 -timeout 120s"
+      JAVA_OPTS: ${SPECIES_LIST_JAVA_OPTS}
     ports:
       - "9010:8080"
     networks:

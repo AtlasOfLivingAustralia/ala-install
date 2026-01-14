@@ -24,7 +24,7 @@
 {% endif %}
     environment:
       TZ: {{ server_tz | default('UTC') }}
-      DOCKERIZE_OPTS: "-wait tcp://{{ cas_db_hostname | default('mysql') }}:3306 -wait tcp://{{ cas_services_host | default('mongodb') }}:27017 -timeout 120s"
+      JAVA_OPTS: ${CAS_MANAGEMENT_JAVA_OPTS}
     ports:
       - "9003:8080"
     networks:

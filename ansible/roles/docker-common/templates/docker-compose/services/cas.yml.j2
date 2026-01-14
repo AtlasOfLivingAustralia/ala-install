@@ -6,7 +6,7 @@
     image: cas:{{ cas_version | default('6.5.6-3') }}
     pull_policy: never
     build:
-      context: ../docker/cas
+      context: ../docker/cas5
       dockerfile: Dockerfile
       args:
         CAS_VERSION: {{ cas_version | default('6.5.6-3') }}
@@ -24,7 +24,7 @@
 {% endif %}
     environment:
       TZ: {{ server_tz | default('UTC') }}
-      DOCKERIZE_OPTS: "-wait tcp://{{ cas_db_hostname | default('mysql') }}:3306 -wait tcp://{{ ticket_registry_db_hostname | default('mongodb') }}:27017 -timeout 120s"
+      JAVA_OPTS: ${CAS_JAVA_OPTS}
     ports:
       - "9000:8080"
     networks:

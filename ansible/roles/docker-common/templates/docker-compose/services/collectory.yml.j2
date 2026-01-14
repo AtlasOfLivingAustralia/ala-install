@@ -5,6 +5,9 @@
     # Build locally with correct Java version based on collectory_version
     image: {{ docker_registry | default('') }}collectory:{{ collectory_version | default('latest') }}
     pull_policy: never
+    build:
+      context: ../docker/collectory
+      dockerfile: Dockerfile
 {% else %}
     # Use locally built image (from docker buildx bake)
     image: collectory:{{ collectory_version | default('latest') }}
@@ -19,7 +22,7 @@
 {% endif %}
     environment:
       TZ: {{ server_tz | default('UTC') }}
-      DOCKERIZE_OPTS: "-wait tcp://{{ collectory_db_host_address }}:3306 -timeout 120s"
+      JAVA_OPTS: ${COLLECTORY_JAVA_OPTS}
     expose:
       - 8080
     networks:
