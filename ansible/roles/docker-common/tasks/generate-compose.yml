@@ -2,6 +2,24 @@
 # Generate docker-compose.yml from templates
 # Using existing ala-install variables
 
+- name: Set docker facts for all services
+  set_fact:
+    docker_default_user: "{{ docker_user | default(ansible_user_id) }}"
+    # Core user variables for all services
+    tomcat_user: "{{ docker_default_user | default(ansible_user_id) }}"
+    nginx_user: "{{ docker_default_user | default(ansible_user_id) }}"
+    cas_user: "{{ docker_default_user | default(ansible_user_id) }}"
+    collectory_user: "{{ docker_default_user | default(ansible_user_id) }}"
+    userdetails_user: "{{ docker_default_user | default(ansible_user_id) }}"
+    apikey_user: "{{ docker_default_user | default(ansible_user_id) }}"
+    namematching_user: "{{ docker_default_user | default(ansible_user_id) }}"
+    sensitive_data_user: "{{ docker_default_user | default(ansible_user_id) }}"
+    # Docker host variables for services (WIP, comented for now)
+    # collectory_docker_host: "{{ collectory_docker_host | default('la_collectory_war') }}"
+    # userdetails_docker_host: "{{ userdetails_docker_host | default('la_auth_userdetails') }}"
+    # CAS MongoDB flags
+    cas_add_mongo_users: "{{ cas_add_mongo_users | default(true) }}"
+
 - name: Ensure output directory exists
   file:
     path: "{{ data_dir }}"
@@ -95,7 +113,8 @@
     name: cas5
   vars:
     deployment_type: container
-  when: "'cas' in services_enabled"
+  when:
+    - "'cas' in services_enabled"
   tags:
     - cas
     - config
@@ -105,7 +124,8 @@
     name: userdetails
   vars:
     deployment_type: container
-  when: "'userdetails' in services_enabled"
+  when:
+    - "'userdetails' in services_enabled"
   tags:
     - userdetails
     - config
@@ -115,7 +135,8 @@
     name: apikey
   vars:
     deployment_type: container
-  when: "'apikey' in services_enabled"
+  when:
+    - "'apikey' in services_enabled"
   tags:
     - apikey
     - config
@@ -125,7 +146,8 @@
     name: cas-management
   vars:
     deployment_type: container
-  when: "'cas-management' in services_enabled"
+  when:
+    - "'cas_management' in services_enabled"
   tags:
     - cas-management
     - config
@@ -250,6 +272,7 @@
     service_classifier: "{{ docker_services_desc[item].get('classifier') | default('') }}"
     # Version from service_versions_dict
     service_version: "{{ service_versions_dict.get(item, 'develop') }}"
+    log_dir: "{{ docker_services_desc[item].get('log_dir') }}"
   when:
     - item in docker_services_desc
     - docker_services_desc[item].get('buildTool') == 'gradle'
@@ -273,6 +296,7 @@
     service_classifier: "{{ docker_services_desc[item].get('classifier') | default('') }}"
     # Version from service_versions_dict
     service_version: "{{ service_versions_dict.get(item, 'develop') }}"
+    log_dir: "{{ docker_services_desc[item].get('log_dir') }}"
   when:
     - item in docker_services_desc
     - docker_services_desc[item].get('buildTool') == 'maven'
@@ -348,7 +372,7 @@
     name: species-list
   vars:
     deployment_type: container
-  when: "'species-lists' in services_enabled"
+  when: "'species_lists' in services_enabled"
   tags:
     - species-list
     - config
