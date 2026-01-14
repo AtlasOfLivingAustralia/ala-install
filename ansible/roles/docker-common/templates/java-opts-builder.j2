@@ -1,0 +1,18 @@
+{#
+  java-opts-builder.j2
+
+  Helper template to build JAVA_OPTS strings for services.
+  Based on ansible/roles/exec-jar/templates/service.conf pattern
+
+  Variables passed via Ansible vars:
+  - service_name: name of the service
+  - max_memory: max heap size (e.g., '2g')
+  - min_memory: min heap size (e.g., '1g')
+  - jvm_params: list of additional JVM parameters
+  - extra_params: list of dicts with key/value pairs
+  - java_security_opts: Java security options
+  - http_user_agent: HTTP user agent string
+  - datadog_java_apm_enabled: boolean to enable Datadog APM
+#}
+-Djava.awt.headless=true -Xmx{{ max_memory }} -Xms{{ min_memory }}{% for jvm_param in jvm_params | default([]) %} {{ jvm_param }}{% endfor %}{% for extra_param in extra_params | default([]) %} -D{{ extra_param.key }}={{ extra_param.value }}{% endfor %} {{ java_security_opts }}{% if http_user_agent %} -Dhttp.agent={{ http_user_agent }}{% endif %}{% if datadog_java_apm_enabled %} -Djava.rmi.server.hostname={{ jmx_hostname | default(inventory_hostname) }} -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port={{ jmx_port | default('10058')}} -Dcom.sun.management.jmxremote.authenticate={{ jmx_authenticate | default('false')}} -Dcom.sun.management.jmxremote.ssl={{ jmx_ssl | default('false')}} -Dcom.sun.management.jmxremote.rmi.port={{ jmx_rmi_port | default(jmx_port | default('10058'))}} -javaagent:/opt/atlas/{{ service_name }}/dd-java-agent.jar -Ddd.version={{ version | default('latest')}} -Ddd.service={{ service_name }} -Ddd.env={{ datadog_env | default('production') }} -Ddd.logs.injection={{ datadog_log_injection | default('true')}} -Ddd.profiling.enabled={{ datadog_profiling_enabled | default('true')}}{% endif %}
+
