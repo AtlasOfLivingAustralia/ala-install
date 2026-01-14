@@ -379,12 +379,14 @@ cmd_config_docker() {
     fi
 
     step "Generating docker-compose.yml, docker-bake.hcl, and Dockerfiles (Docker files only, no role configs)..."
+    info "⚠️  This generates ONLY docker files, NOT service configurations (cas, collectory, etc.)"
+    info "💡 For full configuration generation, use: ./docker/ala config"
     cd "$PROJECT_ROOT" || exit 1
     # Skip all role-specific configuration tasks, only run docker-common generation
     ansible-playbook $inventories_arg "$PLAYBOOK" $extra_vars \
         --skip-tags cas,collectory,userdetails,apikey,cas-management,nginx,bie-hub,biocache-hub,spatial,alerts,species-list,sds,pipelines,doi,data-quality,namematching,sensitive-data,biocollect,dashboard,regions,images,events,gatus,config \
         || error "Failed to generate Docker configuration"
-    success "Docker files generated"
+    success "Docker files generated (without service configurations)"
 
 
     # Create required docker subdirectories for volumes
