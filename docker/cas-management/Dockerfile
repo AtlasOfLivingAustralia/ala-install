@@ -178,12 +178,12 @@ LABEL org.opencontainers.image.title="cas_management"
 LABEL org.opencontainers.image.description=""
 LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/ala-cas-5-services"
 
-WORKDIR /app
+WORKDIR /opt/atlas/$APP_ARTIFACT
 
 COPY --from=final-builder /build/artifact.war /app/app.war
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=3 CMD \
-curl --fail --silent http://localhost:8080/cas_management/actuator/health || exit 1
+curl --fail --silent http://localhost:8080/actuator/health || exit 1
 
 EXPOSE 8080
 
@@ -199,11 +199,21 @@ CMD ["java", "-jar", "/app/app.war"]
 # hadolint ignore=DL3006
 FROM runtime-${RUN_TOOL}
 
-RUN mkdir -p /data && \
-    chown 1000:1000 /data
+ARG SERVICE_USER=cas_management
+ARG APP_ARTIFACT=cas-management
+ARG LOG_DIR=/var/log/ala/cas-management
+
+# Create user and directories
+RUN groupadd -r ${SERVICE_USER} -g 1000 && \
+    useradd -r -g ${SERVICE_USER} -u 1000 -m ${SERVICE_USER} && \
+    mkdir -p /data/${APP_ARTIFACT}/config && \
+    chown -R ${SERVICE_USER}:${SERVICE_USER} /data/${APP_ARTIFACT}
+
+RUN mkdir -p /var/log/ala/cas-management && \
+    chown -R ${SERVICE_USER}:${SERVICE_USER} /var/log/ala/cas-management
 
 VOLUME /data
-USER 1000:1000
+USER ${SERVICE_USER}
 
 ARG BUILD_DATE
 ARG VCS_REF

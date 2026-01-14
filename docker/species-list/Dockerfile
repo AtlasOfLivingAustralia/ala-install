@@ -178,12 +178,12 @@ LABEL org.opencontainers.image.title="species_lists"
 LABEL org.opencontainers.image.description="user provided species lists"
 LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/specieslist-webapp"
 
-WORKDIR /app
+WORKDIR /opt/atlas/$APP_ARTIFACT
 
 COPY --from=final-builder /build/artifact.war /app/app.war
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=3 CMD \
-curl --fail --silent http://localhost:8080/species_lists/actuator/health || exit 1
+curl --fail --silent http://localhost:8080/actuator/health || exit 1
 
 EXPOSE 8080
 
@@ -199,11 +199,19 @@ CMD ["java", "-jar", "/app/app.war"]
 # hadolint ignore=DL3006
 FROM runtime-${RUN_TOOL}
 
-RUN mkdir -p /data && \
-    chown 1000:1000 /data
+ARG SERVICE_USER=species_lists
+ARG APP_ARTIFACT=specieslist-webapp
+ARG LOG_DIR=
+
+# Create user and directories
+RUN groupadd -r ${SERVICE_USER} -g 1000 && \
+    useradd -r -g ${SERVICE_USER} -u 1000 -m ${SERVICE_USER} && \
+    mkdir -p /data/${APP_ARTIFACT}/config && \
+    chown -R ${SERVICE_USER}:${SERVICE_USER} /data/${APP_ARTIFACT}
+
 
 VOLUME /data
-USER 1000:1000
+USER ${SERVICE_USER}
 
 ARG BUILD_DATE
 ARG VCS_REF
