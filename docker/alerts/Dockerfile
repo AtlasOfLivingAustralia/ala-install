@@ -9,18 +9,14 @@
 #   - repo-branch: Clone repository and build from a specific branch
 #   - repo-commit: Clone repository and build from a specific commit
 #
-# Supports multiple runtime tools: tomcat, java-jar
+# Supports Java JAR runtime
 #
 # ============================================
-# HOW TO SELECT BUILD_METHOD AND RUN_TOOL
+# HOW TO SELECT BUILD_METHOD
 # ============================================
 # BUILD_METHOD selection: nexus | url | repo-branch | repo-commit
 #   Usage: docker build --build-arg BUILD_METHOD=nexus ...
 #   Default: nexus (fast, downloads pre-built artifact from ALA's nexus)
-#
-# RUN_TOOL selection: java-jar | tomcat
-#   Usage: docker build --build-arg RUN_TOOL=tomcat ...
-#   Default: java-jar (lightweight, runs WAR directly)
 #
 # ============================================
 # GLOBAL BUILD ARGUMENTS
@@ -150,32 +146,13 @@ RUN ls -lh artifact.war && \
 FROM builder-${BUILD_METHOD} AS final-builder
 
 # ============================================
-# Stage 7: Runtime - Tomcat
+# Stage 7: Final Runtime - Java JAR with setup
 # ============================================
-FROM tomcat:9-jre11 AS runtime-tomcat
+FROM eclipse-temurin:11-jre-jammy
 
-LABEL org.opencontainers.image.title="alerts"
-LABEL org.opencontainers.image.description="users can subscribe to notifications about new occurrences regions,…"
-LABEL org.opencontainers.image.source="https://github.com/AtlasOfLivingAustralia/alerts"
-
-RUN rm -rf /usr/local/tomcat/webapps/*
-
-COPY --from=final-builder /build/artifact.war /usr/local/tomcat/webapps/alerts.war
-
-# Default JAVA_OPTS can be overridden via docker-compose environment variables
-ENV JAVA_OPTS="-Djava.awt.headless=true -Xmx2g -Xms1g"
-
-HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=3 CMD \
-curl --fail --silent http://localhost:8080/alerts/actuator/health || exit 1
-
-EXPOSE 8080
-
-CMD ["catalina.sh", "run"]
-
-# ============================================
-# Stage 8: Runtime - Java JAR
-# ============================================
-FROM eclipse-temurin:11-jre-jammy AS runtime-java-jar
+ARG SERVICE_USER=alerts
+ARG APP_ARTIFACT=alerts
+ARG LOG_DIR=
 
 LABEL org.opencontainers.image.title="alerts"
 LABEL org.opencontainers.image.description="users can subscribe to notifications about new occurrences regions,…"
@@ -193,31 +170,29 @@ curl --fail --silent http://localhost:8080/actuator/health || exit 1
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "java ${JAVA_OPTS} -jar /app/app.war"]
-
-# ============================================
-# Stage 9: Final stage selection
-# ============================================
-# This stage selects the appropriate runtime based on RUN_TOOL argument
-# The FROM instruction uses variable substitution: runtime-tomcat, runtime-java-jar
-# Only the selected runtime stage is used; others are ignored
-# Example: --build-arg RUN_TOOL=tomcat will use runtime-tomcat
-# hadolint ignore=DL3006
-FROM runtime-${RUN_TOOL}
-
-ARG SERVICE_USER=alerts
-ARG APP_ARTIFACT=alerts
-ARG LOG_DIR=
-
-# Create user and directories
+# Create service user and data directories
 RUN groupadd -r ${SERVICE_USER} -g 1000 && \
     useradd -r -g ${SERVICE_USER} -u 1000 -m ${SERVICE_USER} && \
     mkdir -p /data/${APP_ARTIFACT}/config && \
-    chown -R ${SERVICE_USER}:${SERVICE_USER} /data/${APP_ARTIFACT}
+    mkdir -p /data/${APP_ARTIFACT}/data && \
+    chown -R ${SERVICE_USER}:${SERVICE_USER} /data/${APP_ARTIFACT} && \
+    chown ${SERVICE_USER}:${SERVICE_USER} /app/app.war
 
 
 VOLUME /data
+
+# Copy entrypoint script
+COPY ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Switch to service user for runtime execution
 USER ${SERVICE_USER}
+
+# Set entrypoint to fix permissions at runtime, then execute CMD
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Execute service
+CMD ["sh", "-c", "java ${JAVA_OPTS} -jar /app/app.war"]
 
 ARG BUILD_DATE
 ARG VCS_REF
