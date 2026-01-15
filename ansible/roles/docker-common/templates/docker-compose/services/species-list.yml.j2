@@ -1,4 +1,5 @@
   # Species List Service
+services:
   species-list:
     container_name: species-list
 {% if build_images is defined and (build_images | bool or build_images == 'true') %}
@@ -19,7 +20,7 @@
 {% endif %}
     environment:
       TZ: {{ server_tz | default('UTC') }}
-      JAVA_OPTS: ${SPECIES_LIST_JAVA_OPTS}
+      JAVA_OPTS: ${SPECIES_LISTS_JAVA_OPTS}
     ports:
       - "9010:8080"
     networks:

@@ -1,4 +1,5 @@
   # Gatus Health Monitoring Dashboard
+services:
   gatus:
     container_name: gatus
     image: twinproduction/gatus:{{ gatus_version | default('latest') }}
