@@ -6,7 +6,7 @@
     image: cas-management:{{ cas_management_version | default('6.5.5-2') }}
     pull_policy: never
     build:
-      context: ../docker/cas-management
+      context: ../../docker/cas-management
       dockerfile: Dockerfile
       args:
         CAS_MANAGEMENT_VERSION: {{ cas_management_version | default('6.5.5-2') }}
@@ -18,7 +18,7 @@
     pull_policy: never
 {% endif %}
     volumes:
-      - ./cas-management:/data/cas-management
+      - ../cas-management:/data/cas-management
 {% if i18n.enabled and i18n.strategy == 'volume' %}
       - {{ i18n.volume.name }}:/opt/atlas/i18n/:ro
 {% endif %}

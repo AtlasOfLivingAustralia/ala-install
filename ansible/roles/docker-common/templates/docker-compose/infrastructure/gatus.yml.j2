@@ -3,7 +3,7 @@
     container_name: gatus
     image: twinproduction/gatus:{{ gatus_version | default('latest') }}
     volumes:
-      - ./gatus/config:/config:ro
+      - ../gatus/config:/config:ro
       - gatus-data:/data
     environment:
       TZ: {{ server_tz | default('UTC') }}

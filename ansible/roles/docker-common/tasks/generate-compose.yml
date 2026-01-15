@@ -303,7 +303,125 @@
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_gid }}"
 
-- name: Fix docker-compose build paths (relative to docker-compose-output/)
+# Create subdirectories for organized service files
+- name: Create infrastructure directory for docker-compose files
+  file:
+    path: "{{ data_dir }}/infrastructure"
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+
+- name: Create services directory for docker-compose files
+  file:
+    path: "{{ data_dir }}/services"
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+
+# Generate infrastructure service files
+- name: Generate i18n.yml if enabled
+  template:
+    src: docker-compose/infrastructure/i18n.yml.j2
+    dest: "{{ data_dir }}/infrastructure/i18n.yml"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  when: i18n.enabled and i18n.strategy == 'volume' and i18n.volume.source == 'init-container'
+
+- name: Generate nginx.yml
+  template:
+    src: docker-compose/infrastructure/nginx.yml.j2
+    dest: "{{ data_dir }}/infrastructure/nginx.yml"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  when: "'nginx' in services_enabled"
+
+- name: Generate mongodb.yml
+  template:
+    src: docker-compose/infrastructure/mongodb.yml.j2
+    dest: "{{ data_dir }}/infrastructure/mongodb.yml"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  when: "'cas' in services_enabled or groups['cas-servers'] is defined"
+
+- name: Generate mysql.yml
+  template:
+    src: docker-compose/infrastructure/mysql.yml.j2
+    dest: "{{ data_dir }}/infrastructure/mysql.yml"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  when: "'collectory' in services_enabled or 'cas' in services_enabled or groups['cas-servers'] is defined"
+
+- name: Generate gatus.yml
+  template:
+    src: docker-compose/infrastructure/gatus.yml.j2
+    dest: "{{ data_dir }}/infrastructure/gatus.yml"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  when: "'gatus' in services_enabled or gatus_enabled | default(true)"
+
+# Generate service files
+- name: Generate cas.yml
+  template:
+    src: docker-compose/services/cas.yml.j2
+    dest: "{{ data_dir }}/services/cas.yml"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  when: "'cas' in services_enabled or groups['cas-servers'] is defined"
+
+- name: Generate userdetails.yml
+  template:
+    src: docker-compose/services/userdetails.yml.j2
+    dest: "{{ data_dir }}/services/userdetails.yml"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  when: "'cas' in services_enabled or groups['cas-servers'] is defined"
+
+- name: Generate apikey.yml
+  template:
+    src: docker-compose/services/apikey.yml.j2
+    dest: "{{ data_dir }}/services/apikey.yml"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  when: "'cas' in services_enabled or groups['cas-servers'] is defined"
+
+- name: Generate cas-management.yml
+  template:
+    src: docker-compose/services/cas-management.yml.j2
+    dest: "{{ data_dir }}/services/cas-management.yml"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  when: "'cas' in services_enabled or groups['cas-servers'] is defined"
+
+- name: Generate species-list.yml
+  template:
+    src: docker-compose/services/species-list.yml.j2
+    dest: "{{ data_dir }}/services/species-list.yml"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  when: "'species-list' in services_enabled or groups['species-list'] is defined"
+
+- name: Generate collectory.yml
+  template:
+    src: docker-compose/services/collectory.yml.j2
+    dest: "{{ data_dir }}/services/collectory.yml"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  when: "'collectory' in services_enabled"
+
+- name: Fix docker-compose build paths in base file (relative to docker-compose-output/)
   replace:
     path: "{{ data_dir }}/docker-compose.yml"
     regexp: 'context: \./docker/'

@@ -4,7 +4,7 @@
     image: mongo:7
     volumes:
       - mongodb-data:/data/db
-      - ./mongodb/init:/docker-entrypoint-initdb.d:ro
+      - ../mongodb/init:/docker-entrypoint-initdb.d:ro
     environment:
       TZ: {{ server_tz | default('UTC') }}
       MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME}
