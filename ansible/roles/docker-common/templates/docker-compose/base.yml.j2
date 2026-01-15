@@ -11,10 +11,10 @@ services:
   i18n-init:
 {% if build_images | default(false) %}
     # Using pre-built image from 'docker buildx bake'
-    image: {{ docker_registry | default('') }}ala-i18n:develop
+    image: {{ docker_registry | default('') }}ala-i18n:latest
     pull_policy: never  # Don't try to pull - image is local
 {% else %}
-    image: {{ docker_registry | default('') }}ala-i18n:develop
+    image: {{ docker_registry | default('') }}ala-i18n:latest
 {% endif %}
     volumes:
       - {{ i18n.volume.name }}:/opt/atlas/i18n/
