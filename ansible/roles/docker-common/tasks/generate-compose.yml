@@ -347,6 +347,8 @@
   when:
     - item in docker_services_desc
     - docker_services_desc[item].get('buildTool') == 'gradle'
+    - docker_services_desc[item].get('artifacts') is defined
+    - docker_services_desc[item].get('role') is defined
 
 # Generate Maven Dockerfiles using already-determined Java versions
 - name: Generate Maven Dockerfiles
@@ -371,6 +373,24 @@
   when:
     - item in docker_services_desc
     - docker_services_desc[item].get('buildTool') == 'maven'
+    - docker_services_desc[item].get('artifacts') is defined
+    - docker_services_desc[item].get('role') is defined
+
+# Generate entrypoint.sh scripts for Maven/Gradle services only
+- name: Generate entrypoint.sh for services
+  template:
+    src: "entrypoint.sh.j2"
+    dest: "{{ playbook_dir | dirname }}/docker/{{ docker_services_desc[item].role }}/entrypoint.sh"
+    mode: '0755'
+  loop: "{{ services_enabled }}"
+  vars:
+    service_name: "{{ item }}"
+    artifact_id: "{{ docker_services_desc[item].artifacts }}"
+  when:
+    - item in docker_services_desc
+    - docker_services_desc[item].get('buildTool') in ['maven', 'gradle']
+    - docker_services_desc[item].get('artifacts') is defined
+    - docker_services_desc[item].get('role') is defined
 
 - name: Display generated Dockerfiles with versions and Java
   debug:
