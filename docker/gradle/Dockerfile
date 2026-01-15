@@ -9,7 +9,7 @@ ARG JDK_VERSION=11
 
 # CRITICAL: Use -jammy variant (Ubuntu) instead of -corretto (Amazon Linux)
 # This makes it cloud-agnostic and avoids AWS dependencies
-FROM --platform=${BUILDPLATFORM} gradle:${GRADLE_VERSION}-jdk${JDK_VERSION}-jammy AS builder
+FROM --platform=${BUILDPLATFORM} gradle:${GRADLE_VERSION}-jdk${JDK_VERSION}-jammy
 COPY gradle.properties /home/gradle/.gradle/gradle.properties
 COPY init.gradle /home/gradle/.gradle/init.gradle
 
@@ -34,5 +34,6 @@ RUN mkdir -p /opt/opentelemetry-agent && \
 # Working directory for builds
 WORKDIR /build
 
-# This is a builder image, no CMD needed
+# This is a builder image - used as base for multi-stage builds
+
 

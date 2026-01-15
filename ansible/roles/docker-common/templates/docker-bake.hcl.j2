@@ -26,8 +26,8 @@ target "gradle-builder-jdk11" {
     JDK_VERSION = "11"
     GRADLE_VERSION = "7"
   }
-  # Builders should not have output - they're only used as base images
-  # output = ["type=docker"]
+  tags = ["gradle-builder:jdk11"]
+  output = ["type=docker"]
 {% if docker_registry and docker_registry != '' %}
   cache-from = ["type=registry,ref={{ docker_registry }}/gradle-builder:jdk11-${CACHE_TAG}"]
 {% endif %}
@@ -42,8 +42,8 @@ target "gradle-builder-jdk17" {
     JDK_VERSION = "17"
     GRADLE_VERSION = "7"
   }
-  # Builders should not have output - they're only used as base images
-  # output = ["type=docker"]
+  tags = ["gradle-builder:jdk17"]
+  output = ["type=docker"]
 {% if docker_registry and docker_registry != '' %}
   cache-from = ["type=registry,ref={{ docker_registry }}/gradle-builder:jdk17-${CACHE_TAG}"]
 {% endif %}
@@ -58,8 +58,8 @@ target "gradle-builder-jdk21" {
     JDK_VERSION = "21"
     GRADLE_VERSION = "8"
   }
-  # Builders should not have output - they're only used as base images
-  # output = ["type=docker"]
+  tags = ["gradle-builder:jdk21"]
+  output = ["type=docker"]
 {% if docker_registry and docker_registry != '' %}
   cache-from = ["type=registry,ref={{ docker_registry }}/gradle-builder:jdk21-${CACHE_TAG}"]
 {% endif %}
@@ -78,8 +78,8 @@ target "maven-builder-jdk11" {
     JDK_VERSION = "11"
     MAVEN_VERSION = "3.9"
   }
-  # Builders should not have output - they're only used as base images
-  # output = ["type=docker"]
+  tags = ["maven-builder:jdk11"]
+  output = ["type=docker"]
 {% if docker_registry and docker_registry != '' %}
   cache-from = ["type=registry,ref={{ docker_registry }}/maven-builder:jdk11-${CACHE_TAG}"]
 {% endif %}
@@ -94,8 +94,8 @@ target "maven-builder-jdk17" {
     JDK_VERSION = "17"
     MAVEN_VERSION = "3.9"
   }
-  # Builders should not have output - they're only used as base images
-  # output = ["type=docker"]
+  tags = ["maven-builder:jdk17"]
+  output = ["type=docker"]
 {% if docker_registry and docker_registry != '' %}
   cache-from = ["type=registry,ref={{ docker_registry }}/maven-builder:jdk17-${CACHE_TAG}"]
 {% endif %}
@@ -110,8 +110,8 @@ target "maven-builder-jdk21" {
     JDK_VERSION = "21"
     MAVEN_VERSION = "3.9"
   }
-  # Builders should not have output - they're only used as base images
-  # output = ["type=docker"]
+  tags = ["maven-builder:jdk21"]
+  output = ["type=docker"]
 {% if docker_registry and docker_registry != '' %}
   cache-from = ["type=registry,ref={{ docker_registry }}/maven-builder:jdk21-${CACHE_TAG}"]
 {% endif %}

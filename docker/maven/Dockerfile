@@ -9,7 +9,7 @@ ARG JDK_VERSION=11
 
 # Use Maven with Eclipse Temurin JDK
 # Available tags: maven:3.9-eclipse-temurin-11, maven:3.9-eclipse-temurin-17, maven:3.9-eclipse-temurin-21
-FROM --platform=${BUILDPLATFORM} maven:${MAVEN_VERSION}-eclipse-temurin-${JDK_VERSION} AS builder
+FROM --platform=${BUILDPLATFORM} maven:${MAVEN_VERSION}-eclipse-temurin-${JDK_VERSION}
 
 # Install common build tools
 # Docker BuildKit cache is used with --mount=type=cache in RUN commands
@@ -31,5 +31,6 @@ RUN mkdir -p /opt/opentelemetry-agent && \
 # Working directory for builds
 WORKDIR /build
 
-# This is a builder image, no CMD needed
+# This is a builder image - used as base for multi-stage builds
+
 
