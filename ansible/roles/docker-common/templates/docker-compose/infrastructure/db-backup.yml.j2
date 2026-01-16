@@ -1,13 +1,13 @@
   # Database Backup Service (MongoDB, MySQL, PostgreSQL)
 services:
   db-backup:
-    container_name: db-backup
+    container_name: la_db-backup
     image: tiredofit/db-backup:latest
     volumes:
       - {{ data_dir }}/db-backups:/backup
     networks:
       default: {}
-      {{ docker_network | default('la_internal') }}:
+      {{ docker_network | default('internal') }}:
         aliases:
           - db-backup
     environment:

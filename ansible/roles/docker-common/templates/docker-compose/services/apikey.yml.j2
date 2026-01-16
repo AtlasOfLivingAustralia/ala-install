@@ -1,7 +1,7 @@
   # API Key Service
 services:
   apikey:
-    container_name: apikey
+    container_name: la_apikey
 {% if build_images | default(false) %}
     # Using locally built image
     image: apikey:{{ apikey_version | default('1.7.0') }}
@@ -31,7 +31,7 @@ services:
       - "9002:8080"
     networks:
       default: {}
-      {{ docker_network | default('la_internal') }}:
+      {{ docker_network | default('internal') }}:
         aliases:
           - {{ apikey_hostname | default(apikey_docker_host | default('apikey')) }}
     depends_on:

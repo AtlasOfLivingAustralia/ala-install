@@ -34,7 +34,7 @@ include:
 
 # Global networks and volumes
 networks:
-  {{ docker_network | default('la_internal') }}:
+  {{ docker_network | default('internal') }}:
 {% if deployment_type == 'swarm' %}
     external: true
 {% else %}
@@ -45,13 +45,13 @@ volumes:
 {% if i18n.enabled and i18n.strategy == 'volume' %}
   {{ i18n.volume.name }}:
 {% endif %}
-  mysql-data:
+  la_mysql-data:
     external: true
-  postgres-data:
+  la_postgres-data:
     external: true
-  mongodb-data:
+  la_mongodb-data:
     external: true
 {% if 'gatus' in services_enabled or gatus_enabled | default(true) %}
-  gatus-data:
+  la_gatus-data:
     external: true
 {% endif %}

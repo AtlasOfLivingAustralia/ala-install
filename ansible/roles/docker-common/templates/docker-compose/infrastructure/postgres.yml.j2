@@ -1,10 +1,10 @@
   # PostgreSQL database (for CAS and other services)
 services:
   postgres:
-    container_name: postgres
+    container_name: la_postgres
     image: postgres:16-alpine
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - la_postgres-data:/var/lib/postgresql/data
     environment:
       TZ: {{ server_tz | default('UTC') }}
       POSTGRES_DB: {{ postgres_db | default('cas') }}
@@ -18,7 +18,7 @@ services:
 {% endif %}
     networks:
       default: {}
-      {{ docker_network | default('la_internal') }}:
+      {{ docker_network | default('internal') }}:
         aliases:
           - {{ postgres_db_host_address | default('postgres') }}
     healthcheck:

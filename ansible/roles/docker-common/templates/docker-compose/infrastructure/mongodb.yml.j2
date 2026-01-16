@@ -1,10 +1,10 @@
   # MongoDB for CAS (ticket registry, audit, sessions)
 services:
   mongodb:
-    container_name: mongodb
+    container_name: la_mongodb
     image: mongo:7
     volumes:
-      - mongodb-data:/data/db
+      - la_mongodb-data:/data/db
       - ../mongodb/init:/docker-entrypoint-initdb.d:ro
     environment:
       TZ: {{ server_tz | default('UTC') }}
@@ -20,7 +20,7 @@ services:
 {% endif %}
     networks:
       default: {}
-      {{ docker_network | default('la_internal') }}:
+      {{ docker_network | default('internal') }}:
         aliases:
           - {{ mongodb_hostname | default('mongodb') }}
     healthcheck:

@@ -1,10 +1,10 @@
   # MySQL database (following PR #675 pattern)
 services:
   mysql:
-    container_name: mysql
+    container_name: la_mysql
     image: mysql:8.0-debian
     volumes:
-      - mysql-data:/var/lib/mysql
+      - la_mysql-data:/var/lib/mysql
       - ../mysql/init:/docker-entrypoint-initdb.d:ro
     command: --default-authentication-plugin=mysql_native_password
     environment:
@@ -25,7 +25,7 @@ services:
 {% endif %}
     networks:
       default: {}
-      {{ docker_network | default('la_internal') }}:
+      {{ docker_network | default('internal') }}:
         aliases:
           - {{ collectory_db_host_address }}
     healthcheck:

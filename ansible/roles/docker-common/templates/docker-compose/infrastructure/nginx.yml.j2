@@ -1,8 +1,8 @@
   # Nginx reverse proxy
 services:
   nginx:
-    container_name: nginx
-    image: nginx:alpine
+    container_name: la_nginx
+    image: nginx:latest
     ports:
       - "80:80"
       - "443:443"
@@ -14,7 +14,7 @@ services:
 {% endif %}
     networks:
       default: {}
-      {{ docker_network | default('la_internal') }}:
+      {{ docker_network | default('internal') }}:
     depends_on:
 {% if 'collectory' in services_enabled %}
       collectory:

@@ -1,7 +1,7 @@
   # CAS Management Service
 services:
   cas-management:
-    container_name: cas-management
+    container_name: la_cas-management
 {% if build_images | default(false) %}
     # Using locally built image
     image: cas-management:{{ cas_management_version | default('6.5.5-2') }}
@@ -31,7 +31,7 @@ services:
       - "9003:8080"
     networks:
       default: {}
-      {{ docker_network | default('la_internal') }}:
+      {{ docker_network | default('internal') }}:
         aliases:
           - {{ cas_management_hostname | default(cas_management_docker_host | default('cas-management')) }}
     depends_on:

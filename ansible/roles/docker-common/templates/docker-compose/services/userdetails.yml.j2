@@ -1,7 +1,7 @@
   # User Details Service
 services:
   userdetails:
-    container_name: userdetails
+    container_name: la_userdetails
 {% if build_images | default(false) %}
     # Using locally built image
     image: userdetails:{{ user_details_version | default('3.2.1') }}
@@ -31,7 +31,7 @@ services:
       - "9001:8080"
     networks:
       default: {}
-      {{ docker_network | default('la_internal') }}:
+      {{ docker_network | default('internal') }}:
         aliases:
           - {{ userdetails_hostname | default(userdetails_docker_host | default('userdetails')) }}
     depends_on:

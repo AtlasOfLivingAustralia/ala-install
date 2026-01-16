@@ -2,7 +2,8 @@ services:
   # i18n initialization container
   # Uses pre-built ala-i18n image (built via docker buildx bake)
   i18n-init:
-    container_name: i18n-init
+    # container_name: la_i18n-init
+    container_name: la_i18n-init
 {% if build_images | default(false) %}
     # Using pre-built image from 'docker buildx bake'
     image: {{ docker_registry | default('') }}ala-i18n:latest

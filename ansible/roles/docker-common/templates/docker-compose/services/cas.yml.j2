@@ -1,7 +1,7 @@
   # CAS Authentication Server
 services:
   cas:
-    container_name: cas
+    container_name: la_cas
 {% if build_images | default(false) %}
     # Using locally built image
     image: cas:{{ cas_version | default('6.5.6-3') }}
@@ -31,7 +31,7 @@ services:
       - "9000:8080"
     networks:
       default: {}
-      {{ docker_network | default('la_internal') }}:
+      {{ docker_network | default('internal') }}:
         aliases:
           - {{ cas_hostname | default(cas_docker_host | default('cas')) }}
     depends_on:
