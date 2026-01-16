@@ -318,6 +318,30 @@
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_gid }}"
 
+# Create logs directories for all services
+- name: Create main logs directory
+  file:
+    path: "{{ data_dir }}/logs"
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+
+- name: Create service-specific logs directories
+  file:
+    path: "{{ data_dir }}/logs/{{ item }}"
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+  loop:
+    - cas
+    - userdetails
+    - apikey
+    - cas-management
+    - collectory
+    - species-list
+
 # Generate infrastructure service files
 - name: Generate i18n.yml if enabled
   template:
