@@ -1,89 +1,121 @@
 ---
 # Initialize CAS5 and related databases in Docker Compose containers
-# Sets variable to expose database ports during initialization
-# Then reverts after databases are initialized
+# This task:
+# 1. Sets expose_db_ports_for_init=true to expose MySQL/PostgreSQL/MongoDB ports temporarily
+# 2. Regenerates docker-compose.yml with exposed ports
+# 3. Executes Ansible db initialization tasks (cas5-dbs, cas5 admin, cas-management OIDC)
+# 4. Resets expose_db_ports_for_init=false to hide ports in final configuration
+# 5. Recreates containers with original secure configuration
 
-- name: Debug - Database initialization setup
-  debug:
-    msg: |
-      Database Initialization:
-      - MySQL will be exposed on: 127.0.0.1:3306
-      - MongoDB will be exposed on: 127.0.0.1:27017
-      - Ports will be removed after initialization
+- name: "Database volumes: Ensure all external named volumes exist"
+  include_tasks: ensure-db-volumes.yml
   tags:
     - db-init
+    - docker-volumes
 
-- name: Set flag to expose database ports
+- name: "Database initialization: Set flag to expose ports"
   set_fact:
     expose_db_ports_for_init: true
   tags:
     - db-init
 
-- name: Regenerate docker-compose.yml with exposed ports
+- name: "Database initialization: Regenerate docker-compose.yml with exposed ports"
   include_tasks: generate-compose.yml
   tags:
     - db-init
 
-- name: Recreate containers with exposed ports
+- name: "Database initialization: Start database containers with exposed ports"
   shell: |
-    cd "{{ data_dir }}" && \
-    docker compose up -d mysql mongodb
+    cd "{{ data_dir }}" && docker compose up -d mysql postgres mongodb
   changed_when: false
   tags:
     - db-init
 
-- name: Wait for ports to be available
+- name: "Database initialization: Wait for databases to be ready"
   wait_for:
     host: 127.0.0.1
     port: "{{ item }}"
-    delay: 1
-    timeout: 30
+    delay: 2
+    timeout: 60
   loop:
     - 3306
+    - 5432
     - 27017
   tags:
     - db-init
 
-- name: Initialize databases in Docker Compose containers
-  include_tasks: init-docker-dbs.yml
+- name: "Database initialization: Initialize CAS5 databases"
+  include_tasks: ../../cas5-dbs/tasks/main.yml
+  vars:
+    cas_db_hostname: "127.0.0.1"
+    user_store_db_hostname: "127.0.0.1"
+    apikey_db_hostname: "127.0.0.1"
+    ticket_registry_db_hostname: "127.0.0.1"
+    cas_audit_host: "127.0.0.1"
+    cas_spring_session_host: "127.0.0.1"
+    cas_tickets_host: "127.0.0.1"
+    cas_services_host: "127.0.0.1"
+    cas_mysql_src_host: '%'
+    apikey_mysql_src_host: '%'
   tags:
     - db-init
     - cas-dbs
+  run_once: true
 
-- name: Remove flag to hide database ports
+- name: "Database initialization: Initialize CAS5 admin account"
+  include_tasks: ../../cas5/tasks/admin-account.yml
+  vars:
+    cas_db_hostname: "127.0.0.1"
+  tags:
+    - db-init
+    - cas-dbs
+  run_once: true
+
+- name: "Database initialization: Initialize CAS Management OIDC configuration"
+  include_tasks: ../../cas-management/tasks/oidc-tasks.yml
+  tags:
+    - db-init
+    - cas-dbs
+    - cas-oidc
+  run_once: true
+
+- name: "Database initialization: Reset flag to hide ports"
   set_fact:
     expose_db_ports_for_init: false
   tags:
     - db-init
 
-- name: Regenerate docker-compose.yml without exposed ports
+- name: "Database initialization: Regenerate docker-compose.yml without exposed ports"
   include_tasks: generate-compose.yml
   tags:
     - db-init
 
-- name: Recreate containers with original configuration
+- name: "Database initialization: Restart containers with secure configuration"
   shell: |
-    cd "{{ data_dir }}" && \
-    docker compose up -d mysql mongodb
+    cd "{{ data_dir }}" && docker compose up -d mysql postgres mongodb
   changed_when: false
   tags:
     - db-init
 
-- name: Wait for containers to be healthy again
+- name: "Database initialization: Verify containers are healthy"
   wait_for:
     host: 127.0.0.1
     port: 3306
-    delay: 1
-    timeout: 30
+    delay: 2
+    timeout: 60
   tags:
     - db-init
 
-- name: Debug - Database initialization complete
+- name: "Database initialization: Summary"
   debug:
     msg: |
       ✅ Database initialization complete!
-      - Temporary ports have been removed
-      - Containers are running with original configuration
+      - All databases initialized successfully
+      - CAS5 databases, users, and schemas created
+      - CAS5 admin account configured
+      - CAS Management OIDC configuration applied
+      - Temporary exposed ports have been removed
+      - Containers running with secure internal network only
   tags:
     - db-init
 

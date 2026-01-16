@@ -11,7 +11,16 @@ include:
   - ./infrastructure/nginx.yml
 {% endif %}
 {% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
+  - ./infrastructure/db-backup.yml
+{% endif %}
+{% if 'collectory' in services_enabled or 'cas' in services_enabled or groups['cas-servers'] is defined %}
+  - ./infrastructure/mysql.yml
+  - ./infrastructure/postgres.yml
+{% endif %}
+{% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
   - ./infrastructure/mongodb.yml
+{% endif %}
+{% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
   - ./services/cas.yml
   - ./services/userdetails.yml
   - ./services/apikey.yml
@@ -22,9 +31,6 @@ include:
 {% endif %}
 {% if 'collectory' in services_enabled %}
   - ./services/collectory.yml
-{% endif %}
-{% if 'collectory' in services_enabled or 'cas' in services_enabled or groups['cas-servers'] is defined %}
-  - ./infrastructure/mysql.yml
 {% endif %}
 {% if 'gatus' in services_enabled or gatus_enabled | default(true) %}
   - ./infrastructure/gatus.yml
@@ -48,6 +54,7 @@ volumes:
 {% endif %}
 {% if 'collectory' in services_enabled or 'cas' in services_enabled or groups['cas-servers'] is defined %}
   mysql-data:
+  postgres-data:
 {% endif %}
 {% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
   mongodb-data:
@@ -55,5 +62,8 @@ volumes:
 {% if 'gatus' in services_enabled or gatus_enabled | default(true) %}
   gatus-data:
 {% endif %}
+
+
+
 
 

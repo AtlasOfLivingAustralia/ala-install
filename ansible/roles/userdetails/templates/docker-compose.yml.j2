@@ -3,36 +3,78 @@ version: '3.8'
 
 services:
 
+  # ====== DATABASES ======
+
   mysql:
     image: mysql:5.7
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
       MYSQL_ROOT_PASSWORD: {{ mysql_root_password }}
-      MYSQL_USER: {{ collectory_db_user }}
-      MYSQL_PASSWORD: {{ collectory_db_password }}
-      MYSQL_DATABASE: collectory
       TZ: {{ server_tz }}
     expose:
       - 3306
+{% if expose_db_ports_for_init | bool %}
+    ports:
+      - "127.0.0.1:3306:3306"
+{% endif %}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p{{ mysql_root_password }}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       default: {}
       la_internal:
         aliases:
           - auth_mysql
 
+  postgres:
+    image: postgres:16-alpine
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: {{ postgres_db | default('cas') }}
+      POSTGRES_USER: {{ postgres_user | default('postgres') }}
+      POSTGRES_PASSWORD: {{ postgresql_password }}
+      TZ: {{ server_tz }}
+    expose:
+      - 5432
+{% if expose_db_ports_for_init | bool %}
+    ports:
+      - "127.0.0.1:5432:5432"
+{% endif %}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U {{ postgres_user | default('postgres') }}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      default: {}
+      la_internal:
+        aliases:
+          - auth_postgres
+
   mongo:
     image: mongo:5
     volumes:
       - mongo_data:/data/db
-    expose:
-      - 27017
     command: ["mongod", "--bind_ip_all"]
     environment:
       MONGO_INITDB_ROOT_USERNAME: {{ mongodb_root_username }}
       MONGO_INITDB_ROOT_PASSWORD: {{ mongodb_root_password }}
       TZ: {{ server_tz }}
+    expose:
+      - 27017
+{% if expose_db_ports_for_init | bool %}
+    ports:
+      - "127.0.0.1:27017:27017"
+{% endif %}
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       default: {}
       la_internal:
@@ -44,7 +86,7 @@ services:
     image: mongo-express
     restart: always
     ports:
-      - 8081
+      - "8081:8081"
     environment:
       ME_CONFIG_MONGODB_SERVER: auth_mongo
       ME_CONFIG_MONGODB_ADMINUSERNAME: {{ mongodb_root_username }}
@@ -57,12 +99,62 @@ services:
           - auth_mongo_express
 {% endif %}
 
+  # ====== DATABASE BACKUPS ======
+
+  db-backup:
+    image: tiredofit/db-backup:latest
+    container_name: la_auth_db_backup
+    volumes:
+      - {{ userdetails_data_dir }}/db-backups:/backup
+    networks:
+      default: {}
+      la_internal: {}
+    environment:
+      - TIMEZONE={{ server_tz }}
+      - CONTAINER_NAME=la_auth_db_backup
+      - CONTAINER_ENABLE_MONITORING=FALSE
+      - DB01_RESOURCE_OPTIMIZED=TRUE
+      - BACKUP_JOB_CONCURRENCY=1
+      - DEFAULT_CHECKSUM=NONE
+      - DEFAULT_COMPRESSION=ZSTD
+      - DEFAULT_BACKUP_INTERVAL={{ db_backup_interval | default('1440') }}
+      - DEFAULT_BACKUP_BEGIN={{ db_backup_begin | default('0000') }}
+      - DEFAULT_CLEANUP_TIME={{ db_cleanup_time | default('8640') }}
+      # MongoDB backup (DB01)
+      - DB01_TYPE=mongo
+      - DB01_HOST=auth_mongo
+      - DB01_NAME={{ mongo_backup_db | default('admin') }}
+      - DB01_USER={{ mongodb_root_username }}
+      - DB01_PASS={{ mongodb_root_password }}
+      # MySQL backup (DB02)
+      - DB02_TYPE=mysql
+      - DB02_HOST=auth_mysql
+      - DB02_NAME=all
+      - DB02_USER=root
+      - DB02_PASS={{ mysql_root_password }}
+      # PostgreSQL backup (DB03)
+      - DB03_TYPE=postgres
+      - DB03_HOST=auth_postgres
+      - DB03_NAME=all
+      - DB03_USER={{ postgres_user | default('postgres') }}
+      - DB03_PASS={{ postgresql_password }}
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+
+  # ====== APPLICATIONS ======
+
   cas:
     image: atlasoflivingaustralia/cas:{{ cas_version }}
     expose:
       - {{ cas_port | default('9000') }}
     environment:
-      DOCKERIZE_OPTS: "-wait tcp://la_auth_mysql:3306 -wait tcp://la_auth_mongo:27017 -timeout 60s"
+      DOCKERIZE_OPTS: "-wait tcp://auth_mysql:3306 -wait tcp://auth_mongo:27017 -timeout 60s"
       TZ: {{ server_tz }}
     volumes:
       - cas_data:/data/cas
@@ -82,7 +174,7 @@ services:
     expose:
       - {{ userdetails_port | default('9001') }}
     environment:
-      DOCKERIZE_OPTS: "-wait tcp://la_auth_mysql:3306 -wait tcp://la_auth_cas:{{ cas_port | default('9000') }} -timeout 120s"
+      DOCKERIZE_OPTS: "-wait tcp://auth_mysql:3306 -wait tcp://auth_cas:{{ cas_port | default('9000') }} -timeout 120s"
       TZ: {{ server_tz }}
     volumes:
       - userdetails_data:/data/userdetails
@@ -98,11 +190,11 @@ services:
           - {{ userdetails_docker_host }}
 
   cas-management:
-    image: atlasoflivingaustralia/cas-management:{{cas_management_version }}
+    image: atlasoflivingaustralia/cas-management:{{ cas_management_version }}
     expose:
       - {{ cas_management_port | default('8070') }}
     environment:
-      DOCKERIZE_OPTS: "-wait tcp://la_auth_mysql:3306 -wait tcp://la_auth_cas:{{ cas_port | default('9000') }} -wait tcp://la_auth_mongo:27017 -timeout 120s"
+      DOCKERIZE_OPTS: "-wait tcp://auth_mysql:3306 -wait tcp://auth_cas:{{ cas_port | default('9000') }} -wait tcp://auth_mongo:27017 -timeout 120s"
       TZ: {{ server_tz }}
     volumes:
       - cas_management_data:/data/cas-management
@@ -127,18 +219,13 @@ networks:
 volumes:
 
   mysql_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: "{{ userdetails_docker_db_mysql_data_dir }}"
+    external: true
+
+  pgdata:
+    external: true
 
   mongo_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: "{{ userdetails_docker_db_mongo_data_dir }}"
+    external: true
 
   i18n:
     driver: local

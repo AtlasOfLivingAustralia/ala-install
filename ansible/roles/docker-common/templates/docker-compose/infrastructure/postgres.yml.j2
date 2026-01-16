@@ -1,0 +1,30 @@
+  # PostgreSQL database (for CAS and other services)
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:16-alpine
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      TZ: {{ server_tz | default('UTC') }}
+      POSTGRES_DB: {{ postgres_db | default('cas') }}
+      POSTGRES_USER: {{ postgres_user | default('postgres') }}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    expose:
+      - 5432
+{% if expose_db_ports_for_init | default(false) %}
+    ports:
+      - 127.0.0.1:5432:5432
+{% endif %}
+    networks:
+      default: {}
+      {{ docker_network | default('la_internal') }}:
+        aliases:
+          - {{ postgres_db_host_address | default('postgres') }}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U {{ postgres_user | default('postgres') }}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped

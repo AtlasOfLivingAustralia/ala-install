@@ -1,0 +1,49 @@
+  # Database Backup Service (MongoDB, MySQL, PostgreSQL)
+services:
+  db-backup:
+    container_name: db-backup
+    image: tiredofit/db-backup:latest
+    volumes:
+      - {{ data_dir }}/db-backups:/backup
+    networks:
+      default: {}
+      {{ docker_network | default('la_internal') }}:
+        aliases:
+          - db-backup
+    environment:
+      - TIMEZONE={{ server_tz | default('UTC') }}
+      - CONTAINER_NAME=db-backup
+      - CONTAINER_ENABLE_MONITORING=FALSE
+      - DB01_RESOURCE_OPTIMIZED=TRUE
+      - BACKUP_JOB_CONCURRENCY=1
+      - DEFAULT_CHECKSUM=NONE
+      - DEFAULT_COMPRESSION=ZSTD
+      - DEFAULT_BACKUP_INTERVAL={{ db_backup_interval | default('1440') }}
+      - DEFAULT_BACKUP_BEGIN={{ db_backup_begin | default('0000') }}
+      - DEFAULT_CLEANUP_TIME={{ db_cleanup_time | default('8640') }}
+      # MongoDB backup (DB01)
+      - DB01_TYPE=mongo
+      - DB01_HOST={{ mongodb_docker_host_address | default('mongodb') }}
+      - DB01_NAME={{ mongo_backup_db | default('admin') }}
+      - DB01_USER={{ mongodb_root_username }}
+      - DB01_PASS=${MONGODB_ROOT_PASSWORD}
+      # MySQL backup (DB02)
+      - DB02_TYPE=mysql
+      - DB02_HOST={{ collectory_db_host_address }}
+      - DB02_NAME=all
+      - DB02_USER=root
+      - DB02_PASS=${MYSQL_ROOT_PASSWORD}
+      # PostgreSQL backup (DB03)
+      - DB03_TYPE=postgres
+      - DB03_HOST={{ postgres_db_host_address | default('postgres') }}
+      - DB03_NAME=all
+      - DB03_USER={{ postgres_user | default('postgres') }}
+      - DB03_PASS=${POSTGRES_PASSWORD}
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
