@@ -10,15 +10,10 @@ include:
 {% if 'nginx' in services_enabled %}
   - ./infrastructure/nginx.yml
 {% endif %}
-{% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
-  - ./infrastructure/db-backup.yml
-{% endif %}
-{% if 'collectory' in services_enabled or 'cas' in services_enabled or groups['cas-servers'] is defined %}
   - ./infrastructure/mysql.yml
   - ./infrastructure/postgres.yml
-{% endif %}
-{% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
   - ./infrastructure/mongodb.yml
+  - ./infrastructure/db-backup.yml
 {% endif %}
 {% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
   - ./services/cas.yml
@@ -49,16 +44,11 @@ volumes:
 {% if i18n.enabled and i18n.strategy == 'volume' %}
   {{ i18n.volume.name }}:
 {% endif %}
-{% if 'collectory' in services_enabled %}
-  collectory-upload:
-{% endif %}
-{% if 'collectory' in services_enabled or 'cas' in services_enabled or groups['cas-servers'] is defined %}
   mysql-data:
+    external: true
   postgres-data:
-{% endif %}
-{% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
+    external: true
   mongodb-data:
-{% endif %}
 {% if 'gatus' in services_enabled or gatus_enabled | default(true) %}
   gatus-data:
 {% endif %}
