@@ -47,14 +47,15 @@
 - name: "Database initialization: Initialize CAS5 databases"
   include_tasks: ../../cas5-dbs/tasks/main.yml
   vars:
-    cas_db_hostname: "127.0.0.1"
-    user_store_db_hostname: "127.0.0.1"
-    apikey_db_hostname: "127.0.0.1"
-    ticket_registry_db_hostname: "127.0.0.1"
-    cas_audit_host: "127.0.0.1"
-    cas_spring_session_host: "127.0.0.1"
-    cas_tickets_host: "127.0.0.1"
-    cas_services_host: "127.0.0.1"
+    # Use container names for Docker Compose - these resolve via network
+    cas_db_hostname: "{{ docker_db_mysql_host | default('la_mysql') }}"
+    user_store_db_hostname: "{{ docker_db_mysql_host | default('la_mysql') }}"
+    apikey_db_hostname: "{{ docker_db_mysql_host | default('la_mysql') }}"
+    ticket_registry_db_hostname: "{{ docker_db_postgres_host | default('la_postgres') }}"
+    cas_audit_host: "{{ docker_db_mongodb_host | default('la_mongodb') }}"
+    cas_spring_session_host: "{{ docker_db_mongodb_host | default('la_mongodb') }}"
+    cas_tickets_host: "{{ docker_db_mongodb_host | default('la_mongodb') }}"
+    cas_services_host: "{{ docker_db_mongodb_host | default('la_mongodb') }}"
     cas_mysql_src_host: '%'
     apikey_mysql_src_host: '%'
   tags:
@@ -65,7 +66,7 @@
 - name: "Database initialization: Initialize CAS5 admin account"
   include_tasks: ../../cas5/tasks/admin-account.yml
   vars:
-    cas_db_hostname: "127.0.0.1"
+    cas_db_hostname: "{{ docker_db_mysql_host | default('la_mysql') }}"
   tags:
     - db-init
     - cas-dbs
@@ -77,6 +78,13 @@
     - db-init
     - cas-dbs
     - cas-oidc
+  run_once: true
+
+- name: "Database initialization: Validate database initialization"
+  include_tasks: validate-db-init.yml
+  tags:
+    - db-init
+    - db-validation
   run_once: true
 
 - name: "Database initialization: Reset flag to hide ports"

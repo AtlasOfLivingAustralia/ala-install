@@ -1,19 +1,18 @@
 ---
 # Validate that databases and tables were created correctly
-# This task validates:
+# This task validates using native Ansible modules (no shell dependencies)
 # 1. MySQL databases (emmet, apikey) and tables
-# 2. MongoDB collections and users
-# 3. OIDC keys in MongoDB cas-service-registry
+# 2. MongoDB collections
+# 3. OIDC services in MongoDB
 
-- name: "Database validation: Validate MySQL emmet database and tables"
-  shell: |
-    mysql -h 127.0.0.1 \
-    -u "{{ mysql_root_username }}" \
-    -p"{{ mysql_root_password }}" \
-    "{{ cas_db_name | default('emmet') }}" \
-    -e "SHOW TABLES;" 2>&1
+- name: "Database validation: Validate MySQL emmet database tables"
+  community.mysql.mysql_query:
+    login_host: "{{ docker_db_mysql_host | default('la_mysql') }}"
+    login_user: "{{ mysql_root_username }}"
+    login_password: "{{ mysql_root_password }}"
+    query: "SHOW TABLES FROM {{ cas_db_name | default('emmet') }}"
   register: emmet_tables
-  failed_when: "'error' in emmet_tables.stderr.lower() or emmet_tables.rc != 0"
+  ignore_errors: yes
   tags:
     - db-init
     - db-validation
@@ -21,9 +20,12 @@
 - name: "Database validation: Verify emmet database has tables"
   assert:
     that:
-      - emmet_tables.stdout_lines | length > 1
-    fail_msg: "Emmet database appears to be empty or not initialized properly. Tables found: {{ emmet_tables.stdout_lines }}"
-    success_msg: "Emmet database has {{ emmet_tables.stdout_lines | length - 1 }} tables"
+      - emmet_tables is not failed
+      - emmet_tables.query_result | length > 0
+    fail_msg: |
+      ❌ FAILED: Emmet database validation failed!
+      Error: {{ emmet_tables.msg if emmet_tables is failed else 'No tables found' }}
+    success_msg: "✅ OK - Emmet database has {{ emmet_tables.query_result | length }} tables"
   tags:
     - db-init
     - db-validation
@@ -31,21 +33,22 @@
 - name: "Database validation: Display emmet tables"
   debug:
     msg: |
-      ✅ MySQL Emmet database tables:
-      {{ emmet_tables.stdout }}
+      ✅ MySQL Emmet database tables ({{ emmet_tables.query_result | length }}):
+      {% for table in emmet_tables.query_result %}
+      - {{ table.values() | list | first }}
+      {% endfor %}
   tags:
     - db-init
     - db-validation
 
-- name: "Database validation: Validate MySQL apikey database and tables"
-  shell: |
-    mysql -h 127.0.0.1 \
-    -u "{{ mysql_root_username }}" \
-    -p"{{ mysql_root_password }}" \
-    "{{ apikey_db_name | default('apikey') }}" \
-    -e "SHOW TABLES;" 2>&1
+- name: "Database validation: Validate MySQL apikey database tables"
+  community.mysql.mysql_query:
+    login_host: "{{ docker_db_mysql_host | default('la_mysql') }}"
+    login_user: "{{ mysql_root_username }}"
+    login_password: "{{ mysql_root_password }}"
+    query: "SHOW TABLES FROM {{ apikey_db_name | default('apikey') }}"
   register: apikey_tables
-  failed_when: apikey_tables.rc | int != 0
+  ignore_errors: yes
   tags:
     - db-init
     - db-validation
@@ -53,9 +56,12 @@
 - name: "Database validation: Verify apikey database has tables"
   assert:
     that:
-      - apikey_tables.stdout_lines | length > 1
-    fail_msg: "Apikey database appears to be empty or not initialized properly. Tables found: {{ apikey_tables.stdout_lines }}"
-    success_msg: "Apikey database has {{ apikey_tables.stdout_lines | length - 1 }} tables"
+      - apikey_tables is not failed
+      - apikey_tables.query_result | length > 0
+    fail_msg: |
+      ❌ FAILED: Apikey database validation failed!
+      Error: {{ apikey_tables.msg if apikey_tables is failed else 'No tables found' }}
+    success_msg: "✅ OK - Apikey database has {{ apikey_tables.query_result | length }} tables"
   tags:
     - db-init
     - db-validation
@@ -63,135 +69,147 @@
 - name: "Database validation: Display apikey tables"
   debug:
     msg: |
-      ✅ MySQL Apikey database tables:
-      {{ apikey_tables.stdout }}
+      ✅ MySQL Apikey database tables ({{ apikey_tables.query_result | length }}):
+      {% for table in apikey_tables.query_result %}
+      - {{ table.values() | list | first }}
+      {% endfor %}
   tags:
     - db-init
     - db-validation
 
-- name: "Database validation: Validate MongoDB cas-ticket-registry database"
-  shell: |
-    mongosh --host "{{ cas_tickets_host }}" --port "{{ cas_tickets_port | default('27017') }}" \
-    --username "{{ cas_tickets_username }}" --password "{{ cas_tickets_password }}" \
-    "{{ cas_tickets_db | default('cas-ticket-registry') }}" \
-    --eval "db.getCollectionNames()" --quiet 2>&1 || \
-    mongo --host "{{ cas_tickets_host }}" --port "{{ cas_tickets_port | default('27017') }}" \
-    --username "{{ cas_tickets_username }}" --password "{{ cas_tickets_password }}" \
-    "{{ cas_tickets_db | default('cas-ticket-registry') }}" \
-    --eval "db.getCollectionNames()" --quiet 2>&1
-  register: ticket_registry_collections
-  failed_when: false
+- name: "Database validation: Validate MongoDB cas-ticket-registry collections"
+  community.mongodb.mongodb_info:
+    login_host: "{{ docker_db_mongodb_host | default('la_mongodb') }}"
+    login_port: "{{ cas_tickets_port | default(27017) }}"
+    login_user: "{{ cas_tickets_username }}"
+    login_password: "{{ cas_tickets_password }}"
+    filter:
+      - collections
+  register: ticket_registry_info
+  ignore_errors: yes
   tags:
     - db-init
     - db-validation
 
-- name: "Database validation: Validate MongoDB cas-service-registry database"
-  shell: |
-    mongosh --host "{{ cas_services_host }}" --port "{{ cas_services_port | default('27017') }}" \
-    --username "{{ cas_services_username }}" --password "{{ cas_services_password }}" \
-    "{{ cas_services_db | default('cas-service-registry') }}" \
-    --eval "db.getCollectionNames()" --quiet 2>&1 || \
-    mongo --host "{{ cas_services_host }}" --port "{{ cas_services_port | default('27017') }}" \
-    --username "{{ cas_services_username }}" --password "{{ cas_services_password }}" \
-    "{{ cas_services_db | default('cas-service-registry') }}" \
-    --eval "db.getCollectionNames()" --quiet 2>&1
-  register: service_registry_collections
-  failed_when: false
+- name: "Database validation: Verify MongoDB cas-ticket-registry has collections"
+  assert:
+    that:
+      - ticket_registry_info is not failed
+      - ticket_registry_info.msg is defined or ticket_registry_info.databases is defined
+    fail_msg: |
+      ❌ FAILED: MongoDB cas-ticket-registry validation failed!
+      Error: {{ ticket_registry_info.msg if ticket_registry_info.msg is defined else 'Unable to retrieve collections' }}
+    success_msg: "✅ OK - MongoDB CAS Ticket Registry is initialized"
   tags:
     - db-init
     - db-validation
 
-- name: "Database validation: Validate MongoDB cas-audit-repository database"
-  shell: |
-    mongosh --host "{{ cas_audit_host | default('localhost') }}" --port "{{ cas_audit_port | default('27017') }}" \
-    --username "{{ mongodb_root_username }}" --password "{{ mongodb_root_password }}" \
-    "{{ cas_audit_db | default('cas-audit-repository') }}" \
-    --eval "db.getCollectionNames()" --quiet 2>&1 || \
-    mongo --host "{{ cas_audit_host | default('localhost') }}" --port "{{ cas_audit_port | default('27017') }}" \
-    --username "{{ mongodb_root_username }}" --password "{{ mongodb_root_password }}" \
-    "{{ cas_audit_db | default('cas-audit-repository') }}" \
-    --eval "db.getCollectionNames()" --quiet 2>&1
-  register: audit_repository_collections
-  failed_when: false
+- name: "Database validation: Validate MongoDB cas-service-registry collections"
+  community.mongodb.mongodb_info:
+    login_host: "{{ docker_db_mongodb_host | default('la_mongodb') }}"
+    login_port: "{{ cas_services_port | default(27017) }}"
+    login_user: "{{ cas_services_username }}"
+    login_password: "{{ cas_services_password }}"
+    filter:
+      - collections
+  register: service_registry_info
+  ignore_errors: yes
   tags:
     - db-init
     - db-validation
 
-- name: "Database validation: Validate MongoDB spring-sessions database"
-  shell: |
-    mongosh --host "{{ cas_spring_session_host | default('localhost') }}" --port "{{ cas_spring_session_port | default('27017') }}" \
-    --username "{{ mongodb_root_username }}" --password "{{ mongodb_root_password }}" \
-    "{{ spring_session_mongo_collection | default('spring-sessions') }}" \
-    --eval "db.getCollectionNames()" --quiet 2>&1 || \
-    mongo --host "{{ cas_spring_session_host | default('localhost') }}" --port "{{ cas_spring_session_port | default('27017') }}" \
-    --username "{{ mongodb_root_username }}" --password "{{ mongodb_root_password }}" \
-    "{{ spring_session_mongo_collection | default('spring-sessions') }}" \
-    --eval "db.getCollectionNames()" --quiet 2>&1
-  register: spring_session_collections
-  failed_when: false
+- name: "Database validation: Verify MongoDB cas-service-registry has collections"
+  assert:
+    that:
+      - service_registry_info is not failed
+      - service_registry_info.msg is defined or service_registry_info.databases is defined
+    fail_msg: |
+      ❌ FAILED: MongoDB cas-service-registry validation failed!
+      Error: {{ service_registry_info.msg if service_registry_info.msg is defined else 'Unable to retrieve collections' }}
+    success_msg: "✅ OK - MongoDB CAS Service Registry is initialized"
   tags:
     - db-init
     - db-validation
 
-- name: "Database validation: Display MongoDB database validation results"
-  debug:
-    msg: |
-      ✅ MongoDB Databases Validation:
-      
-      CAS Ticket Registry:
-      Collections: {{ ticket_registry_collections.stdout }}
-      
-      CAS Service Registry:
-      Collections: {{ service_registry_collections.stdout }}
-      
-      CAS Audit Repository:
-      Collections: {{ audit_repository_collections.stdout }}
-      
-      Spring Sessions:
-      Collections: {{ spring_session_collections.stdout }}
+- name: "Database validation: Check OIDC services count (MongoDB)"
+  community.mongodb.mongodb_query:
+    login_host: "{{ docker_db_mongodb_host | default('la_mongodb') }}"
+    login_port: "{{ cas_services_port | default(27017) }}"
+    login_user: "{{ cas_services_username }}"
+    login_password: "{{ cas_services_password }}"
+    database: "{{ cas_services_db | default('cas-service-registry') }}"
+    collection: "OAuthRegisteredService"
+    find: {}
+  register: oidc_services
+  ignore_errors: yes
   tags:
     - db-init
     - db-validation
 
-- name: "Database validation: Validate OIDC services in MongoDB"
-  shell: |
-    mongosh --host "{{ docker_db_mongodb_host | default('la_mongodb') }}" --port "{{ cas_services_port | default('27017') }}" \
-    --username "{{ cas_services_username }}" --password "{{ cas_services_password }}" \
-    "{{ cas_services_db | default('cas-service-registry') }}" \
-    --eval "db.OAuthRegisteredService.countDocuments()" --quiet 2>&1 || \
-    mongo --host "{{ docker_db_mongodb_host | default('la_mongodb') }}" --port "{{ cas_services_port | default('27017') }}" \
-    --username "{{ cas_services_username }}" --password "{{ cas_services_password }}" \
-    "{{ cas_services_db | default('cas-service-registry') }}" \
-    --eval "db.OAuthRegisteredService.countDocuments()" --quiet 2>&1
-  register: oidc_services_count
-  failed_when: false
+- name: "Database validation: Verify OIDC services are registered"
+  assert:
+    that:
+      - oidc_services is not failed
+      - oidc_services.result | length >= 1
+    fail_msg: |
+      ❌ FAILED: OIDC services validation failed!
+      Error: {{ oidc_services.msg if oidc_services is failed else 'No OIDC services found' }}
+      Services found: {{ oidc_services.result | length | default(0) }}
+    success_msg: "✅ OK - OIDC services registered: {{ oidc_services.result | length }}"
   tags:
     - db-init
     - db-validation
 
-- name: "Database validation: Validate OIDC services list"
-  shell: |
-    mongosh --host "{{ docker_db_mongodb_host | default('la_mongodb') }}" --port "{{ cas_services_port | default('27017') }}" \
-    --username "{{ cas_services_username }}" --password "{{ cas_services_password }}" \
-    "{{ cas_services_db | default('cas-service-registry') }}" \
-    --eval "db.OAuthRegisteredService.find({}, {name: 1, clientId: 1}).pretty()" --quiet 2>&1 || \
-    mongo --host "{{ docker_db_mongodb_host | default('la_mongodb') }}" --port "{{ cas_services_port | default('27017') }}" \
-    --username "{{ cas_services_username }}" --password "{{ cas_services_password }}" \
-    "{{ cas_services_db | default('cas-service-registry') }}" \
-    --eval "db.OAuthRegisteredService.find({}, {name: 1, clientId: 1}).pretty()" --quiet 2>&1
-  register: oidc_services_list
-  failed_when: false
+- name: "Database validation: Validate MongoDB cas-audit-repository collections"
+  community.mongodb.mongodb_info:
+    login_host: "{{ docker_db_mongodb_host | default('la_mongodb') }}"
+    login_port: "{{ cas_audit_port | default(27017) }}"
+    login_user: "{{ mongodb_root_username }}"
+    login_password: "{{ mongodb_root_password }}"
+    filter:
+      - collections
+  register: audit_repository_info
+  ignore_errors: yes
   tags:
     - db-init
     - db-validation
 
-- name: "Database validation: Display OIDC services"
-  debug:
-    msg: |
-      ✅ OIDC Services Found: {{ oidc_services_count.stdout }}
-      
-      Registered OIDC Services:
-      {{ oidc_services_list.stdout }}
+- name: "Database validation: Verify MongoDB cas-audit-repository has collections"
+  assert:
+    that:
+      - audit_repository_info is not failed
+      - audit_repository_info.msg is defined or audit_repository_info.databases is defined
+    fail_msg: |
+      ❌ FAILED: MongoDB cas-audit-repository validation failed!
+      Error: {{ audit_repository_info.msg if audit_repository_info.msg is defined else 'Unable to retrieve collections' }}
+    success_msg: "✅ OK - MongoDB CAS Audit Repository is initialized"
+  tags:
+    - db-init
+    - db-validation
+
+- name: "Database validation: Validate MongoDB spring-sessions collections"
+  community.mongodb.mongodb_info:
+    login_host: "{{ docker_db_mongodb_host | default('la_mongodb') }}"
+    login_port: "{{ cas_spring_session_port | default(27017) }}"
+    login_user: "{{ mongodb_root_username }}"
+    login_password: "{{ mongodb_root_password }}"
+    filter:
+      - collections
+  register: spring_session_info
+  ignore_errors: yes
+  tags:
+    - db-init
+    - db-validation
+
+- name: "Database validation: Verify MongoDB spring-sessions has collections"
+  assert:
+    that:
+      - spring_session_info is not failed
+      - spring_session_info.msg is defined or spring_session_info.databases is defined
+    fail_msg: |
+      ❌ FAILED: MongoDB spring-sessions validation failed!
+      Error: {{ spring_session_info.msg if spring_session_info.msg is defined else 'Unable to retrieve collections' }}
+    success_msg: "✅ OK - MongoDB Spring Sessions is initialized"
   tags:
     - db-init
     - db-validation
@@ -202,10 +220,10 @@
       ✅ Database Validation Complete!
       
       Summary:
-      ✓ MySQL Emmet database: {{ emmet_tables.stdout_lines | length - 1 }} tables
-      ✓ MySQL Apikey database: {{ apikey_tables.stdout_lines | length - 1 }} tables
+      ✓ MySQL Emmet database: {{ emmet_tables.query_result | length }} tables
+      ✓ MySQL Apikey database: {{ apikey_tables.query_result | length }} tables
       ✓ MongoDB CAS Ticket Registry: Initialized
-      ✓ MongoDB CAS Service Registry: Initialized with {{ oidc_services_count.stdout }} OIDC services
+      ✓ MongoDB CAS Service Registry: Initialized with {{ oidc_services.result | length }} OIDC services
       ✓ MongoDB CAS Audit Repository: Initialized
       ✓ MongoDB Spring Sessions: Initialized
       

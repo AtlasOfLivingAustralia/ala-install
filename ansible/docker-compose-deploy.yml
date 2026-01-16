@@ -60,9 +60,8 @@
         data_dir: "{{ data_dir }}"
       when:
         - deployment_type == 'container'
-        - db_init_enabled | default(false) | bool
+        - db_init_enabled | default(true) | bool
       tags:
         - db-init
         - cas-dbs
-        - never  # Never run unless explicitly requested
 
