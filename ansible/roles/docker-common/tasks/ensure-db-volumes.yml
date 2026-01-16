@@ -1,48 +1,61 @@
 ---
-# Ensure external named volumes exist for databases
+# Ensure external named volumes exist for databases with la_ prefix
 # This prevents accidental deletion of database data
 
-- name: "Database volumes: Create MySQL named volume if not exists"
-  shell: |
-    docker volume inspect mysql_data > /dev/null 2>&1 || \
-    docker volume create mysql_data
-  changed_when: false
+- name: "Database volumes: Set Docker socket path"
+  set_fact:
+    docker_socket: "{{ lookup('env', 'DOCKER_HOST') | default('unix:///var/run/docker.sock') }}"
   tags:
     - db-init
     - docker-volumes
 
-- name: "Database volumes: Create PostgreSQL named volume if not exists"
-  shell: |
-    docker volume inspect pgdata > /dev/null 2>&1 || \
-    docker volume create pgdata
-  changed_when: false
+- name: "Database volumes: Create MySQL external volume"
+  docker_volume:
+    name: la_mysql-data
+    driver: local
+    docker_host: "{{ docker_socket }}"
+    state: present
   tags:
     - db-init
     - docker-volumes
 
-- name: "Database volumes: Create MongoDB named volume if not exists"
-  shell: |
-    docker volume inspect mongo_data > /dev/null 2>&1 || \
-    docker volume create mongo_data
-  changed_when: false
+- name: "Database volumes: Create PostgreSQL external volume"
+  docker_volume:
+    name: la_postgres-data
+    driver: local
+    docker_host: "{{ docker_socket }}"
+    state: present
   tags:
     - db-init
     - docker-volumes
 
-- name: "Database volumes: Verify all volumes exist"
-  shell: |
-    docker volume ls --filter name="mysql_data|pgdata|mongo_data" --format "table {{.Name}}"
-  register: volume_list
-  changed_when: false
+- name: "Database volumes: Create MongoDB external volume"
+  docker_volume:
+    name: la_mongodb-data
+    driver: local
+    docker_host: "{{ docker_socket }}"
+    state: present
   tags:
     - db-init
     - docker-volumes
 
-- name: "Database volumes: Summary"
-  debug:
-    msg: |
-      ✅ Database volumes verified:
-      {{ volume_list.stdout }}
+- name: "Database volumes: Create Gatus external volume"
+  docker_volume:
+    name: la_gatus-data
+    driver: local
+    docker_host: "{{ docker_socket }}"
+    state: present
   tags:
     - db-init
     - docker-volumes
+
+
+
+
+
+
+
+
+
+
+

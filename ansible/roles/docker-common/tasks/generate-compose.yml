@@ -630,32 +630,37 @@
   include_tasks: build-images.yml
   when: build_images | default(false)
 
-- name: Display generated compose file location
-  debug:
-    msg:
-      - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-      - "📄 Docker Compose Configuration Generated"
-      - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-      - "  Location: {{ data_dir }}/"
-      - "  Files:"
-      - "    - docker-compose.yml"
-      - "{% if build_images | default(false) %}    - docker-bake.hcl{% endif %}"
-      - "{% if 'nginx' in services_enabled %}    - nginx/default.conf{% endif %}"
-      - "{% if 'collectory' in services_enabled %}    - collectory/config/collectory-config.properties{% endif %}"
-      - "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-#
-#- name: Fix ownership of configuration files (user-relevant files only)
-#  shell: |
-#    # Fix docker-compose.yml
-#    if [ -f "{{ data_dir }}/docker-compose.yml" ]; then
-#      chown {{ ansible_user_id }}:{{ ansible_user_gid }} "{{ data_dir }}/docker-compose.yml"    fi
-#
-#    # Fix nginx configuration
-#    if [ -d "{{ data_dir }}/nginx" ]; then
-#      chown -R {{ ansible_user_id }}:{{ ansible_user_gid }} "{{ data_dir }}/nginx"
-#      find "{{ data_dir }}/nginx" -type d -exec chmod 0755 {} \;
-#      find "{{ data_dir }}/nginx" -type f -exec chmod 0644 {} \;
-#    fi
-#  changed_when: false
-#  become: yes
+# ============================================================================
+# Final Validation and Health Checks (AFTER all generation)
+# ============================================================================
 
+- name: "Ensure database volumes exist (external)"
+  include_tasks: ensure-db-volumes.yml
+  tags:
+    - validate
+    - docker-volumes
+
+- name: "Validate docker-compose generation"
+  include_tasks: validate-docker-compose.yml
+  tags:
+    - validate
+    - docker-compose
+
+- name: "Display generated compose file location"
+  debug:
+    msg: |
+      ✅ Docker Compose configuration successfully generated and validated!
+      Location: {{ data_dir }}/
+      
+      Files created:
+        ✓ docker-compose.yml (v3.8)
+        ✓ .env (with database credentials)
+        ✓ infrastructure/ directory with all services
+        ✓ services/ directory with service configs
+        ✓ logs/ directory with service subdirectories
+        ✓ External volumes created (mysql-data, postgres-data, mongodb-data)
+      
+      Next steps:
+        1. Review configuration: cat {{ data_dir }}/docker-compose.yml
+        2. Start services: docker-compose -f {{ data_dir }}/docker-compose.yml up -d
+        3. Access Gatus monitoring: http://your-domain/gatus/
