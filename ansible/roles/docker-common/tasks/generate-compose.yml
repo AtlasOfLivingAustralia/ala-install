@@ -196,6 +196,7 @@
     collectory_db_password: "{{ collectory_db_password | default('generated_collectory_password') }}"
     mongodb_root_password: "{{ mongodb_root_password | default('generated_mongodb_password') }}"
     mongodb_root_username: "{{ mongodb_root_username | default('admin') }}"
+    postgresql_password: "{{ postgresql_password | default('generated_postgres_password') }}"
 
 # Create common directories BEFORE any role tries to use them
 - name: Run common directory and config setup
@@ -353,6 +354,22 @@
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_gid }}"
   when: "'collectory' in services_enabled or 'cas' in services_enabled or groups['cas-servers'] is defined"
+
+- name: Generate postgres.yml
+  template:
+    src: docker-compose/infrastructure/postgres.yml.j2
+    dest: "{{ data_dir }}/infrastructure/postgres.yml"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+
+- name: Generate db-backup.yml
+  template:
+    src: docker-compose/infrastructure/db-backup.yml.j2
+    dest: "{{ data_dir }}/infrastructure/db-backup.yml"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
 
 - name: Generate gatus.yml
   template:
