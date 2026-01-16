@@ -1,0 +1,89 @@
+---
+# Initialize CAS5 and related databases in Docker Compose containers
+# Sets variable to expose database ports during initialization
+# Then reverts after databases are initialized
+
+- name: Debug - Database initialization setup
+  debug:
+    msg: |
+      Database Initialization:
+      - MySQL will be exposed on: 127.0.0.1:3306
+      - MongoDB will be exposed on: 127.0.0.1:27017
+      - Ports will be removed after initialization
+  tags:
+    - db-init
+
+- name: Set flag to expose database ports
+  set_fact:
+    expose_db_ports_for_init: true
+  tags:
+    - db-init
+
+- name: Regenerate docker-compose.yml with exposed ports
+  include_tasks: generate-compose.yml
+  tags:
+    - db-init
+
+- name: Recreate containers with exposed ports
+  shell: |
+    cd "{{ data_dir }}" && \
+    docker compose up -d mysql mongodb
+  changed_when: false
+  tags:
+    - db-init
+
+- name: Wait for ports to be available
+  wait_for:
+    host: 127.0.0.1
+    port: "{{ item }}"
+    delay: 1
+    timeout: 30
+  loop:
+    - 3306
+    - 27017
+  tags:
+    - db-init
+
+- name: Initialize databases in Docker Compose containers
+  include_tasks: init-docker-dbs.yml
+  tags:
+    - db-init
+    - cas-dbs
+
+- name: Remove flag to hide database ports
+  set_fact:
+    expose_db_ports_for_init: false
+  tags:
+    - db-init
+
+- name: Regenerate docker-compose.yml without exposed ports
+  include_tasks: generate-compose.yml
+  tags:
+    - db-init
+
+- name: Recreate containers with original configuration
+  shell: |
+    cd "{{ data_dir }}" && \
+    docker compose up -d mysql mongodb
+  changed_when: false
+  tags:
+    - db-init
+
+- name: Wait for containers to be healthy again
+  wait_for:
+    host: 127.0.0.1
+    port: 3306
+    delay: 1
+    timeout: 30
+  tags:
+    - db-init
+
+- name: Debug - Database initialization complete
+  debug:
+    msg: |
+      ✅ Database initialization complete!
+      - Temporary ports have been removed
+      - Containers are running with original configuration
+  tags:
+    - db-init
+

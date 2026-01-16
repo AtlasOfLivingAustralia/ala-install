@@ -1,0 +1,102 @@
+---
+# Initialize CAS5 and related databases via socat tunnels
+# Expects socat tunnels to be already created by generate-db-init-scripts.yml
+
+- name: Debug - Show database initialization via socat tunnels
+  debug:
+    msg: |
+      Database Initialization via socat tunnels:
+      - MySQL: 127.0.0.1:3306
+      - MongoDB: 127.0.0.1:27017
+  tags:
+    - db-init
+
+- name: Wait for MySQL to be ready via socat tunnel
+  command: |
+    mysqladmin ping -u root -p'{{ mysql_root_password }}' -h 127.0.0.1 2>&1
+  environment:
+    MYSQL_PWD: "{{ mysql_root_password }}"
+  retries: 30
+  delay: 2
+  register: mysql_wait
+  until: mysql_wait.rc == 0
+  changed_when: false
+  tags:
+    - db-init
+
+- name: Create CAS and API Key databases via socat tunnel
+  mysql_db:
+    name: "{{ item }}"
+    state: present
+    login_host: 127.0.0.1
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    encoding: "{{ cas_db_encoding | default('utf8') }}"
+  loop:
+    - "{{ cas_db_name | default('emmet') }}"
+    - "{{ apikey_db_name | default('apikey') }}"
+  tags:
+    - db-init
+
+- name: Create CAS database users via socat tunnel
+  mysql_user:
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    host: "%"
+    state: present
+    login_host: 127.0.0.1
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    priv: "{{ item.priv }}"
+  loop:
+    - { name: "{{ cas_flyway_username }}", password: "{{ cas_flyway_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:ALL" }
+    - { name: "{{ cas_db_username }}", password: "{{ cas_db_password }}", priv: "{{ cas_db_name | default('emmet') }}.*:INSERT,SELECT,UPDATE,DELETE,EXECUTE,TRIGGER" }
+    - { name: "{{ apikey_db_username }}", password: "{{ apikey_db_password }}", priv: "{{ apikey_db_name | default('apikey') }}.*:ALL" }
+  tags:
+    - db-init
+
+- name: Debug - MySQL setup complete
+  debug:
+    msg: |
+      ✅ MySQL Setup Complete:
+      - Database: {{ cas_db_name | default('emmet') }}
+      - API Key DB: {{ apikey_db_name | default('apikey') }}
+      - Flyway user: {{ cas_flyway_username }}
+      - CAS user: {{ cas_db_username }}
+      - API Key user: {{ apikey_db_username }}
+  tags:
+    - db-init
+
+- name: Wait for MongoDB to be ready via socat tunnel
+  mongodb_info:
+    login_host: 127.0.0.1
+    login_user: "{{ mongo_admin_user | default('admin') }}"
+    login_password: "{{ mongo_admin_password }}"
+  register: mongo_info
+  retries: 30
+  delay: 2
+  until: mongo_info is not failed
+  ignore_errors: true
+  tags:
+    - db-init
+
+- name: Create MongoDB admin user via socat tunnel
+  mongodb_user:
+    user: "{{ mongo_admin_user | default('admin') }}"
+    password: "{{ mongo_admin_password }}"
+    database: admin
+    roles: root
+    state: present
+    login_host: 127.0.0.1
+  ignore_errors: true
+  tags:
+    - db-init
+
+- name: Debug - MongoDB setup complete
+  debug:
+    msg: |
+      ✅ MongoDB Setup Complete:
+      - Admin user: {{ mongo_admin_user | default('admin') }}
+  tags:
+    - db-init
+

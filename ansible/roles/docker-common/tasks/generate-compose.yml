@@ -222,6 +222,11 @@
   loop:
     - "{{ data_dir }}/mysql/init"
     - "{{ data_dir }}/mongodb/init"
+    - "{{ data_dir }}/var-log-atlas/cas"
+    - "{{ data_dir }}/var-log-atlas/cas-management"
+    - "{{ data_dir }}/var-log-atlas/apikey"
+    - "{{ data_dir }}/var-log-atlas/userdetails"
+    - "{{ data_dir }}/var-log-atlas/image-service"
 
 - name: Set CAS database variables from inventories for MongoDB initialization
   set_fact:
@@ -239,14 +244,6 @@
     spring_session_mongo_collection: "{{ spring_session_mongo_collection | default('spring-sessions') }}"
   when: "'cas' in services_enabled"
 
-- name: Generate MongoDB initialization script
-  template:
-    src: mongodb-init.js.j2
-    dest: "{{ data_dir }}/mongodb/init/init-users.js"
-    mode: '0644'
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_gid }}"
-  when: "'cas' in services_enabled"
 
 # Build JAVA_OPTS for each service from inventory variables
 - name: Build JAVA_OPTS strings for each service

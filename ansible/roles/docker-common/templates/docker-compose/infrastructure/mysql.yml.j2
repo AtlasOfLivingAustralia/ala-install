@@ -19,6 +19,10 @@ services:
       SPECIESLIST_MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     expose:
       - 3306
+{% if expose_db_ports_for_init | default(false) %}
+    ports:
+      - 127.0.0.1:3306:3306
+{% endif %}
     networks:
       default: {}
       {{ docker_network | default('la_internal') }}:
