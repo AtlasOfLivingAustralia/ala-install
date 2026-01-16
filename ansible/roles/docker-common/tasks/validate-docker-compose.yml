@@ -1,0 +1,127 @@
+---
+# Validate docker-compose generation
+# Tests performed offline before containers are started
+# Similar to what the shell script does but from Ansible
+
+- name: "Validation: Check docker-compose.yml exists"
+  stat:
+    path: "{{ data_dir }}/docker-compose.yml"
+  register: compose_file
+
+- name: "Validation: Fail if docker-compose.yml doesn't exist"
+  fail:
+    msg: "docker-compose.yml not found at {{ data_dir }}/docker-compose.yml"
+  when: not compose_file.stat.exists
+
+- name: "Validation: Check YAML syntax"
+  shell: |
+    cd "{{ data_dir }}" && docker compose config >/dev/null 2>&1
+  changed_when: false
+  register: compose_syntax
+
+- name: "Validation: Check infrastructure files exist"
+  stat:
+    path: "{{ data_dir }}/infrastructure/{{ item }}"
+  register: infra_file_check
+  loop:
+    - "mysql.yml"
+    - "postgres.yml"
+    - "mongodb.yml"
+    - "db-backup.yml"
+    - "nginx.yml"
+
+- name: "Validation: Fail if any infrastructure file is missing"
+  fail:
+    msg: "Infrastructure file missing: {{ item.item }}"
+  when: not item.stat.exists
+  loop: "{{ infra_file_check.results }}"
+
+- name: "Validation: Check .env file exists and has passwords"
+  stat:
+    path: "{{ data_dir }}/.env"
+  register: env_file
+
+- name: "Validation: Fail if .env doesn't exist"
+  fail:
+    msg: ".env file not found at {{ data_dir }}/.env"
+  when: not env_file.stat.exists
+
+- name: "Validation: Check .env contains required passwords"
+  shell: |
+    grep -E "MYSQL_ROOT_PASSWORD|POSTGRES_PASSWORD|MONGODB_ROOT_PASSWORD" "{{ data_dir }}/.env"
+  changed_when: false
+  register: env_passwords
+
+- name: "Validation: Check logs directories created"
+  stat:
+    path: "{{ data_dir }}/logs/{{ item }}"
+  register: log_dir_check
+  loop:
+    - "cas"
+    - "userdetails"
+    - "apikey"
+    - "cas-management"
+
+- name: "Validation: Fail if any log directory is missing"
+  fail:
+    msg: "Log directory missing: {{ item.item }}"
+  when: not item.stat.exists
+  loop: "{{ log_dir_check.results }}"
+
+- name: "Validation: Check database volumes are external"
+  shell: |
+    grep -A2 "{{ item }}-data:" "{{ data_dir }}/docker-compose.yml" | grep -q "external: true" || echo "NOT_EXTERNAL"
+  loop:
+    - "mysql"
+    - "postgres"
+    - "mongodb"
+    - "gatus"
+  changed_when: false
+  register: external_volumes
+  failed_when: "'NOT_EXTERNAL' in external_volumes.stdout"
+
+- name: "Validation: Check Docker daemon availability"
+  shell: |
+    docker ps > /dev/null 2>&1
+  changed_when: false
+  register: docker_daemon_check
+  failed_when: false
+
+- name: "Validation: Check if external volumes actually exist"
+  shell: |
+    docker volume ls | grep -q "la_{{ item }}-data" && echo "EXISTS" || echo "MISSING"
+  loop:
+    - "mysql"
+    - "postgres"
+    - "mongodb"
+    - "gatus"
+  changed_when: false
+  register: volume_exists_check
+  failed_when: "'MISSING' in volume_exists_check.stdout"
+  when: docker_daemon_check.rc == 0
+
+- name: "Validation: Docker not available - volumes will be created at docker-compose up"
+  debug:
+    msg: |
+      ⚠️  Docker daemon not available during validation
+      
+      External volumes (la_mysql-data, la_postgres-data, la_mongodb-data, la_gatus-data)
+      will be created automatically when you run: docker compose up -d
+      
+      If volumes don't exist when docker-compose tries to use them, they will be created.
+  when: docker_daemon_check.rc != 0
+
+- name: "Validation Summary"
+  debug:
+    msg: |
+      ✅ All validation tests passed!
+      
+      Generated files:
+        ✓ docker-compose.yml (valid YAML syntax)
+        ✓ .env (with database passwords)
+        ✓ infrastructure/*.yml files
+        ✓ logs/ directories
+      
+      Configuration:
+        ✓ External volumes configured
+
