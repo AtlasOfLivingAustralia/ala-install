@@ -14,7 +14,6 @@ include:
   - ./infrastructure/postgres.yml
   - ./infrastructure/mongodb.yml
   - ./infrastructure/db-backup.yml
-{% endif %}
 {% if 'cas' in services_enabled or groups['cas-servers'] is defined %}
   - ./services/cas.yml
   - ./services/userdetails.yml
@@ -49,8 +48,10 @@ volumes:
   postgres-data:
     external: true
   mongodb-data:
+    external: true
 {% if 'gatus' in services_enabled or gatus_enabled | default(true) %}
   gatus-data:
+    external: true
 {% endif %}
 
 
