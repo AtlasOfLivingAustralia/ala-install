@@ -3,12 +3,10 @@
   file:
     path: "{{item}}"
     state: directory
-    mode: '0755'
-    owner: "{{ docker_default_user | default(ansible_user_id) }}"
-    group: "{{ docker_default_user | default(ansible_user_id) }}"
+    owner: "{{userdetails_user}}"
+    group: "{{userdetails_user}}"
   with_items:
     - "{{ userdetails_docker_db_mysql_data_dir }}"
-    - "{{ userdetails_docker_db_postgres_data_dir | default(data_dir + '/userdetails/postgres') }}"
     - "{{ userdetails_docker_db_mongo_data_dir }}"
     - "{{ userdetails_data_dir }}/docker/"
   tags:
@@ -21,9 +19,139 @@
     stack: la_auth
     docker_compose_data_dir: "{{ userdetails_data_dir }}/docker/"
 
-- name: Initialize CAS5 databases and OIDC configuration
-  import_tasks: ../../docker-common/tasks/generate-db-init-scripts.yml
+- name: Remove previous socat container for MySQL tunnel
+  import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: la_auth_mysql
+  run_once: true
   tags:
     - cas-dbs
-    - db-init
+
+- name: Remove previous socat container for MongoDB tunnel
+  import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: la_auth_mongo
   run_once: true
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: la_auth_cas
+  run_once: true
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: la_auth_cas-management
+  run_once: true
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat.yml
+  vars:
+    name: la_auth_mysql
+    port: 3306
+  run_once: true
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat.yml
+  vars:
+    name: la_auth_mongo
+    port: 27017
+  run_once: true
+  tags:
+    - cas-dbs
+
+- name: Add mongo/mysql dbs and users
+  include_tasks: ../../cas5-dbs/tasks/main.yml
+  tags:
+    - cas-dbs
+  run_once: true
+  vars:
+    cas_db_hostname: 127.0.0.1
+    user_store_db_hostname: 127.0.0.1
+    user_store_db_hostname: 127.0.0.1
+    apikey_db_hostname: 127.0.0.1
+    ticket_registry_db_hostname: 127.0.0.1
+    cas_audit_host: 127.0.0.1
+    cas_spring_session_host: 127.0.0.1
+    cas_tickets_host: 127.0.0.1
+    cas_tickets_host: 127.0.0.1
+    cas_services_host: 127.0.0.1
+    cas_services_host: 127.0.0.1
+    cas_mysql_src_host: '%'
+    apikey_mysql_src_host: '%'
+
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: la_auth_cas
+  run_once: true
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat.yml
+  vars:
+    name: la_auth_cas
+    port: "{{ cas_port | default('9000') }}"
+  run_once: true
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../cas5/tasks/admin-account.yml
+  vars:
+    cas_db_hostname: 127.0.0.1
+  run_once: true
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: la_auth_cas-management
+  run_once: true
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat.yml
+  vars:
+    name: la_auth_cas-management
+    port: "{{ cas_management_port | default('8070') }}"
+  run_once: true
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../cas-management/tasks/oidc-tasks.yml
+  run_once: true
+  tags:
+    - cas-dbs
+    - cas-oidc
+
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: la_auth_mysql
+  run_once: true
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: la_auth_mongo
+  run_once: true
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: la_auth_cas
+  run_once: true
+  tags:
+    - cas-dbs
+
+- import_tasks: ../../docker-common/tasks/socat-rm.yml
+  vars:
+    name: la_auth_cas-management
+  run_once: true
+  tags:
+    - cas-dbs
