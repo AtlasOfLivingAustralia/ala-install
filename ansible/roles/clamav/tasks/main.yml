@@ -83,7 +83,7 @@
     create: yes
   loop:
     - { regexp: '^ExecStart=', line: 'ExecStart=/usr/sbin/clamd -c /etc/clamav/clamd.conf --foreground=true' }
-  notify: restart clamav-daemon.service
+  notify: restart clamav-daemon
   tags:
     - clamav
 
@@ -97,7 +97,6 @@
   loop:
     - { regexp: '^#?ListenStream=1024', line: 'ListenStream=127.0.0.1:3310' }
   notify:
-    - stop clamav-daemon
     - daemon-reload
     - restart clamav-daemon.socket
   tags:
