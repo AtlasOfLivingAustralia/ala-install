@@ -279,7 +279,7 @@
   template:
     src: "fragment_02_upstream.j2"
     dest: "{{nginx_conf_dir}}/conf.d/http_02_upstream_{{ hostname }}_127.0.0.1_{{ tomcat_server_port | default('8080', True) }}.conf"
-  when: vhost_required | bool == True and nginx_load_balancing | bool == true and item.is_proxy and item.proxy_pass is defined and not nginx_vhost_fast_mode | bool
+  when: vhost_required | bool == True and nginx_load_balancing | bool == true and item.is_proxy and item.proxy_pass is defined
   with_items:
     - "{{ nginx_paths}} "
   notify:
@@ -291,7 +291,7 @@
   file:
     path: "{{nginx_conf_dir}}/conf.d/http_02_upstream_{{ hostname }}_127.0.0.1_{{ tomcat_server_port | default('8080', True) }}.conf"
     state: absent
-  when: vhost_required | bool == True and nginx_load_balancing | bool != true and not nginx_vhost_fast_mode | bool
+  when: vhost_required | bool == True and nginx_load_balancing | bool != true
   with_items:
     - "{{ nginx_paths}} "
   notify:
@@ -303,7 +303,7 @@
   template:
     src: "fragment_03_blocking.j2"
     dest: "{{nginx_conf_dir}}/conf.d/http_03_blocking.conf"
-  when: vhost_required | bool == True and not nginx_vhost_fast_mode | bool
+  when: vhost_required | bool == True
   notify:
    - reload nginx
   tags:
@@ -321,7 +321,7 @@
   template:
     src: "fragment_05_cache.j2"
     dest: "{{nginx_conf_dir}}/conf.d/http_05_cache_{{ nginx_cache_zone }}.conf"
-  when: vhost_required | bool == True and nginx_cache | bool == True and not nginx_vhost_fast_mode | bool
+  when: vhost_required | bool == True and nginx_cache | bool == True
   notify:
    - reload nginx
   tags:
