@@ -15,7 +15,7 @@
     - profile-service
   when: exec_jar and ( is_primary | bool )
 
-- include: ../../common/tasks/setfacts.yml
+- include_tasks: ../../common/tasks/setfacts.yml
   tags:
     - profile-service
     - deploy
@@ -229,7 +229,8 @@
 #
 # WAR file deployment and virtual host configuration
 #
-- include: ../../apache_vhost/tasks/main.yml
+- include_tasks: ../../apache_vhost/tasks/main.yml
+  vars:
     context_path='{{ profile_service_context_path }}'
     hostname='{{ profile_service_hostname }}'
   tags:
@@ -273,7 +274,7 @@
     - profile-service
   when: webserver_nginx | bool  and ( is_primary | bool )
 
-- include: ../../tomcat_deploy/tasks/main.yml
+- include_tasks: ../../tomcat_deploy/tasks/main.yml
   vars:
     war_url: '{{ profile_service_war_url }}'
     context_path: '{{ profile_service_context_path }}'
