@@ -112,7 +112,7 @@
     - properties
 
 - name: set data ownership for {{data_dir}}/image-service
-  file: path={{data_dir}}/image-service owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}"
+  file: path={{data_dir}}/image-service owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}" recurse=true
   notify:
      - restart image-service
   tags:
