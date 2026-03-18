@@ -143,3 +143,14 @@
     enabled: yes
   tags:
     - clamav
+
+- name: add cron job to send email notification when clamav daemon is down
+  cron:
+    name: "notify when replica clam anti-virus daemon is down"
+    hour: "*"
+    minute: "*"
+    job: "pgrep clamd > /dev/null && rm -f /tmp/clamd_alert_sent || ( [ ! -f /tmp/clamd_alert_sent ] && echo \"Clamd down at $(date) on {{ inventory_hostname }}\" | mail -s \"Clam anti-virus alert\" {{ email_address | default('merit-team@ala.org.au') }} && touch /tmp/clamd_alert_sent )"
+  tags:
+    - clamav
+    - cron
+  when: clamav_notification | bool
