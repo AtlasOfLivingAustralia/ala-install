@@ -35,6 +35,14 @@ action.auto_create_index: {{ es_action_auto_create_index }}
 xpack.security.enabled: true
 {% endif %}
 
+{% if es_version is defined and es_version is version('8.0.0', '>=') and (es_api_basic_auth_username is not defined or not es_enable_xpack) %}
+# ES8+ has security enabled by default; disable when no explicit auth is configured
+xpack.security.enabled: false
+xpack.security.enrollment.enabled: false
+xpack.security.http.ssl.enabled: false
+xpack.security.transport.ssl.enabled: false
+{% endif %}
+
 {% if es_mail_config is defined %}
 xpack.notification.email:
   account:
