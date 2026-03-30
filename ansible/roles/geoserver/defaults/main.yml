@@ -1,4 +1,4 @@
-geoserver_version: "2.25.2"
+geoserver_version: "2.28.3"
 
 geoserver_war_url: "https://repo.osgeo.org/repository/release/org/geoserver/web/gs-web-app/{{ geoserver_version }}/gs-web-app-{{ geoserver_version }}.war"
 geoserver_war_sha1sum: "sha1:2da0b585e4b892107c9731bc4dcd60d46dc726ed"
