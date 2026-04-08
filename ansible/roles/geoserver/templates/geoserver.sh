@@ -53,7 +53,8 @@ curl -u {{geoserver_username}}:{{geoserver_password}} -XPUT -H 'Content-type: te
 wget -O /tmp/marker.png https://github.com/AtlasOfLivingAustralia/spatial-database/raw/master/marker.png
 curl -u {{geoserver_username}}:{{geoserver_password}} -XPUT -H 'Content-type: image/png' -d @/tmp/marker.png {{geoserver_url}}/rest/resource/styles/marker.png
 
-
+#add url check for uploads from colocated spatial-service
+curl -u {{geoserver_username}}:{{geoserver_password}} -XPOST -H 'Content-type: text/xml' {{geoserver_url}}/rest/urlchecks -d '<regexUrlCheck><name>colocated_uploads</name><description></description><enabled>true</enabled><regex>^file:///data/spatial-data/layer/(?!.*(\.\.|%2e%2e)).*$</regex></regexUrlCheck>'
 
 echo ""
 echo "May need to edit /etc/hosts and re-run"
