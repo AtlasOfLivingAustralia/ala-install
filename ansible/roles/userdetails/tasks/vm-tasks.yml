@@ -8,8 +8,8 @@
   vars:
     service_name: "userdetails"
     jar_url: '{{ userdetails_jar_url }}'
-    use_openjdk11: "{{ user_details_version is version('3', '>=') }}"
-    use_openjdk8: "{{ user_details_version is version('3', '<') }}"
+    use_openjdk11: "{{ not (use_openjdk17 | default(false)) and (user_details_version is version('3', '>=')) }}"
+    use_openjdk8: "{{ not (use_openjdk17 | default(false)) and (user_details_version is version('3', '<')) }}"
     java_headless: true
     java_jre: true
     log_config_filename: logback.xml
