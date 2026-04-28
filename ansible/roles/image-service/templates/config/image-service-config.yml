@@ -207,7 +207,7 @@ elasticsearch:
   username: "{{ elasticsearch_username | default('') }}"
   password: "{{ elasticsearch_password | default ('') }}"
 {% if elasticsearch_default_headers is defined and elasticsearch_default_headers | length > 0 %}
-  hosts:
+  default-headers:
 {% for item in elasticsearch_default_headers %}
   - name: {{ item.name }}
     value: {{ item.value }}
