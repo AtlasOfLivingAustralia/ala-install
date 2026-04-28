@@ -87,7 +87,7 @@
     - { regexp: '^ExecStart=', line: 'ExecStart=/usr/sbin/clamd -c /etc/clamav/clamd.conf --foreground=true' }
   notify:
     - reload systemd daemon
-    - restart clamav-daemon
+    - restart clamav-daemon.socket
   tags:
     - clamav
 
