@@ -1,0 +1,41 @@
+- name: reload systemd daemon
+  systemd:
+    daemon_reload: yes
+  become: yes
+  tags:
+    - clamav
+
+- name: stop clamav-daemon.service
+  systemd:
+    name: clamav-daemon.service
+    state: stopped
+  become: yes
+  tags:
+    - clamav
+
+
+- name: restart clamav-daemon.socket
+  systemd:
+    name: clamav-daemon.socket
+    state: restarted
+  become: yes
+  tags:
+    - clamav
+
+
+- name: restart clamav-daemon.service
+  systemd:
+    name: clamav-daemon.service
+    state: restarted
+  become: yes
+  tags:
+    - clamav
+
+
+- name: restart clamav-freshclam
+  service:
+    name: clamav-freshclam
+    state: restarted
+    enabled: yes
+  tags:
+    - clamav
