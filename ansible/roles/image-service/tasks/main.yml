@@ -147,6 +147,18 @@
     - properties
     - image-service
 
+- name: Configure TCP keepalive for S3 connection stability
+  ansible.posix.sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_file: /etc/sysctl.d/99-tcp-keepalive.conf
+    reload: true
+  loop:
+    - { name: net.ipv4.tcp_keepalive_time,   value: "{{ tcp_keepalive_time | default('60') }}"  }
+    - { name: net.ipv4.tcp_keepalive_intvl,  value: "{{ tcp_keepalive_intvl | default('10') }}" }
+    - { name: net.ipv4.tcp_keepalive_probes, value: "{{ tcp_keepalive_probes | default('3') }}" }
+
 - name: install openjfx (Debian)
   apt: pkg=openjfx state=latest update_cache=yes
   when: ansible_os_family == "Debian" and use_openjdk8
@@ -171,6 +183,12 @@
             - "main.yml"
           paths:
             - "vars"
+
+    - name: Install libvips
+      package:
+        name: "{{ libvips_packages }}"
+        state: present
+      become: true
 
     - name: Install base image optimisation packages
       package:

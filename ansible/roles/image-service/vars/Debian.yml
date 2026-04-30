@@ -10,3 +10,11 @@ image_optimisation_packages:
   - gifsicle
   - webp
   - libavif-bin
+libvips_packages:
+  - libvips42t64
+  - libvips-tools
+  - libvips-dev
+  - libjpeg-turbo8
+  - libpng16-16t64
+  - libwebp7
+  - libtiff6 
