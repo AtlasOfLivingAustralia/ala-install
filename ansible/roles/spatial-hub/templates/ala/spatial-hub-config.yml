@@ -109,12 +109,52 @@ layersService:
   url: "{{layers_service_url}}"
 
 lists:
+  version: "{{ lists_version | default(1) }}"
   url: "{{ lists_url | default('https://lists.ala.org.au') }}"
-  threatenedSpeciesUrl: '/ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true'
-  invasiveSpeciesUrl: '/ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true'
+  urlUi: "{{ lists_ui_url | default('https://lists.ala.org.au') }}"
+  threatenedSpeciesUrl: "{{ lists_threatened_species_url | default('/ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true') }}"
+  invasiveSpeciesUrl: "{{ lists_invasive_species_url | default('/ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true') }}"
   facets: {{ lists_facets | default(true) }}
   migratoryDR: {{ lists_migratory_data_resource_uid | default('dr1005') }}
   iconicSpeciesDR: {{ lists_iconic_species_data_resource_uid | default('dr781') }}
+{% if lists_version == 2 %}
+  listTypes:
+    - id: 'COMMON_HABITAT'
+      label: "Common habitat list"
+    - id: 'COMMON_TRAIT'
+      label: "Common traits list"
+    - id: 'CONSERVATION_LIST'
+      label: "Conservation species list"
+    - id: 'INVASIVE'
+      label: "Invasive species list"
+    - id: 'LOCAL_LIST'
+      label: "Local checklist"
+    - id: 'OTHER'
+      label: "Other List"
+    - id: 'PROFILE'
+      label: "Profile List"
+    - id: 'SENSITIVE_LIST'
+      label: "Sensitive list"
+    - id: 'SPECIES_CHARACTERS'
+      label: "Species characters"
+    - id: 'TEST'
+      label: "Testing List"
+  listLicences:
+   - id: "CC0"
+     label: "Creative Commons Zero"
+   - id: "CC-BY"
+     label: "Creative Commons By Attribution"
+   - id: "CC-BY-NC"
+     label: "Creative Commons By Attribution-Noncommercial"
+   - id: "CC-BY-NC-ND"
+     label: "Creative Commons By Attribution-Noncommercial-Noderivatives"
+   - id: "CC-BY-NC-SA"
+     label: "Creative Commons By Attribution-Noncommercial-Sharealike"
+   - id: "CC-BY-ND"
+     label: "Creative Commons By Attribution-Noderivatives"
+   - id: "CC-BY-SA"
+     label: "Creative Commons By Attribution-Sharealike"
+{% endif %}
 
 journalmap:
   url: "{{ journalmap_url | default('https://www.journalmap.org/') }}"
