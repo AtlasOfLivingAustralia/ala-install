@@ -22,7 +22,7 @@
     - nginx_vhost
     - deploy
     - spatial-service
-  when: webserver_nginx | bool 
+  when: webserver_nginx | bool
 
 - name: Add proxy paths for grandfathered routes
   include_role:
@@ -32,7 +32,7 @@
     hostname: "{{ spatial_service_hostname }}"
     context_path: "{{ spatial_service_context_path }}"
     nginx_paths:
-      - path: "{{ spatial_hub_context_path }}files"
+      - path: "{{ spatial_hub_context_path }}files/"
         is_proxy: false
         alias: "{{ data_dir }}/ala/runtime/files/"
       - path: "/alaspatial"
@@ -51,7 +51,7 @@
     - nginx_vhost
     - deploy
     - spatial-service
-  when: webserver_nginx | bool 
+  when: webserver_nginx | bool
 
 - include_tasks: ../../tomcat_deploy/tasks/main.yml
   vars:
