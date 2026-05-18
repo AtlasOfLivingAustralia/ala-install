@@ -21,9 +21,7 @@
         </encoder>
     </appender>
 
-    <logger name="au.org.ala.biocollect" level="INFO">
-        <appender-ref ref="STDOUT" />
-    </logger>
+    <logger name="au.org.ala.biocollect" level="INFO"/>
 
     <root level="error">
         <appender-ref ref="STDOUT" />
