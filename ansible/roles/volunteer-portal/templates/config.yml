@@ -84,4 +84,9 @@ elasticsearch:
   cluster.routing.allocation.disk.watermark:
     high: 5gb
     low: 10gb
-
+aws:
+  s3:
+    enabled: {{ digivol_s3_enabled | default('false') }}
+    region: ap-southeast-2
+    bucket: {{ digivol_s3_bucket | default('error-digivol-s3-bucket-not-defined') }}
+    auth-mode: default
