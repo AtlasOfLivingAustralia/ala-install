@@ -145,6 +145,7 @@
       - path: "{{ biocollect_context_path | default('/') }}mobile-app"
         sort_label: "3_pwa_app"
         alias: "{{ biocollect_pwa_app_path | default('/data/biocollect/mobile-app') }}"
+        try_files: "$uri $uri/ {{ biocollect_context_path | default('/') }}mobile-app/index.html"
         index: "index.html"
   tags:
     - nginx_vhost
@@ -177,6 +178,7 @@
       - path: "{{ biocollect_context_path | default('/') }}mobile-app"
         sort_label: "4_pwa_app"
         alias: "{{ biocollect_pwa_app_path | default('/data/biocollect/mobile-app') }}"
+        try_files: "$uri $uri/ {{ biocollect_context_path | default('/') }}mobile-app/index.html"
         index: "index.html"
   tags:
     - nginx_vhost
