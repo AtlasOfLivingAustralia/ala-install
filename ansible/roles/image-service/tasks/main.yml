@@ -196,20 +196,34 @@
         state: present
       become: true
 
+    # Snap has to mount a squashfs image, which is not permitted inside
+    # unprivileged containers (LXC, Docker, ...): snap install aborts with
+    # "system does not fully support snapd: cannot mount squashfs". Detect that
+    # case up front and install svgo (a plain Node CLI) via npm instead.
     - name: Install svgo for SVG optimisation (Snap)
       snap:
         name: svgo
         state: present
       become: true
-      when: ansible_distribution == "Ubuntu"
+      when:
+        - ansible_distribution == "Ubuntu"
+        - ansible_virtualization_type not in snap_unsupported_virt_types
 
     - name: Install svgo for SVG optimisation (npm)
-      npm:
-        name: svgo
-        global: yes
-        state: present
       become: true
-      when: ansible_distribution != "Ubuntu"
+      when: >
+        ansible_distribution != "Ubuntu" or
+        ansible_virtualization_type in snap_unsupported_virt_types
+      block:
+        - name: Ensure npm is installed for svgo
+          ansible.builtin.package:
+            name: npm
+            state: present
+        - name: Install svgo via npm
+          npm:
+            name: svgo
+            global: yes
+            state: present
 
     - name: Check installed oxipng version
       command: dpkg-query -W -f='${Version}' oxipng
