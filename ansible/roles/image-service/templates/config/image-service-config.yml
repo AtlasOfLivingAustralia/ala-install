@@ -112,6 +112,7 @@ images:
       enabled: {{ image_service_native_jna_tiler_enabled | default('true') }}
     ffm:
       enabled: {{ image_service_native_ffm_tiler_enabled | default('true') }}
+  disableCache: {{ image_service_disable_cache | default('false') }}
   optimisation:
     enabled: {{ image_service_image_optimisation_enabled | default('false') }}
   metadata:
@@ -124,9 +125,6 @@ images:
         startTime: {{ image_service_metadata_jsonb_migration_start_time | default('23:00') }}
         endTime: {{ image_service_metadata_jsonb_migration_end_time | default('06:00') }}
         maxLoadAverage: {{ image_service_metadata_jsonb_max_load_average | default('6.0') }}
-
-images:
-  disableCache: {{ image_service_disable_cache | default('false') }}
 
 iiif.enabled: {{ image_service_iiif_enabled | default('false') }}
 
