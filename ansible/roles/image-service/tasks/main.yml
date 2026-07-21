@@ -211,17 +211,31 @@
       become: true
       when: ansible_distribution != "Ubuntu"
 
+    - name: Include architecture-specific oxipng variables
+      include_vars: "{{ lookup('first_found', params) }}"
+      vars:
+        params:
+          files:
+            - "{{ ansible_architecture }}.yml"
+            - "main.yml"
+          paths:
+            - "vars"
+      when: ansible_os_family == "Debian"
+      tags: [oxipng]
+
     - name: Check installed oxipng version
       command: dpkg-query -W -f='${Version}' oxipng
       register: oxipng_installed_version
       changed_when: false
       failed_when: false
       when: ansible_os_family == "Debian"
+      tags: [oxipng]
 
     - name: Install oxipng with optipng fallback (Debian/Ubuntu)
       when:
         - ansible_os_family == "Debian"
         - oxipng_installed_version.stdout != (oxipng_version + "-1")
+      tags: [oxipng]
       block:
         - name: Try to install oxipng from GitHub
           block:
