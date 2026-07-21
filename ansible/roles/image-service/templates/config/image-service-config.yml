@@ -110,8 +110,8 @@ imageservice:
     jsonb:
       migration:
         enabled: {{ image_service_metadata_jsonb_migration_enabled | default('true') }}
-        startTime: {{ image_service_metadata_jsonb_migration_start_time | default('23:00') }}
-        endTime: {{ image_service_metadata_jsonb_migration_start_time | default('06:00') }}
+        startTime: "{{ image_service_metadata_jsonb_migration_start_time | default('23:00') }}"
+        endTime: "{{ image_service_metadata_jsonb_migration_end_time | default('06:00') }}"
         maxLoadAverage: {{ image_service_metadata_jsonb_max_load_average | default('6.0') }}
 
 images:
