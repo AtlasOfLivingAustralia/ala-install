@@ -101,6 +101,17 @@ imageservice:
         {{ item.config | to_nice_yaml(indent=2) | indent(8) }}
 {% endfor %}
 {% endif %}
+images:
+  useStreamingTiler: {{ image_service_use_streaming_tiler | default('true') }}
+  useStreamingThumbnailer: {{ image_service_use_streaming_thumbnailer | default('true') }}
+  useStreamingIiifProcessor: {{ image_service_use_streaming_iiif_processor | default('true') }}
+  padTiles: {{ image_service_pad_tiles | default('true') }}
+  preferPureJavaOperations: {{ image_service_pure_java_operations | default('false') }}
+  nativeDzTiler:
+    jna:
+      enabled: {{ image_service_native_jna_tiler_enabled | default('true') }}
+    ffm:
+      enabled: {{ image_service_native_ffm_tiler_enabled | default('true') }}
   optimisation:
     enabled: {{ image_service_image_optimisation_enabled | default('false') }}
   metadata:
@@ -111,7 +122,7 @@ imageservice:
       migration:
         enabled: {{ image_service_metadata_jsonb_migration_enabled | default('true') }}
         startTime: {{ image_service_metadata_jsonb_migration_start_time | default('23:00') }}
-        endTime: {{ image_service_metadata_jsonb_migration_start_time | default('06:00') }}
+        endTime: {{ image_service_metadata_jsonb_migration_end_time | default('06:00') }}
         maxLoadAverage: {{ image_service_metadata_jsonb_max_load_average | default('6.0') }}
 
 images:
@@ -201,6 +212,7 @@ management:
 tiling:
   levelThreads: {{ image_service_tiler_levelThreads | default('2') }}
   ioThreads: {{ image_service_tiler_iothreads | default('2') }}
+  version: {{ image_service_tiler_version | default('V5') }}
 
 elasticsearch:
   tls.disableTrust: "{{ elasticsearch_disable_tls_trust_verification | default('false') }}"
