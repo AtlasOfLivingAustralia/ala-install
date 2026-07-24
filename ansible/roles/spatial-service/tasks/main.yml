@@ -125,55 +125,28 @@
     - spatial-service
     - spatial-deps
 
-- name: Download maxent.zip
-  ignore_errors: yes # This is currently returning 403
-  get_url:
-    url: 'https://biodiversityinformatics.amnh.org/open_source/maxent/maxent.php?op=download'
-    dest: /tmp/maxent.zip
-  tags:
-    - spatial-service
-    - spatial-deps
-
 - name: Create directory for maxent
   file: path={{data_dir}}/spatial-data/modelling/maxent owner={{tomcat_user}} group={{tomcat_user}} recurse=true state=directory mode='0755'
   tags:
     - spatial-service
     - spatial-deps
 
-- name: Extract maxent.zip
-  ignore_errors: yes # currently failing to download maxent.zip
-  unarchive:
-    src: /tmp/maxent.zip
-    dest: /tmp/
-    remote_src: true
-  tags:
-    - spatial-service
-    - spatial-deps
-
-- name: Copy maxent.jar to the destination directory
-  ignore_errors: yes # currently failing to download maxent.zip
-  copy:
-    src: /tmp/maxent/maxent.jar
+# maxent 3.4.3 = version currently served by AMNH (?op=download). That endpoint is now
+# behind a Cloudflare bot-challenge and returns 403 to automated clients (hence the old
+# ignore_errors), so we fetch the same version directly from the upstream mrmaxent GitHub
+# mirror (no Cloudflare). A newer 3.4.4 exists under ArchivedReleases; bump maxent_version
+# to change it.
+- name: Download maxent.jar
+  get_url:
+    url: "https://raw.githubusercontent.com/mrmaxent/Maxent/master/ArchivedReleases/{{ maxent_version | default('3.4.3') }}/maxent.jar"
     dest: "{{data_dir}}/spatial-data/modelling/maxent/maxent.jar"
-    remote_src: true
-  tags:
-    - spatial-service
-    - spatial-deps
-
-- name: Remove temporary maxent.zip file
-  ignore_errors: yes # currently failing to download maxent.zip
-  file:
-    path: /tmp/maxent.zip
-    state: absent
-  tags:
-    - spatial-service
-    - spatial-deps
-
-- name: Remove extracted maxent directory
-  ignore_errors: yes # currently failing to download maxent.zip
-  file:
-    path: /tmp/maxent
-    state: absent
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+    mode: '0644'
+  register: maxent_dl
+  retries: 3
+  delay: 5
+  until: maxent_dl is succeeded
   tags:
     - spatial-service
     - spatial-deps
