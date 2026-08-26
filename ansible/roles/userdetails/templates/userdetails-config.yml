@@ -204,8 +204,8 @@ webservice:
   apiKey: {{ api_key }}
   jwt: {{ userdetails_jwt_client_enabled | default('true') }}
   jwt-scopes: {{ userdetails_jwt_scopes | default('openid ala/internal') }}
-  client-id: {{ userdetails_client_id | default(userdetails_jwt_clientid) | default('') }}
-  client-secret: {{ userdetails_client_secret | default(userdetails_jwt_secret) | default('') }}
+  client-id: {{ userdetails_client_id | default(userdetails_jwt_clientid) | default(userdetails_oidc_client_id) | default('') }}
+  client-secret: {{ userdetails_client_secret | default(userdetails_jwt_secret) | default(userdetails_oidc_secret) | default('') }}
 
 # Default primary fields for Export to CSV functionality
 admin.export.csv.primary.fields: {{ admin_export_csv_primary_fields | default('id,userName,firstName,lastName,email,activated,locked,created')}}
