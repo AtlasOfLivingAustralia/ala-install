@@ -184,6 +184,18 @@
           paths:
             - "vars"
 
+    - name: Detect whether t64 (64-bit time_t) library packages are available
+      command: apt-cache show libvips42t64
+      register: libvips_t64_check
+      changed_when: false
+      failed_when: false
+      when: ansible_os_family == "Debian"
+
+    - name: Select libvips packages (legacy names before the t64 transition)
+      set_fact:
+        libvips_packages: "{{ libvips_packages_t64 if libvips_t64_check.rc == 0 else libvips_packages_legacy }}"
+      when: ansible_os_family == "Debian"
+
     - name: Install libvips
       package:
         name: "{{ libvips_packages }}"
