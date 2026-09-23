@@ -31,6 +31,8 @@ pipx install ansible==10.3.0 ansible-core==2.17.3
 
 where ```[community-version]``` and ```[core-version]``` are the supported versions listed above.
 
+In recent Ubuntu/Debian versions is recommended to use https://pip.pypa.io/warnings/venv.
+
 For OSX:
 
 ```
