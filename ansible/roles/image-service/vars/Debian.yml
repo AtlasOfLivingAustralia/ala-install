@@ -1,6 +1,7 @@
 ---
 image_optimisation_packages:
   - snapd
+  - libvips-tools
   - imagemagick
   - libjpeg-turbo-progs
   - jpegoptim
