@@ -36,6 +36,9 @@ nginx_set_real_ips: []
 # Set to true to enable the proxy protocol
 # https://docs.nginx.com/nginx/admin-guide/load-balancer/using-proxy-protocol/
 nginx_proxy_protocol_enabled: False
+# Set to false where the host has no IPv6 stack: nginx aborts on "listen [::]:80"
+# rather than skipping it, so the vhost never starts
+nginx_listen_ipv6: true
 # Set to "proxy_protocol" to support the nginx proxy protocol
 nginx_real_ip_header: "X-Forwarded-For"
 # If either of the following are set to true, a default host will be created

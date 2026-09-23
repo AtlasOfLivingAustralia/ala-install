@@ -2,4 +2,6 @@
 #{{ ansible_managed }}
 server {
     listen 80 {% if nginx_proxy_protocol_enabled | bool %}proxy_protocol{% endif %};
+{% if nginx_listen_ipv6 | bool %}
     listen [::]:80 {% if nginx_proxy_protocol_enabled | bool %}proxy_protocol{% endif %};
+{% endif %}
