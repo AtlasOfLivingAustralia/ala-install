@@ -13,3 +13,4 @@ enable_google_analytics: True
 bdr_api_readTimeout: 60000
 
 monitor_enable_determiner_roles: True
+reportReminderTask_cronExpression: "1 2 1  * * ?"
