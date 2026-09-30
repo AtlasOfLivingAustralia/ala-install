@@ -26,12 +26,14 @@ default_map_colour: e6704c
 default_map_lat: -25.61
 default_map_lon: 134.35
 # Basemap tiles. Set carto_api_key (in [all:vars]) to your CARTO key to remove
-# the "API KEY REQUIRED" watermark; the template appends it to carto_basemap_url.
-# Setting default_map_url to a full URL still overrides everything, query string
-# included, so inventories that already append the key to the URL keep working
+# the "API KEY REQUIRED" watermark; the template appends it to carto_basemap_url
+# and carto_basemap_vector_url.
+# Setting default_map_url and/or default_map_vector_url to a full URL still overrides everything,
+#  query string included, so inventories that already append the key to the URL keep working
 # untouched.
 carto_api_key: ""
 carto_basemap_url: "https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png"
+carto_basemap_vector_url: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
 default_map_zoom: 4
 eol_lang: en
 genbank_url: https://www.ncbi.nlm.nih.gov
