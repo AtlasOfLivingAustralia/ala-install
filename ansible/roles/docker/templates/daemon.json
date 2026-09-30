@@ -1,3 +1,8 @@
 {
-  "data-root": "{{ docker_dir }}"
+  "data-root": "{{ docker_dir }}",
+  "log-driver": "{{ docker_log_driver }}",
+  "log-opts": {
+    "max-size": "{{ docker_log_max_size }}",
+    "max-file": "{{ docker_log_max_file }}"
+  }
 }
