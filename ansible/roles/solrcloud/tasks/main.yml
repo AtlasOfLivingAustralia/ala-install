@@ -8,7 +8,7 @@
   include_tasks: docker-tasks.yml
   vars:
     solr_temp_disable_shardsWhitelist: true
-  when: deployment_type == 'swarm'
+  when: (deployment_type | default('vm')) != 'vm'
   tags: [docker, docker-service]
 
 - name: Include VM tasks
@@ -141,7 +141,7 @@
     solr_zk_host: la_solrcloud_zoo_1
     solr_user: "{{ docker_default_user }}"
     solrcloud_num_shards: 1
-  when: deployment_type == 'swarm'
+  when: (deployment_type | default('vm')) != 'vm'
 
   # We can let this port open during development
 - name: Remove previous socat container for solr tunnel
@@ -149,10 +149,10 @@
   vars:
     name: la_solrcloud_solr_1
   run_once: true
-  when: deployment_type == 'swarm' and docker_development_mode is defined and docker_development_mode | bool == false
+  when: (deployment_type | default('vm')) != 'vm' and docker_development_mode is defined and docker_development_mode | bool == false
   tags:
     - solr_config
 
 - name: Redeploy stack without solr_temp_disable_shardsWhitelist
   include_tasks: docker-tasks.yml
-  when: deployment_type == 'swarm' and solr_enable_shards_white_list is defined and solr_enable_shards_white_list | bool == true
+  when: (deployment_type | default('vm')) != 'vm' and solr_enable_shards_white_list is defined and solr_enable_shards_white_list | bool == true

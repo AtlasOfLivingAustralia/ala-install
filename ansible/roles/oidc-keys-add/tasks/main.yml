@@ -65,7 +65,7 @@
     mongo:5 sh -c "cat /scripts/add-key.js | mongo --host \"{{ cas_services_host }}\"
     --port \"{{ cas_services_port | default('27017') }}\" --username \"{{ cas_services_username }}\"
     --password \"{{ cas_services_password }}\" \"{{ cas_services_db | default('cas-service-registry') }}\" --quiet"
-  when: deployment_type == 'swarm'
+  when: (deployment_type | default('vm')) != 'vm'
   async: 90
   poll: 5
   tags:
