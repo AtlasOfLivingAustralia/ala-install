@@ -31,8 +31,6 @@ default_map_lon: 134.35
 # Setting default_map_url and/or default_map_vector_url to a full URL still overrides everything,
 #  query string included, so inventories that already append the key to the URL keep working
 # untouched.
-# default_map_url:
-# default_map_vector_url:
 carto_api_key: ""
 carto_basemap_url: "https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png"
 carto_basemap_vector_url: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
