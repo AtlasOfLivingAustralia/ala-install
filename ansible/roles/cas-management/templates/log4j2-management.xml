@@ -37,7 +37,9 @@
         <AsyncLogger name="org.apereo.inspektr.audit.support.Slf4jLoggingAuditTrailManager" level="info"/>
         <Root level="warn">
             <AppenderRef ref="cas-management"/>
-            <!-- <AppenderRef ref="console"/> -->
+{% if deployment_type | default('vm') != 'vm' %}
+            <AppenderRef ref="console"/>
+{% endif %}
         </Root>
     </Loggers>
 </Configuration>

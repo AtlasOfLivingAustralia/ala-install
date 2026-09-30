@@ -103,6 +103,9 @@
         <AsyncLogger name="au.org.ala.cas" level="info" includeLocation="true" />
         <AsyncRoot level="error">
             <AppenderRef ref="casFile"/>
+{% if deployment_type | default('vm') != 'vm' %}
+            <AppenderRef ref="casConsole"/>
+{% endif %}
         </AsyncRoot>
     </Loggers>
 </Configuration>
