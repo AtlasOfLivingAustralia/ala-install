@@ -194,6 +194,7 @@ defaultZoomLevel: {{ default_map_zoom }}
 map:
   default:
     url: "{{ default_map_url | default(carto_basemap_url ~ (('?key=' ~ carto_api_key) if carto_api_key else '')) }}"
+    vectorTileUrl: "{{ default_map_vector_url | default(carto_basemap_vector_url ~ (('?key=' ~ carto_api_key) if carto_api_key else '')) }}"
   simpleMapButton: {{ map_simpleMapButton }}
   records:
     colour: {{ default_map_colour }}
