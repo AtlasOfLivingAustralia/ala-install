@@ -146,9 +146,11 @@ registration:
   activationArticle: {{ activation_article | default('https://support.ala.org.au/support/solutions/articles/6000195196-i-created-an-account-but-did-not-receive-the-account-activation-email') }}
 
 recaptcha:
-  baseUrl: {{ recaptcha_base_url | default('https://www.google.com/recaptcha/api/') }}
+  baseUrl: {{ recaptcha_base_url | default('https://recaptchaenterprise.googleapis.com/') }}
   siteKey: {{ userdetails_recaptcha_site_key | default('') }}
   secretKey: {{ userdetails_recaptcha_secret_key | default('') }}
+  projectId: {{ userdetails_recaptcha_project_id | default('') }}
+  apiKey: {{ userdetails_recaptcha_api_key | default('') }}
 
 ala:
   baseURL: {{ ala_base_url | default('https://www.ala.org.au') }}
@@ -204,8 +206,8 @@ webservice:
   apiKey: {{ api_key }}
   jwt: {{ userdetails_jwt_client_enabled | default('true') }}
   jwt-scopes: {{ userdetails_jwt_scopes | default('openid ala/internal') }}
-  client-id: {{ userdetails_client_id | default(userdetails_jwt_clientid) | default('') }}
-  client-secret: {{ userdetails_client_secret | default(userdetails_jwt_secret) | default('') }}
+  client-id: {{ userdetails_client_id | default(userdetails_jwt_clientid) | default(userdetails_oidc_client_id) | default('') }}
+  client-secret: {{ userdetails_client_secret | default(userdetails_jwt_secret) | default(userdetails_oidc_secret) | default('') }}
 
 # Default primary fields for Export to CSV functionality
 admin.export.csv.primary.fields: {{ admin_export_csv_primary_fields | default('id,userName,firstName,lastName,email,activated,locked,created')}}
