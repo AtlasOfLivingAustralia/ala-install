@@ -146,9 +146,11 @@ registration:
   activationArticle: {{ activation_article | default('https://support.ala.org.au/support/solutions/articles/6000195196-i-created-an-account-but-did-not-receive-the-account-activation-email') }}
 
 recaptcha:
-  baseUrl: {{ recaptcha_base_url | default('https://www.google.com/recaptcha/api/') }}
+  baseUrl: {{ recaptcha_base_url | default('https://recaptchaenterprise.googleapis.com/') }}
   siteKey: {{ userdetails_recaptcha_site_key | default('') }}
   secretKey: {{ userdetails_recaptcha_secret_key | default('') }}
+  projectId: {{ userdetails_recaptcha_project_id | default('') }}
+  apiKey: {{ userdetails_recaptcha_api_key | default('') }}
 
 ala:
   baseURL: {{ ala_base_url | default('https://www.ala.org.au') }}
