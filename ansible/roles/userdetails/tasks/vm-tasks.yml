@@ -7,6 +7,7 @@
       tags: userdetails
   vars:
     service_name: "userdetails"
+    jvm_dns_cache_override: true
     jar_url: '{{ userdetails_jar_url }}'
     use_openjdk17: "{{ user_details_version is version('3.3', '>=') }}"
     use_openjdk11: "{{ (user_details_version is version('3', '>=')) and (user_details_version is version('3.3', '<')) }}"

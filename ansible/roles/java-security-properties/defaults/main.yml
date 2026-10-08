@@ -1,0 +1,47 @@
+---
+# Per-service JVM security property overrides, written to a file and loaded via
+# -Djava.security.properties. Used by exec-jar, exec-war and tomcat.
+#
+# The effective properties are merged from these layers (later wins, see vars/main.yml):
+#   1. java_legacy_tls_properties                         (JDKs where setfacts declares java_legacy_tls)
+#   2. java_security_properties_defaults                  (inventory, all services)
+#   3. jvm_dns_cache_properties                           (app roles that set jvm_dns_cache_override)
+#   4. java_security_properties                           (passed in by an app role)
+#   5. java_security_properties_overrides[service_name]   (inventory, per service)
+# A property with a null or empty value is dropped. If nothing is left, no file is
+# written and no -Djava.security.properties flag is added.
+
+java_security_properties_enabled: true
+
+java_security_properties_defaults: {}
+
+# Re-enables TLSv1 and TLSv1.1 on openjdk8 (ala-install#481) by removing them from
+# jdk.tls.disabledAlgorithms. Java can't remove single entries from that list, so this
+# replaces the whole list with the snapshot below, undoing any later JDK additions.
+# Set to {} to stop re-enabling legacy TLS.
+java_legacy_tls_properties:
+  jdk.tls.disabledAlgorithms: "SSLv3, RC4, DES, MD5withRSA, DH keySize < 1024, EC keySize < 224, 3DES_EDE_CBC, anon, NULL, include jdk.disabled.namedCurves"
+
+# Opt-in, set by app roles that need to follow DNS changes quickly, e.g. an RDS
+# blue/green switchover. Otherwise the JDK defaults (30s / 10s) are left alone.
+jvm_dns_cache_override: false
+jvm_dns_cache_ttl: 5
+jvm_dns_cache_negative_ttl: 5
+jvm_dns_cache_properties:
+  networkaddress.cache.ttl: "{{ jvm_dns_cache_ttl }}"
+  networkaddress.cache.negative.ttl: "{{ jvm_dns_cache_negative_ttl }}"
+
+# Extra/overriding properties for a single service, intended to be passed by the app role
+java_security_properties: {}
+
+# Inventory knob, keyed by service_name, e.g.
+# java_security_properties_overrides:
+#   cas:
+#     networkaddress.cache.ttl: 30
+#   apikey:
+#     jdk.tls.disabledAlgorithms: ~   # use the JDK's own list, i.e. no legacy TLS
+java_security_properties_overrides: {}
+
+java_security_properties_file: "/opt/atlas/{{ service_name }}/security.properties"
+java_security_properties_owner: "{{ service_owner | default(service_name) }}"
+java_security_properties_group: "{{ service_group | default(service_owner | default(service_name)) }}"

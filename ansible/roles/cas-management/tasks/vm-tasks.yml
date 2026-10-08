@@ -8,6 +8,7 @@
       value: /data/cas-management/config/
     log_config_filename: 'log4j2.xml'
     service_name: "cas-management"
+    jvm_dns_cache_override: true
     service_owner: "{{ cas_user | default('cas') }}"
     service_group: "{{ cas_user | default('cas') }}"
     use_openjdk11: "{{ cas_management_version is version('6', '>=') }}"
