@@ -194,6 +194,10 @@ aws:
     cloudwatch:
       metrics:
         enabled: {{ image_service_s3_cloudwatch_metrics_enabled | default('false') }}
+    upload:
+      derivative:
+        pool:
+          enabled: {{ image_service_s3_upload_pooling_enabled | default('false') }}
 
 management:
   metrics:
