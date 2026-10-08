@@ -1,0 +1,5 @@
+# Java security property overrides for {{ service_name }}
+# Managed by Ansible (java-security-properties role), loaded via -Djava.security.properties
+{% for key, value in _java_security_properties | dictsort %}
+{{ key }}={{ value }}
+{% endfor %}

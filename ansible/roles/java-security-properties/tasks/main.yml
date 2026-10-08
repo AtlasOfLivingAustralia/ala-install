@@ -1,0 +1,37 @@
+- name: "Set {{ service_name }} JVM security properties"
+  template:
+    src: security.properties.j2
+    dest: "{{ java_security_properties_file }}"
+    owner: "{{ java_security_properties_owner }}"
+    group: "{{ java_security_properties_group }}"
+    mode: '0644'
+  when: _java_security_properties_active | bool
+  notify: "restart {{ service_name }}"
+  tags:
+  - service
+  - service-conf
+
+- name: "Remove {{ service_name }} JVM security properties"
+  file:
+    path: "{{ java_security_properties_file }}"
+    state: absent
+  when: not _java_security_properties_active | bool
+  notify: "restart {{ service_name }}"
+  tags:
+  - service
+  - service-conf
+
+- name: "Set {{ service_name }} java security opts"
+  set_fact:
+    service_java_security_opts: "{{ java_security_opts | default('', true) }}"
+  tags:
+  - service
+  - service-conf
+
+- name: "Add {{ service_name }} JVM security properties to java security opts"
+  set_fact:
+    service_java_security_opts: "{{ service_java_security_opts }} -Djava.security.properties={{ java_security_properties_file }}"
+  when: _java_security_properties_active | bool
+  tags:
+  - service
+  - service-conf

@@ -11,6 +11,7 @@
       value: /data/cas/config/pwe.properties
     log_config_filename: 'log4j2.xml'
     service_name: "cas"
+    jvm_dns_cache_override: true
     use_openjdk11: "{{ cas_version is version('6', '>=') }}"
     use_openjdk8: "{{ cas_version is version('6', '<') }}"
     java_headless: true

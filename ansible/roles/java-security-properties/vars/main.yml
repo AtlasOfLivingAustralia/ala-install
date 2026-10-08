@@ -1,0 +1,17 @@
+---
+_java_security_properties_layers:
+  - "{{ java_legacy_tls | default(false) | bool | ternary(java_legacy_tls_properties, {}) }}"
+  - "{{ java_security_properties_defaults }}"
+  - "{{ jvm_dns_cache_override | bool | ternary(jvm_dns_cache_properties, {}) }}"
+  - "{{ java_security_properties }}"
+  - "{{ java_security_properties_overrides[service_name] | default({}) }}"
+
+_java_security_properties: >-
+  {{ _java_security_properties_layers
+     | combine
+     | dict2items
+     | rejectattr('value', 'none')
+     | rejectattr('value', 'equalto', '')
+     | items2dict }}
+
+_java_security_properties_active: "{{ java_security_properties_enabled | bool and _java_security_properties | length > 0 }}"

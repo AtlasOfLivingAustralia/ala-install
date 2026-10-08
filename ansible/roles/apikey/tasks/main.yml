@@ -86,6 +86,7 @@
       tags: apikey
   vars:
     service_name: "apikey"
+    jvm_dns_cache_override: true
     jar_url: '{{ apikey_jar_url }}'
     use_openjdk11: "{{ apikey_version is version('1.7.0', '>=') }}"
     use_openjdk8: "{{ apikey_version is version('1.7.0', '<') }}"
