@@ -3,7 +3,7 @@
 
 - name: "Show java version"
   debug:
-    msg: "Using java versions: java8={{ use_openjdk8 }} java11={{ use_openjdk11 }} java17={{ use_openjdk17 }} java21={{ use_openjdk21 }} java25={{ use_openjdk25 }}"
+    msg: "Using java versions: java8={{ use_openjdk8 }} java11={{ use_openjdk11 }} java17={{ use_openjdk17 }}'"
   tags:
     - java
 
@@ -21,6 +21,3 @@
 
 - include_tasks: openjdk-java-21.yml
   when: use_openjdk21 is defined and use_openjdk21 | bool == True
-
-- include_tasks: openjdk-java-25.yml
-  when: use_openjdk25 is defined and use_openjdk25 | bool == True
