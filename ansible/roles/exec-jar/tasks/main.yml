@@ -50,6 +50,7 @@
     src: systemd.service
     dest: "/etc/systemd/system/{{service_name}}.service"
   register: service
+  notify: "restart {{service_name}}"
   tags:
   - service
 
