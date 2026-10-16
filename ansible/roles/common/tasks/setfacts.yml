@@ -222,6 +222,14 @@
   tags:
     - setfacts
 
+- name: set java defaults for openjdk25
+  set_fact:
+    java_security_opts: "-Dlog4j2.formatMsgNoLookups=true{% if use_compact_object_headers | default(false) | bool %} -XX:+UseCompactObjectHeaders{% endif %}"
+    java_home: "/usr/lib/jvm/java-25-openjdk-{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
+  when: use_openjdk25 is defined and use_openjdk25 | bool == True
+  tags:
+    - setfacts
+
 - name: set java defaults for openjdk21 (amd64)
   set_fact:
     java_security_opts: -Dlog4j2.formatMsgNoLookups=true
