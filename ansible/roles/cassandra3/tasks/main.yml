@@ -5,7 +5,7 @@
 
 - name: Include docker tasks
   include_tasks: docker-tasks.yml
-  when: deployment_type == 'swarm'
+  when: (deployment_type | default('vm')) != 'vm'
 
 - name: Include VM tasks
   import_tasks: vm-tasks.yml
