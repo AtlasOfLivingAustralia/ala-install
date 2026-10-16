@@ -4,7 +4,11 @@ After=syslog.target
 
 [Service]
 User={{ service_owner | default(service_name) }}
+{% if java_jar | bool -%}
+ExecStart=/bin/bash -c '. /opt/atlas/{{service_name}}/{{service_name}}.conf && exec "$$JAVA_HOME/bin/java" $$JAVA_OPTS -jar /opt/atlas/{{service_name}}/{{service_name}}.jar'
+{% else -%}
 ExecStart=/opt/atlas/{{service_name}}/{{service_name}}.jar
+{% endif -%}
 SuccessExitStatus=143
 {% if service_restart_on_failure is defined and service_restart_on_failure | bool == True %}
 Restart=on-failure

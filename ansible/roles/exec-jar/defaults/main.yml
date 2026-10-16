@@ -1,1 +1,4 @@
 http_user_agent: "{{ service_name }}/{{ version }}"
+# Run with `java -jar` instead of executing the archive. Spring Boot 4 jars are
+# not shell scripts; the sibling .conf is sourced so JAVA_HOME and JAVA_OPTS still apply.
+java_jar: false
