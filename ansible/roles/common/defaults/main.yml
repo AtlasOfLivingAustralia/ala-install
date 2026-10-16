@@ -4,3 +4,6 @@ use_openjdk8: True
 use_openjdk11: False
 use_openjdk17: False
 use_openjdk21: False
+use_openjdk25: False
+# OpenJDK 25 only. Adds -XX:+UseCompactObjectHeaders when true.
+use_compact_object_headers: False
