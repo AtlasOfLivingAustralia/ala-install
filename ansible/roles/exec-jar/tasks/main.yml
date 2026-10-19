@@ -50,6 +50,7 @@
     src: systemd.service
     dest: "/etc/systemd/system/{{service_name}}.service"
   register: service
+  notify: "restart {{service_name}}"
   tags:
   - service
 
@@ -141,6 +142,18 @@
   tags:
   - service
   - service-conf
+
+- name: "Install {{service_name}} java launcher"
+  template:
+    src: java-jar.sh
+    dest: "/opt/atlas/{{service_name}}/{{service_name}}.sh"
+    owner: "{{ service_owner | default(service_name) }}"
+    group: "{{ service_group | default(service_name) }}"
+    mode: "0755"
+  notify: "restart {{service_name}}"
+  when: java_jar | bool
+  tags:
+  - service
 
 # Don't force start the service, rely on the handlers to do it
 # - name: "Start {{service_name}} service"

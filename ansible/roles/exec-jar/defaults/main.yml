@@ -1,1 +1,4 @@
 http_user_agent: "{{ service_name }}/{{ version }}"
+# Start with java -jar via {{service_name}}.sh. Required for Spring Boot 4 jars,
+# which no longer contain an embedded launch script.
+java_jar: false
