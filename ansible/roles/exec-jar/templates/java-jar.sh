@@ -5,23 +5,23 @@ APP_HOME="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
 cd "$APP_HOME"
 . "${APP_HOME}/{{ service_name }}.conf"
 
-# service.conf assigns JAVA_OPTS as one double-quoted string, so quotes in a
-# jvm_params entry such as -Dapp.label='Bio Collect' are stored literally.
-# An unquoted ${JAVA_OPTS} expansion splits on the space and does not treat
-# those quotes as argument delimiters. Java then takes Collect' as the main
-# class and never applies -jar. xargs honours the quotes without executing
-# the string.
+# JAVA_OPTS wraps settings in double quotes, preserving literal inner quotes like -Dapp.label='Bio Collect'.
+# Standard unquoted expansion breaks on spaces and drops quotes, confusing Java's main class parser.
+# xargs respects quoted substrings without risk of code execution (unlike eval), safely splitting arguments.
 java_opts=()
 if [[ -n ${JAVA_OPTS//[[:space:]]/} ]]; then
   set -o pipefail
-  if ! mapfile -t java_opts < <(printf '%s\n' "${JAVA_OPTS}" | xargs -n1 printf '%s\n'); then
+  if ! parsed=$(printf '%s\n' "${JAVA_OPTS}" | xargs -n1 printf '%s\n'); then
     echo "Failed to parse JAVA_OPTS. A jvm_params value has an unmatched quote." >&2
     exit 1
   fi
   set +o pipefail
+
+  # Populate the array safely from the verified variable
+  mapfile -t java_opts <<< "${parsed}"
 fi
 
-if [[ ${#java_opts[@]} -eq 0 ]]; then
+if [[ {% raw %}${#java_opts[@]}{% endraw %} -eq 0 ]]; then
   echo "Failed to parse JAVA_OPTS." >&2
   exit 1
 fi
