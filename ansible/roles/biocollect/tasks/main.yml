@@ -17,6 +17,7 @@
     name: exec-jar
   vars:
     service_name: "biocollect"
+    java_jar: true
     jar_url: '{{ biocollect_artifact_url }}'
     maven_repo_url: '{{ biocollect_repo_url }}'
     maven_repo_username: '{{ biocollect_repo_username }}'
@@ -32,6 +33,7 @@
     name: exec-jar
   vars:
     service_name: "biocollect"
+    java_jar: true
     jar_url: '{{ biocollect_artifact_url }}'
   tags:
     - deploy

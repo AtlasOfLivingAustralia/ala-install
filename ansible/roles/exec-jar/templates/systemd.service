@@ -4,7 +4,12 @@ After=syslog.target
 
 [Service]
 User={{ service_owner | default(service_name) }}
+{% if java_jar | bool -%}
+WorkingDirectory=/opt/atlas/{{service_name}}
+ExecStart=/opt/atlas/{{service_name}}/{{service_name}}.sh
+{% else -%}
 ExecStart=/opt/atlas/{{service_name}}/{{service_name}}.jar
+{% endif -%}
 SuccessExitStatus=143
 {% if service_restart_on_failure is defined and service_restart_on_failure | bool == True %}
 Restart=on-failure
