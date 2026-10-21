@@ -259,3 +259,71 @@
     - cas-dbs
   run_once: true
   when: cas_add_mongo_users is defined and cas_add_mongo_users
+
+# CAS reads the audit repository on every authentication attempt (the throttle
+# interceptor) and nothing ever indexes that collection: MongoDbAuditTrailManager only
+# implements saveAuditRecord/getAuditRecordsSince/removeAll, in 6.5.x and in master
+# alike. Once it grows, every login becomes a COLLSCAN that blows past
+# cas.audit.mongo.timeout and 500s on /cas/login.
+#
+# Opt-in via cas_audit_indexes so inventories that don't ask for it behave exactly as
+# before. Uses the mongo/mongosh shell rather than community.mongodb.mongodb_index
+# because the mongo tasks above call mongodb_user unqualified - the collection is not
+# guaranteed to be installed everywhere this role runs.
+#
+- name: Render CAS audit repository index script
+  template:
+    src: cas-audit-indexes.js.j2
+    dest: /tmp/cas-audit-indexes.js
+    mode: "0600"
+  run_once: true
+  when: cas_audit_indexes | default(false) | bool
+  tags:
+    - cas-dbs
+    - cas-audit-indexes
+
+# Pass the script as a file, never on stdin. Fed through stdin mongosh becomes a REPL: an
+# uncaught exception is printed, execution continues to the next line and it still exits 0,
+# so a broken run reports success. The legacy shell takes the script as a positional
+# argument and aborts on an uncaught throw.
+- name: Create CAS audit repository indexes (ubuntu < 22.04)
+  command: >
+    mongo --host "{{ cas_audit_host | default('localhost') }}"
+    --port "{{ cas_audit_port | default('27017') }}"
+    --username "{{ mongodb_root_username }}" --password "{{ mongodb_root_password }}"
+    --authenticationDatabase "{{ mongodb_root_database | default('admin') }}"
+    "{{ cas_audit_db | default('cas-audit-repository') }}" --quiet
+    /tmp/cas-audit-indexes.js
+  register: cas_audit_indexes_result
+  changed_when: "'CAS_AUDIT_INDEXES_CHANGED' in cas_audit_indexes_result.stdout"
+  failed_when: >-
+    cas_audit_indexes_result.rc != 0
+    or 'CAS_AUDIT_INDEX_COUNT=' not in cas_audit_indexes_result.stdout
+  run_once: true
+  when:
+    - cas_audit_indexes | default(false) | bool
+    - ansible_distribution_version is version('22.04', '<')
+  tags:
+    - cas-dbs
+    - cas-audit-indexes
+
+- name: Create CAS audit repository indexes (ubuntu >= 22.04)
+  command: >
+    mongosh --host "{{ cas_audit_host | default('localhost') }}"
+    --port "{{ cas_audit_port | default('27017') }}"
+    --username "{{ mongodb_root_username }}" --password "{{ mongodb_root_password }}"
+    --authenticationDatabase "{{ mongodb_root_database | default('admin') }}"
+    "{{ cas_audit_db | default('cas-audit-repository') }}" --quiet
+    --file /tmp/cas-audit-indexes.js
+  register: cas_audit_indexes_result
+  changed_when: "'CAS_AUDIT_INDEXES_CHANGED' in cas_audit_indexes_result.stdout"
+  failed_when: >-
+    cas_audit_indexes_result.rc != 0
+    or 'CAS_AUDIT_INDEX_COUNT=' not in cas_audit_indexes_result.stdout
+  run_once: true
+  when:
+    - cas_audit_indexes | default(false) | bool
+    - ansible_distribution_version is version('22.04', '>=')
+  tags:
+    - cas-dbs
+    - cas-audit-indexes

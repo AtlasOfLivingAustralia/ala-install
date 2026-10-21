@@ -1,0 +1,74 @@
+// CAS audit repository indexes - idempotent, safe to re-run on every play.
+//
+// Why this exists: CAS hits this collection on EVERY authentication attempt, from
+// MongoDbThrottledSubmissionHandlerInterceptorAdapter.exceedsThreshold, and nothing
+// ever indexes it. Apereo's MongoDbAuditTrailManager only implements saveAuditRecord /
+// getAuditRecordsSince / removeAll - no index creation, no TTL - in 6.5.x and in master
+// alike. So the collection grows unbounded and every login degrades into a COLLSCAN that
+// blows past cas.audit.mongo.timeout (PT5S), surfacing as MongoSocketReadTimeoutException
+// and a 500 on /cas/login.
+//
+// Index shape: clientIpAddress is the only selective field - applicationCode is always
+// "CAS" and principal is null in >99.9% of the throttle queries, so including them would
+// only inflate the index and slow down every audit write. whenActionWasPerformed serves
+// both the $gte range and the descending sort; the remaining predicates stay as a
+// residual filter over a handful of documents. `background` is deliberately absent: it
+// has been deprecated (and ignored) since MongoDB 4.2.
+//
+// Two mongosh traps this script is shaped around, both found the hard way in CI:
+//
+//  1. getIndexes() raises NamespaceNotFound when the collection does not exist, which
+//     is the NORMAL state on a fresh install - this runs before CAS writes its first
+//     audit record. So create the collection up front; CAS would create it anyway, and
+//     this way the index is in place before the first write.
+//  2. The shell API is promise-based. Only the top level of a script gets an implicit
+//     await, so a mongo call inside a plain function returns an unresolved Promise and
+//     a try/catch around it never fires. Every db call below therefore stays at the top
+//     level - do not "tidy" them into a helper function.
+//
+// Run it with `mongosh --file`, never with `< script.js`: stdin puts mongosh in REPL
+// mode, where an uncaught exception is printed and the script carries on to the next
+// line, still exiting 0. That turned a broken run into a green one. The legacy `mongo`
+// shell aborts the script on an uncaught throw, so it is safe there either way.
+{% set audit_collection = cas_audit_collection | default('MongoDbCasAuditRepository') %}
+var coll = {{ audit_collection | to_json }};
+var retentionDays = {{ cas_audit_retention_days | default(0) | int }};
+if (!db.getCollectionNames().includes(coll)) {
+  db.createCollection(coll);
+}
+var c = db.getCollection(coll);
+var changed = 0;
+
+var before = c.getIndexes().length;
+c.createIndex({ clientIpAddress: 1, whenActionWasPerformed: -1 },
+              { name: "idx_cas_throttle_lookup" });
+if (c.getIndexes().length > before) {
+  changed++;
+}
+
+// Retention. createIndex cannot change expireAfterSeconds on an index that already
+// exists (it fails with IndexOptionsConflict), so each transition is handled explicitly.
+// Default is 0 = no TTL: the audit trail is personal data and the retention period is
+// each institution's policy to set. Enabling it on an already-large collection purges
+// the backlog in the background - do it off-peak.
+var ttlName = "idx_cas_audit_ttl";
+var ttl = c.getIndexes().filter(function (i) { return i.name === ttlName; })[0];
+if (retentionDays > 0) {
+  var seconds = retentionDays * 86400;
+  if (!ttl) {
+    c.createIndex({ whenActionWasPerformed: 1 }, { name: ttlName, expireAfterSeconds: seconds });
+    changed++;
+  } else if (ttl.expireAfterSeconds !== seconds) {
+    db.runCommand({ collMod: coll, index: { name: ttlName, expireAfterSeconds: seconds } });
+    changed++;
+  }
+} else if (ttl) {
+  c.dropIndex(ttlName);
+  changed++;
+}
+
+// Sentinels for changed_when and for the read-back in the calling task.
+if (changed > 0) {
+  print("CAS_AUDIT_INDEXES_CHANGED");
+}
+print("CAS_AUDIT_INDEX_COUNT=" + c.getIndexes().length);
