@@ -44,11 +44,12 @@
   import_tasks: vm-tasks.yml
   when: deployment_type == 'vm'
 
+# No run_once here: the next task templates into this directory on *every* host, so creating it
+# only on the first one makes the rest fail with "Destination directory does not exist".
 - name: ensure sds directories exist
   file: path={{item}} state=directory
   with_items:
     - "{{ data_dir }}/sds/config"
-  run_once: true
   tags:
     - sds
     - properties
