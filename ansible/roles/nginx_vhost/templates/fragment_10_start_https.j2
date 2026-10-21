@@ -1,5 +1,7 @@
 
 server {
     listen 443 ssl {% if nginx_proxy_protocol_enabled | bool %}proxy_protocol{% endif %};
+{% if nginx_listen_ipv6 | bool %}
     listen [::]:443 ssl {% if nginx_proxy_protocol_enabled | bool %}proxy_protocol{% endif %};
+{% endif %}
     {% if nginx_http2_enabled | bool %}http2 on;{% endif %}
