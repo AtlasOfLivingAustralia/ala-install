@@ -226,6 +226,26 @@
 - name: set java defaults
   set_fact:
     java_legacy_tls: false
+    # derived from use_* JDK flags; use jvm_params / tomcat_java_opts for per-service flags
+    java_jvm_opts: ""
+  tags:
+    - setfacts
+
+- name: set java defaults for openjdk25 (amd64)
+  set_fact:
+    java_security_opts: -Dlog4j2.formatMsgNoLookups=true
+    java_jvm_opts: "{{ '-XX:+UseCompactObjectHeaders' if use_compact_object_headers | default(false) | bool else '' }}"
+    java_home: /usr/lib/jvm/java-25-openjdk-amd64
+  when: use_openjdk25 is defined and use_openjdk25 | bool == True and ansible_architecture != "aarch64"
+  tags:
+    - setfacts
+
+- name: set java defaults for openjdk25 (arm64)
+  set_fact:
+    java_security_opts: -Dlog4j2.formatMsgNoLookups=true
+    java_jvm_opts: "{{ '-XX:+UseCompactObjectHeaders' if use_compact_object_headers | default(false) | bool else '' }}"
+    java_home: /usr/lib/jvm/java-25-openjdk-arm64
+  when: use_openjdk25 is defined and use_openjdk25 | bool == True and ansible_architecture == "aarch64"
   tags:
     - setfacts
 
