@@ -1,11 +1,13 @@
 ---
 
+# Nothing in this file may be run_once: the index is a per-host artifact, and every host
+# that mounts {{ final_dest }} needs its own copy on its own disk.
+
 - name: ensure lucene base directory exists
   file: path={{item}} state=directory
   with_items:
     - "{{ data_dir }}/lucene"
     - "/tmp/nm"
-  run_once: true
   tags:
     - nameindex
 
@@ -16,7 +18,6 @@
     force: "{{ force_nameindex_download | default(false) }}"
     timeout: 10000
     checksum: "sha1:{{ sha1 }}"
-  run_once: true
   tags:
     - nameindex
 
@@ -26,7 +27,6 @@
     dest: "/tmp/nm"
     remote_src: true
     extra_opts: ["--no-same-owner"]
-  run_once: true
   register: unarchive_result
   tags:
     - nameindex
@@ -36,7 +36,6 @@
     paths: "/tmp/nm"
     file_type: directory
     recurse: false
-  run_once: true
   register: find_result
   tags:
     - nameindex
@@ -52,7 +51,6 @@
     dest: "{{ final_dest }}"
     delete: true
     recursive: true
-  run_once: true
   delegate_to: "{{ inventory_hostname }}"
   tags:
     - nameindex
@@ -64,7 +62,6 @@
     # owner: "{{ namematching_user }}"
     # group: "{{ namematching_user }}"
     recurse: true
-  run_once: true
   tags:
     - nameindex
     - debug

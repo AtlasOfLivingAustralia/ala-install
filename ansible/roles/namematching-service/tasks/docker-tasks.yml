@@ -1,9 +1,9 @@
 ---
 - name: ensure target db directories exist
+  # Not run_once: every host that runs the service needs this directory.
   file: path={{item}} state=directory
   with_items:
     - "{{ ala_namematching_service_docker_dir }}"
-  run_once: true
   tags:
     - docker
     - docker-service
