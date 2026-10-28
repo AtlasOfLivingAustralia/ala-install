@@ -1,2 +1,12 @@
 # To avoid collisions in shared data dirs we use inventory_hostname
 docker_dir: "{{ docker_data_dir | default('/data/docker/' + inventory_hostname) }}"
+
+
+# Container log rotation for the daemon. The json-file driver never truncates
+# unless log-opts says so, so a long lived container writes until the filesystem
+# fills: we lost a host that way, with two containers holding 5.4 GB and 3.5 GB
+# of logs on a 29 GB root, and the next deploy died on "No space left on device"
+# before it could do anything. 100m x 5 caps each container at 500 MB.
+docker_log_driver: json-file
+docker_log_max_size: 100m
+docker_log_max_file: "5"
