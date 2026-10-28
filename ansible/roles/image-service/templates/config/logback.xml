@@ -23,6 +23,14 @@
         </encoder>
     </appender>
 
+{% if deployment_type | default('vm') != 'vm' %}
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} : %m%n%wex</pattern>
+        </encoder>
+    </appender>
+{% endif %}
     <logger name="org.hibernate.orm.deprecation" level="OFF" />
 
     <logger name="au.org.ala" level="WARN" />
@@ -40,5 +48,8 @@
 
     <root level="ERROR">
         <appender-ref ref="APPLICATION_LOG" />
+{% if deployment_type | default('vm') != 'vm' %}
+        <appender-ref ref="CONSOLE" />
+{% endif %}
     </root>
 </configuration>

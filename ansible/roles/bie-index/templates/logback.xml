@@ -38,6 +38,13 @@
         </encoder>
     </appender>
 
+{% if deployment_type | default('vm') != 'vm' %}
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} : %m%n%wex</pattern>
+        </encoder>
+    </appender>
+{% endif %}
     <logger name="org.grails.config.NavigableMap" level="ERROR"/>
 
     <logger name="au.org.ala" level="INFO">
@@ -56,6 +63,9 @@
 
     <root level="WARN">
         <appender-ref ref="TOMCAT_LOG" />
+{% if deployment_type | default('vm') != 'vm' %}
+        <appender-ref ref="CONSOLE" />
+{% endif %}
     </root>
 
 </configuration>
