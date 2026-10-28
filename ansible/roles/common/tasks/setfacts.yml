@@ -222,9 +222,19 @@
   tags:
     - setfacts
 
+# Reset per-JDK facts so a previous role's JDK doesn't leak into this one
+- name: set java defaults
+  set_fact:
+    java_legacy_tls: false
+    # derived from use_* JDK flags; use jvm_params / tomcat_java_opts for per-service flags
+    java_jvm_opts: ""
+  tags:
+    - setfacts
+
 - name: set java defaults for openjdk25 (amd64)
   set_fact:
-    java_security_opts: "-Dlog4j2.formatMsgNoLookups=true{% if use_compact_object_headers | default(false) | bool %} -XX:+UseCompactObjectHeaders{% endif %}"
+    java_security_opts: -Dlog4j2.formatMsgNoLookups=true
+    java_jvm_opts: "{{ '-XX:+UseCompactObjectHeaders' if use_compact_object_headers | default(false) | bool else '' }}"
     java_home: /usr/lib/jvm/java-25-openjdk-amd64
   when: use_openjdk25 is defined and use_openjdk25 | bool == True and ansible_architecture != "aarch64"
   tags:
@@ -232,7 +242,8 @@
 
 - name: set java defaults for openjdk25 (arm64)
   set_fact:
-    java_security_opts: "-Dlog4j2.formatMsgNoLookups=true{% if use_compact_object_headers | default(false) | bool %} -XX:+UseCompactObjectHeaders{% endif %}"
+    java_security_opts: -Dlog4j2.formatMsgNoLookups=true
+    java_jvm_opts: "{{ '-XX:+UseCompactObjectHeaders' if use_compact_object_headers | default(false) | bool else '' }}"
     java_home: /usr/lib/jvm/java-25-openjdk-arm64
   when: use_openjdk25 is defined and use_openjdk25 | bool == True and ansible_architecture == "aarch64"
   tags:
@@ -288,7 +299,8 @@
 
 - name: set java defaults for openjdk8 (amd64)
   set_fact:
-    java_security_opts: -Djava.security.properties=/etc/java-8-openjdk/security/enableLegacyTLS.security -Dlog4j2.formatMsgNoLookups=true
+    java_security_opts: -Dlog4j2.formatMsgNoLookups=true
+    java_legacy_tls: true
     java_home: /usr/lib/jvm/java-8-openjdk-amd64
   when: use_openjdk8 is defined and use_openjdk8 | bool == True and ansible_architecture != "aarch64"
   tags:
@@ -296,7 +308,8 @@
 
 - name: set java defaults for openjdk8 (arm64)
   set_fact:
-    java_security_opts: -Djava.security.properties=/etc/java-8-openjdk/security/enableLegacyTLS.security -Dlog4j2.formatMsgNoLookups=true
+    java_security_opts: -Dlog4j2.formatMsgNoLookups=true
+    java_legacy_tls: true
     java_home: /usr/lib/jvm/java-8-openjdk-arm64
   when: use_openjdk8 is defined and use_openjdk8 | bool == True and ansible_architecture == "aarch64"
   tags:
