@@ -10,11 +10,23 @@ image_optimisation_packages:
   - gifsicle
   - webp
   - libavif-bin
-libvips_packages:
+# libvips and friends were renamed for the 64-bit time_t (t64) transition and
+# the libtiff SONAME bump. Ubuntu 24.04+ (and current Debian) ship the t64
+# names; Ubuntu < 24.04 (e.g. 22.04) ship the legacy names. tasks/main.yml
+# probes for t64 at runtime and picks the matching list. See issue #975.
+libvips_packages_t64:
   - libvips42t64
   - libvips-tools
   - libvips-dev
   - libjpeg-turbo8
   - libpng16-16t64
   - libwebp7
-  - libtiff6 
+  - libtiff6
+libvips_packages_legacy:
+  - libvips42
+  - libvips-tools
+  - libvips-dev
+  - libjpeg-turbo8
+  - libpng16-16
+  - libwebp7
+  - libtiff5
