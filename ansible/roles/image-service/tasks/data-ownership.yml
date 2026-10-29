@@ -13,7 +13,7 @@
     set -o pipefail;
     find {{ (data_dir ~ '/image-service') | quote }}
     \( ! -user {{ image_user | default('image-service') | quote }} -o ! -group {{ image_user | default('image-service') | quote }} \)
-    -exec chown -v {{ image_user | default('image-service') | quote }}:{{ image_user | default('image-service') | quote }} {} + | wc -l
+    -exec chown -h -v {{ image_user | default('image-service') | quote }}:{{ image_user | default('image-service') | quote }} {} + | wc -l
   args:
     executable: /bin/bash
   register: image_service_data_ownership_fix

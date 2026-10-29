@@ -36,7 +36,11 @@ make_store() {
   done
   : > "$base/config/image-service-config.yml"
   : > "$base/exports/export.csv"
+  # A symlink to a file outside the store: fixing its ownership must not follow it.
+  : > "$dir/outside.jpg"
+  ln -s "$dir/outside.jpg" "$base/store/0/link.jpg"
   chgrp -R "$other" "$base"
+  chgrp "$other" "$dir/outside.jpg"
   if [ "$locked" = 1 ]; then
     mkdir "$base/store/locked"
     : > "$base/store/locked/img.jpg"
@@ -70,6 +74,7 @@ make_store "$f" 0
 out="$(play "$f" -e image_service_fix_data_ownership=true)" || { echo "$out"; fail "fix run failed"; }
 left="$(find "$f/image-service" \( -not -user "$user" -o -not -group "$user" \) | wc -l)"
 [ "$left" = 0 ] || fail "$left entries still not owned by $user:$user"
+[ "$(stat -c %G "$f/outside.jpg")" = "$other" ] || fail "a symlink in the store was followed"
 out="$(play "$f" -e image_service_fix_data_ownership=true)" || { echo "$out"; fail "second fix run failed"; }
 [ "$(echo "$out" | changed)" = 0 ] || { echo "$out"; fail "second fix run is not idempotent"; }
 
