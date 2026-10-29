@@ -56,6 +56,12 @@ options:
       - the port to automatically redirect to for requests that require servlet security-constraints
     required: false
     default: 443
+  server:
+    description:
+      - the value of the Server HTTP header emitted by the connector
+      - use a single space to send an empty Server header
+    required: false
+    default: " "
   state:
     description:
       - The connector state
@@ -132,7 +138,7 @@ def default_port(name):
     return 8080 if name == "HTTP/1.1" else 8009
 
 
-def add_connector(aug, protocol, service, bind_addr, port, max_post_size, connection_timeout=20000, uri_encoding="UTF-8", redirect_port=443, relaxed_query_chars=""):
+def add_connector(aug, protocol, service, bind_addr, port, max_post_size, connection_timeout=20000, uri_encoding="UTF-8", redirect_port=443, relaxed_query_chars="", server=" "):
 
     aug.defvar("service", "/files/server.xml/Server/Service[#attribute/name=\"%(service)s\"]" % locals())
 
@@ -156,6 +162,9 @@ def add_connector(aug, protocol, service, bind_addr, port, max_post_size, connec
     if len(relaxed_query_chars) > 0:
         aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/relaxedQueryChars" % locals(), relaxed_query_chars)
 
+    if server is not None:
+        aug.set("$service/Connector[#attribute/port=\"%(port)s\"]/#attribute/server" % locals(), server)
+
 def remove_connector(aug, protocol, port):
     aug.remove("$service/Connector[#attribute/port=\"%(port)s\"]" % locals())
 
@@ -177,6 +186,7 @@ def main():
             connection_timeout=dict(default=20000, type="int"),
             uri_encoding=dict(default="UTF-8"),
             redirect_port=dict(default=443, type="int"),
+            server=dict(default=" "),
             state=dict(default="present", choices=["absent", "present"]),
             tomcat_conf_dir=dict(default=None)
         ),
@@ -196,6 +206,7 @@ def main():
     connection_timeout = module.params["connection_timeout"]
     uri_encoding = module.params["uri_encoding"]
     redirect_port = module.params["redirect_port"]
+    server = module.params["server"]
     state = module.params["state"]
 
     tomcat_conf_dir = module.params["tomcat_conf_dir"]
@@ -217,7 +228,7 @@ def main():
         if state == "absent":
             remove_connector(aug, name, port)
         else:
-            add_connector(aug, name, service, bind_addr, port, max_post_size, connection_timeout, uri_encoding, redirect_port, relaxed_query_chars)
+            add_connector(aug, name, service, bind_addr, port, max_post_size, connection_timeout, uri_encoding, redirect_port, relaxed_query_chars, server)
 
         try:
             aug.save()
