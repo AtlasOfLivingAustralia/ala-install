@@ -1,0 +1,21 @@
+# A recursive chown of {{data_dir}}/image-service on every deploy walks the whole image store
+# (tens of millions of files on a large portal) and can take hours. Only the top directory is
+# set here: its subdirectories are created with the right owner by the "ensure target
+# directories exist" tasks, and the config files by their template task.
+# After migrating or rsyncing a store from another host, run once with
+# image_service_fix_data_ownership=true to fix the ownership of everything below it. That walks
+# the whole store, and only changes the entries whose owner or group is wrong.
+- name: set data ownership for {{data_dir}}/image-service
+  file: path={{data_dir}}/image-service state=directory owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}"
+
+- name: fix data ownership below {{data_dir}}/image-service (walks the whole store)
+  shell: >
+    set -o pipefail;
+    find {{ (data_dir ~ '/image-service') | quote }}
+    \( ! -user {{ image_user | default('image-service') | quote }} -o ! -group {{ image_user | default('image-service') | quote }} \)
+    -exec chown -v {{ image_user | default('image-service') | quote }}:{{ image_user | default('image-service') | quote }} {} + | wc -l
+  args:
+    executable: /bin/bash
+  register: image_service_data_ownership_fix
+  changed_when: image_service_data_ownership_fix.stdout | int > 0
+  when: image_service_fix_data_ownership | default(false) | bool
