@@ -67,7 +67,7 @@
     - properties
 
 - name: copy all config.properties
-  template: src={{ item }} dest={{data_dir}}/image-service/config/
+  template: src={{ item }} dest={{data_dir}}/image-service/config/ owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}"
   with_items:
     - "config/image-service-config.yml"
     - "config/{{ image_service_logfile | default('logback.groovy') }}"
@@ -111,23 +111,10 @@
     - image-service
     - properties
 
-- name: set data ownership for {{data_dir}}/image-service
-  file: path={{data_dir}}/image-service owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}" recurse=true
-  notify:
-     - restart image-service
+- import_tasks: data-ownership.yml
   tags:
     - image-service
     - properties
-    - image-service
-
-- name: set data ownership postgres for {{data_dir}}/image-service/exports
-  file: path={{data_dir}}/image-service/exports owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}" recurse=true
-  notify:
-     - restart image-service
-  tags:
-    - image-service
-    - properties
-    - image-service
 
 - name: set data ownership for /opt/atlas/image-service
   file: path=/opt/atlas/image-service owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}" recurse=true
