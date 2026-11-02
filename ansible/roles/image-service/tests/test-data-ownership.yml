@@ -1,0 +1,14 @@
+# Runs tasks/data-ownership.yml against a throwaway data_dir built by run-tests.sh.
+# Never point data_dir at a real image store.
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    image_user: "{{ lookup('env', 'USER') }}"
+  tasks:
+    - import_tasks: ../tasks/data-ownership.yml
+
+  handlers:
+    - name: restart image-service
+      fail:
+        msg: "an ownership task notified a restart of image-service"
