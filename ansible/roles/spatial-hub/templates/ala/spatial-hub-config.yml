@@ -109,7 +109,7 @@ layersService:
   url: "{{layers_service_url}}"
 
 lists:
-  version: "{{ lists_version | default(1) }}"
+  version: {{ lists_version | default(1) | int }}
   url: "{{ lists_url | default('https://lists.ala.org.au') }}"
   urlUi: "{{ lists_ui_url | default('https://lists.ala.org.au') }}"
   threatenedSpeciesUrl: "{{ lists_threatened_species_url | default('/ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true') }}"
@@ -117,7 +117,7 @@ lists:
   facets: {{ lists_facets | default(true) }}
   migratoryDR: {{ lists_migratory_data_resource_uid | default('dr1005') }}
   iconicSpeciesDR: {{ lists_iconic_species_data_resource_uid | default('dr781') }}
-{% if lists_version == 2 %}
+{% if (lists_version | default(1) | int) == 2 %}
   listTypes:
     - id: 'COMMON_HABITAT'
       label: "Common habitat list"
