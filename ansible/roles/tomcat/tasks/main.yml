@@ -99,7 +99,7 @@
   - restart tomcat
 
 - name: enable the HTTP 1.1 connector (Tomcat-9)
-  tomcat9_connector: name="HTTP/1.1" bind_addr="{{ tomcat_bind_addr }}" port="{{ tomcat_http_port }}" max_post_size="{{ tomcat_max_post_size }}" relaxed_query_chars="{{ tomcat_relaxed_query_chars }}" tomcat_conf_dir="{{ tomcat_conf_dir }}"
+  tomcat9_connector: name="HTTP/1.1" bind_addr="{{ tomcat_bind_addr }}" port="{{ tomcat_http_port }}" max_post_size="{{ tomcat_max_post_size }}" relaxed_query_chars="{{ tomcat_relaxed_query_chars }}" tomcat_conf_dir="{{ tomcat_conf_dir }}" server="{{ tomcat_server_header | default(' ') }}"
   when:
     - tomcat_http | bool == True
     - tomcat == "tomcat9"
@@ -125,6 +125,19 @@
     - tomcat_ajp | bool == True
     - tomcat == "tomcat9"
   tags: 
+    - tomcat
+  notify:
+    - restart tomcat
+
+- name: suppress Tomcat version in default error pages (Tomcat-9)
+  lineinfile:
+    path: "{{ tomcat_conf_dir }}/server.xml"
+    insertbefore: '</Host>'
+    line: '      <Valve className="org.apache.catalina.valves.ErrorReportValve" showReport="false" showServerInfo="false" />'
+    backup: yes
+  when:
+    - tomcat == "tomcat9"
+  tags:
     - tomcat
   notify:
     - restart tomcat
