@@ -1,10 +1,11 @@
 ---
+# No run_once here, same reason as in main.yml: the downloads below write into
+# {{ data_dir }}/biocache/layers on every host, not just the first.
 - name: ensure target db directories exist
   file: path={{item}} state=directory
   with_items:
     - "{{ ala_sensitive_data_service_docker_dir }}"
     - "{{ data_dir }}/biocache/layers"
-  run_once: true
   tags:
     - docker
     - docker-service
