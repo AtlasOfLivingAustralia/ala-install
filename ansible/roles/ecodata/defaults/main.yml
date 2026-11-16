@@ -66,3 +66,5 @@ ecodata_ips: "{{ mongo_cluster_enabled | ternary(ecodata_server_ip +','+ecodata_
 data_dir: /data
 
 production_server_hostname: ala-waters.it.csiro.au
+
+use_java_jar: False

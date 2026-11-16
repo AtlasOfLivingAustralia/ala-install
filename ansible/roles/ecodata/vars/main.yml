@@ -1,7 +1,7 @@
 # assets
 version: "{{ ecodata_version | default('LATEST')}}"
 artifactId: "ecodata"
-classifier: "{{ ecodata_classifier | default('exec') }}"
+classifier: "{{ use_java_jar | ternary('', 'exec') }}"
 packaging: "{{ ecodata_packaging | default('jar') }}"
 groupId: "au.org.ala"
 ecodata_war_url: "{{maven_repo_ws_url}}"

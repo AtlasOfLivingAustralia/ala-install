@@ -66,6 +66,7 @@
     name: exec-jar
   vars:
     service_name: "ecodata"
+    java_jar: '{{ use_java_jar }}'
     jar_url: '{{ ecodata_artifact_url }}'
     extra_params:
       - key: "java.io.tmpdir"

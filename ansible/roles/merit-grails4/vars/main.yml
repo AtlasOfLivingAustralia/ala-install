@@ -1,7 +1,7 @@
 # assets
 version: "{{ merit_version | default('LATEST') }}"
 artifactId: "fieldcapture"
-classifier: 'exec'
+classifier: "{{ use_java_jar | ternary('', 'exec') }}"
 packaging: "jar"
 groupId: "au.org.ala"
 merit_jar_url: "{{maven_repo_ws_url}}"

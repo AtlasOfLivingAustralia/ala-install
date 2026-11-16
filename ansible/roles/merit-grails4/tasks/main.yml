@@ -27,6 +27,7 @@
     name: exec-jar
   vars:
     service_name: "fieldcapture"
+    java_jar: '{{ use_java_jar }}'
     maven_repo_url: '{{ merit_repo_url }}'
     maven_repo_username: '{{ merit_repo_username }}'
     maven_repo_password: '{{ merit_repo_password }}'
