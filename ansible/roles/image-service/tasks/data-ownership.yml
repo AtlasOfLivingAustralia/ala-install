@@ -1,10 +1,11 @@
 # A recursive chown of {{data_dir}}/image-service on every deploy walks the whole image store
 # (tens of millions of files on a large portal) and can take hours. Only the top directory is
 # set here: its subdirectories are created with the right owner by the "ensure target
-# directories exist" tasks, and the config files by their template task.
+# directories exist" tasks. config/ is not one of them: the app only reads its config, so the
+# directory and the files in it are root-owned by their own tasks and are left alone here.
 # After migrating or rsyncing a store from another host, run once with
 # image_service_fix_data_ownership=true to fix the ownership of everything below it. That walks
-# the whole store, and only changes the entries whose owner or group is wrong.
+# the whole store (skipping config/), and only changes the entries whose owner or group is wrong.
 - name: set data ownership for {{data_dir}}/image-service
   file: path={{data_dir}}/image-service state=directory owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}"
 
@@ -12,6 +13,7 @@
   shell: >
     set -o pipefail;
     find {{ (data_dir ~ '/image-service') | quote }}
+    -path {{ (data_dir ~ '/image-service/config') | quote }} -prune -o
     \( ! -user {{ image_user | default('image-service') | quote }} -o ! -group {{ image_user | default('image-service') | quote }} \)
     -exec chown -h -v {{ image_user | default('image-service') | quote }}:{{ image_user | default('image-service') | quote }} {} + | wc -l
   args:

@@ -62,8 +62,8 @@ touch "$tmp/marker"
 out="$(play "$d")" || { echo "$out"; fail "default run failed"; }
 [ "$(stat -c %G "$d/image-service")" = "$user" ] || fail "top directory not given to $user"
 # find exits 1 on the locked directory; what matters is what it printed.
-touched="$( (find "$d/image-service/store" "$d/image-service/exports" -cnewer "$tmp/marker" 2>/dev/null || true) | wc -l)"
-[ "$touched" = 0 ] || fail "$touched store/exports entries were changed"
+touched="$( (find "$d/image-service/store" "$d/image-service/exports" "$d/image-service/config" -cnewer "$tmp/marker" 2>/dev/null || true) | wc -l)"
+[ "$touched" = 0 ] || fail "$touched store/exports/config entries were changed"
 [ -z "$(find "$d/image-service/store" -not -group "$other" 2>/dev/null || true)" ] || fail "store group changed"
 out="$(play "$d")" || { echo "$out"; fail "second default run failed"; }
 [ "$(echo "$out" | changed)" = 0 ] || { echo "$out"; fail "second default run is not idempotent"; }
@@ -72,8 +72,12 @@ echo "== image_service_fix_data_ownership=true: the store is fixed"
 f="$tmp/fix"
 make_store "$f" 0
 out="$(play "$f" -e image_service_fix_data_ownership=true)" || { echo "$out"; fail "fix run failed"; }
-left="$(find "$f/image-service" \( -not -user "$user" -o -not -group "$user" \) | wc -l)"
-[ "$left" = 0 ] || fail "$left entries still not owned by $user:$user"
+left="$(find "$f/image-service/store" "$f/image-service/exports" "$f/image-service/incoming" \( -not -user "$user" -o -not -group "$user" \) | wc -l)"
+[ "$left" = 0 ] || fail "$left store entries still not owned by $user:$user"
+# config/ and the files in it are root-owned by their own tasks in main.yml, so fix mode
+# must walk past them instead of handing the config back to the application.
+[ "$(stat -c %G "$f/image-service/config")" = "$other" ] || fail "the config directory was chowned"
+[ "$(stat -c %G "$f/image-service/config/image-service-config.yml")" = "$other" ] || fail "a config file was chowned"
 [ "$(stat -c %G "$f/outside.jpg")" = "$other" ] || fail "a symlink in the store was followed"
 out="$(play "$f" -e image_service_fix_data_ownership=true)" || { echo "$out"; fail "second fix run failed"; }
 [ "$(echo "$out" | changed)" = 0 ] || { echo "$out"; fail "second fix run is not idempotent"; }

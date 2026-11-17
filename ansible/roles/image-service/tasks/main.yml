@@ -54,7 +54,6 @@
   file: path={{item}} state=directory owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}"
   with_items:
     - "{{data_dir}}/image-service/setup"
-    - "{{data_dir}}/image-service/config"
     - "{{data_dir}}/image-service/store"
     - "{{data_dir}}/image-service/incoming"
     - "{{data_dir}}/image-service/exports"
@@ -66,8 +65,18 @@
     - image-service
     - properties
 
+# The app only reads its config, so the config directory and the files in it stay
+# root-owned: image-service reads them through its group.
+- name: ensure the config directory exists
+  file: path={{data_dir}}/image-service/config state=directory owner=root group=root mode="0755"
+  notify:
+    - restart image-service
+  tags:
+    - image-service
+    - properties
+
 - name: copy all config.properties
-  template: src={{ item }} dest={{data_dir}}/image-service/config/ owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}"
+  template: src={{ item }} dest={{data_dir}}/image-service/config/ owner=root group="{{ image_user | default('image-service') }}" mode="0640"
   with_items:
     - "config/image-service-config.yml"
     - "config/{{ image_service_logfile | default('logback.groovy') }}"
@@ -99,7 +108,6 @@
   file: path={{item}} state=directory owner="{{ image_user | default('image-service') }}" group="{{ image_user | default('image-service') }}"
   with_items:
     - "{{data_dir}}/image-service/setup"
-    - "{{data_dir}}/image-service/config"
     - "{{data_dir}}/image-service/store"
     - "{{data_dir}}/image-service/incoming"
     - "{{data_dir}}/image-service/exports"
@@ -107,6 +115,14 @@
     - "/var/log/atlas/image-service"
   notify:
      - restart image-service
+  tags:
+    - image-service
+    - properties
+
+- name: ensure the config directory exists
+  file: path={{data_dir}}/image-service/config state=directory owner=root group=root mode="0755"
+  notify:
+    - restart image-service
   tags:
     - image-service
     - properties
