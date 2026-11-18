@@ -41,12 +41,12 @@
     name: nginx
     types: deb
     uris: https://nginx.org/packages/mainline/ubuntu/
-    suites: '{{ ansible_distribution_release }}'
+    suites: '{{ ansible_facts["distribution_release"] }}'
     components: nginx
     architectures: arm64
     signed_by: https://nginx.org/keys/nginx_signing.key
   when:
-    - ansible_distribution == "Ubuntu"
+    - ansible_facts["distribution"] == "Ubuntu"
     - ansible_facts["architecture"] == "aarch64"
 
 - name: Add source for nginx (amd64)
@@ -54,12 +54,12 @@
     name: nginx
     types: deb
     uris: https://nginx.org/packages/mainline/ubuntu/
-    suites: '{{ ansible_distribution_release }}'
+    suites: '{{ ansible_facts["distribution_release"] }}'
     components: nginx
     architectures: amd64
     signed_by: https://nginx.org/keys/nginx_signing.key
   when:
-    - ansible_distribution == "Ubuntu"
+    - ansible_facts["distribution"] == "Ubuntu"
     - ansible_facts["architecture"] == "x86_64"
 
 - name: Update APT cache
