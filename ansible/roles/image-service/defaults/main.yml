@@ -2,5 +2,8 @@
 image_service_port: 8080
 image_service_logfile: logback.groovy
 image_service_install_optimisation_packages: false
+# Set to true once after migrating or rsyncing the image store from another host: it chowns
+# everything below {{data_dir}}/image-service to image_user, walking the whole store.
+image_service_fix_data_ownership: false
 oxipng_version: "9.1.0"
 oxipng_deb_url: "https://github.com/shssoichiro/oxipng/releases/download/v{{ oxipng_version }}/oxipng_{{ oxipng_version }}-1_amd64.deb"
