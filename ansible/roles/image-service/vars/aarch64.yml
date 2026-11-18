@@ -1,0 +1,2 @@
+---
+oxipng_deb_url: "{{ oxipng_download_base_url }}/v{{ oxipng_version }}/oxipng_{{ oxipng_version }}-1_arm64.deb"
