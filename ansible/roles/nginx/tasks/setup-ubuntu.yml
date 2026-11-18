@@ -36,17 +36,31 @@
     state: present
     update_cache: yes
 
-- name: Add official NGINX repository
-  become: true
-  ansible.builtin.deb822_repository:
+- name: Add source for nginx (arm64)
+  deb822_repository:
     name: nginx
-    types: [deb]
-    uris: "http://nginx.org/packages/ubuntu"
-    suites: "{{ ansible_facts['distribution_release'] }}"
-    components: ["nginx"]
-    signed_by: "https://nginx.org/keys/nginx_signing.key"
-    state: present
-    enabled: true
+    types: deb
+    uris: https://nginx.org/packages/mainline/ubuntu/
+    suites: '{{ ansible_distribution_release }}'
+    components: nginx
+    architectures: arm64
+    signed_by: https://nginx.org/keys/nginx_signing.key
+  when:
+    - ansible_distribution == "Ubuntu"
+    - ansible_facts["architecture"] == "aarch64"
+
+- name: Add source for nginx (amd64)
+  deb822_repository:
+    name: nginx
+    types: deb
+    uris: https://nginx.org/packages/mainline/ubuntu/
+    suites: '{{ ansible_distribution_release }}'
+    components: nginx
+    architectures: amd64
+    signed_by: https://nginx.org/keys/nginx_signing.key
+  when:
+    - ansible_distribution == "Ubuntu"
+    - ansible_facts["architecture"] == "x86_64"
 
 - name: Update APT cache
   become: true
