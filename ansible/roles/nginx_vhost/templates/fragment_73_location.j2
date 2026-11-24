@@ -8,8 +8,19 @@
             return 444;
         }
 {% endif %}
+{% if (item.disable is defined and item.disable | bool == True) or item.return_code is defined -%}
+{% if item.log_not_found is defined and not (item.log_not_found | bool) %}
+        log_not_found off;
+{% endif %}
+{% if item.access_log_off is defined and (item.access_log_off | bool) %}
+        access_log off;
+{% endif %}
+{%- endif -%}
 {% if item.disable is defined and item.disable | bool == True %}
         return 404;
+{% endif -%}
+{% if item.return_code is defined %}
+        return {{ item.return_code }};
 {% endif %}
 {% if item.hide_headers is defined and item.hide_headers|length > 0 %}
 {% for next_hide_header in item.hide_headers %}
@@ -38,10 +49,14 @@
 {% else %}
 {% if item.extra_limit_zones is defined and item.extra_limit_zones|length > 0 %}
 {% for next_extra_limit_zone in item.extra_limit_zones %}
-        limit_req zone={{ next_extra_limit_zone.name }} burst={{ next_extra_limit_zone.burst }};
+        limit_req zone={{ next_extra_limit_zone.name }} burst={{ next_extra_limit_zone.burst }}{% if next_extra_limit_zone.nodelay | default(nginx_rate_limit_nodelay | default(false)) | bool %} nodelay{% endif %};
 {% endfor %}
 {% endif %}
-        limit_req zone={{ nginx_rate_limit_name }} burst={{ nginx_rate_limit_burst }};
+        limit_req zone={{ nginx_rate_limit_name }} burst={{ nginx_rate_limit_burst }}{% if item.rate_limit_nodelay | default(nginx_rate_limit_nodelay | default(false)) | bool %} nodelay{% endif %};
+{% set effective_limit_status = item.rate_limit_status_code | default(nginx_rate_limit_status_code | default(503)) %}
+{% if (effective_limit_status | int) != 503 %}
+        limit_req_status {{ effective_limit_status }};
+{% endif %}
 {% endif %}
 {% endif %}
 {% if item.block_by_arguments is defined and item.block_by_arguments|length > 0 %}
@@ -187,6 +202,7 @@ try_files {{ item.try_files }};
     {% endif %}
 {% elif item.default_type is defined and item.default_type %}
     default_type {{ item.default_type }};
+{% elif (item.disable is defined and item.disable | bool == True) or item.return_code is defined %}
 {% else %}
         try_files {{ item.try_files }};
 {% endif %}

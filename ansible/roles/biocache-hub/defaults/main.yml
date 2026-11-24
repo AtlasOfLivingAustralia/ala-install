@@ -8,3 +8,6 @@ biocache_hub_docker_dir: "{{ data_dir }}/{{ biocache_hub }}/docker"
 # that already append the key to the URL keep working untouched.
 carto_api_key: ""
 carto_basemap_url: "https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png"
+
+# Optional extra nginx location entries prepended before the default root proxy location
+biocache_hub_extra_nginx_paths: []

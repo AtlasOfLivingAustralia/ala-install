@@ -48,7 +48,7 @@
     mode: "{{nginx_config_file_mode}}"
   when: ala_default_vhost | bool == True and vhost_required | bool == True and nginx_load_balancing | bool == true and item.is_proxy and item.proxy_pass is defined
   with_items:
-    - "{{ nginx_paths}} "
+    - "{{ nginx_paths }}"
   notify:
    - reload nginx
   tags:
@@ -60,7 +60,7 @@
     state: absent
   when: ala_default_vhost | bool == False or (vhost_required | bool == True and nginx_load_balancing | bool != true)
   with_items:
-    - "{{ nginx_paths}} "
+    - "{{ nginx_paths }}"
   notify:
    - reload nginx
   tags:

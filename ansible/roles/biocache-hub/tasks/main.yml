@@ -6,6 +6,8 @@
     - biocache_hub
     - hub_config
     - facets_config
+    - setfacts
+    - nginx_vhost
 
 #
 # Apache/Tomcat virtual host configuration
@@ -22,6 +24,64 @@
     - biocache_hub
   when: not webserver_nginx
 
+- name: normalise biocache_hub_extra_nginx_paths
+  set_fact:
+    biocache_hub_has_caller_nginx_paths: "{{ nginx_paths is defined and nginx_paths is not none and (nginx_paths | length > 0) }}"
+    biocache_hub_parsed_extra_nginx_paths: >-
+      {{
+        ((biocache_hub_extra_nginx_paths | trim) | from_json)
+        if (biocache_hub_extra_nginx_paths is string and (biocache_hub_extra_nginx_paths | trim | length > 0))
+        else ([] if biocache_hub_extra_nginx_paths is string else (biocache_hub_extra_nginx_paths | default([], True)))
+      }}
+  tags:
+    - nginx_vhost
+    - deploy
+    - biocache_hub
+  when:
+    - webserver_nginx | bool
+
+- name: compute nginx_paths when biocache_hub_extra_nginx_paths is configured
+  set_fact:
+    biocache_hub_computed_nginx_paths: >-
+      {{
+        biocache_hub_parsed_extra_nginx_paths + [
+          {
+            'path': biocache_hub_context_path | default('/', True),
+            'sort_label': '9_root',
+            'is_proxy': true,
+            'use_cache': false,
+            'proxy_pass': 'http://' ~ (biocache_hub_docker_host | default('127.0.0.1')) ~ ':' ~ (biocache_server_port | default('8080', True)) ~ (biocache_hub_context_path | default('/', True))
+          }
+        ]
+      }}
+  tags:
+    - nginx_vhost
+    - deploy
+    - biocache_hub
+  when:
+    - webserver_nginx | bool
+    - biocache_hub_parsed_extra_nginx_paths | length > 0
+    - not (biocache_hub_has_caller_nginx_paths | bool)
+
+- name: add nginx vhost if configured (with extra nginx paths)
+  include_role:
+    name: nginx_vhost
+  vars:
+    appname: "{{ biocache_hub }}"
+    hostname: "{{ biocache_hub_hostname }}"
+    context_path: "{{ biocache_hub_context_path }}"
+    tomcat_server_port: "{{ biocache_server_port }}"
+    nginx_upstream_host: "{{ biocache_hub_docker_host | default('127.0.0.1') }}"
+    nginx_paths: "{{ biocache_hub_computed_nginx_paths }}"
+  tags:
+    - nginx_vhost
+    - deploy
+    - biocache_hub
+  when:
+    - webserver_nginx | bool
+    - biocache_hub_parsed_extra_nginx_paths | length > 0
+    - not (biocache_hub_has_caller_nginx_paths | bool)
+
 - name: add nginx vhost if configured
   include_role:
     name: nginx_vhost
@@ -35,7 +95,9 @@
     - nginx_vhost
     - deploy
     - biocache_hub
-  when: webserver_nginx | bool 
+  when:
+    - webserver_nginx | bool
+    - not (biocache_hub_parsed_extra_nginx_paths | length > 0 and not (biocache_hub_has_caller_nginx_paths | bool))
 
 - include_tasks: ../../tomcat_deploy/tasks/main.yml
   vars:
