@@ -1,8 +1,26 @@
 {% if nginx_rate_limit_enabled | bool == True %}
-limit_req_zone {{ nginx_rate_limit_ip_variable }} zone={{ nginx_rate_limit_name }}:{{ nginx_rate_limit_size }} rate={{ nginx_rate_limit }};
+{% if nginx_rate_limit_exempt_useragents is defined and nginx_rate_limit_exempt_useragents | length > 0 and nginx_set_real_ips is defined and nginx_set_real_ips | length > 0 %}
+geo ${{ nginx_rate_limit_name }}_trusted_probe_ip {
+    default 0;
+    127.0.0.1/32 1;
+{% for next_set_real_ip in nginx_set_real_ips %}
+    {{ next_set_real_ip }} 1;
+{% endfor %}
+}
+map "${{ nginx_rate_limit_name }}_trusted_probe_ip:$http_user_agent" ${{ nginx_rate_limit_name }}_key {
+    default {{ nginx_rate_limit_ip_variable }};
+{% for ua in nginx_rate_limit_exempt_useragents %}
+    "~*^1:.*{{ ua | regex_escape | replace('"', '\\"') }}" "";
+{% endfor %}
+}
+{% set effective_rate_limit_key = "$" ~ nginx_rate_limit_name ~ "_key" %}
+{% else %}
+{% set effective_rate_limit_key = nginx_rate_limit_ip_variable %}
+{% endif %}
+limit_req_zone {{ effective_rate_limit_key }} zone={{ nginx_rate_limit_name }}:{{ nginx_rate_limit_size }} rate={{ nginx_rate_limit }};
 {% if nginx_other_limit_zones is defined and nginx_other_limit_zones|length > 0 %}
 {% for next_other_limit_zone in nginx_other_limit_zones %}
-limit_req_zone {{ next_other_limit_zone.ip_variable | default(nginx_rate_limit_ip_variable) }} zone={{ next_other_limit_zone.name }}:{{ next_other_limit_zone.size | default(nginx_rate_limit_size) }} rate={{ next_other_limit_zone.rate }};
+limit_req_zone {{ next_other_limit_zone.ip_variable | default(effective_rate_limit_key) }} zone={{ next_other_limit_zone.name }}:{{ next_other_limit_zone.size | default(nginx_rate_limit_size) }} rate={{ next_other_limit_zone.rate }};
 {% endfor %}
 {% endif %}
 {% endif %}

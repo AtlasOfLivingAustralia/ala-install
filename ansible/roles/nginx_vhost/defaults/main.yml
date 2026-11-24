@@ -92,6 +92,12 @@ nginx_fail_timeout: 10
 # https://www.nginx.com/blog/rate-limiting-nginx/
 nginx_rate_limit_enabled: False
 nginx_rate_limit_ip_variable: "$binary_remote_addr"
+# User-Agent substrings excluded from rate limiting when request $remote_addr is a trusted probe IP
+nginx_rate_limit_exempt_useragents: ["ELB-HealthChecker"]
+# Set to true to add 'nodelay' to limit_req so burst requests are served immediately rather than queued
+nginx_rate_limit_nodelay: False
+# HTTP status returned when limit_req rejects a request (nginx default is 503)
+nginx_rate_limit_status_code: 503
 # Customise this name if necessary to support rate limits specific to applications
 nginx_rate_limit_name: "nginxratelimitzone"
 # 10m is quoted in documentation to support about 160,000 requests
