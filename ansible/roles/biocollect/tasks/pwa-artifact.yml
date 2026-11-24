@@ -1,0 +1,60 @@
+- name: Resolve PWA artifact
+  block:
+    - name: Validate PWA artifact configuration
+      ansible.builtin.assert:
+        that:
+          - (pwa_version | default('') | string | length > 0) != (pwa_commit | default('') | string | length > 0)
+          - pwa_artifact_name | default('') | length > 0
+          - pwa_gh_token | default('') | length > 0
+        fail_msg: "Set exactly one of pwa_version (release tag) or pwa_commit, plus pwa_artifact_name and pwa_gh_token."
+
+    - name: Resolve PWA release tag or commit to a full SHA
+      ansible.builtin.uri:
+        url: "{{ pwa_github_api }}/commits/{{ pwa_ref | urlencode }}"
+        headers: "{{ pwa_github_headers }}"
+      register: pwa_commit_response
+      no_log: true
+
+    - name: List PWA artifacts for the configured environment
+      ansible.builtin.uri:
+        url: "{{ pwa_github_api }}/actions/artifacts?name={{ pwa_artifact_name | urlencode }}&per_page=100"
+        headers: "{{ pwa_github_headers }}"
+      register: pwa_artifacts_response
+      no_log: true
+
+    - name: List remaining pages of PWA artifacts
+      ansible.builtin.uri:
+        url: "{{ pwa_github_api }}/actions/artifacts?name={{ pwa_artifact_name | urlencode }}&per_page=100&page={{ item }}"
+        headers: "{{ pwa_github_headers }}"
+      loop: "{{ range(2, ((pwa_artifacts_response.json.total_count | int + 99) // 100) + 1) | list }}"
+      register: pwa_artifact_pages
+      no_log: true
+
+    - name: Find unexpired PWA artifacts built from the requested commit
+      ansible.builtin.set_fact:
+        pwa_matching_artifacts: >-
+          {{ (pwa_artifacts_response.json.artifacts +
+              (pwa_artifact_pages.results | default([]) | map(attribute='json.artifacts') | sum(start=[])))
+             | selectattr('name', 'equalto', pwa_artifact_name)
+             | selectattr('workflow_run.head_sha', 'equalto', pwa_commit_response.json.sha)
+             | selectattr('expired', 'equalto', false)
+             | sort(attribute='id', reverse=true) | list }}
+
+    - name: Require an available PWA artifact
+      ansible.builtin.assert:
+        that:
+          - pwa_matching_artifacts | length > 0
+        fail_msg: >-
+          No unexpired {{ pwa_artifact_name }} artifact was found for {{ pwa_ref }}
+          ({{ pwa_commit_response.json.sha }}). Check the build run and artifact retention.
+
+    - name: Select the newest matching PWA artifact
+      ansible.builtin.set_fact:
+        pwa_artifact: "{{ pwa_matching_artifacts | first }}"
+  vars:
+    pwa_ref: "{{ pwa_commit | default('', true) or ('tags/' ~ pwa_version | default('')) }}"
+    pwa_github_api: https://api.github.com/repos/AtlasOfLivingAustralia/biocollect-pwa
+    pwa_github_headers:
+      Accept: application/vnd.github+json
+      Authorization: "Bearer {{ pwa_gh_token }}"
+      X-GitHub-Api-Version: "2022-11-28"
