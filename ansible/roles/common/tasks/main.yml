@@ -33,15 +33,17 @@
 
 - name: apt-get update (Debian)
   apt: update_cache=yes
-  when: ansible_os_family == "Debian"
+  when:
+    - ansible_os_family == "Debian"
+    - deployment_type == 'vm' or deployment_type is undefined
   tags:
     - common
     - apt_update
 
 - name: Check if deployment_type is valid
   fail:
-    msg: "'deployment_type' must be one of 'vm', 'swarm', 'k8s'. Current value is '{{ deployment_type }}'."
-  when: deployment_type not in ['vm', 'swarm', 'k8s']
+    msg: "'deployment_type' must be one of 'vm', 'swarm', 'k8s', 'container'. Current value is '{{ deployment_type }}'."
+  when: deployment_type not in ['vm', 'swarm', 'k8s', 'container']
   tags:
     - common
 
@@ -49,6 +51,7 @@
   file:
     path: "{{ data_dir }}"
     state: directory
+  when: deployment_type == 'vm' or deployment_type is undefined
   tags:
     - common
 
@@ -56,6 +59,7 @@
   copy:
     src: data-gitignore
     dest: "{{ data_dir }}/.gitignore"
+  when: deployment_type == 'vm' or deployment_type is undefined
   tags:
     - common
     - gitignore
