@@ -1,5 +1,7 @@
 - include_tasks: ../../common/tasks/setfacts.yml
-  tags: common
+  tags:
+    - common
+    - setfacts
 # We need to:
 #
 # 1. Set in the inventory where the mounted storage is.
