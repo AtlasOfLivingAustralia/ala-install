@@ -205,20 +205,46 @@
   tags:
     - pwa
 
+- name: Find the PWA artifact for the release tag or commit
+  import_tasks: pwa-artifact.yml
+  tags:
+    - pwa
+
 - name: Check if PWA artifact already exists
   ansible.builtin.stat:
-    path: "/data/biocollect/{{ pwa_artifact_id }}.zip"
+    path: "/data/biocollect/{{ pwa_artifact.id }}.zip"
   register: pwa_artifact_stat
   tags:
     - pwa
 
- # We have to use curl instead of get_url as the latter is broken for some mysterious reason
+# Keep curl because get_url does not work with this artifact download.
 - name: Download PWA artifact (if it doesn't exist)
   ansible.builtin.command:
-    cmd: "curl -X GET https://api.github.com/repos/AtlasOfLivingAustralia/biocollect-pwa/actions/artifacts/{{ pwa_artifact_id }}/zip -H 'Authorization: Bearer {{ pwa_gh_token }}' -o /data/biocollect/{{ pwa_artifact_id }}.zip -v -L"
+    argv:
+      - curl
+      - --fail
+      - --silent
+      - --show-error
+      - --location
+      - "{{ pwa_artifact.archive_download_url }}"
+      - --header
+      - "Authorization: Bearer {{ pwa_gh_token }}"
+      - --output
+      - "/data/biocollect/{{ pwa_artifact.id }}.zip.part"
+  no_log: true
   when: not pwa_artifact_stat.stat.exists
   tags:
    - pwa
+
+- name: Cache the completed PWA artifact download
+  ansible.builtin.command:
+    argv:
+      - mv
+      - "/data/biocollect/{{ pwa_artifact.id }}.zip.part"
+      - "/data/biocollect/{{ pwa_artifact.id }}.zip"
+  when: not pwa_artifact_stat.stat.exists
+  tags:
+    - pwa
 
 - name: Remove current PWA deployment
   file:
@@ -228,14 +254,26 @@
     - pwa
 
 - name: Extract new PWA archives
-  ansible.builtin.shell: "sudo unzip {{ pwa_artifact_id }}.zip"
+  ansible.builtin.command:
+    argv:
+      - sudo
+      - unzip
+      - -o
+      - "{{ pwa_artifact.id }}.zip"
   args:
     chdir: /data/biocollect
   tags:
     - pwa
 
 - name: Extract new PWA build
-  ansible.builtin.shell: "sudo unzip {{ pwa_artifact_name }}.zip -d /data/biocollect/mobile-app"
+  ansible.builtin.command:
+    argv:
+      - sudo
+      - unzip
+      - -o
+      - "{{ pwa_artifact_name }}.zip"
+      - -d
+      - /data/biocollect/mobile-app
   args:
     chdir: /data/biocollect
   tags:
@@ -254,6 +292,6 @@
     path: "{{ item.path }}"
     state: absent
   loop: "{{ zip_files.files }}"
-  when: (item.path | basename) != (pwa_artifact_id ~ '.zip')
+  when: (item.path | basename) != (pwa_artifact.id ~ '.zip')
   tags:
     - pwa
