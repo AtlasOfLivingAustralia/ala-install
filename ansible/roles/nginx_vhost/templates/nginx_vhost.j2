@@ -16,7 +16,11 @@
 {{ m.fragment_50_root() }}
 {{ m.fragment_55_include() -}}
 {{ m.fragment_60_robots() }}
-{% for item in nginx_paths | sort(attribute='sort_label') %}
+{# nginx_paths entries may omit sort_label; sorting on it directly raises
+   AnsibleUndefinedVariable as soon as one entry has it and another does not.
+   Keep the labelled ones sorted first and append the unlabelled ones in
+   declaration order. #}
+{% for item in (nginx_paths | selectattr('sort_label', 'defined') | sort(attribute='sort_label')) + (nginx_paths | rejectattr('sort_label', 'defined') | list) %}
 {{ m.fragment_70_location_start(item) -}}
 {{ m.fragment_73_location(item) -}}
 {% if (nginx_cors_origin_regexp is defined) -%}
@@ -37,7 +41,11 @@
 {{ m.fragment_50_root() }}
 {{ m.fragment_55_include() -}}
 {{ m.fragment_60_robots() }}
-{% for item in nginx_paths | sort(attribute='sort_label') %}
+{# nginx_paths entries may omit sort_label; sorting on it directly raises
+   AnsibleUndefinedVariable as soon as one entry has it and another does not.
+   Keep the labelled ones sorted first and append the unlabelled ones in
+   declaration order. #}
+{% for item in (nginx_paths | selectattr('sort_label', 'defined') | sort(attribute='sort_label')) + (nginx_paths | rejectattr('sort_label', 'defined') | list) %}
 {{ m.fragment_70_location_start(item) -}}
 {{ m.fragment_73_location(item) -}}
 {{ m.fragment_74_location_cors() }}
